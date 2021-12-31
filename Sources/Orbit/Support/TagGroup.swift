@@ -1,0 +1,231 @@
+import SwiftUI
+
+public protocol TagModel: Identifiable, Equatable {
+    var label: String { get }
+    var isRemovable: Bool { get }
+    var isRemoved: Bool { get set }
+    var isSelected: Bool { get set }
+}
+
+/// Collection of Orbit tags with binding through `TagModel` protocol.
+///
+/// Can be used in single line or multiline layout.
+public struct TagGroup<TM: TagModel>: View {
+
+    @Environment(\.accessibilityReduceMotion) private var isReduceMotionEnabled
+    @Environment(\.isFadeIn) private var isFadeIn
+    @State private var tagsFadeIn: [Bool] = []
+    @Binding private var tags: [TM]
+
+    private let spacing: UIOffset
+    private let label: String
+    private let showRemovedTags: Bool
+    private let layout: Layout
+
+    public var body: some View {
+        VStack(alignment: .leading, spacing: 1) {
+            if label.isEmpty == false {
+                FormFieldLabel(label)
+            }
+
+            switch layout {
+                case .singleLineScrollable:
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: spacing.horizontal) {
+                            ForEach(tags) { tagView(for: $0) }
+                        }
+                    }
+                case .multiLine:
+                    CollectionView(data: tags, spacing: spacing) { index in
+                        tagView(for: tags[index])
+                    }
+            }
+        }
+        .onAppear {
+            if isFadeIn, isReduceMotionEnabled == false {
+                tagsFadeIn = tags.map { _ in false }
+                let delays = tags.enumerated().map { Double($0.offset) * 0.15 }.shuffled()
+
+                for index in 0..<tags.count {
+                    withAnimation(.spring(response: 0.74, dampingFraction: 0.5).delay(delays[index])) {
+                        tagsFadeIn[index] = true
+                    }
+                }
+            }
+        }
+    }
+
+    /// Creates a collection of related Orbit Tag components.
+    public init(
+        label: String = "",
+        tags: Binding<[TM]>,
+        showRemovedTags: Bool = false,
+        layout: Layout,
+        spacing: UIOffset = UIOffset(horizontal: .xSmall, vertical: .xSmall)
+    ) {
+        self.label = label
+        _tags = tags
+        self.showRemovedTags = showRemovedTags
+        self.layout = layout
+        self.spacing = spacing
+    }
+
+    private func isFadeIn(forIndex index: Int) -> Bool {
+        guard index >= 0, index < tagsFadeIn.endIndex else {
+            return true
+        }
+
+        return tagsFadeIn[index]
+    }
+
+    private func tagView(for tag: TM) -> some View {
+        guard let index = tags.firstIndex(of: tag), showRemovedTags || tag.isRemoved == false else {
+            return AnyView(EmptyView())
+        }
+
+        let style: Tag.Style = tag.isRemovable ? .removable(action: { tags[index].isRemoved = true }) : .default
+
+        return AnyView(
+            Tag(
+                tag.label,
+                isSelected: $tags[index].isSelected.wrappedValue,
+                style: style
+            ) {
+                $tags[index].isSelected.wrappedValue.toggle()
+            }
+            .opacity(isFadeIn(forIndex: index) ? 1 : 0)
+            .scaleEffect(isFadeIn(forIndex: index) ? 1 : 0.3)
+        )
+    }
+}
+
+// MARK: - Types
+public extension TagGroup {
+
+    enum Layout {
+        /// Tags are laid out on a single line in a horizontal scroll view.
+        case singleLineScrollable
+        /// Tags are laid out in an available space, wrapping the tags on next line if needed.
+        case multiLine
+    }
+}
+
+// MARK: - Previews
+struct TagGroupPreviews: PreviewProvider {
+
+    struct TagModelPreview: TagModel {
+        let id: Int
+        let label: String
+        var isRemovable: Bool = false
+        var isRemoved: Bool = false
+        var isSelected: Bool = false
+    }
+
+    static var previews: some View {
+        snapshots
+
+        ScrollView {
+            VStack(alignment: .leading, spacing: .xxSmall) {
+                PreviewWrapperWithState(
+                    initialState: [
+                        TagModelPreview(id: 1, label: "One"),
+                        TagModelPreview(id: 2, label: "Two", isSelected: true),
+                    ]
+                ) { tags in
+                    TagGroup(tags: tags, layout: .singleLineScrollable)
+                        .environment(\.isFadeIn, true)
+                }
+
+                Separator()
+
+                PreviewWrapperWithState(
+                    initialState: [
+                        TagModelPreview(id: 1, label: "Bags", isRemovable: true, isSelected: false),
+                        TagModelPreview(id: 2, label: "Price", isRemovable: false, isSelected: true),
+                        TagModelPreview(id: 3, label: "Days", isRemovable: false, isSelected: false),
+                        TagModelPreview(id: 4, label: "Carriers", isRemovable: true, isSelected: true),
+                        TagModelPreview(id: 5, label: "Countries", isRemovable: true, isSelected: false),
+                    ]
+                ) { tags in
+                    VStack(alignment: .leading) {
+                        TagGroup(label: "Filters", tags: tags, showRemovedTags: true, layout: .singleLineScrollable)
+                            .environment(\.isFadeIn, true)
+
+                        ForEach(tags.wrappedValue) { tag in
+                            HStack {
+                                Icon(tag.isSelected ? .checkCircle : .emptyCircle, size: .small)
+                                Icon(tag.isRemoved ? .remove : .emptyCircle, size: .small)
+                                Text(tag.label, size: .small)
+                            }
+                        }
+                    }
+                }
+
+                Separator()
+
+                PreviewWrapperWithState(
+                    initialState: [
+                        TagModelPreview(id: 1, label: "Fun 🎢", isRemovable: false, isSelected: false),
+                        TagModelPreview(id: 2, label: "Adventure 🏕", isRemovable: false, isSelected: true),
+                        TagModelPreview(id: 3, label: "Music 🎷", isRemovable: false, isSelected: false),
+                        TagModelPreview(id: 4, label: "Sport ⚽️", isRemovable: false, isSelected: true),
+                        TagModelPreview(id: 5, label: "Nightlife 🍻", isRemovable: false, isSelected: false),
+                        TagModelPreview(id: 6, label: "Beach 🏖", isRemovable: false, isSelected: false),
+                    ]
+                ) { tags in
+                    TagGroup(label: "Interests", tags: tags, layout: .multiLine)
+                }
+
+                Separator()
+
+                PreviewWrapperWithState(
+                    initialState: [
+                        TagModelPreview(id: 1, label: "Prague", isRemovable: true),
+                        TagModelPreview(id: 2, label: "Vienna", isRemovable: true, isSelected: true),
+                        TagModelPreview(id: 3, label: "Paris", isRemovable: true),
+                        TagModelPreview(id: 4, label: "Milan", isRemovable: true),
+                        TagModelPreview(id: 5, label: "New York", isRemovable: true),
+                        TagModelPreview(id: 6, label: "Delhi", isRemovable: true),
+                        TagModelPreview(id: 7, label: "Sutton-under-Whitestonecliffe", isRemovable: true),
+                        TagModelPreview(id: 8, label: "Hongkong", isRemovable: true),
+                        TagModelPreview(id: 9, label: "Chaussée-Notre-Dame-Louvignies", isRemovable: true),
+                    ]
+                ) { tags in
+                    TagGroup(label: "Removable tags", tags: tags, layout: .multiLine)
+                        .environment(\.isFadeIn, true)
+                }
+            }
+        }
+        .padding()
+        .previewLayout(.sizeThatFits)
+        .previewDisplayName("Live Preview")
+    }
+
+    static let snapshotTags = [
+        TagModelPreview(id: 1, label: "Prague", isRemovable: true),
+        TagModelPreview(id: 2, label: "Vienna", isRemovable: true, isSelected: true),
+        TagModelPreview(id: 3, label: "Paris", isRemovable: false),
+        TagModelPreview(id: 4, label: "Milan", isRemovable: false),
+        TagModelPreview(id: 5, label: "New York", isRemovable: false),
+        TagModelPreview(id: 6, label: "Delhi", isRemovable: true),
+        TagModelPreview(id: 7, label: "Sutton-under-Whitestonecliffe", isRemovable: true),
+        TagModelPreview(id: 8, label: "Hongkong", isRemovable: true),
+        TagModelPreview(id: 9, label: "Chaussée-Notre-Dame-Louvignies", isRemovable: true),
+    ]
+
+    static var snapshots: some View {
+        Group {
+            TagGroup(tags: .constant(snapshotTags), layout: .singleLineScrollable)
+                .padding(.vertical)
+                .previewDisplayName("Single line scrollable")
+
+            TagGroup(tags: .constant(snapshotTags), layout: .multiLine)
+                .frame(height: 200)
+                .padding(.vertical)
+                .previewDisplayName("Multi line")
+        }
+        .frame(width: 300)
+        .padding(.horizontal)
+        .previewLayout(.sizeThatFits)
+    }
+}

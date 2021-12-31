@@ -1,0 +1,20 @@
+# Xcode
+.DS_Store
+build/
+*.pbxuser
+!default.pbxuser
+!default.xcworkspace
+xcuserdata
+*.moved-aside
+DerivedData
+.idea/
+/Gemfile.lock
+/Brewfile.lock*
+LocalizableStrings
+phraseapp
+*.pyc
+.envrc
+.python-version
+**/__pycache__
+mobile-automation
+**/*.xcscheme
