@@ -17,12 +17,14 @@ public struct Illustration: View {
     let alignment: Alignment?
 
     public var body: some View {
-        SwiftUI.Image(image.assetName, bundle: .current)
-            .resizable()
-            .scaledToFit()
-            .frame(maxWidth: maxWidth, maxHeight: maxHeight)
-            .frame(maxWidth: wrapperMaxWidth, alignment: alignment ?? .center)
-            .fixedSize(horizontal: false, vertical: true)
+        if image != .none {
+            SwiftUI.Image(image.assetName, bundle: .current)
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: maxWidth, maxHeight: maxHeight)
+                .frame(maxWidth: wrapperMaxWidth, alignment: alignment ?? .center)
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
 
     var wrapperMaxWidth: CGFloat? {

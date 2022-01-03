@@ -3,6 +3,8 @@ import Foundation
 public extension Illustration {
 
     enum Image: CaseIterable, AssetNameProviding {
+        case none
+        
         case airHelp
         case airportTransportTaxi
         case accommodation

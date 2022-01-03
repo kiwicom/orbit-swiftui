@@ -5,7 +5,8 @@ let package = Package(
     name: "Orbit",
     platforms: [.iOS(.v13)],
     products: [
-        .library(name: "Orbit", type: .dynamic, targets: ["Orbit"]),
+        .library(name: "Orbit", targets: ["Orbit"]),
+        .library(name: "OrbitDynamic", type: .dynamic, targets: ["Orbit"]),
         .library(name: "OrbitStatic", type: .static, targets: ["Orbit"]),
     ],
     dependencies: [

@@ -15,21 +15,25 @@ public struct Heading: View {
     let iconContent: Icon.Content
     let style: Style
     let color: Color?
+    let alignment: TextAlignment
 
     public var body: some View {
+        
+        if text.isEmpty == false || iconContent.isEmpty == false {
+            
+            HStack(alignment: .firstTextBaseline, spacing: Self.spacing) {
+                iconContent.view()
+                    .alignmentGuide(.firstTextBaseline) { size in
+                        self.style.size * Text.firstBaselineRatio + size.height / 2
+                    }
 
-        HStack(alignment: .firstTextBaseline, spacing: Self.spacing) {
-            iconContent.view()
-                .alignmentGuide(.firstTextBaseline) { size in
-                    self.style.size * Text.firstBaselineRatio + size.height / 2
+                if text.isEmpty == false {
+                    SwiftUI.Text(verbatim: text)
+                        .font(.orbit(size: style.size, weight: style.weight))
+                        .multilineTextAlignment(alignment)
+                        .foregroundColor(color?.value)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-
-            if text.isEmpty == false {
-                SwiftUI.Text(verbatim: text)
-                    .font(.orbit(size: style.size, weight: style.weight))
-                    .multilineTextAlignment(.leading)
-                    .foregroundColor(color?.value)
-                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
@@ -46,19 +50,33 @@ public struct Heading: View {
 public extension Heading {
 
     /// Creates Orbit Heading component.
-    init(_ label: String, iconContent: Icon.Content = .none, style: Style, color: Color? = .inkNormal) {
+    init(
+        _ label: String,
+        iconContent: Icon.Content = .none,
+        style: Style,
+        color: Color? = .inkNormal,
+        alignment: TextAlignment = .leading
+    ) {
         self.label = label
         self.iconContent = iconContent
         self.style = style
         self.color = color
+        self.alignment = alignment
     }
 
     /// Creates Orbit Heading component with icon symbol.
-    init(_ label: String, icon: Icon.Symbol, style: Style, color: Color? = .inkNormal) {
+    init(
+        _ label: String,
+        icon: Icon.Symbol,
+        style: Style,
+        color: Color? = .inkNormal,
+        alignment: TextAlignment = .leading
+    ) {
         self.label = label
         self.iconContent = .icon(icon, size: .custom(style.size), color: color?.value)
         self.style = style
         self.color = color
+        self.alignment = alignment
     }
 }
 
