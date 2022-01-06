@@ -26,7 +26,6 @@ This library allows you to integrate the Orbit design system into your iOS Swift
 ## Requirements
 
 - iOS 13
-- Swift 5.5
 - Xcode 13
 - Swift Package Manager
 
@@ -46,12 +45,12 @@ Add Orbit package to your project by adding the package dependency:
 Font.registerOrbitFonts()
 ```
 
-2. Include any of our components in your project and use it.
+2. Include any of our components in your project and use them.
 
 ```swift
 HStack {
-	Text("Hello Orbit!")
-	Button("Continue")
+    Text("Hello Orbit!")
+    Button("Continue")
 }
 ```
 
@@ -71,7 +70,7 @@ As some Orbit components already exist in standard SwiftUI library (`Text` for e
 
 ### Components
 
-To use Orbit components in SwiftUI, import Orbit library and use the components using their matching Orbit name.
+To use Orbit components in SwiftUI, import the `Orbit` library and use the components using their matching Orbit name.
 
 ```swift
 import Orbit
@@ -79,16 +78,16 @@ import Orbit
 ...
 
 VStack(spacing: .medium) {
-	Heading("Messages", style: .title2)
-	Illustration(.mailbox)
-	Text("...<strong>...</strong>...<a href="...">here</a>.")
-	Button("Continue", style: .secondary)
+    Heading("Messages", style: .title2)
+    Illustration(.mailbox)
+    Text("...<strong>...</strong>...<a href="...">here</a>.")
+    Button("Continue", style: .secondary)
 }
 ```
 
 ### Foundation
 
-Most Foundation types and values are accessed using extension on related types.
+Most Foundation types and values are accessed using extensions on related types.
 
 #### Spacing
 
@@ -96,7 +95,7 @@ Use `Spacing` enum with `CGFloat` extensions to access values.
 
 ```swift
 VStack(spacing: .medium) {
-	...
+    ...
 }
 .padding(.large)
 ```
@@ -116,4 +115,4 @@ Use `BorderRadius` and `BorderWidth` enums.
 #### Typography
 
 Use `Font` and `UIFont` extensions. 
-Orbit components use Orbit font automatically.
+Orbit components use the Orbit font automatically.
