@@ -10,8 +10,6 @@ public enum HapticsProvider {
         case notification(_ feedbackType: UINotificationFeedbackGenerator.FeedbackType)
     }
 
-    public static var isEnabled: () -> Bool = { false }
-
     private static let selectionFeedbackGenerator = UISelectionFeedbackGenerator()
     private static let lightImpactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
     private static let heavyImpactFeedbackGenerator = UIImpactFeedbackGenerator(style: .heavy)
@@ -19,8 +17,6 @@ public enum HapticsProvider {
     private static let notificationFeedbackGenerator = UINotificationFeedbackGenerator()
 
     public static func prepareHapticFeedbackGenerator(_ type: HapticFeedbackType) {
-        guard isEnabled() else { return }
-
         switch type {
             case .selection:                selectionFeedbackGenerator.prepare()
             case .light:                    lightImpactFeedbackGenerator.prepare()
@@ -31,8 +27,6 @@ public enum HapticsProvider {
     }
 
     public static func sendHapticFeedback(_ type: HapticFeedbackType) {
-        guard isEnabled() else { return }
-
         prepareHapticFeedbackGenerator(type)
 
         switch type {
