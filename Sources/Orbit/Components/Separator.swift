@@ -8,12 +8,13 @@ public struct Separator: View {
     let label: String
     let color: Color
     let height: CGFloat
+    let verticalPadding: CGFloat
 
     public var body: some View {
         color
             .frame(height: height)
             .frame(minWidth: .small)
-            .padding(.vertical, Spacing.small)
+            .padding(.vertical, verticalPadding)
             .overlay(
                 HStack(spacing: 0) {
                     if label.isEmpty == false {
@@ -47,10 +48,16 @@ public struct Separator: View {
 public extension Separator {
     
     /// Creates Orbit Separator component.
-    init(_ label: String = "", color: Color = .cloudDark, height: CGFloat = 1) {
+    init(
+        _ label: String = "",
+        color: Color = .cloudDark,
+        height: CGFloat = 1,
+        verticalPadding: CGFloat = Spacing.small
+    ) {
         self.label = label
         self.color = color
         self.height = height
+        self.verticalPadding = verticalPadding
     }
 }
 
