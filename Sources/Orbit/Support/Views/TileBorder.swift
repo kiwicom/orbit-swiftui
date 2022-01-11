@@ -7,9 +7,15 @@ public struct TileBorder: ViewModifier {
         case `default`
         case small
     }
+    
+    public enum Style {
+        case `default`
+        /// A card style that visually matches the iOS plain table section appearance.
+        case iOS
+    }
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    let style: Tile.Style?
+    let style: Style?
     let status: Status?
     let backgroundColor: Color?
     let shadowSize: ShadowSize
@@ -24,13 +30,14 @@ public struct TileBorder: ViewModifier {
             )
             .shadow(color: shadowColor.opacity(shadowSize == .small ? 0 : 0.6), radius: 6, x: 0, y: 5)
             .overlay(outerBorder)
-            .overlay(verticalSeparator, alignment: .top)
-            .overlay(verticalSeparator, alignment: .bottom)
+            .overlay(verticalBorder, alignment: .top)
+            .overlay(verticalBorder, alignment: .bottom)
     }
 
-    @ViewBuilder var verticalSeparator: some View {
+    @ViewBuilder var verticalBorder: some View {
         if style == .iOS, horizontalSizeClass != .regular {
-            HairlineSeparator(color: borderColor)
+            borderColor
+                .frame(height: status == nil ? BorderWidth.thin : BorderWidth.emphasis)
         }
     }
 
@@ -111,7 +118,7 @@ public extension View {
     ///
     /// - Parameter style: The style to apply. If style is nil, the view doesn’t get decorated.
     func tileBorder(
-        style: Tile.Style? = .default,
+        style: TileBorder.Style? = .default,
         status: Status? = nil,
         backgroundColor: Color? = nil,
         shadowSize: TileBorder.ShadowSize = .default

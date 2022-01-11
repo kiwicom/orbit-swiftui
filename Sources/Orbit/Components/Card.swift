@@ -24,7 +24,8 @@ public struct Card<Content: View>: View {
     let spacing: CGFloat
     let padding: CGFloat
     let alignment: HorizontalAlignment
-    let style: Tile.Style
+    let style: Style
+    let status: Status?
     let backgroundColor: Color?
     let content: Content
 
@@ -41,7 +42,7 @@ public struct Card<Content: View>: View {
             }
         }
         .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
-        .tileBorder(style: style, backgroundColor: backgroundColor)
+        .tileBorder(style: style.tileBorderStyle, status: status, backgroundColor: backgroundColor)
         .frame(maxWidth: .infinity)
         .padding(.horizontal, horizontalPadding)
     }
@@ -106,6 +107,20 @@ public extension Card {
         case none
         case buttonLink(_ label: String, action: () -> Void = {})
     }
+    
+    enum Style {
+
+        case `default`
+        /// A card style that visually matches the iOS plain table section appearance.
+        case iOS
+        
+        public var tileBorderStyle: TileBorder.Style {
+            switch self {
+                case .default:      return .default
+                case .iOS:          return .iOS
+            }
+        }
+    }
 }
 
 // MARK: - Inits
@@ -120,7 +135,8 @@ public extension Card {
         action: Action = .none,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
-        style: Tile.Style = .iOS,
+        style: Style = .iOS,
+        status: Status? = nil,
         backgroundColor: Color = .white,
         @ViewBuilder content: @escaping () -> Content
     ) {
@@ -132,6 +148,7 @@ public extension Card {
         self.spacing = spacing
         self.padding = padding
         self.style = style
+        self.status = status
         self.backgroundColor = backgroundColor
         self.content = content()
     }
@@ -145,7 +162,8 @@ public extension Card {
         action: Action = .none,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
-        style: Tile.Style = .iOS,
+        style: Style = .iOS,
+        status: Status? = nil,
         backgroundColor: Color = .white
     ) where Content == EmptyView {
         self.init(
@@ -157,6 +175,7 @@ public extension Card {
             spacing: spacing,
             padding: padding,
             style: style,
+            status: status,
             backgroundColor: backgroundColor,
             content: { EmptyView() }
         )
@@ -239,7 +258,8 @@ struct CardPreviews: PreviewProvider {
         Card(
             "Very very very long and multi-line title",
             description: "Very very very very very long and multi-line description",
-            action: .buttonLink("Update")
+            action: .buttonLink("Update"),
+            status: .critical
         ) {
             Alert("Card content alert")
             Text("Card content with a very very very very very very veryvery long text.")

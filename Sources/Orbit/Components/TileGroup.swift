@@ -13,7 +13,7 @@ public struct TileGroup<Content: View>: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
-    let style: Tile.Style
+    let style: Style
     let status: Status?
     let backgroundColor: Color?
     let content: () -> Content
@@ -23,7 +23,7 @@ public struct TileGroup<Content: View>: View {
             content()
         }
         .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
-        .tileBorder(style: style, status: status, backgroundColor: backgroundColor)
+        .tileBorder(style: style.tileBorderStyle, status: status, backgroundColor: backgroundColor)
         .frame(maxWidth: .infinity)
         .padding(.horizontal, horizontalPadding)
     }
@@ -39,9 +39,9 @@ public extension TileGroup {
     /// Creates Orbit TileGroup component as a wrapper for Tile content.
     ///
     /// - Parameters:
-    ///   - style: Appearance of TileGroup. Can be styled to match iOS default table row section.
+    ///   - style: Appearance of TileGroup. Can be styled to match iOS default table section.
     init(
-        style: Tile.Style = .default,
+        style: Style = .default,
         status: Status? = nil,
         backgroundColor: Color? = nil,
         @ViewBuilder content: @escaping () -> Content
@@ -50,6 +50,22 @@ public extension TileGroup {
         self.status = status
         self.backgroundColor = backgroundColor
         self.content = content
+    }
+}
+
+public extension TileGroup {
+    
+    enum Style {
+        case `default`
+        /// A style that visually matches the iOS plain table section appearance.
+        case iOS
+        
+        public var tileBorderStyle: TileBorder.Style {
+            switch self {
+                case .default:      return .default
+                case .iOS:          return .iOS
+            }
+        }
     }
 }
 
@@ -63,6 +79,7 @@ struct TileGroupPreviews: PreviewProvider {
             snapshotsIOSRegular
             snapshotsIOSRegularNarrow
         }
+        .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
