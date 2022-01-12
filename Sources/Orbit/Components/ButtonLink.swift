@@ -10,10 +10,12 @@ import SwiftUI
 /// - Important: Component has the same height as a ``Button``, but does not expand horizontally.
 public struct ButtonLink: View {
 
+    public static let defaultHeight: CGFloat = 20
+    
     let label: String
     let style: Style
     let iconContent: Icon.Content
-    let alignment: VerticalAlignment
+    let size: Size
     let action: () -> Void
 
     public var body: some View {
@@ -37,7 +39,7 @@ public struct ButtonLink: View {
                 }
             }
         )
-        .buttonStyle(OrbitStyle(style: style, alignment: alignment))
+        .buttonStyle(OrbitStyle(style: style, size: size))
     }
 }
 
@@ -49,13 +51,13 @@ public extension ButtonLink {
         _ label: String = "",
         style: Style = .primary,
         iconContent: Icon.Content = .none,
-        alignment: VerticalAlignment = .center,
+        size: Size = .default,
         action: @escaping () -> Void = {}
     ) {
         self.label = label
         self.style = style
         self.iconContent = iconContent
-        self.alignment = alignment
+        self.size = size
         self.action = action
     }
 
@@ -64,39 +66,39 @@ public extension ButtonLink {
         _ label: String = "",
         style: Style = .primary,
         icon: Icon.Symbol = .none,
-        alignment: VerticalAlignment = .center,
+        size: Size = .default,
         action: @escaping () -> Void = {}
     ) {
         self.init(
             label,
             style: style,
             iconContent: .icon(icon, size: .small),
-            alignment: alignment,
+            size: size,
             action: action
         )
     }
     
-    /// Creates Orbit ButtonLink component with no icons.
+    /// Creates Orbit ButtonLink component with no icon.
     init(
         _ label: String = "",
         style: Style = .primary,
-        alignment: VerticalAlignment = .center,
+        size: Size = .default,
         action: @escaping () -> Void = {}
     ) {
         self.init(
             label,
             style: style,
             iconContent: .none,
-            alignment: alignment,
+            size: size,
             action: action
         )
     }
 }
 
 // MARK: - Types
-extension ButtonLink {
+public extension ButtonLink {
 
-    public enum Style {
+    enum Style {
         case primary
         case secondary
         case critical
@@ -117,23 +119,38 @@ extension ButtonLink {
         }
     }
 
-    private struct OrbitStyle: ButtonStyle {
+    enum Size {
+        case `default`
+        case button
+        case buttonSmall
 
-        let style: Style
-        let alignment: VerticalAlignment
-
-        var frameAlignment: Alignment {
-            switch alignment {
-                case .bottom:               return .bottom
-                case .top:                  return .top
-                default:                    return .center
+        public var height: CGFloat {
+            switch self {
+                case .default:              return ButtonLink.defaultHeight
+                case .button:               return Layout.preferredButtonHeight
+                case .buttonSmall:          return Layout.preferredSmallButtonHeight
             }
         }
+        
+        public var maxWidth: CGFloat? {
+            switch self {
+                case .default:                  return nil
+                case .button, .buttonSmall:     return .infinity
+            }
+        }
+    }
+    
+    struct OrbitStyle: ButtonStyle {
 
-        func makeBody(configuration: Configuration) -> some View {
+        let style: Style
+        let size: ButtonLink.Size
+
+        public func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .foregroundColor(Color(configuration.isPressed ? style.color.active : style.color.normal))
-                .frame(height: Layout.preferredButtonHeight, alignment: frameAlignment)
+                .frame(height: size.height)
+                .frame(maxWidth: size.maxWidth)
+                .contentShape(Rectangle())
         }
     }
 }
@@ -144,7 +161,23 @@ struct ButtonLinkPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            snapshots
+            
+            styles
+                .padding(.medium)
+                .previewDisplayName("Styles")
+            
+            withIcon
+                .padding(.medium)
+                .previewDisplayName("With icon")
+            
+            status
+                .padding(.medium)
+                .previewDisplayName("Status")
+            
+            size
+                .padding(.medium)
+                .previewDisplayName("Size")
+            
             snapshotsCustom
         }
         .previewLayout(.sizeThatFits)
@@ -152,41 +185,59 @@ struct ButtonLinkPreviews: PreviewProvider {
 
     static var standalone: some View {
         ButtonLink("ButtonLink")
-            
     }
 
-    @ViewBuilder static var orbit: some View {
-        VStack(alignment: .leading) {
+    static var styles: some View {
+        VStack(alignment: .leading, spacing: .small) {
             ButtonLink("Primary", style: .primary)
             ButtonLink("Secondary", style: .secondary)
             ButtonLink("Critical", style: .critical)
         }
-        .padding(.vertical)
-        .previewDisplayName("Styles")
-
-        VStack(alignment: .leading) {
+    }
+    
+    static var withIcon: some View {
+        VStack(alignment: .leading, spacing: .small) {
             ButtonLink("Primary", style: .primary, icon: .accomodation)
             ButtonLink("Secondary", style: .secondary, icon: .airplaneDown)
             ButtonLink("Critical", style: .critical, icon: .alertCircle)
         }
-        .padding(.vertical)
-        .previewDisplayName("With icon")
-
-        VStack(alignment: .leading) {
+    }
+    
+    static var status: some View {
+        VStack(alignment: .leading, spacing: .small) {
             ButtonLink("Info", style: .status(.info), icon: .informationCircle)
             ButtonLink("Success", style: .status(.success), icon: .checkCircle)
             ButtonLink("Warning", style: .status(.warning), icon: .alert)
             ButtonLink("Critical", style: .status(.critical), icon: .alertCircle)
         }
-        .padding(.vertical)
-        .previewDisplayName("Status")
+    }
+    
+    static var size: some View {
+        VStack(alignment: .leading, spacing: .small) {
+            ButtonLink("Size Default (20)", icon: .baggageSet)
+                .border(Color.cloudNormal)
+            ButtonLink("Size ButtonSmall", icon: .baggageSet, size: .buttonSmall)
+                .border(Color.cloudNormal)
+            ButtonLink("Size Button", icon: .baggageSet, size: .button)
+                .border(Color.cloudNormal)
+        }
+    }
+    
+    static var orbit: some View {
+        VStack(spacing: 0) {
+            styles
+            Separator()
+            withIcon
+            Separator()
+            status
+            Separator()
+            size
+        }
+        .padding()
     }
 
     static var snapshots: some View {
-        Group {
-            orbit
-        }
-        .padding(.horizontal)
+        orbit
     }
 
     static var snapshotsCustom: some View {
@@ -201,20 +252,7 @@ struct ButtonLinkPreviews: PreviewProvider {
             ButtonLink(icon: .kiwicom)
                 .background(Color.blueLight)
                 .padding(.vertical)
-                .previewDisplayName("No label")
-
-            VStack(alignment: .leading, spacing: .small) {
-                ButtonLink("Center", style: .secondary)
-                    .background(Color.blueLight)
-
-                ButtonLink("Top", style: .secondary, alignment: .top)
-                    .background(Color.blueLight)
-
-                ButtonLink("Bottom", style: .secondary, alignment: .bottom)
-                    .background(Color.blueLight)
-            }
-            .padding(.vertical)
-            .previewDisplayName("Alignments")
+                .previewDisplayName("Icon only")
         }
         .padding(.horizontal)
     }

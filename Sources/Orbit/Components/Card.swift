@@ -66,9 +66,7 @@ public struct Card<Content: View>: View {
                 switch action {
                     case .buttonLink(let label, let action):
                         if label.isEmpty == false {
-                            ButtonLink(label, alignment: .top, action: action)
-                                .frame(maxHeight: .large, alignment: .top)
-                                .padding(.top, 2.5)
+                            ButtonLink(label, action: action)
                         }
                     case .none:
                         EmptyView()
