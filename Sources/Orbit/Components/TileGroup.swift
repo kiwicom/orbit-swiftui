@@ -19,17 +19,9 @@ public struct TileGroup<Content: View>: View {
     let content: () -> Content
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        Card(spacing: 0, padding: 0, style: style.cardStyle, status: status, backgroundColor: backgroundColor) {
             content()
         }
-        .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
-        .tileBorder(style: style.tileBorderStyle, status: status, backgroundColor: backgroundColor)
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, horizontalPadding)
-    }
-
-    var horizontalPadding: CGFloat {
-        horizontalSizeClass == .regular ? .medium : 0
     }
 }
 
@@ -61,6 +53,13 @@ public extension TileGroup {
         case iOS
         
         public var tileBorderStyle: TileBorder.Style {
+            switch self {
+                case .default:      return .default
+                case .iOS:          return .iOS
+            }
+        }
+        
+        public var cardStyle: Card<Content>.Style {
             switch self {
                 case .default:      return .default
                 case .iOS:          return .iOS

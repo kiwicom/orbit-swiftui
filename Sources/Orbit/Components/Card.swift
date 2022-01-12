@@ -19,15 +19,16 @@ public struct Card<Content: View>: View {
 
     let title: String
     let description: String
-    let icon: Icon.Content
+    let iconContent: Icon.Content
     let action: Action
     let spacing: CGFloat
     let padding: CGFloat
     let alignment: HorizontalAlignment
     let style: Style
+    let titleStyle: Heading.Style
     let status: Status?
     let backgroundColor: Color?
-    let content: Content
+    let content: () -> Content
 
     public var body: some View {
         VStack(alignment: .leading, spacing: .medium) {
@@ -35,14 +36,19 @@ public struct Card<Content: View>: View {
 
             if isContentEmpty == false {
                 VStack(alignment: alignment, spacing: spacing) {
-                    content
+                    content()
                 }
                 .padding(.top, isHeaderEmpty ? padding : 0)
                 .padding([.horizontal, .bottom], padding)
             }
         }
         .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
-        .tileBorder(style: style.tileBorderStyle, status: status, backgroundColor: backgroundColor)
+        .tileBorder(
+            style: style.tileBorderStyle,
+            status: status,
+            backgroundColor: backgroundColor,
+            shadow: shadow
+        )
         .frame(maxWidth: .infinity)
         .padding(.horizontal, horizontalPadding)
     }
@@ -51,15 +57,7 @@ public struct Card<Content: View>: View {
         if isHeaderEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: .small) {
 
-                icon.view(defaultColor: .inkNormal)
-                    .alignmentGuide(.firstTextBaseline) { _ in
-                        Heading.Style.title3.size * 1.1
-                    }
-
-                VStack(alignment: .leading, spacing: .xxxSmall) {
-                    Heading(title, style: .title3)
-                    Text(description, color: .inkLight)
-                }
+                Header(title, description: description, iconContent: iconContent, titleStyle: titleStyle)
 
                 Spacer(minLength: .xxxSmall)
 
@@ -86,7 +84,7 @@ public struct Card<Content: View>: View {
     }
 
     var isHeaderEmpty: Bool {
-        if case .none = action, case .none = icon, title.isEmpty, description.isEmpty {
+        if case .none = action, iconContent.isEmpty, title.isEmpty, description.isEmpty {
             return true
         } else {
             return false
@@ -94,7 +92,11 @@ public struct Card<Content: View>: View {
     }
 
     var isContentEmpty: Bool {
-        content is EmptyView
+        content() is EmptyView
+    }
+    
+    var shadow: TileBorder.Shadow {
+        status == nil ? .small : .none
     }
 }
 
@@ -128,41 +130,103 @@ public extension Card {
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content = .none,
+        iconContent: Icon.Content,
         alignment: HorizontalAlignment = .leading,
         action: Action = .none,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
         style: Style = .iOS,
+        titleStyle: Heading.Style = .title3,
         status: Status? = nil,
-        backgroundColor: Color = .white,
+        backgroundColor: Color? = .white,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
         self.description = description
-        self.icon = icon
+        self.iconContent = iconContent
         self.alignment = alignment
         self.action = action
         self.spacing = spacing
         self.padding = padding
         self.style = style
+        self.titleStyle = titleStyle
         self.status = status
         self.backgroundColor = backgroundColor
-        self.content = content()
+        self.content = { content() }
     }
 
     /// Creates Orbit Card wrapper component with empty content.
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content = .none,
+        iconContent: Icon.Content,
         alignment: HorizontalAlignment = .leading,
         action: Action = .none,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
         style: Style = .iOS,
+        titleStyle: Heading.Style = .title3,
         status: Status? = nil,
-        backgroundColor: Color = .white
+        backgroundColor: Color? = .white
+    ) where Content == EmptyView {
+        self.init(
+            title,
+            description: description,
+            iconContent: iconContent,
+            alignment: alignment,
+            action: action,
+            spacing: spacing,
+            padding: padding,
+            style: style,
+            titleStyle: titleStyle,
+            status: status,
+            backgroundColor: backgroundColor,
+            content: { EmptyView() }
+        )
+    }
+    
+    /// Creates Orbit Card wrapper component over a custom content.
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Symbol = .none,
+        alignment: HorizontalAlignment = .leading,
+        action: Action = .none,
+        spacing: CGFloat = .medium,
+        padding: CGFloat = .medium,
+        style: Style = .iOS,
+        titleStyle: Heading.Style = .title3,
+        status: Status? = nil,
+        backgroundColor: Color? = .white,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.title = title
+        self.description = description
+        self.iconContent = .icon(icon, size: .heading(titleStyle))
+        self.alignment = alignment
+        self.action = action
+        self.spacing = spacing
+        self.padding = padding
+        self.style = style
+        self.titleStyle = titleStyle
+        self.status = status
+        self.backgroundColor = backgroundColor
+        self.content = { content() }
+    }
+
+    /// Creates Orbit Card wrapper component with empty content.
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Symbol = .none,
+        alignment: HorizontalAlignment = .leading,
+        action: Action = .none,
+        spacing: CGFloat = .medium,
+        padding: CGFloat = .medium,
+        style: Style = .iOS,
+        titleStyle: Heading.Style = .title3,
+        status: Status? = nil,
+        backgroundColor: Color? = .white
     ) where Content == EmptyView {
         self.init(
             title,
@@ -173,10 +237,10 @@ public extension Card {
             spacing: spacing,
             padding: padding,
             style: style,
+            titleStyle: titleStyle,
             status: status,
-            backgroundColor: backgroundColor,
-            content: { EmptyView() }
-        )
+            backgroundColor: backgroundColor
+        ) { EmptyView() }
     }
 }
 
@@ -186,7 +250,9 @@ struct CardPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            standaloneIos
             snapshots
+            snapshotsDefault
             
             content
                 .frame(width: 800)
@@ -202,13 +268,25 @@ struct CardPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Card("Card title", description: "Card description", action: .buttonLink("ButtonLink")) {
-            Color.productLight
-                .frame(height: 80)
-                .overlay(Text("Custom card content", color: .inkLight))
+        Card("Card title", description: "Card description", icon: .baggageSet, action: .buttonLink("ButtonLink"), style: .default) {
+            customContentPlaceholder
+            customContentPlaceholder
         }
+        .padding()
+        .background(Color.cloudLight)
         .previewLayout(.sizeThatFits)
         .previewDisplayName("Standalone")
+    }
+    
+    static var standaloneIos: some View {
+        Card("Card title", description: "Card description", icon: .baggageSet, action: .buttonLink("ButtonLink")) {
+            customContentPlaceholder
+            customContentPlaceholder
+        }
+        .padding()
+        .background(Color.cloudLight)
+        .previewLayout(.sizeThatFits)
+        .previewDisplayName("Standalone (iOS)")
     }
 
     static var orbit: some View {
@@ -226,29 +304,76 @@ struct CardPreviews: PreviewProvider {
     static var snapshots: some View {
         content
     }
+    
+    static var snapshotsDefault: some View {
+        contentDefault
+    }
 
     static var content: some View {
-        VStack(alignment: .leading, spacing: .xSmall) {
+        VStack(alignment: .leading, spacing: .medium) {
+            Card("Card title", description: "Card description", icon: .baggageSet, action: .buttonLink("ButtonLink")) {
+                customContentPlaceholder
+                customContentPlaceholder
+            }
+            
             Card("Card without content", action: .buttonLink("Edit"))
-
-            Card("Title", description: "Description", action: .buttonLink("Edit Passenger")) {
-                Text("Card content with a very very very very very very veryvery long text.")
-                Badge("Card content", style: .neutral)
+            
+            Card() {
+                customContentPlaceholder
+                customContentPlaceholder
             }
-
+            
+            Card("Card with custom spacing and padding", action: .buttonLink("ButtonLink"), spacing: .xxSmall, padding: 0) {
+                customContentPlaceholder
+                customContentPlaceholder
+            }
+            
+            Card(spacing: .xxSmall, padding: 0) {
+                customContentPlaceholder
+                customContentPlaceholder
+            }
+            
             cardContent
-
-            Card {
-                Alert("Card content without a header")
-            }
-
-            Card(spacing: .medium) {
-                Heading("Custom Long Heading", style: .title1)
-                Text("Card content with a custom header")
-                Alert("Card content alert with a custom header", icon: .informationCircle)
-            }
         }
         .padding(.vertical)
+        .background(Color.cloudLight)
+    }
+    
+    static var contentDefault: some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            Card("Card title", description: "Card description", icon: .baggageSet, action: .buttonLink("ButtonLink"), style: .default) {
+                customContentPlaceholder
+                customContentPlaceholder
+            }
+            
+            Card("Card without content", action: .buttonLink("Edit"), style: .default)
+            
+            Card(style: .default) {
+                customContentPlaceholder
+                customContentPlaceholder
+            }
+            
+            Card("Card with custom spacing and padding", action: .buttonLink("ButtonLink"), spacing: .xxSmall, padding: 0, style: .default) {
+                customContentPlaceholder
+                customContentPlaceholder
+            }
+            
+            Card(spacing: .xxSmall, padding: 0, style: .default) {
+                customContentPlaceholder
+                customContentPlaceholder
+            }
+            
+            Card(
+                "Very very very long and multi-line title",
+                description: "Very very very very very long and multi-line description",
+                action: .buttonLink("Update"),
+                style: .default,
+                status: .critical
+            ) {
+                customContentPlaceholder
+            }
+        }
+        .padding()
         .background(Color.cloudLight)
     }
 
@@ -259,8 +384,7 @@ struct CardPreviews: PreviewProvider {
             action: .buttonLink("Update"),
             status: .critical
         ) {
-            Alert("Card content alert")
-            Text("Card content with a very very very very very very veryvery long text.")
+            customContentPlaceholder
         }
     }
 }

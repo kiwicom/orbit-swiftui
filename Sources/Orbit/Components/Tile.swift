@@ -1,5 +1,30 @@
 import SwiftUI
 
+/// Button style wrapper for Tile.
+/// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
+public struct TileButtonStyle: SwiftUI.ButtonStyle {
+
+    let backgroundColor: Tile.BackgroundColor?
+
+    public init(backgroundColor: Tile.BackgroundColor? = nil) {
+        self.backgroundColor = backgroundColor
+    }
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(backgroundColor(isPressed: configuration.isPressed))
+    }
+
+    func backgroundColor(isPressed: Bool) -> Color {
+        switch (backgroundColor, isPressed) {
+            case (let backgroundColor?, true):          return backgroundColor.active
+            case (let backgroundColor?, false):         return backgroundColor.normal
+            case (.none, true):                         return .whiteHover
+            case (.none, false):                        return .white
+        }
+    }
+}
+
 /// Groups actionable content to make it easy to scan.
 ///
 /// Can be used standalone or wrapped inside a ``TileGroup``.
@@ -15,7 +40,7 @@ public struct Tile<Content: View>: View {
 
     let title: String
     let description: String
-    let icon: Icon.Symbol
+    let iconContent: Icon.Content
     let disclosure: Disclosure
     let border: Border
     let style: Style
@@ -23,13 +48,12 @@ public struct Tile<Content: View>: View {
     let backgroundColor: BackgroundColor?
     let titleColor: Text.Color
     let descriptionColor: Text.Color
-    let iconColor: Color
     let action: () -> Void
     let content: () -> Content
 
     public var body: some View {
         tileContent
-            .tileBorder(style: tileBorderStyle, status: status)
+            .tileBorder(style: tileBorderStyle, status: status, shadow: shadow)
             .accessibility(label: SwiftUI.Text(title))
             .accessibility(hint: SwiftUI.Text(description))
     }
@@ -46,7 +70,7 @@ public struct Tile<Content: View>: View {
                         buttonContent
                     }
                 )
-                .buttonStyle(ButtonStyle(backgroundColor: backgroundColor))
+                .buttonStyle(TileButtonStyle(backgroundColor: backgroundColor))
             case .buttonLink:
                 buttonContent
                     .background(backgroundColor?.normal ?? .white)
@@ -56,27 +80,7 @@ public struct Tile<Content: View>: View {
     @ViewBuilder var buttonContent: some View {
         HStack(spacing: 0) {
             VStack(spacing: 0) {
-                HStack(alignment: style.iconAlignment, spacing: .small) {
-                    Icon(icon, color: iconColor)
-                        .alignmentGuide(.firstTextBaseline) { _ in
-                            Text.Size.normal.value * 1.25
-                        }
-
-                    HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
-                        VStack(alignment: .leading, spacing: style == .iOS ? .xxxSmall : .xSmall) {
-                            Text(title, size: .large, color: titleColor, weight: style.titleWeight)
-                            Text(description, size: style.descriptionSize, color: descriptionColor)
-                        }
-                        .padding(.vertical, style.verticalPadding)
-
-                        Spacer()
-
-                        buttonLink
-                            .padding(.trailing, .medium)
-                    }
-                }
-                .padding(.leading, .medium)
-                
+                header
                 content()
             }
 
@@ -88,6 +92,31 @@ public struct Tile<Content: View>: View {
                 .padding(.trailing, .medium)
         }
         .overlay(separator, alignment: .bottom)
+    }
+    
+    @ViewBuilder var header: some View {
+        if isHeaderEmpty == false {
+            HStack(alignment: style.iconAlignment, spacing: .small) {
+                iconContent.view()
+                    .alignmentGuide(.firstTextBaseline) { _ in
+                        Heading.Style.title3.size * 1.1
+                    }
+
+                // TODO: Extract and use Header
+                HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
+                    VStack(alignment: .leading, spacing: style == .iOS ? .xxxSmall : .xSmall) {
+                        Text(title, size: .large, color: titleColor, weight: style.titleWeight)
+                        Text(description, size: style.descriptionSize, color: descriptionColor)
+                    }
+                    .padding(.vertical, style.verticalPadding)
+
+                    Spacer(minLength: 0)
+
+                    buttonLink
+                }
+            }
+            .padding(.horizontal, .medium)
+        }
     }
 
     @ViewBuilder var buttonLink: some View {
@@ -126,16 +155,56 @@ public struct Tile<Content: View>: View {
     }
 
     var separatorPadding: CGFloat {
-        icon == .none ? .medium : .xxxLarge
+        iconContent.isEmpty ? .medium : .xxxLarge
     }
     
     var tileBorderStyle: TileBorder.Style? {
         border == .default ? style.tileBorderStyle : nil
     }
+    
+    var isHeaderEmpty: Bool {
+        title.isEmpty && description.isEmpty && iconContent.isEmpty
+    }
+    
+    var shadow: TileBorder.Shadow {
+        status == nil ? .small : .none
+    }
 }
 
 // MARK: - Inits
 public extension Tile {
+    
+    /// Creates Orbit Tile component with custom content.
+    ///
+    /// - Parameters:
+    ///   - style: Appearance of tile. Can be styled to match iOS default table row.
+    init(
+        _ title: String = "",
+        description: String = "",
+        iconContent: Icon.Content,
+        disclosure: Disclosure = .icon(.chevronRight),
+        border: Border = .default,
+        style: Style = .default,
+        status: Status? = nil,
+        backgroundColor: BackgroundColor? = nil,
+        titleColor: Text.Color = .inkNormal,
+        descriptionColor: Text.Color = .inkLight,
+        action: @escaping () -> Void = {},
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.title = title
+        self.description = description
+        self.iconContent = iconContent
+        self.disclosure = disclosure
+        self.border = border
+        self.style = style
+        self.status = status
+        self.backgroundColor = backgroundColor
+        self.titleColor = titleColor
+        self.descriptionColor = descriptionColor
+        self.action = action
+        self.content = content
+    }
     
     /// Creates Orbit Tile component with custom content.
     ///
@@ -158,7 +227,7 @@ public extension Tile {
     ) {
         self.title = title
         self.description = description
-        self.icon = icon
+        self.iconContent = .icon(icon, color: iconColor)
         self.disclosure = disclosure
         self.border = border
         self.style = style
@@ -166,9 +235,41 @@ public extension Tile {
         self.backgroundColor = backgroundColor
         self.titleColor = titleColor
         self.descriptionColor = descriptionColor
-        self.iconColor = iconColor
         self.action = action
         self.content = content
+    }
+    
+    /// Creates Orbit Tile component.
+    ///
+    /// - Parameters:
+    ///   - style: Appearance of tile. Can be styled to match iOS default table row.
+    init(
+        _ title: String = "",
+        description: String = "",
+        iconContent: Icon.Content,
+        disclosure: Disclosure = .icon(.chevronRight),
+        border: Border = .default,
+        style: Style = .default,
+        status: Status? = nil,
+        backgroundColor: BackgroundColor? = nil,
+        titleColor: Text.Color = .inkNormal,
+        descriptionColor: Text.Color = .inkLight,
+        action: @escaping () -> Void = {}
+    ) where Content == EmptyView {
+        self.init(
+            title: title,
+            description: description,
+            iconContent: iconContent,
+            disclosure: disclosure,
+            border: border,
+            style: style,
+            status: status,
+            backgroundColor: backgroundColor,
+            titleColor: titleColor,
+            descriptionColor: descriptionColor,
+            action: action,
+            content: { EmptyView() }
+        )
     }
     
     /// Creates Orbit Tile component.
@@ -192,7 +293,7 @@ public extension Tile {
         self.init(
             title: title,
             description: description,
-            icon: icon,
+            iconContent: .icon(icon, color: iconColor),
             disclosure: disclosure,
             border: border,
             style: style,
@@ -200,7 +301,6 @@ public extension Tile {
             backgroundColor: backgroundColor,
             titleColor: titleColor,
             descriptionColor: descriptionColor,
-            iconColor: iconColor,
             action: action,
             content: { EmptyView() }
         )
@@ -271,31 +371,6 @@ public extension Tile {
         /// Error style border.
         case error
     }
-
-    /// Button style wrapper for Tile.
-    /// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
-    struct ButtonStyle: SwiftUI.ButtonStyle {
-
-        let backgroundColor: BackgroundColor?
-
-        public init(backgroundColor: BackgroundColor? = nil) {
-            self.backgroundColor = backgroundColor
-        }
-
-        public func makeBody(configuration: Configuration) -> some View {
-            configuration.label
-                .background(backgroundColor(isPressed: configuration.isPressed))
-        }
-
-        func backgroundColor(isPressed: Bool) -> Color {
-            switch (backgroundColor, isPressed) {
-                case (let backgroundColor?, true):          return backgroundColor.active
-                case (let backgroundColor?, false):         return backgroundColor.normal
-                case (.none, true):                         return .cloudLight
-                case (.none, false):                        return .white
-            }
-        }
-    }
 }
 
 // MARK: - Previews
@@ -338,15 +413,17 @@ struct TilePreviews: PreviewProvider {
             Tile("Full border", disclosure: .buttonLink("Edit"), status: .info)
             Tile("Full border", status: .critical)
             
-            Tile("Custom Content", disclosure: .none) {
-                Color.productLight
-                    .frame(height: 60)
-                    .overlay(Text("Custom content", color: .inkLight))
+            Tile {
+                customContentPlaceholder
             }
-            Tile("Custom Content", description: "Description", status: .warning) {
-                Color.productLight
-                    .frame(height: 60)
-                    .overlay(Text("Custom content", color: .inkLight))
+            Tile(disclosure: .none) {
+                customContentPlaceholder
+            }
+            Tile("Tile with custom content", disclosure: .none) {
+                customContentPlaceholder
+            }
+            Tile("Tile with custom content", description: "Description", status: .warning) {
+                customContentPlaceholder
             }
 
             VStack(spacing: 0) {
@@ -398,15 +475,18 @@ struct TilePreviews: PreviewProvider {
             Tile("Full border", style: .iOS)
             Tile("Full border", disclosure: .buttonLink("Edit"), style: .iOS, status: .info)
             Tile("Full border", style: .iOS, status: .critical)
-            Tile("Custom Content", disclosure: .none, style: .iOS) {
-                Color.productLight
-                    .frame(height: 60)
-                    .overlay(Text("Custom content", color: .inkLight))
+            
+            Tile(style: .iOS) {
+                customContentPlaceholder
             }
-            Tile("Custom Content", style: .iOS, status: .warning) {
-                Color.productLight
-                    .frame(height: 60)
-                    .overlay(Text("Custom content", color: .inkLight))
+            Tile(disclosure: .none, style: .iOS) {
+                customContentPlaceholder
+            }
+            Tile("Tile with custom content", disclosure: .none, style: .iOS) {
+                customContentPlaceholder
+            }
+            Tile("Tile with custom content", description: "Description", style: .iOS, status: .warning) {
+                customContentPlaceholder
             }
 
             VStack(spacing: 0) {

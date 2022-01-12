@@ -77,6 +77,8 @@ public extension Icon {
         case medium
         /// Size 32
         case large
+        /// Size based on Heading style.
+        case heading(Heading.Style)
         /// Custom size
         case custom(CGFloat)
         
@@ -86,6 +88,7 @@ public extension Icon {
                 case .default:              return 20
                 case .medium:               return 24
                 case .large:                return 32
+                case .heading(let style):   return style.size + 1
                 case .custom(let size):     return size
             }
         }

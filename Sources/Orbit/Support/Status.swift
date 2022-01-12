@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Non-default status of a component.
 public enum Status {
 
     case info

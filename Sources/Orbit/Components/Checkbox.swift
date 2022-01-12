@@ -77,7 +77,7 @@ public extension Checkbox {
 }
 
 // MARK: - ButtonStyle
-extension Checkbox {
+public extension Checkbox {
 
     /// Button style wrapper for checkbox input.
     /// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
@@ -88,7 +88,7 @@ extension Checkbox {
         let state: Checkbox.State
         let isChecked: Bool
 
-        func makeBody(configuration: Configuration) -> some View {
+        public func makeBody(configuration: Configuration) -> some View {
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 indicator(isPressed: configuration.isPressed)
                 configuration.label

@@ -3,7 +3,8 @@ import SwiftUI
 /// Provides decoration with ``Tile`` appearance.
 public struct TileBorder: ViewModifier {
 
-    public enum ShadowSize {
+    public enum Shadow {
+        case none
         case `default`
         case small
     }
@@ -18,17 +19,14 @@ public struct TileBorder: ViewModifier {
     let style: Style?
     let status: Status?
     let backgroundColor: Color?
-    let shadowSize: ShadowSize
+    let shadow: Shadow
 
     public func body(content: Content) -> some View {
         content
             .background(backgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-            .shadow(
-                color: shadowColor.opacity(shadowSize == .small ? 0.8 : 0.3),
-                radius: shadowSize == .small ? 2 : 1.5, x: 0, y: 2
-            )
-            .shadow(color: shadowColor.opacity(shadowSize == .small ? 0 : 0.6), radius: 6, x: 0, y: 5)
+            .shadow(color: shadowColor.opacity(shadowOpacity.primary), radius: shadowRadius.primary, x: 0, y: 2)
+            .shadow(color: shadowColor.opacity(shadowOpacity.secondary), radius: shadowRadius.secondary, x: 0, y: 5)
             .overlay(outerBorder)
             .overlay(verticalBorder, alignment: .top)
             .overlay(verticalBorder, alignment: .bottom)
@@ -37,7 +35,7 @@ public struct TileBorder: ViewModifier {
     @ViewBuilder var verticalBorder: some View {
         if style == .iOS, horizontalSizeClass != .regular {
             borderColor
-                .frame(height: status == nil ? BorderWidth.thin : BorderWidth.emphasis)
+                .frame(height: status == nil ? BorderWidth.hairline : BorderWidth.emphasis)
         }
     }
 
@@ -59,6 +57,22 @@ public struct TileBorder: ViewModifier {
     @ViewBuilder var outerBorderShape: some InsettableShape {
         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
     }
+    
+    var shadowRadius: (primary: CGFloat, secondary: CGFloat) {
+        switch shadow {
+            case .none:         return (0, 0)
+            case .default:      return (1.5, 6)
+            case .small:        return (2, 6)
+        }
+    }
+    
+    var shadowOpacity: (primary: CGFloat, secondary: CGFloat) {
+        switch shadow {
+            case .none:         return (0, 0)
+            case .default:      return (0.3, 0.6)
+            case .small:        return (0.5, 0.2)
+        }
+    }
 
     var outerBorderGradient: LinearGradient {
         LinearGradient(
@@ -78,8 +92,6 @@ public struct TileBorder: ViewModifier {
     }
 
     var shadowColor: Color {
-        if status != nil { return .clear }
-
         switch style {
             case .default:          return .inkNormal.opacity(0.15)
             case .none, .iOS:       return .clear
@@ -121,10 +133,10 @@ public extension View {
         style: TileBorder.Style? = .default,
         status: Status? = nil,
         backgroundColor: Color? = nil,
-        shadowSize: TileBorder.ShadowSize = .default
+        shadow: TileBorder.Shadow = .default
     ) -> some View {
         modifier(
-            TileBorder(style: style, status: status, backgroundColor: backgroundColor, shadowSize: shadowSize)
+            TileBorder(style: style, status: status, backgroundColor: backgroundColor, shadow: shadow)
         )
     }
 }

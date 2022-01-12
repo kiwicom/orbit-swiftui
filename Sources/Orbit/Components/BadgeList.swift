@@ -127,6 +127,7 @@ public struct BadgeListPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             snapshots
+                .previewDisplayName("Orbit")
         }
         .previewLayout(.sizeThatFits)
     }
@@ -147,7 +148,6 @@ public struct BadgeListPreviews: PreviewProvider {
 
     static var snapshots: some View {
         orbit
-            .padding()
-            .previewDisplayName("Orbit")
+            .padding(.medium)
     }
 }
