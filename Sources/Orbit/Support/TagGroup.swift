@@ -2,9 +2,14 @@ import SwiftUI
 
 public protocol TagModel: Identifiable, Equatable {
     var label: String { get }
+    var accessibilityIdentifier: String { get }
     var isRemovable: Bool { get }
     var isRemoved: Bool { get set }
     var isSelected: Bool { get set }
+}
+
+public extension TagModel {
+    var accessibilityIdentifier: String { "" }
 }
 
 /// Collection of Orbit tags with binding through `TagModel` protocol.
@@ -35,10 +40,12 @@ public struct TagGroup<TM: TagModel>: View {
                             ForEach(tags) { tagView(for: $0) }
                         }
                     }
+                    .accessibilityElement(children: .contain)
                 case .multiLine:
                     CollectionView(data: tags, spacing: spacing) { index in
                         tagView(for: tags[index])
                     }
+                    .accessibilityElement(children: .contain)
             }
         }
         .onAppear {
@@ -93,6 +100,7 @@ public struct TagGroup<TM: TagModel>: View {
             ) {
                 $tags[index].isSelected.wrappedValue.toggle()
             }
+            .accessibility(identifier: tag.accessibilityIdentifier)
             .opacity(isFadeIn(forIndex: index) ? 1 : 0)
             .scaleEffect(isFadeIn(forIndex: index) ? 1 : 0.3)
         )
