@@ -51,5 +51,6 @@ public extension Illustration {
         case transport
         case transportBus
         case womanWithPhone
+        case mobileApp
     }
 }
