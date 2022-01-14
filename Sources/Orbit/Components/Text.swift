@@ -47,8 +47,11 @@ public struct Text: View {
     @ViewBuilder var textLinks: some View {
         if content.containsTextLinks {
             GeometryReader { geometry in
-                TextLink(content: textLinkContent, size: geometry.size, color: linkColor, action: linkAction)
-                    .accessibility(addTraits: .isLink)
+                TextLink(content: textLinkContent, size: geometry.size, color: linkColor) { url, text in
+                    HapticsProvider.sendHapticFeedback(.light(0.5))
+                    linkAction(url, text)
+                }
+                .accessibility(addTraits: .isLink)
             }
         }
     }
