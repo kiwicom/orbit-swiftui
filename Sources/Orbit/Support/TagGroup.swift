@@ -76,6 +76,21 @@ public struct TagGroup<TM: TagModel>: View {
         self.layout = layout
         self.spacing = spacing
     }
+    
+    @ViewBuilder private func tagView(for tag: TM) -> some View {
+        if let index = tags.firstIndex(of: tag), showRemovedTags || tag.isRemoved == false {
+            Tag(
+                tag.label,
+                isSelected: $tags[index].isSelected.wrappedValue,
+                style: tag.isRemovable ? .removable(action: { tags[index].isRemoved = true }) : .default
+            ) {
+                $tags[index].isSelected.wrappedValue.toggle()
+            }
+            .accessibility(identifier: tag.accessibilityIdentifier)
+            .opacity(isFadeIn(forIndex: index) ? 1 : 0)
+            .scaleEffect(isFadeIn(forIndex: index) ? 1 : 0.3)
+        }
+    }
 
     private func isFadeIn(forIndex index: Int) -> Bool {
         guard index >= 0, index < tagsFadeIn.endIndex else {
@@ -83,27 +98,6 @@ public struct TagGroup<TM: TagModel>: View {
         }
 
         return tagsFadeIn[index]
-    }
-
-    private func tagView(for tag: TM) -> some View {
-        guard let index = tags.firstIndex(of: tag), showRemovedTags || tag.isRemoved == false else {
-            return AnyView(EmptyView())
-        }
-
-        let style: Tag.Style = tag.isRemovable ? .removable(action: { tags[index].isRemoved = true }) : .default
-
-        return AnyView(
-            Tag(
-                tag.label,
-                isSelected: $tags[index].isSelected.wrappedValue,
-                style: style
-            ) {
-                $tags[index].isSelected.wrappedValue.toggle()
-            }
-            .accessibility(identifier: tag.accessibilityIdentifier)
-            .opacity(isFadeIn(forIndex: index) ? 1 : 0)
-            .scaleEffect(isFadeIn(forIndex: index) ? 1 : 0.3)
-        )
     }
 }
 
@@ -124,9 +118,9 @@ struct TagGroupPreviews: PreviewProvider {
     struct TagModelPreview: TagModel {
         let id: Int
         let label: String
-        var isRemovable: Bool = false
-        var isRemoved: Bool = false
-        var isSelected: Bool = false
+        var isRemovable = false
+        var isRemoved = false
+        var isSelected = false
     }
 
     static var previews: some View {
