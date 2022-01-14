@@ -3,8 +3,8 @@
 
 """
 This script:
-  1) Gets all currently used illustration names from our source code 'Illustrations.swift'
-  2) Downloads all illustrations with proper file names
+  1) Gets all currently defined illustration names from 'Illustrations.swift'
+  2) Downloads and rewrites all illustrations
 """
 
 import sys
@@ -15,8 +15,7 @@ import shutil
 import time
 from urllib.request import urlretrieve
 
-content_template = '''
-{{
+content_template = '''{{
   "images" : [
     {{
       "filename" : "{name}@1x.png",
@@ -54,6 +53,8 @@ def get_illustration_names(codePath):
   with open(codePath, 'r') as illustrationCode:
     for line in illustrationCode:
       for case in p.findall(line):
+        if case == 'none':
+          continue
         names.append(uppercase_first_letter(case))
   return names
 
@@ -80,7 +81,7 @@ if __name__ == "__main__":
 
   folder = illustrationsFolderPath()
   codePath = folder.joinpath(f'{source_filename}.swift')
-  assetDownloadedPath = folder.joinpath('../Illustrations/Illustrations.xcassets/⚠️ Downloaded/')
+  assetDownloadedPath = folder.joinpath('../Illustrations/Illustrations.xcassets/')
   assetDownloadedPath.mkdir(exist_ok = True)
 
   for illustration in get_illustration_names(codePath):

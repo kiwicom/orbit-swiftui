@@ -6,7 +6,6 @@ This script:
   1) Reads up-to-date color definitions from Orbit API
   2) If running in the check-only mode
     a) Checks if the regenerated file would result in a different content
-    b) If yes, it calls a script to create relevant Jira task
   3) Else
     a) Regenerates xcassets file with updated color definitions
     b) Regenerates a swift source code that uses that color xcassets file
@@ -19,7 +18,6 @@ import re
 import pathlib
 import shutil
 from urllib.request import urlopen
-import update_colors_jira_task
 
 ORBIT_URL = 'https://unpkg.com/@kiwicom/orbit-design-tokens/output/theo-spec.json'
 ORBIT_COLOR_PREFIX = 'palette'
@@ -121,6 +119,10 @@ if __name__ == "__main__":
     shutil.rmtree(assetPath, ignore_errors = True)
     assetPath.mkdir(exist_ok = True)
 
+    # Create generic xcassets header
+    with open(assetPath.joinpath(contents_filename), "w") as contentsFile:
+      contentsFile.write(xcassets_header)
+
   sourceColorLines = []
   sourceUIColorLines = []
   lastColorGroup = ''
@@ -174,7 +176,7 @@ if __name__ == "__main__":
     exitCode = 0
 
     if isUpdateAvailable:
-      exitCode = update_colors_jira_task.create()
+      exitCode = 1
 
     sys.exit(exitCode)
 
