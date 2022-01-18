@@ -28,6 +28,7 @@ public final class TextLinkView: UITextView, UITextViewDelegate {
 
         delegate = self
 
+        clipsToBounds = false
         backgroundColor = .clear
         isEditable = false
         isSelectable = true
@@ -42,12 +43,12 @@ public final class TextLinkView: UITextView, UITextViewDelegate {
 
     public func textView(
         _ textView: UITextView,
-        shouldInteractWith URL: URL,
+        shouldInteractWith url: URL,
         in characterRange: NSRange,
         interaction _: UITextItemInteraction
     ) -> Bool {
-        let linkText = (textView.text as NSString).substring(with: characterRange)
-        action(URL, linkText)
+        let text = (textView.text as NSString).substring(with: characterRange)
+        action(url, text)
         return false
     }
 
