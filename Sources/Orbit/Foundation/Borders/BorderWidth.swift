@@ -1,6 +1,7 @@
 import CoreGraphics
 import UIKit
 
+/// Defines Orbit border widths.
 public enum BorderWidth {
     /// 1 pixel border width.
     public static let hairline: CGFloat = 1.0 / UIScreen.main.scale

@@ -76,7 +76,7 @@ public struct TileBorderModifier: ViewModifier {
 
     var outerBorderGradient: LinearGradient {
         LinearGradient(
-            gradient: Gradient(colors: [bottomBorderColor, bottomBorderColor.opacity(0.5)]),
+            colors: [bottomBorderColor, bottomBorderColor.opacity(0.5)],
             startPoint: .bottom,
             endPoint: .top
         )

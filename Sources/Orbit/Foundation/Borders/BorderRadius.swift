@@ -1,6 +1,6 @@
 import CoreGraphics
 
-/// Defines border radiuses.
+/// Defines Orbit border radiuses.
 
 /// - Note: [Orbit definition](https://orbit.kiwi/foundation/border-radiuses/)
 public enum BorderRadius {

@@ -61,7 +61,7 @@ public struct Button: View {
                 .padding(.horizontal, label.isEmpty ? 0 : size.padding)
             }
         )
-        .buttonStyle(OrbitStyle(style: style, size: size))
+        .buttonStyle(ButtonStyle(style: style, size: size))
         .frame(minWidth: size.height, maxWidth: .infinity)
         .frame(width: isIconOnly ? size.height : nil)
     }
@@ -74,7 +74,7 @@ public struct Button: View {
         switch style {
             case .primary:
                 HapticsProvider.sendHapticFeedback(.light(1))
-            case .primarySubtle, .secondary, .status(.info, _):
+            case .primarySubtle, .secondary, .status(.info, _), .gradient:
                 HapticsProvider.sendHapticFeedback(.light(0.5))
             case .critical, .criticalSubtle, .status(.critical, _):
                 HapticsProvider.sendHapticFeedback(.notification(.error))
@@ -171,6 +171,7 @@ extension Button {
         case critical
         case criticalSubtle
         case status(_ status: Status, subtle: Bool = false)
+        case gradient(Gradient)
 
         var foregroundColor: Color {
             Color(foregroundUIColor)
@@ -191,24 +192,45 @@ extension Button {
                 case .status(.success, true):   return .greenNormalHover
                 case .status(.warning, false):  return .white
                 case .status(.warning, true):   return .orangeNormalHover
+                case .gradient:                 return .white
             }
         }
 
-        var backgroundColor: (normal: Color, active: Color) {
+        @ViewBuilder public var background: some View {
             switch self {
-                case .primary:                  return (.productNormal, .productNormalActive)
-                case .primarySubtle:            return (.productLight, .productLightActive)
-                case .secondary:                return (.cloudDark, .cloudNormalActive)
-                case .critical:                 return (.redNormal, .redNormalActive)
-                case .criticalSubtle:           return (.redLight, .redLightActive)
-                case .status(.critical, false): return (.redNormal, .redNormalActive)
-                case .status(.critical, true):  return (.redLightHover, .redLightActive)
-                case .status(.info, false):     return (.blueNormal, .blueNormalActive)
-                case .status(.info, true):      return (.blueLightHover, .blueLightActive)
-                case .status(.success, false):  return (.greenNormal, .greenNormalActive)
-                case .status(.success, true):   return (.greenLightHover, .greenLightActive)
-                case .status(.warning, false):  return (.orangeNormal, .orangeNormalActive)
-                case .status(.warning, true):   return (.orangeLightHover, .orangeLightActive)
+                case .primary:                  Color.productNormal
+                case .primarySubtle:            Color.productLight
+                case .secondary:                Color.cloudDark
+                case .critical:                 Color.redNormal
+                case .criticalSubtle:           Color.redLight
+                case .status(.critical, false): Color.redNormal
+                case .status(.critical, true):  Color.redLightHover
+                case .status(.info, false):     Color.blueNormal
+                case .status(.info, true):      Color.blueLightHover
+                case .status(.success, false):  Color.greenNormal
+                case .status(.success, true):   Color.greenLightHover
+                case .status(.warning, false):  Color.orangeNormal
+                case .status(.warning, true):   Color.orangeLightHover
+                case .gradient(let gradient):   gradient.background
+            }
+        }
+        
+        @ViewBuilder public var backgroundActive: some View {
+            switch self {
+                case .primary:                  Color.productNormalActive
+                case .primarySubtle:            Color.productLightActive
+                case .secondary:                Color.cloudNormalActive
+                case .critical:                 Color.redNormalActive
+                case .criticalSubtle:           Color.redLightActive
+                case .status(.critical, false): Color.redNormalActive
+                case .status(.critical, true):  Color.redLightActive
+                case .status(.info, false):     Color.blueNormalActive
+                case .status(.info, true):      Color.blueLightActive
+                case .status(.success, false):  Color.greenNormalActive
+                case .status(.success, true):   Color.greenLightActive
+                case .status(.warning, false):  Color.orangeNormalActive
+                case .status(.warning, true):   Color.orangeLightActive
+                case .gradient(let gradient):   gradient.outline
             }
         }
     }
@@ -239,18 +261,24 @@ extension Button {
         }
     }
 
-    private struct OrbitStyle: ButtonStyle {
+    public struct ButtonStyle: SwiftUI.ButtonStyle {
 
         var style: Style
         var size: Size
 
-        func makeBody(configuration: Configuration) -> some View {
+        public func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .frame(height: size.height)
-                .background(
-                    configuration.isPressed ? style.backgroundColor.active : style.backgroundColor.normal
-                )
+                .background(background(for: configuration))
                 .cornerRadius(BorderRadius.default)
+        }
+        
+        @ViewBuilder func background(for configuration: Configuration) -> some View {
+            if configuration.isPressed {
+                style.backgroundActive
+            } else {
+                style.background
+            }
         }
     }
 }
@@ -307,6 +335,19 @@ struct ButtonPreviews: PreviewProvider {
         .padding(.vertical)
         .previewDisplayName("Status buttons")
 
+        VStack(spacing: .medium) {
+            Button("Orange Gradient", style: .gradient(.orange), icon: .email)
+            Button("Purple Gradient", style: .gradient(.purple), icon: .flightNomad, disclosureIcon: .chevronRight)
+            Button("Ink Gradient", style: .gradient(.ink), icon: .flightDirect, disclosureIcon: .chevronRight)
+
+            HStack(spacing: .medium) {
+                Button("Turn on push notifications", style: .gradient(.purple))
+                Button(.close, style: .gradient(.ink))
+            }
+        }
+        .padding(.vertical)
+        .previewDisplayName("Gradients")
+        
         VStack(spacing: .medium) {
             Button("Secondary with icon", style: .secondary, icon: .email)
             Button("Primary with Icons", style: .primary, icon: .flightNomad, disclosureIcon: .chevronRight)
