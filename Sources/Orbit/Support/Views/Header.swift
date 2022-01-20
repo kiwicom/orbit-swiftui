@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// Header for Tiles and Cards, containing combination of texts and icon.
+/// Header for Tiles and Cards, containing combination of title, description and icon.
 public struct Header: View {
 
-    public static let horizontalSpacing: CGFloat = .xSmall
-    public static let verticalSpacing: CGFloat = .xxxSmall
+    public static let horizontalSpacing: CGFloat = 10
+    public static let verticalSpacing: CGFloat = 6
 
     let title: String
     let description: String

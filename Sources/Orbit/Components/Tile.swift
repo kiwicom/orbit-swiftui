@@ -35,7 +35,7 @@ public struct TileButtonStyle: SwiftUI.ButtonStyle {
 ///   - ``ChoiceTile``
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tile/)
-/// - Important: Component expands horizontally to infinity.
+/// - Important: Component expands horizontally to infinity up to a ``Layout/readableMaxWidth``.
 public struct Tile<Content: View>: View {
 
     let title: String
@@ -46,35 +46,26 @@ public struct Tile<Content: View>: View {
     let style: Style
     let status: Status?
     let backgroundColor: BackgroundColor?
+    let titleStyle: Heading.Style
     let titleColor: Text.Color
     let descriptionColor: Text.Color
     let action: () -> Void
     let content: () -> Content
 
     public var body: some View {
-        tileContent
-            .tileBorder(style: tileBorderStyle, status: status, shadow: shadow)
-            .accessibility(label: SwiftUI.Text(title))
-            .accessibility(hint: SwiftUI.Text(description))
-    }
-
-    @ViewBuilder var tileContent: some View {
-        switch disclosure {
-            case .none, .icon:
-                SwiftUI.Button(
-                    action: {
-                        HapticsProvider.sendHapticFeedback(.light(0.5))
-                        action()
-                    },
-                    label: {
-                        buttonContent
-                    }
-                )
-                .buttonStyle(TileButtonStyle(backgroundColor: backgroundColor))
-            case .buttonLink:
+        SwiftUI.Button(
+            action: {
+                HapticsProvider.sendHapticFeedback(.light(0.5))
+                action()
+            },
+            label: {
                 buttonContent
-                    .background(backgroundColor?.normal ?? .white)
-        }
+            }
+        )
+        .buttonStyle(TileButtonStyle(backgroundColor: backgroundColor))
+        .tileBorder(style: tileBorderStyle, status: status, shadow: shadow)
+        .accessibility(label: SwiftUI.Text(title))
+        .accessibility(hint: SwiftUI.Text(description))
     }
 
     @ViewBuilder var buttonContent: some View {
@@ -83,6 +74,7 @@ public struct Tile<Content: View>: View {
                 header
                 content()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             // Provide minimal height (frame(minHeight:) collapses multiline text in snapshots)
             Color.clear
@@ -91,6 +83,7 @@ public struct Tile<Content: View>: View {
             disclosureIcon
                 .padding(.trailing, .medium)
         }
+        .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
         .overlay(separator, alignment: .bottom)
     }
     
@@ -112,20 +105,21 @@ public struct Tile<Content: View>: View {
 
                     Spacer(minLength: 0)
 
-                    buttonLink
+                    inactiveButtonLink
                 }
             }
             .padding(.horizontal, .medium)
         }
     }
 
-    @ViewBuilder var buttonLink: some View {
+    @ViewBuilder var inactiveButtonLink: some View {
         switch disclosure {
             case .none, .icon:
                 EmptyView()
-            case .buttonLink(let label, let style, let action):
+            case .buttonLink(let label, let style):
                 Spacer(minLength: 0)
-                ButtonLink(label, style: style, action: action)
+                ButtonLink(label, style: style)
+                    .disabled(true)
                     .padding(.vertical, -.xxxSmall)
         }
     }
@@ -187,6 +181,7 @@ public extension Tile {
         style: Style = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
+        titleStyle: Heading.Style = .title3,
         titleColor: Text.Color = .inkNormal,
         descriptionColor: Text.Color = .inkLight,
         action: @escaping () -> Void = {},
@@ -200,6 +195,7 @@ public extension Tile {
         self.style = style
         self.status = status
         self.backgroundColor = backgroundColor
+        self.titleStyle = titleStyle
         self.titleColor = titleColor
         self.descriptionColor = descriptionColor
         self.action = action
@@ -219,6 +215,7 @@ public extension Tile {
         style: Style = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
+        titleStyle: Heading.Style = .title3,
         titleColor: Text.Color = .inkNormal,
         descriptionColor: Text.Color = .inkLight,
         iconColor: Color = .inkNormal,
@@ -233,6 +230,7 @@ public extension Tile {
         self.style = style
         self.status = status
         self.backgroundColor = backgroundColor
+        self.titleStyle = titleStyle
         self.titleColor = titleColor
         self.descriptionColor = descriptionColor
         self.action = action
@@ -252,6 +250,7 @@ public extension Tile {
         style: Style = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
+        titleStyle: Heading.Style = .title3,
         titleColor: Text.Color = .inkNormal,
         descriptionColor: Text.Color = .inkLight,
         action: @escaping () -> Void = {}
@@ -265,6 +264,7 @@ public extension Tile {
             style: style,
             status: status,
             backgroundColor: backgroundColor,
+            titleStyle: titleStyle,
             titleColor: titleColor,
             descriptionColor: descriptionColor,
             action: action,
@@ -285,6 +285,7 @@ public extension Tile {
         style: Style = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
+        titleStyle: Heading.Style = .title3,
         titleColor: Text.Color = .inkNormal,
         descriptionColor: Text.Color = .inkLight,
         iconColor: Color = .inkNormal,
@@ -299,6 +300,7 @@ public extension Tile {
             style: style,
             status: status,
             backgroundColor: backgroundColor,
+            titleStyle: titleStyle,
             titleColor: titleColor,
             descriptionColor: descriptionColor,
             action: action,
@@ -316,9 +318,11 @@ public extension Tile {
         case none
         /// Icon with optional color override.
         case icon(Icon.Symbol, color: Color? = nil, alignment: VerticalAlignment = .center)
-        case buttonLink(_ label: String, style: ButtonLink.Style = .primary, action: () -> Void = {})
+        /// ButtonLink indicator.
+        case buttonLink(_ label: String, style: ButtonLink.Style = .primary)
     }
 
+    // TODO: Remove style and use ListChoice for iOS version
     enum Style {
 
         case `default`
@@ -410,8 +414,14 @@ struct TilePreviews: PreviewProvider {
     static var snapshots: some View {
         VStack(spacing: .large) {
             Tile("Full border")
-            Tile("Full border", disclosure: .buttonLink("Edit"), status: .info)
-            Tile("Full border", status: .critical)
+            
+            Tile("Full border", disclosure: .buttonLink("Edit"), status: .info) {
+                customContentPlaceholder
+            }
+            
+            Tile("Full border", disclosure: .buttonLink("Edit", style: .critical), status: .critical) {
+                customContentPlaceholder
+            }
             
             Tile {
                 customContentPlaceholder
@@ -473,8 +483,14 @@ struct TilePreviews: PreviewProvider {
     static var iOSContent: some View {
         VStack(spacing: .large) {
             Tile("Full border", style: .iOS)
-            Tile("Full border", disclosure: .buttonLink("Edit"), style: .iOS, status: .info)
-            Tile("Full border", style: .iOS, status: .critical)
+            
+            Tile("Full border", disclosure: .buttonLink("Edit"), style: .iOS, status: .info) {
+                customContentPlaceholder
+            }
+            
+            Tile("Full border", disclosure: .buttonLink("Edit", style: .critical), style: .iOS, status: .critical) {
+                customContentPlaceholder
+            }
             
             Tile(style: .iOS) {
                 customContentPlaceholder

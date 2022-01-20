@@ -110,18 +110,16 @@ public extension Heading {
                 case .displaySubtitle:  return 22
                 case .title1:           return 28
                 case .title2:           return 22
-                case .title3:           return 16
-                case .title4:           return 14
-                case .title5:           return 12
+                case .title3:           return Text.Size.large.value
+                case .title4:           return Text.Size.normal.value
+                case .title5:           return Text.Size.small.value
             }
         }
 
         public var weight: Font.Weight {
             switch self {
-                case .display, .title1:
-                    return .bold
-                case .displaySubtitle, .title2, .title3, .title4, .title5:
-                    return .medium
+                case .display, .title1:                                         return .bold
+                case .displaySubtitle, .title2, .title3, .title4, .title5:      return .medium
             }
         }
     }
