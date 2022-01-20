@@ -194,19 +194,13 @@ struct TextPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-                .previewLayout(.sizeThatFits)
-
             selectable
-                .previewLayout(.sizeThatFits)
-
             formatted
-                .previewLayout(.sizeThatFits)
-
             snapshots
             attributedTextSnapshots
+            attributedTextInteractive
         }
-
-        attributedTextInteractive
+        .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {

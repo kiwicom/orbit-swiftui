@@ -31,7 +31,8 @@ public struct Select: View {
                     action()
                 },
                 label: {
-                    Text(value ?? placeholder, color: .custom(valueColor))
+                    Text(value ?? placeholder, color: .none)
+                        .foregroundColor(textColor)
                 }
             )
             .buttonStyle(
@@ -49,13 +50,10 @@ public struct Select: View {
         }
     }
 
-    var valueColor: UIColor {
-        switch (value, state) {
-            case (_, .disabled):        return .cloudDarkerActive
-            case (.none, _):            return .inkLight
-            case (_, .modified):        return .blueDark
-            default:                    return .inkNormal
-        }
+    var textColor: Color {
+        value == nil
+            ? state.placeholderColor
+            : state.textColor
     }
 }
 

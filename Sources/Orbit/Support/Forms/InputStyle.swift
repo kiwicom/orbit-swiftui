@@ -7,9 +7,16 @@ public enum InputState {
 
     public var textColor: Color {
         switch self {
-            case .disabled:         return .cloudNormalActive
+            case .disabled:         return .cloudDarkerActive
             case .default:          return .inkNormal
             case .modified:         return .blueDark
+        }
+    }
+    
+    public var placeholderColor: Color {
+        switch self {
+            case .disabled:             return textColor
+            case .default, .modified:   return .inkLighter
         }
     }
 }

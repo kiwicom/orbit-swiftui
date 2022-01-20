@@ -82,6 +82,8 @@ public struct InputField: View {
             },
             onCommit: onCommit
         )
+        .disabled(state == .disabled)
+        .overlay(textFieldPlaceholder, alignment: .leading)
         .autocapitalization(autocapitalization)
         .disableAutocorrection(isAutocompleteEnabled == false)
         .textContentType(textContent)
@@ -91,6 +93,12 @@ public struct InputField: View {
         .frame(height: Layout.preferredButtonHeight)
     }
 
+    @ViewBuilder var textFieldPlaceholder: some View {
+        Text(placeholder, color: .none)
+            .foregroundColor(state.placeholderColor)
+            .opacity(value.isEmpty ? 1 : 0)
+    }
+    
     @ViewBuilder var suffix: some View {
         if value.isEmpty == false, state != .disabled {
             Image(systemName: "multiply.circle.fill")
@@ -161,7 +169,7 @@ struct InputFieldPreviews: PreviewProvider {
     @ViewBuilder static var orbit: some View {
         InputField("Empty", value: .constant(""), placeholder: "Placeholder")
         InputField("Disabled, Empty", value: .constant(""), placeholder: "Placeholder", state: .disabled)
-        InputField("Disabled", value: .constant("Disabled"), placeholder: "Placeholder", state: .disabled)
+        InputField("Disabled", value: .constant("Disabled Value"), placeholder: "Placeholder", state: .disabled)
         InputField("Default", value: .constant("InputField Value"))
         InputField("Modified", value: .constant("Modified value"), state: .modified)
         InputField("Focused", value: .constant("Focus / Help"), message: .help("Help message"))

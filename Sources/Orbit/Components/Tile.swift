@@ -123,9 +123,9 @@ public struct Tile<Content: View>: View {
         switch disclosure {
             case .none, .icon:
                 EmptyView()
-            case .buttonLink(let label, let action):
+            case .buttonLink(let label, let style, let action):
                 Spacer(minLength: 0)
-                ButtonLink(label, action: action)
+                ButtonLink(label, style: style, action: action)
                     .padding(.vertical, -.xxxSmall)
         }
     }
@@ -316,7 +316,7 @@ public extension Tile {
         case none
         /// Icon with optional color override.
         case icon(Icon.Symbol, color: Color? = nil, alignment: VerticalAlignment = .center)
-        case buttonLink(_ label: String, action: () -> Void = {})
+        case buttonLink(_ label: String, style: ButtonLink.Style = .primary, action: () -> Void = {})
     }
 
     enum Style {
