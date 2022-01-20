@@ -1,5 +1,62 @@
 import SwiftUI
 
+public enum ChoiceTileIndicator {
+    case none
+    case radio
+    case checkbox
+}
+
+/// Button style wrapper for ``ChoiceTile``.
+/// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
+public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
+
+    let indicator: ChoiceTileIndicator
+    let status: Status?
+    let isSelected: Bool
+
+    /// Creates button style wrapper for ``ChoiceTile``.
+    public init(
+        indicator: ChoiceTileIndicator,
+        status: Status?,
+        isSelected: Bool
+    ) {
+        self.indicator = indicator
+        self.status = status
+        self.isSelected = isSelected
+    }
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .overlay(indicatorOverlay.disabled(true), alignment: .bottomTrailing)
+            .padding(.medium)
+            .tileBorder(
+                status: isSelected ? .info : nil,
+                backgroundColor: backgroundColor(isPressed: configuration.isPressed),
+                shadow: shadow(isPressed: configuration.isPressed))
+    }
+
+    @ViewBuilder var indicatorOverlay: some View {
+        switch indicator {
+            case .none:         EmptyView()
+            case .radio:        Radio(isChecked: isSelected, action: {})
+            case .checkbox:     Checkbox(isChecked: isSelected, action: {})
+        }
+    }
+    
+    func backgroundColor(isPressed: Bool) -> Color {
+        isPressed ? .whiteHover : .white
+    }
+    
+    func shadow(isPressed: Bool) -> TileBorderModifier.Shadow {
+        switch (isSelected, isPressed) {
+            case (false, false):    return .small
+            case (false, true):     return .default
+            case (true, false):     return .small
+            case (true, true):      return .default
+        }
+    }
+}
+
 /// Enables users to encapsulate radio or checkbox to pick exactly one option from a group.
 ///
 /// - Related components:
@@ -13,7 +70,7 @@ public struct ChoiceTile<Content: View>: View {
     let title: String
     let description: String
     let iconContent: Icon.Content
-    let style: Style
+    let indicator: ChoiceTileIndicator
     let titleStyle: Heading.Style
     let isSelected: Bool
     let status: Status?
@@ -39,20 +96,15 @@ public struct ChoiceTile<Content: View>: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         )
-        .buttonStyle(ChoiceTileButtonStyle(style: style, status: status, isSelected: isSelected))
+        .buttonStyle(ChoiceTileButtonStyle(indicator: indicator, status: status, isSelected: isSelected))
         .accessibility(removeTraits: isSelected == false ? .isSelected : [])
         .accessibility(addTraits: isSelected ? .isSelected : [])
     }
 
-    @ViewBuilder var indicator: some View {
-        switch style {
-            case .radio:    Radio(isChecked: isSelected, action: {})
-            case .checkbox: Checkbox(isChecked: isSelected, action: {})
-        }
-    }
-
     var indicatorWidth: CGFloat {
-        style == .radio ? Radio.ButtonStyle.size.width : Checkbox.ButtonStyle.size.width
+        indicator == .radio
+            ? Radio.ButtonStyle.size.width
+            : Checkbox.ButtonStyle.size.width
     }
 }
 
@@ -64,7 +116,7 @@ public extension ChoiceTile {
         _ title: String = "",
         description: String = "",
         iconContent: Icon.Content,
-        style: Style = .radio,
+        indicator: ChoiceTileIndicator = .radio,
         titleStyle: Heading.Style = .title3,
         isSelected: Bool = false,
         status: Status? = nil,
@@ -75,8 +127,8 @@ public extension ChoiceTile {
         self.title = title
         self.description = description
         self.iconContent = iconContent
+        self.indicator = indicator
         self.message = message
-        self.style = style
         self.titleStyle = titleStyle
         self.isSelected = isSelected
         self.status = status
@@ -89,7 +141,7 @@ public extension ChoiceTile {
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol = .none,
-        style: Style = .radio,
+        indicator: ChoiceTileIndicator = .radio,
         titleStyle: Heading.Style = .title3,
         isSelected: Bool = false,
         status: Status? = nil,
@@ -101,7 +153,7 @@ public extension ChoiceTile {
             title,
             description: description,
             iconContent: .icon(icon, size: .heading(titleStyle)),
-            style: style,
+            indicator: indicator,
             titleStyle: titleStyle,
             isSelected: isSelected,
             status: status,
@@ -109,65 +161,6 @@ public extension ChoiceTile {
             action: action,
             content: content
         )
-    }
-}
-
-// MARK: - Types
-public extension ChoiceTile {
-
-    enum Style {
-        case radio
-        case checkbox
-    }
-    
-    /// Button style wrapper for ``ChoiceTile``.
-    /// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
-    struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
-
-        let style: Style
-        let status: Status?
-        let isSelected: Bool
-
-        /// Creates button style wrapper for ``ChoiceTile``.
-        public init(
-            style: Style,
-            status: Status?,
-            isSelected: Bool
-        ) {
-            self.style = style
-            self.status = status
-            self.isSelected = isSelected
-        }
-
-        public func makeBody(configuration: Configuration) -> some View {
-            configuration.label
-                .overlay(indicator.disabled(true), alignment: .bottomTrailing)
-                .padding(.medium)
-                .tileBorder(
-                    status: isSelected ? .info : nil,
-                    backgroundColor: backgroundColor(isPressed: configuration.isPressed),
-                    shadow: shadow(isPressed: configuration.isPressed))
-        }
-
-        @ViewBuilder var indicator: some View {
-            switch style {
-                case .radio:    Radio(isChecked: isSelected, action: {})
-                case .checkbox: Checkbox(isChecked: isSelected, action: {})
-            }
-        }
-        
-        func backgroundColor(isPressed: Bool) -> Color {
-            isPressed ? .whiteHover : .white
-        }
-        
-        func shadow(isPressed: Bool) -> TileBorder.Shadow {
-            switch (isSelected, isPressed) {
-                case (false, false):    return .small
-                case (false, true):    return .default
-                case (true, false):    return .small
-                case (true, true):    return .default
-            }
-        }
     }
 }
 
@@ -184,7 +177,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                 ChoiceTile(
                     "ChoiceTile",
                     icon: .email,
-                    style: .radio,
+                    indicator: .radio,
                     isSelected: state.wrappedValue,
                     message: .help("Helpful message"),
                     action: {
@@ -205,7 +198,7 @@ struct ChoiceTilePreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        ChoiceTile("ChoiceTile heading", description: "Description", icon: .email, style: .checkbox, message: .help("Message")) {
+        ChoiceTile("ChoiceTile heading", description: "Description", icon: .email, indicator: .checkbox, message: .help("Message")) {
             customContentPlaceholder
         }
         .padding()
@@ -215,21 +208,21 @@ struct ChoiceTilePreviews: PreviewProvider {
         VStack(spacing: .large) {
             HStack(alignment: .top, spacing: .medium) {
                 VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", icon: .flightNomad, style: .radio, message: .help("Helpful message")) {
+                    ChoiceTile("Label", icon: .flightNomad, indicator: .radio, message: .help("Helpful message")) {
                         Text("Unchecked Radio", size: .small, color: .inkLight)
                     }
 
-                    ChoiceTile("Label", style: .checkbox, message: .help("Helpful message")) {
+                    ChoiceTile("Label", indicator: .checkbox, message: .help("Helpful message")) {
                         Text("Unchecked Checkbox", size: .small, color: .inkLight)
                     }
                 }
 
                 VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", style: .radio, isSelected: true, message: .help("Helpful message")) {
+                    ChoiceTile("Label", indicator: .radio, isSelected: true, message: .help("Helpful message")) {
                         Text("Checked Checkbox", size: .small, color: .inkLight)
                     }
 
-                    ChoiceTile("Label", style: .checkbox, isSelected: true, message: .error("Error message")) {
+                    ChoiceTile("Label", indicator: .checkbox, isSelected: true, message: .error("Error message")) {
                         Text("Checked Checkbox", size: .small, color: .inkLight)
                     }
                 }
@@ -239,7 +232,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                 "Multiline long choice title label",
                 description: "Multiline and very long description",
                 icon: .baggageSet,
-                style: .radio,
+                indicator: .radio,
                 titleStyle: .title1,
                 message: .help("Helpful multiline message")
             ) {
@@ -247,11 +240,15 @@ struct ChoiceTilePreviews: PreviewProvider {
             }
             .frame(maxWidth: 250)
             
-            ChoiceTile("ChoiceTile", style: .radio, isSelected: true) {
+            ChoiceTile("ChoiceTile", indicator: .radio, isSelected: true) {
                 customContentPlaceholder
             }
             
-            ChoiceTile(style: .checkbox, isSelected: true) {
+            ChoiceTile(indicator: .checkbox, isSelected: true) {
+                customContentPlaceholder
+            }
+            
+            ChoiceTile(indicator: .none, isSelected: true) {
                 customContentPlaceholder
             }
         }

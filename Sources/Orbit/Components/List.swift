@@ -32,6 +32,7 @@ public struct List<Content: View>: View {
 }
 
 extension HorizontalAlignment {
+    
     enum ListAlignment: AlignmentID {
         static func defaultValue(in context: ViewDimensions) -> CGFloat {
             context[.leading]

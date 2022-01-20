@@ -1,5 +1,25 @@
 import SwiftUI
 
+public enum TileGroupStyle {
+    case `default`
+    /// A style that visually matches the iOS plain table section appearance.
+    case iOS
+    
+    public var tileBorderStyle: TileBorderModifier.Style {
+        switch self {
+            case .default:      return .default
+            case .iOS:          return .iOS
+        }
+    }
+    
+    public var cardStyle: CardStyle {
+        switch self {
+            case .default:      return .default
+            case .iOS:          return .iOS
+        }
+    }
+}
+
 /// Wraps tiles to show related interactions.
 
 /// - Related components:
@@ -13,7 +33,7 @@ public struct TileGroup<Content: View>: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
-    let style: Style
+    let style: TileGroupStyle
     let status: Status?
     let backgroundColor: Color?
     let content: () -> Content
@@ -33,7 +53,7 @@ public extension TileGroup {
     /// - Parameters:
     ///   - style: Appearance of TileGroup. Can be styled to match iOS default table section.
     init(
-        style: Style = .default,
+        style: TileGroupStyle = .default,
         status: Status? = nil,
         backgroundColor: Color? = nil,
         @ViewBuilder content: @escaping () -> Content
@@ -42,29 +62,6 @@ public extension TileGroup {
         self.status = status
         self.backgroundColor = backgroundColor
         self.content = content
-    }
-}
-
-public extension TileGroup {
-    
-    enum Style {
-        case `default`
-        /// A style that visually matches the iOS plain table section appearance.
-        case iOS
-        
-        public var tileBorderStyle: TileBorder.Style {
-            switch self {
-                case .default:      return .default
-                case .iOS:          return .iOS
-            }
-        }
-        
-        public var cardStyle: Card<Content>.Style {
-            switch self {
-                case .default:      return .default
-                case .iOS:          return .iOS
-            }
-        }
     }
 }
 

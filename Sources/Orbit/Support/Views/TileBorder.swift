@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Provides decoration with ``Tile`` appearance.
-public struct TileBorder: ViewModifier {
+public struct TileBorderModifier: ViewModifier {
 
     public enum Shadow {
         case none
@@ -130,13 +130,13 @@ public extension View {
     ///
     /// - Parameter style: The style to apply. If style is nil, the view doesn’t get decorated.
     func tileBorder(
-        style: TileBorder.Style? = .default,
+        style: TileBorderModifier.Style? = .default,
         status: Status? = nil,
         backgroundColor: Color? = nil,
-        shadow: TileBorder.Shadow = .default
+        shadow: TileBorderModifier.Shadow = .default
     ) -> some View {
         modifier(
-            TileBorder(style: style, status: status, backgroundColor: backgroundColor, shadow: shadow)
+            TileBorderModifier(style: style, status: status, backgroundColor: backgroundColor, shadow: shadow)
         )
     }
 }

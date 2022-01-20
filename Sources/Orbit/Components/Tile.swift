@@ -25,6 +25,68 @@ public struct TileButtonStyle: SwiftUI.ButtonStyle {
     }
 }
 
+public enum TileDisclosure {
+    case none
+    /// Icon with optional color override.
+    case icon(Icon.Symbol, color: Color? = nil, alignment: VerticalAlignment = .center)
+    /// ButtonLink indicator.
+    case buttonLink(_ label: String, style: ButtonLink.Style = .primary)
+}
+
+// TODO: Remove style and use ListChoice for iOS version
+public enum TileStyle {
+
+    case `default`
+    /// A tile style that visually matches the iOS plain table row appearance.
+    case iOS
+
+    public var iconAlignment: VerticalAlignment {
+        self == .iOS ? .center : .firstTextBaseline
+    }
+
+    public var verticalPadding: CGFloat {
+        self == .iOS ? .xSmall : .medium
+    }
+
+    public var minHeight: CGFloat {
+        self == .iOS ? Layout.preferredButtonHeight : 56
+    }
+
+    public var titleWeight: Font.Weight {
+        self == .iOS ? .regular : .medium
+    }
+
+    public var descriptionSize: Text.Size {
+        self == .iOS ? .small : .normal
+    }
+
+    public var defaultDisclosureColor: Color {
+        self == .iOS ? .cloudDarker : .inkLight
+    }
+
+    public var disclosureIconOffset: CGFloat {
+        self == .iOS ? .xxSmall : 0
+    }
+    
+    public var tileBorderStyle: TileBorderModifier.Style {
+        switch self {
+            case .default:      return .default
+            case .iOS:          return .iOS
+        }
+    }
+}
+
+public enum TileBorder {
+    /// No border or separator applied. For custom usage inside other components.
+    case none
+    /// Border around the whole tile for standalone usage outside of ``TileGroup``.
+    case `default`
+    /// Bottom separator only. To be used inside a ``TileGroup``.
+    case separator
+    /// Error style border.
+    case error
+}
+
 /// Groups actionable content to make it easy to scan.
 ///
 /// Can be used standalone or wrapped inside a ``TileGroup``.
@@ -41,9 +103,9 @@ public struct Tile<Content: View>: View {
     let title: String
     let description: String
     let iconContent: Icon.Content
-    let disclosure: Disclosure
-    let border: Border
-    let style: Style
+    let disclosure: TileDisclosure
+    let border: TileBorder
+    let style: TileStyle
     let status: Status?
     let backgroundColor: BackgroundColor?
     let titleStyle: Heading.Style
@@ -152,7 +214,7 @@ public struct Tile<Content: View>: View {
         iconContent.isEmpty ? .medium : .xxxLarge
     }
     
-    var tileBorderStyle: TileBorder.Style? {
+    var tileBorderStyle: TileBorderModifier.Style? {
         border == .default ? style.tileBorderStyle : nil
     }
     
@@ -160,7 +222,7 @@ public struct Tile<Content: View>: View {
         title.isEmpty && description.isEmpty && iconContent.isEmpty
     }
     
-    var shadow: TileBorder.Shadow {
+    var shadow: TileBorderModifier.Shadow {
         status == nil ? .small : .none
     }
 }
@@ -176,9 +238,9 @@ public extension Tile {
         _ title: String = "",
         description: String = "",
         iconContent: Icon.Content,
-        disclosure: Disclosure = .icon(.chevronRight),
-        border: Border = .default,
-        style: Style = .default,
+        disclosure: TileDisclosure = .icon(.chevronRight),
+        border: TileBorder = .default,
+        style: TileStyle = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title3,
@@ -210,9 +272,9 @@ public extension Tile {
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol = .none,
-        disclosure: Disclosure = .icon(.chevronRight),
-        border: Border = .default,
-        style: Style = .default,
+        disclosure: TileDisclosure = .icon(.chevronRight),
+        border: TileBorder = .default,
+        style: TileStyle = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title3,
@@ -245,9 +307,9 @@ public extension Tile {
         _ title: String = "",
         description: String = "",
         iconContent: Icon.Content,
-        disclosure: Disclosure = .icon(.chevronRight),
-        border: Border = .default,
-        style: Style = .default,
+        disclosure: TileDisclosure = .icon(.chevronRight),
+        border: TileBorder = .default,
+        style: TileStyle = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title3,
@@ -280,9 +342,9 @@ public extension Tile {
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol = .none,
-        disclosure: Disclosure = .icon(.chevronRight),
-        border: Border = .default,
-        style: Style = .default,
+        disclosure: TileDisclosure = .icon(.chevronRight),
+        border: TileBorder = .default,
+        style: TileStyle = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title3,
@@ -313,68 +375,6 @@ public extension Tile {
 public extension Tile {
 
     typealias BackgroundColor = (normal: Color, active: Color)
-
-    enum Disclosure {
-        case none
-        /// Icon with optional color override.
-        case icon(Icon.Symbol, color: Color? = nil, alignment: VerticalAlignment = .center)
-        /// ButtonLink indicator.
-        case buttonLink(_ label: String, style: ButtonLink.Style = .primary)
-    }
-
-    // TODO: Remove style and use ListChoice for iOS version
-    enum Style {
-
-        case `default`
-        /// A tile style that visually matches the iOS plain table row appearance.
-        case iOS
-
-        public var iconAlignment: VerticalAlignment {
-            self == .iOS ? .center : .firstTextBaseline
-        }
-
-        public var verticalPadding: CGFloat {
-            self == .iOS ? .xSmall : .medium
-        }
-
-        public var minHeight: CGFloat {
-            self == .iOS ? Layout.preferredButtonHeight : 56
-        }
-
-        public var titleWeight: Font.Weight {
-            self == .iOS ? .regular : .medium
-        }
-
-        public var descriptionSize: Text.Size {
-            self == .iOS ? .small : .normal
-        }
-
-        public var defaultDisclosureColor: Color {
-            self == .iOS ? .cloudDarker : .inkLight
-        }
-
-        public var disclosureIconOffset: CGFloat {
-            self == .iOS ? .xxSmall : 0
-        }
-        
-        public var tileBorderStyle: TileBorder.Style {
-            switch self {
-                case .default:      return .default
-                case .iOS:          return .iOS
-            }
-        }
-    }
-
-    enum Border {
-        /// No border or separator applied. For custom usage inside other components.
-        case none
-        /// Border around the whole tile for standalone usage outside of ``TileGroup``.
-        case `default`
-        /// Bottom separator only. To be used inside a ``TileGroup``.
-        case separator
-        /// Error style border.
-        case error
-    }
 }
 
 // MARK: - Previews

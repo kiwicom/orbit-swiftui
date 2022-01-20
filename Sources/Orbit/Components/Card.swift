@@ -1,5 +1,24 @@
 import SwiftUI
 
+public enum CardAction {
+    case none
+    case buttonLink(_ label: String, action: () -> Void = {}, accessibilityIdentifier: String = "")
+}
+
+public enum CardStyle {
+
+    case `default`
+    /// A card style that visually matches the iOS plain table section appearance.
+    case iOS
+    
+    public var tileBorderStyle: TileBorderModifier.Style {
+        switch self {
+            case .default:      return .default
+            case .iOS:          return .iOS
+        }
+    }
+}
+
 /// Separates content into sections.
 ///
 /// Card is a wrapping component around a custom content.
@@ -20,11 +39,11 @@ public struct Card<Content: View>: View {
     let title: String
     let description: String
     let iconContent: Icon.Content
-    let action: Action
+    let action: CardAction
     let spacing: CGFloat
     let padding: CGFloat
     let alignment: HorizontalAlignment
-    let style: Style
+    let style: CardStyle
     let titleStyle: Heading.Style
     let status: Status?
     let backgroundColor: Color?
@@ -62,9 +81,10 @@ public struct Card<Content: View>: View {
                 Spacer(minLength: .xxxSmall)
 
                 switch action {
-                    case .buttonLink(let label, let action):
+                    case .buttonLink(let label, let action, let accessibilityIdentifier):
                         if label.isEmpty == false {
                             ButtonLink(label, action: action)
+                                .accessibility(identifier: accessibilityIdentifier)
                         }
                     case .none:
                         EmptyView()
@@ -95,31 +115,8 @@ public struct Card<Content: View>: View {
         content() is EmptyView
     }
     
-    var shadow: TileBorder.Shadow {
+    var shadow: TileBorderModifier.Shadow {
         status == nil ? .small : .none
-    }
-}
-
-// MARK: - Types
-public extension Card {
-    
-    enum Action {
-        case none
-        case buttonLink(_ label: String, action: () -> Void = {})
-    }
-    
-    enum Style {
-
-        case `default`
-        /// A card style that visually matches the iOS plain table section appearance.
-        case iOS
-        
-        public var tileBorderStyle: TileBorder.Style {
-            switch self {
-                case .default:      return .default
-                case .iOS:          return .iOS
-            }
-        }
     }
 }
 
@@ -132,10 +129,10 @@ public extension Card {
         description: String = "",
         iconContent: Icon.Content,
         alignment: HorizontalAlignment = .leading,
-        action: Action = .none,
+        action: CardAction = .none,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
-        style: Style = .iOS,
+        style: CardStyle = .iOS,
         titleStyle: Heading.Style = .title3,
         status: Status? = nil,
         backgroundColor: Color? = .white,
@@ -161,10 +158,10 @@ public extension Card {
         description: String = "",
         iconContent: Icon.Content,
         alignment: HorizontalAlignment = .leading,
-        action: Action = .none,
+        action: CardAction = .none,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
-        style: Style = .iOS,
+        style: CardStyle = .iOS,
         titleStyle: Heading.Style = .title3,
         status: Status? = nil,
         backgroundColor: Color? = .white
@@ -191,10 +188,10 @@ public extension Card {
         description: String = "",
         icon: Icon.Symbol = .none,
         alignment: HorizontalAlignment = .leading,
-        action: Action = .none,
+        action: CardAction = .none,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
-        style: Style = .iOS,
+        style: CardStyle = .iOS,
         titleStyle: Heading.Style = .title3,
         status: Status? = nil,
         backgroundColor: Color? = .white,
@@ -220,10 +217,10 @@ public extension Card {
         description: String = "",
         icon: Icon.Symbol = .none,
         alignment: HorizontalAlignment = .leading,
-        action: Action = .none,
+        action: CardAction = .none,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
-        style: Style = .iOS,
+        style: CardStyle = .iOS,
         titleStyle: Heading.Style = .title3,
         status: Status? = nil,
         backgroundColor: Color? = .white
@@ -253,12 +250,12 @@ struct CardPreviews: PreviewProvider {
             standaloneIos
             snapshots
             snapshotsDefault
-            
+
             content
                 .frame(width: 800)
                 .environment(\.horizontalSizeClass, .regular)
                 .previewDisplayName("Regular wide")
-            
+
             content
                 .frame(width: 450)
                 .environment(\.horizontalSizeClass, .regular)
