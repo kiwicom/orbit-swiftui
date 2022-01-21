@@ -12,6 +12,7 @@ public extension Illustration {
         case boardingPass
         case businessTravel
         case cabinBaggage
+        case enjoyApp
         case error
         case error404
         case forceUpdate
