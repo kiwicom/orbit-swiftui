@@ -38,8 +38,8 @@ public struct Badge: View {
         .frame(minWidth: size.height)
         .frame(height: size.height)
         .background(
-            Capsule()
-                .fill(style.backgroundColor)
+            style.background
+                .clipShape(Capsule())
         )
         .overlay(
             Capsule()
@@ -118,38 +118,41 @@ public extension Badge {
         case neutral
         case status(_ status: Status, inverted: Bool = false)
         case custom(labelColor: UIColor, outlineColor: SwiftUI.Color, backgroundColor: SwiftUI.Color)
+        case gradient(Gradient)
 
         public var outlineColor: Color {
             switch self {
                 case .light:                                return .cloudNormalHover
-                case .lightInverted:                        return backgroundColor
+                case .lightInverted:                        return .inkNormal
                 case .neutral:                              return .cloudLightHover
                 case .status(.info, false):                 return .blueLightHover
-                case .status(.info, true):                  return backgroundColor
+                case .status(.info, true):                  return .blueNormal
                 case .status(.success, false):              return .greenLightHover
-                case .status(.success, true):               return backgroundColor
+                case .status(.success, true):               return .greenNormal
                 case .status(.warning, false):              return .orangeLightHover
-                case .status(.warning, true):               return backgroundColor
+                case .status(.warning, true):               return .orangeNormal
                 case .status(.critical, false):             return .redLightHover
-                case .status(.critical, true):              return backgroundColor
+                case .status(.critical, true):              return .redNormal
                 case .custom(_, let outlineColor, _):       return outlineColor
+                case .gradient(let gradient):               return gradient.outline
             }
         }
 
-        public var backgroundColor: Color {
+        @ViewBuilder public var background: some View {
             switch self {
-                case .light:                                return .white
-                case .lightInverted:                        return .inkNormal
-                case .neutral:                              return .cloudLight
-                case .status(.info, false):                 return .blueLight
-                case .status(.info, true):                  return .blueNormal
-                case .status(.success, false):              return .greenLight
-                case .status(.success, true):               return .greenNormal
-                case .status(.warning, false):              return .orangeLight
-                case .status(.warning, true):               return .orangeNormal
-                case .status(.critical, false):             return .redLight
-                case .status(.critical, true):              return .redNormal
-                case .custom(_, _, let backgroundColor):    return backgroundColor
+                case .light:                                Color.white
+                case .lightInverted:                        Color.inkNormal
+                case .neutral:                              Color.cloudLight
+                case .status(.info, false):                 Color.blueLight
+                case .status(.info, true):                  Color.blueNormal
+                case .status(.success, false):              Color.greenLight
+                case .status(.success, true):               Color.greenNormal
+                case .status(.warning, false):              Color.orangeLight
+                case .status(.warning, true):               Color.orangeNormal
+                case .status(.critical, false):             Color.redLight
+                case .status(.critical, true):              Color.redNormal
+                case .custom(_, _, let backgroundColor):    backgroundColor
+                case .gradient(let gradient):               gradient.background
             }
         }
 
@@ -167,6 +170,7 @@ public extension Badge {
                 case .status(.critical, false):             return .redDark
                 case .status(.critical, true):              return .white
                 case .custom(let labelColor, _, _):         return labelColor
+                case .gradient:                             return .white
             }
         }
     }
@@ -201,6 +205,11 @@ struct BadgePreviews: PreviewProvider {
                     Badge("Critical", style: .status(.critical))
                     Badge("Critical Inverted", style: .status(.critical, inverted: true))
                 }
+                VStack(alignment: .leading, spacing: .xSmall) {
+                    Badge("Orange Gradient", icon: .check, style: .gradient(.orange))
+                    Badge("Purple Gradient", icon: .accomodation, style: .gradient(.purple))
+                    Badge("Ink Gradient", icon: .airplaneUp, style: .gradient(.ink))
+                }
             }
 
             VStack(alignment: .leading, spacing: .xxLarge) {
@@ -218,6 +227,11 @@ struct BadgePreviews: PreviewProvider {
                     Badge("Warning Inverted", icon: .accomodation, style: .status(.warning, inverted: true))
                     Badge("Critical", icon: .accomodation, style: .status(.critical))
                     Badge("Critical Inverted", icon: .accomodation, style: .status(.critical, inverted: true))
+                }
+                VStack(alignment: .leading, spacing: .xSmall) {
+                    Badge("Orange Gradient", style: .gradient(.orange))
+                    Badge("Purple Gradient", style: .gradient(.purple))
+                    Badge("Ink Gradient", style: .gradient(.ink))
                 }
             }
         }
