@@ -41,8 +41,7 @@ public struct Select: View {
                     suffix: suffix,
                     state: state,
                     value: value,
-                    message: message,
-                    isEditing: false
+                    message: message
                 )
             )
 

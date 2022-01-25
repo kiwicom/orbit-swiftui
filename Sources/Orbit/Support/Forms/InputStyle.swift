@@ -21,39 +21,25 @@ public enum InputState {
     }
 }
 
-/// Button-like appearance for inputs that share common layout with a prefix and suffix.
-/// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
-struct InputStyle: ButtonStyle {
-
-    private let prefix: Icon.Content
-    private let suffix: Icon.Content
-    private let state: InputState
-    private let value: String?
-    private let message: MessageType
-    private let isEditing: Bool
-
-    init(
-        prefix: Icon.Content,
-        suffix: Icon.Content,
-        state: InputState,
-        value: String?,
-        message: MessageType,
-        isEditing: Bool
-    ) {
-        self.prefix = prefix
-        self.suffix = suffix
-        self.state = state
-        self.value = value
-        self.message = message
-        self.isEditing = isEditing
-    }
-
-    func makeBody(configuration: Configuration) -> some View {
+/// Content for inputs that share common layout with a prefix and suffix.
+struct InputContent<Content: View>: View {
+    
+    var prefix: Icon.Content = .none
+    var suffix: Icon.Content = .none
+    var state: InputState = .default
+    var value: String?
+    var message: MessageType = .none
+    var isPressed: Bool = false
+    var isEditing: Bool = false
+    var padding: CGFloat = .xSmall
+    let label: () -> Content
+    
+    var body: some View {
         HStack(spacing: 0) {
             prefix.view(defaultColor: prefixColor)
                 .padding(.trailing, .xxxSmall)
 
-            configuration.label
+            label()
                 .lineLimit(1)
                 .padding(.leading, .xxSmall)
 
@@ -62,17 +48,17 @@ struct InputStyle: ButtonStyle {
             suffix.view(defaultColor: suffixColor)
         }
         .foregroundColor(state.textColor)
+        .padding(.horizontal, padding)
         .frame(height: Layout.preferredButtonHeight)
-        .padding(.horizontal, Spacing.xSmall)
-        .background(backgroundColor(isPressed: configuration.isPressed).animation(.default, value: message))
+        .background(backgroundColor(isPressed: isPressed).animation(.default, value: message))
         .cornerRadius(BorderRadius.default)
         .overlay(
             RoundedRectangle(cornerRadius: BorderRadius.default)
-                .strokeBorder(outlineColor(isPressed: configuration.isPressed), lineWidth: BorderWidth.emphasis)
+                .strokeBorder(outlineColor(isPressed: isPressed), lineWidth: BorderWidth.emphasis)
         )
         .disabled(state == .disabled)
     }
-
+    
     private func backgroundColor(isPressed: Bool) -> Color {
         switch (state, isPressed) {
             case (.disabled, _):        return .cloudLight
@@ -106,4 +92,31 @@ struct InputStyle: ButtonStyle {
             default:                    return backgroundColor(isPressed: isPressed)
         }
     }
+}
+
+/// Button-like appearance for inputs that share common layout with a prefix and suffix.
+/// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
+struct InputStyle: ButtonStyle {
+
+    var prefix: Icon.Content = .none
+    var suffix: Icon.Content = .none
+    var state: InputState = .default
+    var value: String?
+    var message: MessageType = .none
+    var isEditing = false
+
+    func makeBody(configuration: Configuration) -> some View {
+        InputContent(
+            prefix: prefix,
+            suffix: suffix,
+            state: state,
+            value: value,
+            message: message,
+            isPressed: configuration.isPressed,
+            isEditing: isEditing
+        ) {
+            configuration.label
+        }
+    }
+
 }

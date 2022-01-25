@@ -32,40 +32,15 @@ public struct InputField: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: 1) {
             FormFieldLabel(label)
-
-            SwiftUI.Button(
-                action: {
-                    HapticsProvider.sendHapticFeedback(.light(0.5))
-                },
-                label: {
-                    // The content is moved up as an overlay because it loses
-                    // the TextField accessibility trait when embedded inside the button
-                    EmptyView()
-                }
-            )
-            .buttonStyle(
-                InputStyle(
-                    prefix: .none,
-                    suffix: .none,
-                    state: state,
-                    value: value,
-                    message: message,
-                    isEditing: isEditing
-                )
-            )
-            .accessibility(removeTraits: .isButton)
-            .overlay(
+            
+            InputContent(state: state, message: message, isEditing: isEditing, padding: 0) {
                 HStack(spacing: 0) {
                     textField
-                        .padding(.leading, .small)
-
                     Spacer(minLength: 0)
-
                     suffix
                 }
-                .foregroundColor(state.textColor)
-            )
-
+            }
+            
             ContentHeightReader(height: $messageHeight.animation(.easeOut(duration: 0.2))) {
                 FormFieldMessage(message)
             }
@@ -74,7 +49,7 @@ public struct InputField: View {
 
     @ViewBuilder var textField: some View {
         TextField(
-            placeholder,
+            "",
             text: $value,
             onEditingChanged: { isEditing in
                 self.isEditing = isEditing
@@ -82,8 +57,7 @@ public struct InputField: View {
             },
             onCommit: onCommit
         )
-        .disabled(state == .disabled)
-        .overlay(textFieldPlaceholder, alignment: .leading)
+        .textFieldStyle(TextFieldStyle())
         .autocapitalization(autocapitalization)
         .disableAutocorrection(isAutocompleteEnabled == false)
         .textContentType(textContent)
@@ -91,11 +65,14 @@ public struct InputField: View {
         .font(.orbit(size: Text.Size.normal.value, weight: .regular))
         .accentColor(.blueNormal)
         .frame(height: Layout.preferredButtonHeight)
+        .background(textFieldPlaceholder, alignment: .leading)
+        .disabled(state == .disabled)
     }
 
     @ViewBuilder var textFieldPlaceholder: some View {
         Text(placeholder, color: .none)
             .foregroundColor(state.placeholderColor)
+            .padding(.leading, .xSmall)
             .opacity(value.isEmpty ? 1 : 0)
     }
     
@@ -146,6 +123,19 @@ public extension InputField {
         self.isAutocompleteEnabled = isAutocompleteEnabled
         self.onEditingChanged = onEditingChanged
         self.onCommit = onCommit
+    }
+}
+
+// MARK: - Types
+public extension InputField {
+    
+    struct TextFieldStyle : SwiftUI.TextFieldStyle {
+        
+        public func _body(configuration: TextField<Self._Label>) -> some View {
+            configuration
+                .padding(.horizontal, .xSmall)
+                .padding(.vertical, .xxSmall)
+        }
     }
 }
 
