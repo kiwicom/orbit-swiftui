@@ -33,49 +33,6 @@ public enum TileDisclosure {
     case buttonLink(_ label: String, style: ButtonLink.Style = .primary)
 }
 
-// TODO: Remove style and use ListChoice for iOS version
-public enum TileStyle {
-
-    case `default`
-    /// A tile style that visually matches the iOS plain table row appearance.
-    case iOS
-
-    public var iconAlignment: VerticalAlignment {
-        self == .iOS ? .center : .firstTextBaseline
-    }
-
-    public var verticalPadding: CGFloat {
-        self == .iOS ? .xSmall : .medium
-    }
-
-    public var minHeight: CGFloat {
-        self == .iOS ? Layout.preferredButtonHeight : 56
-    }
-
-    public var titleWeight: Font.Weight {
-        self == .iOS ? .regular : .medium
-    }
-
-    public var descriptionSize: Text.Size {
-        self == .iOS ? .small : .normal
-    }
-
-    public var defaultDisclosureColor: Color {
-        self == .iOS ? .cloudDarker : .inkLight
-    }
-
-    public var disclosureIconOffset: CGFloat {
-        self == .iOS ? .xxSmall : 0
-    }
-    
-    public var tileBorderStyle: TileBorderModifier.Style {
-        switch self {
-            case .default:      return .default
-            case .iOS:          return .iOS
-        }
-    }
-}
-
 public enum TileBorder {
     /// No border or separator applied. For custom usage inside other components.
     case none
@@ -105,7 +62,6 @@ public struct Tile<Content: View>: View {
     let iconContent: Icon.Content
     let disclosure: TileDisclosure
     let border: TileBorder
-    let style: TileStyle
     let status: Status?
     let backgroundColor: BackgroundColor?
     let titleStyle: Heading.Style
@@ -140,7 +96,7 @@ public struct Tile<Content: View>: View {
 
             // Provide minimal height (frame(minHeight:) collapses multiline text in snapshots)
             Color.clear
-                .frame(width: 0, height: style.minHeight)
+                .frame(width: 0, height: 56)
 
             disclosureIcon
                 .padding(.trailing, .medium)
@@ -149,29 +105,23 @@ public struct Tile<Content: View>: View {
         .overlay(separator, alignment: .bottom)
     }
     
-    @ViewBuilder var header: some View {
-        if isHeaderEmpty == false {
-            HStack(alignment: style.iconAlignment, spacing: .small) {
-                iconContent.view()
-                    .alignmentGuide(.firstTextBaseline) { _ in
-                        Heading.Style.title3.size * 1.1
-                    }
+    var header: some View {
+        HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
+            Header(
+                title,
+                description: description,
+                iconContent: iconContent,
+                titleStyle: titleStyle,
+                horizontalSpacing: .small,
+                verticalSpacing: .xSmall
+            )
+            .padding(.vertical, .medium)
 
-                // TODO: Extract and use Header
-                HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
-                    VStack(alignment: .leading, spacing: style == .iOS ? .xxxSmall : .xSmall) {
-                        Text(title, size: .large, color: titleColor, weight: style.titleWeight)
-                        Text(description, size: style.descriptionSize, color: descriptionColor)
-                    }
-                    .padding(.vertical, style.verticalPadding)
+            Spacer(minLength: 0)
 
-                    Spacer(minLength: 0)
-
-                    inactiveButtonLink
-                }
-            }
-            .padding(.horizontal, .medium)
+            inactiveButtonLink
         }
+        .padding(.horizontal, .medium)
     }
 
     @ViewBuilder var inactiveButtonLink: some View {
@@ -191,22 +141,15 @@ public struct Tile<Content: View>: View {
             case .none, .buttonLink:
                 EmptyView()
             case .icon(let icon, let color, _):
-                Icon(icon, color: color ?? style.defaultDisclosureColor)
+                Icon(icon, color: color ?? .inkLight)
                     .padding(.leading, .xSmall)
-                    .padding(.trailing, -style.disclosureIconOffset)
         }
     }
 
     @ViewBuilder var separator: some View {
         if border == .separator {
-            switch style {
-                case .default:
-                    Color.cloudNormal
-                        .frame(height: BorderWidth.thin)
-                case .iOS:
-                    HairlineSeparator()
-                        .padding(.leading, separatorPadding)
-            }
+            Color.cloudNormal
+                .frame(height: BorderWidth.thin)
         }
     }
 
@@ -215,7 +158,7 @@ public struct Tile<Content: View>: View {
     }
     
     var tileBorderStyle: TileBorderModifier.Style? {
-        border == .default ? style.tileBorderStyle : nil
+        border == .default ? .default : nil
     }
     
     var isHeaderEmpty: Bool {
@@ -240,7 +183,6 @@ public extension Tile {
         iconContent: Icon.Content,
         disclosure: TileDisclosure = .icon(.chevronRight),
         border: TileBorder = .default,
-        style: TileStyle = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title3,
@@ -254,7 +196,6 @@ public extension Tile {
         self.iconContent = iconContent
         self.disclosure = disclosure
         self.border = border
-        self.style = style
         self.status = status
         self.backgroundColor = backgroundColor
         self.titleStyle = titleStyle
@@ -274,7 +215,6 @@ public extension Tile {
         icon: Icon.Symbol = .none,
         disclosure: TileDisclosure = .icon(.chevronRight),
         border: TileBorder = .default,
-        style: TileStyle = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title3,
@@ -286,10 +226,9 @@ public extension Tile {
     ) {
         self.title = title
         self.description = description
-        self.iconContent = .icon(icon, color: iconColor)
+        self.iconContent = .icon(icon, size: .heading(titleStyle), color: iconColor)
         self.disclosure = disclosure
         self.border = border
-        self.style = style
         self.status = status
         self.backgroundColor = backgroundColor
         self.titleStyle = titleStyle
@@ -309,7 +248,6 @@ public extension Tile {
         iconContent: Icon.Content,
         disclosure: TileDisclosure = .icon(.chevronRight),
         border: TileBorder = .default,
-        style: TileStyle = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title3,
@@ -323,7 +261,6 @@ public extension Tile {
             iconContent: iconContent,
             disclosure: disclosure,
             border: border,
-            style: style,
             status: status,
             backgroundColor: backgroundColor,
             titleStyle: titleStyle,
@@ -344,7 +281,6 @@ public extension Tile {
         icon: Icon.Symbol = .none,
         disclosure: TileDisclosure = .icon(.chevronRight),
         border: TileBorder = .default,
-        style: TileStyle = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title3,
@@ -359,7 +295,6 @@ public extension Tile {
             iconContent: .icon(icon, color: iconColor),
             disclosure: disclosure,
             border: border,
-            style: style,
             status: status,
             backgroundColor: backgroundColor,
             titleStyle: titleStyle,
@@ -389,8 +324,6 @@ struct TilePreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             snapshots
-            snapshotsIOS
-            snapshotsIOSRegular
         }
         .previewLayout(.sizeThatFits)
     }
@@ -403,10 +336,7 @@ struct TilePreviews: PreviewProvider {
 
     static var figma: some View {
         VStack(spacing: .small) {
-            standalone
-            Tile("iOS style tile", description: "Description", disclosure: .buttonLink("Edit"), style: .iOS)
-            Tile("iOS style tile", description: "Description", icon: .airplane, style: .iOS)
-            Tile("iOS style tile", description: "Description", icon: .airplane, style: .iOS, status: .critical)
+            standalone        
         }
         .previewDisplayName("Figma")
     }
@@ -433,6 +363,10 @@ struct TilePreviews: PreviewProvider {
                 customContentPlaceholder
             }
             Tile("Tile with custom content", description: "Description", status: .warning) {
+                customContentPlaceholder
+            }
+            
+            Tile("Tile with HUGE TITLE", description: "short", icon: .circle, status: .warning, titleStyle: .title1) {
                 customContentPlaceholder
             }
 
@@ -463,75 +397,6 @@ struct TilePreviews: PreviewProvider {
         .padding()
         .background(background)
         .previewDisplayName("Style - Default")
-    }
-
-    static var snapshotsIOS: some View {
-        iOSContent
-            .padding(.horizontal, -.medium)
-            .background(background)
-            .previewDisplayName("Style - iOS")
-    }
-
-    static var snapshotsIOSRegular: some View {
-        iOSContent
-            .frame(width: 450)
-            .background(background)
-            .environment(\.horizontalSizeClass, .regular)
-            .previewDisplayName("Style - iOS Regular")
-    }
-
-    static var iOSContent: some View {
-        VStack(spacing: .large) {
-            Tile("Full border", style: .iOS)
-            
-            Tile("Full border", disclosure: .buttonLink("Edit"), style: .iOS, status: .info) {
-                customContentPlaceholder
-            }
-            
-            Tile("Full border", disclosure: .buttonLink("Edit", style: .critical), style: .iOS, status: .critical) {
-                customContentPlaceholder
-            }
-            
-            Tile(style: .iOS) {
-                customContentPlaceholder
-            }
-            Tile(disclosure: .none, style: .iOS) {
-                customContentPlaceholder
-            }
-            Tile("Tile with custom content", disclosure: .none, style: .iOS) {
-                customContentPlaceholder
-            }
-            Tile("Tile with custom content", description: "Description", style: .iOS, status: .warning) {
-                customContentPlaceholder
-            }
-
-            VStack(spacing: 0) {
-                Tile(
-                    "Bottom separator",
-                    description: description,
-                    border: .separator,
-                    style: .iOS
-                )
-
-                Tile(
-                    "Bottom separator",
-                    description: description,
-                    icon: .circle,
-                    disclosure: .buttonLink("Edit"),
-                    border: .separator,
-                    style: .iOS
-                )
-            }
-
-            Tile(
-                "No borders",
-                description: description,
-                icon: .settings,
-                border: .none,
-                style: .iOS
-            )
-        }
-        .padding()
     }
 
     static var background: some View {
