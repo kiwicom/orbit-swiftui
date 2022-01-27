@@ -2,19 +2,35 @@ name: Release
 
 on:
   workflow_dispatch:
-    # Inputs the workflow accepts.
     inputs:
       version:
         description: "The version/tag for this release"
         required: true
       changelog:
         description: "What's new in this release"
-        required: true
+        required: false
 
 jobs:
-  echo:
+  release:
     runs-on: ubuntu-latest
     steps:
-    - run: -|
-           echo "Version - ${{ github.event.inputs.version }}"
-           echo "Changelog - ${{ github.event.inputs.changelog }}"
+      - uses: actions/checkout@v2
+      - name: Update assets
+        run: |
+          ./Automation/update_illustrations.py
+          ./Automation/update_colors.py
+      - name: Commit changes
+        run: |
+          git config --global user.name 'Automation'
+          git config --global user.email 'mobile.automation@kiwi.com'
+          git commit -am "Update assets" || true
+          git push
+      - uses: actions-ecosystem/action-push-tag@v1
+        with:
+          tag: ${{ github.event.inputs.version }}
+      - uses: ncipollo/release-action@v1
+        with:
+          body: ${{ github.event.inputs.changelog }}
+          tag: ${{ github.event.inputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
