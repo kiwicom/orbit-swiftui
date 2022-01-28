@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "place_ipad_placehold.png",
+      "filename" : "PlaceholderDestinationCropIPad@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "PlaceholderDestinationCropIPad@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "PlaceholderDestinationCropIPad@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

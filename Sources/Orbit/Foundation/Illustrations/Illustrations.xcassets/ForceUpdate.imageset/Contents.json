@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Improve@1x.png",
+      "filename" : "ForceUpdate@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Improve@2x.png",
+      "filename" : "ForceUpdate@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Improve@3x.png",
+      "filename" : "ForceUpdate@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

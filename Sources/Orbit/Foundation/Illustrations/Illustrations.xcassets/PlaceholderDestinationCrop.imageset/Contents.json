@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "place_placehold.png",
+      "filename" : "PlaceholderDestinationCrop@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "PlaceholderDestinationCrop@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "PlaceholderDestinationCrop@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
