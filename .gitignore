@@ -10,11 +10,9 @@ DerivedData
 .idea/
 /Gemfile.lock
 /Brewfile.lock*
-LocalizableStrings
-phraseapp
 *.pyc
 .envrc
 .python-version
 **/__pycache__
-mobile-automation
 **/*.xcscheme
+.swiftpm
