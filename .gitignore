@@ -16,3 +16,4 @@ DerivedData
 **/__pycache__
 **/*.xcscheme
 .swiftpm
+Package.resolved
