@@ -1,0 +1,31 @@
+category-template: '### $TITLE'
+categories:
+  - title: '🚀 Features'
+    label: 'feature'
+  - title: '🐛 Bug Fixes'
+    label: 'bug'
+  - title: '🧰 Maintenance'
+    label: 'maintenance'
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+change-title-escapes: '\<*_&'
+exclude-labels:
+  - 'skip-changelog'
+  - 'automation'
+template: |
+  Changes in this release:
+  $CHANGES
+autolabeler:
+  - label: 'maintenance'
+    files:
+      - '*.md'
+  - label: 'bug'
+    branch:
+      - '/fix\/.+/'
+    title:
+      - '/fix/i'
+  - label: 'feature'
+    files: 'Sources/Orbit/Components/**/*'
+  - label: 'automation'
+    files:
+      - 'Automation/**/*'
+      - '.github/**/*'
