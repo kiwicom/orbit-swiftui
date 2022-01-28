@@ -17,7 +17,7 @@ import SwiftUI
 ///   - ``Modal``
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/alert/)
-/// - Important: Component expands horizontally to infinity.
+/// - Important: Component expands horizontally to infinity. 
 public struct Alert: View {
 
     let title: String
