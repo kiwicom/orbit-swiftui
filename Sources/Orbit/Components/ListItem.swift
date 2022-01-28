@@ -13,10 +13,12 @@ public struct ListItem: View {
     let size: Text.Size
     let spacing: CGFloat
     let style: ListItem.Style
+    let linkColor: UIColor
+    let linkAction: TextLink.Action
 
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: spacing) {
-            iconContent.view(defaultColor: style.color)
+            iconContent.view()
                 .alignmentGuide(.firstTextBaseline) { size in
                     self.size.value * Text.firstBaselineRatio + size.height / 2
                 }
@@ -24,7 +26,7 @@ public struct ListItem: View {
                     dimensions.width + .xSmall
                 })
 
-            Text(text, size: size, color: style.textColor)
+            Text(text, size: size, color: style.textColor, linkColor: linkColor, linkAction: linkAction)
         }
     }
 
@@ -40,35 +42,43 @@ public struct ListItem: View {
 // MARK: - Inits
 public extension ListItem {
 
-    /// Creates Orbit ListItem component.
+    /// Creates Orbit ListItem component with custom icon content.
     init(
         _ text: String = "",
-        iconContent: Icon.Content = .icon(.circleSmall, size: .small),
+        iconContent: Icon.Content,
         size: Text.Size = .normal,
         spacing: CGFloat = .xSmall,
-        style: ListItem.Style = .primary
+        style: ListItem.Style = .primary,
+        linkColor: UIColor = .productDark,
+        linkAction: @escaping TextLink.Action = { _, _ in }
     ) {
         self.text = text
         self.iconContent = iconContent
         self.size = size
         self.spacing = spacing
         self.style = style
+        self.linkColor = linkColor
+        self.linkAction = linkAction
     }
 
     /// Creates Orbit ListItem component.
     init(
         _ text: String = "",
-        icon: Icon.Symbol,
+        icon: Icon.Symbol = .circleSmall,
         size: Text.Size = .normal,
         spacing: CGFloat = .xSmall,
-        style: ListItem.Style = .primary
+        style: ListItem.Style = .primary,
+        linkColor: UIColor = .productDark,
+        linkAction: @escaping TextLink.Action = { _, _ in }
     ) {
         self.init(
             text,
-            iconContent: .icon(icon, size: .small),
+            iconContent: .icon(icon, size: .small, color: Color(style.textColor.value)),
             size: size,
             spacing: spacing,
-            style: style
+            style: style,
+            linkColor: linkColor,
+            linkAction: linkAction
         )
     }
 }
@@ -79,18 +89,13 @@ public extension ListItem {
     enum Style {
         case primary
         case secondary
-
-        public var color: Color {
-            switch self {
-                case .primary:      return .inkNormal
-                case .secondary:    return .inkLight
-            }
-        }
+        case custom(textColor: UIColor)
 
         public var textColor: Text.Color {
             switch self {
-                case .primary:      return .inkNormal
-                case .secondary:    return .inkLight
+                case .primary:                  return .inkNormal
+                case .secondary:                return .inkLight
+                case .custom(let textColor):    return .custom(textColor)
             }
         }
     }
@@ -103,66 +108,80 @@ struct ListItemPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             snapshots
+            snapshotsLinks
+            snapshotsCustom
             orbit
 
             List {
                 ListItem(
-                    "This is just a line",
+                    "ListItem",
                     iconContent: .icon(.airplane, size: .small),
                     size: .small,
                     style: .secondary
                 )
-                Text("Hey \nmultiline")
-                Text("Hey \nmultiline 2", size: .large)
+                Text("Aligned multiline content")
+                Text("Aligned multiline content", size: .large)
             }
+            .frame(width: 130)
+            .padding()
             .previewDisplayName("Text Baseline alignment")
         }
-        .padding()
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
-        ListItem(
-            "This is just a line",
-            iconContent: .icon(.airplaneDown, size: .small, color: .blue),
-            size: .normal,
-            style: .primary
-        )
+        ListItem("ListItem")
     }
 
     static var snapshots: some View {
         List(spacing: .medium) {
-            ListItem("This is just a normal line")
-
-            ListItem("This is just a normal line", size: .normal, style: .secondary)
-
-            ListItem("This is just a large line", size: .large, style: .primary)
-
-            ListItem("This is just a large line", size: .large, style: .secondary)
-
-            ListItem("This is just a small line", size: .small, style: .primary)
-
-            ListItem("This is just a small line", size: .small, style: .primary)
-
-            ListItem("This is just a line", iconContent: .icon(.airplaneDown, size: .small, color: .blue))
-
-            ListItem("This is just a line without an icon", icon: .none)
+            ListItem("ListItem - normal")
+            ListItem("ListItem - normal, secondary", size: .normal, style: .secondary)
+            ListItem("ListItem - large", size: .large, style: .primary)
+            ListItem("ListItem - large, secondary", size: .large, style: .secondary)
+            ListItem("ListItem - small", size: .small, style: .primary)
+            ListItem("ListItem - small, secondary", size: .small, style: .secondary)
         }
+        .padding()
         .previewDisplayName("Snapshots")
+    }
+    
+    static var snapshotsLinks: some View {
+        List {
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#)
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, size: .small, style: .secondary, linkColor: .redNormal)
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, style: .custom(textColor: .greenNormal))
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, iconContent: .icon(.circleSmall, size: .small, color: .inkNormal), style: .custom(textColor: .greenNormal))
+        }
+        .padding()
+        .previewDisplayName("Snapshots - Links")
+    }
+    
+    static var snapshotsCustom: some View {
+        List {
+            ListItem("ListItem with custom icon", iconContent: .icon(.check, size: .small, color: .greenNormal))
+            ListItem("ListItem with custom icon", iconContent: .icon(.check, size: .small))
+            ListItem("ListItem with custom icon", icon: .check)
+            ListItem("ListItem with custom icon", icon: .check, style: .custom(textColor: .blueDark))
+            ListItem("ListItem with no icon", icon: .none)
+        }
+        .padding()
+        .previewDisplayName("Snapshots - Custom")
     }
 
     static var orbit: some View {
         HStack(alignment: .top, spacing: .medium) {
             List(spacing: .medium) {
-                ListItem("This is simple list item", size: .normal, style: .primary)
-                ListItem("This is simple list item", size: .large, style: .primary)
+                ListItem("ListItem - normal", size: .normal, style: .primary)
+                ListItem("ListItem - large", size: .large, style: .primary)
             }
 
             List(spacing: .medium) {
-                ListItem("This is simple list item", size: .normal, style: .secondary)
-                ListItem("This is simple list item", size: .large, style: .secondary)
+                ListItem("ListItem - normal, secondary", size: .normal, style: .secondary)
+                ListItem("ListItem - large, secondary", size: .large, style: .secondary)
             }
         }
+        .padding()
         .previewDisplayName("Orbit")
     }
 }

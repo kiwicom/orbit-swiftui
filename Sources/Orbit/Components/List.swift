@@ -20,14 +20,9 @@ public struct List<Content: View>: View {
     }
 
     /// Creates Orbit List component, wrapping ListItem content.
-    public init(spacing: CGFloat, @ViewBuilder content: @escaping () -> Content) {
+    public init(spacing: CGFloat = .xSmall, @ViewBuilder content: @escaping () -> Content) {
         self.spacing = spacing
         self.content = content
-    }
-
-    /// Creates Orbit List component, wrapping ListItem content.
-    public init(@ViewBuilder content: @escaping () -> Content) {
-        self.init(spacing: .xSmall, content: content)
     }
 }
 
