@@ -11,14 +11,15 @@ public struct Illustration: View {
 
     public static let defaultWidth: CGFloat = 300
 
-    let image: Image
+    let name: String
+    let bundle: Bundle
     let maxWidth: CGFloat?
     let maxHeight: CGFloat?
     let alignment: Alignment?
 
     public var body: some View {
-        if image != .none {
-            SwiftUI.Image(image.assetName, bundle: .current)
+        if name.isEmpty == false {
+            SwiftUI.Image(name, bundle: bundle)
                 .resizable()
                 .scaledToFit()
                 .frame(maxWidth: maxWidth, maxHeight: maxHeight)
@@ -35,21 +36,42 @@ public struct Illustration: View {
 // MARK: - Inits
 public extension Illustration {
 
-    /// Creates Orbit Illustration component for provided image.
+    /// Creates Orbit Illustration component using Orbit illustration asset.
     ///
     /// - Parameters:
-    ///     - image: Orbit Image
+    ///     - image: Orbit Illustration asset.
     ///     - maxWidth: Maximum width of the resizeable image content. Detaults to ``Illustration/defaultWidth``.
     ///     - maxHeight: Maximum height of the resizeable image content. Defaults to `nil`.
-    ///     - alignment: If provided, expands horizontally to infinity and aligns the resulting resized image.
-    ///     Defaults to `.center`.
+    ///     - alignment: If provided, expands horizontally to infinity and aligns the resulting resized image. Defaults to `.center`.
     init(
         _ image: Image,
         maxWidth: CGFloat? = Self.defaultWidth,
         maxHeight: CGFloat? = nil,
         alignment: Alignment? = .center
     ) {
-        self.image = image
+        self.name = image.assetName
+        self.bundle = .current
+        self.maxWidth = maxWidth
+        self.maxHeight = maxHeight
+        self.alignment = alignment
+    }
+    
+    /// Creates Orbit Illustration component for custom image resource.
+    ///
+    /// - Parameters:
+    ///     - name: Resource name. Empty value results in no illustration.
+    ///     - maxWidth: Maximum width of the resizeable image content. Detaults to ``Illustration/defaultWidth``.
+    ///     - maxHeight: Maximum height of the resizeable image content. Defaults to `nil`.
+    ///     - alignment: If provided, expands horizontally to infinity and aligns the resulting resized image. Defaults to `.center`.
+    init(
+        _ name: String,
+        bundle: Bundle,
+        maxWidth: CGFloat? = Self.defaultWidth,
+        maxHeight: CGFloat? = nil,
+        alignment: Alignment? = .center
+    ) {
+        self.name = name
+        self.bundle = bundle
         self.maxWidth = maxWidth
         self.maxHeight = maxHeight
         self.alignment = alignment
@@ -62,6 +84,7 @@ struct IllustrationPreviews: PreviewProvider {
     public static var previews: some View {
         PreviewWrapper {
             standalone
+            custom
 
             snapshots
 
@@ -74,6 +97,11 @@ struct IllustrationPreviews: PreviewProvider {
 
     static var standalone: some View {
         Illustration(.womanWithPhone)
+            .previewLayout(.sizeThatFits)
+    }
+    
+    static var custom: some View {
+        Illustration("WomanWithPhone", bundle: .current)
             .previewLayout(.sizeThatFits)
     }
 
