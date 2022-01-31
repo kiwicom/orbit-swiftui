@@ -1,17 +1,35 @@
 import SwiftUI
 
+public enum ListChoiceDisclosure {
+    
+    public enum ButtonType {
+        case add
+        case remove
+    }
+    
+    case none
+    /// An iOS-style disclosure indicator.
+    case disclosure(Color = .cloudDarker)
+    /// A non-interactive button.
+    case button(type: ButtonType)
+    /// A non-interactive checkbox.
+    case checkbox(isChecked: Bool = true)
+}
+
 /// Shows one of a selectable list of items with similar structures.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/listchoice/)
 /// - Important: Component expands horizontally to infinity up to a ``Layout/readableMaxWidth``.
-public struct ListChoice: View {
+public struct ListChoice<Content: View>: View {
 
     let title: String
     let description: String
     let icon: Icon.Content
-    let trailingElement: ListChoice.TrailingElement
+    let disclosure: ListChoiceDisclosure
     let backgroundColor: BackgroundColor?
+    let showSeparator: Bool
     let action: () -> Void
+    let content: () -> Content
 
     public var body: some View {
         SwiftUI.Button(
@@ -30,14 +48,18 @@ public struct ListChoice: View {
 
     var buttonContent: some View {
         HStack(spacing: 0) {
-            header
-                .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading, spacing: 0) {
+                header
+                content()
+            }
+            
+            Spacer(minLength: 0)
 
             // Provide minimal height (frame(minHeight:) collapses multiline text in snapshots)
             Color.clear
                 .frame(width: 0, height: 48)
 
-            trailingElementView
+            disclosureView
                 .padding(.trailing, .medium)
         }
         .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
@@ -59,14 +81,15 @@ public struct ListChoice: View {
         .padding(.trailing, .medium)
     }
 
-    @ViewBuilder var trailingElementView: some View {
-        switch trailingElement {
+    @ViewBuilder var disclosureView: some View {
+        switch disclosure {
             case .none:
                 EmptyView()
             case .disclosure(let color):
                 Icon(symbol: .chevronRight, size: .medium, color: color)
+                    .padding(.trailing, -.xxSmall)
             case .button(let type):
-                trailingButton(type: type)
+                disclosureButton(type: type)
                     .padding(.vertical, .small)
                     .disabled(true)
             case .checkbox(let isChecked):
@@ -75,18 +98,18 @@ public struct ListChoice: View {
         }
     }
     
-    @ViewBuilder func trailingButton(type: TrailingElement.ButtonType) -> some View {
+    @ViewBuilder func disclosureButton(type: ListChoiceDisclosure.ButtonType) -> some View {
         switch type {
-            case .add:
-                Button(.plus, style: .primarySubtle, size: .small)
-            case .remove:
-                Button(.close, style: .criticalSubtle, size: .small)
+            case .add:      Button(.plus, style: .primarySubtle, size: .small)
+            case .remove:   Button(.close, style: .criticalSubtle, size: .small)
         }
     }
 
-    var separator: some View {
-        HairlineSeparator()
-            .padding(.leading, separatorPadding)
+    @ViewBuilder var separator: some View {
+        if showSeparator {
+            HairlineSeparator()
+                .padding(.leading, separatorPadding)
+        }
     }
 
     var separatorPadding: CGFloat {
@@ -105,60 +128,97 @@ public struct ListChoice: View {
 // MARK: - Inits
 public extension ListChoice {
     
-    /// Creates Orbit ListChoice component.
+    /// Creates Orbit ListChoice component with custom icon and content.
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Symbol = .none,
-        trailingElement: ListChoice.TrailingElement = .disclosure(),
+        icon: Icon.Content,
+        disclosure: ListChoiceDisclosure = .disclosure(),
         backgroundColor: BackgroundColor? = nil,
-        action: @escaping () -> Void = {}
+        showSeparator: Bool = true,
+        action: @escaping () -> Void = {},
+        @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
         self.description = description
-        self.icon = .icon(icon, size: .default, color: .inkNormal)
-        self.trailingElement = trailingElement
+        self.icon = icon
+        self.disclosure = disclosure
         self.backgroundColor = backgroundColor
+        self.showSeparator = showSeparator
         self.action = action
+        self.content = content
     }
     
     /// Creates Orbit ListChoice component with custom content.
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content,
-        trailingElement: ListChoice.TrailingElement = .disclosure(),
+        icon: Icon.Symbol = .none,
+        disclosure: ListChoiceDisclosure = .disclosure(),
         backgroundColor: BackgroundColor? = nil,
-        action: @escaping () -> Void = {}
+        showSeparator: Bool = true,
+        action: @escaping () -> Void = {},
+        @ViewBuilder content: @escaping () -> Content
     ) {
-        self.title = title
-        self.description = description
-        self.icon = icon
-        self.trailingElement = trailingElement
-        self.backgroundColor = backgroundColor
-        self.action = action
+        self.init(
+            title,
+            description: description,
+            icon: .icon(icon, size: .default, color: .inkNormal),
+            disclosure: disclosure,
+            backgroundColor: backgroundColor,
+            showSeparator: showSeparator,
+            action: action,
+            content: content
+        )
+    }
+    
+    /// Creates Orbit ListChoice component.
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Content,
+        disclosure: ListChoiceDisclosure = .disclosure(),
+        backgroundColor: BackgroundColor? = nil,
+        showSeparator: Bool = true,
+        action: @escaping () -> Void = {}
+    ) where Content == EmptyView {
+        self.init(
+            title,
+            description: description,
+            icon: icon,
+            disclosure: disclosure,
+            backgroundColor: backgroundColor,
+            showSeparator: showSeparator,
+            action: action,
+            content: { EmptyView() }
+        )
+    }
+    
+    /// Creates Orbit ListChoice component.
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Symbol = .none,
+        disclosure: ListChoiceDisclosure = .disclosure(),
+        backgroundColor: BackgroundColor? = nil,
+        showSeparator: Bool = true,
+        action: @escaping () -> Void = {}
+    ) where Content == EmptyView {
+        self.init(
+            title,
+            description: description,
+            icon: .icon(icon, size: .default, color: .inkNormal),
+            disclosure: disclosure,
+            backgroundColor: backgroundColor,
+            showSeparator: showSeparator,
+            action: action
+        )
     }
 }
 
 // MARK: - Types
 public extension ListChoice {
     
-    enum TrailingElement {
-        
-        public enum ButtonType {
-            case add
-            case remove
-        }
-        
-        case none
-        /// An iOS-style disclosure indicator.
-        case disclosure(Color = .cloudDarker)
-        /// A non-interactive button.
-        case button(type: ButtonType)
-        /// A non-interactive checkbox.
-        case checkbox(isChecked: Bool = true)
-    }
-
     typealias BackgroundColor = (normal: Color, active: Color)
 }
 
@@ -206,17 +266,22 @@ struct ListChoicePreviews: PreviewProvider {
     
     static let title = "ListChoice tile"
     static let description = "Further description"
-    static let addButton = ListChoice.TrailingElement.button(type: .add)
-    static let removeButton = ListChoice.TrailingElement.button(type: .remove)
-    static let uncheckedCheckbox = ListChoice.TrailingElement.checkbox(isChecked: false)
-    static let checkedCheckbox = ListChoice.TrailingElement.checkbox(isChecked: true)
+    static let addButton = ListChoiceDisclosure.button(type: .add)
+    static let removeButton = ListChoiceDisclosure.button(type: .remove)
+    static let uncheckedCheckbox = ListChoiceDisclosure.checkbox(isChecked: false)
+    static let checkedCheckbox = ListChoiceDisclosure.checkbox(isChecked: true)
     
     static var plain: some View {
         VStack(spacing: .small) {
-            ListChoice(title, trailingElement: .none)
-            ListChoice(title, description: description, trailingElement: .none)
-            ListChoice(title, icon: .airplane, trailingElement: .none)
-            ListChoice(title, description: description, icon: .airplane, trailingElement: .none)
+            ListChoice(title, disclosure: .none)
+            ListChoice(title, description: description, disclosure: .none)
+            ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
+            ListChoice(title, icon: .airplane, disclosure: .none)
+            ListChoice(title, icon: .icon(.airplane, size: .medium, color: .inkLighter), disclosure: .none)
+            ListChoice(title, description: description, icon: .airplane, disclosure: .none)
+            ListChoice(title, description: description, disclosure: .none) {
+                customContentPlaceholder
+            }
         }
         .padding()
         .previewDisplayName("No disclosure")
@@ -228,6 +293,9 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description)
             ListChoice(title, icon: .airplane)
             ListChoice(title, description: description, icon: .airplane)
+            ListChoice(title, description: description) {
+                customContentPlaceholder
+            }
         }
         .padding()
         .previewDisplayName("Chevron")
@@ -235,14 +303,14 @@ struct ListChoicePreviews: PreviewProvider {
     
     static var button: some View {
         VStack(spacing: .small) {
-            ListChoice(title, trailingElement: addButton)
-            ListChoice(title, trailingElement: removeButton)
-            ListChoice(title, description: description, trailingElement: addButton)
-            ListChoice(title, description: description, trailingElement: removeButton)
-            ListChoice(title, icon: .airplane, trailingElement: addButton)
-            ListChoice(title, icon: .airplane, trailingElement: removeButton)
-            ListChoice(title, description: description, icon: .airplane, trailingElement: addButton)
-            ListChoice(title, description: description, icon: .airplane, trailingElement: removeButton)
+            ListChoice(title, disclosure: addButton)
+            ListChoice(title, disclosure: removeButton)
+            ListChoice(title, description: description, disclosure: addButton)
+            ListChoice(title, description: description, disclosure: removeButton)
+            ListChoice(title, icon: .airplane, disclosure: addButton)
+            ListChoice(title, icon: .airplane, disclosure: removeButton)
+            ListChoice(title, description: description, icon: .airplane, disclosure: addButton)
+            ListChoice(title, description: description, icon: .airplane, disclosure: removeButton)
         }
         .padding()
         .previewDisplayName("Button")
@@ -250,14 +318,14 @@ struct ListChoicePreviews: PreviewProvider {
 
     static var checkbox: some View {
         VStack(spacing: .small) {
-            ListChoice(title, trailingElement: uncheckedCheckbox)
-            ListChoice(title, trailingElement: checkedCheckbox)
-            ListChoice(title, description: description, trailingElement: uncheckedCheckbox)
-            ListChoice(title, description: description, trailingElement: checkedCheckbox)
-            ListChoice(title, icon: .airplane, trailingElement: uncheckedCheckbox)
-            ListChoice(title, icon: .airplane, trailingElement: checkedCheckbox)
-            ListChoice(title, description: description, icon: .airplane, trailingElement: uncheckedCheckbox)
-            ListChoice(title, description: description, icon: .airplane, trailingElement: checkedCheckbox)
+            ListChoice(title, disclosure: uncheckedCheckbox)
+            ListChoice(title, disclosure: checkedCheckbox)
+            ListChoice(title, description: description, disclosure: uncheckedCheckbox)
+            ListChoice(title, description: description, disclosure: checkedCheckbox)
+            ListChoice(title, icon: .airplane, disclosure: uncheckedCheckbox)
+            ListChoice(title, icon: .airplane, disclosure: checkedCheckbox)
+            ListChoice(title, description: description, icon: .airplane, disclosure: uncheckedCheckbox)
+            ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox)
         }
         .padding()
         .previewDisplayName("Checkbox")
