@@ -54,10 +54,8 @@ public struct ListChoice<Content: View>: View {
             }
             
             Spacer(minLength: 0)
-
-            // Provide minimal height (frame(minHeight:) collapses multiline text in snapshots)
-            Color.clear
-                .frame(width: 0, height: 48)
+            
+            Strut(height: 48)
 
             disclosureView
                 .padding(.trailing, .medium)

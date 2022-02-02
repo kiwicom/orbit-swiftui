@@ -94,9 +94,7 @@ public struct Tile<Content: View>: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            // Provide minimal height (frame(minHeight:) collapses multiline text in snapshots)
-            Color.clear
-                .frame(width: 0, height: 56)
+            Strut(height: 56)
 
             disclosureIcon
                 .padding(.trailing, .medium)
