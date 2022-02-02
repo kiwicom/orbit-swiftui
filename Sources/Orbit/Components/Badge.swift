@@ -20,31 +20,37 @@ public struct Badge: View {
     let size: Size
 
     public var body: some View {
-        HStack(spacing: size.spacing) {
-            iconContent.view()
-            
-            if label.isEmpty == false {
-                Text(
-                    label,
-                    size: .small,
-                    color: .custom(style.labelColor),
-                    weight: .medium,
-                    linkColor: style.labelColor
-                )
-                .lineLimit(1)
+        if isEmpty == false {
+            HStack(spacing: size.spacing) {
+                iconContent.view()
+                
+                if label.isEmpty == false {
+                    Text(
+                        label,
+                        size: .small,
+                        color: .custom(style.labelColor),
+                        weight: .medium,
+                        linkColor: style.labelColor
+                    )
+                    .lineLimit(1)
+                }
             }
+            .padding(.horizontal, size.padding)
+            .frame(minWidth: size.height)
+            .frame(height: size.height)
+            .background(
+                style.background
+                    .clipShape(Capsule())
+            )
+            .overlay(
+                Capsule()
+                    .strokeBorder(style.outlineColor, lineWidth: BorderWidth.thin)
+            )
         }
-        .padding(.horizontal, size.padding)
-        .frame(minWidth: size.height)
-        .frame(height: size.height)
-        .background(
-            style.background
-                .clipShape(Capsule())
-        )
-        .overlay(
-            Capsule()
-                .strokeBorder(style.outlineColor, lineWidth: BorderWidth.thin)
-        )
+    }
+    
+    var isEmpty: Bool {
+        iconContent.isEmpty && label.isEmpty
     }
 }
 
@@ -237,8 +243,10 @@ struct BadgePreviews: PreviewProvider {
         }
     }
 
-    static var standalone: some View {
+    @ViewBuilder static var standalone: some View {
         Badge("Label", icon: .informationCircle, style: .neutral)
+        Badge()
+        Badge("")
     }
 
     static var snapshots: some View {
