@@ -61,7 +61,13 @@ You can also check the `OrbitStorybookComponentsScreen` preview to see all suppo
 
 File structure and component names reflect the Orbit design system structure.
 
-As some Orbit components already exist in standard SwiftUI library (`Text` for example), Orbit components shadows them. In order to access standard component, a `SwifUI.` prefix can be used.
+As some Orbit components already exist in standard SwiftUI library (`Text` and `List` for example), you can create typealias for Orbit components to shadow them. Then, iin order to access standard components where needed, a `SwifUI.` prefix can be used to specify the native component.
+
+```swift
+// Add these lines to use Orbit components by default
+typealias Text = Orbit.Text
+typealias List = Orbit.List
+```
 
 - [Components](https://github.com/kiwicom/orbit-swiftui/tree/main/Sources/Orbit/Components/)
 - [Colors](https://github.com/kiwicom/orbit-swiftui/tree/main/Sources/Orbit/Foundation/Colors/)
