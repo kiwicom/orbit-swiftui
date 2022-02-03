@@ -5,7 +5,7 @@ import SwiftUI
 /// Used to fix layout issues where `frame(minHeight:)` causes issues.
 struct Strut: View {
     
-    let height: CGFloat
+    let height: CGFloat?
     
     var body: some View {
         Color.clear
