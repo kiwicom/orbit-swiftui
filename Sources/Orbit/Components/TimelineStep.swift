@@ -17,8 +17,7 @@ public struct TimelineStep: View {
 
     public var body: some View {
         HStack(alignment: .top, spacing: .small) {
-            Rectangle()
-                .fill(Color.clear)
+            Color.clear
                 .frame(width: Icon.Size.medium.value, height: Icon.Size.medium.value)
                 .overlay(indicator)
 
