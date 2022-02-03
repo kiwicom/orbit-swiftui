@@ -64,7 +64,7 @@ public struct Tile<Content: View>: View {
     let border: TileBorder
     let status: Status?
     let backgroundColor: BackgroundColor?
-    let titleStyle: Heading.Style
+    let titleStyle: Header.TitleStyle
     let titleColor: Text.Color
     let descriptionColor: Text.Color
     let action: () -> Void
@@ -185,7 +185,7 @@ public extension Tile {
         border: TileBorder = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
-        titleStyle: Heading.Style = .title3,
+        titleStyle: Header.TitleStyle = .title3,
         titleColor: Text.Color = .inkNormal,
         descriptionColor: Text.Color = .inkLight,
         action: @escaping () -> Void = {},
@@ -217,7 +217,7 @@ public extension Tile {
         border: TileBorder = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
-        titleStyle: Heading.Style = .title3,
+        titleStyle: Header.TitleStyle = .title3,
         titleColor: Text.Color = .inkNormal,
         descriptionColor: Text.Color = .inkLight,
         iconColor: Color = .inkNormal,
@@ -226,7 +226,7 @@ public extension Tile {
     ) {
         self.title = title
         self.description = description
-        self.iconContent = .icon(icon, size: .heading(titleStyle), color: iconColor)
+        self.iconContent = .icon(icon, size: .header(titleStyle), color: iconColor)
         self.disclosure = disclosure
         self.border = border
         self.status = status
@@ -250,7 +250,7 @@ public extension Tile {
         border: TileBorder = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
-        titleStyle: Heading.Style = .title3,
+        titleStyle: Header.TitleStyle = .title3,
         titleColor: Text.Color = .inkNormal,
         descriptionColor: Text.Color = .inkLight,
         action: @escaping () -> Void = {}
@@ -283,7 +283,7 @@ public extension Tile {
         border: TileBorder = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
-        titleStyle: Heading.Style = .title3,
+        titleStyle: Header.TitleStyle = .title3,
         titleColor: Text.Color = .inkNormal,
         descriptionColor: Text.Color = .inkLight,
         iconColor: Color = .inkNormal,

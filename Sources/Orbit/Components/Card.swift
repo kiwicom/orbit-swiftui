@@ -44,7 +44,7 @@ public struct Card<Content: View>: View {
     let padding: CGFloat
     let alignment: HorizontalAlignment
     let style: CardStyle
-    let titleStyle: Heading.Style
+    let titleStyle: Header.TitleStyle
     let status: Status?
     let backgroundColor: Color?
     let content: () -> Content
@@ -133,7 +133,7 @@ public extension Card {
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
         style: CardStyle = .iOS,
-        titleStyle: Heading.Style = .title3,
+        titleStyle: Header.TitleStyle = .title3,
         status: Status? = nil,
         backgroundColor: Color? = .white,
         @ViewBuilder content: @escaping () -> Content
@@ -162,7 +162,7 @@ public extension Card {
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
         style: CardStyle = .iOS,
-        titleStyle: Heading.Style = .title3,
+        titleStyle: Header.TitleStyle = .title3,
         status: Status? = nil,
         backgroundColor: Color? = .white
     ) where Content == EmptyView {
@@ -192,14 +192,14 @@ public extension Card {
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
         style: CardStyle = .iOS,
-        titleStyle: Heading.Style = .title3,
+        titleStyle: Header.TitleStyle = .title3,
         status: Status? = nil,
         backgroundColor: Color? = .white,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
         self.description = description
-        self.iconContent = .icon(icon, size: .heading(titleStyle))
+        self.iconContent = .icon(icon, size: .header(titleStyle))
         self.alignment = alignment
         self.action = action
         self.spacing = spacing
@@ -221,7 +221,7 @@ public extension Card {
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
         style: CardStyle = .iOS,
-        titleStyle: Heading.Style = .title3,
+        titleStyle: Header.TitleStyle = .title3,
         status: Status? = nil,
         backgroundColor: Color? = .white
     ) where Content == EmptyView {

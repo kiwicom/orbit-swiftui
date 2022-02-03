@@ -72,7 +72,7 @@ public struct ListChoice<Content: View>: View {
             description: description,
             iconContent: icon,
             titleStyle: .title4,
-            descriptionSize: .small,
+            descriptionStyle: .custom(.small),
             horizontalSpacing: .xSmall,
             verticalSpacing: .xxxSmall
         )

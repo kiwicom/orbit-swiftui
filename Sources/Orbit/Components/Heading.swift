@@ -30,8 +30,8 @@ public struct Heading: View {
                 if text.isEmpty == false {
                     SwiftUI.Text(verbatim: text)
                         .font(.orbit(size: style.size, weight: style.weight))
-                        .multilineTextAlignment(alignment)
                         .foregroundColor(color?.value)
+                        .multilineTextAlignment(alignment)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -131,6 +131,10 @@ struct HeadingPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            
+            Heading("Heading", icon: .grid, style: .title1, color: .none)
+                .foregroundColor(.blueNormal)
+            
             snapshots
         }
         .previewLayout(.sizeThatFits)
