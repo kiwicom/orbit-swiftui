@@ -77,8 +77,10 @@ public extension Icon {
         case medium
         /// Size 32
         case large
-        /// Size based on Heading style.
-        case heading(Heading.Style)
+        /// Size based on Font size.
+        case fontSize(CGFloat)
+        /// Size based on Header.Title style.
+        case header(Header.TitleStyle)
         /// Custom size
         case custom(CGFloat)
         
@@ -88,9 +90,14 @@ public extension Icon {
                 case .default:              return 20
                 case .medium:               return 24
                 case .large:                return 32
-                case .heading(let style):   return style.size + 1
+                case .fontSize(let size):   return size + 1
+                case .header(let style):    return style.size + 1
                 case .custom(let size):     return size
             }
+        }
+        
+        public static func == (lhs: Icon.Size, rhs: Icon.Size) -> Bool {
+            lhs.value == rhs.value
         }
     }
 }

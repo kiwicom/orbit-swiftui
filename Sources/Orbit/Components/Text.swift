@@ -228,7 +228,8 @@ struct TextPreviews: PreviewProvider {
             .previewDisplayName("Text - formatted")
 
         Group {
-            Text(multilineText)
+            Text(multilineText, color : .none)
+                .foregroundColor(.blueDark)
                 .previewDisplayName("Text - multiline")
 
             Text(multilineFormattedText)

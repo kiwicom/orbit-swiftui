@@ -103,7 +103,7 @@ public struct ChoiceTile<Content: View>: View {
     let badgeOverlay: String
     let iconContent: Icon.Content
     let indicator: ChoiceTileIndicator
-    let titleStyle: Heading.Style
+    let titleStyle: Header.TitleStyle
     let isSelected: Bool
     let status: Status?
     let message: MessageType
@@ -145,11 +145,18 @@ public struct ChoiceTile<Content: View>: View {
                 VStack(spacing: .xxSmall) {
                     iconContent.view()
                         .padding(.bottom, .xxxSmall)
-                    Heading(title, style: titleStyle, alignment: .center)
+                    centeredHeading
                     Text(description, color: .inkLight, alignment: .center)
                     Badge(badge, style: .neutral)
                 }
                 .frame(maxWidth: .infinity)
+        }
+    }
+    
+    @ViewBuilder var centeredHeading: some View {
+        switch titleStyle {
+            case .heading(let style, let color):           Heading(title, style: style, color: color, alignment: .center)
+            case .text(let size, let weight, let color):   Text(title, size: size, color: color, weight: weight)
         }
     }
     
@@ -197,7 +204,7 @@ public extension ChoiceTile {
         badge: String = "",
         badgeOverlay: String = "",
         indicator: ChoiceTileIndicator = .radio,
-        titleStyle: Heading.Style = .title3,
+        titleStyle: Header.TitleStyle = .title3,
         isSelected: Bool = false,
         status: Status? = nil,
         message: MessageType = .none,
@@ -228,7 +235,7 @@ public extension ChoiceTile {
         badge: String = "",
         badgeOverlay: String = "",
         indicator: ChoiceTileIndicator = .radio,
-        titleStyle: Heading.Style = .title3,
+        titleStyle: Header.TitleStyle = .title3,
         isSelected: Bool = false,
         status: Status? = nil,
         message: MessageType = .none,
@@ -239,7 +246,7 @@ public extension ChoiceTile {
         self.init(
             title,
             description: description,
-            iconContent: .icon(icon, size: .heading(titleStyle)),
+            iconContent: .icon(icon, size: .header(titleStyle)),
             badge: badge,
             badgeOverlay: badgeOverlay,
             indicator: indicator,
