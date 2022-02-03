@@ -23,41 +23,38 @@ public struct Alert: View {
     let title: String
     let description: String
     let icon: Icon.Symbol
-    let buttons: ButtonConfiguration
+    let buttons: Buttons
     let status: Status
+    let isSuppressed: Bool
     let descriptionLinkAction: TextLink.Action
 
     public var body: some View {
-        HStack(alignment: .top, spacing: .xSmall) {
-            Icon(icon, size: .small, color: Color(textColor))
-                .padding(.top, 1)
-            VStack(alignment: .leading, spacing: .xxSmall) {
-                Text(title, color: .custom(textColor), weight: .bold)
-
-                Text(
-                    description,
-                    color: .custom(textColor),
-                    linkColor: textColor,
-                    linkAction: descriptionLinkAction
-                )
-
-                switch buttons {
-                    case .primary, .secondary, .primaryAndSecondary:
-                        // Keeping the identity of buttons for correct animations
-                        buttonsView
-                    case .none:
-                        EmptyView()
-                }
+        VStack(alignment: .leading, spacing: .medium) {
+            
+            Header(
+                title,
+                description: description,
+                iconContent: .icon(icon, size: .default, color: status.color),
+                titleStyle: .text(weight: .bold),
+                descriptionStyle: .custom(.normal, color: .inkNormal, linkColor: .inkNormal),
+                horizontalSpacing: .xSmall,
+                verticalSpacing: .xxSmall,
+                descriptionLinkAction: descriptionLinkAction
+            )
+            
+            switch buttons {
+                case .primary, .secondary, .primaryAndSecondary:
+                    // Keeping the identity of buttons for correct animations
+                    buttonsView
+                case .none:
+                    EmptyView()
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.small)
-        .background(backgroundColor)
+        .padding([.vertical, .trailing], .medium)
+        .padding(.leading, icon == .none ? .medium : .small)
+        .background(background)
         .cornerRadius(BorderRadius.default)
-        .overlay(
-            RoundedRectangle(cornerRadius: BorderRadius.default)
-                .strokeBorder(strokeColor)
-        )
     }
 
     @ViewBuilder var buttonsView: some View {
@@ -65,7 +62,7 @@ public struct Alert: View {
             switch buttons {
                 case .primary(let title, let action),
                      .primaryAndSecondary(let title, _, let action, _):
-                    Button(title, style: primaryButtonStyle, action: action)
+                    Button(title, style: primaryButtonStyle, size: .small, action: action)
                 case .none, .secondary:
                     EmptyView()
             }
@@ -73,29 +70,44 @@ public struct Alert: View {
             switch buttons {
                 case .secondary(let title, let action),
                      .primaryAndSecondary(_, let title, _, let action):
-                    Button(title, style: secondaryButtonStyle, action: action)
+                    Button(title, style: secondaryButtonStyle, size: .small, action: action)
                 case .none, .primary:
                     EmptyView()
             }
         }
-        .padding(.top, .xSmall)
+        .padding(.leading, icon == .none ? 0 : 28)
     }
 
+    @ViewBuilder var background: some View {
+        backgroundColor
+            .overlay(
+                RoundedRectangle(cornerRadius: BorderRadius.default)
+                    .strokeBorder(strokeColor)
+            )
+            .overlay(
+                status.color
+                    .frame(height: 3),
+                alignment: .top
+            )
+    }
+    
     var backgroundColor: Color {
-        switch status {
-            case .info:     return .blueLight
-            case .success:  return .greenLight
-            case .warning:  return .orangeLight
-            case .critical: return .redLight
+        switch (status, isSuppressed) {
+            case (_, true):             return .cloudLight
+            case (.info, _):            return .blueLight
+            case (.success, _):         return .greenLight
+            case (.warning, _):         return .orangeLight
+            case (.critical, _):        return .redLight
         }
     }
 
     var strokeColor: Color {
-        switch status {
-            case .info:     return .blueLightHover
-            case .success:  return .greenLightHover
-            case .warning:  return .orangeLightHover
-            case .critical: return .redLightHover
+        switch (status, isSuppressed) {
+            case (_, true):             return .cloudLightHover
+            case (.info, _):            return .blueLightHover
+            case (.success, _):         return .greenLightHover
+            case (.warning, _):         return .orangeLightHover
+            case (.critical, _):        return .redLightHover
         }
     }
 
@@ -113,7 +125,9 @@ public struct Alert: View {
     }
 
     var secondaryButtonStyle: Orbit.Button.Style {
-        .status(status, subtle: true)
+        isSuppressed
+            ? .secondary
+            : .status(status, subtle: true)
     }
 }
 
@@ -125,8 +139,9 @@ public extension Alert {
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol = .none,
-        buttons: ButtonConfiguration = .none,
+        buttons: Buttons = .none,
         status: Status = .info,
+        isSuppressed: Bool = false,
         descriptionLinkAction: @escaping TextLink.Action = { _, _ in }
     ) {
         self.title = title
@@ -134,6 +149,7 @@ public extension Alert {
         self.icon = icon
         self.buttons = buttons
         self.status = status
+        self.isSuppressed = isSuppressed
         self.descriptionLinkAction = descriptionLinkAction
     }
 }
@@ -141,7 +157,7 @@ public extension Alert {
 // MARK: - Types
 public extension Alert {
 
-    enum ButtonConfiguration {
+    enum Buttons {
         case none
         case primary(_ title: String, action: () -> Void = {})
         case secondary(_ title: String, action: () -> Void = {})
@@ -157,19 +173,21 @@ public extension Alert {
 // MARK: - Previews
 struct AlertPreviews: PreviewProvider {
 
-    private static let primaryAndSecondaryConfiguration = Alert.ButtonConfiguration.primaryAndSecondary(
+    private static let primaryAndSecondaryConfiguration = Alert.Buttons.primaryAndSecondary(
         primaryTitle: "Primary",
         secondaryTitle: "Secondary"
     )
 
-    private static let primaryConfiguration = Alert.ButtonConfiguration.primary("Primary")
-    private static let secondaryConfiguration = Alert.ButtonConfiguration.secondary("Secondary")
+    private static let primaryConfiguration = Alert.Buttons.primary("Primary")
+    private static let secondaryConfiguration = Alert.Buttons.secondary("Secondary")
 
     static var previews: some View {
         PreviewWrapperWithState(initialState: Self.primaryAndSecondaryConfiguration) { buttonConfiguration in
             standalone
                 .previewLayout(.sizeThatFits)
 
+            snapshotSuppressed
+            
             snapshots
                 .previewLayout(.sizeThatFits)
 
@@ -206,13 +224,14 @@ struct AlertPreviews: PreviewProvider {
     static var standalone: some View {
         Alert(
             "Title",
-            description: "Alert description",
+            description: #"Alert description with <u>underline</u> vs <a href="..">link</a>."#,
             icon: .informationCircle,
             buttons: .primaryAndSecondary(
                 primaryTitle: "Primary",
                 secondaryTitle: "Secondary"
             )
         )
+        .padding()
     }
 
     static var orbit: some View {
@@ -332,5 +351,21 @@ struct AlertPreviews: PreviewProvider {
             .padding()
             .previewLayout(.sizeThatFits)
             .previewDisplayName("Statuses")
+    }
+    
+    static var snapshotSuppressed: some View {
+        Alert(
+            "Title",
+            description: #"Alert description with <u>underline</u> vs <a href="..">link</a>."#,
+            icon: .informationCircle,
+            buttons: .primaryAndSecondary(
+                primaryTitle: "Primary",
+                secondaryTitle: "Secondary"
+            ),
+            isSuppressed: true
+        )
+        .padding()
+        .previewLayout(.sizeThatFits)
+        .previewDisplayName("Status Suppressed")
     }
 }
