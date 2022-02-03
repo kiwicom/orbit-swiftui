@@ -183,15 +183,15 @@ extension Button {
                 case .primarySubtle:            return .productDark
                 case .secondary:                return .inkNormal
                 case .critical:                 return .white
-                case .criticalSubtle:           return .redNormal
+                case .criticalSubtle:           return .redDark
                 case .status(.critical, false): return .white
-                case .status(.critical, true):  return .redNormalHover
+                case .status(.critical, true):  return .redDarkHover
                 case .status(.info, false):     return .white
-                case .status(.info, true):      return .blueNormalHover
+                case .status(.info, true):      return .blueDarkHover
                 case .status(.success, false):  return .white
-                case .status(.success, true):   return .greenNormalHover
+                case .status(.success, true):   return .greenDarkHover
                 case .status(.warning, false):  return .white
-                case .status(.warning, true):   return .orangeNormalHover
+                case .status(.warning, true):   return .orangeDarkHover
                 case .gradient:                 return .white
             }
         }
