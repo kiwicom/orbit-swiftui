@@ -26,7 +26,6 @@ public struct ListChoice<Content: View>: View {
     let description: String
     let icon: Icon.Content
     let disclosure: ListChoiceDisclosure
-    let backgroundColor: BackgroundColor?
     let showSeparator: Bool
     let action: () -> Void
     let content: () -> Content
@@ -41,7 +40,7 @@ public struct ListChoice<Content: View>: View {
                 buttonContent
             }
         )
-        .buttonStyle(ListChoiceButtonStyle(backgroundColor: backgroundColor))
+        .buttonStyle(ListChoiceButtonStyle())
         .accessibility(label: SwiftUI.Text(title))
         .accessibility(hint: SwiftUI.Text(description))
     }
@@ -132,7 +131,6 @@ public extension ListChoice {
         description: String = "",
         icon: Icon.Content,
         disclosure: ListChoiceDisclosure = .disclosure(),
-        backgroundColor: BackgroundColor? = nil,
         showSeparator: Bool = true,
         action: @escaping () -> Void = {},
         @ViewBuilder content: @escaping () -> Content
@@ -141,7 +139,6 @@ public extension ListChoice {
         self.description = description
         self.icon = icon
         self.disclosure = disclosure
-        self.backgroundColor = backgroundColor
         self.showSeparator = showSeparator
         self.action = action
         self.content = content
@@ -153,7 +150,6 @@ public extension ListChoice {
         description: String = "",
         icon: Icon.Symbol = .none,
         disclosure: ListChoiceDisclosure = .disclosure(),
-        backgroundColor: BackgroundColor? = nil,
         showSeparator: Bool = true,
         action: @escaping () -> Void = {},
         @ViewBuilder content: @escaping () -> Content
@@ -163,7 +159,6 @@ public extension ListChoice {
             description: description,
             icon: .icon(icon, size: .default, color: .inkNormal),
             disclosure: disclosure,
-            backgroundColor: backgroundColor,
             showSeparator: showSeparator,
             action: action,
             content: content
@@ -176,7 +171,6 @@ public extension ListChoice {
         description: String = "",
         icon: Icon.Content,
         disclosure: ListChoiceDisclosure = .disclosure(),
-        backgroundColor: BackgroundColor? = nil,
         showSeparator: Bool = true,
         action: @escaping () -> Void = {}
     ) where Content == EmptyView {
@@ -185,7 +179,6 @@ public extension ListChoice {
             description: description,
             icon: icon,
             disclosure: disclosure,
-            backgroundColor: backgroundColor,
             showSeparator: showSeparator,
             action: action,
             content: { EmptyView() }
@@ -198,7 +191,6 @@ public extension ListChoice {
         description: String = "",
         icon: Icon.Symbol = .none,
         disclosure: ListChoiceDisclosure = .disclosure(),
-        backgroundColor: BackgroundColor? = nil,
         showSeparator: Bool = true,
         action: @escaping () -> Void = {}
     ) where Content == EmptyView {
@@ -207,7 +199,6 @@ public extension ListChoice {
             description: description,
             icon: .icon(icon, size: .default, color: .inkNormal),
             disclosure: disclosure,
-            backgroundColor: backgroundColor,
             showSeparator: showSeparator,
             action: action
         )
@@ -226,24 +217,16 @@ extension ListChoice {
     // Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
     struct ListChoiceButtonStyle: SwiftUI.ButtonStyle {
 
-        let backgroundColor: ListChoice.BackgroundColor?
-
-        public init(backgroundColor: ListChoice.BackgroundColor? = nil) {
-            self.backgroundColor = backgroundColor
-        }
-
-        public func makeBody(configuration: Configuration) -> some View {
+        func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .background(backgroundColor(isPressed: configuration.isPressed))
+                .background(
+                    backgroundColor(isPressed: configuration.isPressed)
+                        .contentShape(Rectangle())
+                )
         }
 
         func backgroundColor(isPressed: Bool) -> Color {
-            switch (backgroundColor, isPressed) {
-                case (let backgroundColor?, true):          return backgroundColor.active
-                case (let backgroundColor?, false):         return backgroundColor.normal
-                case (.none, true):                         return .whiteHover
-                case (.none, false):                        return .white
-            }
+            isPressed ? .inkLight.opacity(0.2) : .clear
         }
     }
 }
@@ -257,6 +240,7 @@ struct ListChoicePreviews: PreviewProvider {
             chevron
             button
             checkbox
+            white
         }
         .background(Color.cloudLight.opacity(0.8))
         .previewLayout(.sizeThatFits)
@@ -327,5 +311,28 @@ struct ListChoicePreviews: PreviewProvider {
         }
         .padding()
         .previewDisplayName("Checkbox")
+    }
+    
+    static var white: some View {
+        VStack(spacing: .small) {
+            ListChoice(title, disclosure: .none)
+                .background(Color.white)
+            ListChoice(title, description: description, disclosure: .none)
+                .background(Color.white)
+            ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
+                .background(Color.white)
+            ListChoice(title, icon: .airplane, disclosure: .none)
+                .background(Color.white)
+            ListChoice(title, icon: .icon(.airplane, size: .medium, color: .inkLighter), disclosure: .none)
+                .background(Color.white)
+            ListChoice(title, description: description, icon: .airplane, disclosure: .none)
+                .background(Color.white)
+            ListChoice(title, description: description, disclosure: .none) {
+                customContentPlaceholder
+            }
+            .background(Color.white)
+        }
+        .padding()
+        .previewDisplayName("White background")
     }
 }
