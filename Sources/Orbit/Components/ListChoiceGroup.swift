@@ -1,5 +1,14 @@
 import SwiftUI
 
+public enum ListChoiceGroupStyle {
+    
+    // Style with no decoration.
+    case borderless
+    
+    // Style with Card-like appearance.
+    case card(status: Status? = nil, backgroundColor: Color = .white)
+}
+
 /// Wraps ListChoice items.
 
 /// - Related components:
@@ -11,14 +20,35 @@ public struct ListChoiceGroup<Content: View>: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
-    let status: Status?
-    let backgroundColor: Color?
+    let title: String
+    let iconContent: Icon.Content
+    let style: ListChoiceGroupStyle
+    let titleStyle: Header.TitleStyle
     let content: () -> Content
 
     public var body: some View {
-        Card(spacing: 0, padding: 0, style: .iOS, status: status, backgroundColor: backgroundColor) {
-            content()
+        switch style {
+            case .card(let status, let backgroundColor):
+                Card(title, spacing: 0, padding: 0, style: .iOS, status: status, backgroundColor: backgroundColor) {
+                    content()
+                }
+            case .borderless:
+                borderlessView
         }
+    }
+    
+    var borderlessView: some View {
+        VStack(alignment: .leading, spacing: .xSmall) {
+            Header(title, iconContent: iconContent, titleStyle: titleStyle)
+                .padding([.horizontal, .top], .medium)
+
+            VStack(alignment: .leading, spacing: 0) {
+                content()
+            }
+        }
+        .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, horizontalSizeClass == .regular ? .medium : 0)
     }
 }
 
@@ -27,12 +57,31 @@ public extension ListChoiceGroup {
     
     /// Creates Orbit ListChoiceGroup wrapper component.
     init(
-        status: Status? = nil,
-        backgroundColor: Color? = nil,
+        _ title: String = "",
+        icon: Icon.Symbol = .none,
+        style: ListChoiceGroupStyle = .card(),
+        titleStyle: Header.TitleStyle = .title3,
         @ViewBuilder content: @escaping () -> Content
     ) {
-        self.status = status
-        self.backgroundColor = backgroundColor
+        self.title = title
+        self.iconContent = .icon(icon, size: .header(titleStyle))
+        self.style = style
+        self.titleStyle = titleStyle
+        self.content = content
+    }
+    
+    /// Creates Orbit ListChoiceGroup wrapper component.
+    init(
+        _ title: String = "",
+        iconContent: Icon.Content,
+        style: ListChoiceGroupStyle = .card(),
+        titleStyle: Header.TitleStyle = .title3,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.title = title
+        self.iconContent = iconContent
+        self.style = style
+        self.titleStyle = titleStyle
         self.content = content
     }
 }
@@ -47,48 +96,86 @@ struct ListChoiceGroupPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            snapshotsIOS
-            snapshotsIOSRegular
-            snapshotsIOSRegularNarrow
+            snapshotsCard
+            snapshotsCardRegular
+            snapshotsCardRegularNarrow
+            snapshotsBorderless
+            snapshotsBorderlessRegular
+            snapshotsBorderlessRegularNarrow
         }
         .previewLayout(.sizeThatFits)
     }
 
     static var figma: some View {
-        listChoiceGroups
+        listChoiceGroupsCard
             .previewLayout(.sizeThatFits)
             .previewDisplayName("Figma")
     }
 
-    static var snapshotsIOS: some View {
-        listChoiceGroups
+    static var snapshotsCard: some View {
+        listChoiceGroupsCard
             .background(Color.cloudLight)
-            .previewDisplayName("Style - iOS")
+            .previewDisplayName("Style - Card")
     }
 
-    static var snapshotsIOSRegular: some View {
-        listChoiceGroups
+    static var snapshotsCardRegular: some View {
+        listChoiceGroupsCard
             .background(Color.cloudLight)
             .environment(\.horizontalSizeClass, .regular)
             .frame(width: Layout.readableMaxWidth + 100)
-            .previewDisplayName("Style - iOS Regular")
+            .previewDisplayName("Style - Card Regular")
     }
 
-    static var snapshotsIOSRegularNarrow: some View {
-        listChoiceGroups
+    static var snapshotsCardRegularNarrow: some View {
+        listChoiceGroupsCard
             .background(Color.cloudLight)
             .environment(\.horizontalSizeClass, .regular)
             .frame(width: Layout.readableMaxWidth - 200)
-            .previewDisplayName("Style - iOS Regular narrow")
+            .previewDisplayName("Style - Card Regular narrow")
+    }
+    
+    static var snapshotsBorderless: some View {
+        listChoiceGroupsBorderless
+            .background(Color.cloudLight)
+            .previewDisplayName("Style - Borderless")
     }
 
-    static var listChoiceGroups: some View {
+    static var snapshotsBorderlessRegular: some View {
+        listChoiceGroupsBorderless
+            .background(Color.cloudLight)
+            .environment(\.horizontalSizeClass, .regular)
+            .frame(width: Layout.readableMaxWidth + 100)
+            .previewDisplayName("Style - Borderless Regular")
+    }
+
+    static var snapshotsBorderlessRegularNarrow: some View {
+        listChoiceGroupsBorderless
+            .background(Color.cloudLight)
+            .environment(\.horizontalSizeClass, .regular)
+            .frame(width: Layout.readableMaxWidth - 200)
+            .previewDisplayName("Style - Borderless Regular narrow")
+    }
+
+    static var listChoiceGroupsCard: some View {
         VStack(spacing: .medium) {
             ListChoiceGroup {
                 listChoices
             }
 
-            ListChoiceGroup(status: .critical) {
+            ListChoiceGroup(style: .card(status: .critical)) {
+                listChoices
+            }
+        }
+        .padding(.vertical)
+    }
+    
+    static var listChoiceGroupsBorderless: some View {
+        VStack(spacing: .medium) {
+            ListChoiceGroup(style: .borderless) {
+                listChoices
+            }
+            
+            ListChoiceGroup("Group Title", style: .borderless) {
                 listChoices
             }
         }
@@ -96,10 +183,10 @@ struct ListChoiceGroupPreviews: PreviewProvider {
     }
 
     @ViewBuilder static var listChoices: some View {
-        ListChoice("Title")
+        ListChoice("Choice Title")
 
-        ListChoice("Title", icon: .notification)
+        ListChoice("Choice Title", icon: .notification)
 
-        ListChoice("Title", description: description, icon: .airplane)
+        ListChoice("Choice Title", description: description, icon: .airplane)
     }
 }
