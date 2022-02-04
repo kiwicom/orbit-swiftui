@@ -48,12 +48,7 @@ Font.registerOrbitFonts()
 
 2. Include any of our components in your project and use them.
 
-```swift
-HStack {
-    Text("Hello Orbit!")
-    Button("Continue")
-}
-```
+![Usage in code](/Documentation/usage.png)
 
 You can also check the `OrbitStorybookComponentsScreen` preview to see all supported components.
 
@@ -61,11 +56,11 @@ You can also check the `OrbitStorybookComponentsScreen` preview to see all suppo
 
 File structure and component names reflect the Orbit design system structure.
 
-- [Components](https://github.com/kiwicom/orbit-swiftui/tree/main/Sources/Orbit/Components/)
-- [Colors](https://github.com/kiwicom/orbit-swiftui/tree/main/Sources/Orbit/Foundation/Colors/)
-- [Icons](https://github.com/kiwicom/orbit-swiftui/tree/main/Sources/Orbit/Foundation/Icons/)
-- [Illustrations](https://github.com/kiwicom/orbit-swiftui/tree/main/Sources/Orbit/Foundation/Illustrations)
-- [Spacing](https://github.com/kiwicom/orbit-swiftui/tree/main/Sources/Orbit/Foundation/Spacing/)
+- [Components](/Sources/Orbit/Components/)
+- [Colors](/Sources/Orbit/Foundation/Colors/)
+- [Icons](/Sources/Orbit/Foundation/Icons/)
+- [Illustrations](/Sources/Orbit/Foundation/Illustrations)
+- [Spacing](/Sources/Orbit/Foundation/Spacing/)
 
 ### Components
 
