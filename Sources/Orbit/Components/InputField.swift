@@ -14,11 +14,12 @@ public struct InputField: View {
 
     @Binding private var value: String
     @Binding private var messageHeight: CGFloat
-    @State private var isPressed: Bool = false
     @State private var isEditing: Bool = false
 
     let label: String
     let placeholder: String
+    let prefix: Icon.Content
+    let suffix: Icon.Content
     let state: InputState
     let textContent: UITextContentType?
     let keyboard: UIKeyboardType
@@ -28,16 +29,24 @@ public struct InputField: View {
 
     let onEditingChanged: (Bool) -> Void
     let onCommit: () -> Void
+    let suffixAction: () -> Void
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 1) {
             FormFieldLabel(label)
             
-            InputContent(state: state, message: message, isEditing: isEditing, padding: 0) {
+            InputContent(
+                prefix: prefix,
+                suffix: suffix,
+                state: state,
+                message: message,
+                isEditing: isEditing,
+                suffixAction: suffixAction
+            ) {
                 HStack(spacing: 0) {
                     textField
                     Spacer(minLength: 0)
-                    suffix
+                    clearButton
                 }
             }
             
@@ -57,7 +66,7 @@ public struct InputField: View {
             },
             onCommit: onCommit
         )
-        .textFieldStyle(TextFieldStyle())
+        .textFieldStyle(TextFieldStyle(leadingPadding: 0))
         .autocapitalization(autocapitalization)
         .disableAutocorrection(isAutocompleteEnabled == false)
         .textContentType(textContent)
@@ -70,13 +79,13 @@ public struct InputField: View {
     }
 
     @ViewBuilder var textFieldPlaceholder: some View {
-        Text(placeholder, color: .none)
-            .foregroundColor(state.placeholderColor)
-            .padding(.leading, .xSmall)
-            .opacity(value.isEmpty ? 1 : 0)
+        if value.isEmpty {
+            Text(placeholder, color: .none)
+                .foregroundColor(state.placeholderColor)
+        }
     }
     
-    @ViewBuilder var suffix: some View {
+    @ViewBuilder var clearButton: some View {
         if value.isEmpty == false, state != .disabled {
             Image(systemName: "multiply.circle.fill")
                 .foregroundColor(.cloudDarker)
@@ -100,6 +109,8 @@ public extension InputField {
     init(
         _ label: String = "",
         value: Binding<String>,
+        prefix: Icon.Content = .none,
+        suffix: Icon.Content = .none,
         placeholder: String = "",
         state: InputState = .default,
         textContent: UITextContentType? = nil,
@@ -109,10 +120,13 @@ public extension InputField {
         message: MessageType = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
         onEditingChanged: @escaping (Bool) -> Void = { _ in },
-        onCommit: @escaping () -> Void = {}
+        onCommit: @escaping () -> Void = {},
+        suffixAction: @escaping () -> Void = {}
     ) {
         self.label = label
         self._value = value
+        self.prefix = prefix
+        self.suffix = suffix
         self.placeholder = placeholder
         self.state = state
         self.message = message
@@ -123,6 +137,7 @@ public extension InputField {
         self.isAutocompleteEnabled = isAutocompleteEnabled
         self.onEditingChanged = onEditingChanged
         self.onCommit = onCommit
+        self.suffixAction = suffixAction
     }
 }
 
@@ -131,10 +146,16 @@ public extension InputField {
     
     struct TextFieldStyle : SwiftUI.TextFieldStyle {
         
+        let leadingPadding: CGFloat
+        
+        public init(leadingPadding: CGFloat = .xSmall) {
+            self.leadingPadding = leadingPadding
+        }
+        
         public func _body(configuration: TextField<Self._Label>) -> some View {
             configuration
-                .padding(.horizontal, .xSmall)
-                .padding(.vertical, .xxSmall)
+                .padding(.leading, leadingPadding)
+                .padding(.vertical, .xSmall)
         }
     }
 }
@@ -152,7 +173,7 @@ struct InputFieldPreviews: PreviewProvider {
 
     static var standalone: some View {
         PreviewWrapperWithState(initialState: "Value") { state in
-            InputField("Label", value: state, placeholder: "Placeholder", state: .default)
+            InputField("Label", value: state, prefix: .icon(.grid), suffix: .icon(.grid), placeholder: "Placeholder", state: .default)
         }
     }
 
@@ -169,6 +190,7 @@ struct InputFieldPreviews: PreviewProvider {
             message: .error("Error message, also very long and multi-line to test that it works.")
         )
         InputField(value: .constant("InputField with no label"))
+        standalone
     }
 
     static var snapshots: some View {

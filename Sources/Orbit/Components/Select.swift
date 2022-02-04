@@ -93,13 +93,13 @@ struct SelectPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Select("Label", value: "Value")
+        Select("Label", prefix: .icon(.grid), value: "Value")
     }
 
     @ViewBuilder static var orbit: some View {
         VStack(spacing: Spacing.medium) {
             Select("Label", value: "Value")
-            Select("", prefix: .icon(.airplane), value: "Value")
+            Select("", prefix: .icon(.grid), value: "Value")
             Select("", prefix: .icon(.airplane), value: nil, placeholder: "Please select")
             Select("Label (Empty Value)", prefix: .icon(.airplane), value: "")
             Select("Label (No Value)", prefix: .icon(.airplane), value: nil, placeholder: "Please select")

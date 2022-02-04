@@ -31,24 +31,26 @@ struct InputContent<Content: View>: View {
     var message: MessageType = .none
     var isPressed: Bool = false
     var isEditing: Bool = false
-    var padding: CGFloat = .xSmall
+    var suffixAction = {}
     let label: () -> Content
     
     var body: some View {
         HStack(spacing: 0) {
             prefix.view(defaultColor: prefixColor)
-                .padding(.trailing, .xxxSmall)
+                .padding(.horizontal, .xSmall)
 
             label()
                 .lineLimit(1)
-                .padding(.leading, .xxSmall)
+                .padding(.leading, prefix.isEmpty ? .small : 0)
 
             Spacer(minLength: 0)
 
             suffix.view(defaultColor: suffixColor)
+                .padding(.horizontal, .xSmall)
+                .contentShape(Rectangle())
+                .onTapGesture(perform: suffixAction)
         }
         .foregroundColor(state.textColor)
-        .padding(.horizontal, padding)
         .frame(height: Layout.preferredButtonHeight)
         .background(backgroundColor(isPressed: isPressed).animation(.default, value: message))
         .cornerRadius(BorderRadius.default)

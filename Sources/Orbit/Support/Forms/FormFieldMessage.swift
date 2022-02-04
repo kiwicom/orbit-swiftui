@@ -20,7 +20,7 @@ public struct FormFieldMessage: View {
         }
     }
 
-    public init(_ message: MessageType, spacing: CGFloat = Spacing.xxSmall) {
+    public init(_ message: MessageType, spacing: CGFloat = 5) {
         self.message = message
         self.spacing = spacing
     }
