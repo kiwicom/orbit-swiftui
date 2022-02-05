@@ -1,6 +1,6 @@
 import SwiftUI
 
-public enum ListChoiceDisclosure {
+public enum ListChoiceDisclosure: Equatable {
     
     public enum ButtonType {
         case add
@@ -46,19 +46,12 @@ public struct ListChoice<Content: View>: View {
         .accessibility(hint: SwiftUI.Text(description))
     }
 
-    var buttonContent: some View {
-        HStack(spacing: 0) {
+    @ViewBuilder var buttonContent: some View {
+        HStack(spacing: .medium) {
             VStack(alignment: .leading, spacing: 0) {
-                HStack(spacing: .xSmall) {
-                    header
-                    Spacer(minLength: 0)
-                    Text(value)
-                        .padding(.trailing, valuePadding)
-                }
+                headerWithValue
                 content()
             }
-            
-            Strut(height: 48)
             
             disclosureView
                 .padding(.trailing, .medium)
@@ -67,7 +60,18 @@ public struct ListChoice<Content: View>: View {
         .overlay(separator, alignment: .bottom)
     }
     
-    var header: some View {
+    @ViewBuilder var headerWithValue: some View {
+        HStack(spacing: 0) {
+            header
+            Spacer(minLength: .xSmall)
+            Strut(height: 48)
+            Heading(value, style: .title4)
+        }
+        .padding(.leading, icon.isEmpty ? .medium : .small)
+        .padding(.trailing, disclosure == .none ? .medium : 0)
+    }
+    
+    @ViewBuilder var header: some View {
         Header(
             title,
             description: description,
@@ -77,9 +81,7 @@ public struct ListChoice<Content: View>: View {
             horizontalSpacing: .xSmall,
             verticalSpacing: .xxxSmall
         )
-        .padding(.vertical, headerTextPadding)
-        .padding(.leading, icon.isEmpty ? .medium : .small)
-        .padding(.trailing, .medium)
+        .padding(.vertical, .small)
     }
 
     @ViewBuilder var disclosureView: some View {
@@ -88,6 +90,7 @@ public struct ListChoice<Content: View>: View {
                 EmptyView()
             case .disclosure(let color):
                 Icon(symbol: .chevronRight, size: .medium, color: color)
+                    .padding(.leading, -.xSmall)
                     .padding(.trailing, -.xxSmall)
             case .button(let type):
                 disclosureButton(type: type)
@@ -115,22 +118,6 @@ public struct ListChoice<Content: View>: View {
 
     var separatorPadding: CGFloat {
         icon.isEmpty ? .medium : .xxLarge
-    }
-    
-    var isHeaderEmpty: Bool {
-        title.isEmpty && description.isEmpty && icon.isEmpty
-    }
-    
-    var headerTextPadding: CGFloat {
-        title.isEmpty || description.isEmpty ? .medium : .small
-    }
-    
-    var valuePadding: CGFloat {
-        if case .disclosure = disclosure {
-            return 0
-        } else {
-            return .xSmall
-        }
     }
 }
 
@@ -225,12 +212,6 @@ public extension ListChoice {
     }
 }
 
-// MARK: - Types
-public extension ListChoice {
-    
-    typealias BackgroundColor = (normal: Color, active: Color)
-}
-
 extension ListChoice {
     
     // Button style wrapper for ListChoice.
@@ -246,7 +227,7 @@ extension ListChoice {
         }
 
         func backgroundColor(isPressed: Bool) -> Color {
-            isPressed ? .inkLight.opacity(0.2) : .clear
+            isPressed ? .inkLight.opacity(0.08) : .clear
         }
     }
 }
@@ -256,13 +237,15 @@ struct ListChoicePreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
+            standalone
             plain
             chevron
             button
             checkbox
             white
+            backgroundColor
         }
-        .background(Color.cloudLight.opacity(0.8))
+        .background(Color.cloudLight)
         .previewLayout(.sizeThatFits)
     }
     
@@ -274,8 +257,12 @@ struct ListChoicePreviews: PreviewProvider {
     static let uncheckedCheckbox = ListChoiceDisclosure.checkbox(isChecked: false)
     static let checkedCheckbox = ListChoiceDisclosure.checkbox(isChecked: true)
     
+    static var standalone: some View {
+        ListChoice(title, description: description, icon: .grid, value: "100")
+    }
+    
     static var plain: some View {
-        VStack(spacing: .small) {
+        ListChoiceGroup {
             ListChoice(title, disclosure: .none)
             ListChoice(title, description: description, disclosure: .none)
             ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
@@ -287,16 +274,15 @@ struct ListChoicePreviews: PreviewProvider {
                 customContentPlaceholder
             }
         }
-        .padding()
         .previewDisplayName("No disclosure")
     }
     
     static var chevron: some View {
-        VStack(spacing: .small) {
+        ListChoiceGroup {
             ListChoice(title)
-            ListChoice(title, value: value)
+            ListChoice(title, value: "10")
             ListChoice(title, description: description)
-            ListChoice(title, description: description, value: value)
+            ListChoice(title, description: "Multiline\ndescription", value: "USD")
             ListChoice(title, icon: .airplane)
             ListChoice(title, icon: .airplane, value: value)
             ListChoice(title, description: description, icon: .airplane)
@@ -304,16 +290,15 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description) {
                 customContentPlaceholder
             }
-            ListChoice(title, description: description, value: value) {
+            ListChoice(title, description: description, icon: .grid, value: value) {
                 customContentPlaceholder
             }
         }
-        .padding()
         .previewDisplayName("Chevron")
     }
     
     static var button: some View {
-        VStack(spacing: .small) {
+        ListChoiceGroup {
             ListChoice(title, disclosure: addButton)
             ListChoice(title, disclosure: removeButton)
             ListChoice(title, description: description, disclosure: addButton)
@@ -323,14 +308,15 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, icon: .airplane, disclosure: addButton)
             ListChoice(title, description: description, icon: .airplane, disclosure: removeButton)
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: addButton)
-            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: removeButton)
+            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: removeButton) {
+                customContentPlaceholder
+            }
         }
-        .padding()
         .previewDisplayName("Button")
     }
 
     static var checkbox: some View {
-        VStack(spacing: .small) {
+        ListChoiceGroup {
             ListChoice(title, disclosure: uncheckedCheckbox)
             ListChoice(title, disclosure: checkedCheckbox)
             ListChoice(title, description: description, disclosure: uncheckedCheckbox)
@@ -340,9 +326,10 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, icon: .airplane, disclosure: uncheckedCheckbox)
             ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox)
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: uncheckedCheckbox)
-            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: checkedCheckbox)
+            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: checkedCheckbox) {
+                customContentPlaceholder
+            }
         }
-        .padding()
         .previewDisplayName("Checkbox")
     }
     
@@ -367,5 +354,22 @@ struct ListChoicePreviews: PreviewProvider {
         }
         .padding()
         .previewDisplayName("White background")
+    }
+    
+    static var backgroundColor: some View {
+        VStack(spacing: .small) {
+            ListChoice(title, value: value, disclosure: .none) {
+                customContentPlaceholder
+            }
+            .background(Color.orangeLight)
+            
+            ListChoice(title, icon: .grid, value: value)
+            {
+                customContentPlaceholder
+            }
+            .background(Color.blueLight)
+        }
+        .padding()
+        .previewDisplayName("Custom background")
     }
 }
