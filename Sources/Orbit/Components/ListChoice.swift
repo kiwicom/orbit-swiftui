@@ -25,7 +25,6 @@ public struct ListChoice<Content: View>: View {
     let title: String
     let description: String
     let icon: Icon.Content
-    let value: String
     let disclosure: ListChoiceDisclosure
     let showSeparator: Bool
     let action: () -> Void
@@ -48,10 +47,7 @@ public struct ListChoice<Content: View>: View {
 
     @ViewBuilder var buttonContent: some View {
         HStack(spacing: .medium) {
-            VStack(alignment: .leading, spacing: 0) {
-                headerWithValue
-                content()
-            }
+            headerWithValue
             
             disclosureView
                 .padding(.trailing, .medium)
@@ -63,9 +59,11 @@ public struct ListChoice<Content: View>: View {
     @ViewBuilder var headerWithValue: some View {
         HStack(spacing: 0) {
             header
-            Spacer(minLength: .xSmall)
+            if isHeaderEmpty == false {
+                Spacer(minLength: .xSmall)
+            }
             Strut(height: 48)
-            Heading(value, style: .title4)
+            content()
         }
         .padding(.leading, icon.isEmpty ? .medium : .small)
         .padding(.trailing, disclosure == .none ? .medium : 0)
@@ -117,7 +115,19 @@ public struct ListChoice<Content: View>: View {
     }
 
     var separatorPadding: CGFloat {
-        icon.isEmpty ? .medium : .xxLarge
+        if isHeaderEmpty {
+            return 0
+        }
+        
+        if icon.isEmpty {
+            return .medium
+        }
+        
+        return .xxLarge
+    }
+    
+    var isHeaderEmpty: Bool {
+        icon.isEmpty && title.isEmpty && description.isEmpty
     }
 }
 
@@ -129,7 +139,6 @@ public extension ListChoice {
         _ title: String = "",
         description: String = "",
         icon: Icon.Content,
-        value: String = "",
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {},
@@ -138,7 +147,6 @@ public extension ListChoice {
         self.title = title
         self.description = description
         self.icon = icon
-        self.value = value
         self.disclosure = disclosure
         self.showSeparator = showSeparator
         self.action = action
@@ -150,7 +158,6 @@ public extension ListChoice {
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol = .none,
-        value: String = "",
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {},
@@ -160,7 +167,6 @@ public extension ListChoice {
             title,
             description: description,
             icon: .icon(icon, size: .default, color: .inkNormal),
-            value: value,
             disclosure: disclosure,
             showSeparator: showSeparator,
             action: action,
@@ -173,7 +179,6 @@ public extension ListChoice {
         _ title: String = "",
         description: String = "",
         icon: Icon.Content,
-        value: String = "",
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {}
@@ -182,7 +187,6 @@ public extension ListChoice {
             title,
             description: description,
             icon: icon,
-            value: value,
             disclosure: disclosure,
             showSeparator: showSeparator,
             action: action,
@@ -195,11 +199,48 @@ public extension ListChoice {
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol = .none,
-        value: String = "",
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {}
     ) where Content == EmptyView {
+        self.init(
+            title,
+            description: description,
+            icon: .icon(icon, size: .default, color: .inkNormal),
+            disclosure: disclosure,
+            showSeparator: showSeparator,
+            action: action
+        )
+    }
+    
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Content,
+        value: String,
+        disclosure: ListChoiceDisclosure = .disclosure(),
+        showSeparator: Bool = true,
+        action: @escaping () -> Void = {}
+    ) where Content == Heading {
+        self.title = title
+        self.description = description
+        self.icon = icon
+        self.disclosure = disclosure
+        self.showSeparator = showSeparator
+        self.action = action
+        self.content = { Heading(value, style: .title4) }
+    }
+    
+    /// Creates Orbit ListChoice component with custom content.
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Symbol = .none,
+        value: String,
+        disclosure: ListChoiceDisclosure = .disclosure(),
+        showSeparator: Bool = true,
+        action: @escaping () -> Void = {}
+    ) where Content == Heading {
         self.init(
             title,
             description: description,
@@ -252,6 +293,7 @@ struct ListChoicePreviews: PreviewProvider {
     static let title = "ListChoice tile"
     static let description = "Further description"
     static let value = "value"
+    static let badge = Badge("3", style: .status(.info, inverted: false))
     static let addButton = ListChoiceDisclosure.button(type: .add)
     static let removeButton = ListChoiceDisclosure.button(type: .remove)
     static let uncheckedCheckbox = ListChoiceDisclosure.checkbox(isChecked: false)
@@ -271,8 +313,12 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, icon: .airplane, disclosure: .none)
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: .none)
             ListChoice(title, description: description, disclosure: .none) {
+                badge
+            }
+            ListChoice(disclosure: .none) {
                 customContentPlaceholder
             }
+            .padding(.bottom)
         }
         .previewDisplayName("No disclosure")
     }
@@ -288,10 +334,10 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, icon: .airplane)
             ListChoice(title, description: description, icon: .airplane, value: value)
             ListChoice(title, description: description) {
-                customContentPlaceholder
+                badge
             }
-            ListChoice(title, description: description, icon: .grid, value: value) {
-                customContentPlaceholder
+            ListChoice(title, description: description, icon: .grid) {
+                badge
             }
         }
         .previewDisplayName("Chevron")
@@ -308,7 +354,7 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, icon: .airplane, disclosure: addButton)
             ListChoice(title, description: description, icon: .airplane, disclosure: removeButton)
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: addButton)
-            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: removeButton) {
+            ListChoice(title, description: description, icon: .airplane, disclosure: removeButton) {
                 customContentPlaceholder
             }
         }
@@ -326,7 +372,7 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, icon: .airplane, disclosure: uncheckedCheckbox)
             ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox)
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: uncheckedCheckbox)
-            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: checkedCheckbox) {
+            ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox) {
                 customContentPlaceholder
             }
         }
@@ -358,16 +404,16 @@ struct ListChoicePreviews: PreviewProvider {
     
     static var backgroundColor: some View {
         VStack(spacing: .small) {
-            ListChoice(title, value: value, disclosure: .none) {
-                customContentPlaceholder
-            }
-            .background(Color.orangeLight)
+            ListChoice(title, value: value, disclosure: .none)
+                .background(Color.orangeLight)
             
             ListChoice(title, icon: .grid, value: value)
-            {
+                .background(Color.blueLight)
+            
+            ListChoice(title, icon: .grid) {
                 customContentPlaceholder
             }
-            .background(Color.blueLight)
+            .background(Color.redLight)
         }
         .padding()
         .previewDisplayName("Custom background")
