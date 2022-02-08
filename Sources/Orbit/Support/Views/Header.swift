@@ -112,7 +112,7 @@ public extension Header {
 
     enum TitleStyle {
     
-        case heading(_ style: Heading.Style = .title3, color: Heading.Color? = nil)
+        case heading(_ style: Heading.Style = .title3, color: Heading.Color? = .inkNormal)
         case text(_ size: Text.Size = .normal, weight: Font.Weight = .medium, color: Text.Color? = .inkNormal)
     
         public static let display = Self.heading(.display)
