@@ -43,6 +43,8 @@ public struct ListChoice<Content: View>: View {
         .buttonStyle(ListChoiceButtonStyle())
         .accessibility(label: SwiftUI.Text(title))
         .accessibility(hint: SwiftUI.Text(description))
+        .accessibility(removeTraits: accessibilityTraitsToRemove)
+        .accessibility(addTraits: accessibilityTraitsToAdd)
     }
 
     @ViewBuilder var buttonContent: some View {
@@ -128,6 +130,20 @@ public struct ListChoice<Content: View>: View {
     
     var isHeaderEmpty: Bool {
         icon.isEmpty && title.isEmpty && description.isEmpty
+    }
+    
+    var accessibilityTraitsToAdd: AccessibilityTraits {
+        switch disclosure {
+            case .none, .disclosure, .button, .checkbox(false):     return []
+            case .checkbox(true):                                   return .isSelected
+        }
+    }
+    
+    var accessibilityTraitsToRemove: AccessibilityTraits {
+        switch disclosure {
+            case .none, .disclosure, .button, .checkbox(true):      return []
+            case .checkbox(false):                                  return .isSelected
+        }
     }
 }
 
