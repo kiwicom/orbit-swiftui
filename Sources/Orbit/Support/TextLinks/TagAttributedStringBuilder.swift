@@ -69,7 +69,7 @@ final class TagAttributedStringBuilder {
 
     func attributedString(
         _ string: String,
-        fontSize: CGFloat? = nil,
+        fontSize: CGFloat,
         fontWeight: Font.Weight = .regular,
         lineSpacing: CGFloat?,
         color: UIColor? = nil,
@@ -84,7 +84,7 @@ final class TagAttributedStringBuilder {
             textAttributes[.paragraphStyle] = titleParagraphStyle
         }
 
-        textAttributes[.font] = fontSize.map { UIFont.orbit(size: $0, weight: fontWeight.uiKit) }
+        textAttributes[.font] = UIFont.orbit(size: fontSize, weight: fontWeight.uiKit)
         textAttributes[.foregroundColor] = color
 
         var linksAttributes: [NSAttributedString.Key: Any] = [:]
@@ -223,8 +223,7 @@ private extension TagAttributedStringBuilder.Tag {
         switch self {
             case .anchor, .applink:
                 guard result.ranges.count == 3,
-                      let font = textAttributes[.font] as? UIFont,
-                      let size = UIFont.Size(rawValue: Int(font.pointSize))
+                      let font = textAttributes[.font] as? UIFont
                 else {
                     return nil
                 }
@@ -233,7 +232,7 @@ private extension TagAttributedStringBuilder.Tag {
 
                 let attributes = [
                     .link: url,
-                    .font: UIFont.orbit(size: size, weight: .medium),
+                    .font: UIFont.orbit(size: font.pointSize, weight: .medium),
                 ].merging(tagTextAttributes, uniquingKeysWith: { $1 })
 
                 return stringByAddingAttributes(attributes, to: currentAttributedString, at: result.ranges[2])
@@ -244,9 +243,8 @@ private extension TagAttributedStringBuilder.Tag {
 
                 if let font = tagTextAttributes[.font] as? UIFont {
                     boldFont = font
-                } else if let font = textAttributes[.font] as? UIFont,
-                          let size = UIFont.Size(rawValue: Int(font.pointSize)) {
-                    boldFont = .orbit(size: size, weight: .bold)
+                } else if let font = textAttributes[.font] as? UIFont {
+                    boldFont = .orbit(size: font.pointSize, weight: .bold)
                 } else {
                     boldFont = .orbit(size: .normal, weight: .bold)
                 }
@@ -267,14 +265,13 @@ private extension TagAttributedStringBuilder.Tag {
             case .ref:
                 guard result.ranges.count == 2,
                       let color = tagTextAttributes[.foregroundColor] as? UIColor,
-                      let font = textAttributes[.font] as? UIFont,
-                      let size = UIFont.Size(rawValue: Int(font.pointSize))
+                      let font = textAttributes[.font] as? UIFont
                 else {
                     return nil
                 }
 
                 return stringByAddingAttributes(
-                    [.foregroundColor: color, .font: UIFont.orbit(size: size, weight: .bold)],
+                    [.foregroundColor: color, .font: UIFont.orbit(size: font.pointSize, weight: .bold)],
                     to: currentAttributedString,
                     at: result.ranges[1]
                 )
