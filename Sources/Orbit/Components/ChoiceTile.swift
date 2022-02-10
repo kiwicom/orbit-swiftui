@@ -47,7 +47,7 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
             .overlay(indicatorOverlay, alignment: indicatorAlignment)
             .padding(ChoiceTileAlignment.padding)
             .tileBorder(
-                status: isSelected ? .info : nil,
+                status: isSelected && status == nil ? .info : status,
                 backgroundColor: backgroundColor(isPressed: configuration.isPressed),
                 shadow: shadow(isPressed: configuration.isPressed))
     }
@@ -61,8 +61,8 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
     @ViewBuilder var indicatorElement: some View {
         switch indicator {
             case .none:         EmptyView()
-            case .radio:        Radio(isChecked: isSelected, action: {})
-            case .checkbox:     Checkbox(isChecked: isSelected, action: {})
+            case .radio:        Radio(state: status == .critical ? .error : .normal, isChecked: isSelected)
+            case .checkbox:     Checkbox(state: status == .critical ? .error : .normal, isChecked: isSelected)
         }
     }
     
@@ -78,6 +78,10 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
     }
     
     func shadow(isPressed: Bool) -> TileBorderModifier.Shadow {
+        if status != nil {
+            return .none
+        }
+        
         switch (isSelected, isPressed) {
             case (false, false):    return .small
             case (false, true):     return .default
@@ -367,7 +371,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                 VStack(alignment: .leading, spacing: .medium) {
                     ChoiceTile("Label", description: "Unchecked Checkbox", isSelected: true, message: .help("Helpful message")) {}
 
-                    ChoiceTile("Label", description: "Checked Checkbox", indicator: .checkbox, isSelected: true, message: .error("Error message")) {}
+                    ChoiceTile("Label", description: "Checked Checkbox", indicator: .checkbox, isSelected: true, status: .critical, message: .error("Error message")) {}
                 }
             }
 
@@ -386,7 +390,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                 customContentPlaceholder
             }
             
-            ChoiceTile(indicator: .checkbox, isSelected: true) {
+            ChoiceTile(indicator: .checkbox, isSelected: false, status: .critical) {
                 customContentPlaceholder
             }
             
@@ -401,23 +405,15 @@ struct ChoiceTilePreviews: PreviewProvider {
         VStack(spacing: .large) {
             HStack(alignment: .top, spacing: .medium) {
                 VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", icon: .flightNomad, message: .help("Helpful message"), alignment: .center) {
-                        Text("Unchecked Radio", size: .small, color: .inkLight)
-                    }
+                    ChoiceTile("Label", description: "Checked Radio", icon: .flightNomad, message: .help("Helpful message"), alignment: .center) {}
 
-                    ChoiceTile("Label", indicator: .checkbox, message: .help("Helpful message"), alignment: .center) {
-                        Text("Unchecked Checkbox", size: .small, color: .inkLight)
-                    }
+                    ChoiceTile("Label", description: "Unchecked Checkbox", indicator: .checkbox, message: .help("Helpful message"), alignment: .center) {}
                 }
 
                 VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", isSelected: true, message: .help("Helpful message"), alignment: .center) {
-                        Text("Checked Checkbox", size: .small, color: .inkLight)
-                    }
+                    ChoiceTile("Label", description: "Unchecked Radio", isSelected: true, message: .help("Helpful message"), alignment: .center) {}
 
-                    ChoiceTile("Label", indicator: .checkbox, isSelected: true, message: .error("Error message"), alignment: .center) {
-                        Text("Checked Checkbox", size: .small, color: .inkLight)
-                    }
+                    ChoiceTile("Label", description: "Checked Checkbox", indicator: .checkbox, isSelected: true, status: .critical, message: .error("Error message"), alignment: .center) {}
                 }
             }
 
