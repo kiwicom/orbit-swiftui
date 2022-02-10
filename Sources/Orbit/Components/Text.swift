@@ -71,7 +71,7 @@ public struct Text: View {
     var textLinkContent: NSAttributedString {
         TagAttributedStringBuilder.all.attributedStringForLinks(
             content,
-            fontSize: scaledSize,
+            fontSize: size.value,
             fontWeight: weight,
             lineSpacing: lineSpacing,
             alignment: alignment
@@ -85,7 +85,7 @@ public struct Text: View {
     var attributedText: NSAttributedString {
         TagAttributedStringBuilder.all.attributedString(
             content,
-            fontSize: scaledSize,
+            fontSize: size.value,
             fontWeight: weight,
             lineSpacing: lineSpacing,
             color: foregroundColor,
@@ -228,12 +228,15 @@ struct TextPreviews: PreviewProvider {
             .previewDisplayName("Text - formatted")
 
         Group {
-            Text(multilineText, color : .none)
-                .foregroundColor(.blueDark)
+            Text(multilineText)
                 .previewDisplayName("Text - multiline")
 
             Text(multilineFormattedText)
                 .previewDisplayName("Text - formatted multiline")
+            
+            Text(multilineFormattedText, color: .none)
+                .foregroundColor(.blueDark)
+                .previewDisplayName("Text - formatted multiline with color override")
 
             Text(multilineText, alignment: .trailing)
                 .previewDisplayName("Text - multiline")
@@ -280,6 +283,18 @@ struct TextPreviews: PreviewProvider {
             Separator()
 
             Group {
+                Text("Text custom size", size: .custom(5))
+                Text("Text custom size", size: .custom(21))
+                
+                Text("Text <strong>formatted</strong> custom size", size: .custom(5))
+                Text("Text <strong>formatted</strong> custom size", size: .custom(21))
+                
+                Text("Text <applink1>TextLink</applink1> custom size", size: .custom(5))
+                Text("Text <applink1>TextLink</applink1> custom size", size: .custom(21))
+                Separator()
+            }
+            
+            Group {
                 Text("Text Normal - Undefined color, modified to Blue", size: .normal, color: nil)
                     .foregroundColor(.blueNormal)
                     .foregroundColor(.redNormal)
@@ -289,9 +304,9 @@ struct TextPreviews: PreviewProvider {
                 Text("Text Normal - Custom color", size: .normal, color: .custom(.productDark))
                     .foregroundColor(.blueNormal)
                     .foregroundColor(.redNormal)
+                
+                Separator()
             }
-
-            Separator()
 
             Group {
                 Text("Text Normal, M")
