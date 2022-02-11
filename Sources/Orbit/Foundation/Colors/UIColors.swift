@@ -17,6 +17,10 @@ public extension UIColor {
     static let blueNormalActive = fromResource(named: "Blue Normal Active")
     static let blueNormalHover = fromResource(named: "Blue Normal Hover")
 
+    // MARK: - Bundle
+    static let bundleBasic = fromResource(named: "Bundle Basic")
+    static let bundleMedium = fromResource(named: "Bundle Medium")
+
     // MARK: - Cloud
     static let cloudDark = fromResource(named: "Cloud Dark")
     static let cloudDarker = fromResource(named: "Cloud Darker")

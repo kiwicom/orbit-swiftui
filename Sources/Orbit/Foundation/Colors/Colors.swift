@@ -17,6 +17,10 @@ public extension Color {
     static let blueNormalActive = Color("Blue Normal Active", bundle: .current)
     static let blueNormalHover = Color("Blue Normal Hover", bundle: .current)
 
+    // MARK: - Bundle
+    static let bundleBasic = Color("Bundle Basic", bundle: .current)
+    static let bundleMedium = Color("Bundle Medium", bundle: .current)
+
     // MARK: - Cloud
     static let cloudDark = Color("Cloud Dark", bundle: .current)
     static let cloudDarker = Color("Cloud Darker", bundle: .current)
