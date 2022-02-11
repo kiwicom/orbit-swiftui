@@ -47,7 +47,8 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
             .overlay(indicatorOverlay, alignment: indicatorAlignment)
             .padding(ChoiceTileAlignment.padding)
             .tileBorder(
-                status: isSelected ? .info : nil,
+                isSelected: isSelected,
+                status: status,
                 backgroundColor: backgroundColor(isPressed: configuration.isPressed),
                 shadow: shadow(isPressed: configuration.isPressed))
     }
@@ -61,8 +62,8 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
     @ViewBuilder var indicatorElement: some View {
         switch indicator {
             case .none:         EmptyView()
-            case .radio:        Radio(isChecked: isSelected, action: {})
-            case .checkbox:     Checkbox(isChecked: isSelected, action: {})
+            case .radio:        Radio(state: status == .critical ? .error : .normal, isChecked: isSelected)
+            case .checkbox:     Checkbox(state: status == .critical ? .error : .normal, isChecked: isSelected)
         }
     }
     
@@ -78,6 +79,10 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
     }
     
     func shadow(isPressed: Bool) -> TileBorderModifier.Shadow {
+        if status != nil {
+            return .none
+        }
+        
         switch (isSelected, isPressed) {
             case (false, false):    return .small
             case (false, true):     return .default
@@ -121,7 +126,7 @@ public struct ChoiceTile<Content: View>: View {
                 VStack(alignment: .leading, spacing: ChoiceTileAlignment.padding) {
                     header
                     content()
-                    footer
+                    messageView
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, badgeOverlay.isEmpty ? 0 : .small)
@@ -134,22 +139,24 @@ public struct ChoiceTile<Content: View>: View {
     }
     
     @ViewBuilder var header: some View {
-        switch alignment {
-            case .default:
-                HStack(alignment: .firstTextBaseline, spacing: 0) {
-                    Header(title, description: description, iconContent: iconContent, titleStyle: titleStyle, horizontalSpacing: .xSmall, verticalSpacing: .xxSmall)
-                    Spacer(minLength: 0)
-                    Badge(badge, style: .status(.info))
-                }
-            case .center:
-                VStack(spacing: .xxSmall) {
-                    iconContent.view()
-                        .padding(.bottom, .xxxSmall)
-                    centeredHeading
-                    Text(description, color: .inkLight, alignment: .center)
-                    Badge(badge, style: .neutral)
-                }
-                .frame(maxWidth: .infinity)
+        if isHeaderContentEmpty == false {
+            switch alignment {
+                case .default:
+                    HStack(alignment: .firstTextBaseline, spacing: 0) {
+                        Header(title, description: description, iconContent: iconContent, titleStyle: titleStyle, horizontalSpacing: .xSmall, verticalSpacing: .xxSmall)
+                        Spacer(minLength: 0)
+                        Badge(badge, style: .status(.info))
+                    }
+                case .center:
+                    VStack(spacing: .xxSmall) {
+                        iconContent.view()
+                            .padding(.bottom, .xxxSmall)
+                        centeredHeading
+                        Text(description, color: .inkLight, alignment: .center)
+                        Badge(badge, style: .neutral)
+                    }
+                    .frame(maxWidth: .infinity)
+            }
         }
     }
     
@@ -160,15 +167,15 @@ public struct ChoiceTile<Content: View>: View {
         }
     }
     
-    @ViewBuilder var footer: some View {
+    @ViewBuilder var messageView: some View {
         switch alignment {
             case .default:
                 FormFieldMessage(message, spacing: .xSmall)
-                    .padding(.trailing, footerPadding)
+                    .padding(.trailing, messagePadding)
             case .center:
                 FormFieldMessage(message, spacing: .xSmall)
                     .frame(maxWidth: .infinity)
-                    .padding(.bottom, footerPadding)
+                    .padding(.bottom, messagePadding)
         }
     }
     
@@ -177,18 +184,28 @@ public struct ChoiceTile<Content: View>: View {
             .offset(y: -Badge.Size.default.height / 2)
     }
 
-    var indicatorSize: CGSize {
-        indicator == .radio
-            ? Radio.ButtonStyle.size
-            : Checkbox.ButtonStyle.size
+    var isHeaderContentEmpty: Bool {
+        title.isEmpty && description.isEmpty && iconContent.isEmpty && badge.isEmpty
     }
     
-    var footerPadding: CGFloat {
+    var indicatorSize: CGSize {
+        switch indicator {
+            case .none:             return .zero
+            case .radio:            return Radio.ButtonStyle.size
+            case .checkbox:         return Checkbox.ButtonStyle.size
+        }
+    }
+    
+    var messagePadding: CGFloat {
         switch alignment {
             case .default:
-                return indicatorSize.width > 0 ? (indicatorSize.width + ChoiceTileAlignment.padding) : 0
+                return indicatorSize.width > 0
+                    ? (indicatorSize.width + ChoiceTileAlignment.padding + .xSmall)
+                    : 0
             case .center:
-                return indicatorSize.height > 0 ? (indicatorSize.height + ChoiceTileAlignment.padding) : 0
+                return indicatorSize.height > 0
+                    ? (indicatorSize.height + ChoiceTileAlignment.padding + .xSmall)
+                    : 0
         }
     }
 }
@@ -314,7 +331,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         ChoiceTile(
             "Title",
             description: "Description",
-            icon: .grid,
+            iconContent: .illustration(.priorityBoarding, size: .custom(90)),
             badge: "Included",
             badgeOverlay: "Recommended",
             message: .help("Message"),
@@ -323,51 +340,84 @@ struct ChoiceTilePreviews: PreviewProvider {
             customContentPlaceholder
         }
         .padding()
+        .previewDisplayName("Centered")
     }
 
     static var standaloneNarrow: some View {
-        ChoiceTile(
-            "Title with very long multiline text",
-            description: "Description with very long text",
-            icon: .grid,
-            badge: "Popular",
-            message: .help("Message with very long multiline text")
-        ) {
-            customContentPlaceholder
+        HStack {
+            ChoiceTile(
+                "Title with very long multiline text",
+                description: "Description with very long text",
+                icon: .grid,
+                badge: "Popular",
+                message: .help("Message with very long multiline text")
+            ) {
+                customContentPlaceholder
+            }
+            
+            ChoiceTile(
+                "Title with very long multiline text",
+                description: "Description with very long text",
+                icon: .grid,
+                badge: "Popular",
+                isSelected: true,
+                message: .help("Message with very long multiline text")
+            ) {
+                customContentPlaceholder
+            }
         }
-        .frame(width: 200)
+        .frame(width: 400)
         .padding()
+        .previewDisplayName("Multiline")
     }
     
     static var standaloneNarrowCentered: some View {
-        ChoiceTile(
-            "Title with very long multiline text",
-            description: "Description with very long text",
-            icon: .grid,
-            badge: "Included",
-            badgeOverlay: "Recommended",
-            message: .help("Message with very long multiline text"),
-            alignment: .center
-        ) {
-            customContentPlaceholder
+        HStack {
+            ChoiceTile(
+                "Title with very long multiline text",
+                description: "Description with very long text",
+                icon: .grid,
+                badge: "Included",
+                badgeOverlay: "Recommended",
+                message: .help("Message with very long multiline text"),
+                alignment: .center
+            ) {
+                customContentPlaceholder
+            }
+            
+            ChoiceTile(
+                "Title with very long multiline text",
+                description: "Description with very long text",
+                icon: .grid,
+                badge: "Included",
+                badgeOverlay: "Recommended",
+                isSelected: true,
+                message: .help("Message with very long multiline text"),
+                alignment: .center
+            ) {
+                customContentPlaceholder
+            }
         }
-        .frame(width: 200)
+        .frame(width: 400)
         .padding()
+        .previewDisplayName("Multiline centered")
     }
 
     static var snapshots: some View {
         VStack(spacing: .large) {
             HStack(alignment: .top, spacing: .medium) {
                 VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", description: "Unchecked Radio", icon: .flightNomad, message: .help("Helpful message")) {}
+                    ChoiceTile("Label", description: "Unchecked Radio", icon: .grid, message: .help("Helpful message")) {}
 
-                    ChoiceTile("Label", description: "Unchecked Checkbox", indicator: .checkbox, message: .help("Helpful message")) {}
+                    ChoiceTile("Label", indicator: .checkbox, status: .critical) {
+                        customContentPlaceholder
+                    }
                 }
 
                 VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", description: "Unchecked Checkbox", isSelected: true, message: .help("Helpful message")) {}
+                    ChoiceTile("Label", description: "Checked Checkbox", isSelected: true, message: .help("Helpful message")) {}
 
-                    ChoiceTile("Label", description: "Checked Checkbox", indicator: .checkbox, isSelected: true, message: .error("Error message")) {}
+                    ChoiceTile("Label", description: "Checked Checkbox", indicator: .checkbox, isSelected: true, status: .critical, message: .error("Error message")) {}
                 }
             }
 
@@ -386,7 +436,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                 customContentPlaceholder
             }
             
-            ChoiceTile(indicator: .checkbox, isSelected: true) {
+            ChoiceTile(indicator: .checkbox, isSelected: true, status: .critical) {
                 customContentPlaceholder
             }
             
@@ -401,23 +451,15 @@ struct ChoiceTilePreviews: PreviewProvider {
         VStack(spacing: .large) {
             HStack(alignment: .top, spacing: .medium) {
                 VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", icon: .flightNomad, message: .help("Helpful message"), alignment: .center) {
-                        Text("Unchecked Radio", size: .small, color: .inkLight)
-                    }
+                    ChoiceTile("Label", description: "Checked Radio", icon: .flightNomad, message: .help("Helpful message"), alignment: .center) {}
 
-                    ChoiceTile("Label", indicator: .checkbox, message: .help("Helpful message"), alignment: .center) {
-                        Text("Unchecked Checkbox", size: .small, color: .inkLight)
-                    }
+                    ChoiceTile("Label", description: "Unchecked Checkbox", indicator: .checkbox, message: .help("Helpful message"), alignment: .center) {}
                 }
 
                 VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", isSelected: true, message: .help("Helpful message"), alignment: .center) {
-                        Text("Checked Checkbox", size: .small, color: .inkLight)
-                    }
+                    ChoiceTile("Label", description: "Unchecked Radio", isSelected: true, message: .help("Helpful message"), alignment: .center) {}
 
-                    ChoiceTile("Label", indicator: .checkbox, isSelected: true, message: .error("Error message"), alignment: .center) {
-                        Text("Checked Checkbox", size: .small, color: .inkLight)
-                    }
+                    ChoiceTile("Label", description: "Checked Checkbox", indicator: .checkbox, isSelected: true, status: .critical, message: .error("Error message"), alignment: .center) {}
                 }
             }
 

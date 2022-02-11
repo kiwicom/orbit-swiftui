@@ -40,10 +40,12 @@ public extension Icon {
     /// Defines content of an Icon.
     enum Content: Equatable {
         case none
-        /// Icon symbol with size and optional overrideable color.
+        /// Orbit icon symbol with size and optional overrideable color.
         case icon(Symbol, size: Size = .medium, color: Color? = nil)
         /// Icon using custom Image.
         case image(Image, size: Size = .medium, mode: ContentMode = .fit)
+        /// Orbit illustration.
+        case illustration(Illustration.Image, size: Size = .large)
 
         @ViewBuilder public func view(defaultColor: Color? = nil) -> some View {
             switch self {
@@ -54,6 +56,8 @@ public extension Icon {
                         .resizable()
                         .aspectRatio(contentMode: mode)
                         .frame(width: size.value, height: size.value)
+                case .illustration(let illlustration, let size):
+                    Illustration(illlustration, maxWidth: size.value, maxHeight: size.value, alignment: nil)
                 case .none:
                     EmptyView()
             }
@@ -61,9 +65,10 @@ public extension Icon {
         
         public var isEmpty: Bool {
             switch self {
-                case .none:                     return true
-                case .icon(let symbol, _, _):   return symbol == .none
-                case .image:                    return false
+                case .none:                             return true
+                case .icon(let symbol, _, _):           return symbol == .none
+                case .illustration(let image, _):       return image == .none
+                case .image:                            return false
             }
         }
     }

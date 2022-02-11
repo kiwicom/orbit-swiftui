@@ -17,6 +17,7 @@ public struct TileBorderModifier: ViewModifier {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     let style: Style?
+    let isSelected: Bool
     let status: Status?
     let backgroundColor: Color?
     let shadow: Shadow
@@ -45,9 +46,14 @@ public struct TileBorderModifier: ViewModifier {
                 outerBorderShape
                     .strokeBorder(status.color, lineWidth: borderWidth)
             case (.default, .none):
-                outerBorderShape
-                    .strokeBorder(outerBorderGradient, lineWidth: borderWidth)
-                    .blendMode(.darken)
+                if isSelected {
+                    outerBorderShape
+                        .strokeBorder(Color.blueNormal, lineWidth: borderWidth)
+                } else {
+                    outerBorderShape
+                        .strokeBorder(outerBorderGradient, lineWidth: borderWidth)
+                        .blendMode(.darken)
+                }
             default:
                 outerBorderShape
                     .strokeBorder(borderColor, lineWidth: borderWidth)
@@ -92,6 +98,10 @@ public struct TileBorderModifier: ViewModifier {
     }
 
     var shadowColor: Color {
+        if status != .none {
+            return .clear
+        }
+        
         switch style {
             case .default:          return .inkNormal.opacity(0.15)
             case .none, .iOS:       return .clear
@@ -99,6 +109,10 @@ public struct TileBorderModifier: ViewModifier {
     }
 
     var borderWidth: CGFloat {
+        if isSelected {
+            return BorderWidth.selection
+        }
+        
         switch (style, status, horizontalSizeClass) {
             case (.default, _?, _):         return BorderWidth.emphasis
             case (.iOS, _?, .regular):      return BorderWidth.emphasis
@@ -131,12 +145,13 @@ public extension View {
     /// - Parameter style: The style to apply. If style is nil, the view doesn’t get decorated.
     func tileBorder(
         style: TileBorderModifier.Style? = .default,
+        isSelected: Bool = false,
         status: Status? = nil,
         backgroundColor: Color? = nil,
         shadow: TileBorderModifier.Shadow = .default
     ) -> some View {
         modifier(
-            TileBorderModifier(style: style, status: status, backgroundColor: backgroundColor, shadow: shadow)
+            TileBorderModifier(style: style, isSelected: isSelected, status: status, backgroundColor: backgroundColor, shadow: shadow)
         )
     }
 }
