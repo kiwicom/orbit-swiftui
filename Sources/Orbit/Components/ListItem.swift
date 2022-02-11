@@ -33,8 +33,9 @@ public struct ListItem: View {
     var iconSize: Icon.Size? {
         switch iconContent {
             case .none:                                 return nil
-            case .icon(_, size: let size, color: _):    return size
-            case .image(_, size: let size, mode: _):    return size
+            case .icon(_, size: let size, _):           return size
+            case .image(_, size: let size, _):          return size
+            case .illustration(_, size: let size):      return size
         }
     }
 }
