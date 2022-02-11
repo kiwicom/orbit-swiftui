@@ -230,7 +230,7 @@ extension Button {
                 case .status(.success, true):   Color.greenLightActive
                 case .status(.warning, false):  Color.orangeNormalActive
                 case .status(.warning, true):   Color.orangeLightActive
-                case .gradient(let gradient):   gradient.outline
+                case .gradient(let gradient):   gradient.color
             }
         }
     }
@@ -336,13 +336,13 @@ struct ButtonPreviews: PreviewProvider {
         .previewDisplayName("Status buttons")
 
         VStack(spacing: .medium) {
-            Button("Orange Gradient", style: .gradient(.orange), icon: .email)
-            Button("Purple Gradient", style: .gradient(.purple), icon: .flightNomad, disclosureIcon: .chevronRight)
-            Button("Ink Gradient", style: .gradient(.ink), icon: .flightDirect, disclosureIcon: .chevronRight)
+            Button("Orange Gradient", style: .gradient(.bundleBasic), icon: .email)
+            Button("Purple Gradient", style: .gradient(.bundleMedium), icon: .flightNomad, disclosureIcon: .chevronRight)
+            Button("Ink Gradient", style: .gradient(.bundleTop), icon: .flightDirect, disclosureIcon: .chevronRight)
 
             HStack(spacing: .medium) {
-                Button("Turn on push notifications", style: .gradient(.purple))
-                Button(.close, style: .gradient(.ink))
+                Button("Turn on push notifications", style: .gradient(.bundleMedium))
+                Button(.close, style: .gradient(.bundleTop))
             }
         }
         .padding(.vertical)

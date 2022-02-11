@@ -2,48 +2,64 @@ import SwiftUI
 
 /// Defines Orbit gradient styles.
 public enum Gradient {
-    case orange
-    case purple
-    case ink
+    case bundleBasic
+    case bundleMedium
+    case bundleTop
     
     @ViewBuilder public var background: some View {
         switch self {
-            case .orange:               LinearGradient.orange
-            case .purple:               LinearGradient.purple
-            case .ink:                  LinearGradient.ink
+            case .bundleBasic:              LinearGradient.bundleBasic
+            case .bundleMedium:             LinearGradient.bundleMedium
+            case .bundleTop:                LinearGradient.bundleTop
         }
     }
     
-    public var outline: Color {
+    public var color: Color {
         switch self {
-            case .orange:               return .orangeStart
-            case .purple:               return .purpleStart
-            case .ink:                  return .inkStart
+            case .bundleBasic:              return .bundleBasic
+            case .bundleMedium:             return .bundleMedium
+            case .bundleTop:                return .inkNormal
+        }
+    }
+    
+    public var startColor: Color {
+        switch self {
+            case .bundleBasic:              return .bundleBasicStart
+            case .bundleMedium:             return .bundleMediumStart
+            case .bundleTop:                return .bundleTopStart
+        }
+    }
+    
+    public var endColor: Color {
+        switch self {
+            case .bundleBasic:              return .bundleBasicEnd
+            case .bundleMedium:             return .bundleMediumEnd
+            case .bundleTop:                return .bundleTopEnd
         }
     }
 }
 
 public extension LinearGradient {
 
-    static let orange = LinearGradient(
-        colors: [.orangeStart, .orangeEnd], startPoint: .bottomLeading, endPoint: .topTrailing
+    static let bundleBasic = LinearGradient(
+        colors: [.bundleBasicStart, .bundleBasicEnd], startPoint: .bottomLeading, endPoint: .topTrailing
     )
     
-    static let purple = LinearGradient(
-        colors: [.purpleStart, .purpleEnd], startPoint: .bottomLeading, endPoint: .topTrailing
+    static let bundleMedium = LinearGradient(
+        colors: [.bundleMediumStart, .bundleMediumEnd], startPoint: .bottomLeading, endPoint: .topTrailing
     )
     
-    static let ink = LinearGradient(
-        colors: [.inkStart, .inkEnd], startPoint: .bottomLeading, endPoint: .topTrailing
+    static let bundleTop = LinearGradient(
+        colors: [.bundleTopStart, .bundleTopEnd], startPoint: .bottomLeading, endPoint: .topTrailing
     )
 }
 
 public extension Color {
     
-    static let orangeStart = Color(red: 0.88, green: 0.24, blue: 0.23)
-    static let orangeEnd = Color(red: 0.91, green: 0.49, blue: 0.04)
-    static let purpleStart = Color(red: 0.22, green: 0.1, blue: 0.67)
-    static let purpleEnd = Color(red: 0.49, green: 0.22, blue: 0.86)
-    static let inkStart = Color(red: 0.17, green: 0.18, blue: 0.18)
-    static let inkEnd = Color(red: 0.41, green: 0.43, blue: 0.45)
+    static let bundleBasicStart = Color(red: 0.882, green: 0.243, blue: 0.231)
+    static let bundleBasicEnd = Color(red: 0.91, green: 0.494, blue: 0.035)
+    static let bundleMediumStart = Color(red: 0.216, green: 0.098, blue: 0.671)
+    static let bundleMediumEnd = Color(red: 0.522, green: 0.224, blue: 0.859)
+    static let bundleTopStart = Color(red: 0.176, green: 0.176, blue: 0.18)
+    static let bundleTopEnd = Color(red: 0.412, green: 0.431, blue: 0.451)
 }

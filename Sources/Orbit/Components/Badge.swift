@@ -140,7 +140,7 @@ public extension Badge {
                 case .status(.critical, false):             return .redLightHover
                 case .status(.critical, true):              return .redNormal
                 case .custom(_, let outlineColor, _):       return outlineColor
-                case .gradient(let gradient):               return gradient.outline
+                case .gradient(let gradient):               return gradient.color
             }
         }
 
@@ -212,9 +212,9 @@ struct BadgePreviews: PreviewProvider {
                     Badge("Critical Inverted", style: .status(.critical, inverted: true))
                 }
                 VStack(alignment: .leading, spacing: .xSmall) {
-                    Badge("Orange Gradient", icon: .check, style: .gradient(.orange))
-                    Badge("Purple Gradient", icon: .accomodation, style: .gradient(.purple))
-                    Badge("Ink Gradient", icon: .airplaneUp, style: .gradient(.ink))
+                    Badge("Orange Gradient", icon: .check, style: .gradient(.bundleBasic))
+                    Badge("Purple Gradient", icon: .accomodation, style: .gradient(.bundleMedium))
+                    Badge("Ink Gradient", icon: .airplaneUp, style: .gradient(.bundleTop))
                 }
             }
 
@@ -235,9 +235,9 @@ struct BadgePreviews: PreviewProvider {
                     Badge("Critical Inverted", icon: .accomodation, style: .status(.critical, inverted: true))
                 }
                 VStack(alignment: .leading, spacing: .xSmall) {
-                    Badge("Orange Gradient", style: .gradient(.orange))
-                    Badge("Purple Gradient", style: .gradient(.purple))
-                    Badge("Ink Gradient", style: .gradient(.ink))
+                    Badge("Orange Gradient", style: .gradient(.bundleBasic))
+                    Badge("Purple Gradient", style: .gradient(.bundleMedium))
+                    Badge("Ink Gradient", style: .gradient(.bundleTop))
                 }
             }
         }
