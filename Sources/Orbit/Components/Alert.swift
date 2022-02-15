@@ -55,7 +55,7 @@ public struct Alert<Content: View>: View {
                 descriptionLinkAction: descriptionLinkAction
             )
             
-            VStack(spacing: .medium) {
+            Group {
                 content()
                 
                 switch buttons {
@@ -209,12 +209,9 @@ struct AlertPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapperWithState(initialState: Self.primaryAndSecondaryConfiguration) { buttonConfiguration in
             standalone
-                .previewLayout(.sizeThatFits)
-
             snapshotSuppressed
-            
             snapshots
-                .previewLayout(.sizeThatFits)
+            snapshotsNoButtons
 
             VStack {
                 Alert(
@@ -244,6 +241,7 @@ struct AlertPreviews: PreviewProvider {
             .padding()
             .previewDisplayName("Live Preview")
         }
+        .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
@@ -306,71 +304,72 @@ struct AlertPreviews: PreviewProvider {
     }
 
     static var snapshots: some View {
-        Group {
-            VStack(spacing: .medium) {
-                Alert(
-                    "Your message - make it short & clear",
-                    description: "Description - make it as clear as possible.",
-                    icon: .informationCircle,
-                    buttons: Self.primaryAndSecondaryConfiguration
-                )
-                Alert(
-                    "Your message - make it short & clear",
-                    description: "Description - make it as clear as possible.",
-                    buttons: Self.primaryAndSecondaryConfiguration,
-                    status: .warning
-                )
-                Alert(
-                    "Your message - make it short & clear",
-                    icon: .informationCircle,
-                    buttons: Self.primaryAndSecondaryConfiguration,
-                    status: .critical
-                )
-                Alert(
-                    "Your message - make it short & clear",
-                    buttons: Self.primaryAndSecondaryConfiguration,
-                    status: .success
-                )
-                Alert(
-                    "Your message - make it short & clear",
-                    description: "Description - make it as clear as possible.",
-                    icon: .informationCircle,
-                    buttons: Self.primaryConfiguration
-                )
-                Alert(
-                    "Your message - make it short & clear",
-                    description: "Description - make it as clear as possible.",
-                    buttons: Self.primaryConfiguration
-                )
-                Alert(
-                    "Your message - make it short & clear",
-                    icon: .informationCircle,
-                    buttons: Self.primaryConfiguration
-                )
-                Alert(
-                    "Your message - make it short & clear",
-                    buttons: Self.primaryConfiguration
-                )
-            }
-            .padding(.vertical)
-            .previewDisplayName("Layout")
-
-            VStack(spacing: .medium) {
-                Alert(
-                    "Your message - make it short & clear",
-                    description: "Description - make it as clear as possible.",
-                    icon: .informationCircle
-                )
-                
-                Alert("Title", description: "Description")
-                Alert("Title", icon: .informationCircle)
-                Alert("Title")
-            }
-            .padding(.vertical)
-            .previewDisplayName("No buttons")
+        VStack(spacing: .medium) {
+            Alert(
+                "Your message - make it short & clear",
+                description: "Description - make it as clear as possible.",
+                icon: .informationCircle,
+                buttons: Self.primaryAndSecondaryConfiguration
+            )
+            Alert(
+                "Your message - make it short & clear",
+                description: "Description - make it as clear as possible.",
+                buttons: Self.primaryAndSecondaryConfiguration,
+                status: .warning
+            )
+            Alert(
+                "Your message - make it short & clear",
+                icon: .informationCircle,
+                buttons: Self.primaryAndSecondaryConfiguration,
+                status: .critical
+            )
+            Alert(
+                "Your message - make it short & clear",
+                buttons: Self.primaryAndSecondaryConfiguration,
+                status: .success
+            )
+            Alert(
+                "Your message - make it short & clear",
+                description: "Description - make it as clear as possible.",
+                icon: .informationCircle,
+                buttons: Self.primaryConfiguration
+            )
+            Alert(
+                "Your message - make it short & clear",
+                description: "Description - make it as clear as possible.",
+                buttons: Self.primaryConfiguration
+            )
+            Alert(
+                "Your message - make it short & clear",
+                icon: .informationCircle,
+                buttons: Self.primaryConfiguration
+            )
+            Alert(
+                "Your message - make it short & clear",
+                buttons: Self.primaryConfiguration
+            )
         }
-        .padding(.horizontal)
-        .previewLayout(.sizeThatFits)
+        .padding()
+        .previewDisplayName("Layout")
+    }
+    
+    static var snapshotsNoButtons: some View {
+        VStack(spacing: .medium) {
+            Alert(
+                "Your message - make it short & clear",
+                description: "Description - make it as clear as possible.",
+                icon: .informationCircle
+            )
+            
+            Alert("Title", description: "Description")
+            Alert("Title") {
+                customContentPlaceholder
+            }
+            Alert("Title", icon: .informationCircle)
+            Alert("Title")
+        }
+        .padding()
+        .previewDisplayName("No buttons")
     }
 
     static var snapshotsStatuses: some View {
