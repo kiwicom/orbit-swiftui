@@ -1,5 +1,17 @@
 import SwiftUI
 
+public enum AlertButtons {
+    case none
+    case primary(_ title: String, action: () -> Void = {})
+    case secondary(_ title: String, action: () -> Void = {})
+    case primaryAndSecondary(
+        primaryTitle: String,
+        secondaryTitle: String,
+        primaryAction: () -> Void = {},
+        secondaryAction: () -> Void = {}
+    )
+}
+
 /// Breaks the main user flow to present information.
 ///
 /// There are times when just simple information isn’t enough and the user needs
@@ -18,15 +30,16 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/alert/)
 /// - Important: Component expands horizontally to infinity.
-public struct Alert: View {
+public struct Alert<Content: View>: View {
 
     let title: String
     let description: String
     let icon: Icon.Symbol
-    let buttons: Buttons
+    let buttons: AlertButtons
     let status: Status
     let isSuppressed: Bool
     let descriptionLinkAction: TextLink.Action
+    let content: () -> Content
 
     public var body: some View {
         VStack(alignment: .leading, spacing: .medium) {
@@ -42,13 +55,18 @@ public struct Alert: View {
                 descriptionLinkAction: descriptionLinkAction
             )
             
-            switch buttons {
-                case .primary, .secondary, .primaryAndSecondary:
-                    // Keeping the identity of buttons for correct animations
-                    buttonsView
-                case .none:
-                    EmptyView()
+            VStack(spacing: .medium) {
+                content()
+                
+                switch buttons {
+                    case .primary, .secondary, .primaryAndSecondary:
+                        // Keeping the identity of buttons for correct animations
+                        buttonsView
+                    case .none:
+                        EmptyView()
+                }
             }
+            .padding(.leading, icon == .none ? 0 : 28)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding([.vertical, .trailing], .medium)
@@ -75,7 +93,6 @@ public struct Alert: View {
                     EmptyView()
             }
         }
-        .padding(.leading, icon == .none ? 0 : 28)
     }
 
     @ViewBuilder var background: some View {
@@ -134,15 +151,16 @@ public struct Alert: View {
 // MARK: - Inits
 public extension Alert {
     
-    /// Creates Orbit Alert component.
+    /// Creates Orbit Alert component including custom content.
     init(
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol = .none,
-        buttons: Buttons = .none,
+        buttons: AlertButtons = .none,
         status: Status = .info,
         isSuppressed: Bool = false,
-        descriptionLinkAction: @escaping TextLink.Action = { _, _ in }
+        descriptionLinkAction: @escaping TextLink.Action = { _, _ in },
+        @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
         self.description = description
@@ -151,21 +169,28 @@ public extension Alert {
         self.status = status
         self.isSuppressed = isSuppressed
         self.descriptionLinkAction = descriptionLinkAction
+        self.content = content
     }
-}
-
-// MARK: - Types
-public extension Alert {
-
-    enum Buttons {
-        case none
-        case primary(_ title: String, action: () -> Void = {})
-        case secondary(_ title: String, action: () -> Void = {})
-        case primaryAndSecondary(
-            primaryTitle: String,
-            secondaryTitle: String,
-            primaryAction: () -> Void = {},
-            secondaryAction: () -> Void = {}
+    
+    /// Creates Orbit Alert component.
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Symbol = .none,
+        buttons: AlertButtons = .none,
+        status: Status = .info,
+        isSuppressed: Bool = false,
+        descriptionLinkAction: @escaping TextLink.Action = { _, _ in }
+    ) where Content == EmptyView {
+        self.init(
+            title,
+            description: description,
+            icon: icon,
+            buttons: buttons,
+            status: status,
+            isSuppressed: isSuppressed,
+            descriptionLinkAction: descriptionLinkAction,
+            content: { EmptyView() }
         )
     }
 }
@@ -173,13 +198,13 @@ public extension Alert {
 // MARK: - Previews
 struct AlertPreviews: PreviewProvider {
 
-    private static let primaryAndSecondaryConfiguration = Alert.Buttons.primaryAndSecondary(
+    private static let primaryAndSecondaryConfiguration = AlertButtons.primaryAndSecondary(
         primaryTitle: "Primary",
         secondaryTitle: "Secondary"
     )
 
-    private static let primaryConfiguration = Alert.Buttons.primary("Primary")
-    private static let secondaryConfiguration = Alert.Buttons.secondary("Secondary")
+    private static let primaryConfiguration = AlertButtons.primary("Primary")
+    private static let secondaryConfiguration = AlertButtons.secondary("Secondary")
 
     static var previews: some View {
         PreviewWrapperWithState(initialState: Self.primaryAndSecondaryConfiguration) { buttonConfiguration in
@@ -230,7 +255,9 @@ struct AlertPreviews: PreviewProvider {
                 primaryTitle: "Primary",
                 secondaryTitle: "Secondary"
             )
-        )
+        ) {
+            customContentPlaceholder
+        }
         .padding()
     }
 
@@ -363,7 +390,9 @@ struct AlertPreviews: PreviewProvider {
                 secondaryTitle: "Secondary"
             ),
             isSuppressed: true
-        )
+        ) {
+            customContentPlaceholder
+        }
         .padding()
         .previewLayout(.sizeThatFits)
         .previewDisplayName("Status Suppressed")

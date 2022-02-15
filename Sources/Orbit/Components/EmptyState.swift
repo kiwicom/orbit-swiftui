@@ -68,7 +68,7 @@ public extension EmptyState {
 }
 
 // MARK: - Previews
-struct EmptyState_Previews: PreviewProvider {
+struct EmptyStatePreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
