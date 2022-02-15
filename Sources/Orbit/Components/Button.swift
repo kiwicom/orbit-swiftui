@@ -59,6 +59,7 @@ public struct Button: View {
                     }
                 }
                 .padding(.horizontal, label.isEmpty ? 0 : size.padding)
+                .contentShape(Rectangle())
             }
         )
         .buttonStyle(ButtonStyle(style: style, size: size))
