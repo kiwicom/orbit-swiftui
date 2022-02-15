@@ -59,7 +59,6 @@ public struct Button: View {
                     }
                 }
                 .padding(.horizontal, label.isEmpty ? 0 : size.padding)
-                .contentShape(Rectangle())
             }
         )
         .buttonStyle(ButtonStyle(style: style, size: size))
@@ -270,6 +269,7 @@ extension Button {
         public func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .frame(height: size.height)
+                .contentShape(Rectangle())
                 .background(background(for: configuration))
                 .cornerRadius(BorderRadius.default)
         }
