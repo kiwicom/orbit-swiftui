@@ -9,7 +9,7 @@ public enum ListChoiceDisclosure: Equatable {
     
     case none
     /// An iOS-style disclosure indicator.
-    case disclosure(Color = .cloudDarker)
+    case disclosure(Color = .inkLight)
     /// A non-interactive button.
     case button(type: ButtonType)
     /// A non-interactive checkbox.
@@ -87,7 +87,6 @@ public struct ListChoice<Content: View>: View {
             case .disclosure(let color):
                 Icon(symbol: .chevronRight, size: .medium, color: color)
                     .padding(.leading, -.xSmall)
-                    .padding(.trailing, -.xxSmall)
             case .button(let type):
                 disclosureButton(type: type)
                     .padding(.vertical, .small)
