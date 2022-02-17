@@ -9,27 +9,47 @@ import SwiftUI
 /// - Important: The component expands horizontally to infinity if alignment is provided.
 public struct Illustration: View {
 
-    public static let defaultWidth: CGFloat = 300
-
     let name: String
     let bundle: Bundle
-    let maxWidth: CGFloat?
-    let maxHeight: CGFloat?
-    let alignment: Alignment?
+    let size: Size
 
     public var body: some View {
         if name.isEmpty == false {
             SwiftUI.Image(name, bundle: bundle)
                 .resizable()
-                .scaledToFit()
+                .aspectRatio(contentMode: .fit)
                 .frame(maxWidth: maxWidth, maxHeight: maxHeight)
-                .frame(maxWidth: wrapperMaxWidth, alignment: alignment ?? .center)
-                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: wrapperMaxWidth, alignment: wrapperAlignment)
         }
     }
 
     var wrapperMaxWidth: CGFloat? {
-        alignment == nil ? nil : .infinity
+        switch size {
+            case .expanding:                    return .infinity
+            case .intrinsic:                    return nil
+        }
+    }
+    
+    var wrapperAlignment: Alignment {
+        switch size {
+            case .expanding(_, .leading):       return .leading
+            case .expanding(_, .center):        return .center
+            case .expanding(_, .trailing):      return .trailing
+            default:                            return .center
+        }
+    }
+    
+    var maxWidth: CGFloat? {
+        switch size {
+            case .expanding:                    return nil
+            case .intrinsic(let maxWidth, _):   return maxWidth
+        }
+    }
+    
+    var maxHeight: CGFloat? {
+        switch size {
+            case .expanding(let maxHeight, _), .intrinsic(_, let maxHeight):   return maxHeight
+        }
     }
 }
 
@@ -40,41 +60,43 @@ public extension Illustration {
     ///
     /// - Parameters:
     ///     - image: Orbit Illustration asset.
-    ///     - maxWidth: Maximum width of the resizeable image content. Detaults to ``Illustration/defaultWidth``.
-    ///     - maxHeight: Maximum height of the resizeable image content. Defaults to `nil`.
-    ///     - alignment: If provided, expands horizontally to infinity and aligns the resulting resized image. Defaults to `.center`.
+    ///     - size: Sizing behavior of image content.
     init(
         _ image: Image,
-        maxWidth: CGFloat? = Self.defaultWidth,
-        maxHeight: CGFloat? = nil,
-        alignment: Alignment? = .center
+        size: Size = .expanding()
     ) {
         self.name = image.assetName
         self.bundle = .current
-        self.maxWidth = maxWidth
-        self.maxHeight = maxHeight
-        self.alignment = alignment
+        self.size = size
     }
     
     /// Creates Orbit Illustration component for custom image resource.
     ///
     /// - Parameters:
     ///     - name: Resource name. Empty value results in no illustration.
-    ///     - maxWidth: Maximum width of the resizeable image content. Detaults to ``Illustration/defaultWidth``.
-    ///     - maxHeight: Maximum height of the resizeable image content. Defaults to `nil`.
-    ///     - alignment: If provided, expands horizontally to infinity and aligns the resulting resized image. Defaults to `.center`.
+    ///     - bundle: The bundle to search for the image resource and localization.
+    ///     - size: Sizing behavior of image content.
     init(
         _ name: String,
         bundle: Bundle,
-        maxWidth: CGFloat? = Self.defaultWidth,
-        maxHeight: CGFloat? = nil,
-        alignment: Alignment? = .center
+        size: Size = .expanding()
     ) {
         self.name = name
         self.bundle = bundle
-        self.maxWidth = maxWidth
-        self.maxHeight = maxHeight
-        self.alignment = alignment
+        self.size = size
+    }
+}
+
+// MARK: - Types
+public extension Illustration {
+    
+    enum Size {
+        public static let defaultMaxHeight: CGFloat = 200
+        
+        /// Scales illustration up to optional maxHeight and expand horizontally to infinity with specified alignment.
+        case expanding(maxHeight: CGFloat? = Self.defaultMaxHeight, alignment: HorizontalAlignment = .center)
+        /// Scales illustraton up to maxWidth and/or maxHeight.
+        case intrinsic(maxWidth: CGFloat? = nil, maxHeight: CGFloat? = nil)
     }
 }
 
@@ -84,6 +106,7 @@ struct IllustrationPreviews: PreviewProvider {
     public static var previews: some View {
         PreviewWrapper {
             standalone
+            intrinsic
             custom
 
             snapshots
@@ -94,11 +117,22 @@ struct IllustrationPreviews: PreviewProvider {
             .previewDisplayName("All illustrations")
         }
     }
-
+    
     static var standalone: some View {
         Illustration(.womanWithPhone)
             .previewLayout(.sizeThatFits)
     }
+    
+    static var intrinsic: some View {
+        HStack {
+            Illustration(.womanWithPhone, size: .intrinsic(maxHeight: 80))
+                .border(.blue)
+            Illustration(.time, size: .intrinsic(maxHeight: 40))
+                .border(.blue)
+        }
+        .previewLayout(.sizeThatFits)
+    }
+    
     
     static var custom: some View {
         Illustration("WomanWithPhone", bundle: .current)
@@ -121,7 +155,7 @@ struct IllustrationPreviews: PreviewProvider {
                 HStack {
                     VStack {
                         Text("Leading", size: .small)
-                        Illustration(.womanWithPhone, alignment: .leading)
+                        Illustration(.womanWithPhone, size: .expanding(alignment: .leading))
                             .border(Color.cloudDark)
                     }
                 }
@@ -130,8 +164,8 @@ struct IllustrationPreviews: PreviewProvider {
             Card("Default size") {
                 HStack {
                     VStack {
-                        Text("No alignment", size: .small)
-                        Illustration(.womanWithPhone, alignment: nil)
+                        Text("Intrinsic", size: .small)
+                        Illustration(.womanWithPhone, size: .intrinsic())
                             .border(Color.cloudDark)
                     }
                 }
@@ -139,29 +173,8 @@ struct IllustrationPreviews: PreviewProvider {
 
             Card("MaxWidth = 40") {
                 HStack {
-                    VStack(alignment: .leading) {
-                        Text("Leading", size: .small)
-                        Illustration(.womanWithPhone, maxWidth: 40, alignment: .leading)
-                            .border(Color.cloudDark)
-                    }
-
-                    VStack(alignment: .leading) {
-                        Text("Center", size: .small)
-                        Illustration(.womanWithPhone, maxWidth: 40)
-                            .border(Color.cloudDark)
-                    }
-
-                    VStack(alignment: .leading) {
-                        Text("None", size: .small)
-                        Illustration(.womanWithPhone, maxWidth: 40, alignment: nil)
-                            .border(Color.cloudDark)
-                    }
-
-                    VStack(alignment: .leading) {
-                        Text("Trailing", size: .small)
-                        Illustration(.womanWithPhone, maxWidth: 40, alignment: .trailing)
-                            .border(Color.cloudDark)
-                    }
+                    Illustration(.womanWithPhone, size: .intrinsic(maxWidth: 40))
+                        .border(Color.cloudDark)
                 }
             }
 
@@ -169,56 +182,33 @@ struct IllustrationPreviews: PreviewProvider {
                 HStack {
                     VStack(alignment: .leading) {
                         Text("Leading", size: .small)
-                        Illustration(.womanWithPhone, maxWidth: nil, maxHeight: 30, alignment: .leading)
+                        Illustration(.womanWithPhone, size: .expanding(maxHeight: 30, alignment: .leading))
                             .border(Color.cloudDark)
                     }
 
                     VStack(alignment: .leading) {
                         Text("Center", size: .small)
-                        Illustration(.womanWithPhone, maxWidth: nil, maxHeight: 30)
+                        Illustration(.womanWithPhone, size: .expanding(maxHeight: 30))
                             .border(Color.cloudDark)
                     }
 
                     VStack(alignment: .leading) {
                         Text("None", size: .small)
-                        Illustration(.womanWithPhone, maxWidth: nil, maxHeight: 30, alignment: nil)
+                        Illustration(.womanWithPhone, size: .intrinsic(maxHeight: 30))
                             .border(Color.cloudDark)
                     }
 
                     VStack(alignment: .leading) {
                         Text("Trailing", size: .small)
-                        Illustration(.womanWithPhone, maxWidth: nil, maxHeight: 30, alignment: .trailing)
+                        Illustration(.womanWithPhone, size: .expanding(maxHeight: 30, alignment: .trailing))
                             .border(Color.cloudDark)
                     }
                 }
             }
 
             Card("MaxWidth = 40, MaxHeight = 30") {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("Leading", size: .small)
-                        Illustration(.womanWithPhone, maxWidth: 40, maxHeight: 30, alignment: .leading)
-                            .border(Color.cloudDark)
-                    }
-
-                    VStack(alignment: .leading) {
-                        Text("Center", size: .small)
-                        Illustration(.womanWithPhone, maxWidth: 40, maxHeight: 30)
-                            .border(Color.cloudDark)
-                    }
-
-                    VStack(alignment: .leading) {
-                        Text("None", size: .small)
-                        Illustration(.womanWithPhone, maxWidth: 40, maxHeight: 30, alignment: nil)
-                            .border(Color.cloudDark)
-                    }
-
-                    VStack(alignment: .leading) {
-                        Text("Trailing", size: .small)
-                        Illustration(.womanWithPhone, maxWidth: 40, maxHeight: 30, alignment: .trailing)
-                            .border(Color.cloudDark)
-                    }
-                }
+                Illustration(.womanWithPhone, size: .intrinsic(maxWidth: 40, maxHeight: 30))
+                    .border(Color.cloudDark)
             }
         }
         .padding(.vertical)
@@ -230,7 +220,7 @@ struct IllustrationPreviews: PreviewProvider {
         VStack(spacing: .small) {
             ForEach(Illustration.Image.allCases, id: \.self) { image in
                 Separator(image.assetName)
-                Illustration(image, maxHeight: 100, alignment: .center)
+                Illustration(image, size: .expanding(maxHeight: 60))
             }
         }
         .padding(.horizontal)

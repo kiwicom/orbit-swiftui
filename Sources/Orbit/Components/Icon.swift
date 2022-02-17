@@ -57,7 +57,7 @@ public extension Icon {
                         .aspectRatio(contentMode: mode)
                         .frame(width: size.value, height: size.value)
                 case .illustration(let illlustration, let size):
-                    Illustration(illlustration, maxWidth: size.value, maxHeight: size.value, alignment: nil)
+                    Illustration(illlustration, size: .intrinsic(maxWidth: size.value, maxHeight: size.value))
                 case .none:
                     EmptyView()
             }

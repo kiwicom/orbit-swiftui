@@ -12,7 +12,7 @@ public struct EmptyState: View {
 
     public var body: some View {
         VStack(spacing: .medium) {
-            Illustration(illustration, maxHeight: 120)
+            Illustration(illustration, size: .intrinsic(maxHeight: 120))
                 .padding(.top, .large)
         
             texts
