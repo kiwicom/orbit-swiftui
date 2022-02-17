@@ -8,17 +8,25 @@ import SwiftUI
 ///   - ``ChoiceTile``
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tilegroup/)
-/// - Important: Component expands horizontally to infinity up to a ``Layout/readableMaxWidth``.
+/// - Important: Expands horizontally up to ``Layout/readableMaxWidth`` by default and then centered. Can be adjusted by `width` property.
 public struct TileGroup<Content: View>: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     let status: Status?
     let backgroundColor: Color?
+    let width: ContainerWidth
     let content: () -> Content
 
     public var body: some View {
-        Card(spacing: 0, padding: 0, style: .default, status: status, backgroundColor: backgroundColor) {
+        Card(
+            spacing: 0,
+            padding: 0,
+            style: .default,
+            status: status,
+            width: width,
+            backgroundColor: backgroundColor
+        ) {
             content()
         }
     }
@@ -34,10 +42,12 @@ public extension TileGroup {
     init(
         status: Status? = nil,
         backgroundColor: Color? = nil,
+        width: ContainerWidth = .expanding(),
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.status = status
         self.backgroundColor = backgroundColor
+        self.width = width
         self.content = content
     }
 }
