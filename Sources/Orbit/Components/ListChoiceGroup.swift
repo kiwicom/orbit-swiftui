@@ -15,7 +15,7 @@ public enum ListChoiceGroupStyle {
 ///   - ``ListChoice``
 ///   - ``Card``
 ///
-/// - Important: Component expands horizontally to infinity up to a ``Layout/readableMaxWidth``.
+/// - Important: Expands horizontally up to ``Layout/readableMaxWidth`` by default and then centered. Can be adjusted by `width` property.
 public struct ListChoiceGroup<Content: View>: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
@@ -24,12 +24,21 @@ public struct ListChoiceGroup<Content: View>: View {
     let iconContent: Icon.Content
     let style: ListChoiceGroupStyle
     let titleStyle: Header.TitleStyle
+    let width: ContainerWidth
     let content: () -> Content
 
     public var body: some View {
         switch style {
             case .card(let status, let backgroundColor):
-                Card(title, spacing: 0, padding: 0, style: .iOS, status: status, backgroundColor: backgroundColor) {
+                Card(
+                    title,
+                    spacing: 0,
+                    padding: 0,
+                    style: .iOS,
+                    status: status,
+                    width: width,
+                    backgroundColor: backgroundColor
+                ) {
                     content()
                 }
             case .borderless:
@@ -48,7 +57,6 @@ public struct ListChoiceGroup<Content: View>: View {
         }
         .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
         .frame(maxWidth: .infinity)
-        .padding(.horizontal, horizontalSizeClass == .regular ? .medium : 0)
     }
 }
 
@@ -61,12 +69,14 @@ public extension ListChoiceGroup {
         icon: Icon.Symbol = .none,
         style: ListChoiceGroupStyle = .card(),
         titleStyle: Header.TitleStyle = .title3,
+        width: ContainerWidth = .expanding(),
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
         self.iconContent = .icon(icon, size: .header(titleStyle))
         self.style = style
         self.titleStyle = titleStyle
+        self.width = width
         self.content = content
     }
     
@@ -76,12 +86,14 @@ public extension ListChoiceGroup {
         iconContent: Icon.Content,
         style: ListChoiceGroupStyle = .card(),
         titleStyle: Header.TitleStyle = .title3,
+        width: ContainerWidth = .expanding(),
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
         self.iconContent = iconContent
         self.style = style
         self.titleStyle = titleStyle
+        self.width = width
         self.content = content
     }
 }
@@ -130,7 +142,7 @@ struct ListChoiceGroupPreviews: PreviewProvider {
         listChoiceGroupsCard
             .background(Color.cloudLight)
             .environment(\.horizontalSizeClass, .regular)
-            .frame(width: Layout.readableMaxWidth - 200)
+            .frame(width: Layout.readableMaxWidth - 5)
             .previewDisplayName("Style - Card Regular narrow")
     }
     
@@ -152,7 +164,7 @@ struct ListChoiceGroupPreviews: PreviewProvider {
         listChoiceGroupsBorderless
             .background(Color.cloudLight)
             .environment(\.horizontalSizeClass, .regular)
-            .frame(width: Layout.readableMaxWidth - 200)
+            .frame(width: Layout.readableMaxWidth - 8)
             .previewDisplayName("Style - Borderless Regular narrow")
     }
 

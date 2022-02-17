@@ -31,7 +31,7 @@ public enum CardStyle {
 ///   - ``Table``
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/card/)
-/// - Important: Component expands horizontally to infinity up to a ``Layout/readableMaxWidth``.
+/// - Important: Expands horizontally up to ``Layout/readableMaxWidth`` by default and then centered. Can be adjusted by `width` property.
 public struct Card<Content: View>: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
@@ -46,6 +46,7 @@ public struct Card<Content: View>: View {
     let style: CardStyle
     let titleStyle: Header.TitleStyle
     let status: Status?
+    let width: ContainerWidth
     let backgroundColor: Color?
     let content: () -> Content
 
@@ -61,14 +62,14 @@ public struct Card<Content: View>: View {
                 .padding([.horizontal, .bottom], padding)
             }
         }
-        .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
+        .frame(maxWidth: maxWidth, alignment: .leading)
         .tileBorder(
             style: style.tileBorderStyle,
             status: status,
             backgroundColor: backgroundColor,
             shadow: shadow
         )
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: maxOuterWidth)
         .padding(.horizontal, horizontalPadding)
     }
 
@@ -78,7 +79,9 @@ public struct Card<Content: View>: View {
 
                 Header(title, description: description, iconContent: iconContent, titleStyle: titleStyle)
 
-                Spacer(minLength: .xxxSmall)
+                if case .expanding = width {
+                    Spacer(minLength: .xxxSmall)
+                }
 
                 switch action {
                     case .buttonLink(let label, let action, let accessibilityIdentifier):
@@ -98,9 +101,28 @@ public struct Card<Content: View>: View {
     var cornerRadius: CGFloat {
         horizontalSizeClass == .regular ? BorderRadius.default : 0
     }
+    
+    var maxWidth: CGFloat? {
+        switch width {
+            case .expanding(let upTo, _):   return upTo
+            case .intrinsic:                return nil
+        }
+    }
+    
+    var maxOuterWidth: CGFloat? {
+        switch width {
+            case .expanding:                return .infinity
+            case .intrinsic:                return nil
+        }
+    }
 
     var horizontalPadding: CGFloat {
-        horizontalSizeClass == .regular ? .medium : 0
+        guard horizontalSizeClass == .regular else { return 0 }
+        
+        switch width {
+            case .expanding(_, let minimalRegularWidthPadding):     return minimalRegularWidthPadding
+            case .intrinsic:                                        return 0
+        }
     }
 
     var isHeaderEmpty: Bool {
@@ -135,6 +157,7 @@ public extension Card {
         style: CardStyle = .iOS,
         titleStyle: Header.TitleStyle = .title3,
         status: Status? = nil,
+        width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .white,
         @ViewBuilder content: @escaping () -> Content
     ) {
@@ -148,6 +171,7 @@ public extension Card {
         self.style = style
         self.titleStyle = titleStyle
         self.status = status
+        self.width = width
         self.backgroundColor = backgroundColor
         self.content = { content() }
     }
@@ -164,6 +188,7 @@ public extension Card {
         style: CardStyle = .iOS,
         titleStyle: Header.TitleStyle = .title3,
         status: Status? = nil,
+        width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .white
     ) where Content == EmptyView {
         self.init(
@@ -177,6 +202,7 @@ public extension Card {
             style: style,
             titleStyle: titleStyle,
             status: status,
+            width: width,
             backgroundColor: backgroundColor,
             content: { EmptyView() }
         )
@@ -194,6 +220,7 @@ public extension Card {
         style: CardStyle = .iOS,
         titleStyle: Header.TitleStyle = .title3,
         status: Status? = nil,
+        width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .white,
         @ViewBuilder content: @escaping () -> Content
     ) {
@@ -207,6 +234,7 @@ public extension Card {
         self.style = style
         self.titleStyle = titleStyle
         self.status = status
+        self.width = width
         self.backgroundColor = backgroundColor
         self.content = { content() }
     }
@@ -223,6 +251,7 @@ public extension Card {
         style: CardStyle = .iOS,
         titleStyle: Header.TitleStyle = .title3,
         status: Status? = nil,
+        width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .white
     ) where Content == EmptyView {
         self.init(
@@ -236,6 +265,7 @@ public extension Card {
             style: style,
             titleStyle: titleStyle,
             status: status,
+            width: width,
             backgroundColor: backgroundColor
         ) { EmptyView() }
     }
@@ -247,17 +277,18 @@ struct CardPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            standaloneIntrinsic
             standaloneIos
             snapshots
             snapshotsDefault
 
             content
-                .frame(width: 800)
+                .frame(width: Layout.readableMaxWidth + 100)
                 .environment(\.horizontalSizeClass, .regular)
                 .previewDisplayName("Regular wide")
 
             content
-                .frame(width: 450)
+                .frame(width: Layout.readableMaxWidth - 5)
                 .environment(\.horizontalSizeClass, .regular)
                 .previewDisplayName("Regular narrow")
         }
@@ -271,8 +302,16 @@ struct CardPreviews: PreviewProvider {
         }
         .padding()
         .background(Color.cloudLight)
-        .previewLayout(.sizeThatFits)
         .previewDisplayName("Standalone")
+    }
+    
+    static var standaloneIntrinsic: some View {
+        Card("Card title", description: "Card description", icon: .baggageSet, style: .default, width: .intrinsic) {
+            Text("Card Content")
+        }
+        .padding()
+        .background(Color.cloudLight)
+        .previewDisplayName("Standalone Intrinsic width")
     }
     
     static var standaloneIos: some View {
@@ -280,9 +319,8 @@ struct CardPreviews: PreviewProvider {
             customContentPlaceholder
             customContentPlaceholder
         }
-        .padding()
+        .padding(.vertical)
         .background(Color.cloudLight)
-        .previewLayout(.sizeThatFits)
         .previewDisplayName("Standalone (iOS)")
     }
 
@@ -310,26 +348,36 @@ struct CardPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .medium) {
             Card("Card title", description: "Card description", icon: .baggageSet, action: .buttonLink("ButtonLink")) {
                 customContentPlaceholder
+                Tile("Tile")
+                TileGroup(width: .intrinsic) {
+                    Tile("Tile in TileGroup", border: .separator)
+                    Tile("Tile in TileGroup", border: .none)
+                }
+                ListChoice("ListChoice")
+                ListChoiceGroup(width: .intrinsic) {
+                    ListChoice("ListChoice in ListChoiceGroup")
+                    ListChoice("ListChoice in ListChoiceGroup")
+                }
                 customContentPlaceholder
             }
             
             Card("Card without content", action: .buttonLink("Edit"))
-            
+
             Card() {
                 customContentPlaceholder
                 customContentPlaceholder
             }
-            
+
             Card("Card with custom spacing and padding", action: .buttonLink("ButtonLink"), spacing: .xxSmall, padding: 0) {
                 customContentPlaceholder
                 customContentPlaceholder
             }
-            
+
             Card(spacing: .xxSmall, padding: 0) {
                 customContentPlaceholder
                 customContentPlaceholder
             }
-            
+
             cardContent
         }
         .padding(.vertical)

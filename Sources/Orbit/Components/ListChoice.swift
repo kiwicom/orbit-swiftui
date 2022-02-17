@@ -19,7 +19,7 @@ public enum ListChoiceDisclosure: Equatable {
 /// Shows one of a selectable list of items with similar structures.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/listchoice/)
-/// - Important: Component expands horizontally to infinity up to a ``Layout/readableMaxWidth``.
+/// - Important: Component expands horizontally up to ``Layout/readableMaxWidth``.
 public struct ListChoice<Content: View>: View {
 
     let title: String
@@ -37,7 +37,14 @@ public struct ListChoice<Content: View>: View {
                 action()
             },
             label: {
-                buttonContent
+                HStack(spacing: .medium) {
+                    headerWithValue
+                    
+                    disclosureView
+                        .padding(.trailing, .medium)
+                }
+                .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
+                .overlay(separator, alignment: .bottom)
             }
         )
         .buttonStyle(ListChoiceButtonStyle())
@@ -45,17 +52,6 @@ public struct ListChoice<Content: View>: View {
         .accessibility(hint: SwiftUI.Text(description))
         .accessibility(removeTraits: accessibilityTraitsToRemove)
         .accessibility(addTraits: accessibilityTraitsToAdd)
-    }
-
-    @ViewBuilder var buttonContent: some View {
-        HStack(spacing: .medium) {
-            headerWithValue
-            
-            disclosureView
-                .padding(.trailing, .medium)
-        }
-        .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
-        .overlay(separator, alignment: .bottom)
     }
     
     @ViewBuilder var headerWithValue: some View {
