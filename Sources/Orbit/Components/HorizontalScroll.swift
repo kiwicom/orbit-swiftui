@@ -135,16 +135,16 @@ struct HorizontalScrollPreviews: PreviewProvider {
     static var ratioWidthIntrinsicHeight: some View {
         HorizontalScroll {
 
-            ChoiceTile("Choice Tile", icon: .accomodation) {
+            ChoiceTile("Choice Tile", icon: .accommodation) {
                 customContentPlaceholder
             }
             
-            ChoiceTile("Choice Tile with long title", icon: .accomodation) {
+            ChoiceTile("Choice Tile with long title", icon: .accommodation) {
                 Color.blueLight
                     .frame(width: 100, height: 150)
             }
             
-            ChoiceTile("Choice Tile", description: "Description", icon: .accomodation) {
+            ChoiceTile("Choice Tile", description: "Description", icon: .accommodation) {
                 customContentPlaceholder
             }
         }
@@ -154,7 +154,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
     static var smallRatioWidthIntrinsicHeight: some View {
         HorizontalScroll(itemWidth: .ratio(0.33), itemHeight: .intrinsic) {
 
-            ChoiceTile("ChoiceTile", icon: .accomodation) {
+            ChoiceTile("ChoiceTile", icon: .accommodation) {
                 VStack {
                     Text("Matching tallest item using Spacer")
                     Spacer()
@@ -162,12 +162,12 @@ struct HorizontalScrollPreviews: PreviewProvider {
                 }
             }
             
-            ChoiceTile("ChoiceTile", icon: .accomodation) {
+            ChoiceTile("ChoiceTile", icon: .accommodation) {
                 Color.blueLight
                     .frame(height: 150)
             }
             
-            ChoiceTile("ChoiceTile", description: "Description", icon: .accomodation) {
+            ChoiceTile("ChoiceTile", description: "Description", icon: .accommodation) {
                 customContentPlaceholder
             }
         }
@@ -177,16 +177,16 @@ struct HorizontalScrollPreviews: PreviewProvider {
     static var fullWidthIntrinsicHeight: some View {
         HorizontalScroll(itemWidth: .ratio(1), itemHeight: .intrinsic) {
 
-            ChoiceTile("Choice Tile", icon: .accomodation) {
+            ChoiceTile("Choice Tile", icon: .accommodation) {
                 customContentPlaceholder
             }
             
-            ChoiceTile("Choice Tile with long title", icon: .accomodation) {
+            ChoiceTile("Choice Tile with long title", icon: .accommodation) {
                 Color.blueLight
                     .frame(height: 150)
             }
             
-            ChoiceTile("Choice Tile", description: "Description", icon: .accomodation) {
+            ChoiceTile("Choice Tile", description: "Description", icon: .accommodation) {
                 customContentPlaceholder
             }
         }
@@ -196,16 +196,16 @@ struct HorizontalScrollPreviews: PreviewProvider {
     static var intrinsic: some View {
         HorizontalScroll(itemWidth: .intrinsic, itemHeight: .intrinsic) {
 
-            ChoiceTile("Choice Tile", icon: .accomodation) {
+            ChoiceTile("Choice Tile", icon: .accommodation) {
                 customContentPlaceholder
             }
             
-            ChoiceTile("Choice Tile with long title", icon: .accomodation) {
+            ChoiceTile("Choice Tile with long title", icon: .accommodation) {
                 Color.blueLight
                     .frame(height: 150)
             }
             
-            ChoiceTile("Choice Tile", description: "Description", icon: .accomodation) {
+            ChoiceTile("Choice Tile", description: "Description", icon: .accommodation) {
                 customContentPlaceholder
             }
         }
@@ -215,7 +215,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
     static var custom: some View {
         HorizontalScroll(itemWidth: .custom(120), itemHeight: .custom(120)) {
 
-            ChoiceTile("Choice Tile", icon: .accomodation) {
+            ChoiceTile("Choice Tile", icon: .accommodation) {
                 Spacer()
             }
             

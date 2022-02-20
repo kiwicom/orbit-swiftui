@@ -132,7 +132,7 @@ struct IconPreviews: PreviewProvider {
         VStack(spacing: .small) {
             ForEach(Icon.Symbol.allCases.sorted(), id: \.self) { icon in
                 HStack {
-                    Text(icon.rawValue, size: .normal)
+                    Text("\(icon)", size: .normal)
                         .layoutPriority(1)
                     Separator()
                     Icon(icon, size: .large, color: .inkNormal)

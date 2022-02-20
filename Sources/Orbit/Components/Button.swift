@@ -362,7 +362,7 @@ struct ButtonPreviews: PreviewProvider {
 
             HStack(spacing: .medium) {
                 Button("Icons", style: .secondary, icon: .anywhere, disclosureIcon: .chevronRight)
-                Button("Icons", style: .secondary, icon: .accomodation, disclosureIcon: .informationCircle)
+                Button("Icons", style: .secondary, icon: .accommodation, disclosureIcon: .informationCircle)
             }
         }
         .padding(.vertical)
@@ -381,7 +381,7 @@ struct ButtonPreviews: PreviewProvider {
 
             HStack(spacing: .medium) {
                 Button("Icons", style: .secondary, size: .small, icon: .anywhere, disclosureIcon: .chevronRight)
-                Button("Icons", style: .secondary, size: .small, icon: .accomodation, disclosureIcon: .informationCircle)
+                Button("Icons", style: .secondary, size: .small, icon: .accommodation, disclosureIcon: .informationCircle)
             }
         }
         .padding(.vertical)
