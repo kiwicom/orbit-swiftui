@@ -155,8 +155,8 @@ struct TagGroupPreviews: PreviewProvider {
 
                         ForEach(tags.wrappedValue) { tag in
                             HStack {
-                                Icon(tag.isSelected ? .checkCircle : .emptyCircle, size: .small)
-                                Icon(tag.isRemoved ? .remove : .emptyCircle, size: .small)
+                                Icon(tag.isSelected ? .checkCircle : .circleEmpty, size: .small)
+                                Icon(tag.isRemoved ? .remove : .circleEmpty, size: .small)
                                 Text(tag.label, size: .small)
                             }
                         }

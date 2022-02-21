@@ -17,10 +17,9 @@ git config --local user.name "Mobile Automation"
 git add --all || true
 git commit -m "tokens: update colors on $TODAY" || true
 
-# TODO: icons!
-# ???
-# git add --all || true
-# git commit -m "tokens: update icons on $TODAY" || true
+./Automation/update_icons.py Sources/Orbit/Foundation/Icons
+git add --all || true
+git commit -m "tokens: update icons on $TODAY" || true
 
 ./Automation/update_illustrations.py
 git add --all || true

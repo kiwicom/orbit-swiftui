@@ -197,7 +197,7 @@ struct ButtonLinkPreviews: PreviewProvider {
     
     static var withIcon: some View {
         VStack(alignment: .leading, spacing: .small) {
-            ButtonLink("Primary", style: .primary, icon: .accomodation)
+            ButtonLink("Primary", style: .primary, icon: .accommodation)
             ButtonLink("Secondary", style: .secondary, icon: .airplaneDown)
             ButtonLink("Critical", style: .critical, icon: .alertCircle)
         }

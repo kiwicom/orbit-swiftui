@@ -456,11 +456,11 @@ struct TextPreviews: PreviewProvider {
                 )
 
                 HStack {
-                    Badge("<strong>Strong</strong> badge <u>label</u>", icon: .accomodation)
+                    Badge("<strong>Strong</strong> badge <u>label</u>", icon: .accommodation)
                     Badge("<strong>Strong</strong> badge <u>label</u>", style: .status(.success, inverted: true))
                     Spacer(minLength: 0)
                 }
-                BadgeList("<strong>Strong</strong> badge <u>label</u>", icon: .accomodation, style: .status(.success))
+                BadgeList("<strong>Strong</strong> badge <u>label</u>", icon: .accommodation, style: .status(.success))
             }
         }
         .padding(.vertical)

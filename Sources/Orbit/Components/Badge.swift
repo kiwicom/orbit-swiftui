@@ -213,7 +213,7 @@ struct BadgePreviews: PreviewProvider {
                 }
                 VStack(alignment: .leading, spacing: .xSmall) {
                     Badge("Orange Gradient", icon: .check, style: .gradient(.bundleBasic))
-                    Badge("Purple Gradient", icon: .accomodation, style: .gradient(.bundleMedium))
+                    Badge("Purple Gradient", icon: .accommodation, style: .gradient(.bundleMedium))
                     Badge("Ink Gradient", icon: .airplaneUp, style: .gradient(.bundleTop))
                 }
             }
@@ -229,10 +229,10 @@ struct BadgePreviews: PreviewProvider {
                     Badge("Info Inverted", icon: .bus, style: .status(.info, inverted: true))
                     Badge("Success", icon: .airplane, style: .status(.success))
                     Badge("Success Inverted", icon: .baggageCabin, style: .status(.success, inverted: true))
-                    Badge("Warning", icon: .baggageNone, style: .status(.warning))
-                    Badge("Warning Inverted", icon: .accomodation, style: .status(.warning, inverted: true))
-                    Badge("Critical", icon: .accomodation, style: .status(.critical))
-                    Badge("Critical Inverted", icon: .accomodation, style: .status(.critical, inverted: true))
+                    Badge("Warning", icon: .baggageCheckedNone, style: .status(.warning))
+                    Badge("Warning Inverted", icon: .accommodation, style: .status(.warning, inverted: true))
+                    Badge("Critical", icon: .accommodation, style: .status(.critical))
+                    Badge("Critical Inverted", icon: .accommodation, style: .status(.critical, inverted: true))
                 }
                 VStack(alignment: .leading, spacing: .xSmall) {
                     Badge("Orange Gradient", style: .gradient(.bundleBasic))
@@ -287,7 +287,7 @@ struct BadgePreviews: PreviewProvider {
             .previewDisplayName("Only icon or label")
 
             HStack {
-                Badge("Label", icon: .accomodation, style: .neutral, size: .compact)
+                Badge("Label", icon: .accommodation, style: .neutral, size: .compact)
                 Badge("Only label", style: .neutral, size: .compact)
                 Badge("1", style: .status(.critical, inverted: true), size: .compact)
                 Badge("", icon: .wifi, style: .neutral, size: .compact)
