@@ -14,8 +14,8 @@ public struct Dialog: View {
 
     public var body: some View {
         VStack(alignment: .center, spacing: .medium) {
-            if let illustration = illustration {
-                Illustration(illustration, size: .intrinsic(maxHeight: 120))
+            if illustration != .none {
+                Illustration(illustration, layout: .frame(maxHeight: 120))
                     .padding(.top, .medium)
             }
 
