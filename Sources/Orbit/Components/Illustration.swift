@@ -6,50 +6,36 @@ import SwiftUI
 ///   - ``Icon``
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/illustration/)
-/// - Important: The component expands horizontally to infinity if alignment is provided.
+/// - Important: The component expands horizontally to infinity in case of `.expanded` layout.
 public struct Illustration: View {
 
     let name: String
     let bundle: Bundle
-    let size: Size
+    let layout: Layout
 
     public var body: some View {
         if name.isEmpty == false {
-            SwiftUI.Image(name, bundle: bundle)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: maxWidth, maxHeight: maxHeight)
-                .frame(maxWidth: wrapperMaxWidth, alignment: wrapperAlignment)
-        }
-    }
-
-    var wrapperMaxWidth: CGFloat? {
-        switch size {
-            case .expanding:                    return .infinity
-            case .intrinsic:                    return nil
-        }
-    }
-    
-    var wrapperAlignment: Alignment {
-        switch size {
-            case .expanding(_, .leading):       return .leading
-            case .expanding(_, .center):        return .center
-            case .expanding(_, .trailing):      return .trailing
-            default:                            return .center
+            switch layout {
+                case .frame(let minHeight, let maxHeight, let alignment):
+                    resizeableImage
+                        .frame(minHeight: minHeight, idealHeight: maxHeight, maxHeight: maxHeight)
+                        .frame(maxWidth: .infinity, alignment: .init(alignment))
+                case .resizeable:
+                    resizeableImage
+                case .intrinsic:
+                    image
+            }
         }
     }
     
-    var maxWidth: CGFloat? {
-        switch size {
-            case .expanding:                    return nil
-            case .intrinsic(let maxWidth, _):   return maxWidth
-        }
+    @ViewBuilder var resizeableImage: some View {
+        image
+            .resizable()
+            .scaledToFit()
     }
     
-    var maxHeight: CGFloat? {
-        switch size {
-            case .expanding(let maxHeight, _), .intrinsic(_, let maxHeight):   return maxHeight
-        }
+    @ViewBuilder var image: SwiftUI.Image {
+        SwiftUI.Image(name, bundle: bundle)
     }
 }
 
@@ -63,11 +49,11 @@ public extension Illustration {
     ///     - size: Sizing behavior of image content.
     init(
         _ image: Image,
-        size: Size = .expanding()
+        layout: Layout = .frame()
     ) {
         self.name = image.assetName
         self.bundle = .current
-        self.size = size
+        self.layout = layout
     }
     
     /// Creates Orbit Illustration component for custom image resource.
@@ -79,24 +65,31 @@ public extension Illustration {
     init(
         _ name: String,
         bundle: Bundle,
-        size: Size = .expanding()
+        layout: Layout = .frame()
     ) {
         self.name = name
         self.bundle = bundle
-        self.size = size
+        self.layout = layout
     }
 }
 
 // MARK: - Types
 public extension Illustration {
     
-    enum Size {
+    enum Layout {
+        public static let defaultMinHeight: CGFloat = 10
         public static let defaultMaxHeight: CGFloat = 200
         
-        /// Scales illustration up to optional maxHeight and expand horizontally to infinity with specified alignment.
-        case expanding(maxHeight: CGFloat? = Self.defaultMaxHeight, alignment: HorizontalAlignment = .center)
-        /// Scales illustraton up to maxWidth and/or maxHeight.
-        case intrinsic(maxWidth: CGFloat? = nil, maxHeight: CGFloat? = nil)
+        /// Positions illustration, first scaled to fit height values, in a horizontally expanded frame with specified alignment.
+        case frame(
+            minHeight: CGFloat? = Self.defaultMinHeight,
+            maxHeight: CGFloat? = Self.defaultMaxHeight,
+            alignment: HorizontalAlignment = .center
+        )
+        /// Illustration with `resizable` and `scaledToFit` modifiers applied to allow further sizing.
+        case resizeable
+        /// Keeps original illustration size without applying any resize options.
+        case intrinsic
     }
 }
 
@@ -105,11 +98,18 @@ struct IllustrationPreviews: PreviewProvider {
 
     public static var previews: some View {
         PreviewWrapper {
-            standalone
-            intrinsic
-            custom
+            Group {
+                standalone
+                intrinsic
+                customResource
+                
+                stackFixed
+                stackExpanding
 
-            snapshots
+                snapshotsExpanding
+                snapshotsSizing
+            }
+            .previewLayout(.sizeThatFits)
 
             ScrollView {
                 orbit
@@ -120,107 +120,137 @@ struct IllustrationPreviews: PreviewProvider {
     
     static var standalone: some View {
         Illustration(.womanWithPhone)
-            .previewLayout(.sizeThatFits)
     }
     
     static var intrinsic: some View {
-        HStack {
-            Illustration(.womanWithPhone, size: .intrinsic(maxHeight: 80))
-                .border(.blue)
-            Illustration(.time, size: .intrinsic(maxHeight: 40))
-                .border(.blue)
+        Illustration(.womanWithPhone, layout: .intrinsic)
+            .previewDisplayName("Intrinsic size")
+    }
+
+    static var customResource: some View {
+        Illustration("WomanWithPhone", bundle: .current, layout: .intrinsic)
+            .previewDisplayName("Custom image resource")
+    }
+    
+    static var stackFixed: some View {
+        VStack {
+            Illustration(.womanWithPhone)
+                .border(Color.cloudDark)
+            
+            Illustration(.womanWithPhone)
+                .border(Color.cloudDark)
         }
-        .previewLayout(.sizeThatFits)
+        .previewDisplayName("Fixed stack")
     }
     
-    
-    static var custom: some View {
-        Illustration("WomanWithPhone", bundle: .current)
-            .previewLayout(.sizeThatFits)
+    static var stackExpanding: some View {
+        ScrollView {
+            VStack {
+                Illustration(.womanWithPhone)
+                    .border(Color.cloudDark)
+                
+                Illustration(.womanWithPhone)
+                    .border(Color.cloudDark)
+            }
+        }
+        .previewDisplayName("Expanding stack")
     }
 
-    static var snapshots: some View {
+    static var snapshotsExpanding: some View {
+        Card {
+            VStack {
+                Text("Expanded - Center (default)", size: .small)
+                Illustration(.womanWithPhone, layout: .frame(maxHeight: 100))
+                    .border(Color.cloudDark)
+            }
+            
+            VStack {
+                Text("Expanded - Leading", size: .small)
+                Illustration(.womanWithPhone, layout: .frame(maxHeight: 100, alignment: .leading))
+                    .border(Color.cloudDark)
+            }
+            
+            VStack {
+                Text("Expanded - Trailing", size: .small)
+                Illustration(.womanWithPhone, layout: .frame(maxHeight: 100, alignment: .trailing))
+                    .border(Color.cloudDark)
+            }
+            
+            VStack {
+                Text("Resizeable", size: .small)
+                Illustration(.womanWithPhone, layout: .resizeable)
+                    .frame(height: 100)
+                    .border(Color.cloudDark)
+            }
+        }
+        .background(Color.cloudLight)
+        .previewDisplayName("Layout - Expanded")
+    }
+
+    static var snapshotsSizing: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            Card("Default size") {
-                HStack {
-                    VStack {
-                        Text("Center (default)", size: .small)
-                        Illustration(.womanWithPhone)
-                            .border(Color.cloudDark)
-                    }
-                }
-            }
 
-            Card("Default size") {
-                HStack {
-                    VStack {
-                        Text("Leading", size: .small)
-                        Illustration(.womanWithPhone, size: .expanding(alignment: .leading))
-                            .border(Color.cloudDark)
-                    }
+            Card("Resizeable") {
+                VStack(alignment: .leading) {
+                    Text("Width = 80", size: .small)
+                    Illustration(.womanWithPhone, layout: .resizeable)
+                        .frame(width: 80)
+                        .border(Color.cloudDark)
                 }
-            }
 
-            Card("Default size") {
-                HStack {
-                    VStack {
-                        Text("Intrinsic", size: .small)
-                        Illustration(.womanWithPhone, size: .intrinsic())
-                            .border(Color.cloudDark)
-                    }
+                VStack(alignment: .leading) {
+                    Text("Height = 80", size: .small)
+                    Illustration(.womanWithPhone, layout: .resizeable)
+                        .frame(height: 80)
+                        .border(Color.cloudDark)
                 }
-            }
 
-            Card("MaxWidth = 40") {
-                HStack {
-                    Illustration(.womanWithPhone, size: .intrinsic(maxWidth: 40))
+                VStack(alignment: .leading) {
+                    Text("Width = 80, Height = 80", size: .small)
+                    Illustration(.womanWithPhone, layout: .resizeable)
+                        .frame(width: 80, height: 80)
                         .border(Color.cloudDark)
                 }
             }
 
-            Card("MaxHeight = 30") {
+            Card("Mix, Height = 30") {
                 HStack {
                     VStack(alignment: .leading) {
                         Text("Leading", size: .small)
-                        Illustration(.womanWithPhone, size: .expanding(maxHeight: 30, alignment: .leading))
+                        Illustration(.womanWithPhone, layout: .frame(maxHeight: 30, alignment: .leading))
                             .border(Color.cloudDark)
                     }
 
                     VStack(alignment: .leading) {
                         Text("Center", size: .small)
-                        Illustration(.womanWithPhone, size: .expanding(maxHeight: 30))
+                        Illustration(.womanWithPhone, layout: .frame(maxHeight: 30))
                             .border(Color.cloudDark)
                     }
 
                     VStack(alignment: .leading) {
-                        Text("None", size: .small)
-                        Illustration(.womanWithPhone, size: .intrinsic(maxHeight: 30))
+                        Text("Resizeable", size: .small)
+                        Illustration(.womanWithPhone, layout: .resizeable)
+                            .frame(height: 30)
                             .border(Color.cloudDark)
                     }
 
                     VStack(alignment: .leading) {
                         Text("Trailing", size: .small)
-                        Illustration(.womanWithPhone, size: .expanding(maxHeight: 30, alignment: .trailing))
+                        Illustration(.womanWithPhone, layout: .frame(maxHeight: 30, alignment: .trailing))
                             .border(Color.cloudDark)
                     }
                 }
             }
-
-            Card("MaxWidth = 40, MaxHeight = 30") {
-                Illustration(.womanWithPhone, size: .intrinsic(maxWidth: 40, maxHeight: 30))
-                    .border(Color.cloudDark)
-            }
         }
-        .padding(.vertical)
-        .previewLayout(.sizeThatFits)
-        .previewDisplayName("Snapshots")
+        .background(Color.cloudLight)
+        .previewDisplayName("Mixed sizes")
     }
 
     static var orbit: some View {
         VStack(spacing: .small) {
             ForEach(Illustration.Image.allCases, id: \.self) { image in
                 Separator(image.assetName)
-                Illustration(image, size: .expanding(maxHeight: 60))
+                Illustration(image, layout: .frame(maxHeight: 60))
             }
         }
         .padding(.horizontal)
