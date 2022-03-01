@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Also known as textbox. Offers users a simple input for a form.
 ///
@@ -15,6 +16,7 @@ public struct InputField: View {
     @Binding private var value: String
     @Binding private var messageHeight: CGFloat
     @State private var isEditing: Bool = false
+    @State private var isSecureTextEntry: Bool = true
 
     let label: String
     let placeholder: String
@@ -25,8 +27,8 @@ public struct InputField: View {
     let keyboard: UIKeyboardType
     let autocapitalization: UITextAutocapitalizationType
     let isAutocompleteEnabled: Bool
+    let isSecure: Bool
     let message: MessageType
-
     let onEditingChanged: (Bool) -> Void
     let onCommit: () -> Void
     let suffixAction: () -> Void
@@ -34,19 +36,34 @@ public struct InputField: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: .xxSmall) {
             FormFieldLabel(label)
-            
+
             InputContent(
                 prefix: prefix,
                 suffix: suffix,
                 state: state,
                 message: message,
                 isEditing: isEditing,
-                suffixAction: suffixAction
-            ) {
-                HStack(spacing: 0) {
-                    textField
-                    Spacer(minLength: 0)
-                    clearButton
+                suffixAction: suffixAction,
+                label: {
+                    HStack(spacing: 0) {
+                        input
+                            .textFieldStyle(TextFieldStyle(leadingPadding: 0))
+                            .autocapitalization(autocapitalization)
+                            .disableAutocorrection(isAutocompleteEnabled == false)
+                            .textContentType(textContent)
+                            .keyboardType(keyboard)
+                            .font(.orbit(size: Text.Size.normal.value, weight: .regular))
+                            .accentColor(.blueNormal)
+                            .frame(height: Layout.preferredButtonHeight)
+                            .background(textFieldPlaceholder, alignment: .leading)
+                            .disabled(state == .disabled)
+                        if isSecure {
+                            securedSuffix
+                        } else {
+                            Spacer(minLength: 0)
+                            clearButton
+                        }
+                    }
                 }
             }
             
@@ -56,6 +73,23 @@ public struct InputField: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder var input: some View {
+        if isSecure {
+            secureField
+        } else {
+            textField
+        }
+    }
+
+    @ViewBuilder var secureField: some View {
+        SecureTextField(text: $value, isSecured: $isSecureTextEntry)
+        .onTapGesture {
+            self.isEditing = isEditing
+            onEditingChanged(isEditing)
+        }
+        .background(textFieldPlaceholder, alignment: .leading)
     }
 
     @ViewBuilder var textField: some View {
@@ -68,16 +102,6 @@ public struct InputField: View {
             },
             onCommit: onCommit
         )
-        .textFieldStyle(TextFieldStyle(leadingPadding: 0))
-        .autocapitalization(autocapitalization)
-        .disableAutocorrection(isAutocompleteEnabled == false)
-        .textContentType(textContent)
-        .keyboardType(keyboard)
-        .font(.orbit(size: Text.Size.normal.value, weight: .regular))
-        .accentColor(.blueNormal)
-        .frame(height: Layout.preferredButtonHeight)
-        .background(textFieldPlaceholder, alignment: .leading)
-        .disabled(state == .disabled)
     }
 
     @ViewBuilder var textFieldPlaceholder: some View {
@@ -96,6 +120,15 @@ public struct InputField: View {
                 .onTapGesture {
                     value = ""
                 }
+        }
+    }
+
+    @ViewBuilder var securedSuffix: some View {
+        Icon.Content.icon(isSecureTextEntry ? .visibility : .visibilityOff, size: .default)
+        .view()
+        .padding(.horizontal, .xSmall)
+        .onTapGesture {
+            isSecureTextEntry.toggle()
         }
     }
 }
@@ -119,6 +152,7 @@ public extension InputField {
         keyboard: UIKeyboardType = .default,
         autocapitalization: UITextAutocapitalizationType = .none,
         isAutocompleteEnabled: Bool = false,
+        isSecure: Bool = false,
         message: MessageType = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
         onEditingChanged: @escaping (Bool) -> Void = { _ in },
@@ -137,6 +171,7 @@ public extension InputField {
         self.keyboard = keyboard
         self.autocapitalization = autocapitalization
         self.isAutocompleteEnabled = isAutocompleteEnabled
+        self.isSecure = isSecure
         self.onEditingChanged = onEditingChanged
         self.onCommit = onCommit
         self.suffixAction = suffixAction
@@ -162,15 +197,64 @@ public extension InputField {
     }
 }
 
+private struct SecureTextField: UIViewRepresentable {
+    typealias UIViewType = UITextField
+
+    @Binding var text: String
+    @Binding var isSecured: Bool
+
+    func makeUIView(context: Context) -> UITextField {
+        let textFied = UITextField()
+        textFied.text = text
+        textFied.isSecureTextEntry = isSecured
+
+        textFied.delegate = context.coordinator
+
+        return textFied
+    }
+
+    func updateUIView(_ uiView: UITextField, context: Context) {
+        uiView.isSecureTextEntry = isSecured
+
+        if uiView.isSecureTextEntry, let text = uiView.text {
+            uiView.text?.removeAll()
+            uiView.insertText(text)
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator($text)
+    }
+
+    class Coordinator: NSObject, UITextFieldDelegate {
+        var text: Binding<String>
+
+        init(_ text: Binding<String>) {
+            self.text = text
+        }
+
+        public func textFieldDidEndEditing(_ textField: UITextField) {
+            self.text.wrappedValue = textField.text ?? ""
+        }
+
+        public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            self.text.wrappedValue = textField.text ?? ""
+            return true
+        }
+    }
+}
+
 // MARK: - Previews
 struct InputFieldPreviews: PreviewProvider {
 
     static var previews: some View {
-        PreviewWrapper {
-            standalone
-            snapshots
+        Group {
+            PreviewWrapper {
+                standalone
+                snapshots
+            }
+            .previewLayout(PreviewLayout.sizeThatFits)
         }
-        .previewLayout(PreviewLayout.sizeThatFits)
     }
 
     static var standalone: some View {
@@ -184,6 +268,7 @@ struct InputFieldPreviews: PreviewProvider {
         InputField("Disabled, Empty", value: .constant(""), placeholder: "Placeholder", state: .disabled)
         InputField("Disabled", value: .constant("Disabled Value"), placeholder: "Placeholder", state: .disabled)
         InputField("Default", value: .constant("InputField Value"))
+        InputField("Secured", value: .constant("password"), isSecure: true)
         InputField("Modified", value: .constant("Modified value"), state: .modified)
         InputField("Focused", value: .constant("Focus / Help"), message: .help("Help message"))
         InputField(
@@ -209,6 +294,7 @@ struct InputFieldLivePreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper()
+        securedWrapper
     }
 
     struct PreviewWrapper: View {
@@ -258,7 +344,28 @@ struct InputFieldLivePreviews: PreviewProvider {
             }
             .animation(.easeOut(duration: 0.25), value: message)
             .padding()
-            .previewDisplayName("Run Live Preview")
+            .previewDisplayName("Run Live Preview with Input Field")
         }
     }
+
+    static var securedWrapper: some View {
+
+        PreviewWrapperWithState(initialState: "") { state in
+
+            VStack(alignment: .leading, spacing: .medium) {
+                Heading("Heading", style: .title2)
+
+                InputField(
+                    value: state,
+                    suffix: .none,
+                    textContent: .password,
+                    isSecure: true
+                )
+            }
+            .padding()
+            .previewDisplayName("Run Live Preview with Secured Input Field")
+
+        }
+    }
+
 }
