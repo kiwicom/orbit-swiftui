@@ -1,0 +1,143 @@
+import SwiftUI
+
+/// Displays logos of transport carriers.
+///
+/// Carrier logos can include up to four logos at once. With one logo, by default it occupies the entire space.
+/// With multiple logos, the logos are shrunk to the same size (no matter how many more there are).
+///
+/// To create visual balance, the logos are positioned differently depending on their number. With two logos,
+/// they’re in the top left and bottom right. With three, the second logo shifts to the bottom left
+/// and the third is present in the top right. With four, the logos take up all four corners.
+///
+/// - Note: [Orbit definition](https://orbit.kiwi/components/visuals/carrierlogo/)
+public struct CarrierLogo: View {
+    
+    public enum Size {
+        case small
+        case medium
+        case large
+        
+        var value: Double {
+            switch self {
+                case .small:    return 16
+                case .medium:   return 24
+                case .large:    return 32
+            }
+        }
+    }
+    
+    struct SingleCarrierImage: View {
+        
+        let image: Image
+        
+        init(_ image: Image) {
+            self.image = image
+        }
+        
+        var body: some View {
+            image
+                .resizable()
+                .cornerRadius(BorderRadius.desktop)
+        }
+    }
+    
+    let images: [Image]
+    let size: Size
+    
+    public var body: some View {
+        content
+            .frame(width: size.value, height: size.value)
+    }
+    
+    @ViewBuilder var content: some View {
+        switch images.count {
+            case 0:  EmptyView()
+            case 1:  SingleCarrierImage(images[0])
+            case 2:  twoImages
+            case 3:  threeImages
+            default: fourImages
+        }
+    }
+    
+    var twoImages: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                SingleCarrierImage(images[0])
+                Color.clear
+            }
+            HStack(spacing: 0) {
+                Color.clear
+                SingleCarrierImage(images[1])
+            }
+        }
+    }
+    
+    var threeImages: some View {
+        VStack(spacing: 2) {
+            HStack(spacing: 2) {
+                SingleCarrierImage(images[0])
+                SingleCarrierImage(images[2])
+            }
+            HStack(spacing: 2) {
+                SingleCarrierImage(images[1])
+                Color.clear
+            }
+        }
+    }
+    
+    var fourImages: some View {
+        VStack(spacing: 2) {
+            HStack(spacing: 2) {
+                SingleCarrierImage(images[0])
+                SingleCarrierImage(images[2])
+            }
+            HStack(spacing: 2) {
+                SingleCarrierImage(images[1])
+                SingleCarrierImage(images[3])
+            }
+        }
+    }
+        
+    /// Creates an Orbit `CarrierLogo` component with a single logo image.
+    /// - Parameters:
+    ///   - image: a logo image.
+    ///   - size: the size of the view. The image will occupy the whole view.
+    public init(image: Image, size: Size) {
+        self.images = [image]
+        self.size = size
+    }
+        
+    /// Creates an Orbit `CarrierLogo` component with multiple images.
+    /// - Parameter images: logo images to show in the view.
+    public init(images: [Image]) {
+        self.images = images
+        self.size = .large
+    }
+}
+
+struct CarrierLogoPreviews: PreviewProvider {
+    
+    static let square = Image(systemName: "square.fill")
+    
+    static var previews: some View {
+        Group {
+            HStack {
+                CarrierLogo(image: square, size: .small)
+                CarrierLogo(image: square, size: .medium)
+                CarrierLogo(image: square, size: .large)
+            }
+            .padding()
+            .previewDisplayName("Sizes")
+            
+            CarrierLogo(images: [square, square])
+                .previewDisplayName("Two logos")
+            
+            CarrierLogo(images: [square, square, square])
+                .previewDisplayName("Three logos")
+            
+            CarrierLogo(images: [square, square, square, square])
+                .previewDisplayName("Four logos")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+}
