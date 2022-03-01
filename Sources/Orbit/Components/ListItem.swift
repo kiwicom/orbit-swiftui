@@ -23,7 +23,7 @@ public struct ListItem: View {
                     self.size.value * Text.firstBaselineRatio + size.height / 2
                 }
                 .alignmentGuide(.listAlignment, computeValue: { dimensions in
-                    dimensions.width + .xSmall
+                    dimensions.width + spacing
                 })
 
             Text(text, size: size, color: style.textColor, linkColor: linkColor, linkAction: linkAction)
