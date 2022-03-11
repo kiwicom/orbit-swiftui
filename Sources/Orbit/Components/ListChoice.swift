@@ -60,10 +60,10 @@ public struct ListChoice<Content: View>: View {
             if isHeaderEmpty == false {
                 Spacer(minLength: .xSmall)
             }
-            Strut(height: 48)
+            Strut(height: 44)
             content()
         }
-        .padding(.leading, icon.isEmpty ? .medium : .small)
+        .padding(.leading, .medium)
         .padding(.trailing, disclosure == .none ? .medium : 0)
     }
     
