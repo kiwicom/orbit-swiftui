@@ -49,7 +49,7 @@ public struct ListChoiceGroup<Content: View>: View {
     var borderlessView: some View {
         VStack(alignment: .leading, spacing: .xSmall) {
             Header(title, iconContent: iconContent, titleStyle: titleStyle)
-                .padding([.horizontal, .top], .medium)
+                .padding(.horizontal, .medium)
 
             VStack(alignment: .leading, spacing: 0) {
                 content()
