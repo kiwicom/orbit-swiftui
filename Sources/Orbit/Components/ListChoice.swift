@@ -120,7 +120,7 @@ public struct ListChoice<Content: View>: View {
             return .medium
         }
         
-        return .xxLarge
+        return .xxLarge + .xxSmall
     }
     
     var isHeaderEmpty: Bool {
