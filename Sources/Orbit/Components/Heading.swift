@@ -40,8 +40,8 @@ public struct Heading: View {
 
     var text: String {
         switch style {
-            case .display, .title1, .displaySubtitle, .title2, .title3, .title4:    return label
-            case .title5:                                                           return label.localizedUppercase
+            case .display, .title1, .displaySubtitle, .title2, .title3, .title4, .title5:   return label
+            case .title6:                                                                   return label.localizedUppercase
         }
     }
 }
@@ -96,13 +96,22 @@ public extension Heading {
     }
 
     enum Style {
+        /// 40 pts.
         case display
+        /// 22 pts.
         case displaySubtitle
+        /// 28 pts.
         case title1
+        /// 22 pts.
         case title2
+        /// 18 pts.
         case title3
+        /// 16 pts.
         case title4
+        /// 14 pts.
         case title5
+        /// 12 pts.
+        case title6
 
         public var size: CGFloat {
             switch self {
@@ -110,16 +119,17 @@ public extension Heading {
                 case .displaySubtitle:  return 22
                 case .title1:           return 28
                 case .title2:           return 22
-                case .title3:           return Text.Size.large.value
-                case .title4:           return Text.Size.normal.value
-                case .title5:           return Text.Size.small.value
+                case .title3:           return Text.Size.xLarge.value
+                case .title4:           return Text.Size.large.value
+                case .title5:           return Text.Size.normal.value
+                case .title6:           return Text.Size.small.value
             }
         }
 
         public var weight: Font.Weight {
             switch self {
-                case .display, .title1:                                         return .bold
-                case .displaySubtitle, .title2, .title3, .title4, .title5:      return .medium
+                case .display, .title1, .title4, .title5, .title6:      return .bold
+                case .displaySubtitle, .title2, .title3:                return .medium
             }
         }
     }
@@ -154,6 +164,7 @@ struct HeadingPreviews: PreviewProvider {
             Heading("Title 3", style: .title3)
             Heading("Title 4", style: .title4)
             Heading("Title 5", style: .title5)
+            Heading("Title 6", style: .title6)
         }
         .previewDisplayName("Orbit")
     }
@@ -172,6 +183,7 @@ struct HeadingPreviews: PreviewProvider {
                 Heading("Title 3, but very very very very very very very very long", icon: .circle, style: .title3)
                 Heading("Title 4, but very very very very very very very very long", icon: .circle, style: .title4)
                 Heading("Title 5, but very very very very very very very very long", icon: .circle, style: .title5)
+                Heading("Title 6, but very very very very very very very very long", icon: .circle, style: .title6)
             }
             .padding(.vertical)
             .previewDisplayName("Longer text")
