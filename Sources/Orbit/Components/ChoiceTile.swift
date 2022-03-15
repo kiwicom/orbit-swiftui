@@ -26,19 +26,14 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
 
     let indicator: ChoiceTileIndicator
     let alignment: ChoiceTileAlignment
-    let status: Status?
+    let isError: Bool
     let isSelected: Bool
 
     /// Creates button style wrapper for ``ChoiceTile``.
-    public init(
-        indicator: ChoiceTileIndicator,
-        alignment: ChoiceTileAlignment,
-        status: Status?,
-        isSelected: Bool
-    ) {
+    public init(indicator: ChoiceTileIndicator, alignment: ChoiceTileAlignment, isError: Bool, isSelected: Bool) {
         self.indicator = indicator
         self.alignment = alignment
-        self.status = status
+        self.isError = isError
         self.isSelected = isSelected
     }
 
@@ -48,7 +43,6 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
             .padding(ChoiceTileAlignment.padding)
             .tileBorder(
                 isSelected: isSelected,
-                status: status,
                 backgroundColor: backgroundColor(isPressed: configuration.isPressed),
                 shadow: shadow(isPressed: configuration.isPressed))
     }
@@ -62,8 +56,8 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
     @ViewBuilder var indicatorElement: some View {
         switch indicator {
             case .none:         EmptyView()
-            case .radio:        Radio(state: status == .critical ? .error : .normal, isChecked: isSelected)
-            case .checkbox:     Checkbox(state: status == .critical ? .error : .normal, isChecked: isSelected)
+            case .radio:        Radio(state: isError ? .error : .normal, isChecked: isSelected)
+            case .checkbox:     Checkbox(state: isError ? .error : .normal, isChecked: isSelected)
         }
     }
     
@@ -79,7 +73,7 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
     }
     
     func shadow(isPressed: Bool) -> TileBorderModifier.Shadow {
-        if status != nil {
+        if isError {
             return .none
         }
         
@@ -110,7 +104,7 @@ public struct ChoiceTile<Content: View>: View {
     let indicator: ChoiceTileIndicator
     let titleStyle: Header.TitleStyle
     let isSelected: Bool
-    let status: Status?
+    let isError: Bool
     let message: MessageType
     let alignment: ChoiceTileAlignment
     let action: () -> Void
@@ -132,7 +126,7 @@ public struct ChoiceTile<Content: View>: View {
                 .padding(.top, badgeOverlay.isEmpty ? 0 : .small)
             }
         )
-        .buttonStyle(ChoiceTileButtonStyle(indicator: indicator, alignment: alignment, status: status, isSelected: isSelected))
+        .buttonStyle(ChoiceTileButtonStyle(indicator: indicator, alignment: alignment, isError: isError, isSelected: isSelected))
         .accessibility(removeTraits: isSelected == false ? .isSelected : [])
         .accessibility(addTraits: isSelected ? .isSelected : [])
         .overlay(badgeOverlayView, alignment: .top)
@@ -223,7 +217,7 @@ public extension ChoiceTile {
         indicator: ChoiceTileIndicator = .radio,
         titleStyle: Header.TitleStyle = .title3,
         isSelected: Bool = false,
-        status: Status? = nil,
+        isError: Bool = false,
         message: MessageType = .none,
         alignment: ChoiceTileAlignment = .default,
         action: @escaping () -> Void = {},
@@ -237,7 +231,7 @@ public extension ChoiceTile {
         self.indicator = indicator
         self.titleStyle = titleStyle
         self.isSelected = isSelected
-        self.status = status
+        self.isError = isError
         self.message = message
         self.alignment = alignment
         self.action = action
@@ -254,7 +248,7 @@ public extension ChoiceTile {
         indicator: ChoiceTileIndicator = .radio,
         titleStyle: Header.TitleStyle = .title3,
         isSelected: Bool = false,
-        status: Status? = nil,
+        isError: Bool = false,
         message: MessageType = .none,
         alignment: ChoiceTileAlignment = .default,
         action: @escaping () -> Void = {},
@@ -269,7 +263,7 @@ public extension ChoiceTile {
             indicator: indicator,
             titleStyle: titleStyle,
             isSelected: isSelected,
-            status: status,
+            isError: isError,
             message: message,
             alignment: alignment,
             action: action,
@@ -409,7 +403,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                 VStack(alignment: .leading, spacing: .medium) {
                     ChoiceTile("Label", description: "Unchecked Radio", icon: .grid, message: .help("Helpful message")) {}
 
-                    ChoiceTile("Label", indicator: .checkbox, status: .critical) {
+                    ChoiceTile("Label", indicator: .checkbox, isError: true) {
                         customContentPlaceholder
                     }
                 }
@@ -417,7 +411,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                 VStack(alignment: .leading, spacing: .medium) {
                     ChoiceTile("Label", description: "Checked Checkbox", isSelected: true, message: .help("Helpful message")) {}
 
-                    ChoiceTile("Label", description: "Checked Checkbox", indicator: .checkbox, isSelected: true, status: .critical, message: .error("Error message")) {}
+                    ChoiceTile("Label", description: "Checked Checkbox", indicator: .checkbox, isSelected: true, isError: true, message: .error("Error message")) {}
                 }
             }
 
@@ -436,7 +430,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                 customContentPlaceholder
             }
             
-            ChoiceTile(indicator: .checkbox, isSelected: true, status: .critical) {
+            ChoiceTile(indicator: .checkbox, isSelected: true, isError: true) {
                 customContentPlaceholder
             }
             
@@ -459,7 +453,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                 VStack(alignment: .leading, spacing: .medium) {
                     ChoiceTile("Label", description: "Unchecked Radio", isSelected: true, message: .help("Helpful message"), alignment: .center) {}
 
-                    ChoiceTile("Label", description: "Checked Checkbox", indicator: .checkbox, isSelected: true, status: .critical, message: .error("Error message"), alignment: .center) {}
+                    ChoiceTile("Label", description: "Checked Checkbox", indicator: .checkbox, isSelected: true, isError: true, message: .error("Error message"), alignment: .center) {}
                 }
             }
 
