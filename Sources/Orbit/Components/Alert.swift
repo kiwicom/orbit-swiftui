@@ -44,14 +44,12 @@ public struct Alert<Content: View>: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: .medium) {
             
-            Header(
+            Label(
                 title,
                 description: description,
                 iconContent: .icon(icon, size: .default, color: status.color),
                 titleStyle: .text(weight: .bold),
                 descriptionStyle: .custom(.normal, color: .inkNormal, linkColor: .inkNormal),
-                horizontalSpacing: .xSmall,
-                verticalSpacing: .xxSmall,
                 descriptionLinkAction: descriptionLinkAction
             )
             

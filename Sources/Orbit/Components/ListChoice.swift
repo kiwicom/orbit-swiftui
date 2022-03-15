@@ -68,14 +68,13 @@ public struct ListChoice<Content: View>: View {
     }
     
     @ViewBuilder var header: some View {
-        Header(
+        Label(
             title,
             description: description,
             iconContent: icon,
             titleStyle: .title4,
             descriptionStyle: .custom(.small),
-            horizontalSpacing: .xSmall,
-            verticalSpacing: .xxxSmall
+            descriptionSpacing: .xxxSmall
         )
         .padding(.vertical, .small)
     }

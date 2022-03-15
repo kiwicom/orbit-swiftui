@@ -1,31 +1,31 @@
 import SwiftUI
 
-/// Header for Tiles and Cards, containing combination of title, description and icon.
-public struct Header: View {
+/// Label that combines text, icon and optional description under text.
+public struct Label: View {
 
-    public static let horizontalSpacing: CGFloat = 10
-    public static let verticalSpacing: CGFloat = 6
+    public static let iconSpacing: CGFloat = .xSmall
+    public static let descriptionSpacing: CGFloat = .xxxSmall
 
     let title: String
     let description: String
     let iconContent: Icon.Content
     let titleStyle: TitleStyle
     let descriptionStyle: DescriptionStyle
-    let horizontalSpacing: CGFloat
-    let verticalSpacing: CGFloat
+    let iconSpacing: CGFloat
+    let descriptionSpacing: CGFloat
     let descriptionLinkAction: TextLink.Action
 
     public var body: some View {
         if isEmpty == false {
-            HStack(alignment: .firstTextBaseline, spacing: horizontalSpacing) {
+            HStack(alignment: .firstTextBaseline, spacing: iconSpacing) {
                 iconContent.view()
                     .alignmentGuide(.firstTextBaseline) { size in
                         self.titleStyle.size * Text.firstBaselineRatio + size.height / 2
                     }
 
                 if isTextEmpty == false {
-                    VStack(alignment: .leading, spacing: verticalSpacing) {
-                        heading
+                    VStack(alignment: .leading, spacing: descriptionSpacing) {
+                        titleView
                         descriptionView
                     }
                 }
@@ -33,7 +33,7 @@ public struct Header: View {
         }
     }
     
-    @ViewBuilder var heading: some View {
+    @ViewBuilder var titleView: some View {
         switch titleStyle {
             case .heading(let style, let color):           Heading(title, style: style, color: color)
             case .text(let size, let weight, let color):   Text(title, size: size, color: color, weight: weight)
@@ -60,7 +60,7 @@ public struct Header: View {
 }
 
 // MARK: - Inits
-public extension Header {
+public extension Label {
 
     /// Creates Orbit Header component for Tile or Card usage.
     init(
@@ -69,8 +69,8 @@ public extension Header {
         iconContent: Icon.Content,
         titleStyle: TitleStyle = .title3,
         descriptionStyle: DescriptionStyle = .default,
-        horizontalSpacing: CGFloat = Self.horizontalSpacing,
-        verticalSpacing: CGFloat = Self.verticalSpacing,
+        iconSpacing: CGFloat = Self.iconSpacing,
+        descriptionSpacing: CGFloat = Self.descriptionSpacing,
         descriptionLinkAction: @escaping TextLink.Action = { _, _ in }
     ) {
         self.title = title
@@ -78,8 +78,8 @@ public extension Header {
         self.iconContent = iconContent
         self.titleStyle = titleStyle
         self.descriptionStyle = descriptionStyle
-        self.horizontalSpacing = horizontalSpacing
-        self.verticalSpacing = verticalSpacing
+        self.iconSpacing = iconSpacing
+        self.descriptionSpacing = descriptionSpacing
         self.descriptionLinkAction = descriptionLinkAction
     }
 
@@ -90,8 +90,8 @@ public extension Header {
         icon: Icon.Symbol = .none,
         titleStyle: TitleStyle = .title3,
         descriptionStyle: DescriptionStyle = .default,
-        horizontalSpacing: CGFloat = Self.horizontalSpacing,
-        verticalSpacing: CGFloat = Self.verticalSpacing,
+        iconSpacing: CGFloat = Self.iconSpacing,
+        descriptionSpacing: CGFloat = Self.descriptionSpacing,
         descriptionLinkAction: @escaping TextLink.Action = { _, _ in }
     ) {
         self.init(
@@ -100,15 +100,15 @@ public extension Header {
             iconContent: .icon(icon, size: .header(titleStyle)),
             titleStyle: titleStyle,
             descriptionStyle: descriptionStyle,
-            horizontalSpacing: horizontalSpacing,
-            verticalSpacing: verticalSpacing,
+            iconSpacing: iconSpacing,
+            descriptionSpacing: descriptionSpacing,
             descriptionLinkAction: descriptionLinkAction
         )
     }
 }
 
 // MARK: - Inits
-public extension Header {
+public extension Label {
 
     enum TitleStyle {
     
@@ -172,14 +172,14 @@ struct HeaderPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             Group {
-                Header()
-                Header("Header")
-                Header("Header", description: "Description")
-                Header("Header", description: "Description", descriptionStyle: .custom(.large))
-                Header("Header", description: "Description", icon: .grid)
+                Label()
+                Label("Label")
+                Label("Label", description: "Description")
+                Label("Label", description: "Description", descriptionStyle: .custom(.large))
+                Label("Label", description: "Description", icon: .grid)
                 
-                Header(
-                    "Header",
+                Label(
+                    "Label",
                     description: #"Description <a href="..">link</a>"#,
                     icon: .grid,
                     titleStyle: .text(.large, weight: .bold, color: .none),
@@ -187,32 +187,32 @@ struct HeaderPreviews: PreviewProvider {
                 )
                 .foregroundColor(.blueDark)
                 
-                Header("Header", icon: .grid)
-                Header(icon: .grid)
+                Label("Label", icon: .grid)
+                Label(icon: .grid)
             }
             
             Group {
-                Header("Header", description: "Description", icon: .grid, titleStyle: .text(.small, weight: .medium))
-                Header("Header", description: "Description", icon: .grid, titleStyle: .text(.large, weight: .bold))
-                Header("Header", description: "Description", icon: .grid, titleStyle: .text(.custom(.xxLarge), weight: .bold))
+                Label("Label", description: "Description", icon: .grid, titleStyle: .text(.small, weight: .medium))
+                Label("Label", description: "Description", icon: .grid, titleStyle: .text(.large, weight: .bold))
+                Label("Label", description: "Description", icon: .grid, titleStyle: .text(.custom(.xxLarge), weight: .bold))
             }
             
-            Header(
-                "Header with very very long text",
+            Label(
+                "Label with very very long text",
                 description: "Description with very <strong>very</strong> long text",
                 icon: .grid
             )
             .frame(width: 200, alignment: .leading)
             
-            Header(
-                "Header with very very long text",
+            Label(
+                "Label with very very long text",
                 description: "Description with very <strong>very</strong> long text",
                 icon: .grid,
                 titleStyle: .title1
             )
             .frame(width: 200, alignment: .leading)
             
-            Header(
+            Label(
                 description: "Description with very <strong>very</strong> long text",
                 icon: .grid
             )

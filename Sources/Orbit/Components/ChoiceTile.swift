@@ -102,7 +102,7 @@ public struct ChoiceTile<Content: View>: View {
     let badgeOverlay: String
     let iconContent: Icon.Content
     let indicator: ChoiceTileIndicator
-    let titleStyle: Header.TitleStyle
+    let titleStyle: Label.TitleStyle
     let isSelected: Bool
     let isError: Bool
     let message: MessageType
@@ -137,7 +137,7 @@ public struct ChoiceTile<Content: View>: View {
             switch alignment {
                 case .default:
                     HStack(alignment: .firstTextBaseline, spacing: 0) {
-                        Header(title, description: description, iconContent: iconContent, titleStyle: titleStyle, horizontalSpacing: .xSmall, verticalSpacing: .xxSmall)
+                        Label(title, description: description, iconContent: iconContent, titleStyle: titleStyle)
                         Spacer(minLength: 0)
                         Badge(badge, style: .status(.info))
                     }
@@ -215,7 +215,7 @@ public extension ChoiceTile {
         badge: String = "",
         badgeOverlay: String = "",
         indicator: ChoiceTileIndicator = .radio,
-        titleStyle: Header.TitleStyle = .title3,
+        titleStyle: Label.TitleStyle = .title3,
         isSelected: Bool = false,
         isError: Bool = false,
         message: MessageType = .none,
@@ -246,7 +246,7 @@ public extension ChoiceTile {
         badge: String = "",
         badgeOverlay: String = "",
         indicator: ChoiceTileIndicator = .radio,
-        titleStyle: Header.TitleStyle = .title3,
+        titleStyle: Label.TitleStyle = .title3,
         isSelected: Bool = false,
         isError: Bool = false,
         message: MessageType = .none,

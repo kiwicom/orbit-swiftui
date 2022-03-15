@@ -62,11 +62,10 @@ public struct ToastContent: View {
     
     public var body: some View {
         HStack {
-            Header(
+            Label(
                 description,
                 iconContent: .icon(icon, size: .small, color: .white),
-                titleStyle: .text(weight: .regular, color: .white),
-                horizontalSpacing: .xSmall
+                titleStyle: .text(weight: .regular, color: .white)
             )
             .padding(.small)
             
