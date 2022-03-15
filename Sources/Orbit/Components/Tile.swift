@@ -155,8 +155,8 @@ public struct Tile<Content: View>: View {
         iconContent.isEmpty ? .medium : .xxxLarge
     }
     
-    var tileBorderStyle: TileBorderModifier.Style? {
-        border == .default ? .default : nil
+    var tileBorderStyle: TileBorderStyle {
+        border == .default ? .default : .none
     }
     
     var isHeaderEmpty: Bool {

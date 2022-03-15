@@ -5,20 +5,6 @@ public enum CardAction {
     case buttonLink(_ label: String, action: () -> Void = {}, accessibilityIdentifier: String = "")
 }
 
-public enum CardStyle {
-
-    case `default`
-    /// A card style that visually matches the iOS plain table section appearance.
-    case iOS
-    
-    public var tileBorderStyle: TileBorderModifier.Style {
-        switch self {
-            case .default:      return .default
-            case .iOS:          return .iOS
-        }
-    }
-}
-
 /// Separates content into sections.
 ///
 /// Card is a wrapping component around a custom content.
@@ -43,7 +29,7 @@ public struct Card<Content: View>: View {
     let spacing: CGFloat
     let padding: CGFloat
     let alignment: HorizontalAlignment
-    let style: CardStyle
+    let borderStyle: TileBorderStyle
     let titleStyle: Header.TitleStyle
     let status: Status?
     let width: ContainerWidth
@@ -51,20 +37,19 @@ public struct Card<Content: View>: View {
     let content: () -> Content
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: .medium) {
+        VStack(alignment: .leading, spacing: 0) {
             header
 
             if isContentEmpty == false {
                 VStack(alignment: alignment, spacing: spacing) {
                     content()
                 }
-                .padding(.top, isHeaderEmpty ? padding : 0)
-                .padding([.horizontal, .bottom], padding)
+                .padding(padding)
             }
         }
         .frame(maxWidth: maxWidth, alignment: .leading)
         .tileBorder(
-            style: style.tileBorderStyle,
+            style: borderStyle,
             status: status,
             backgroundColor: backgroundColor,
             shadow: shadow
@@ -94,7 +79,7 @@ public struct Card<Content: View>: View {
                 }
             }
             .padding([.horizontal, .top], .medium)
-            .padding(.bottom, isContentEmpty ? .small : 0)
+            .padding(.bottom, isContentEmpty ? .medium : 0)
         }
     }
 
@@ -154,7 +139,7 @@ public extension Card {
         action: CardAction = .none,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
-        style: CardStyle = .iOS,
+        borderStyle: TileBorderStyle = .iOS,
         titleStyle: Header.TitleStyle = .title3,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
@@ -168,7 +153,7 @@ public extension Card {
         self.action = action
         self.spacing = spacing
         self.padding = padding
-        self.style = style
+        self.borderStyle = borderStyle
         self.titleStyle = titleStyle
         self.status = status
         self.width = width
@@ -185,7 +170,7 @@ public extension Card {
         action: CardAction = .none,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
-        style: CardStyle = .iOS,
+        borderStyle: TileBorderStyle = .iOS,
         titleStyle: Header.TitleStyle = .title3,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
@@ -199,7 +184,7 @@ public extension Card {
             action: action,
             spacing: spacing,
             padding: padding,
-            style: style,
+            borderStyle: borderStyle,
             titleStyle: titleStyle,
             status: status,
             width: width,
@@ -217,7 +202,7 @@ public extension Card {
         action: CardAction = .none,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
-        style: CardStyle = .iOS,
+        borderStyle: TileBorderStyle = .iOS,
         titleStyle: Header.TitleStyle = .title3,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
@@ -231,7 +216,7 @@ public extension Card {
         self.action = action
         self.spacing = spacing
         self.padding = padding
-        self.style = style
+        self.borderStyle = borderStyle
         self.titleStyle = titleStyle
         self.status = status
         self.width = width
@@ -248,7 +233,7 @@ public extension Card {
         action: CardAction = .none,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
-        style: CardStyle = .iOS,
+        borderStyle: TileBorderStyle = .iOS,
         titleStyle: Header.TitleStyle = .title3,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
@@ -262,7 +247,7 @@ public extension Card {
             action: action,
             spacing: spacing,
             padding: padding,
-            style: style,
+            borderStyle: borderStyle,
             titleStyle: titleStyle,
             status: status,
             width: width,
@@ -279,8 +264,12 @@ struct CardPreviews: PreviewProvider {
             standalone
             standaloneIntrinsic
             standaloneIos
+            
             snapshots
             snapshotsDefault
+            snapshotsBorderless
+            snapshotsBorderlessRegular
+            snapshotsBorderlessRegularNarrow
 
             content
                 .frame(width: Layout.readableMaxWidth + 100)
@@ -296,7 +285,7 @@ struct CardPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Card("Card title", description: "Card description", icon: .baggageSet, action: .buttonLink("ButtonLink"), style: .default) {
+        Card("Card title", description: "Card description", icon: .baggageSet, action: .buttonLink("ButtonLink"), borderStyle: .default) {
             customContentPlaceholder
             customContentPlaceholder
         }
@@ -306,7 +295,7 @@ struct CardPreviews: PreviewProvider {
     }
     
     static var standaloneIntrinsic: some View {
-        Card("Card title", description: "Card description", icon: .baggageSet, style: .default, width: .intrinsic) {
+        Card("Card title", description: "Card description", icon: .baggageSet, borderStyle: .default, width: .intrinsic) {
             Text("Card Content")
         }
         .padding()
@@ -343,6 +332,28 @@ struct CardPreviews: PreviewProvider {
     static var snapshotsDefault: some View {
         contentDefault
     }
+    
+    static var snapshotsBorderless: some View {
+        listChoiceGroupsBorderless
+            .background(Color.cloudLight)
+            .previewDisplayName("Style - Borderless")
+    }
+
+    static var snapshotsBorderlessRegular: some View {
+        listChoiceGroupsBorderless
+            .background(Color.cloudLight)
+            .environment(\.horizontalSizeClass, .regular)
+            .frame(width: Layout.readableMaxWidth + 100)
+            .previewDisplayName("Style - Borderless Regular")
+    }
+
+    static var snapshotsBorderlessRegularNarrow: some View {
+        listChoiceGroupsBorderless
+            .background(Color.cloudLight)
+            .environment(\.horizontalSizeClass, .regular)
+            .frame(width: Layout.readableMaxWidth - 8)
+            .previewDisplayName("Style - Borderless Regular narrow")
+    }
 
     static var content: some View {
         VStack(alignment: .leading, spacing: .medium) {
@@ -354,10 +365,6 @@ struct CardPreviews: PreviewProvider {
                     Tile("Tile in TileGroup", border: .none)
                 }
                 ListChoice("ListChoice")
-                ListChoiceGroup(width: .intrinsic) {
-                    ListChoice("ListChoice in ListChoiceGroup")
-                    ListChoice("ListChoice in ListChoiceGroup")
-                }
                 customContentPlaceholder
             }
             
@@ -386,24 +393,24 @@ struct CardPreviews: PreviewProvider {
     
     static var contentDefault: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            Card("Card title", description: "Card description", icon: .baggageSet, action: .buttonLink("ButtonLink"), style: .default) {
+            Card("Card title", description: "Card description", icon: .baggageSet, action: .buttonLink("ButtonLink"), borderStyle: .default) {
                 customContentPlaceholder
                 customContentPlaceholder
             }
             
-            Card("Card without content", action: .buttonLink("Edit"), style: .default)
+            Card("Card without content", action: .buttonLink("Edit"), borderStyle: .default)
             
-            Card(style: .default) {
+            Card(borderStyle: .default) {
                 customContentPlaceholder
                 customContentPlaceholder
             }
             
-            Card("Card with custom spacing and padding", action: .buttonLink("ButtonLink"), spacing: .xxSmall, padding: 0, style: .default) {
+            Card("Card with custom spacing and padding", action: .buttonLink("ButtonLink"), spacing: .xxSmall, padding: 0, borderStyle: .default) {
                 customContentPlaceholder
                 customContentPlaceholder
             }
             
-            Card(spacing: .xxSmall, padding: 0, style: .default) {
+            Card(spacing: .xxSmall, padding: 0, borderStyle: .default) {
                 customContentPlaceholder
                 customContentPlaceholder
             }
@@ -412,7 +419,7 @@ struct CardPreviews: PreviewProvider {
                 "Very very very long and multi-line title",
                 description: "Very very very very very long and multi-line description",
                 action: .buttonLink("Update"),
-                style: .default,
+                borderStyle: .default,
                 status: .critical
             ) {
                 customContentPlaceholder
@@ -430,6 +437,23 @@ struct CardPreviews: PreviewProvider {
             status: .critical
         ) {
             customContentPlaceholder
+        }
+    }
+    
+    static var listChoiceGroupsBorderless: some View {
+        Card(
+            "ListChoice group title",
+            spacing: 0,
+            padding: 0,
+            borderStyle: .none,
+            backgroundColor: .clear
+        ) {
+            VStack(spacing: 0) {
+                ListChoice("ListChoice")
+                ListChoice("ListChoice", icon: .notification)
+                ListChoice("ListChoice", description: "ListChoice description", icon: .airplane)
+            }
+            .padding(.top, .xSmall)
         }
     }
 }

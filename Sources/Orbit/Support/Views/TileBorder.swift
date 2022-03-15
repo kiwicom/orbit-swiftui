@@ -1,5 +1,12 @@
 import SwiftUI
 
+public enum TileBorderStyle {
+    case none
+    case `default`
+    /// A border style that visually matches the iOS plain table section appearance.
+    case iOS
+}
+
 /// Provides decoration with ``Tile`` appearance.
 public struct TileBorderModifier: ViewModifier {
 
@@ -8,15 +15,9 @@ public struct TileBorderModifier: ViewModifier {
         case `default`
         case small
     }
-    
-    public enum Style {
-        case `default`
-        /// A card style that visually matches the iOS plain table section appearance.
-        case iOS
-    }
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    let style: Style?
+    let style: TileBorderStyle
     let isSelected: Bool
     let status: Status?
     let backgroundColor: Color?
@@ -42,6 +43,8 @@ public struct TileBorderModifier: ViewModifier {
 
     @ViewBuilder var outerBorder: some View {
         switch (style, status) {
+            case (.none, _):
+                EmptyView()
             case (.default, let status?):
                 outerBorderShape
                     .strokeBorder(status.color, lineWidth: borderWidth)
@@ -144,7 +147,7 @@ public extension View {
     ///
     /// - Parameter style: The style to apply. If style is nil, the view doesn’t get decorated.
     func tileBorder(
-        style: TileBorderModifier.Style? = .default,
+        style: TileBorderStyle = .default,
         isSelected: Bool = false,
         status: Status? = nil,
         backgroundColor: Color? = nil,
