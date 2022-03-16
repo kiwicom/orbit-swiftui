@@ -26,6 +26,7 @@ public struct Card<Content: View>: View {
     let description: String
     let iconContent: Icon.Content
     let action: CardAction
+    let headerSpacing: CGFloat
     let spacing: CGFloat
     let padding: CGFloat
     let alignment: HorizontalAlignment
@@ -37,14 +38,15 @@ public struct Card<Content: View>: View {
     let content: () -> Content
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: headerSpacing) {
             header
 
             if isContentEmpty == false {
                 VStack(alignment: alignment, spacing: spacing) {
                     content()
                 }
-                .padding(padding)
+                .padding(.top, isHeaderEmpty ? padding : 0)
+                .padding([.horizontal, .bottom], padding)
             }
         }
         .frame(maxWidth: maxWidth, alignment: .leading)
@@ -137,6 +139,7 @@ public extension Card {
         iconContent: Icon.Content,
         alignment: HorizontalAlignment = .leading,
         action: CardAction = .none,
+        headerSpacing: CGFloat = .medium,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
@@ -151,6 +154,7 @@ public extension Card {
         self.iconContent = iconContent
         self.alignment = alignment
         self.action = action
+        self.headerSpacing = headerSpacing
         self.spacing = spacing
         self.padding = padding
         self.borderStyle = borderStyle
@@ -168,6 +172,7 @@ public extension Card {
         iconContent: Icon.Content,
         alignment: HorizontalAlignment = .leading,
         action: CardAction = .none,
+        headerSpacing: CGFloat = .medium,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
@@ -182,6 +187,7 @@ public extension Card {
             iconContent: iconContent,
             alignment: alignment,
             action: action,
+            headerSpacing: headerSpacing,
             spacing: spacing,
             padding: padding,
             borderStyle: borderStyle,
@@ -200,6 +206,7 @@ public extension Card {
         icon: Icon.Symbol = .none,
         alignment: HorizontalAlignment = .leading,
         action: CardAction = .none,
+        headerSpacing: CGFloat = .medium,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
@@ -214,6 +221,7 @@ public extension Card {
         self.iconContent = .icon(icon, size: .header(titleStyle))
         self.alignment = alignment
         self.action = action
+        self.headerSpacing = headerSpacing
         self.spacing = spacing
         self.padding = padding
         self.borderStyle = borderStyle
@@ -231,6 +239,7 @@ public extension Card {
         icon: Icon.Symbol = .none,
         alignment: HorizontalAlignment = .leading,
         action: CardAction = .none,
+        headerSpacing: CGFloat = .medium,
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
@@ -245,6 +254,7 @@ public extension Card {
             icon: icon,
             alignment: alignment,
             action: action,
+            headerSpacing: headerSpacing,
             spacing: spacing,
             padding: padding,
             borderStyle: borderStyle,
@@ -405,7 +415,7 @@ struct CardPreviews: PreviewProvider {
                 customContentPlaceholder
             }
             
-            Card("Card with custom spacing and padding", action: .buttonLink("ButtonLink"), spacing: .xxSmall, padding: 0, borderStyle: .default) {
+            Card("Card with custom spacing and padding", action: .buttonLink("ButtonLink"), headerSpacing: .xxLarge, spacing: .small, padding: .xxSmall, borderStyle: .default) {
                 customContentPlaceholder
                 customContentPlaceholder
             }
