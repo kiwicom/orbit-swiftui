@@ -72,7 +72,7 @@ public struct ListChoice<Content: View>: View {
             title,
             description: description,
             iconContent: icon,
-            titleStyle: .title4,
+            titleStyle: .text(weight: .medium),
             descriptionStyle: .custom(.small),
             descriptionSpacing: .xxxSmall
         )
@@ -231,14 +231,14 @@ public extension ListChoice {
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {}
-    ) where Content == Heading {
+    ) where Content == Text {
         self.title = title
         self.description = description
         self.icon = icon
         self.disclosure = disclosure
         self.showSeparator = showSeparator
         self.action = action
-        self.content = { Heading(value, style: .title4) }
+        self.content = { Text(value, weight: .medium) }
     }
     
     /// Creates Orbit ListChoice component with custom content.
@@ -250,7 +250,7 @@ public extension ListChoice {
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {}
-    ) where Content == Heading {
+    ) where Content == Text {
         self.init(
             title,
             description: description,

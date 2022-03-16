@@ -67,7 +67,7 @@ public extension Label {
         _ title: String = "",
         description: String = "",
         iconContent: Icon.Content,
-        titleStyle: TitleStyle = .title3,
+        titleStyle: TitleStyle = .title4,
         descriptionStyle: DescriptionStyle = .default,
         iconSpacing: CGFloat = Self.iconSpacing,
         descriptionSpacing: CGFloat = Self.descriptionSpacing,
@@ -88,7 +88,7 @@ public extension Label {
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol = .none,
-        titleStyle: TitleStyle = .title3,
+        titleStyle: TitleStyle = .title4,
         descriptionStyle: DescriptionStyle = .default,
         iconSpacing: CGFloat = Self.iconSpacing,
         descriptionSpacing: CGFloat = Self.descriptionSpacing,
@@ -112,7 +112,7 @@ public extension Label {
 
     enum TitleStyle {
     
-        case heading(_ style: Heading.Style = .title3, color: Heading.Color? = .inkNormal)
+        case heading(_ style: Heading.Style = .title4, color: Heading.Color? = .inkNormal)
         case text(_ size: Text.Size = .normal, weight: Font.Weight = .medium, color: Text.Color? = .inkNormal)
     
         public static let display = Self.heading(.display)
@@ -122,6 +122,7 @@ public extension Label {
         public static let title3 = Self.heading(.title3)
         public static let title4 = Self.heading(.title4)
         public static let title5 = Self.heading(.title5)
+        public static let title6 = Self.heading(.title6)
         
         var size: CGFloat {
             switch self {

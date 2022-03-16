@@ -27,7 +27,7 @@ public struct Radio: View {
             label: {
                 if label.isEmpty == false || description.isEmpty == false {
                     VStack(alignment: .leading, spacing: 1) {
-                        Heading(label, style: .title4, color: labelColor)
+                        Heading(label, style: .title5, color: labelColor)
                         Text(description, size: .small, color: descriptionColor)
                     }
                 }

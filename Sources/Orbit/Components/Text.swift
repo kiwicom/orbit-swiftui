@@ -154,6 +154,8 @@ public extension Text {
         case normal
         /// 16 pts.
         case large
+        /// 18 pts.
+        case xLarge
         case custom(CGFloat)
 
         public var value: CGFloat {
@@ -161,6 +163,7 @@ public extension Text {
                 case .small:                return 12
                 case .normal:               return 14
                 case .large:                return 16
+                case .xLarge:               return 18
                 case .custom(let size):     return size
             }
         }
@@ -253,6 +256,7 @@ struct TextPreviews: PreviewProvider {
             Text("Text Small", size: .small)
             Text("Text Normal")
             Text("Text Large", size: .large)
+            Text("Text Extra Large", size: .xLarge)
         }
 
         Separator()
@@ -261,6 +265,7 @@ struct TextPreviews: PreviewProvider {
             Text("Text Medium Small", size: .small, weight: .medium)
             Text("Text Medium Normal", size: .normal, weight: .medium)
             Text("Text Medium Large", size: .large, weight: .medium)
+            Text("Text Medium Extra Large", size: .xLarge, weight: .medium)
         }
 
         Separator()
@@ -269,6 +274,7 @@ struct TextPreviews: PreviewProvider {
             Text("Text Bold Small", size: .small, weight: .bold)
             Text("Text Bold Normal", size: .normal, weight: .bold)
             Text("Text Bold Large", size: .large, weight: .bold)
+            Text("Text Bold Extra Large", size: .xLarge, weight: .bold)
         }
     }
 
