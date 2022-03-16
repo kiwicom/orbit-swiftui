@@ -22,7 +22,7 @@ public struct TileGroup<Content: View>: View {
         Card(
             spacing: 0,
             padding: 0,
-            style: .default,
+            borderStyle: .default,
             status: status,
             width: width,
             backgroundColor: backgroundColor
