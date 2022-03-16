@@ -30,7 +30,7 @@ public struct Card<Content: View>: View {
     let padding: CGFloat
     let alignment: HorizontalAlignment
     let borderStyle: TileBorderStyle
-    let titleStyle: Header.TitleStyle
+    let titleStyle: Label.TitleStyle
     let status: Status?
     let width: ContainerWidth
     let backgroundColor: Color?
@@ -62,7 +62,7 @@ public struct Card<Content: View>: View {
         if isHeaderEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: .small) {
 
-                Header(title, description: description, iconContent: iconContent, titleStyle: titleStyle)
+                Label(title, description: description, iconContent: iconContent, titleStyle: titleStyle)
 
                 if case .expanding = width {
                     Spacer(minLength: .xxxSmall)
@@ -140,7 +140,7 @@ public extension Card {
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
-        titleStyle: Header.TitleStyle = .title3,
+        titleStyle: Label.TitleStyle = .title3,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .white,
@@ -171,7 +171,7 @@ public extension Card {
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
-        titleStyle: Header.TitleStyle = .title3,
+        titleStyle: Label.TitleStyle = .title3,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .white
@@ -203,7 +203,7 @@ public extension Card {
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
-        titleStyle: Header.TitleStyle = .title3,
+        titleStyle: Label.TitleStyle = .title3,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .white,
@@ -234,7 +234,7 @@ public extension Card {
         spacing: CGFloat = .medium,
         padding: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
-        titleStyle: Header.TitleStyle = .title3,
+        titleStyle: Label.TitleStyle = .title3,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .white

@@ -86,7 +86,7 @@ public extension Icon {
         /// Size based on Font size.
         case fontSize(CGFloat)
         /// Size based on Header.Title style.
-        case header(Header.TitleStyle)
+        case header(Label.TitleStyle)
         /// Custom size
         case custom(CGFloat)
         
