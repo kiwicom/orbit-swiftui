@@ -84,7 +84,7 @@ public struct ListChoice<Content: View>: View {
             case .none:
                 EmptyView()
             case .disclosure(let color):
-                Icon(symbol: .chevronRight, size: .medium, color: color)
+                Icon(.chevronRight, size: .medium, color: color)
                     .padding(.leading, -.xSmall)
             case .button(let type):
                 disclosureButton(type: type)

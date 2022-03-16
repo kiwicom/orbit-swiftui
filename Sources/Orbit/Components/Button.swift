@@ -30,7 +30,7 @@ public struct Button: View {
                         Spacer(minLength: 0)
                     }
 
-                    iconContent.view()
+                    Icon(iconContent)
 
                     if #available(iOS 14.0, *) {
                         Text(
@@ -54,9 +54,7 @@ public struct Button: View {
 
                     Spacer(minLength: 0)
 
-                    if disclosureIconContent.isEmpty == false {
-                        disclosureIconContent.view()
-                    }
+                    Icon(disclosureIconContent)
                 }
                 .padding(.horizontal, label.isEmpty ? 0 : size.padding)
             }

@@ -36,7 +36,8 @@ struct InputContent<Content: View>: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            prefix.view(defaultColor: prefixColor)
+            Icon(prefix)
+                .foregroundColor(prefixColor)
                 .padding(.horizontal, .xSmall)
 
             label()
@@ -45,7 +46,8 @@ struct InputContent<Content: View>: View {
 
             Spacer(minLength: 0)
 
-            suffix.view(defaultColor: suffixColor)
+            Icon(suffix)
+                .foregroundColor(suffixColor)
                 .padding(.horizontal, .xSmall)
                 .contentShape(Rectangle())
                 .onTapGesture(perform: suffixAction)

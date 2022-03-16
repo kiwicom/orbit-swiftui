@@ -18,7 +18,7 @@ public struct ListItem: View {
 
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: spacing) {
-            iconContent.view()
+            Icon(iconContent)
                 .alignmentGuide(.firstTextBaseline) { size in
                     self.size.value * Text.firstBaselineRatio + size.height / 2
                 }

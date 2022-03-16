@@ -8,17 +8,28 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/icon/)
 public struct Icon: View {
 
-    let symbol: Icon.Symbol
-    let size: Size
-    let color: Color?
+    let content: Icon.Content
 
     public var body: some View {
-        if symbol == .none {
+        if content.isEmpty {
             EmptyView()
         } else {
-            SwiftUI.Text(verbatim: symbol.value)
-                .font(.orbitIcon(size: size.value))
-                .foregroundColor(color)
+            switch content {
+                case .icon(let symbol, let size, let color):
+                    SwiftUI.Text(verbatim: symbol.value)
+                        .font(.orbitIcon(size: size.value))
+                        .foregroundColor(color)
+                case .image(let image, let size, let mode):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: mode)
+                        .frame(width: size.value, height: size.value)
+                case .illustration(let illlustration, let size):
+                    Illustration(illlustration, layout: .resizeable)
+                        .frame(width: size.value, height: size.value)
+                case .none:
+                    EmptyView()
+            }
         }
     }
 }
@@ -26,11 +37,14 @@ public struct Icon: View {
 // MARK: - Inits
 public extension Icon {
     
+    /// Creates Orbit Icon component for provided icon content.
+    init(_ content: Icon.Content) {
+        self.content = content
+    }
+    
     /// Creates Orbit Icon component for provided icon symbol.
     init(_ symbol: Icon.Symbol, size: Size = .medium, color: Color? = .inkLighter) {
-        self.symbol = symbol
-        self.size = size
-        self.color = color
+        self.init(.icon(symbol, size: size, color: color))
     }
 }
 
@@ -46,23 +60,6 @@ public extension Icon {
         case image(Image, size: Size = .medium, mode: ContentMode = .fit)
         /// Orbit illustration.
         case illustration(Illustration.Image, size: Size = .large)
-
-        @ViewBuilder public func view(defaultColor: Color? = nil) -> some View {
-            switch self {
-                case .icon(let icon, let size, let color):
-                    Icon(icon, size: size, color: color ?? defaultColor)
-                case .image(let image, let size, let mode):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: mode)
-                        .frame(width: size.value, height: size.value)
-                case .illustration(let illlustration, let size):
-                    Illustration(illlustration, layout: .resizeable)
-                        .frame(width: size.value, height: size.value)
-                case .none:
-                    EmptyView()
-            }
-        }
         
         public var isEmpty: Bool {
             switch self {

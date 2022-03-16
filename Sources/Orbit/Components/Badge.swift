@@ -22,18 +22,16 @@ public struct Badge: View {
     public var body: some View {
         if isEmpty == false {
             HStack(spacing: size.spacing) {
-                iconContent.view()
+                Icon(iconContent)
                 
-                if label.isEmpty == false {
-                    Text(
-                        label,
-                        size: .small,
-                        color: .custom(style.labelColor),
-                        weight: .medium,
-                        linkColor: style.labelColor
-                    )
-                    .lineLimit(1)
-                }
+                Text(
+                    label,
+                    size: .small,
+                    color: .custom(style.labelColor),
+                    weight: .medium,
+                    linkColor: style.labelColor
+                )
+                .lineLimit(1)
             }
             .padding(.horizontal, size.padding)
             .frame(minWidth: size.height)

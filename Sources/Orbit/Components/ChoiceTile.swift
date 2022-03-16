@@ -143,7 +143,7 @@ public struct ChoiceTile<Content: View>: View {
                     }
                 case .center:
                     VStack(spacing: .xxSmall) {
-                        iconContent.view()
+                        Icon(iconContent)
                             .padding(.bottom, .xxxSmall)
                         centeredHeading
                         Text(description, color: .inkLight, alignment: .center)

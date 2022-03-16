@@ -22,7 +22,7 @@ public struct BadgeList: View {
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: Self.spacing) {
             badgeBackground
-                .overlay(iconContent.view())
+                .overlay(Icon(iconContent))
                 .alignmentGuide(.firstTextBaseline) { size in
                     Text.Size.small.value * Text.firstBaselineRatio + size.height / 2
                 }

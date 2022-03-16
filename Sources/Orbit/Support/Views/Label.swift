@@ -18,7 +18,7 @@ public struct Label: View {
     public var body: some View {
         if isEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: iconSpacing) {
-                iconContent.view()
+                Icon(iconContent)
                     .alignmentGuide(.firstTextBaseline) { size in
                         self.titleStyle.size * Text.firstBaselineRatio + size.height / 2
                     }
