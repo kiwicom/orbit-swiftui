@@ -94,6 +94,19 @@ public extension Heading {
                 case .title6:           return Text.Size.small.value
             }
         }
+        
+        public var lineHeight: CGFloat {
+            switch self {
+                case .display:          return 48
+                case .displaySubtitle:  return 28
+                case .title1:           return 32
+                case .title2:           return 28
+                case .title3:           return Text.Size.large.lineHeight
+                case .title4:           return Text.Size.normal.lineHeight
+                case .title5:           return Text.Size.normal.lineHeight
+                case .title6:           return Text.Size.small.lineHeight
+            }
+        }
 
         public var weight: Font.Weight {
             switch self {

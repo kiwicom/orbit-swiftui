@@ -218,7 +218,7 @@ public extension Card {
     ) {
         self.title = title
         self.description = description
-        self.iconContent = .icon(icon, size: .header(titleStyle))
+        self.iconContent = .icon(icon, size: .label(titleStyle))
         self.alignment = alignment
         self.action = action
         self.headerSpacing = headerSpacing

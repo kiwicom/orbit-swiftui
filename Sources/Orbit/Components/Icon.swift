@@ -94,20 +94,22 @@ public extension Icon {
         case xLarge
         /// Size based on Font size.
         case fontSize(CGFloat)
-        /// Size based on Header.Title style.
-        case header(Label.TitleStyle)
+        /// Size based on `Label.Title` style.
+        case label(Label.TitleStyle)
         /// Custom size
         case custom(CGFloat)
         
         public var value: CGFloat {
             switch self {
-                case .small:                return 16
-                case .normal:               return 20
-                case .large:                return 24
-                case .xLarge:               return 28
-                case .fontSize(let size):   return size + 1
-                case .header(let style):    return style.size + 1
-                case .custom(let size):     return size
+                case .small:                            return 16
+                case .normal:                           return 20
+                case .large:                            return 24
+                case .xLarge:                           return 28
+                case .fontSize(let size):               return size + 1
+                case .label(.heading(let style, _)):    return style.lineHeight
+                case .label(.text(let style, _, _)):    return style.lineHeight
+                case .label(let style):                 return style.size + 1
+                case .custom(let size):                 return size
             }
         }
         

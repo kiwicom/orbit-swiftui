@@ -97,7 +97,7 @@ public extension Label {
         self.init(
             title: title,
             description: description,
-            iconContent: .icon(icon, size: .header(titleStyle), color: titleStyle.color),
+            iconContent: .icon(icon, size: .label(titleStyle), color: titleStyle.color),
             titleStyle: titleStyle,
             descriptionStyle: descriptionStyle,
             iconSpacing: iconSpacing,
@@ -188,7 +188,8 @@ struct HeaderPreviews: PreviewProvider {
                     .foregroundColor(.blueNormal)
                 Label("SF Symbol", description: "Description", iconContent: .sfSymbol("info.circle.fill"), titleStyle: .heading(.title4, color: .none))
                     .foregroundColor(.blueNormal)
-                Label("CountryFlag", description: "Description", iconContent: .countryFlag("us"), titleStyle: .heading(.title4, color: .custom(.blueNormal)))
+                Label("CountryFlag", description: "Description", iconContent: .countryFlag("us"), titleStyle: .heading(.title4, color: .none))
+                    .foregroundColor(.blueNormal)
                 
                 Label(
                     "Label",

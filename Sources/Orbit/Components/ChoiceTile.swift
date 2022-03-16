@@ -257,7 +257,7 @@ public extension ChoiceTile {
         self.init(
             title,
             description: description,
-            iconContent: .icon(icon, size: .header(titleStyle)),
+            iconContent: .icon(icon, size: .label(titleStyle)),
             badge: badge,
             badgeOverlay: badgeOverlay,
             indicator: indicator,

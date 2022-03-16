@@ -167,6 +167,16 @@ public extension Text {
                 case .custom(let size):     return size
             }
         }
+        
+        public var lineHeight: CGFloat {
+            switch self {
+                case .small:                return 16
+                case .normal:               return 20
+                case .large:                return 24
+                case .xLarge:               return 24
+                case .custom(let size):     return size + 4
+            }
+        }
     }
 
     enum Color: Equatable {
