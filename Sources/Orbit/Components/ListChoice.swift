@@ -13,7 +13,7 @@ public enum ListChoiceDisclosure: Equatable {
     /// A non-interactive button.
     case button(type: ButtonType)
     /// A non-interactive checkbox.
-    case checkbox(isChecked: Bool = true)
+    case checkbox(isChecked: Bool = true, state: Checkbox.State = .normal)
 }
 
 /// Shows one of a selectable list of items with similar structures.
@@ -91,8 +91,8 @@ public struct ListChoice<Content: View>: View {
                 disclosureButton(type: type)
                     .padding(.vertical, .small)
                     .disabled(true)
-            case .checkbox(let isChecked):
-                Checkbox(isChecked: isChecked)
+            case .checkbox(let isChecked, let state):
+                Checkbox(state: state, isChecked: isChecked)
                     .disabled(true)
         }
     }
@@ -129,15 +129,15 @@ public struct ListChoice<Content: View>: View {
     
     var accessibilityTraitsToAdd: AccessibilityTraits {
         switch disclosure {
-            case .none, .disclosure, .button, .checkbox(false):     return []
-            case .checkbox(true):                                   return .isSelected
+            case .none, .disclosure, .button, .checkbox(false, _):     return []
+            case .checkbox(true, _):                                   return .isSelected
         }
     }
     
     var accessibilityTraitsToRemove: AccessibilityTraits {
         switch disclosure {
-            case .none, .disclosure, .button, .checkbox(true):      return []
-            case .checkbox(false):                                  return .isSelected
+            case .none, .disclosure, .button, .checkbox(true, _):      return []
+            case .checkbox(false, _):                                  return .isSelected
         }
     }
 }
@@ -376,10 +376,10 @@ struct ListChoicePreviews: PreviewProvider {
         ListChoiceGroup {
             ListChoice(title, disclosure: uncheckedCheckbox)
             ListChoice(title, disclosure: checkedCheckbox)
-            ListChoice(title, description: description, disclosure: uncheckedCheckbox)
-            ListChoice(title, description: description, disclosure: checkedCheckbox)
-            ListChoice(title, icon: .airplane, disclosure: uncheckedCheckbox)
-            ListChoice(title, icon: .airplane, disclosure: checkedCheckbox)
+            ListChoice(title, description: description, disclosure: .checkbox(state: .error))
+            ListChoice(title, description: description, disclosure: .checkbox(state: .disabled))
+            ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false, state: .error))
+            ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false, state: .disabled))
             ListChoice(title, description: description, icon: .airplane, disclosure: uncheckedCheckbox)
             ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox)
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: uncheckedCheckbox)
