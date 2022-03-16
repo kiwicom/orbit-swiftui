@@ -8,6 +8,7 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/icon/)
 public struct Icon: View {
 
+    public static let averagePadding: CGFloat = .xxxSmall
     let content: Icon.Content
 
     public var body: some View {
@@ -27,6 +28,8 @@ public struct Icon: View {
                 case .illustration(let illlustration, let size):
                     Illustration(illlustration, layout: .resizeable)
                         .frame(width: size.value, height: size.value)
+                case .countryFlag(let countryCode, let size):
+                    CountryFlag(countryCode, size: size)
                 case .none:
                     EmptyView()
             }
@@ -60,6 +63,8 @@ public extension Icon {
         case image(Image, size: Size = .medium, mode: ContentMode = .fit)
         /// Orbit illustration.
         case illustration(Illustration.Image, size: Size = .large)
+        /// Orbit CountryFlag.
+        case countryFlag(String, size: Size = .normal)
         
         public var isEmpty: Bool {
             switch self {
@@ -67,6 +72,7 @@ public extension Icon {
                 case .icon(let symbol, _, _):           return symbol == .none
                 case .illustration(let image, _):       return image == .none
                 case .image:                            return false
+                case .countryFlag(let countryCode, _):  return countryCode.isEmpty
             }
         }
     }

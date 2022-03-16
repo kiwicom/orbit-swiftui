@@ -460,7 +460,7 @@ struct CardPreviews: PreviewProvider {
         ) {
             VStack(spacing: 0) {
                 ListChoice("ListChoice")
-                ListChoice("ListChoice", icon: .notification)
+                ListChoice("ListChoice", icon: .countryFlag("us"))
                 ListChoice("ListChoice", description: "ListChoice description", icon: .airplane)
             }
             .padding(.top, .xSmall)

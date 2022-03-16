@@ -36,6 +36,7 @@ public struct ListItem: View {
             case .icon(_, size: let size, _):           return size
             case .image(_, size: let size, _):          return size
             case .illustration(_, size: let size):      return size
+            case .countryFlag(_, size: let size):       return size
         }
     }
 }

@@ -178,6 +178,7 @@ struct HeaderPreviews: PreviewProvider {
                 Label("Label", description: "Description")
                 Label("Label", description: "Description", descriptionStyle: .custom(.large))
                 Label("Label", description: "Description", icon: .grid)
+                Label("Label", description: "Description", iconContent: .countryFlag("us"))
                 
                 Label(
                     "Label",

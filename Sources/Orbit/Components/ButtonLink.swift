@@ -253,6 +253,10 @@ struct ButtonLinkPreviews: PreviewProvider {
                 .background(Color.blueLight)
                 .padding(.vertical)
                 .previewDisplayName("Icon only")
+            
+            ButtonLink("Flag", iconContent: .countryFlag("us"))
+                .padding(.vertical)
+                .previewDisplayName("Country flag")
         }
         .padding(.horizontal)
     }

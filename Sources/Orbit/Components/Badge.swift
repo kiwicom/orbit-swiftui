@@ -272,6 +272,11 @@ struct BadgePreviews: PreviewProvider {
                         backgroundColor: .white
                     )
                 )
+                
+                Badge(
+                    "Flag",
+                    iconContent: .countryFlag("us")
+                )
             }
             .padding(.vertical)
             .previewDisplayName("Custom")

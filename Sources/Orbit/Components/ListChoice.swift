@@ -320,8 +320,8 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
             ListChoice(title, icon: .airplane, disclosure: .none)
             ListChoice(title, icon: .icon(.airplane, size: .medium, color: .inkLighter), disclosure: .none)
-            ListChoice(title, description: description, icon: .airplane, disclosure: .none)
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: .none)
+            ListChoice(title, description: description, icon: .countryFlag("cs"), disclosure: .none)
             ListChoice(title, description: description, disclosure: .none) {
                 badge
             }
