@@ -65,7 +65,7 @@ public extension Select {
         prefix: Icon.Content = .none,
         value: String?,
         placeholder: String = "",
-        suffix: Icon.Content = .icon(.chevronDown, size: .medium),
+        suffix: Icon.Content = .icon(.chevronDown, size: .large),
         state: InputState = .default,
         message: MessageType = .none,
         action: @escaping () -> Void = {}

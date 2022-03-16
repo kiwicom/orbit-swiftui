@@ -84,7 +84,7 @@ public struct ListChoice<Content: View>: View {
             case .none:
                 EmptyView()
             case .disclosure(let color):
-                Icon(.chevronRight, size: .medium, color: color)
+                Icon(.chevronRight, size: .large, color: color)
                     .padding(.leading, -.xSmall)
             case .button(let type):
                 disclosureButton(type: type)
@@ -176,7 +176,7 @@ public extension ListChoice {
         self.init(
             title,
             description: description,
-            icon: .icon(icon, size: .default, color: .inkNormal),
+            icon: .icon(icon, color: .inkNormal),
             disclosure: disclosure,
             showSeparator: showSeparator,
             action: action,
@@ -216,7 +216,7 @@ public extension ListChoice {
         self.init(
             title,
             description: description,
-            icon: .icon(icon, size: .default, color: .inkNormal),
+            icon: .icon(icon, color: .inkNormal),
             disclosure: disclosure,
             showSeparator: showSeparator,
             action: action
@@ -254,7 +254,7 @@ public extension ListChoice {
         self.init(
             title,
             description: description,
-            icon: .icon(icon, size: .default, color: .inkNormal),
+            icon: .icon(icon, color: .inkNormal),
             value: value,
             disclosure: disclosure,
             showSeparator: showSeparator,
@@ -319,9 +319,9 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, disclosure: .none)
             ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
             ListChoice(title, icon: .airplane, disclosure: .none)
-            ListChoice(title, icon: .icon(.airplane, size: .medium, color: .inkLighter), disclosure: .none)
-            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: .none)
+            ListChoice(title, icon: .icon(.airplane, size: .xLarge, color: .blueNormal), disclosure: .none)
             ListChoice(title, description: description, icon: .countryFlag("cs"), disclosure: .none)
+            ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none)
             ListChoice(title, description: description, disclosure: .none) {
                 badge
             }
@@ -399,7 +399,7 @@ struct ListChoicePreviews: PreviewProvider {
                 .background(Color.white)
             ListChoice(title, icon: .airplane, disclosure: .none)
                 .background(Color.white)
-            ListChoice(title, icon: .icon(.airplane, size: .medium, color: .inkLighter), disclosure: .none)
+            ListChoice(title, icon: .icon(.airplane, size: .large, color: .inkLighter), disclosure: .none)
                 .background(Color.white)
             ListChoice(title, description: description, icon: .airplane, disclosure: .none)
                 .background(Color.white)

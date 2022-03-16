@@ -46,7 +46,7 @@ public extension Icon {
     }
     
     /// Creates Orbit Icon component for provided icon symbol.
-    init(_ symbol: Icon.Symbol, size: Size = .medium, color: Color? = .inkLighter) {
+    init(_ symbol: Icon.Symbol, size: Size = .normal, color: Color? = .inkLighter) {
         self.init(.icon(symbol, size: size, color: color))
     }
 }
@@ -58,11 +58,11 @@ public extension Icon {
     enum Content: Equatable {
         case none
         /// Orbit icon symbol with size and optional overrideable color.
-        case icon(Symbol, size: Size = .medium, color: Color? = nil)
+        case icon(Symbol, size: Size = .normal, color: Color? = nil)
         /// Icon using custom Image.
-        case image(Image, size: Size = .medium, mode: ContentMode = .fit)
+        case image(Image, size: Size = .normal, mode: ContentMode = .fit)
         /// Orbit illustration.
-        case illustration(Illustration.Image, size: Size = .large)
+        case illustration(Illustration.Image, size: Size = .xLarge)
         /// Orbit CountryFlag.
         case countryFlag(String, size: Size = .normal)
         
@@ -78,14 +78,14 @@ public extension Icon {
     }
 
     enum Size: Equatable {
-        /// Size 16
+        /// Size 16.
         case small
-        /// Size 20
-        case `default`
-        /// Size 24
-        case medium
-        /// Size 32
+        /// Size 20.
+        case normal
+        /// Size 24.
         case large
+        /// Size 28.
+        case xLarge
         /// Size based on Font size.
         case fontSize(CGFloat)
         /// Size based on Header.Title style.
@@ -96,9 +96,9 @@ public extension Icon {
         public var value: CGFloat {
             switch self {
                 case .small:                return 16
-                case .default:              return 20
-                case .medium:               return 24
-                case .large:                return 32
+                case .normal:               return 20
+                case .large:                return 24
+                case .xLarge:               return 28
                 case .fontSize(let size):   return size + 1
                 case .header(let style):    return style.size + 1
                 case .custom(let size):     return size
@@ -117,62 +117,49 @@ struct IconPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-
             snapshots
-
-            ScrollView {
-                orbit
-                    .padding()
-            }
         }
+        .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         Icon(.informationCircle)
-            .previewLayout(.sizeThatFits)
     }
-
+    
     static var orbit: some View {
-        VStack(spacing: .small) {
-            ForEach(Icon.Symbol.allCases.sorted(), id: \.self) { icon in
-                HStack {
-                    Text("\(icon)", size: .normal)
-                        .layoutPriority(1)
-                    Separator()
-                    Icon(icon, size: .large, color: .inkNormal)
-                    Icon(icon)
-                    Icon(icon, size: .small, color: .inkLightActive)
-                    Icon(icon, size: .small, color: nil)
-                        .foregroundColor(.redNormal)
-                }
-            }
-        }
-        .previewDisplayName("Icons")
+        snapshots
     }
 
     static var snapshots: some View {
         VStack(spacing: .small) {
             HStack {
-                Icon(.flightNomad, size: .large)
+                Icon(.flightNomad, size: .xLarge)
                 Icon(.flightNomad)
                 Icon(.flightNomad, size: .small)
             }
 
             HStack {
-                Icon(.informationCircle, size: .large, color: .inkNormal)
+                Icon(.informationCircle, size: .xLarge, color: .inkNormal)
                 Icon(.informationCircle, color: .inkNormal)
                 Icon(.informationCircle, size: .small, color: .inkNormal)
             }
 
             HStack {
-                Icon(.airplaneUp, size: .large, color: .blueDark)
-                Icon(.airplaneUp, color: .blueDark)
-                Icon(.airplaneUp, size: .small, color: .blueDark)
+                Icon(.grid, size: .xLarge, color: nil)
+                Icon(.grid)
+                Icon(.grid, size: .small, color: .red)
+            }
+            .foregroundColor(.blueDark)
+            
+            Separator()
+            
+            HStack {
+                Icon(.image(.orbit(.facebook)))
+                Icon(.countryFlag("cz", size: .normal))
+                Icon(.illustration(.womanWithPhone, size: .custom(60)))
             }
         }
-        .previewDisplayName("Icon sizes")
         .frame(width: 120)
         .padding()
-        .previewLayout(.sizeThatFits)
     }
 }

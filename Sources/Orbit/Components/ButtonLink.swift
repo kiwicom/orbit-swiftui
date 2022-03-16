@@ -72,7 +72,7 @@ public extension ButtonLink {
         self.init(
             label,
             style: style,
-            iconContent: .icon(icon, size: .small),
+            iconContent: .icon(icon),
             size: size,
             action: action
         )
