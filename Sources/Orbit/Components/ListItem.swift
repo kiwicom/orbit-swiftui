@@ -33,10 +33,11 @@ public struct ListItem: View {
     var iconSize: Icon.Size? {
         switch iconContent {
             case .none:                                 return nil
-            case .icon(_, size: let size, _):           return size
-            case .image(_, size: let size, _):          return size
-            case .illustration(_, size: let size):      return size
-            case .countryFlag(_, size: let size):       return size
+            case .icon(_, let size, _):                 return size
+            case .image(_, let size, _):                return size
+            case .illustration(_, let size):            return size
+            case .countryFlag(_, let size):             return size
+            case .sfSymbol(_, let size):                return size
         }
     }
 }
@@ -75,7 +76,7 @@ public extension ListItem {
     ) {
         self.init(
             text,
-            iconContent: .icon(icon, size: .small, color: Color(style.textColor.value)),
+            iconContent: .icon(icon, size: .small, color: style.textColor.value),
             size: size,
             spacing: spacing,
             style: style,

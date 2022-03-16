@@ -18,8 +18,8 @@ public struct Icon: View {
             switch content {
                 case .icon(let symbol, let size, let color):
                     SwiftUI.Text(verbatim: symbol.value)
-                        .font(.orbitIcon(size: size.value))
                         .foregroundColor(color)
+                        .font(.orbitIcon(size: size.value))
                 case .image(let image, let size, let mode):
                     image
                         .resizable()
@@ -30,6 +30,9 @@ public struct Icon: View {
                         .frame(width: size.value, height: size.value)
                 case .countryFlag(let countryCode, let size):
                     CountryFlag(countryCode, size: size)
+                case .sfSymbol(let systemName, let size):
+                    Image(systemName: systemName)
+                        .font(.system(size: size.value - 2 * Self.averagePadding))
                 case .none:
                     EmptyView()
             }
@@ -65,6 +68,8 @@ public extension Icon {
         case illustration(Illustration.Image, size: Size = .xLarge)
         /// Orbit CountryFlag.
         case countryFlag(String, size: Size = .normal)
+        /// SwiftUI SF Symbol.
+        case sfSymbol(String, size: Size = .normal)
         
         public var isEmpty: Bool {
             switch self {
@@ -73,6 +78,7 @@ public extension Icon {
                 case .illustration(let image, _):       return image == .none
                 case .image:                            return false
                 case .countryFlag(let countryCode, _):  return countryCode.isEmpty
+                case .sfSymbol(let systemName, _):      return systemName.isEmpty
             }
         }
     }
@@ -156,7 +162,18 @@ struct IconPreviews: PreviewProvider {
             HStack {
                 Icon(.image(.orbit(.facebook)))
                 Icon(.countryFlag("cz", size: .normal))
-                Icon(.illustration(.womanWithPhone, size: .custom(60)))
+                Icon(.illustration(.womanWithPhone, size: .normal))
+            }
+            
+            HStack(spacing: .xxSmall) {
+                Icon(.sfSymbol("info.circle.fill", size: .normal))
+                    .foregroundColor(.greenNormal)
+                Icon(.informationCircle, size: .normal, color: nil)
+                    .foregroundColor(.greenNormal)
+                Icon(.sfSymbol("info.circle.fill", size: .xLarge))
+                    .foregroundColor(.greenNormal)
+                Icon(.informationCircle, size: .xLarge, color: nil)
+                    .foregroundColor(.greenNormal)
             }
         }
         .frame(width: 120)

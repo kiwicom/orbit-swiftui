@@ -79,7 +79,7 @@ public struct Text: View {
     }
 
     var foregroundColor: UIColor? {
-        color?.value
+        color?.uiValue
     }
 
     var attributedText: NSAttributedString {
@@ -137,7 +137,7 @@ public extension Text {
         self.weight = weight
         self.lineSpacing = lineSpacing
         self.alignment = alignment
-        self.accentColor = accentColor ?? color?.value ?? .inkNormal
+        self.accentColor = accentColor ?? color?.uiValue ?? .inkNormal
         self.linkColor = linkColor
         self.isSelectable = isSelectable
         self.linkAction = linkAction
@@ -175,7 +175,11 @@ public extension Text {
         case white
         case custom(UIColor)
 
-        var value: UIColor {
+        var value: SwiftUI.Color {
+            SwiftUI.Color(uiValue)
+        }
+        
+        var uiValue: UIColor {
             switch self {
                 case .inkNormal:            return .inkNormal
                 case .inkLight:             return .inkLight

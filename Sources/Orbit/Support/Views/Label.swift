@@ -62,7 +62,7 @@ public struct Label: View {
 // MARK: - Inits
 public extension Label {
 
-    /// Creates Orbit Header component for Tile or Card usage.
+    /// Creates Orbit Label component.
     init(
         _ title: String = "",
         description: String = "",
@@ -83,7 +83,7 @@ public extension Label {
         self.descriptionLinkAction = descriptionLinkAction
     }
 
-    /// Creates Orbit Header component for Tile or Card usage.
+    /// Creates Orbit Label component.
     init(
         _ title: String = "",
         description: String = "",
@@ -97,7 +97,7 @@ public extension Label {
         self.init(
             title: title,
             description: description,
-            iconContent: .icon(icon, size: .header(titleStyle)),
+            iconContent: .icon(icon, size: .header(titleStyle), color: titleStyle.color),
             titleStyle: titleStyle,
             descriptionStyle: descriptionStyle,
             iconSpacing: iconSpacing,
@@ -128,6 +128,13 @@ public extension Label {
             switch self {
                 case .heading(let style, _):            return style.size
                 case .text(let size, _, _):             return size.value
+            }
+        }
+        
+        var color: Color? {
+            switch self {
+                case .heading(_ , let color):           return color?.value
+                case .text(_, _, let color):            return color?.value
             }
         }
     }
@@ -176,9 +183,12 @@ struct HeaderPreviews: PreviewProvider {
                 Label()
                 Label("Label")
                 Label("Label", description: "Description")
-                Label("Label", description: "Description", descriptionStyle: .custom(.large))
-                Label("Label", description: "Description", icon: .grid)
-                Label("Label", description: "Description", iconContent: .countryFlag("us"))
+                Label("No Icon", description: "Description", descriptionStyle: .custom(.large))
+                Label("Orbit Icon", description: "Description", icon: .informationCircle, titleStyle: .heading(.title4, color: .none))
+                    .foregroundColor(.blueNormal)
+                Label("SF Symbol", description: "Description", iconContent: .sfSymbol("info.circle.fill"), titleStyle: .heading(.title4, color: .none))
+                    .foregroundColor(.blueNormal)
+                Label("CountryFlag", description: "Description", iconContent: .countryFlag("us"), titleStyle: .heading(.title4, color: .custom(.blueNormal)))
                 
                 Label(
                     "Label",
