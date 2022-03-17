@@ -74,6 +74,7 @@ public struct ListChoice<Content: View>: View {
             iconContent: icon,
             titleStyle: .text(weight: .medium),
             descriptionStyle: .custom(.small),
+            iconSpacing: .xSmall,
             descriptionSpacing: .xxxSmall
         )
         .padding(.vertical, .small)

@@ -109,7 +109,9 @@ public struct Tile<Content: View>: View {
                 title,
                 description: description,
                 iconContent: iconContent,
-                titleStyle: titleStyle
+                titleStyle: titleStyle,
+                iconSpacing: .small,
+                descriptionSpacing: .xxSmall
             )
             .padding(.vertical, .medium)
 

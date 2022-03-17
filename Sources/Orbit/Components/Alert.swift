@@ -50,6 +50,7 @@ public struct Alert<Content: View>: View {
                 iconContent: .icon(icon, color: status.color),
                 titleStyle: .text(weight: .bold),
                 descriptionStyle: .custom(.normal, color: .inkNormal, linkColor: .inkNormal),
+                descriptionSpacing: .xxSmall,
                 descriptionLinkAction: descriptionLinkAction
             )
             
