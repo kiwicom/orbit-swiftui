@@ -65,7 +65,7 @@ public extension Select {
         prefix: Icon.Content = .none,
         value: String?,
         placeholder: String = "",
-        suffix: Icon.Content = .icon(.chevronDown, size: .large),
+        suffix: Icon.Content = .icon(.chevronDown),
         state: InputState = .default,
         message: MessageType = .none,
         action: @escaping () -> Void = {}
@@ -103,7 +103,8 @@ struct SelectPreviews: PreviewProvider {
             Select("", prefix: .icon(.airplane), value: nil, placeholder: "Please select")
             Select("Label (Empty Value)", prefix: .icon(.airplane), value: "")
             Select("Label (No Value)", prefix: .icon(.airplane), value: nil, placeholder: "Please select")
-            Select("Label", prefix: .icon(.airplane), value: "Value")
+            Select("Label", prefix: .icon(.phone), value: "Value")
+            Select("Label", prefix: .countryFlag("us"), value: "Value")
         }
         .padding(.vertical)
         .previewDisplayName("Select")

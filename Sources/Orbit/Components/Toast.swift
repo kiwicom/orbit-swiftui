@@ -64,7 +64,7 @@ public struct ToastContent: View {
         HStack {
             Label(
                 description,
-                iconContent: .icon(icon, size: .small, color: .white),
+                iconContent: .icon(icon, color: .white),
                 titleStyle: .text(weight: .regular, color: .white)
             )
             .padding(.small)

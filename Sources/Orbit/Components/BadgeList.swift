@@ -22,7 +22,9 @@ public struct BadgeList: View {
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: Self.spacing) {
             badgeBackground
-                .overlay(Icon(iconContent))
+                .overlay(
+                    Icon(iconContent, size: .small)
+                )
                 .alignmentGuide(.firstTextBaseline) { size in
                     Text.Size.small.value * Text.firstBaselineRatio + size.height / 2
                 }
@@ -63,7 +65,7 @@ public extension BadgeList {
     init(_ label: String = "", icon: Icon.Symbol = .none, style: Style = .neutral, labelColor: LabelColor = .default) {
         self.init(
             label,
-            iconContent: .icon(icon, size: .small, color: style.iconColor),
+            iconContent: .icon(icon, color: style.iconColor),
             style: style,
             labelColor: labelColor
         )

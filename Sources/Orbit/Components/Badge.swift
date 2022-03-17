@@ -22,7 +22,7 @@ public struct Badge: View {
     public var body: some View {
         if isEmpty == false {
             HStack(spacing: size.spacing) {
-                Icon(iconContent)
+                Icon(iconContent, size: .small)
                 
                 Text(
                     label,
@@ -67,7 +67,7 @@ public extension Badge {
     init(_ label: String = "", icon: Icon.Symbol = .none, style: Style = .neutral, size: Size = .default) {
         self.init(
             label,
-            iconContent: .icon(icon, size: .small, color: Color(style.labelColor)),
+            iconContent: .icon(icon, color: Color(style.labelColor)),
             style: style,
             size: size
         )
@@ -265,7 +265,7 @@ struct BadgePreviews: PreviewProvider {
 
                 Badge(
                     "Custom",
-                    iconContent: .icon(.airplane, size: .small, color: .pink),
+                    iconContent: .icon(.airplane, color: .pink),
                     style: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,

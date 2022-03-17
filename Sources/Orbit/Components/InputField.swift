@@ -191,7 +191,7 @@ struct InputFieldPreviews: PreviewProvider {
         )
         InputField(value: .constant("InputField with no label"))
         standalone
-        InputField(value: .constant("InputField with CountryFlag prefix"), prefix: .countryFlag("us", size: .normal))
+        InputField(value: .constant("InputField with CountryFlag prefix"), prefix: .countryFlag("us"))
     }
 
     static var snapshots: some View {

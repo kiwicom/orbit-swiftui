@@ -51,20 +51,20 @@ struct ListPreviews: PreviewProvider {
 
     static var standalone: some View {
         List {
-            ListItem("This is just a line", iconContent: .icon(.airplaneDown, size: .small, color: .blue))
+            ListItem("This is just a line", iconContent: .icon(.airplaneDown, color: .blue))
             ListItem("This is just a line")
             ListItem("This is just a line", icon: .none)
-            ListItem("This is just a line", iconContent: .icon(.baggageSet, size: .small))
+            ListItem("This is just a line", iconContent: .icon(.baggageSet))
         }
     }
 
     static var snapshots: some View {
         Group {
             List {
-                ListItem("This is just a normal line", iconContent: .icon(.airplaneDown, size: .small, color: .green))
-                ListItem("This is just a normal line", iconContent: .icon(.chat, size: .small, color: .inkNormal))
-                ListItem("This is just a normal line", iconContent: .icon(.accountCircle, size: .small, color: .orange))
-                ListItem("This is just a normal line", iconContent: .icon(.document, size: .small, color: .blue))
+                ListItem("This is just a normal line", iconContent: .icon(.airplaneDown, color: .green))
+                ListItem("This is just a normal line", iconContent: .icon(.chat, color: .inkNormal))
+                ListItem("This is just a normal line", iconContent: .icon(.accountCircle, color: .orange))
+                ListItem("This is just a normal line", iconContent: .icon(.document, color: .blue))
                 ListItem("This is just a normal line", icon: .none)
             }
             .padding()

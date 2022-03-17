@@ -18,7 +18,7 @@ public struct Label: View {
     public var body: some View {
         if isEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: iconSpacing) {
-                Icon(iconContent)
+                Icon(iconContent, size: .label(titleStyle))
                     .alignmentGuide(.firstTextBaseline) { size in
                         self.titleStyle.size * Text.firstBaselineRatio + size.height / 2
                     }
@@ -97,7 +97,7 @@ public extension Label {
         self.init(
             title: title,
             description: description,
-            iconContent: .icon(icon, size: .label(titleStyle), color: titleStyle.color),
+            iconContent: .icon(icon, color: titleStyle.color),
             titleStyle: titleStyle,
             descriptionStyle: descriptionStyle,
             iconSpacing: iconSpacing,
@@ -107,7 +107,7 @@ public extension Label {
     }
 }
 
-// MARK: - Inits
+// MARK: - Types
 public extension Label {
 
     enum TitleStyle {
@@ -128,6 +128,13 @@ public extension Label {
             switch self {
                 case .heading(let style, _):            return style.size
                 case .text(let size, _, _):             return size.value
+            }
+        }
+        
+        var iconSize: CGFloat {
+            switch self {
+                case .heading(let style, _):            return style.iconSize
+                case .text(let size, _, _):             return size.iconSize
             }
         }
         

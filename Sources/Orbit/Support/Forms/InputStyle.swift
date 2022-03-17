@@ -36,7 +36,7 @@ struct InputContent<Content: View>: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            Icon(prefix)
+            Icon(prefix, size: .large)
                 .foregroundColor(prefixColor)
                 .padding(.horizontal, .xSmall)
 
@@ -46,7 +46,7 @@ struct InputContent<Content: View>: View {
 
             Spacer(minLength: 0)
 
-            Icon(suffix)
+            Icon(suffix, size: .large)
                 .foregroundColor(suffixColor)
                 .padding(.horizontal, .xSmall)
                 .contentShape(Rectangle())

@@ -21,7 +21,7 @@ public struct CountryFlag: View {
                 clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
                     .blendMode(.darken)
             )
-            .padding(Icon.averagePadding)
+            .padding(Icon.averagePadding / 2)
             .frame(width: size.value)
             .fixedSize()
     }

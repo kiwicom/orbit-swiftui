@@ -224,7 +224,7 @@ public extension Tile {
     ) {
         self.title = title
         self.description = description
-        self.iconContent = .icon(icon, size: .label(titleStyle), color: iconColor)
+        self.iconContent = .icon(icon, color: iconColor)
         self.disclosure = disclosure
         self.border = border
         self.status = status

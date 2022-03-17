@@ -85,7 +85,7 @@ public struct ListChoice<Content: View>: View {
             case .none:
                 EmptyView()
             case .disclosure(let color):
-                Icon(.chevronRight, size: .large, color: color)
+                Icon(.chevronRight, color: color)
                     .padding(.leading, -.xSmall)
             case .button(let type):
                 disclosureButton(type: type)
@@ -320,7 +320,7 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, disclosure: .none)
             ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
             ListChoice(title, icon: .airplane, disclosure: .none)
-            ListChoice(title, icon: .icon(.airplane, size: .xLarge, color: .blueNormal), disclosure: .none)
+            ListChoice(title, icon: .icon(.airplane, color: .blueNormal), disclosure: .none)
             ListChoice(title, description: description, icon: .countryFlag("cs"), disclosure: .none)
             ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none)
             ListChoice(title, description: description, disclosure: .none) {
@@ -400,7 +400,7 @@ struct ListChoicePreviews: PreviewProvider {
                 .background(Color.white)
             ListChoice(title, icon: .airplane, disclosure: .none)
                 .background(Color.white)
-            ListChoice(title, icon: .icon(.airplane, size: .large, color: .inkLighter), disclosure: .none)
+            ListChoice(title, icon: .icon(.airplane, color: .inkLighter), disclosure: .none)
                 .background(Color.white)
             ListChoice(title, description: description, icon: .airplane, disclosure: .none)
                 .background(Color.white)

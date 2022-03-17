@@ -26,7 +26,7 @@ public struct ButtonLink: View {
             },
             label: {
                 HStack(spacing: .xSmall) {
-                    Icon(iconContent)
+                    Icon(iconContent, size: iconSize)
                     
                     Text(
                         label,
@@ -40,6 +40,14 @@ public struct ButtonLink: View {
             }
         )
         .buttonStyle(OrbitStyle(style: style, size: size))
+    }
+    
+    var iconSize: Icon.Size {
+        switch size {
+            case .default:          return .normal
+            case .button:           return .large
+            case .buttonSmall:      return .small
+        }
     }
 }
 
