@@ -49,7 +49,7 @@ public extension Icon {
     }
     
     /// Creates Orbit Icon component for provided icon symbol.
-    init(_ symbol: Icon.Symbol, size: Size = .normal, color: Color? = .inkLighter) {
+    init(_ symbol: Icon.Symbol, size: Size = .normal, color: Color? = .inkNormal) {
         self.init(.icon(symbol, size: size, color: color))
     }
 }
@@ -145,13 +145,13 @@ struct IconPreviews: PreviewProvider {
                 Icon(.flightNomad)
                 Icon(.flightNomad, size: .small)
             }
-
+            
             HStack {
-                Icon(.informationCircle, size: .xLarge, color: .inkNormal)
-                Icon(.informationCircle, color: .inkNormal)
-                Icon(.informationCircle, size: .small, color: .inkNormal)
+                Icon(.informationCircle, size: .xLarge, color: .inkLighter)
+                Icon(.informationCircle, color: .inkLighter)
+                Icon(.informationCircle, size: .small, color: .inkLighter)
             }
-
+            
             HStack {
                 Icon(.grid, size: .xLarge, color: nil)
                 Icon(.grid)

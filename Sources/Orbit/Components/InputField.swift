@@ -87,8 +87,8 @@ public struct InputField: View {
     
     @ViewBuilder var clearButton: some View {
         if value.isEmpty == false, state != .disabled {
-            Image(systemName: "multiply.circle.fill")
-                .foregroundColor(.cloudDarker)
+            Icon(sfSymbol: "multiply.circle.fill")
+                .foregroundColor(.inkLighter)
                 .padding(.small)
                 .contentShape(Rectangle())
                 .onTapGesture {
