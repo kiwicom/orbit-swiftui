@@ -314,7 +314,7 @@ struct ListChoicePreviews: PreviewProvider {
     }
     
     static var plain: some View {
-        Card(spacing: 0, padding: 0) {
+        Card(contentLayout: .fill) {
             ListChoice(title, disclosure: .none)
             ListChoice(title, description: description, disclosure: .none)
             ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
@@ -334,7 +334,7 @@ struct ListChoicePreviews: PreviewProvider {
     }
     
     static var chevron: some View {
-        Card(spacing: 0, padding: 0) {
+        Card(contentLayout: .fill) {
             ListChoice(title)
             ListChoice(title, value: "10")
             ListChoice(title, description: description)
@@ -354,7 +354,7 @@ struct ListChoicePreviews: PreviewProvider {
     }
     
     static var button: some View {
-        Card(spacing: 0, padding: 0) {
+        Card(contentLayout: .fill) {
             ListChoice(title, disclosure: addButton)
             ListChoice(title, disclosure: removeButton)
             ListChoice(title, description: description, disclosure: addButton)
@@ -372,7 +372,7 @@ struct ListChoicePreviews: PreviewProvider {
     }
 
     static var checkbox: some View {
-        Card(spacing: 0, padding: 0) {
+        Card(contentLayout: .fill) {
             ListChoice(title, disclosure: uncheckedCheckbox)
             ListChoice(title, disclosure: checkedCheckbox)
             ListChoice(title, description: description, disclosure: .checkbox(state: .error))
