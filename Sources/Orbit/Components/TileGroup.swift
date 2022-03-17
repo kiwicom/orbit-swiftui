@@ -19,14 +19,7 @@ public struct TileGroup<Content: View>: View {
     let content: () -> Content
 
     public var body: some View {
-        Card(
-            spacing: 0,
-            padding: 0,
-            borderStyle: .default,
-            status: status,
-            width: width,
-            backgroundColor: backgroundColor
-        ) {
+        Card(borderStyle: .default, status: status, width: width, backgroundColor: backgroundColor, contentLayout: .fill) {
             content()
         }
     }

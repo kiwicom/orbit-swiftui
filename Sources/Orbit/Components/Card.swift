@@ -5,6 +5,16 @@ public enum CardAction {
     case buttonLink(_ label: String, action: () -> Void = {}, accessibilityIdentifier: String = "")
 }
 
+/// Specifies the padding and spacing behavior of Card content.
+public enum CardContentLayout {
+    /// Content fills all available space with no padding or spacing.
+    case fill
+    /// Content with `.medium` padding and overridable spacing.
+    case `default`(spacing: CGFloat = .medium)
+    /// Content with custom padding and spacing.
+    case custom(padding: CGFloat, spacing: CGFloat)
+}
+
 /// Separates content into sections.
 ///
 /// Card is a wrapping component around a custom content.
@@ -27,9 +37,8 @@ public struct Card<Content: View>: View {
     let iconContent: Icon.Content
     let action: CardAction
     let headerSpacing: CGFloat
-    let spacing: CGFloat
-    let padding: CGFloat
-    let alignment: HorizontalAlignment
+    let contentLayout: CardContentLayout
+    let contentAlignment: HorizontalAlignment
     let borderStyle: TileBorderStyle
     let titleStyle: Label.TitleStyle
     let status: Status?
@@ -42,11 +51,11 @@ public struct Card<Content: View>: View {
             header
 
             if isContentEmpty == false {
-                VStack(alignment: alignment, spacing: spacing) {
+                VStack(alignment: contentAlignment, spacing: contentSpacing) {
                     content()
                 }
-                .padding(.top, isHeaderEmpty ? padding : 0)
-                .padding([.horizontal, .bottom], padding)
+                .padding(.top, isHeaderEmpty ? contentPadding : 0)
+                .padding([.horizontal, .bottom], contentPadding)
             }
         }
         .frame(maxWidth: maxWidth, alignment: .leading)
@@ -127,6 +136,22 @@ public struct Card<Content: View>: View {
     var shadow: TileBorderModifier.Shadow {
         status == nil ? .small : .none
     }
+    
+    var contentPadding: CGFloat {
+        switch contentLayout {
+            case .fill:                         return 0
+            case .default:                      return .medium
+            case .custom(let padding, _):       return padding
+        }
+    }
+    
+    var contentSpacing: CGFloat {
+        switch contentLayout {
+            case .fill:                         return 0
+            case .default(let spacing):         return spacing
+            case .custom(_, let spacing):       return spacing
+        }
+    }
 }
 
 // MARK: - Inits
@@ -137,31 +162,29 @@ public extension Card {
         _ title: String = "",
         description: String = "",
         iconContent: Icon.Content,
-        alignment: HorizontalAlignment = .leading,
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
-        spacing: CGFloat = .medium,
-        padding: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
         titleStyle: Label.TitleStyle = .title4,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .white,
+        contentLayout: CardContentLayout = .default(),
+        contentAlignment: HorizontalAlignment = .leading,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
         self.description = description
         self.iconContent = iconContent
-        self.alignment = alignment
         self.action = action
         self.headerSpacing = headerSpacing
-        self.spacing = spacing
-        self.padding = padding
         self.borderStyle = borderStyle
         self.titleStyle = titleStyle
         self.status = status
         self.width = width
         self.backgroundColor = backgroundColor
+        self.contentLayout = contentLayout
+        self.contentAlignment = contentAlignment
         self.content = { content() }
     }
 
@@ -170,11 +193,8 @@ public extension Card {
         _ title: String = "",
         description: String = "",
         iconContent: Icon.Content,
-        alignment: HorizontalAlignment = .leading,
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
-        spacing: CGFloat = .medium,
-        padding: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
         titleStyle: Label.TitleStyle = .title4,
         status: Status? = nil,
@@ -185,11 +205,8 @@ public extension Card {
             title,
             description: description,
             iconContent: iconContent,
-            alignment: alignment,
             action: action,
             headerSpacing: headerSpacing,
-            spacing: spacing,
-            padding: padding,
             borderStyle: borderStyle,
             titleStyle: titleStyle,
             status: status,
@@ -204,31 +221,29 @@ public extension Card {
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol = .none,
-        alignment: HorizontalAlignment = .leading,
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
-        spacing: CGFloat = .medium,
-        padding: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
         titleStyle: Label.TitleStyle = .title4,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .white,
+        contentLayout: CardContentLayout = .default(),
+        contentAlignment: HorizontalAlignment = .leading,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
         self.description = description
         self.iconContent = .icon(icon, size: .label(titleStyle))
-        self.alignment = alignment
         self.action = action
         self.headerSpacing = headerSpacing
-        self.spacing = spacing
-        self.padding = padding
         self.borderStyle = borderStyle
         self.titleStyle = titleStyle
         self.status = status
         self.width = width
         self.backgroundColor = backgroundColor
+        self.contentLayout = contentLayout
+        self.contentAlignment = contentAlignment
         self.content = { content() }
     }
 
@@ -237,11 +252,8 @@ public extension Card {
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol = .none,
-        alignment: HorizontalAlignment = .leading,
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
-        spacing: CGFloat = .medium,
-        padding: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
         titleStyle: Label.TitleStyle = .title4,
         status: Status? = nil,
@@ -252,11 +264,8 @@ public extension Card {
             title,
             description: description,
             icon: icon,
-            alignment: alignment,
             action: action,
             headerSpacing: headerSpacing,
-            spacing: spacing,
-            padding: padding,
             borderStyle: borderStyle,
             titleStyle: titleStyle,
             status: status,
@@ -385,12 +394,12 @@ struct CardPreviews: PreviewProvider {
                 customContentPlaceholder
             }
 
-            Card("Card with custom spacing and padding", action: .buttonLink("ButtonLink"), spacing: .xxSmall, padding: 0) {
+            Card("Card with custom spacing and padding", action: .buttonLink("ButtonLink"), contentLayout: .custom(padding: 0, spacing: .xxSmall)) {
                 customContentPlaceholder
                 customContentPlaceholder
             }
 
-            Card(spacing: .xxSmall, padding: 0) {
+            Card(contentLayout: .custom(padding: 0, spacing: .xxSmall)) {
                 customContentPlaceholder
                 customContentPlaceholder
             }
@@ -415,12 +424,12 @@ struct CardPreviews: PreviewProvider {
                 customContentPlaceholder
             }
             
-            Card("Card with custom spacing and padding", action: .buttonLink("ButtonLink"), headerSpacing: .xxLarge, spacing: .small, padding: .xxSmall, borderStyle: .default) {
+            Card("Card with custom spacing and padding", action: .buttonLink("ButtonLink"), headerSpacing: .xxLarge, borderStyle: .default, contentLayout: .custom(padding: .xxSmall, spacing: .small)) {
                 customContentPlaceholder
                 customContentPlaceholder
             }
             
-            Card(spacing: .xxSmall, padding: 0, borderStyle: .default) {
+            Card(borderStyle: .default, contentLayout: .custom(padding: 0, spacing: .xxSmall)) {
                 customContentPlaceholder
                 customContentPlaceholder
             }
@@ -453,10 +462,9 @@ struct CardPreviews: PreviewProvider {
     static var listChoiceGroupsBorderless: some View {
         Card(
             "ListChoice group title",
-            spacing: 0,
-            padding: 0,
             borderStyle: .none,
-            backgroundColor: .clear
+            backgroundColor: .clear,
+            contentLayout: .fill
         ) {
             VStack(spacing: 0) {
                 ListChoice("ListChoice")
