@@ -12,20 +12,6 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/visuals/carrierlogo/)
 public struct CarrierLogo: View {
     
-    public enum Size {
-        case small
-        case medium
-        case large
-        
-        var value: Double {
-            switch self {
-                case .small:    return 16
-                case .medium:   return 24
-                case .large:    return 32
-            }
-        }
-    }
-    
     struct SingleCarrierImage: View {
         
         let image: Image
@@ -42,7 +28,7 @@ public struct CarrierLogo: View {
     }
     
     let images: [Image]
-    let size: Size
+    let size: Icon.Size
     
     public var body: some View {
         content
@@ -102,7 +88,7 @@ public struct CarrierLogo: View {
     /// - Parameters:
     ///   - image: a logo image.
     ///   - size: the size of the view. The image will occupy the whole view.
-    public init(image: Image, size: Size) {
+    public init(image: Image, size: Icon.Size) {
         self.images = [image]
         self.size = size
     }
@@ -123,7 +109,7 @@ struct CarrierLogoPreviews: PreviewProvider {
         Group {
             HStack {
                 CarrierLogo(image: square, size: .small)
-                CarrierLogo(image: square, size: .medium)
+                CarrierLogo(image: square, size: .normal)
                 CarrierLogo(image: square, size: .large)
             }
             .padding()

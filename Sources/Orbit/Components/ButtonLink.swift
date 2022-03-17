@@ -26,7 +26,7 @@ public struct ButtonLink: View {
             },
             label: {
                 HStack(spacing: .xSmall) {
-                    iconContent.view()
+                    Icon(iconContent)
                     
                     Text(
                         label,
@@ -72,7 +72,7 @@ public extension ButtonLink {
         self.init(
             label,
             style: style,
-            iconContent: .icon(icon, size: .small),
+            iconContent: .icon(icon),
             size: size,
             action: action
         )
@@ -253,6 +253,10 @@ struct ButtonLinkPreviews: PreviewProvider {
                 .background(Color.blueLight)
                 .padding(.vertical)
                 .previewDisplayName("Icon only")
+            
+            ButtonLink("Flag", iconContent: .countryFlag("us"))
+                .padding(.vertical)
+                .previewDisplayName("Country flag")
         }
         .padding(.horizontal)
     }

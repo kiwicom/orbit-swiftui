@@ -47,7 +47,7 @@ public struct Alert<Content: View>: View {
             Label(
                 title,
                 description: description,
-                iconContent: .icon(icon, size: .default, color: status.color),
+                iconContent: .icon(icon, color: status.color),
                 titleStyle: .text(weight: .bold),
                 descriptionStyle: .custom(.normal, color: .inkNormal, linkColor: .inkNormal),
                 descriptionLinkAction: descriptionLinkAction

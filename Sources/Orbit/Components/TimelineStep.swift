@@ -8,7 +8,7 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/timeline/)
 public struct TimelineStep: View {
 
-    public static let indicatorDiameter: CGFloat = Icon.Size.medium.value
+    public static let indicatorDiameter: CGFloat = Icon.Size.large.value
 
     let label: String
     let sublabel: String
@@ -18,7 +18,7 @@ public struct TimelineStep: View {
     public var body: some View {
         HStack(alignment: .top, spacing: .small) {
             Color.clear
-                .frame(width: Icon.Size.medium.value, height: Icon.Size.medium.value)
+                .frame(width: Icon.Size.large.value, height: Icon.Size.large.value)
                 .overlay(indicator)
 
             VStack(alignment: .leading, spacing: .xSmall) {
@@ -53,7 +53,7 @@ public struct TimelineStep: View {
                     .strokeBorder(Color.cloudNormalHover, lineWidth: 2)
                     .frame(width: .small, height: .small)
             case .status:
-                Icon(style.icon, size: .medium, color: style.color)
+                Icon(style.icon, size: .large, color: style.color)
         }
     }
 

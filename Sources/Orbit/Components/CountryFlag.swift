@@ -7,24 +7,32 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/countryflag/)
 public struct CountryFlag: View {
-
+    
     let countryCode: String
-    let height: Height
+    let size: Icon.Size
     let border: Border
 
     public var body: some View {
         SwiftUI.Image(countryCode.lowercased(), bundle: .current)
             .resizable()
             .scaledToFit()
-            .frame(height: height.value)
             .clipShape(clipShape)
             .overlay(
-                clipShape.stroke(border.color, lineWidth: BorderWidth.thin)
+                clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
+                    .blendMode(.darken)
             )
+            .padding(Icon.averagePadding)
+            .frame(width: size.value)
+            .fixedSize()
     }
 
-    @ViewBuilder var clipShape: some Shape {
-        RoundedRectangle(cornerRadius: height.value / 8)
+    var clipShape: some InsettableShape {
+        switch border {
+            case .none:
+                return RoundedRectangle(cornerRadius: 0)
+            case .default:
+                return RoundedRectangle(cornerRadius: size.value / 10)
+        }
     }
 }
 
@@ -32,38 +40,15 @@ public struct CountryFlag: View {
 public extension CountryFlag {
 
     /// Creates Orbit CountryFlag component.
-    init(_ countryCode: String, height: Height = .default, border: Border = .default) {
+    init(_ countryCode: String, size: Icon.Size = .normal, border: Border = .default) {
         self.countryCode = countryCode
-        self.height = height
+        self.size = size
         self.border = border
     }
 }
 
 // MARK: - Types
 public extension CountryFlag {
-
-    enum Height: Equatable {
-        /// 12 pts CountryFlag height.
-        case small
-        /// 16 pts CountryFlag height.
-        case `default`
-        /// 20 pts CountryFlag height.
-        case medium
-        /// 24pts CountryFlag height.
-        case large
-        /// Custom CountryFlag height.
-        case custom(CGFloat)
-
-        public var value: CGFloat {
-            switch self {
-                case .small:                return 12
-                case .default:              return 16
-                case .medium:               return 20
-                case .large:                return 24
-                case .custom(let size):     return size
-            }
-        }
-    }
 
     enum Border {
         case none
@@ -72,7 +57,7 @@ public extension CountryFlag {
         var color: Color {
             switch self {
                 case .none:                 return .clear
-                case .default:              return .cloudDark
+                case .default:              return .cloudDarker.opacity(0.8)
             }
         }
     }
@@ -84,8 +69,13 @@ struct CountryFlagPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             CountryFlag("cz")
-            CountryFlag("us", height: .small)
-            CountryFlag("unknown", height: .large)
+            CountryFlag("cz", border: .none)
+            CountryFlag("sg")
+            CountryFlag("jp")
+            CountryFlag("de")
+            CountryFlag("us", size: .small)
+            CountryFlag("us", size: .custom(.xxxLarge))
+            CountryFlag("unknown", size: .xLarge)
         }
         .padding()
         .previewLayout(.sizeThatFits)

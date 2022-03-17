@@ -143,7 +143,7 @@ public struct ChoiceTile<Content: View>: View {
                     }
                 case .center:
                     VStack(spacing: .xxSmall) {
-                        iconContent.view()
+                        Icon(iconContent)
                             .padding(.bottom, .xxxSmall)
                         centeredHeading
                         Text(description, color: .inkLight, alignment: .center)
@@ -257,7 +257,7 @@ public extension ChoiceTile {
         self.init(
             title,
             description: description,
-            iconContent: .icon(icon, size: .header(titleStyle)),
+            iconContent: .icon(icon, size: .label(titleStyle)),
             badge: badge,
             badgeOverlay: badgeOverlay,
             indicator: indicator,
@@ -401,7 +401,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         VStack(spacing: .large) {
             HStack(alignment: .top, spacing: .medium) {
                 VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", description: "Unchecked Radio", icon: .grid, message: .help("Helpful message")) {}
+                    ChoiceTile("Label", description: "Unchecked Radio", iconContent: .countryFlag("cz", size: .large), message: .help("Helpful message")) {}
 
                     ChoiceTile("Label", indicator: .checkbox, isError: true) {
                         customContentPlaceholder
@@ -445,7 +445,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         VStack(spacing: .large) {
             HStack(alignment: .top, spacing: .medium) {
                 VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", description: "Checked Radio", icon: .flightNomad, message: .help("Helpful message"), alignment: .center) {}
+                    ChoiceTile("Label", description: "Checked Radio", iconContent: .countryFlag("cz", size: .large), message: .help("Helpful message"), alignment: .center) {}
 
                     ChoiceTile("Label", description: "Unchecked Checkbox", indicator: .checkbox, message: .help("Helpful message"), alignment: .center) {}
                 }

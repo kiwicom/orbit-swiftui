@@ -9,32 +9,18 @@ import SwiftUI
 /// - Important: Component has fixed vertical size.
 public struct Heading: View {
 
-    public static let spacing: CGFloat = .xSmall
-
     let label: String
-    let iconContent: Icon.Content
     let style: Style
     let color: Color?
     let alignment: TextAlignment
 
     public var body: some View {
-        
-        if text.isEmpty == false || iconContent.isEmpty == false {
-            
-            HStack(alignment: .firstTextBaseline, spacing: Self.spacing) {
-                iconContent.view()
-                    .alignmentGuide(.firstTextBaseline) { size in
-                        self.style.size * Text.firstBaselineRatio + size.height / 2
-                    }
-
-                if text.isEmpty == false {
-                    SwiftUI.Text(verbatim: text)
-                        .font(.orbit(size: style.size, weight: style.weight))
-                        .foregroundColor(color?.value)
-                        .multilineTextAlignment(alignment)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
+        if text.isEmpty == false {
+            SwiftUI.Text(verbatim: text)
+                .font(.orbit(size: style.size, weight: style.weight))
+                .foregroundColor(color?.value)
+                .multilineTextAlignment(alignment)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -52,28 +38,11 @@ public extension Heading {
     /// Creates Orbit Heading component.
     init(
         _ label: String,
-        iconContent: Icon.Content = .none,
         style: Style,
         color: Color? = .inkNormal,
         alignment: TextAlignment = .leading
     ) {
         self.label = label
-        self.iconContent = iconContent
-        self.style = style
-        self.color = color
-        self.alignment = alignment
-    }
-
-    /// Creates Orbit Heading component with icon symbol.
-    init(
-        _ label: String,
-        icon: Icon.Symbol,
-        style: Style,
-        color: Color? = .inkNormal,
-        alignment: TextAlignment = .leading
-    ) {
-        self.label = label
-        self.iconContent = .icon(icon, size: .custom(style.size), color: color?.value)
         self.style = style
         self.color = color
         self.alignment = alignment
@@ -125,6 +94,19 @@ public extension Heading {
                 case .title6:           return Text.Size.small.value
             }
         }
+        
+        public var lineHeight: CGFloat {
+            switch self {
+                case .display:          return 48
+                case .displaySubtitle:  return 28
+                case .title1:           return 32
+                case .title2:           return 28
+                case .title3:           return Text.Size.large.lineHeight
+                case .title4:           return Text.Size.normal.lineHeight
+                case .title5:           return Text.Size.normal.lineHeight
+                case .title6:           return Text.Size.small.lineHeight
+            }
+        }
 
         public var weight: Font.Weight {
             switch self {
@@ -142,8 +124,9 @@ struct HeadingPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             
-            Heading("Heading", icon: .grid, style: .title1, color: .none)
+            Label("Heading", icon: .grid, titleStyle: .heading(.title1, color: nil))
                 .foregroundColor(.blueNormal)
+                .previewDisplayName("Label with color override")
             
             snapshots
         }
@@ -175,18 +158,21 @@ struct HeadingPreviews: PreviewProvider {
                 .padding(.vertical)
 
             VStack(alignment: .leading, spacing: .xSmall) {
-                Heading("Display title, but very very very very very very very long", icon: .circle, style: .display)
-                Heading("Display subtitle, also very very very very very long", icon: .email, style: .displaySubtitle)
+                Label("Display title, but very very very very very very very long", icon: .circle, titleStyle: .display)
+                
+                Label("Display title, but very very very very very very very long", icon: .circle, titleStyle: .display)
+                
+                Label("Display subtitle, also very very very very very long", icon: .email, titleStyle: .displaySubtitle)
                 Separator()
-                Heading("Title 1, also very very very very very very very verylong", icon: .circle, style: .title1)
-                Heading("Title 2, but very very very very very very very very long", icon: .circle, style: .title2)
-                Heading("Title 3, but very very very very very very very very long", icon: .circle, style: .title3)
-                Heading("Title 4, but very very very very very very very very long", icon: .circle, style: .title4)
-                Heading("Title 5, but very very very very very very very very long", icon: .circle, style: .title5)
-                Heading("Title 6, but very very very very very very very very long", icon: .circle, style: .title6)
+                Label("Title 1, also very very very very very very very verylong", icon: .circle, titleStyle: .title1)
+                Label("Title 2, but very very very very very very very very long", icon: .circle, titleStyle: .title2)
+                Label("Title 3, but very very very very very very very very long", icon: .circle, titleStyle: .title3)
+                Label("Title 4, but very very very very very very very very long", icon: .circle, titleStyle: .title4)
+                Label("Title 5, but very very very very very very very very long", icon: .circle, titleStyle: .title5)
+                Label("Title 6, but very very very very very very very very long", icon: .circle, titleStyle: .title6)
             }
             .padding(.vertical)
-            .previewDisplayName("Longer text")
+            .previewDisplayName("Longer text with icon using Label")
         }
         .padding(.horizontal)
     }

@@ -218,7 +218,7 @@ public extension Card {
     ) {
         self.title = title
         self.description = description
-        self.iconContent = .icon(icon, size: .header(titleStyle))
+        self.iconContent = .icon(icon, size: .label(titleStyle))
         self.alignment = alignment
         self.action = action
         self.headerSpacing = headerSpacing
@@ -460,7 +460,7 @@ struct CardPreviews: PreviewProvider {
         ) {
             VStack(spacing: 0) {
                 ListChoice("ListChoice")
-                ListChoice("ListChoice", icon: .notification)
+                ListChoice("ListChoice", icon: .countryFlag("us"))
                 ListChoice("ListChoice", description: "ListChoice description", icon: .airplane)
             }
             .padding(.top, .xSmall)

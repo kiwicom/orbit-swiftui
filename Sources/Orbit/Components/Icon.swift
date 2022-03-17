@@ -8,17 +8,34 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/icon/)
 public struct Icon: View {
 
-    let symbol: Icon.Symbol
-    let size: Size
-    let color: Color?
+    public static let averagePadding: CGFloat = .xxxSmall
+    let content: Icon.Content
 
     public var body: some View {
-        if symbol == .none {
+        if content.isEmpty {
             EmptyView()
         } else {
-            SwiftUI.Text(verbatim: symbol.value)
-                .font(.orbitIcon(size: size.value))
-                .foregroundColor(color)
+            switch content {
+                case .icon(let symbol, let size, let color):
+                    SwiftUI.Text(verbatim: symbol.value)
+                        .foregroundColor(color)
+                        .font(.orbitIcon(size: size.value))
+                case .image(let image, let size, let mode):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: mode)
+                        .frame(width: size.value, height: size.value)
+                case .illustration(let illlustration, let size):
+                    Illustration(illlustration, layout: .resizeable)
+                        .frame(width: size.value, height: size.value)
+                case .countryFlag(let countryCode, let size):
+                    CountryFlag(countryCode, size: size)
+                case .sfSymbol(let systemName, let size):
+                    Image(systemName: systemName)
+                        .font(.system(size: size.value - 2 * Self.averagePadding))
+                case .none:
+                    EmptyView()
+            }
         }
     }
 }
@@ -26,11 +43,14 @@ public struct Icon: View {
 // MARK: - Inits
 public extension Icon {
     
+    /// Creates Orbit Icon component for provided icon content.
+    init(_ content: Icon.Content) {
+        self.content = content
+    }
+    
     /// Creates Orbit Icon component for provided icon symbol.
-    init(_ symbol: Icon.Symbol, size: Size = .medium, color: Color? = .inkLighter) {
-        self.symbol = symbol
-        self.size = size
-        self.color = color
+    init(_ symbol: Icon.Symbol, size: Size = .normal, color: Color? = .inkLighter) {
+        self.init(.icon(symbol, size: size, color: color))
     }
 }
 
@@ -41,28 +61,15 @@ public extension Icon {
     enum Content: Equatable {
         case none
         /// Orbit icon symbol with size and optional overrideable color.
-        case icon(Symbol, size: Size = .medium, color: Color? = nil)
+        case icon(Symbol, size: Size = .normal, color: Color? = nil)
         /// Icon using custom Image.
-        case image(Image, size: Size = .medium, mode: ContentMode = .fit)
+        case image(Image, size: Size = .normal, mode: ContentMode = .fit)
         /// Orbit illustration.
-        case illustration(Illustration.Image, size: Size = .large)
-
-        @ViewBuilder public func view(defaultColor: Color? = nil) -> some View {
-            switch self {
-                case .icon(let icon, let size, let color):
-                    Icon(icon, size: size, color: color ?? defaultColor)
-                case .image(let image, let size, let mode):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: mode)
-                        .frame(width: size.value, height: size.value)
-                case .illustration(let illlustration, let size):
-                    Illustration(illlustration, layout: .resizeable)
-                        .frame(width: size.value, height: size.value)
-                case .none:
-                    EmptyView()
-            }
-        }
+        case illustration(Illustration.Image, size: Size = .xLarge)
+        /// Orbit CountryFlag.
+        case countryFlag(String, size: Size = .normal)
+        /// SwiftUI SF Symbol.
+        case sfSymbol(String, size: Size = .normal)
         
         public var isEmpty: Bool {
             switch self {
@@ -70,35 +77,39 @@ public extension Icon {
                 case .icon(let symbol, _, _):           return symbol == .none
                 case .illustration(let image, _):       return image == .none
                 case .image:                            return false
+                case .countryFlag(let countryCode, _):  return countryCode.isEmpty
+                case .sfSymbol(let systemName, _):      return systemName.isEmpty
             }
         }
     }
 
     enum Size: Equatable {
-        /// Size 16
+        /// Size 16.
         case small
-        /// Size 20
-        case `default`
-        /// Size 24
-        case medium
-        /// Size 32
+        /// Size 20.
+        case normal
+        /// Size 24.
         case large
+        /// Size 28.
+        case xLarge
         /// Size based on Font size.
         case fontSize(CGFloat)
-        /// Size based on Header.Title style.
-        case header(Label.TitleStyle)
+        /// Size based on `Label.Title` style.
+        case label(Label.TitleStyle)
         /// Custom size
         case custom(CGFloat)
         
         public var value: CGFloat {
             switch self {
-                case .small:                return 16
-                case .default:              return 20
-                case .medium:               return 24
-                case .large:                return 32
-                case .fontSize(let size):   return size + 1
-                case .header(let style):    return style.size + 1
-                case .custom(let size):     return size
+                case .small:                            return 16
+                case .normal:                           return 20
+                case .large:                            return 24
+                case .xLarge:                           return 28
+                case .fontSize(let size):               return size + 1
+                case .label(.heading(let style, _)):    return style.lineHeight
+                case .label(.text(let style, _, _)):    return style.lineHeight
+                case .label(let style):                 return style.size + 1
+                case .custom(let size):                 return size
             }
         }
         
@@ -114,62 +125,60 @@ struct IconPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-
             snapshots
-
-            ScrollView {
-                orbit
-                    .padding()
-            }
         }
+        .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         Icon(.informationCircle)
-            .previewLayout(.sizeThatFits)
     }
-
+    
     static var orbit: some View {
-        VStack(spacing: .small) {
-            ForEach(Icon.Symbol.allCases.sorted(), id: \.self) { icon in
-                HStack {
-                    Text("\(icon)", size: .normal)
-                        .layoutPriority(1)
-                    Separator()
-                    Icon(icon, size: .large, color: .inkNormal)
-                    Icon(icon)
-                    Icon(icon, size: .small, color: .inkLightActive)
-                    Icon(icon, size: .small, color: nil)
-                        .foregroundColor(.redNormal)
-                }
-            }
-        }
-        .previewDisplayName("Icons")
+        snapshots
     }
 
     static var snapshots: some View {
         VStack(spacing: .small) {
             HStack {
-                Icon(.flightNomad, size: .large)
+                Icon(.flightNomad, size: .xLarge)
                 Icon(.flightNomad)
                 Icon(.flightNomad, size: .small)
             }
 
             HStack {
-                Icon(.informationCircle, size: .large, color: .inkNormal)
+                Icon(.informationCircle, size: .xLarge, color: .inkNormal)
                 Icon(.informationCircle, color: .inkNormal)
                 Icon(.informationCircle, size: .small, color: .inkNormal)
             }
 
             HStack {
-                Icon(.airplaneUp, size: .large, color: .blueDark)
-                Icon(.airplaneUp, color: .blueDark)
-                Icon(.airplaneUp, size: .small, color: .blueDark)
+                Icon(.grid, size: .xLarge, color: nil)
+                Icon(.grid)
+                Icon(.grid, size: .small, color: .red)
+            }
+            .foregroundColor(.blueDark)
+            
+            Separator()
+            
+            HStack {
+                Icon(.image(.orbit(.facebook)))
+                Icon(.countryFlag("cz", size: .normal))
+                Icon(.illustration(.womanWithPhone, size: .normal))
+            }
+            
+            HStack(spacing: .xxSmall) {
+                Icon(.sfSymbol("info.circle.fill", size: .normal))
+                    .foregroundColor(.greenNormal)
+                Icon(.informationCircle, size: .normal, color: nil)
+                    .foregroundColor(.greenNormal)
+                Icon(.sfSymbol("info.circle.fill", size: .xLarge))
+                    .foregroundColor(.greenNormal)
+                Icon(.informationCircle, size: .xLarge, color: nil)
+                    .foregroundColor(.greenNormal)
             }
         }
-        .previewDisplayName("Icon sizes")
         .frame(width: 120)
         .padding()
-        .previewLayout(.sizeThatFits)
     }
 }

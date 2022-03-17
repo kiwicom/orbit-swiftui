@@ -30,7 +30,7 @@ public struct Button: View {
                         Spacer(minLength: 0)
                     }
 
-                    iconContent.view()
+                    Icon(iconContent)
 
                     if #available(iOS 14.0, *) {
                         Text(
@@ -54,9 +54,7 @@ public struct Button: View {
 
                     Spacer(minLength: 0)
 
-                    if disclosureIconContent.isEmpty == false {
-                        disclosureIconContent.view()
-                    }
+                    Icon(disclosureIconContent)
                 }
                 .padding(.horizontal, label.isEmpty ? 0 : size.padding)
             }
@@ -115,7 +113,7 @@ public extension Button {
         disclosureIcon: Icon.Symbol = .none,
         action: @escaping () -> Void = {}
     ) {
-        let iconSize: Icon.Size = size == .small ? .small : .medium
+        let iconSize: Icon.Size = size == .small ? .small : .large
         self.init(
             label,
             style: style,
@@ -395,7 +393,7 @@ struct ButtonPreviews: PreviewProvider {
             Button(
                 "Custom",
                 style: .critical,
-                iconContent: .icon(.check, size: .large, color: .blueNormal)
+                iconContent: .icon(.check, size: .xLarge, color: .blueNormal)
             )
             .padding(.vertical)
             .previewDisplayName("Custom")
