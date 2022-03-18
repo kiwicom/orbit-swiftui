@@ -78,7 +78,7 @@ public struct Card<Content: View>: View {
                     description: description,
                     iconContent: iconContent,
                     titleStyle: titleStyle,
-                    iconSpacing: .small,
+                    iconSpacing: .xSmall,
                     descriptionSpacing: .xxSmall
                 )
 
@@ -468,7 +468,8 @@ struct CardPreviews: PreviewProvider {
     
     static var listChoiceGroupsBorderless: some View {
         Card(
-            "ListChoice group title",
+            "Card with ListChoices",
+            headerSpacing: .xSmall,
             borderStyle: .none,
             backgroundColor: .clear,
             contentLayout: .fill
