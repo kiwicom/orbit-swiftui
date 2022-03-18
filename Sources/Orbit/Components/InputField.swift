@@ -84,9 +84,19 @@ public struct InputField: View {
     }
 
     @ViewBuilder var secureField: some View {
-        SecureTextField(text: $value, isSecured: $isSecureTextEntry)
+        SecureTextField(
+            text: $value,
+            isSecured: $isSecureTextEntry,
+            isEditing: $isEditing,
+            style: .init(
+                textContentType: textContent,
+                autocapitalization: autocapitalization,
+                keyboardType: keyboard,
+                font: .orbit(size: Text.Size.normal.value, weight: .regular)
+            )
+        )
         .onTapGesture {
-            self.isEditing = isEditing
+            self.isEditing = true
             onEditingChanged(isEditing)
         }
         .background(textFieldPlaceholder, alignment: .leading)
@@ -124,14 +134,15 @@ public struct InputField: View {
     }
 
     @ViewBuilder var securedSuffix: some View {
-        Icon.Content.icon(isSecureTextEntry ? .visibility : .visibilityOff, size: .default)
-        .view()
-        .padding(.horizontal, .xSmall)
-        .onTapGesture {
-            isSecureTextEntry.toggle()
-        }
+        Icon(isSecureTextEntry ? .visibility : .visibilityOff, size: .default)
+            .padding(.horizontal, .xSmall)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                isSecureTextEntry.toggle()
+            }
     }
 }
+
 
 // MARK: - Inits
 public extension InputField {
@@ -197,64 +208,15 @@ public extension InputField {
     }
 }
 
-private struct SecureTextField: UIViewRepresentable {
-    typealias UIViewType = UITextField
-
-    @Binding var text: String
-    @Binding var isSecured: Bool
-
-    func makeUIView(context: Context) -> UITextField {
-        let textFied = UITextField()
-        textFied.text = text
-        textFied.isSecureTextEntry = isSecured
-
-        textFied.delegate = context.coordinator
-
-        return textFied
-    }
-
-    func updateUIView(_ uiView: UITextField, context: Context) {
-        uiView.isSecureTextEntry = isSecured
-
-        if uiView.isSecureTextEntry, let text = uiView.text {
-            uiView.text?.removeAll()
-            uiView.insertText(text)
-        }
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator($text)
-    }
-
-    class Coordinator: NSObject, UITextFieldDelegate {
-        var text: Binding<String>
-
-        init(_ text: Binding<String>) {
-            self.text = text
-        }
-
-        public func textFieldDidEndEditing(_ textField: UITextField) {
-            self.text.wrappedValue = textField.text ?? ""
-        }
-
-        public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-            self.text.wrappedValue = textField.text ?? ""
-            return true
-        }
-    }
-}
-
 // MARK: - Previews
 struct InputFieldPreviews: PreviewProvider {
 
     static var previews: some View {
-        Group {
-            PreviewWrapper {
-                standalone
-                snapshots
-            }
-            .previewLayout(PreviewLayout.sizeThatFits)
+        PreviewWrapper {
+            standalone
+            snapshots
         }
+        .previewLayout(PreviewLayout.sizeThatFits)
     }
 
     static var standalone: some View {
@@ -296,7 +258,7 @@ struct InputFieldLivePreviews: PreviewProvider {
         PreviewWrapper()
         securedWrapper
     }
-
+    
     struct PreviewWrapper: View {
 
         @State var message: MessageType = .none
