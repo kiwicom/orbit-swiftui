@@ -22,6 +22,9 @@ public struct Label: View {
                     .alignmentGuide(.firstTextBaseline) { size in
                         self.titleStyle.size * Text.firstBaselineRatio + size.height / 2
                     }
+                    .alignmentGuide(.labelAlignment) { size in
+                        size.width + iconSpacing
+                    }
 
                 if isTextEmpty == false {
                     VStack(alignment: .leading, spacing: descriptionSpacing) {
@@ -180,6 +183,19 @@ public extension Label {
         }
     }
 }
+
+// MARK: - Alignment
+extension HorizontalAlignment {
+    
+    enum LabelAlignment: AlignmentID {
+        static func defaultValue(in context: ViewDimensions) -> CGFloat {
+            context[.leading]
+        }
+    }
+
+    static let labelAlignment = HorizontalAlignment(LabelAlignment.self)
+}
+
 
 // MARK: - Previews
 struct HeaderPreviews: PreviewProvider {
