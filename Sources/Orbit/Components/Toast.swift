@@ -64,7 +64,7 @@ public struct ToastContent: View {
         HStack {
             Label(
                 description,
-                iconContent: .icon(icon, size: .small, color: .white),
+                iconContent: .icon(icon, color: .white),
                 titleStyle: .text(weight: .regular, color: .white)
             )
             .padding(.small)
@@ -80,10 +80,10 @@ public struct ToastContent: View {
             .overlay(progressIndicator, alignment: .leading)
             .clipShape(shape)
             .shadow(
-                color: Color(red: 0.09, green: 0.106, blue: 0.118, opacity: 0.15),
-                radius: 60,
+                color: .inkLight.opacity(0.5),
+                radius: 50,
                 x: 0,
-                y: 40
+                y: 25
             )
     }
     
@@ -92,7 +92,7 @@ public struct ToastContent: View {
             Color.inkLight
                 .opacity(max(0, progress * 2 - 0.5) * 0.3)
                 .clipShape(shape)
-                .frame(width: geometry.size.width * progress,  alignment: .bottomLeading)
+                .frame(width: geometry.size.width * progress, alignment: .bottomLeading)
                 .animation(ToastQueue.animationIn, value: progress)
         }
     }

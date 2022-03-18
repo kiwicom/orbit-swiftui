@@ -73,7 +73,14 @@ public struct Card<Content: View>: View {
         if isHeaderEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: .small) {
 
-                Label(title, description: description, iconContent: iconContent, titleStyle: titleStyle)
+                Label(
+                    title,
+                    description: description,
+                    iconContent: iconContent,
+                    titleStyle: titleStyle,
+                    iconSpacing: .xSmall,
+                    descriptionSpacing: .xxSmall
+                )
 
                 if case .expanding = width {
                     Spacer(minLength: .xxxSmall)
@@ -234,7 +241,7 @@ public extension Card {
     ) {
         self.title = title
         self.description = description
-        self.iconContent = .icon(icon, size: .label(titleStyle))
+        self.iconContent = .icon(icon)
         self.action = action
         self.headerSpacing = headerSpacing
         self.borderStyle = borderStyle
@@ -461,7 +468,8 @@ struct CardPreviews: PreviewProvider {
     
     static var listChoiceGroupsBorderless: some View {
         Card(
-            "ListChoice group title",
+            "Card with ListChoices",
+            headerSpacing: .xSmall,
             borderStyle: .none,
             backgroundColor: .clear,
             contentLayout: .fill

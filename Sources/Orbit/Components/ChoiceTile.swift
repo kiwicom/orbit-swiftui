@@ -101,6 +101,7 @@ public struct ChoiceTile<Content: View>: View {
     let badge: String
     let badgeOverlay: String
     let iconContent: Icon.Content
+    let illustration: Illustration.Image
     let indicator: ChoiceTileIndicator
     let titleStyle: Label.TitleStyle
     let isSelected: Bool
@@ -143,8 +144,13 @@ public struct ChoiceTile<Content: View>: View {
                     }
                 case .center:
                     VStack(spacing: .xxSmall) {
-                        Icon(iconContent)
-                            .padding(.bottom, .xxxSmall)
+                        if illustration == .none {
+                            Icon(iconContent, size: .label(titleStyle))
+                                .padding(.bottom, .xxxSmall)
+                        } else {
+                            Illustration(illustration, layout: .resizeable)
+                                .frame(height: .xxLarge)
+                        }
                         centeredHeading
                         Text(description, color: .inkLight, alignment: .center)
                         Badge(badge, style: .neutral)
@@ -212,6 +218,7 @@ public extension ChoiceTile {
         _ title: String = "",
         description: String = "",
         iconContent: Icon.Content,
+        illustration: Illustration.Image = .none,
         badge: String = "",
         badgeOverlay: String = "",
         indicator: ChoiceTileIndicator = .radio,
@@ -226,6 +233,7 @@ public extension ChoiceTile {
         self.title = title
         self.description = description
         self.iconContent = iconContent
+        self.illustration = illustration
         self.badge = badge
         self.badgeOverlay = badgeOverlay
         self.indicator = indicator
@@ -243,6 +251,7 @@ public extension ChoiceTile {
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol = .none,
+        illustration: Illustration.Image = .none,
         badge: String = "",
         badgeOverlay: String = "",
         indicator: ChoiceTileIndicator = .radio,
@@ -257,7 +266,8 @@ public extension ChoiceTile {
         self.init(
             title,
             description: description,
-            iconContent: .icon(icon, size: .label(titleStyle)),
+            iconContent: .icon(icon),
+            illustration: illustration,
             badge: badge,
             badgeOverlay: badgeOverlay,
             indicator: indicator,
@@ -325,7 +335,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         ChoiceTile(
             "Title",
             description: "Description",
-            iconContent: .illustration(.priorityBoarding, size: .custom(90)),
+            illustration: .priorityBoarding,
             badge: "Included",
             badgeOverlay: "Recommended",
             message: .help("Message"),
@@ -401,7 +411,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         VStack(spacing: .large) {
             HStack(alignment: .top, spacing: .medium) {
                 VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", description: "Unchecked Radio", iconContent: .countryFlag("cz", size: .large), message: .help("Helpful message")) {}
+                    ChoiceTile("Label", description: "Unchecked Radio", iconContent: .countryFlag("cz"), message: .help("Helpful message")) {}
 
                     ChoiceTile("Label", indicator: .checkbox, isError: true) {
                         customContentPlaceholder
@@ -445,7 +455,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         VStack(spacing: .large) {
             HStack(alignment: .top, spacing: .medium) {
                 VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", description: "Checked Radio", iconContent: .countryFlag("cz", size: .large), message: .help("Helpful message"), alignment: .center) {}
+                    ChoiceTile("Label", description: "Checked Radio", iconContent: .countryFlag("cz"), message: .help("Helpful message"), alignment: .center) {}
 
                     ChoiceTile("Label", description: "Unchecked Checkbox", indicator: .checkbox, message: .help("Helpful message"), alignment: .center) {}
                 }

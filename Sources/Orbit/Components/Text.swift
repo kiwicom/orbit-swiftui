@@ -177,6 +177,13 @@ public extension Text {
                 case .custom(let size):     return size + 4
             }
         }
+        
+        public var iconSize: CGFloat {
+            switch self {
+                case .large:           return 22
+                default:                return lineHeight
+            }
+        }
     }
 
     enum Color: Equatable {

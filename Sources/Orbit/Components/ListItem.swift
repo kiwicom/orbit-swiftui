@@ -18,7 +18,7 @@ public struct ListItem: View {
 
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: spacing) {
-            Icon(iconContent)
+            Icon(iconContent, size: .label(.text(size)))
                 .alignmentGuide(.firstTextBaseline) { size in
                     self.size.value * Text.firstBaselineRatio + size.height / 2
                 }
@@ -27,17 +27,6 @@ public struct ListItem: View {
                 })
 
             Text(text, size: size, color: style.textColor, linkColor: linkColor, linkAction: linkAction)
-        }
-    }
-
-    var iconSize: Icon.Size? {
-        switch iconContent {
-            case .none:                                 return nil
-            case .icon(_, let size, _):                 return size
-            case .image(_, let size, _):                return size
-            case .illustration(_, let size):            return size
-            case .countryFlag(_, let size):             return size
-            case .sfSymbol(_, let size):                return size
         }
     }
 }
@@ -76,7 +65,7 @@ public extension ListItem {
     ) {
         self.init(
             text,
-            iconContent: .icon(icon, size: .small, color: style.textColor.value),
+            iconContent: .icon(icon, color: style.textColor.value),
             size: size,
             spacing: spacing,
             style: style,
@@ -118,7 +107,7 @@ struct ListItemPreviews: PreviewProvider {
             List {
                 ListItem(
                     "ListItem",
-                    iconContent: .icon(.airplane, size: .small),
+                    icon: .airplane,
                     size: .small,
                     style: .secondary
                 )
@@ -154,7 +143,7 @@ struct ListItemPreviews: PreviewProvider {
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#)
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, size: .small, style: .secondary, linkColor: .redNormal)
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, style: .custom(textColor: .greenNormal))
-            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, iconContent: .icon(.circleSmall, size: .small, color: .inkNormal), style: .custom(textColor: .greenNormal))
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, iconContent: .icon(.circleSmall, color: .inkNormal), style: .custom(textColor: .greenNormal))
         }
         .padding()
         .previewDisplayName("Snapshots - Links")
@@ -162,8 +151,8 @@ struct ListItemPreviews: PreviewProvider {
     
     static var snapshotsCustom: some View {
         List {
-            ListItem("ListItem with custom icon", iconContent: .icon(.check, size: .small, color: .greenNormal))
-            ListItem("ListItem with custom icon", iconContent: .icon(.check, size: .small))
+            ListItem("ListItem with custom icon", iconContent: .icon(.check, color: .greenNormal))
+            ListItem("ListItem with custom icon", iconContent: .icon(.check))
             ListItem("ListItem with custom icon", icon: .check)
             ListItem("ListItem with custom icon", icon: .check, style: .custom(textColor: .blueDark))
             ListItem("ListItem with no icon", icon: .none)

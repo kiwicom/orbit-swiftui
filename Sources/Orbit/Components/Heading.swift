@@ -107,6 +107,13 @@ public extension Heading {
                 case .title6:           return Text.Size.small.lineHeight
             }
         }
+        
+        public var iconSize: CGFloat {
+            switch self {
+                case .title4:           return 22
+                default:                return lineHeight
+            }
+        }
 
         public var weight: Font.Weight {
             switch self {
@@ -159,9 +166,6 @@ struct HeadingPreviews: PreviewProvider {
 
             VStack(alignment: .leading, spacing: .xSmall) {
                 Label("Display title, but very very very very very very very long", icon: .circle, titleStyle: .display)
-                
-                Label("Display title, but very very very very very very very long", icon: .circle, titleStyle: .display)
-                
                 Label("Display subtitle, also very very very very very long", icon: .email, titleStyle: .displaySubtitle)
                 Separator()
                 Label("Title 1, also very very very very very very very verylong", icon: .circle, titleStyle: .title1)

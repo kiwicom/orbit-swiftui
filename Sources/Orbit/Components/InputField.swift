@@ -87,8 +87,8 @@ public struct InputField: View {
     
     @ViewBuilder var clearButton: some View {
         if value.isEmpty == false, state != .disabled {
-            Image(systemName: "multiply.circle.fill")
-                .foregroundColor(.cloudDarker)
+            Icon(sfSymbol: "multiply.circle.fill")
+                .foregroundColor(.inkLighter)
                 .padding(.small)
                 .contentShape(Rectangle())
                 .onTapGesture {
@@ -191,7 +191,7 @@ struct InputFieldPreviews: PreviewProvider {
         )
         InputField(value: .constant("InputField with no label"))
         standalone
-        InputField(value: .constant("InputField with CountryFlag prefix"), prefix: .countryFlag("us", size: .normal))
+        InputField(value: .constant("InputField with CountryFlag prefix"), prefix: .countryFlag("us"))
     }
 
     static var snapshots: some View {

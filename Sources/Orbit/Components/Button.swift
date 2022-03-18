@@ -30,7 +30,7 @@ public struct Button: View {
                         Spacer(minLength: 0)
                     }
 
-                    Icon(iconContent)
+                    Icon(iconContent, size: iconSize)
 
                     if #available(iOS 14.0, *) {
                         Text(
@@ -54,7 +54,7 @@ public struct Button: View {
 
                     Spacer(minLength: 0)
 
-                    Icon(disclosureIconContent)
+                    Icon(disclosureIconContent, size: iconSize)
                 }
                 .padding(.horizontal, label.isEmpty ? 0 : size.padding)
             }
@@ -66,6 +66,10 @@ public struct Button: View {
 
     var isIconOnly: Bool {
         iconContent.isEmpty == false && label.isEmpty
+    }
+    
+    var iconSize: Icon.Size {
+        size == .small ? .small : .large
     }
 
     func presentHapticFeedback() {
@@ -113,13 +117,12 @@ public extension Button {
         disclosureIcon: Icon.Symbol = .none,
         action: @escaping () -> Void = {}
     ) {
-        let iconSize: Icon.Size = size == .small ? .small : .large
         self.init(
             label,
             style: style,
             size: size,
-            iconContent: .icon(icon, size: iconSize, color: style.foregroundColor),
-            disclosureIconContent: .icon(disclosureIcon, size: iconSize, color: style.foregroundColor),
+            iconContent: .icon(icon, color: style.foregroundColor),
+            disclosureIconContent: .icon(disclosureIcon, color: style.foregroundColor),
             action: action
         )
     }
@@ -393,7 +396,7 @@ struct ButtonPreviews: PreviewProvider {
             Button(
                 "Custom",
                 style: .critical,
-                iconContent: .icon(.check, size: .xLarge, color: .blueNormal)
+                iconContent: .icon(.check, color: .blueNormal)
             )
             .padding(.vertical)
             .previewDisplayName("Custom")
