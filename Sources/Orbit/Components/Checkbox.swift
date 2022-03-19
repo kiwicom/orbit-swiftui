@@ -25,7 +25,7 @@ public struct Checkbox: View {
             },
             label: {
                 if label.isEmpty == false || description.isEmpty == false {
-                    VStack(alignment: .leading, spacing: 1) {
+                    VStack(alignment: .leading, spacing: 0) {
                         Heading(label, style: .title5, color: labelColor)
                         Text(description, size: .small, color: descriptionColor)
                     }
