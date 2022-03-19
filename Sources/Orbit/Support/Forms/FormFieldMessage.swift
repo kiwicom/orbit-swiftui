@@ -25,3 +25,15 @@ public struct FormFieldMessage: View {
         self.spacing = spacing
     }
 }
+
+// MARK: - Previews
+struct FormFieldMessagePreviews: PreviewProvider {
+    
+    static var previews: some View {
+        PreviewWrapper {
+            FormFieldMessage(.normal("Form Field Message", icon: .informationCircle))
+            FormFieldMessage(.error("Form Field Message", icon: .alertCircle))
+        }
+        .previewLayout(.sizeThatFits)
+    }
+}

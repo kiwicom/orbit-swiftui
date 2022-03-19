@@ -65,7 +65,6 @@ public struct Tile<Content: View>: View {
     let status: Status?
     let backgroundColor: BackgroundColor?
     let titleStyle: Label.TitleStyle
-    let titleColor: Text.Color
     let descriptionColor: Text.Color
     let action: () -> Void
     let content: () -> Content
@@ -184,7 +183,6 @@ public extension Tile {
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Label.TitleStyle = .title4,
-        titleColor: Text.Color = .inkNormal,
         descriptionColor: Text.Color = .inkLight,
         action: @escaping () -> Void = {},
         @ViewBuilder content: @escaping () -> Content
@@ -197,7 +195,6 @@ public extension Tile {
         self.status = status
         self.backgroundColor = backgroundColor
         self.titleStyle = titleStyle
-        self.titleColor = titleColor
         self.descriptionColor = descriptionColor
         self.action = action
         self.content = content
@@ -216,7 +213,6 @@ public extension Tile {
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Label.TitleStyle = .title4,
-        titleColor: Text.Color = .inkNormal,
         descriptionColor: Text.Color = .inkLight,
         iconColor: Color = .inkNormal,
         action: @escaping () -> Void = {},
@@ -230,7 +226,6 @@ public extension Tile {
         self.status = status
         self.backgroundColor = backgroundColor
         self.titleStyle = titleStyle
-        self.titleColor = titleColor
         self.descriptionColor = descriptionColor
         self.action = action
         self.content = content
@@ -249,7 +244,6 @@ public extension Tile {
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Label.TitleStyle = .title4,
-        titleColor: Text.Color = .inkNormal,
         descriptionColor: Text.Color = .inkLight,
         action: @escaping () -> Void = {}
     ) where Content == EmptyView {
@@ -262,7 +256,6 @@ public extension Tile {
             status: status,
             backgroundColor: backgroundColor,
             titleStyle: titleStyle,
-            titleColor: titleColor,
             descriptionColor: descriptionColor,
             action: action,
             content: { EmptyView() }
@@ -282,7 +275,6 @@ public extension Tile {
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Label.TitleStyle = .title4,
-        titleColor: Text.Color = .inkNormal,
         descriptionColor: Text.Color = .inkLight,
         iconColor: Color = .inkNormal,
         action: @escaping () -> Void = {}
@@ -296,7 +288,6 @@ public extension Tile {
             status: status,
             backgroundColor: backgroundColor,
             titleStyle: titleStyle,
-            titleColor: titleColor,
             descriptionColor: descriptionColor,
             action: action,
             content: { EmptyView() }

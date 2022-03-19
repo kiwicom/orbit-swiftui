@@ -127,7 +127,7 @@ public extension Text {
         lineSpacing: CGFloat? = nil,
         alignment: TextAlignment = .leading,
         accentColor: UIColor? = nil,
-        linkColor: UIColor = .productDark,
+        linkColor: UIColor = TextLink.defaultColor,
         isSelectable: Bool = false,
         linkAction: @escaping TextLink.Action = { _, _ in }
     ) {
@@ -180,8 +180,8 @@ public extension Text {
         
         public var iconSize: CGFloat {
             switch self {
-                case .large:           return 22
-                default:                return lineHeight
+                case .large:                return 22
+                default:                    return lineHeight
             }
         }
     }

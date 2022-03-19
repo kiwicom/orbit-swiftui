@@ -14,3 +14,14 @@ public struct FormFieldLabel: View {
         self.label = label
     }
 }
+
+// MARK: - Previews
+struct FormFieldLabelPreviews: PreviewProvider {
+    
+    static var previews: some View {
+        PreviewWrapper {
+            FormFieldLabel("Form Field Label")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+}

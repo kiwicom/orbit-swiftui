@@ -44,6 +44,7 @@ public struct Badge: View {
                 Capsule()
                     .strokeBorder(style.outlineColor, lineWidth: BorderWidth.thin)
             )
+            .fixedSize()
         }
     }
     
@@ -89,28 +90,22 @@ public extension Badge {
 
         public var height: CGFloat {
             switch self {
-                case .default:
-                    return .large
-                case .compact:
-                    return 18
+                case .default:      return .large
+                case .compact:      return 18
             }
         }
 
         public var padding: CGFloat {
             switch self {
-                case .default:
-                    return .xSmall
-                case .compact:
-                    return 6
+                case .default:      return .xSmall
+                case .compact:      return 6
             }
         }
 
         public var spacing: CGFloat {
             switch self {
-                case .default:
-                    return 5
-                case .compact:
-                    return 3
+                case .default:      return 5
+                case .compact:      return 3
             }
         }
     }

@@ -12,6 +12,7 @@ public struct TextLink: UIViewRepresentable {
 
     /// An action handler for a link tapped inside the ``Text`` component.
     public typealias Action = (URL, String) -> Void
+    public static let defaultColor: UIColor = .productDark
 
     let content: NSAttributedString
     let size: CGSize
