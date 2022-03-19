@@ -12,3 +12,8 @@ public enum BorderWidth {
     /// 2 pts border width used for actively selected component.
     public static let selection: CGFloat = 2.0
 }
+
+public extension CGFloat {
+    /// 1 pixel
+    static let hairline: CGFloat = BorderWidth.hairline
+}
