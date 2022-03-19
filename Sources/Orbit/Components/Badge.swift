@@ -192,14 +192,14 @@ struct BadgePreviews: PreviewProvider {
     }
 
     static var orbit: some View {
-        HStack(spacing: .xxLarge) {
-            VStack(alignment: .leading, spacing: .xxLarge) {
-                VStack(alignment: .leading, spacing: .xSmall) {
+        HStack {
+            VStack(alignment: .leading) {
+                VStack(alignment: .leading) {
                     Badge("Light", style: .light)
                     Badge("Light Inverted", style: .lightInverted)
                     Badge("Neutral", style: .neutral)
                 }
-                VStack(alignment: .leading, spacing: .xSmall) {
+                VStack(alignment: .leading) {
                     Badge("Info", style: .status(.info))
                     Badge("Info Inverted", style: .status(.info, inverted: true))
                     Badge("Success", style: .status(.success))
@@ -209,20 +209,20 @@ struct BadgePreviews: PreviewProvider {
                     Badge("Critical", style: .status(.critical))
                     Badge("Critical Inverted", style: .status(.critical, inverted: true))
                 }
-                VStack(alignment: .leading, spacing: .xSmall) {
+                VStack(alignment: .leading) {
                     Badge("Orange Gradient", icon: .check, style: .gradient(.bundleBasic))
                     Badge("Purple Gradient", icon: .accommodation, style: .gradient(.bundleMedium))
                     Badge("Ink Gradient", icon: .airplaneUp, style: .gradient(.bundleTop))
                 }
             }
 
-            VStack(alignment: .leading, spacing: .xxLarge) {
-                VStack(alignment: .leading, spacing: .xSmall) {
+            VStack(alignment: .leading) {
+                VStack(alignment: .leading) {
                     Badge("Light", icon: .sun, style: .light)
                     Badge("Light Inverted", icon: .moon, style: .lightInverted)
                     Badge("Neutral", icon: .airplaneUp, style: .neutral)
                 }
-                VStack(alignment: .leading, spacing: .xSmall) {
+                VStack(alignment: .leading) {
                     Badge("Info", icon: .wifi, style: .status(.info))
                     Badge("Info Inverted", icon: .bus, style: .status(.info, inverted: true))
                     Badge("Success", icon: .airplane, style: .status(.success))
@@ -232,7 +232,7 @@ struct BadgePreviews: PreviewProvider {
                     Badge("Critical", icon: .accommodation, style: .status(.critical))
                     Badge("Critical Inverted", icon: .accommodation, style: .status(.critical, inverted: true))
                 }
-                VStack(alignment: .leading, spacing: .xSmall) {
+                VStack(alignment: .leading) {
                     Badge("Orange Gradient", style: .gradient(.bundleBasic))
                     Badge("Purple Gradient", style: .gradient(.bundleMedium))
                     Badge("Ink Gradient", style: .gradient(.bundleTop))
