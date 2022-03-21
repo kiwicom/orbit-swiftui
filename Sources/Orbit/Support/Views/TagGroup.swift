@@ -28,7 +28,7 @@ public struct TagGroup<TM: TagModel>: View {
     private let layout: Layout
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 1) {
+        VStack(alignment: .leading, spacing: .xxSmall) {
             if label.isEmpty == false {
                 FormFieldLabel(label)
             }

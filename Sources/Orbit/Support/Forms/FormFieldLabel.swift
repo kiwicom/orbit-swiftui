@@ -7,7 +7,7 @@ public struct FormFieldLabel: View {
 
     public var body: some View {
         Text(label, size: .normal, weight: .medium)
-            .padding(.bottom, .xxSmall)
+            .padding(.bottom, 1)
     }
 
     public init(_ label: String) {
