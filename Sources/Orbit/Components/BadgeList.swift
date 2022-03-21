@@ -26,7 +26,7 @@ public struct BadgeList: View {
                     Icon(iconContent, size: .small)
                 )
                 .alignmentGuide(.firstTextBaseline) { size in
-                    Text.Size.small.value * Text.firstBaselineRatio + size.height / 2
+                    Text.Size.small.lineHeight * Text.firstBaselineRatio + size.height / 2
                 }
 
             Text(

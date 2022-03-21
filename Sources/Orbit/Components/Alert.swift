@@ -42,19 +42,17 @@ public struct Alert<Content: View>: View {
     let content: () -> Content
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: .medium) {
+        HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
             
-            Label(
-                title,
-                description: description,
-                iconContent: .icon(icon, color: status.color),
-                titleStyle: .text(weight: .bold),
-                descriptionStyle: .custom(.normal, color: .inkNormal, linkColor: .inkNormal),
-                descriptionSpacing: .xxSmall,
-                descriptionLinkAction: descriptionLinkAction
-            )
+            Icon(icon, size: .normal, color: status.color)
             
-            Group {
+            VStack(alignment: .leading, spacing: .medium) {
+                
+                VStack(alignment: .leading, spacing: .xxSmall) {
+                    Text(title, weight: .bold)
+                    Text(description, linkColor: .inkNormal, linkAction: descriptionLinkAction)
+                }
+                
                 content()
                 
                 switch buttons {
@@ -65,7 +63,6 @@ public struct Alert<Content: View>: View {
                         EmptyView()
                 }
             }
-            .padding(.leading, icon == .none ? 0 : 28)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding([.vertical, .trailing], .medium)

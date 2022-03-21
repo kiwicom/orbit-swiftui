@@ -22,16 +22,28 @@ public struct Icon: View {
                     SwiftUI.Text(verbatim: symbol.value)
                         .foregroundColor(color)
                         .font(.orbitIcon(size: size.value))
+                        .alignmentGuide(.firstTextBaseline) { dimensions in
+                            size.textLineHeight * Text.firstBaselineRatio + dimensions.height / 2
+                        }
                 case .image(let image, let mode):
                     image
                         .resizable()
                         .aspectRatio(contentMode: mode)
                         .frame(width: size.value, height: size.value)
+                        .alignmentGuide(.firstTextBaseline) { dimensions in
+                            size.textLineHeight * Text.firstBaselineRatio + dimensions.height / 2
+                        }
                 case .countryFlag(let countryCode):
                     CountryFlag(countryCode, size: size)
+                        .alignmentGuide(.firstTextBaseline) { dimensions in
+                            size.textLineHeight * Text.firstBaselineRatio + dimensions.height / 2
+                        }
                 case .sfSymbol(let systemName):
                     Image(systemName: systemName)
-                        .font(.system(size: size.value - 2 * Self.averagePadding))
+                        .font(.system(size: size.value * 0.85))
+                        .alignmentGuide(.firstTextBaseline) { dimensions in
+                            size.textLineHeight * Text.firstBaselineRatio + dimensions.height / 2
+                        }
                 case .none:
                     EmptyView()
             }
@@ -116,8 +128,12 @@ public extension Icon {
         case xLarge
         /// Size based on Font size.
         case fontSize(CGFloat)
+        /// Size based on `Text` size.
+        case text(Text.Size)
+        /// Size based on `Heading` style.
+        case heading(Heading.Style)
         /// Size based on `Label` title style.
-        case label(Label.TitleStyle)
+        case label(Label.Style)
         /// Custom size
         case custom(CGFloat)
         
@@ -127,7 +143,9 @@ public extension Icon {
                 case .normal:                           return 20
                 case .large:                            return 24
                 case .xLarge:                           return 28
-                case .fontSize(let size):               return size + 1
+                case .fontSize(let size):               return size * 1.31
+                case .text(let size):                   return size.iconSize
+                case .heading(let style):               return style.iconSize
                 case .label(let style):                 return style.iconSize
                 case .custom(let size):                 return size
             }
@@ -136,15 +154,37 @@ public extension Icon {
         public static func == (lhs: Icon.Size, rhs: Icon.Size) -> Bool {
             lhs.value == rhs.value
         }
+        
+        /// Default text line height for icon size.
+        public var textLineHeight: CGFloat {
+            switch self {
+                case .small:                            return Text.Size.small.iconSize
+                case .normal:                           return Text.Size.normal.iconSize
+                case .large:                            return Text.Size.large.iconSize
+                case .xLarge:                           return Text.Size.xLarge.iconSize
+                case .fontSize(let size):               return size * 1.31
+                case .text(let size):                   return size.iconSize
+                case .heading(let style):               return style.iconSize
+                case .label(let style):                 return style.iconSize
+                case .custom(let size):                 return size
+            }
+        }
     }
 }
 
 // MARK: - Previews
 struct IconPreviews: PreviewProvider {
 
+    static let sfSymbol = "info.circle.fill"
+    
     static var previews: some View {
         PreviewWrapper {
             standalone
+            snapshotSizes
+            snapshotSizesText
+            snapshotSizesLabelText
+            snapshotSizesHeading
+            snapshotSizesLabelHeading
             snapshots
         }
         .previewLayout(.sizeThatFits)
@@ -155,49 +195,214 @@ struct IconPreviews: PreviewProvider {
     }
     
     static var orbit: some View {
-        snapshots
+        snapshotSizes
+    }
+    
+    static var snapshotSizes: some View {
+        VStack(alignment: .leading, spacing: .small) {
+            HStack(spacing: .xSmall) {
+                Text("16", color: .custom(.redNormal))
+            
+                HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
+                    Icon(.passengers, size: .small)
+                    Text("Lorem ipsum", size: .small)
+                }
+                .overlay(HairlineSeparator(), alignment: .top)
+                .overlay(HairlineSeparator(), alignment: .bottom)
+            }
+            HStack(spacing: .xSmall) {
+                Text("20", color: .custom(.orangeNormal))
+            
+                HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
+                    Icon(.passengers, size: .normal)
+                    Text("Lorem ipsum", size: .normal)
+                }
+                .overlay(HairlineSeparator(), alignment: .top)
+                .overlay(HairlineSeparator(), alignment: .bottom)
+            }
+            HStack(spacing: .xSmall) {
+                Text("24", color: .custom(.greenNormal))
+            
+                HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
+                    Icon(.passengers, size: .large)
+                    Text("Lorem ipsum", size: .large)
+                }
+                .overlay(HairlineSeparator(), alignment: .top)
+                .overlay(HairlineSeparator(), alignment: .bottom)
+            }
+        }
+        .padding()
+        .previewDisplayName("Default sizes")
+    }
+    
+    static func headingStack(_ style: Heading.Style) -> some View {
+        HStack(spacing: .xSmall) {
+            HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
+                Icon(.passengers, size: .heading(style))
+                Heading("Heading", style: style)
+            }
+            .overlay(HairlineSeparator(), alignment: .top)
+            .overlay(HairlineSeparator(), alignment: .bottom)
+        }
+    }
+    
+    static func labelHeadingStack(_ style: Heading.Style) -> some View {
+        HStack(spacing: .xSmall) {
+            Label("Label Heading", icon: .passengers, style: .heading(style))
+                .overlay(HairlineSeparator(), alignment: .top)
+                .overlay(HairlineSeparator(), alignment: .bottom)
+        }
+    }
+    
+    static func labelTextStack(_ size: Text.Size) -> some View {
+        HStack(spacing: .xSmall) {
+            Label("Label Text", icon: .passengers, style: .text(size))
+                .overlay(HairlineSeparator(), alignment: .top)
+                .overlay(HairlineSeparator(), alignment: .bottom)
+        }
+    }
+    
+    static func textStack(_ size: Text.Size) -> some View {
+        HStack(spacing: .xSmall) {
+            HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
+                Icon(.passengers, size: .text(size))
+                Text("Text", size: size)
+            }
+            .overlay(HairlineSeparator(), alignment: .top)
+            .overlay(HairlineSeparator(), alignment: .bottom)
+        }
+    }
+    
+    static var snapshotSizesText: some View {
+        VStack(alignment: .leading, spacing: .small) {
+            textStack(.small)
+            textStack(.normal)
+            textStack(.large)
+            textStack(.xLarge)
+            textStack(.custom(50))
+        }
+        .padding()
+        .previewDisplayName("Calculated sizes for Text")
+    }
+    
+    static var snapshotSizesLabelText: some View {
+        VStack(alignment: .leading, spacing: .small) {
+            labelTextStack(.small)
+            labelTextStack(.normal)
+            labelTextStack(.large)
+            labelTextStack(.xLarge)
+            labelTextStack(.custom(50))
+        }
+        .padding()
+        .previewDisplayName("Calculated sizes for Text in Label")
+    }
+    
+    static var snapshotSizesHeading: some View {
+        VStack(alignment: .leading, spacing: .small) {
+            headingStack(.title6)
+            headingStack(.title5)
+            headingStack(.title4)
+            headingStack(.title3)
+            headingStack(.title2)
+            headingStack(.title1)
+            headingStack(.displaySubtitle)
+            headingStack(.display)
+        }
+        .padding()
+        .previewDisplayName("Calculated sizes for Heading")
+    }
+    
+    static var snapshotSizesLabelHeading: some View {
+        VStack(alignment: .leading, spacing: .small) {
+            labelHeadingStack(.title6)
+            labelHeadingStack(.title5)
+            labelHeadingStack(.title4)
+            labelHeadingStack(.title3)
+            labelHeadingStack(.title2)
+            labelHeadingStack(.title1)
+            labelHeadingStack(.displaySubtitle)
+            labelHeadingStack(.display)
+        }
+        .padding()
+        .previewDisplayName("Calculated sizes for Heading in Label")
     }
 
     static var snapshots: some View {
         VStack(spacing: .small) {
-            HStack {
-                Icon(.flightNomad, size: .xLarge)
-                Icon(.flightNomad)
-                Icon(.flightNomad, size: .small)
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+                Group {
+                    Icon(.sfSymbol(sfSymbol), size: .custom(Text.Size.xLarge.iconSize))
+                    Icon(.sfSymbol(sfSymbol), size: .fontSize(Text.Size.xLarge.value))
+                    Icon(.sfSymbol(sfSymbol), size: .label(.text(.xLarge)))
+                    Icon(.informationCircle, size: .custom(Text.Size.xLarge.iconSize), color: nil)
+                    Icon(.informationCircle, size: .fontSize(Text.Size.xLarge.value), color: nil)
+                    Icon(.informationCircle, size: .label(.text(.xLarge)), color: nil)
+                    Text("XLarge", size: .xLarge, color: nil)
+                }
+                .foregroundColor(.blueNormal)
+                .border(Color.cloudLightActive, width: .hairline)
             }
+            .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
             
-            HStack {
-                Icon(.informationCircle, size: .xLarge, color: .inkLighter)
-                Icon(.informationCircle, color: .inkLighter)
-                Icon(.informationCircle, size: .small, color: .inkLighter)
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+                Group {
+                    Icon(.sfSymbol(sfSymbol), size: .custom(Text.Size.small.iconSize))
+                    Icon(.sfSymbol(sfSymbol), size: .fontSize(Text.Size.small.value))
+                    Icon(.sfSymbol(sfSymbol), size: .label(.text(.small)))
+                    Icon(.informationCircle, size: .custom(Text.Size.small.iconSize), color: nil)
+                    Icon(.informationCircle, size: .fontSize(Text.Size.small.value), color: nil)
+                    Icon(.informationCircle, size: .label(.text(.small)), color: nil)
+                    Text("Small", size: .small, color: nil)
+                }
+                .foregroundColor(.blueNormal)
+                .border(Color.cloudLightActive, width: .hairline)
             }
+            .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
             
-            HStack {
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+                Group {
+                    Icon(.countryFlag("cz"), size: .xLarge)
+                    Icon(.image(.orbit(.facebook)), size: .xLarge)
+                    Icon(.sfSymbol(sfSymbol), size: .xLarge)
+                    Text("Text", size: .custom(20), color: nil)
+                }
+                .foregroundColor(.blueNormal)
+                .border(Color.cloudLightActive, width: .hairline)
+            }
+            .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
+            
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+                Group {
+                    Icon(.countryFlag("cz"), size: .small)
+                    Icon(.image(.orbit(.facebook)), size: .small)
+                    Icon(.sfSymbol(sfSymbol), size: .small)
+                    Text("Text", size: .small, color: nil)
+                }
+                .foregroundColor(.blueNormal)
+                .border(Color.cloudLightActive, width: .hairline)
+            }
+            .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
+            
+            HStack(alignment: .firstTextBaseline) {
+                Group {
+                    Text("O", size: .custom(30))
+                    Icon(.informationCircle, size: .fontSize(30))
+                    Icon(.informationCircle, size: .fontSize(8))
+                    Text("O", size: .custom(8))
+                }
+                .border(Color.cloudLightActive, width: .hairline)
+            }
+            .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
+            
+            HStack(alignment: .firstTextBaseline) {
                 Icon(.grid, size: .xLarge, color: nil)
                 Icon(.grid)
                 Icon(.grid, size: .small, color: .red)
             }
             .foregroundColor(.blueDark)
-            
-            Separator()
-            
-            HStack {
-                Icon(image: .orbit(.facebook))
-                Icon(countryCode: "cz", size: .large)
-            }
-            
-            HStack(spacing: .xxSmall) {
-                Icon(sfSymbol: "info.circle.fill", size: .normal)
-                    .foregroundColor(.greenNormal)
-                Icon(.informationCircle, size: .normal, color: nil)
-                    .foregroundColor(.greenNormal)
-                Icon(sfSymbol: "info.circle.fill", size: .xLarge)
-                    .foregroundColor(.greenNormal)
-                Icon(.informationCircle, size: .xLarge, color: nil)
-                    .foregroundColor(.greenNormal)
-            }
+            .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
         }
-        .frame(width: 120)
-        .padding()
+        .padding(.xSmall)
+        .previewDisplayName("firstTextBaseline alignment")
     }
 }

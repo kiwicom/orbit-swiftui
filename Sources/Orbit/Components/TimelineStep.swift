@@ -147,7 +147,7 @@ struct TimelineStepPreviews: PreviewProvider {
     }
 
     static var snapshots: some View {
-        VStack(spacing: .xxLarge) {
+        VStack {
             TimelineStep(
                 "Requested",
                 sublabel: "3rd May 14:04",

@@ -1,64 +1,56 @@
 import SwiftUI
 
-/// Label that combines text, icon and optional description under text.
+/// Label that prefixes text with icon of correct size, vertically aligned on `firstBaseline`.
+///
+/// Offers two horizontal alignments:
+///  - `labelTextLeading`
+///  - `labelIconCenter`
+///
+/// - Important: Using above alignments on horizontally expanding content will increase the container size.
 public struct Label: View {
 
-    public static let iconSpacing: CGFloat = .xSmall
-    public static let descriptionSpacing: CGFloat = .xxxSmall
-
+    public static let defaultSpacing: CGFloat = .xSmall
+    
     let title: String
-    let description: String
     let iconContent: Icon.Content
-    let titleStyle: TitleStyle
-    let descriptionStyle: DescriptionStyle
-    let iconSpacing: CGFloat
-    let descriptionSpacing: CGFloat
-    let descriptionLinkAction: TextLink.Action
+    let style: Style
+    let spacing: CGFloat
 
     public var body: some View {
         if isEmpty == false {
-            HStack(alignment: .firstTextBaseline, spacing: iconSpacing) {
-                Icon(iconContent, size: .label(titleStyle))
-                    .alignmentGuide(.firstTextBaseline) { size in
-                        self.titleStyle.size * Text.firstBaselineRatio + size.height / 2
-                    }
-                    .alignmentGuide(.labelAlignment) { size in
-                        size.width + iconSpacing
-                    }
+            HStack(alignment: .firstTextBaseline, spacing: spacing) {
+                Icon(iconContent, size: .label(style))
+                    .alignmentGuide(.labelIconCenter) { $0[HorizontalAlignment.center] }
 
-                if isTextEmpty == false {
-                    VStack(alignment: .leading, spacing: descriptionSpacing) {
-                        titleView
-                        descriptionView
-                    }
-                }
+                titleView
+                    .alignmentGuide(.labelTextLeading) { $0[.leading] }
             }
         }
     }
     
     @ViewBuilder var titleView: some View {
-        switch titleStyle {
-            case .heading(let style, let color):           Heading(title, style: style, color: color)
-            case .text(let size, let weight, let color):   Text(title, size: size, color: color, weight: weight)
+        switch style {
+            case .heading(let style, let color):
+                Heading(title, style: style, color: color)
+            case .text(let size, let weight, let color, let accentColor, let linkColor, let linkAction):
+                Text(
+                    title,
+                    size: size,
+                    color: color,
+                    weight: weight,
+                    accentColor: accentColor,
+                    linkColor: linkColor,
+                    linkAction: linkAction
+                )
         }
     }
     
-    @ViewBuilder var descriptionView: some View {
-        Text(
-            description,
-            size: descriptionStyle.size,
-            color: descriptionStyle.color,
-            linkColor: descriptionStyle.linkColor,
-            linkAction: descriptionLinkAction
-        )
-    }
-    
-    var isTextEmpty: Bool {
-        title.isEmpty && description.isEmpty
+    var iconSize: CGFloat {
+        style.iconSize
     }
     
     var isEmpty: Bool {
-        isTextEmpty && iconContent.isEmpty
+        title.isEmpty && iconContent.isEmpty
     }
 }
 
@@ -68,44 +60,28 @@ public extension Label {
     /// Creates Orbit Label component.
     init(
         _ title: String = "",
-        description: String = "",
         iconContent: Icon.Content,
-        titleStyle: TitleStyle = .title4,
-        descriptionStyle: DescriptionStyle = .default,
-        iconSpacing: CGFloat = Self.iconSpacing,
-        descriptionSpacing: CGFloat = Self.descriptionSpacing,
-        descriptionLinkAction: @escaping TextLink.Action = { _, _ in }
+        style: Style = .title4,
+        spacing: CGFloat = Self.defaultSpacing
     ) {
         self.title = title
-        self.description = description
         self.iconContent = iconContent
-        self.titleStyle = titleStyle
-        self.descriptionStyle = descriptionStyle
-        self.iconSpacing = iconSpacing
-        self.descriptionSpacing = descriptionSpacing
-        self.descriptionLinkAction = descriptionLinkAction
+        self.style = style
+        self.spacing = spacing
     }
 
     /// Creates Orbit Label component.
     init(
         _ title: String = "",
-        description: String = "",
         icon: Icon.Symbol = .none,
-        titleStyle: TitleStyle = .title4,
-        descriptionStyle: DescriptionStyle = .default,
-        iconSpacing: CGFloat = Self.iconSpacing,
-        descriptionSpacing: CGFloat = Self.descriptionSpacing,
-        descriptionLinkAction: @escaping TextLink.Action = { _, _ in }
+        style: Style = .title4,
+        spacing: CGFloat = Self.defaultSpacing
     ) {
         self.init(
             title: title,
-            description: description,
-            iconContent: .icon(icon, color: titleStyle.color),
-            titleStyle: titleStyle,
-            descriptionStyle: descriptionStyle,
-            iconSpacing: iconSpacing,
-            descriptionSpacing: descriptionSpacing,
-            descriptionLinkAction: descriptionLinkAction
+            iconContent: .icon(icon, color: style.color),
+            style: style,
+            spacing: spacing
         )
     }
 }
@@ -113,147 +89,195 @@ public extension Label {
 // MARK: - Types
 public extension Label {
 
-    enum TitleStyle {
+    enum Style {
     
         case heading(_ style: Heading.Style = .title4, color: Heading.Color? = .inkNormal)
-        case text(_ size: Text.Size = .normal, weight: Font.Weight = .medium, color: Text.Color? = .inkNormal)
+        case text(
+            _ size: Text.Size = .normal,
+            weight: Font.Weight = .regular,
+            color: Text.Color? = .inkNormal,
+            accentColor: UIColor = .inkNormal,
+            linkColor: UIColor = TextLink.defaultColor,
+            linkAction: TextLink.Action = { _, _ in }
+        )
     
+        /// 40 pts.
         public static let display = Self.heading(.display)
+        /// 22 pts.
         public static let displaySubtitle = Self.heading(.displaySubtitle)
+        /// 28 pts.
         public static let title1 = Self.heading(.title1)
+        /// 22 pts.
         public static let title2 = Self.heading(.title2)
+        /// 18 pts.
         public static let title3 = Self.heading(.title3)
+        /// 16 pts.
         public static let title4 = Self.heading(.title4)
+        /// 14 pts.
         public static let title5 = Self.heading(.title5)
+        /// 12 pts.
         public static let title6 = Self.heading(.title6)
         
         var size: CGFloat {
             switch self {
                 case .heading(let style, _):            return style.size
-                case .text(let size, _, _):             return size.value
+                case .text(let size, _, _, _, _, _):    return size.value
             }
         }
         
         var iconSize: CGFloat {
             switch self {
                 case .heading(let style, _):            return style.iconSize
-                case .text(let size, _, _):             return size.iconSize
+                case .text(let size, _, _, _, _, _):    return size.iconSize
             }
+        }
+        
+        var lineHeight: CGFloat {
+            switch self {
+                case .heading(let style, _):            return style.lineHeight
+                case .text(let size, _, _, _, _, _):    return size.lineHeight
+            }
+        }
+        
+        var iconSpacing: CGFloat {
+            .xxSmall
         }
         
         var color: Color? {
             switch self {
                 case .heading(_ , let color):           return color?.value
-                case .text(_, _, let color):            return color?.value
-            }
-        }
-    }
-    
-    enum DescriptionStyle {
-    
-        case `default`
-        case custom(_ size: Text.Size = .normal, weight: Font.Weight = .regular, color: Text.Color? = .inkLight, linkColor: UIColor = .productDark)
-        
-        var size: Text.Size {
-            switch self {
-                case .default:                          return .normal
-                case .custom(let size, _, _, _):        return size
-            }
-        }
-        
-        var weight: Font.Weight {
-            switch self {
-                case .default:                          return .regular
-                case .custom(_ , let weight, _, _):     return weight
-            }
-        }
-        
-        var color: Text.Color? {
-            switch self {
-                case .default:                          return .inkLight
-                case .custom(_, _, let color, _):       return color
-            }
-        }
-        
-        var linkColor: UIColor {
-            switch self {
-                case .default:                          return .productDark
-                case .custom(_, _, _, let linkColor):   return linkColor
+                case .text(_, _, let color, _, _, _):   return color?.value
             }
         }
     }
 }
 
-// MARK: - Alignment
-extension HorizontalAlignment {
+// MARK: - Alignments
+public extension HorizontalAlignment {
     
-    enum LabelAlignment: AlignmentID {
-        static func defaultValue(in context: ViewDimensions) -> CGFloat {
+    static let labelIconCenter = HorizontalAlignment(LabelIconCenterAlignment.self)
+    static let labelTextLeading = HorizontalAlignment(LabelTextLeadingAlignment.self)
+    
+    enum LabelIconCenterAlignment: AlignmentID {
+        public static func defaultValue(in context: ViewDimensions) -> CGFloat {
             context[.leading]
         }
     }
 
-    static let labelAlignment = HorizontalAlignment(LabelAlignment.self)
+    enum LabelTextLeadingAlignment: AlignmentID {
+        public static func defaultValue(in context: ViewDimensions) -> CGFloat {
+            context[.leading]
+        }
+    }
 }
 
-
 // MARK: - Previews
-struct HeaderPreviews: PreviewProvider {
+struct LabelPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            Group {
-                Label()
-                Label("Label")
-                Label("Label", description: "Description")
-                Label("No Icon", description: "Description", descriptionStyle: .custom(.large))
-                Label("Orbit Icon", description: "Description", icon: .informationCircle, titleStyle: .heading(.title4, color: .none))
-                    .foregroundColor(.blueNormal)
-                Label("SF Symbol", description: "Description", iconContent: .sfSymbol("info.circle.fill"), titleStyle: .heading(.title4, color: .none))
-                    .foregroundColor(.blueNormal)
-                Label("CountryFlag", description: "Description", iconContent: .countryFlag("us"), titleStyle: .heading(.title4, color: .none))
-                    .foregroundColor(.blueNormal)
-                
-                Label(
-                    "Label",
-                    description: #"Description <a href="..">link</a>"#,
-                    icon: .grid,
-                    titleStyle: .text(.large, weight: .bold, color: .none),
-                    descriptionStyle: .custom(.custom(11), weight: .bold, color: .none, linkColor: .redDark)
-                )
-                .foregroundColor(.blueDark)
-                
-                Label("Label", icon: .grid)
-                Label(icon: .grid)
-            }
-            
-            Group {
-                Label("Label", description: "Description", icon: .grid, titleStyle: .text(.small, weight: .medium))
-                Label("Label", description: "Description", icon: .grid, titleStyle: .text(.large, weight: .bold))
-                Label("Label", description: "Description", icon: .grid, titleStyle: .text(.custom(.xxLarge), weight: .bold))
-            }
-            
-            Label(
-                "Label with very very long text",
-                description: "Description with very <strong>very</strong> long text",
-                icon: .grid
-            )
-            .frame(width: 200, alignment: .leading)
-            
-            Label(
-                "Label with very very long text",
-                description: "Description with very <strong>very</strong> long text",
-                icon: .grid,
-                titleStyle: .title1
-            )
-            .frame(width: 200, alignment: .leading)
-            
-            Label(
-                description: "Description with very <strong>very</strong> long text",
-                icon: .grid
-            )
-            .frame(width: 200, alignment: .leading)
+            snapshots
+            snapshotLabelLayout
+            snapshotStackLayout
+            snapshotColorOverride
         }
         .previewLayout(.sizeThatFits)
+    }
+    
+    @ViewBuilder static var snapshots: some View {
+        VStack(alignment: .leading, spacing: .large) {
+            
+            // No content
+            Label()
+                .border(Color.inkLighter)
+
+            Label("Label")
+
+            Label(icon: .grid)
+            
+            Label("Label", icon: .grid)
+            Label("Label", icon: .informationCircle)
+            
+            VStack(alignment: .leading, spacing: 0) {
+                Heading("leading alignment", style: .title5)
+                Label("Label", icon: .grid, style: .title1)
+                Label("Label", icon: .grid, style: .text(.small))
+                Label("Label", iconContent: .countryFlag("us"), style: .title1)
+                Label("Label", iconContent: .countryFlag("us"), style: .text(.small))
+                Label("Label", iconContent: .sfSymbol("info.circle.fill"), style: .title1)
+                Label("Label", iconContent: .sfSymbol("info.circle.fill"), style: .text(.small))
+            }
+
+            
+            VStack(alignment: .labelTextLeading, spacing: 0) {
+                Heading("labelTextLeading alignment", style: .title5)
+                Label("Label", icon: .grid, style: .title1)
+                Label("Label", icon: .grid, style: .text(.small))
+                Label("Label", iconContent: .countryFlag("us"), style: .title1)
+                Label("Label", iconContent: .countryFlag("us"), style: .text(.small))
+                Label("Label", iconContent: .sfSymbol("info.circle.fill"), style: .title1)
+                Label("Label", iconContent: .sfSymbol("info.circle.fill"), style: .text(.small))
+            }
+            
+
+            VStack(alignment: .labelIconCenter, spacing: 0) {
+                Heading("labelIconCenter alignment", style: .title5)
+                Label("Label", icon: .grid, style: .title1)
+                Label("Label", icon: .grid, style: .text(.small))
+                Label("Label", iconContent: .countryFlag("us"), style: .title1)
+                Label("Label", iconContent: .countryFlag("us"), style: .text(.small))
+                Label("Label", iconContent: .sfSymbol("info.circle.fill"), style: .title1)
+                Label("Label", iconContent: .sfSymbol("info.circle.fill"), style: .text(.small))
+            }
+        }
+        .padding()
+    }
+    
+    @ViewBuilder static var snapshotLabelLayout: some View {
+        HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
+            VStack(alignment: .leading, spacing: .xSmall) {
+                Label("Label with long multiline text", icon: .grid, style: .title2)
+                Text("Description very very very very verylong multiline text", color: .inkLight)
+                customContentPlaceholder
+            }
+            Spacer()
+            Badge("Trailing")
+        }
+        .frame(width: 200, alignment: .leading)
+        .padding()
+    }
+    
+    @ViewBuilder static var snapshotStackLayout: some View {
+        HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+            Icon(.grid, size: .label(.title2))
+            
+            VStack(alignment: .leading, spacing: .xSmall) {
+                Heading("Label with long multiline text", style: .title2)
+                Text("Description very very very very verylong multiline text", color: .inkLight)
+                customContentPlaceholder
+            }
+            
+            Spacer()
+            Badge("Trailing")
+        }
+        .frame(width: 200, alignment: .leading)
+        .padding()
+    }
+    
+    static var snapshotColorOverride: some View {
+        VStack(alignment: .leading, spacing: .xxxSmall) {
+            Label("Orbit Icon", icon: .informationCircle, style: .heading(.title5, color: .none))
+                .foregroundColor(.blueNormal)
+                .border(Color.cloudLight)
+            
+            Label("SF Symbol", iconContent: .sfSymbol("info.circle.fill"), style: .heading(.title5, color: .none))
+                .foregroundColor(.blueNormal)
+                .border(Color.cloudLight)
+            
+            Label("CountryFlag", iconContent: .countryFlag("us"), style: .heading(.title5, color: .none))
+                .foregroundColor(.blueNormal)
+                .border(Color.cloudLight)
+        }
+        .padding()
     }
 }

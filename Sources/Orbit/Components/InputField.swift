@@ -32,7 +32,7 @@ public struct InputField: View {
     let suffixAction: () -> Void
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 1) {
+        VStack(alignment: .leading, spacing: .xxSmall) {
             FormFieldLabel(label)
             
             InputContent(
@@ -50,8 +50,10 @@ public struct InputField: View {
                 }
             }
             
-            ContentHeightReader(height: $messageHeight.animation(.easeOut(duration: 0.2))) {
-                FormFieldMessage(message)
+            if message.isEmpty == false {
+                ContentHeightReader(height: $messageHeight.animation(.easeOut(duration: 0.2))) {
+                    FormFieldMessage(message)
+                }
             }
         }
     }

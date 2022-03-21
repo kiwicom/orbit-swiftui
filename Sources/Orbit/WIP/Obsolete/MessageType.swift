@@ -10,34 +10,25 @@ public enum MessageType: Equatable, Hashable, CustomStringConvertible {
 
     public var description: String {
         switch self {
-            case .none:
-                return ""
-            case .normal(let text, _):
-                return text
-            case .help(let text, _):
-                return text
-            case .warning(let text, _):
-                return text
-            case .error(let text, _):
-                return text
+            case .none:                     return ""
+            case .normal(let text, _):      return text
+            case .help(let text, _):        return text
+            case .warning(let text, _):     return text
+            case .error(let text, _):       return text
         }
     }
 
     public var isEmphasis: Bool {
         switch self {
-            case .error, .help, .warning:
-                return true
-            case .none, .normal:
-                return false
+            case .error, .help, .warning:           return true
+            case .none, .normal:                    return false
         }
     }
 
     public var isError: Bool {
         switch self {
-            case .error:
-                return true
-            case .none, .normal, .help, .warning:
-                return false
+            case .error:                            return true
+            case .none, .normal, .help, .warning:   return false
         }
     }
 

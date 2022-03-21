@@ -103,7 +103,7 @@ public struct ChoiceTile<Content: View>: View {
     let iconContent: Icon.Content
     let illustration: Illustration.Image
     let indicator: ChoiceTileIndicator
-    let titleStyle: Label.TitleStyle
+    let titleStyle: Heading.Style
     let isSelected: Bool
     let isError: Bool
     let message: MessageType
@@ -138,32 +138,34 @@ public struct ChoiceTile<Content: View>: View {
             switch alignment {
                 case .default:
                     HStack(alignment: .firstTextBaseline, spacing: 0) {
-                        Label(title, description: description, iconContent: iconContent, titleStyle: titleStyle)
+                        
+                        Icon(iconContent, size: .heading(titleStyle))
+                            .padding(.trailing, .xSmall)
+                        
+                        VStack(alignment: .leading, spacing: .xxSmall) {
+                            Heading(title, style: titleStyle)
+                            Text(description, color: .inkLight)
+                        }
+                        
                         Spacer(minLength: 0)
+                        
                         Badge(badge, style: .status(.info))
                     }
                 case .center:
                     VStack(spacing: .xxSmall) {
                         if illustration == .none {
-                            Icon(iconContent, size: .label(titleStyle))
+                            Icon(iconContent, size: .heading(titleStyle))
                                 .padding(.bottom, .xxxSmall)
                         } else {
                             Illustration(illustration, layout: .resizeable)
                                 .frame(height: .xxLarge)
                         }
-                        centeredHeading
+                        Heading(title, style: titleStyle, alignment: .center)
                         Text(description, color: .inkLight, alignment: .center)
                         Badge(badge, style: .neutral)
                     }
                     .frame(maxWidth: .infinity)
             }
-        }
-    }
-    
-    @ViewBuilder var centeredHeading: some View {
-        switch titleStyle {
-            case .heading(let style, let color):           Heading(title, style: style, color: color, alignment: .center)
-            case .text(let size, let weight, let color):   Text(title, size: size, color: color, weight: weight)
         }
     }
     
@@ -222,7 +224,7 @@ public extension ChoiceTile {
         badge: String = "",
         badgeOverlay: String = "",
         indicator: ChoiceTileIndicator = .radio,
-        titleStyle: Label.TitleStyle = .title3,
+        titleStyle: Heading.Style = .title3,
         isSelected: Bool = false,
         isError: Bool = false,
         message: MessageType = .none,
@@ -255,7 +257,7 @@ public extension ChoiceTile {
         badge: String = "",
         badgeOverlay: String = "",
         indicator: ChoiceTileIndicator = .radio,
-        titleStyle: Label.TitleStyle = .title3,
+        titleStyle: Heading.Style = .title3,
         isSelected: Bool = false,
         isError: Bool = false,
         message: MessageType = .none,
@@ -427,7 +429,7 @@ struct ChoiceTilePreviews: PreviewProvider {
 
             ChoiceTile(
                 "Multiline long choice title label",
-                description: "Multiline and very long description",
+                description: "Multiline and very very very long description",
                 icon: .grid,
                 titleStyle: .title1,
                 message: .help("Helpful multiline message")
@@ -469,7 +471,7 @@ struct ChoiceTilePreviews: PreviewProvider {
 
             ChoiceTile(
                 "Multiline long choice title label",
-                description: "Multiline and very long description",
+                description: "Multiline and very very very long description",
                 icon: .grid,
                 titleStyle: .title1,
                 message: .help("Helpful multiline message"),

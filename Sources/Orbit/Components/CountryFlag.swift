@@ -27,11 +27,14 @@ public struct CountryFlag: View {
     }
 
     var clipShape: some InsettableShape {
+        RoundedRectangle(cornerRadius: cornerRadius)
+    }
+    
+    var cornerRadius: CGFloat {
         switch border {
-            case .none:
-                return RoundedRectangle(cornerRadius: 0)
-            case .default:
-                return RoundedRectangle(cornerRadius: size.value / 10)
+            case .none:                             return 0
+            case .default(let cornerRadius?):       return cornerRadius
+            case .default:                          return size.value / 10
         }
     }
 }
@@ -40,7 +43,7 @@ public struct CountryFlag: View {
 public extension CountryFlag {
 
     /// Creates Orbit CountryFlag component.
-    init(_ countryCode: String, size: Icon.Size = .normal, border: Border = .default) {
+    init(_ countryCode: String, size: Icon.Size = .normal, border: Border = .default()) {
         self.countryCode = countryCode
         self.size = size
         self.border = border
@@ -52,7 +55,7 @@ public extension CountryFlag {
 
     enum Border {
         case none
-        case `default`
+        case `default`(cornerRadius: CGFloat? = nil)
 
         var color: Color {
             switch self {
@@ -68,7 +71,15 @@ struct CountryFlagPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
+            snapshots
+        }
+        .previewLayout(.sizeThatFits)
+    }
+    
+    static var snapshots: some View {
+        VStack {
             CountryFlag("cz")
+            CountryFlag("cz", border: .default(cornerRadius: 10))
             CountryFlag("cz", border: .none)
             CountryFlag("sg")
             CountryFlag("jp")
@@ -78,6 +89,5 @@ struct CountryFlagPreviews: PreviewProvider {
             CountryFlag("unknown", size: .xLarge)
         }
         .padding()
-        .previewLayout(.sizeThatFits)
     }
 }

@@ -14,7 +14,7 @@ public struct List<Content: View>: View {
     let content: () -> Content
 
     public var body: some View {
-        VStack(alignment: .listAlignment, spacing: spacing) {
+        VStack(alignment: .listTextLeading, spacing: spacing) {
             content()
         }
     }
@@ -26,15 +26,10 @@ public struct List<Content: View>: View {
     }
 }
 
-extension HorizontalAlignment {
+// MARK: - Alignment
+public extension HorizontalAlignment {
     
-    enum ListAlignment: AlignmentID {
-        static func defaultValue(in context: ViewDimensions) -> CGFloat {
-            context[.leading]
-        }
-    }
-
-    static let listAlignment = HorizontalAlignment(ListAlignment.self)
+    static let listTextLeading = Self.labelTextLeading
 }
 
 // MARK: - Previews
@@ -61,12 +56,13 @@ struct ListPreviews: PreviewProvider {
     static var snapshots: some View {
         Group {
             List {
-                ListItem("This is just a normal line", iconContent: .icon(.airplaneDown, color: .green))
-                ListItem("This is just a normal line", iconContent: .icon(.chat, color: .inkNormal))
-                ListItem("This is just a normal line", iconContent: .icon(.accountCircle, color: .orange))
+                ListItem("This is just a normal a normal a normal a normal line just a normal line", iconContent: .icon(.airplaneDown, color: .green), size: .custom(20))
+                ListItem("This is just a normal just a normal linejust a normal linejust a normal lineline", iconContent: .icon(.chat, color: .inkNormal))
+                ListItem("This is just a normal line just a normal line just a normal line", iconContent: .icon(.accountCircle, color: .orange))
                 ListItem("This is just a normal line", iconContent: .icon(.document, color: .blue))
                 ListItem("This is just a normal line", icon: .none)
             }
+            .border(.red)
             .padding()
 
             List {

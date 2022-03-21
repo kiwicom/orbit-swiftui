@@ -110,8 +110,14 @@ public extension Heading {
         
         public var iconSize: CGFloat {
             switch self {
+                case .display:          return 52
+                case .displaySubtitle:  return 30
+                case .title1:           return 38
+                case .title2:           return 30
+                case .title3:           return 26
                 case .title4:           return 22
-                default:                return lineHeight
+                case .title5:           return 20
+                case .title6:           return 18
             }
         }
 
@@ -130,12 +136,8 @@ struct HeadingPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            
-            Label("Heading", icon: .grid, titleStyle: .heading(.title1, color: nil))
-                .foregroundColor(.blueNormal)
-                .previewDisplayName("Label with color override")
-            
             snapshots
+            snapshotsMultiline
         }
         .previewLayout(.sizeThatFits)
     }
@@ -160,24 +162,23 @@ struct HeadingPreviews: PreviewProvider {
     }
 
     static var snapshots: some View {
-        Group {
-            orbit
-                .padding(.vertical)
-
-            VStack(alignment: .leading, spacing: .xSmall) {
-                Label("Display title, but very very very very very very very long", icon: .circle, titleStyle: .display)
-                Label("Display subtitle, also very very very very very long", icon: .email, titleStyle: .displaySubtitle)
-                Separator()
-                Label("Title 1, also very very very very very very very verylong", icon: .circle, titleStyle: .title1)
-                Label("Title 2, but very very very very very very very very long", icon: .circle, titleStyle: .title2)
-                Label("Title 3, but very very very very very very very very long", icon: .circle, titleStyle: .title3)
-                Label("Title 4, but very very very very very very very very long", icon: .circle, titleStyle: .title4)
-                Label("Title 5, but very very very very very very very very long", icon: .circle, titleStyle: .title5)
-                Label("Title 6, but very very very very very very very very long", icon: .circle, titleStyle: .title6)
-            }
-            .padding(.vertical)
-            .previewDisplayName("Longer text with icon using Label")
+        orbit
+            .padding()
+    }
+    
+    static var snapshotsMultiline: some View {
+        VStack(alignment: .leading, spacing: .xSmall) {
+            Heading("Display title, but very very very very very very very long", style: .display)
+            Heading("Display subtitle, also very very very very very long", style: .displaySubtitle)
+            Separator()
+            Heading("Title 1, also very very very very very very very verylong", style: .title1)
+            Heading("Title 2, but very very very very very very very very long", style: .title2)
+            Heading("Title 3, but very very very very very very very very long", style: .title3)
+            Heading("Title 4, but very very very very very very very very long", style: .title4)
+            Heading("Title 5, but very very very very very very very very long", style: .title5)
+            Heading("Title 6, but very very very very very very very very long", style: .title6)
         }
-        .padding(.horizontal)
+        .padding()
+        .previewDisplayName("Multiline")
     }
 }

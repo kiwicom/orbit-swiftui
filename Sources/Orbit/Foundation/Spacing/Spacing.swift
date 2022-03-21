@@ -6,43 +6,47 @@ import CoreGraphics
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/foundation/spacing/)
 public enum Spacing {
-    /// 2 pts spacing.
+    /// 2 pts.
     public static let xxxSmall: CGFloat = 2
-    /// 4 pts spacing.
+    /// 4 pts.
     public static let xxSmall: CGFloat = 4
-    /// 8 pts spacing.
+    /// 8 pts.
     public static let xSmall: CGFloat = 8
-    /// 12 pts spacing.
+    /// 12 pts.
     public static let small: CGFloat = 12
-    /// 16 pts spacing.
+    /// 16 pts.
     public static let medium: CGFloat = 16
-    /// 24 pts spacing.
+    /// 20 pts.
+    public static let xMedium: CGFloat = 20
+    /// 24 pts.
     public static let large: CGFloat = 24
-    /// 32 pts spacing.
+    /// 32 pts.
     public static let xLarge: CGFloat = 32
-    /// 40 pts spacing.
-    public static let xxLarge: CGFloat = 40
-    /// 52 pts spacing.
-    public static let xxxLarge: CGFloat = 52
+    /// 44 pts.
+    public static let xxLarge: CGFloat = 44
+    /// 60 pts.
+    public static let xxxLarge: CGFloat = 60
 }
 
 public extension CGFloat {
-    /// 2 pts spacing.
+    /// 2 pts
     static let xxxSmall = Spacing.xxxSmall
-    /// 4 pts spacing.
+    /// 4 pts.
     static let xxSmall = Spacing.xxSmall
-    /// 8 pts spacing.
+    /// 8 pts.
     static let xSmall = Spacing.xSmall
-    /// 12 pts spacing.
+    /// 12 pts.
     static let small = Spacing.small
-    /// 16 pts spacing.
+    /// 16 pts.
     static let medium = Spacing.medium
-    /// 24 pts spacing.
+    /// 20 pts.
+    static let xMedium = Spacing.xMedium
+    /// 24 pts.
     static let large = Spacing.large
-    /// 32 pts spacing.
+    /// 32 pts.
     static let xLarge = Spacing.xLarge
-    /// 40 pts spacing.
+    /// 44 pts.
     static let xxLarge = Spacing.xxLarge
-    /// 52 pts spacing.
+    /// 60 pts.
     static let xxxLarge = Spacing.xxxLarge
 }

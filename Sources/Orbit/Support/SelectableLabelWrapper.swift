@@ -26,15 +26,6 @@ struct SelectableLabelWrapper: UIViewRepresentable {
     }
 }
 
-struct SelectableLabelWrapper_Previews: PreviewProvider {
-
-    static var previews: some View {
-        SelectableLabelWrapper(text: "my cool label")
-            .fixedSize()
-            .previewLayout(.sizeThatFits)
-    }
-}
-
 private final class SelectableLabel: UILabel {
 
     /// Allows override default behaviour (copying whole text) by for example copying only part of it
