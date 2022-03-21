@@ -68,16 +68,19 @@ public struct ListChoice<Content: View>: View {
     }
     
     @ViewBuilder var header: some View {
-        Label(
-            title,
-            description: description,
-            iconContent: icon,
-            titleStyle: .text(weight: .medium),
-            descriptionStyle: .custom(.small),
-            iconSpacing: .xSmall,
-            descriptionSpacing: .xxxSmall
-        )
-        .padding(.vertical, .small)
+        if isHeaderEmpty == false {
+            HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+                Icon(icon)
+                
+                if isHeaderTextEmpty == false {
+                    VStack(alignment: .labelTextLeading, spacing: .xxxSmall) {
+                        Text(title, weight: .medium)
+                        Text(description, size: .small, color: .inkLight)
+                    }
+                }
+            }
+            .padding(.vertical, .small)
+        }
     }
 
     @ViewBuilder var disclosureView: some View {
@@ -124,7 +127,11 @@ public struct ListChoice<Content: View>: View {
     }
     
     var isHeaderEmpty: Bool {
-        icon.isEmpty && title.isEmpty && description.isEmpty
+        icon.isEmpty && isHeaderTextEmpty
+    }
+
+    var isHeaderTextEmpty: Bool {
+        title.isEmpty && description.isEmpty
     }
     
     var accessibilityTraitsToAdd: AccessibilityTraits {
@@ -329,8 +336,9 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(disclosure: .none) {
                 customContentPlaceholder
             }
-            .padding(.bottom)
         }
+        .padding(.vertical)
+        .background(Color.cloudLight)
         .previewDisplayName("No disclosure")
     }
     
@@ -351,6 +359,8 @@ struct ListChoicePreviews: PreviewProvider {
                 badge
             }
         }
+        .padding(.vertical)
+        .background(Color.cloudLight)
         .previewDisplayName("Chevron")
     }
     
@@ -387,6 +397,8 @@ struct ListChoicePreviews: PreviewProvider {
                 customContentPlaceholder
             }
         }
+        .padding(.vertical)
+        .background(Color.cloudLight)
         .previewDisplayName("Checkbox")
     }
     

@@ -64,7 +64,7 @@ public struct Tile<Content: View>: View {
     let border: TileBorder
     let status: Status?
     let backgroundColor: BackgroundColor?
-    let titleStyle: Label.TitleStyle
+    let titleStyle: Heading.Style
     let descriptionColor: Text.Color
     let action: () -> Void
     let content: () -> Content
@@ -103,15 +103,15 @@ public struct Tile<Content: View>: View {
     }
     
     var header: some View {
-        HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
-            Label(
-                title,
-                description: description,
-                iconContent: iconContent,
-                titleStyle: titleStyle,
-                iconSpacing: .small,
-                descriptionSpacing: .xxSmall
-            )
+        HStack(alignment: .firstTextBaseline, spacing: 0) {
+            
+            Icon(iconContent, size: .heading(titleStyle))
+                .padding(.trailing, .xSmall)
+            
+            VStack(alignment: .labelTextLeading, spacing: .xxSmall) {
+                Heading(title, style: titleStyle)
+                Text(description, color: .inkLight)
+            }
             .padding(.vertical, .medium)
 
             Spacer(minLength: 0)
@@ -182,7 +182,7 @@ public extension Tile {
         border: TileBorder = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
-        titleStyle: Label.TitleStyle = .title4,
+        titleStyle: Heading.Style = .title4,
         descriptionColor: Text.Color = .inkLight,
         action: @escaping () -> Void = {},
         @ViewBuilder content: @escaping () -> Content
@@ -212,7 +212,7 @@ public extension Tile {
         border: TileBorder = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
-        titleStyle: Label.TitleStyle = .title4,
+        titleStyle: Heading.Style = .title4,
         descriptionColor: Text.Color = .inkLight,
         iconColor: Color = .inkNormal,
         action: @escaping () -> Void = {},
@@ -243,7 +243,7 @@ public extension Tile {
         border: TileBorder = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
-        titleStyle: Label.TitleStyle = .title4,
+        titleStyle: Heading.Style = .title4,
         descriptionColor: Text.Color = .inkLight,
         action: @escaping () -> Void = {}
     ) where Content == EmptyView {
@@ -274,7 +274,7 @@ public extension Tile {
         border: TileBorder = .default,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
-        titleStyle: Label.TitleStyle = .title4,
+        titleStyle: Heading.Style = .title4,
         descriptionColor: Text.Color = .inkLight,
         iconColor: Color = .inkNormal,
         action: @escaping () -> Void = {}

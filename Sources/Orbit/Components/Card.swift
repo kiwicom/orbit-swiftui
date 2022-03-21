@@ -40,7 +40,7 @@ public struct Card<Content: View>: View {
     let contentLayout: CardContentLayout
     let contentAlignment: HorizontalAlignment
     let borderStyle: TileBorderStyle
-    let titleStyle: Label.TitleStyle
+    let titleStyle: Heading.Style
     let status: Status?
     let width: ContainerWidth
     let backgroundColor: Color?
@@ -71,16 +71,15 @@ public struct Card<Content: View>: View {
 
     @ViewBuilder var header: some View {
         if isHeaderEmpty == false {
-            HStack(alignment: .firstTextBaseline, spacing: .small) {
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
 
-                Label(
-                    title,
-                    description: description,
-                    iconContent: iconContent,
-                    titleStyle: titleStyle,
-                    iconSpacing: .xSmall,
-                    descriptionSpacing: .xxSmall
-                )
+                Icon(iconContent, size: .heading(titleStyle))
+                    .padding(.trailing, .xSmall)
+                
+                VStack(alignment: .leading, spacing: .xxSmall) {
+                    Heading(title, style: titleStyle)
+                    Text(description, color: .inkLight)
+                }
 
                 if case .expanding = width {
                     Spacer(minLength: .xxxSmall)
@@ -172,7 +171,7 @@ public extension Card {
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
-        titleStyle: Label.TitleStyle = .title4,
+        titleStyle: Heading.Style = .title4,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .white,
@@ -203,7 +202,7 @@ public extension Card {
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
-        titleStyle: Label.TitleStyle = .title4,
+        titleStyle: Heading.Style = .title4,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .white
@@ -231,7 +230,7 @@ public extension Card {
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
-        titleStyle: Label.TitleStyle = .title4,
+        titleStyle: Heading.Style = .title4,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .white,
@@ -262,7 +261,7 @@ public extension Card {
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
-        titleStyle: Label.TitleStyle = .title4,
+        titleStyle: Heading.Style = .title4,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .white
@@ -444,6 +443,7 @@ struct CardPreviews: PreviewProvider {
             Card(
                 "Very very very long and multi-line title",
                 description: "Very very very very very long and multi-line description",
+                icon: .grid,
                 action: .buttonLink("Update"),
                 borderStyle: .default,
                 status: .critical

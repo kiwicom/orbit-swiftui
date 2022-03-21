@@ -174,7 +174,7 @@ public extension Text {
                 case .normal:               return 20
                 case .large:                return 24
                 case .xLarge:               return 24
-                case .custom(let size):     return size + 4
+                case .custom(let size):     return size * 1.31
             }
         }
         
@@ -209,7 +209,9 @@ public extension Text {
 
 // MARK: - Constants
 extension Text {
-    public static var firstBaselineRatio: CGFloat { 0.35 }
+    
+    // Alignment ratio for text size.
+    public static var firstBaselineRatio: CGFloat { 0.26 }
 }
 
 // MARK: - Previews

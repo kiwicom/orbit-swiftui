@@ -65,7 +65,8 @@ public struct ToastContent: View {
             Label(
                 description,
                 iconContent: .icon(icon, color: .white),
-                titleStyle: .text(weight: .regular, color: .white)
+                style: .text(weight: .regular, color: .white),
+                spacing: .xSmall
             )
             .padding(.small)
             

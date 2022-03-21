@@ -13,21 +13,15 @@ public struct ListItem: View {
     let size: Text.Size
     let spacing: CGFloat
     let style: ListItem.Style
-    let linkColor: UIColor
     let linkAction: TextLink.Action
 
     public var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: spacing) {
-            Icon(iconContent, size: .label(.text(size)))
-                .alignmentGuide(.firstTextBaseline) { size in
-                    self.size.value * Text.firstBaselineRatio + size.height / 2
-                }
-                .alignmentGuide(.listAlignment, computeValue: { dimensions in
-                    dimensions.width + spacing
-                })
-
-            Text(text, size: size, color: style.textColor, linkColor: linkColor, linkAction: linkAction)
-        }
+        Label(
+            text,
+            iconContent: iconContent,
+            style: .text(size, weight: style.weight, color: style.textColor, linkAction: linkAction),
+            spacing: spacing
+        )
     }
 }
 
@@ -39,9 +33,8 @@ public extension ListItem {
         _ text: String = "",
         iconContent: Icon.Content,
         size: Text.Size = .normal,
-        spacing: CGFloat = .xSmall,
+        spacing: CGFloat = .xxSmall,
         style: ListItem.Style = .primary,
-        linkColor: UIColor = .productDark,
         linkAction: @escaping TextLink.Action = { _, _ in }
     ) {
         self.text = text
@@ -49,7 +42,6 @@ public extension ListItem {
         self.size = size
         self.spacing = spacing
         self.style = style
-        self.linkColor = linkColor
         self.linkAction = linkAction
     }
 
@@ -58,9 +50,8 @@ public extension ListItem {
         _ text: String = "",
         icon: Icon.Symbol = .circleSmall,
         size: Text.Size = .normal,
-        spacing: CGFloat = .xSmall,
+        spacing: CGFloat = .xxSmall,
         style: ListItem.Style = .primary,
-        linkColor: UIColor = .productDark,
         linkAction: @escaping TextLink.Action = { _, _ in }
     ) {
         self.init(
@@ -69,7 +60,6 @@ public extension ListItem {
             size: size,
             spacing: spacing,
             style: style,
-            linkColor: linkColor,
             linkAction: linkAction
         )
     }
@@ -81,13 +71,29 @@ public extension ListItem {
     enum Style {
         case primary
         case secondary
-        case custom(textColor: UIColor)
+        case custom(color: UIColor = .inkNormal, linkColor: UIColor = TextLink.defaultColor, weight: Font.Weight = .regular)
 
         public var textColor: Text.Color {
             switch self {
-                case .primary:                  return .inkNormal
-                case .secondary:                return .inkLight
-                case .custom(let textColor):    return .custom(textColor)
+                case .primary:                      return .inkNormal
+                case .secondary:                    return .inkLight
+                case .custom(let color, _, _):      return .custom(color)
+            }
+        }
+        
+        public var linkColor: UIColor {
+            switch self {
+                case .primary:                      return TextLink.defaultColor
+                case .secondary:                    return TextLink.defaultColor
+                case .custom(_, let linkColor, _):  return linkColor
+            }
+        }
+        
+        public var weight: Font.Weight {
+            switch self {
+                case .primary:                      return .regular
+                case .secondary:                    return .regular
+                case .custom(_, _, let weight):     return weight
             }
         }
     }
@@ -141,9 +147,9 @@ struct ListItemPreviews: PreviewProvider {
     static var snapshotsLinks: some View {
         List {
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#)
-            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, size: .small, style: .secondary, linkColor: .redNormal)
-            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, style: .custom(textColor: .greenNormal))
-            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, iconContent: .icon(.circleSmall, color: .inkNormal), style: .custom(textColor: .greenNormal))
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, size: .small, style: .secondary)
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, style: .custom(color: .greenNormal))
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, iconContent: .icon(.circleSmall, color: .inkNormal), style: .custom(color: .greenNormal))
         }
         .padding()
         .previewDisplayName("Snapshots - Links")
@@ -154,7 +160,7 @@ struct ListItemPreviews: PreviewProvider {
             ListItem("ListItem with custom icon", iconContent: .icon(.check, color: .greenNormal))
             ListItem("ListItem with custom icon", iconContent: .icon(.check))
             ListItem("ListItem with custom icon", icon: .check)
-            ListItem("ListItem with custom icon", icon: .check, style: .custom(textColor: .blueDark))
+            ListItem("ListItem with custom icon", icon: .check, style: .custom(color: .blueDark))
             ListItem("ListItem with no icon", icon: .none)
         }
         .padding()
