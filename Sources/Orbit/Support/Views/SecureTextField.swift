@@ -48,8 +48,10 @@ struct SecureTextField: UIViewRepresentable {
             return
         }
 
-        if uiView.isSecureTextEntry && uiView.text == text {
-            // Workaround. Without it, UITextField will erase it's own current value on frist input
+        // Workaround. Without it, UITextField will erase it's own current value on frist input
+        let didUserJustDidStartEditing = uiView.isSecureTextEntry && uiView.text == text
+        let isTextModifiedOutsideTextField = text != context.coordinator.textFieldInput
+        if didUserJustDidStartEditing || isTextModifiedOutsideTextField {
             uiView.text?.removeAll()
             uiView.insertText(text)
         }
@@ -64,6 +66,8 @@ struct SecureTextField: UIViewRepresentable {
         var isEditing: Binding<Bool>
         let onEditingChanged: (Bool) -> Void
         let onCommit: () -> Void
+
+        private(set) lazy var textFieldInput: String = text.wrappedValue
 
         init(text: Binding<String>,
              isEditing: Binding<Bool>,
@@ -87,6 +91,7 @@ struct SecureTextField: UIViewRepresentable {
             }
 
             text.wrappedValue = textField.text ?? ""
+            textFieldInput = text.wrappedValue
             onCommit()
 
             isEditing.wrappedValue = false
@@ -105,9 +110,11 @@ struct SecureTextField: UIViewRepresentable {
                 specialRange.clamped(to: text.wrappedValue.startIndex..<text.wrappedValue.endIndex) == specialRange {
 
                 text.wrappedValue.replaceSubrange(specialRange, with: string)
+                textFieldInput = text.wrappedValue
             } else {
                 assertionFailure("Unexpected flow. Please report an issue.")
             }
+
             return true
         }
     }
