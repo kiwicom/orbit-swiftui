@@ -90,15 +90,13 @@ public struct InputField: View {
             isEditing: $isEditing,
             style: .init(
                 textContentType: textContent,
-                autocapitalization: autocapitalization,
                 keyboardType: keyboard,
-                font: .orbit(size: Text.Size.normal.value, weight: .regular)
-            )
+                font: .orbit(size: Text.Size.normal.value, weight: .regular),
+                state: state
+            ),
+            onEditingChanged: onEditingChanged,
+            onCommit: onCommit
         )
-        .onTapGesture {
-            self.isEditing = true
-            onEditingChanged(isEditing)
-        }
         .background(textFieldPlaceholder, alignment: .leading)
     }
 
@@ -134,12 +132,14 @@ public struct InputField: View {
     }
 
     @ViewBuilder var securedSuffix: some View {
-        Icon(isSecureTextEntry ? .visibility : .visibilityOff, size: .default)
-            .padding(.horizontal, .xSmall)
-            .contentShape(Rectangle())
-            .onTapGesture {
-                isSecureTextEntry.toggle()
-            }
+        if value.isEmpty == false, state != .disabled {
+            Icon(isSecureTextEntry ? .visibility : .visibilityOff, size: .default)
+                .padding(.horizontal, .small)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    isSecureTextEntry.toggle()
+                }
+        }
     }
 }
 
