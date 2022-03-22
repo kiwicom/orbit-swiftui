@@ -2,6 +2,7 @@ import SwiftUI
 import UIKit
 
 struct SecureTextFieldStyle {
+    // FIXME: support autocapitalization to match InputField style
     let textContentType: UITextContentType?
     let keyboardType: UIKeyboardType
     let font: UIFont

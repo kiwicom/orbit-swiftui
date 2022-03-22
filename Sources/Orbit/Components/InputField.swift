@@ -43,26 +43,24 @@ public struct InputField: View {
                 state: state,
                 message: message,
                 isEditing: isEditing,
-                suffixAction: suffixAction,
-                label: {
-                    HStack(spacing: 0) {
-                        input
-                            .textFieldStyle(TextFieldStyle(leadingPadding: 0))
-                            .autocapitalization(autocapitalization)
-                            .disableAutocorrection(isAutocompleteEnabled == false)
-                            .textContentType(textContent)
-                            .keyboardType(keyboard)
-                            .font(.orbit(size: Text.Size.normal.value, weight: .regular))
-                            .accentColor(.blueNormal)
-                            .frame(height: Layout.preferredButtonHeight)
-                            .background(textFieldPlaceholder, alignment: .leading)
-                            .disabled(state == .disabled)
-                        if isSecure {
-                            securedSuffix
-                        } else {
-                            Spacer(minLength: 0)
-                            clearButton
-                        }
+                suffixAction: suffixAction
+            ) {
+                HStack(spacing: 0) {
+                    input
+                        .textFieldStyle(TextFieldStyle(leadingPadding: 0))
+                        .autocapitalization(autocapitalization)
+                        .disableAutocorrection(isAutocompleteEnabled == false)
+                        .textContentType(textContent)
+                        .keyboardType(keyboard)
+                        .font(.orbit(size: Text.Size.normal.value, weight: .regular))
+                        .accentColor(.blueNormal)
+                        .frame(height: Layout.preferredButtonHeight)
+                        .background(textFieldPlaceholder, alignment: .leading)
+                        .disabled(state == .disabled)
+                    if isSecure {
+                        securedSuffix
+                    } else {
+                        clearButton
                     }
                 }
             }
@@ -133,7 +131,7 @@ public struct InputField: View {
 
     @ViewBuilder var securedSuffix: some View {
         if value.isEmpty == false, state != .disabled {
-            Icon(isSecureTextEntry ? .visibility : .visibilityOff, size: .default)
+            Icon(isSecureTextEntry ? .visibility : .visibilityOff, size: .normal)
                 .padding(.horizontal, .small)
                 .contentShape(Rectangle())
                 .onTapGesture {
@@ -230,16 +228,15 @@ struct InputFieldPreviews: PreviewProvider {
         InputField("Disabled, Empty", value: .constant(""), placeholder: "Placeholder", state: .disabled)
         InputField("Disabled", value: .constant("Disabled Value"), placeholder: "Placeholder", state: .disabled)
         InputField("Default", value: .constant("InputField Value"))
-        InputField("Secured", value: .constant("password"), isSecure: true)
         InputField("Modified", value: .constant("Modified value"), state: .modified)
         InputField("Focused", value: .constant("Focus / Help"), message: .help("Help message"))
+        InputField("Secured", value: .constant("password"), isSecure: true)
         InputField(
             "InputField with a long multiline label to test that it works",
             value: .constant("Error value with a very long length to test that it works"),
             message: .error("Error message, also very long and multi-line to test that it works.")
         )
         InputField(value: .constant("InputField with no label"))
-        standalone
         InputField(value: .constant("InputField with CountryFlag prefix"), prefix: .countryFlag("us"))
     }
 
