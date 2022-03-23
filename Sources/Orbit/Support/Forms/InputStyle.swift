@@ -19,6 +19,21 @@ public enum InputState {
             case .default, .modified:   return .inkLighter
         }
     }
+
+    public var textUIColor: UIColor {
+        switch self {
+            case .disabled:         return .cloudDarkerActive
+            case .default:          return .inkNormal
+            case .modified:         return .blueDark
+        }
+    }
+
+    public var placeholderUIColor: UIColor {
+        switch self {
+            case .disabled:             return textUIColor
+            case .default, .modified:   return .inkLighter
+        }
+    }
 }
 
 /// Content for inputs that share common layout with a prefix and suffix.
