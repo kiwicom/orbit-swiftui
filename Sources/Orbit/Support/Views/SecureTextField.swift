@@ -105,17 +105,9 @@ struct SecureTextField: UIViewRepresentable {
         }
 
         func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-
-            if let input = textField.text,
-                let specialRange = Range(range, in: input),
-                specialRange.clamped(to: text.wrappedValue.startIndex..<text.wrappedValue.endIndex) == specialRange {
-
-                text.wrappedValue.replaceSubrange(specialRange, with: string)
-                textFieldInput = text.wrappedValue
-            } else {
-                assertionFailure("Unexpected flow. Please report an issue.")
-            }
-
+            text.wrappedValue = ((textField.text ?? "") as NSString).replacingCharacters(in: range, with: string)
+            textFieldInput = text.wrappedValue
+            
             return true
         }
     }
