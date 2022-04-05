@@ -66,5 +66,9 @@ public extension Illustration {
         case transportBus
         case transportTaxi
         case womanWithPhone
+
+        public var assetName: String {
+            self == .none ? "" : defaultAssetName
+        }
     }
 }

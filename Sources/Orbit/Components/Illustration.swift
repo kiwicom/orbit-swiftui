@@ -99,6 +99,8 @@ struct IllustrationPreviews: PreviewProvider {
     public static var previews: some View {
         PreviewWrapper {
             Group {
+                empty
+
                 standalone
                 intrinsic
                 customResource
@@ -115,6 +117,13 @@ struct IllustrationPreviews: PreviewProvider {
                 orbit
             }
             .previewDisplayName("All illustrations")
+        }
+    }
+
+    static var empty: some View {
+        HStack {
+            Illustration(.none)
+            Text("No illustration")
         }
     }
     
