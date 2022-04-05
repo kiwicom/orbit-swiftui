@@ -2,14 +2,9 @@ import SwiftUI
 
 public enum AlertButtons {
     case none
-    case primary(_ title: String, action: () -> Void = {})
-    case secondary(_ title: String, action: () -> Void = {})
-    case primaryAndSecondary(
-        primaryTitle: String,
-        secondaryTitle: String,
-        primaryAction: () -> Void = {},
-        secondaryAction: () -> Void = {}
-    )
+    case primary(Button.Content)
+    case secondary(Button.Content)
+    case primaryAndSecondary(Button.Content, Button.Content)
 }
 
 /// Breaks the main user flow to present information.
@@ -74,17 +69,17 @@ public struct Alert<Content: View>: View {
     @ViewBuilder var buttonsView: some View {
         HStack(spacing: .small) {
             switch buttons {
-                case .primary(let title, let action),
-                     .primaryAndSecondary(let title, _, let action, _):
-                    Button(title, style: primaryButtonStyle, size: .small, action: action)
+                case .primary(let primaryButton),
+                     .primaryAndSecondary(let primaryButton, _):
+                    Button(primaryButton.label, style: primaryButtonStyle, size: .small, action: primaryButton.action)
                 case .none, .secondary:
                     EmptyView()
             }
 
             switch buttons {
-                case .secondary(let title, let action),
-                     .primaryAndSecondary(_, let title, _, let action):
-                    Button(title, style: secondaryButtonStyle, size: .small, action: action)
+                case .secondary(let secondaryButton),
+                     .primaryAndSecondary(_, let secondaryButton):
+                    Button(secondaryButton.label, style: secondaryButtonStyle, size: .small, action: secondaryButton.action)
                 case .none, .primary:
                     EmptyView()
             }
@@ -194,11 +189,7 @@ public extension Alert {
 // MARK: - Previews
 struct AlertPreviews: PreviewProvider {
 
-    private static let primaryAndSecondaryConfiguration = AlertButtons.primaryAndSecondary(
-        primaryTitle: "Primary",
-        secondaryTitle: "Secondary"
-    )
-
+    private static let primaryAndSecondaryConfiguration = AlertButtons.primaryAndSecondary("Primary", "Secondary")
     private static let primaryConfiguration = AlertButtons.primary("Primary")
     private static let secondaryConfiguration = AlertButtons.secondary("Secondary")
 
@@ -245,10 +236,7 @@ struct AlertPreviews: PreviewProvider {
             "Title",
             description: #"Alert description with <u>underline</u> vs <a href="..">link</a>."#,
             icon: .informationCircle,
-            buttons: .primaryAndSecondary(
-                primaryTitle: "Primary",
-                secondaryTitle: "Secondary"
-            )
+            buttons: Self.primaryAndSecondaryConfiguration
         ) {
             customContentPlaceholder
         }
@@ -380,10 +368,7 @@ struct AlertPreviews: PreviewProvider {
             "Title",
             description: #"Alert description with <u>underline</u> vs <a href="..">link</a>."#,
             icon: .informationCircle,
-            buttons: .primaryAndSecondary(
-                primaryTitle: "Primary",
-                secondaryTitle: "Secondary"
-            ),
+            buttons: Self.primaryAndSecondaryConfiguration,
             isSuppressed: true
         ) {
             customContentPlaceholder

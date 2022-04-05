@@ -18,7 +18,7 @@ struct TutorialScreen: View {
                 Alert(
                     "Alert",
                     description: "Alert Desctiption with a <a href=\"...\">TextLink</a>",
-                    buttons: .primary("Action", action: alertAction)
+                    buttons: .primary(.init("Action", action: alertAction))
                 )
                 
                 HStack(spacing: .medium) {
