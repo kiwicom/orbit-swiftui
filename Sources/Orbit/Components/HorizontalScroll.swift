@@ -16,15 +16,6 @@ public enum HorizontalScrollItemHeight {
     case custom(CGFloat)
 }
 
-struct HorizontalScrollWidthKey: PreferenceKey {
-
-    static var defaultValue: CGFloat { 10 }
-
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = max(value, nextValue())
-    }
-}
-
 /// Groups items onto one accessible row even on small screens.
 ///
 /// Can be used to present similar items (such as cards with baggage options) as a single row even on small screens.
@@ -34,8 +25,6 @@ struct HorizontalScrollWidthKey: PreferenceKey {
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/layout/horizontalscroll/)
 public struct HorizontalScroll<Content: View>: View {
-
-    @State private var availableWidth: CGFloat = 0
 
     let spacing: CGFloat
     let itemWidth: HorizontalScrollItemWidth
@@ -47,29 +36,20 @@ public struct HorizontalScroll<Content: View>: View {
     let content: () -> Content
 
     public var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(alignment: .top, spacing: spacing) {
-                content()
-                    .frame(width: itemWidth(forContentWidth: availableWidth), alignment: .leading)
-                    .frame(maxWidth: maxItemWidth, alignment: .leading)
-                    .frame(height: resolvedItemHeight, alignment: .top)
+        SingleAxisGeometryReader(axis: .horizontal, alignment: .top) { width in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: spacing) {
+                    content()
+                        .frame(width: itemWidth(forContentWidth: width), alignment: .leading)
+                        .frame(maxWidth: maxItemWidth, alignment: .leading)
+                        .frame(height: resolvedItemHeight, alignment: .top)
 
-                Strut(height: minHeight)
+                    Strut(minHeight)
+                }
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, horizontalPadding)
+                .padding(.vertical, verticalPadding)
             }
-            .fixedSize(horizontal: false, vertical: true)
-            .padding(.horizontal, horizontalPadding)
-            .padding(.vertical, verticalPadding)
-        }
-        .background(
-            GeometryReader { proxy in
-                Color.clear.preference(
-                    key: HorizontalScrollWidthKey.self,
-                    value: proxy.size.width
-                )
-            }
-        )
-        .onPreferenceChange(HorizontalScrollWidthKey.self) {
-            availableWidth = $0
         }
     }
 
@@ -119,6 +99,7 @@ public struct HorizontalScroll<Content: View>: View {
     }
 }
 
+// MARK: - Previews
 struct HorizontalScrollPreviews: PreviewProvider {
 
     static var intrinsicContent: some View {

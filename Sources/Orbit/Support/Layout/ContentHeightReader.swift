@@ -1,31 +1,54 @@
 import SwiftUI
 
-struct ContentHeightReader<Content: View>: View {
+/// Invisible wrapper that communicates its current content height.
+public struct ContentHeightReader<Content: View>: View {
 
     @Binding var height: CGFloat
     let content: () -> Content
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             content()
                 .background(
                     GeometryReader { proxy in
                         Color.clear
-                            .preference(key: HeightPreferenceKey.self, value: proxy.size.height)
+                            .preference(key: SizePreferenceKey.self, value: proxy.size.height)
                     }
                 )
         }
-        .onPreferenceChange(HeightPreferenceKey.self) { preferences in
+        .onPreferenceChange(SizePreferenceKey.self) { preferences in
             self.height = preferences
         }
     }
+
+    public init(height: Binding<CGFloat>, @ViewBuilder content: @escaping  () -> Content) {
+        self._height = height
+        self.content = content
+    }
 }
 
-struct HeightPreferenceKey: PreferenceKey {
+// MARK: - Previews
+struct ContentHeightReaderPreviews: PreviewProvider {
 
-    static var defaultValue: CGFloat = 0
+    static let message: MessageType = .normal("Form Field Message")
 
-    static func reduce(value _: inout Value, nextValue: () -> Value) {
-        _ = nextValue()
+    static var previews: some View {
+        PreviewWrapperWithState(initialState: (CGFloat(0), Self.message)) { state in
+            VStack {
+                Text("Height: \(state.0.wrappedValue)")
+
+                ContentHeightReader(height: state.0) {
+                    FormFieldMessage(state.1.wrappedValue)
+                }
+
+                Button("Toggle") {
+                    withAnimation(.easeInOut(duration: 1)) {
+                        state.1.wrappedValue = state.1.wrappedValue == .none ? Self.message : .none
+                    }
+                }
+            }
+            .padding()
+        }
+        .previewLayout(.sizeThatFits)
     }
 }
