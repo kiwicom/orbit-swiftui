@@ -14,7 +14,7 @@ struct SizePreferenceKeyData: Equatable {
     var id: AnyHashable
 }
 
-struct SizePreferenceKey: PreferenceKey {
+struct SizesPreferenceKey: PreferenceKey {
     typealias Value = [SizePreferenceKeyData]
 
     static var defaultValue: [SizePreferenceKeyData] = []
@@ -36,7 +36,7 @@ struct PropagatesSize<ID: Hashable, V: View>: View {
             .background(
                 GeometryReader { proxy in
                     Color.clear.preference(
-                        key: SizePreferenceKey.self,
+                        key: SizesPreferenceKey.self,
                         value: [SizePreferenceKeyData(size: proxy.size, id: AnyHashable(self.id))]
                     )
                 }
@@ -122,7 +122,7 @@ View where Data: RandomAccessCollection, Data.Index: Hashable, Data.Element: Ide
             }
             .preference(key: OverallHeightPreference.self, value: laidout.size.height)
         }
-        .onPreferenceChange(SizePreferenceKey.self, perform: {
+        .onPreferenceChange(SizesPreferenceKey.self, perform: {
             sizes = $0
         })
         .onPreferenceChange(OverallHeightPreference.self, perform: { value in

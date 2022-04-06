@@ -17,7 +17,7 @@ public struct Timeline<Content: View>: View {
         .backgroundPreferenceValue(TimelineStep.PreferenceKey.self) { preferences in
             GeometryReader { geometry in
                 VStack(spacing: 0) {
-                    ForEach(preferences.indices.dropFirst()) { index in
+                    ForEach(preferences.indices.dropFirst(), id: \.self) { index in
                         preferences[index].style.color
                             .frame(width: 2)
                             .frame(

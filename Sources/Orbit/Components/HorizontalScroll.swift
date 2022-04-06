@@ -36,15 +36,15 @@ public struct HorizontalScroll<Content: View>: View {
     let content: () -> Content
 
     public var body: some View {
-        SingleAxisGeometryReader(axis: .horizontal) { width in
+        SingleAxisGeometryReader(axis: .horizontal, alignment: .top) { width in
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: spacing) {
                     content()
                         .frame(width: itemWidth(forContentWidth: width), alignment: .leading)
                         .frame(maxWidth: maxItemWidth, alignment: .leading)
                         .frame(height: resolvedItemHeight, alignment: .top)
-                    
-                    Strut(height: minHeight)
+
+                    Strut(minHeight)
                 }
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, horizontalPadding)
@@ -52,14 +52,14 @@ public struct HorizontalScroll<Content: View>: View {
             }
         }
     }
-    
+
     var resolvedItemHeight: CGFloat? {
         switch itemHeight {
             case .intrinsic:            return nil
             case .custom(let height):   return height
         }
     }
-    
+
     /// Creates Orbit HorizontalScroll component.
     /// - Parameters:
     ///   - spacing: Spacing between items. Default value is `.small`.
@@ -92,15 +92,32 @@ public struct HorizontalScroll<Content: View>: View {
 
     func itemWidth(forContentWidth contentWidth: CGFloat) -> CGFloat? {
         switch itemWidth {
-            case .ratio(let ratio):     return min(max(0, ratio * (contentWidth - 2 * horizontalPadding)), maxItemWidth ?? .infinity)
+            case .ratio(let ratio):     return min(max(0, ratio * contentWidth - 2 * horizontalPadding), maxItemWidth ?? .infinity)
             case .intrinsic:            return nil
             case .custom(let width):    return min(width, maxItemWidth ?? .infinity)
         }
     }
 }
 
+// MARK: - Previews
 struct HorizontalScrollPreviews: PreviewProvider {
-    
+
+    static var intrinsicContent: some View {
+        intrinsicContent {
+            customContentPlaceholder
+        }
+    }
+
+    static func intrinsicContent<Content>(
+        @ViewBuilder content: @escaping () -> Content
+    ) -> some View where Content: View {
+        VStack(alignment: .leading) {
+            Text("Text")
+            content()
+        }
+        .border(.red)
+    }
+
     static var previews: some View {
         PreviewWrapper {
             simpleSmallRatio
@@ -110,124 +127,195 @@ struct HorizontalScrollPreviews: PreviewProvider {
             fullWidthIntrinsicHeight
             intrinsic
             custom
+            pagination
+                .previewDisplayName("Live Preview - Pagination")
         }
         .previewLayout(.sizeThatFits)
     }
-    
+
     static var simpleSmallRatio: some View {
-        HorizontalScroll(spacing: .large, itemWidth: .ratio(0.25)) {
-            Color.blueNormal.frame(height: 10)
-            Color.blueNormal.frame(height: 30)
-            Color.blueNormal.frame(height: 50)
+        VStack {
+            HorizontalScroll(spacing: .large, itemWidth: .ratio(1.01)) {
+                Color.blue.frame(height: 10)
+                Color.blue.frame(height: 30)
+                Color.blue.frame(height: 50)
+            }
+
+            HorizontalScroll(spacing: .large, itemWidth: .ratio(1)) {
+                Color.blue.frame(height: 10)
+                Color.blue.frame(height: 30)
+                Color.blue.frame(height: 50)
+            }
+
+            HorizontalScroll(spacing: .large, itemWidth: .ratio(0.5)) {
+                Color.blue.frame(height: 10)
+                Color.blue.frame(height: 30)
+                Color.blue.frame(height: 50)
+            }
+
+            HorizontalScroll(spacing: .large, itemWidth: .ratio(0.33)) {
+                Color.blue.frame(height: 10)
+                Color.blue.frame(height: 30)
+                Color.blue.frame(height: 50)
+                Color.blue.frame(height: 20)
+            }
         }
-        .previewDisplayName("W - small ratio, H - intrinsic")
+        .background(Color.gray.frame(width: 1).padding(.leading, .xSmall), alignment: .leading)
+        .background(Color.gray.frame(width: 1).padding(.trailing, .xSmall), alignment: .trailing)
+        .previewDisplayName("W - ratios, H - intrinsic")
     }
-    
+
     static var simpleCustom: some View {
         HorizontalScroll(itemWidth: .custom(30), itemHeight: .custom(30)) {
-            Color.blueNormal
-            Color.blueNormal
-            Color.blueNormal
+            Color.blue
+            Color.blue
+            Color.blue
         }
+        .border(.gray)
         .previewDisplayName("W - custom, H - custom")
     }
-    
+
     static var ratioWidthIntrinsicHeight: some View {
         HorizontalScroll {
+            intrinsicContent
 
-            ChoiceTile("Choice Tile", icon: .accommodation) {
-                customContentPlaceholder
-            }
-            
-            ChoiceTile("Choice Tile with long title", icon: .accommodation) {
-                Color.blueLight
+            intrinsicContent {
+                Color.blue
                     .frame(width: 100, height: 150)
             }
-            
-            ChoiceTile("Choice Tile", description: "Description", icon: .accommodation) {
-                customContentPlaceholder
-            }
+
+            intrinsicContent
         }
+        .border(.gray)
         .previewDisplayName("W - ratio, H - intrinsic")
     }
-    
-    static var smallRatioWidthIntrinsicHeight: some View {
-        HorizontalScroll(itemWidth: .ratio(0.33), itemHeight: .intrinsic) {
 
-            ChoiceTile("ChoiceTile", icon: .accommodation) {
+    static var smallRatioWidthIntrinsicHeight: some View {
+        HorizontalScroll(itemWidth: .ratio(0.3), itemHeight: .intrinsic) {
+            intrinsicContent {
                 VStack {
                     Text("Matching tallest item using Spacer")
                     Spacer()
                     customContentPlaceholder
                 }
             }
-            
-            ChoiceTile("ChoiceTile", icon: .accommodation) {
-                Color.blueLight
+
+            intrinsicContent {
+                Color.blue
                     .frame(height: 150)
             }
-            
-            ChoiceTile("ChoiceTile", description: "Description", icon: .accommodation) {
-                customContentPlaceholder
-            }
+
+            intrinsicContent
         }
+        .border(.gray)
         .previewDisplayName("W - small ratio, H - intrinsic")
     }
-    
+
     static var fullWidthIntrinsicHeight: some View {
         HorizontalScroll(itemWidth: .ratio(1), itemHeight: .intrinsic) {
+            intrinsicContent
 
-            ChoiceTile("Choice Tile", icon: .accommodation) {
-                customContentPlaceholder
-            }
-            
-            ChoiceTile("Choice Tile with long title", icon: .accommodation) {
-                Color.blueLight
+            intrinsicContent {
+                Color.blue
                     .frame(height: 150)
             }
-            
-            ChoiceTile("Choice Tile", description: "Description", icon: .accommodation) {
-                customContentPlaceholder
-            }
+
+            intrinsicContent
         }
+        .border(.gray)
         .previewDisplayName("W - full, H - intrinsic")
     }
-    
+
     static var intrinsic: some View {
         HorizontalScroll(itemWidth: .intrinsic, itemHeight: .intrinsic) {
+            intrinsicContent
 
-            ChoiceTile("Choice Tile", icon: .accommodation) {
-                customContentPlaceholder
+            intrinsicContent {
+                Color.blue
+                    .frame(width: 100, height: 150)
             }
-            
-            ChoiceTile("Choice Tile with long title", icon: .accommodation) {
-                Color.blueLight
-                    .frame(height: 150)
-            }
-            
-            ChoiceTile("Choice Tile", description: "Description", icon: .accommodation) {
-                customContentPlaceholder
-            }
+
+            intrinsicContent
         }
         .previewDisplayName("W - intrinsic, H - intrinsic")
     }
-    
-    static var custom: some View {
-        HorizontalScroll(itemWidth: .custom(120), itemHeight: .custom(120)) {
 
-            ChoiceTile("Choice Tile", icon: .accommodation) {
+    static var custom: some View {
+        HorizontalScroll(itemWidth: .custom(100), itemHeight: .custom(130)) {
+            intrinsicContent {
                 Spacer()
+                Color.red
             }
-            
-            ChoiceTile("Choice Tile") {
+
+            intrinsicContent {
+                Color.red
                 Spacer()
                 Text("Footer")
             }
-            
-            ChoiceTile("Choice Tile") {
-                Text("Footer")
+
+            intrinsicContent {
+                Text("No Spacer")
             }
         }
+        .border(.gray)
         .previewDisplayName("W - custom, H - custom")
+    }
+
+    static let scrollUnitPoint = UnitPoint(x: 10, y: 0)
+
+    @ViewBuilder static var pagination: some View {
+        if #available(iOS 14, *) {
+            ScrollViewReader { scrollProxy in
+                VStack(spacing: .medium) {
+                    HorizontalScroll {
+                        intrinsicContent {
+                            Spacer()
+                            Color.red
+                        }
+                        .padding(16)
+                        .border(.green)
+                        .id(1)
+
+                        intrinsicContent {
+                            Color.red
+                            Spacer()
+                            Text("Footer")
+                        }
+                        .padding(16)
+                        .border(.green)
+                        .id(2)
+
+                        intrinsicContent {
+                            Text("No Spacer")
+                        }
+                        .padding(16)
+                        .border(.green)
+                        .id(3)
+                    }
+                    .border(.gray)
+
+                    HStack {
+                        Button("Scroll to 1", size: .small) {
+                            withAnimation {
+                                scrollProxy.scrollTo(1, anchor: .topLeading)
+                            }
+                        }
+                        Button("Scroll to 2", size: .small) {
+                            withAnimation {
+                                scrollProxy.scrollTo(2, anchor: .topLeading)
+                            }
+                        }
+                        Button("Scroll to 3", size: .small) {
+                            withAnimation {
+                                scrollProxy.scrollTo(3, anchor: .topLeading)
+                            }
+                        }
+                    }
+                }
+            }
+
+        } else {
+            Text("Pagination support only for iOS >= 14")
+        }
     }
 }

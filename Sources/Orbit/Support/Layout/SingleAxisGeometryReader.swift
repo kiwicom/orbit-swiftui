@@ -1,22 +1,9 @@
 import SwiftUI
 
-/// A geometry reader for a single specific axis.
-///
-/// Avoids issues with infinitely growing geometry reader that grows in both axis.
+/// A geometry reader for a specific axis. Unlike GeometryReader, it does not expand to infinity in the other axis.
 public struct SingleAxisGeometryReader<Content: View>: View {
 
-    private struct SizeKey: PreferenceKey {
-
-        static var defaultValue: CGFloat {
-            10
-        }
-
-        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-            value = max(value, nextValue())
-        }
-    }
-
-    @State private var size: CGFloat = SizeKey.defaultValue
+    @State private var size: CGFloat = SizePreferenceKey.defaultValue
 
     private var axis: Axis = .horizontal
     private var alignment: Alignment = .center
@@ -32,13 +19,15 @@ public struct SingleAxisGeometryReader<Content: View>: View {
             .background(
                 GeometryReader { proxy in
                     Color.clear.preference(
-                        key: SizeKey.self,
+                        key: SizePreferenceKey.self,
                         value: axis == .horizontal ? proxy.size.width : proxy.size.height
                     )
                 }
             )
-            .onPreferenceChange(SizeKey.self) {
-                size = $0
+            .onPreferenceChange(SizePreferenceKey.self) { size in
+                DispatchQueue.main.async {
+                    self.size = size
+                }
             }
     }
 
@@ -46,5 +35,30 @@ public struct SingleAxisGeometryReader<Content: View>: View {
         self.axis = axis
         self.alignment = alignment
         self.content = content
+    }
+}
+
+// MARK: - Previews
+struct SingleAxisGeometryReaderPreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            SingleAxisGeometryReader(axis: .horizontal) { width in
+                Color.blueLight
+                    .frame(width: 200, height: 200)
+                    .overlay(
+                        Text("Available width: \(width)")
+                    )
+            }
+
+            SingleAxisGeometryReader(axis: .vertical) { height in
+                Color.blueLight
+                    .frame(width: 200, height: 200)
+                    .overlay(
+                        Text("Available height: \(height)")
+                    )
+            }
+        }
+        .previewLayout(.sizeThatFits)
     }
 }
