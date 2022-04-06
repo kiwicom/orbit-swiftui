@@ -1,14 +1,41 @@
 import SwiftUI
 
-/// Invisible line that maintains its vertical size.
+/// Invisible vertical line of fixed size.
 ///
-/// Used to fix layout issues where `frame(minHeight:)` causes issues.
-struct Strut: View {
+/// Used as a workaround for cases where `frame(minHeight:)` causes issues.
+public struct Strut: View {
     
     let height: CGFloat?
     
-    var body: some View {
+    public var body: some View {
         Color.clear
             .frame(width: 0, height: height)
+    }
+
+    /// Creates invisible strut of provided height.
+    public init(_ height: CGFloat?) {
+        self.height = height
+    }
+}
+
+// MARK: - Previews
+struct StrutPreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            HStack(spacing: 0) {
+                Strut(.xxLarge)
+                Text("Content")
+            }
+            .background(Color.greenLight)
+
+            HStack(spacing: 0) {
+                Text("Content")
+            }
+            .frame(minHeight: .xxLarge)
+            .background(Color.redLight)
+
+        }
+        .previewLayout(.sizeThatFits)
     }
 }

@@ -93,7 +93,7 @@ public struct Tile<Content: View>: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Strut(height: 56)
+            Strut(56)
 
             disclosureIcon
                 .padding(.trailing, .medium)
