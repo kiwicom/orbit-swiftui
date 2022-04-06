@@ -102,23 +102,24 @@ public struct Tile<Content: View>: View {
         .overlay(separator, alignment: .bottom)
     }
     
-    var header: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 0) {
-            
-            Icon(iconContent, size: .heading(titleStyle))
-                .padding(.trailing, .xSmall)
-            
-            VStack(alignment: .labelTextLeading, spacing: .xxSmall) {
-                Heading(title, style: titleStyle)
-                Text(description, color: .inkLight)
+    @ViewBuilder var header: some View {
+        if isHeaderEmpty == false {
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+                Icon(iconContent, size: .heading(titleStyle))
+                    .padding(.trailing, .xSmall)
+
+                VStack(alignment: .labelTextLeading, spacing: .xxSmall) {
+                    Heading(title, style: titleStyle)
+                    Text(description, color: .inkLight)
+                }
+                .padding(.vertical, .medium)
+
+                Spacer(minLength: 0)
+
+                inactiveButtonLink
             }
-            .padding(.vertical, .medium)
-
-            Spacer(minLength: 0)
-
-            inactiveButtonLink
+            .padding(.horizontal, .medium)
         }
-        .padding(.horizontal, .medium)
     }
 
     @ViewBuilder var inactiveButtonLink: some View {
