@@ -22,11 +22,15 @@ public struct Text: View {
     let linkColor: UIColor
     let linkAction: TextLink.Action
     let isSelectable: Bool
+    let kerning: CGFloat
+    let strikethrough: Bool
 
     public var body: some View {
         if content.isEmpty == false {
             if content.containsHtmlFormatting {
                 SwiftUI.Text(attributedText)
+                    .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
+                    .kerning(kerning)
                     .multilineTextAlignment(alignment)
                     .lineSpacing(lineSpacing ?? 0)
                     .fixedSize(horizontal: false, vertical: true)
@@ -34,6 +38,8 @@ public struct Text: View {
                     .overlay(textLinks)
             } else {
                 SwiftUI.Text(verbatim: content)
+                    .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
+                    .kerning(kerning)
                     .foregroundColor(foregroundColor.map(SwiftUI.Color.init))
                     .font(.orbit(size: scaledSize, weight: weight))
                     .lineSpacing(lineSpacing ?? 0)
@@ -119,6 +125,8 @@ public extension Text {
     /// - Parameter linkColor: Color for `<a href>` and `<applink>` formatting tag.
     /// - Parameter linkAction: Handler for any detected TextLink tap action.
     /// - Parameter isSelectable: Determines if text is copyable using long tap gesture.
+    /// - Parameter kerning: Additional spacing between characters.
+    /// - Parameter strikethrough: Determines if strikethrough should be applied.
     init(
         _ content: String,
         size: Size = .normal,
@@ -129,6 +137,8 @@ public extension Text {
         accentColor: UIColor? = nil,
         linkColor: UIColor = TextLink.defaultColor,
         isSelectable: Bool = false,
+        strikethrough: Bool = false,
+        kerning: CGFloat = 0,
         linkAction: @escaping TextLink.Action = { _, _ in }
     ) {
         self.content = content
@@ -140,6 +150,8 @@ public extension Text {
         self.accentColor = accentColor ?? color?.uiValue ?? .inkNormal
         self.linkColor = linkColor
         self.isSelectable = isSelectable
+        self.strikethrough = strikethrough
+        self.kerning = kerning
         self.linkAction = linkAction
     }
 }
@@ -221,6 +233,7 @@ struct TextPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             selectable
+            strikethroughKerning
             formatted
             snapshots
             attributedTextSnapshots
@@ -237,6 +250,11 @@ struct TextPreviews: PreviewProvider {
     static var selectable: some View {
         Text("Text selectable", isSelectable: true)
             .previewDisplayName("Selectable")
+    }
+
+    static var strikethroughKerning: some View {
+        Text("Text with strikethrough and kerning", strikethrough: true, kerning: 10)
+            .previewDisplayName("Kerning + strikethrough")
     }
 
     static var multilineText: String {
