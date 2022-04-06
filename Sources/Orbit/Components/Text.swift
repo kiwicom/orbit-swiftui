@@ -226,6 +226,18 @@ extension Text {
     public static var firstBaselineRatio: CGFloat { 0.26 }
 }
 
+extension TextAlignment {
+
+    public init(_ horizontalAlignment: HorizontalAlignment) {
+        switch horizontalAlignment {
+            case .leading:      self = .leading
+            case .center:       self = .center
+            case .trailing:     self = .trailing
+            default:            self = .center
+        }
+    }
+}
+
 // MARK: - Previews
 struct TextPreviews: PreviewProvider {
 
