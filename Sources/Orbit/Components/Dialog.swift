@@ -33,8 +33,9 @@ public struct Dialog: View {
                 .fill(.white)
                 .shadow(color: Self.shadowColor.opacity(0.7), radius: .xxxLarge, x: 0, y: .xxxLarge / 2)
         )
-        .frame(maxWidth: Layout.readableMaxWidth / 2, maxHeight: .infinity)
+        .frame(maxWidth: Layout.readableMaxWidth / 2)
         .padding(.xLarge)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.inkNormal.opacity(0.45))
         .edgesIgnoringSafeArea(.all)
     }

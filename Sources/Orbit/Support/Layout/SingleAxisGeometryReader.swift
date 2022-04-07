@@ -24,10 +24,8 @@ public struct SingleAxisGeometryReader<Content: View>: View {
                     )
                 }
             )
-            .onPreferenceChange(SizePreferenceKey.self) { size in
-                DispatchQueue.main.async {
-                    self.size = size
-                }
+            .onPreferenceChange(SizePreferenceKey.self) {
+                size = $0
             }
     }
 

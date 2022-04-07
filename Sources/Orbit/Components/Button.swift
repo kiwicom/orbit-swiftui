@@ -174,11 +174,11 @@ extension Button {
         case status(_ status: Status, subtle: Bool = false)
         case gradient(Gradient)
 
-        var foregroundColor: Color {
+        public var foregroundColor: Color {
             Color(foregroundUIColor)
         }
 
-        var foregroundUIColor: UIColor {
+        public var foregroundUIColor: UIColor {
             switch self {
                 case .primary:                  return .white
                 case .primarySubtle:            return .productDark
@@ -240,21 +240,21 @@ extension Button {
         case `default`
         case small
         
-        var height: CGFloat {
+        public var height: CGFloat {
             switch self {
                 case .default:      return Layout.preferredButtonHeight
                 case .small:        return Layout.preferredSmallButtonHeight
             }
         }
         
-        var textSize: Text.Size {
+        public var textSize: Text.Size {
             switch self {
                 case .default:      return .normal
                 case .small:        return .small
             }
         }
         
-        var padding: CGFloat {
+        public var padding: CGFloat {
             switch self {
                 case .default:      return .small
                 case .small:        return .xSmall
@@ -285,9 +285,9 @@ extension Button {
     }
 
     public struct Content: ExpressibleByStringLiteral {
-        let label: String
-        let accessibilityIdentifier: String
-        let action: () -> Void
+        public let label: String
+        public let accessibilityIdentifier: String
+        public let action: () -> Void
 
         public init(_ label: String, accessibilityIdentifier: String = "", action: @escaping () -> Void = {}) {
             self.label = label

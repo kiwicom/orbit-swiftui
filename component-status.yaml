@@ -38,6 +38,8 @@
   ios: Planned
 - component: Itinerary
   ios: Planned
+- component: KeyValue
+  ios: Planned
 - component: List
   ios: Released
 - component: ListChoice
@@ -57,6 +59,8 @@
 - component: Stepper
   ios: Planned
 - component: Switch
+  ios: Released
+- component: Tabs
   ios: Released
 - component: Tag
   ios: Released
