@@ -52,19 +52,19 @@ public extension UIFont {
     static var orbit: UIFont {
         orbit()
     }
-
-    /// Registers Orbit fonts.
-    static func registerOrbitFonts() {
-        Font.registerOrbitFonts()
-    }
 }
 
 extension UIFont {
 
     static func orbit(size: CGFloat, weight: Weight = .regular) -> UIFont {
 
-        guard let font = UIFont(name: weight.name, size: size) else {
-            return UIFont.systemFont(ofSize: size)
+        if orbitFontNames.isEmpty {
+            return .systemFont(ofSize: size, weight: weight)
+        }
+
+        guard let fontName = orbitFontNames[weight.swiftUI], let font = UIFont(name: fontName, size: size) else {
+            assertionFailure("Unsupported font weight")
+            return .systemFont(ofSize: size, weight: weight)
         }
 
         return font
@@ -73,14 +73,12 @@ extension UIFont {
 
 private extension UIFont.Weight {
 
-    var name: String {
+    var swiftUI: Font.Weight {
         switch self {
-            case .regular:  return "CircularPro-Book"
-            case .bold:     return "CircularPro-Bold"
-            case .medium:   return "CircularPro-Medium"
-            default:
-                assertionFailure("Unsupported font weight")
-                return "CircularPro-Book"
+            case .regular:  return .regular
+            case .bold:     return .bold
+            case .medium:   return .medium
+            default:        return .regular
         }
     }
 }

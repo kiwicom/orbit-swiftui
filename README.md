@@ -40,6 +40,16 @@ Add Orbit package to your project by adding the package dependency:
 
 ## Usage
 
+0. (Optional) Set Circular Pro or custom fonts. [Circular Pro must be licensed](https://orbit.kiwi/foundation/typography/circular-pro/#circular-pro-in-non-kiwicom-projects). If you omit this step, the default iOS system font will be used.
+
+```swift
+Font.orbitFonts = [
+    .regular: URL(fileURLWithPath: "file://User/Joe/Developer/orbit-swift-ui/Foundation/Typography/CircularPro-Book.otf"),
+    .medium: URL(fileURLWithPath: ...),
+    .bold: URL(fileURLWithPath: ...)
+]
+```
+
 1. Import fonts that are used in orbit-components.
 
 ```swift

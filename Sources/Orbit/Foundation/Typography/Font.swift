@@ -1,52 +1,70 @@
 import UIKit
 import SwiftUI
 
+var orbitFontNames: [Font.Weight: String] = [:]
+
 public extension Font {
+
+    /// Fonts used for rendering text in Orbit.
+    static var orbitFonts: [Font.Weight: URL?] = [
+        .regular: Bundle.current.url(forResource: "CircularPro-Book.otf", withExtension: nil),
+        .medium: Bundle.current.url(forResource: "CircularPro-Medium.otf", withExtension: nil),
+        .bold: Bundle.current.url(forResource: "CircularPro-Bold.otf", withExtension: nil)
+    ]
 
     /// Creates Orbit font.
     static func orbit(size: CGFloat, weight: Weight = .regular) -> Font {
-        Font.custom(weight.name, size: size)
+
+        if orbitFontNames.isEmpty {
+            return .system(size: size, weight: weight)
+        }
+
+        guard let fontName = orbitFontNames[weight] else {
+            assertionFailure("Unsupported font weight")
+            return .system(size: size, weight: weight)
+        }
+
+        return .custom(fontName, size: size)
     }
 
     /// Creates Orbit icon font.
     static func orbitIcon(size: CGFloat) -> Font {
-        Font.custom("orbit-icons", size: size)
+        .custom("orbit-icons", size: size)
     }
 
-    /// Registers Orbit fonts.
+    /// Registers Orbit fonts set in the `orbitTextFonts` property
     static func registerOrbitFonts() {
-        for fontName in ["CircularPro-Book.otf", "CircularPro-Bold.otf", "CircularPro-Medium.otf", "Icons.ttf"] {
-            guard let url = Bundle.current.url(forResource: fontName, withExtension: nil),
-                  let data = try? Data(contentsOf: url),
-                  let dataProvider = CGDataProvider(data: data as CFData),
-                  let font = CGFont(dataProvider)
-            else {
-                fatalError("Unable to load custom font [\(fontName)]")
-            }
 
-            var error: Unmanaged<CFError>?
-            if CTFontManagerRegisterGraphicsFont(font, &error) == false {
-                print("Custom font registration error: \(String(describing: error))")
-            }
+        if let iconsFontURL = Bundle.current.url(forResource: "Icons.ttf", withExtension: nil) {
+            _ = registerFont(at: iconsFontURL)
         }
+
+        for case let (weight, url?) in orbitFonts {
+            guard let font = registerFont(at: url) else { continue }
+
+            orbitFontNames[weight] = font.postScriptName as String?
+        }
+    }
+
+    static func registerFont(at url: URL) -> CGFont? {
+
+        guard let data = try? Data(contentsOf: url),
+              let dataProvider = CGDataProvider(data: data as CFData),
+              let font = CGFont(dataProvider)
+        else {
+            fatalError("Unable to load custom font from \(url)")
+        }
+
+        var error: Unmanaged<CFError>?
+        if CTFontManagerRegisterGraphicsFont(font, &error) == false {
+            print("Custom font registration error: \(String(describing: error))")
+        }
+
+        return font
     }
 }
 
 extension Font.Weight {
-
-    var name: String {
-        switch self {
-            case .regular:
-                return "CircularPro-Book"
-            case .bold:
-                return "CircularPro-Bold"
-            case .medium:
-                return "CircularPro-Medium"
-            default:
-                assertionFailure("Unsupported font weight")
-                return "CircularPro-Book"
-        }
-    }
 
     var uiKit: UIFont.Weight {
         switch self {
