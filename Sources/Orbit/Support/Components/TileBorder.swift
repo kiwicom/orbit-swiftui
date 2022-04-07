@@ -158,3 +158,37 @@ public extension View {
         )
     }
 }
+
+// MARK: - Previews
+struct TileBorderModifierPreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            Text("Content")
+                .padding()
+                .tileBorder()
+                .padding()
+
+            Text("Content")
+                .padding()
+                .tileBorder(backgroundColor: .white)
+                .padding()
+
+            Text("Content")
+                .padding()
+                .tileBorder(style: .iOS, backgroundColor: .white)
+                .padding()
+
+            Text("Content")
+                .padding()
+                .tileBorder(backgroundColor: .white, shadow: .default)
+                .padding()
+
+            Text("Content")
+                .padding()
+                .tileBorder(isSelected: true, backgroundColor: .blueLight, shadow: .small)
+                .padding()
+        }
+        .previewLayout(.sizeThatFits)
+    }
+}

@@ -46,7 +46,7 @@ struct BarButtonPreviews: PreviewProvider {
             BarButton(.attachment)
             
             NavigationView {
-                EmptyView()
+                Color.cloudNormal
                     .navigationBarTitle("Title", displayMode: .inline)
                     .navigationBarItems(leading: BarButton(.markdown))
                     .navigationBarItems(trailing: BarButton(.passengers))
