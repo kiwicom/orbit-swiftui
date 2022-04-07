@@ -21,7 +21,7 @@
 - component: Dialog
   ios: Released
 - component: EmptyState
-  ios: Planned
+  ios: Released
 - component: FeatureIcon
   ios: Planned
 - component: Heading
