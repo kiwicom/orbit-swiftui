@@ -45,10 +45,11 @@ struct KeyValuePreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            KeyValue("Trailing", value: "Some value", alignment: .trailing)
-            KeyValue("Centered", value: "Some value", alignment: .center)
-            KeyValue("Multiline and very long key", value: "Multiline and very long value", alignment: .trailing)
-                .frame(width: 100)
+            keyOnly
+            valueOnly
+            trailing
+            centered
+            multiline
         }
         .padding()
         .previewLayout(PreviewLayout.sizeThatFits)
@@ -56,5 +57,28 @@ struct KeyValuePreviews: PreviewProvider {
 
     static var standalone: some View {
         KeyValue("Key", value: "Value")
+    }
+
+    static var keyOnly: some View {
+        KeyValue("Key")
+            .border(Color.cloudNormal)
+    }
+
+    static var valueOnly: some View {
+        KeyValue(value: "Value")
+            .border(Color.cloudNormal)
+    }
+
+    static var trailing: some View {
+        KeyValue("Trailing", value: "Some value", alignment: .trailing)
+    }
+
+    static var centered: some View {
+        KeyValue("Centered", value: "Some value", alignment: .center)
+    }
+
+    static var multiline: some View {
+        KeyValue("Multiline and very long key", value: "Multiline and very long value", alignment: .trailing)
+            .frame(width: 100)
     }
 }
