@@ -16,9 +16,9 @@ struct SecureTextField: UIViewRepresentable {
     @Binding var isSecured: Bool
     @Binding var isEditing: Bool
 
-    let style: SecureTextFieldStyle
-    let onEditingChanged: (Bool) -> Void
-    let onCommit: () -> Void
+    var style: SecureTextFieldStyle = .init(textContentType: nil, keyboardType: .default, font: .orbit, state: .default)
+    var onEditingChanged: (Bool) -> Void = { _ in }
+    var onCommit = {}
 
     func makeUIView(context: Context) -> UITextField {
         let textFied = UITextField()
@@ -110,5 +110,19 @@ struct SecureTextField: UIViewRepresentable {
             
             return true
         }
+    }
+}
+
+// MARK: - Previews
+struct SecureTextFieldPreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            SecureTextField(text: .constant(""), isSecured: .constant(true), isEditing: .constant(false))
+            SecureTextField(text: .constant("value"), isSecured: .constant(true), isEditing: .constant(false))
+            SecureTextField(text: .constant("value"), isSecured: .constant(false), isEditing: .constant(false))
+        }
+        .padding()
+        .previewLayout(.sizeThatFits)
     }
 }
