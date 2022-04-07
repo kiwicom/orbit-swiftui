@@ -283,6 +283,22 @@ extension Button {
             }
         }
     }
+
+    public struct Content: ExpressibleByStringLiteral {
+        let label: String
+        let accessibilityIdentifier: String
+        let action: () -> Void
+
+        public init(_ label: String, accessibilityIdentifier: String = "", action: @escaping () -> Void = {}) {
+            self.label = label
+            self.accessibilityIdentifier = accessibilityIdentifier
+            self.action = action
+        }
+
+        public init(stringLiteral value: String) {
+            self.init(value)
+        }
+    }
 }
 
 // MARK: - Previews
