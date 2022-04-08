@@ -11,12 +11,13 @@ public struct KeyValue: View {
 
     let key: String
     let value: String
+    let size: Size
     let alignment: HorizontalAlignment
     let valueAccessibilityIdentifier: String
 
     public var body: some View {
-        KeyValueField(key, alignment: alignment) {
-            Text(value, weight: .medium, alignment: .init(alignment), isSelectable: true)
+        KeyValueField(key, size: size, alignment: alignment) {
+            Text(value, size: size.valueSize, weight: .medium, alignment: .init(alignment), isSelectable: true)
                 .accessibility(identifier: valueAccessibilityIdentifier)
         }
     }
@@ -29,13 +30,38 @@ extension KeyValue {
     public init(
         _ key: String = "",
         value: String = "",
+        size: Size = .normal,
         alignment: HorizontalAlignment = .leading,
         valueAccessibilityIdentifier: String = ""
     ) {
         self.key = key
         self.value = value
+        self.size = size
         self.alignment = alignment
         self.valueAccessibilityIdentifier = valueAccessibilityIdentifier
+    }
+}
+
+// MARK: - Types
+extension KeyValue {
+
+    public enum Size {
+        case normal
+        case large
+
+        var keySize: Text.Size {
+            switch self {
+                case .normal:   return .small
+                case .large:    return .normal
+            }
+        }
+
+        var valueSize: Text.Size {
+            switch self {
+                case .normal:   return .normal
+                case .large:    return .large
+            }
+        }
     }
 }
 
@@ -45,6 +71,7 @@ struct KeyValuePreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            standaloneLarge
             keyOnly
             valueOnly
             trailing
@@ -57,6 +84,10 @@ struct KeyValuePreviews: PreviewProvider {
 
     static var standalone: some View {
         KeyValue("Key", value: "Value")
+    }
+
+    static var standaloneLarge: some View {
+        KeyValue("Key", value: "Value", size: .large)
     }
 
     static var keyOnly: some View {
