@@ -10,12 +10,13 @@ import SwiftUI
 public struct KeyValueField<Content: View>: View {
 
     let key: String
+    let size: KeyValue.Size
     let content: () -> Content
     let alignment: HorizontalAlignment
 
     public var body: some View {
         VStack(alignment: alignment, spacing: 0) {
-            Text(key, size: .small, color: .inkLight, alignment: .init(alignment))
+            Text(key, size: size.keySize, color: .inkLight, alignment: .init(alignment))
 
             content()
         }
@@ -28,10 +29,12 @@ extension KeyValueField {
     /// Creates Orbit KeyValue component.
     public init(
         _ key: String = "",
+        size: KeyValue.Size = .normal,
         alignment: HorizontalAlignment = .leading,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.key = key
+        self.size = size
         self.alignment = alignment
         self.content = content
     }
@@ -43,6 +46,10 @@ struct KeyValueFieldPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+
+            KeyValueField("Key", size: .large) {
+                Text("Value")
+            }
 
             KeyValueField("Trailing", alignment: .trailing) {
                 customContentPlaceholder
