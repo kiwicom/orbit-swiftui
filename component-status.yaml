@@ -51,7 +51,7 @@
 - component: Separator
   ios: Released
 - component: Skeleton
-  ios: Planned
+  ios: Released
 - component: Slider
   ios: Planned
 - component: SocialButton
