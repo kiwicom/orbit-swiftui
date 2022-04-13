@@ -17,3 +17,4 @@ DerivedData
 **/*.xcscheme
 .swiftpm
 Package.resolved
+Sources/Orbit/Foundation/Typography/*.otf
