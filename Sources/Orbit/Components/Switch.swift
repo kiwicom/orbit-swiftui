@@ -9,40 +9,53 @@ public struct Switch: View {
     public static let circleDiameter: CGFloat = 30
     public static let dotDiameter: CGFloat = 10
     
-    static let borderColor = SwiftUI.Color(white: 0.5, opacity: 0.4)
+    static let borderColor = Color(white: 0.2, opacity: 0.25)
+    static let shadowColor: Color = .inkNormal.opacity(0.2)
     
     @Binding private var isOn: Bool
+    let hasIcon: Bool
     let isEnabled: Bool
 
     public var body: some View {
-        ZStack {
-            Capsule(style: .circular)
-                .frame(width: Self.size.width, height: Self.size.height)
-                .foregroundColor(tint)
-
-            Circle()
-                .frame(width: Self.circleDiameter, height: Self.circleDiameter)
-                .foregroundColor(.white)
-                .shadow(color: Self.borderColor.opacity(isEnabled ? 0.4 : 0), radius: 2, y: 1.5)
-                .overlay(
-                    Circle()
-                        .strokeBorder(Self.borderColor, lineWidth: BorderWidth.hairline)
-                )
-                .overlay(
-                    Circle()
-                        .foregroundColor(tint)
-                        .frame(width: Self.dotDiameter, height: Self.dotDiameter)
-                )
-                .offset(x: isOn ? Self.size.width / 5 : -Self.size.width / 5)
-        }
-        .accessibility(addTraits: [.isButton])
-        .onTapGesture {
-            HapticsProvider.sendHapticFeedback(.light(0.5))
-            withAnimation(.spring(response: 0.25, dampingFraction: 0.6)) {
-                isOn.toggle()
+        capsule
+            .overlay(indicator)
+            .accessibility(addTraits: [.isButton])
+            .onTapGesture {
+                HapticsProvider.sendHapticFeedback(.light(0.5))
+                withAnimation(.spring(response: 0.25, dampingFraction: 0.6)) {
+                    isOn.toggle()
+                }
             }
+            .disabled(isEnabled == false)
+    }
+
+    @ViewBuilder var capsule: some View {
+        Capsule(style: .circular)
+            .frame(width: Self.size.width, height: Self.size.height)
+            .foregroundColor(tint)
+    }
+
+    @ViewBuilder var indicator: some View {
+        Circle()
+            .frame(width: Self.circleDiameter, height: Self.circleDiameter)
+            .foregroundColor(.white)
+            .shadow(color: Self.shadowColor.opacity(isEnabled ? 1 : 0), radius: 2.5, y: 1.5)
+            .overlay(
+                Circle()
+                    .strokeBorder(Self.borderColor, lineWidth: BorderWidth.hairline)
+            )
+            .overlay(indicatorSymbol)
+            .offset(x: isOn ? Self.size.width / 5 : -Self.size.width / 5)
+    }
+
+    @ViewBuilder var indicatorSymbol: some View {
+        if hasIcon {
+            Icon(isOn ? .lock : .lockOpen, size: .small, color: iconTint)
+        } else {
+            Circle()
+                .foregroundColor(tint)
+                .frame(width: Self.dotDiameter, height: Self.dotDiameter)
         }
-        .disabled(isEnabled == false)
     }
 
     var tint: Color {
@@ -50,9 +63,15 @@ public struct Switch: View {
             .opacity(isEnabled ? 1 : 0.5)
     }
 
+    var iconTint: Color {
+        (isOn ? Color.blueNormal : Color.inkLight)
+            .opacity(isEnabled ? 1 : 0.5)
+    }
+
     /// Creates Orbit Switch component.
-    public init(isOn: Binding<Bool>, isEnabled: Bool = true) {
+    public init(isOn: Binding<Bool>, hasIcon: Bool = false, isEnabled: Bool = true) {
         self._isOn = isOn
+        self.hasIcon = hasIcon
         self.isEnabled = isEnabled
     }
 }

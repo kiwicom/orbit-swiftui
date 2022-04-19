@@ -13,17 +13,19 @@ public struct CountryFlag: View {
     let border: Border
 
     public var body: some View {
-        SwiftUI.Image(countryCode.lowercased(), bundle: .current)
-            .resizable()
-            .scaledToFit()
-            .clipShape(clipShape)
-            .overlay(
-                clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
-                    .blendMode(.darken)
-            )
-            .padding(Icon.averagePadding / 2)
-            .frame(width: size.value)
-            .fixedSize()
+        if countryCode.isEmpty == false {
+            SwiftUI.Image(countryCode.lowercased(), bundle: .current)
+                .resizable()
+                .scaledToFit()
+                .clipShape(clipShape)
+                .overlay(
+                    clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
+                        .blendMode(.darken)
+                )
+                .padding(Icon.averagePadding / 2)
+                .frame(width: size.value)
+                .fixedSize()
+        }
     }
 
     var clipShape: some InsettableShape {

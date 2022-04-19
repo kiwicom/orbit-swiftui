@@ -35,7 +35,7 @@ public struct Tabs<Content: View>: View {
                 .frame(maxWidth: maxTabWidth, minHeight: Layout.preferredSmallButtonHeight, maxHeight: .infinity)
         }
         .fixedSize(horizontal: false, vertical: true)
-        .opacity(0)
+        .hidden()
         .backgroundPreferenceValue(Tab.PreferenceKey.self) { preferences in
             GeometryReader { geometry in
                 tabs(for: preferences, in: geometry)
@@ -66,6 +66,7 @@ public struct Tabs<Content: View>: View {
         }
         .fixedSize(horizontal: false, vertical: true)
         .background(activeTab(for: preferences, in: geometry), alignment: .leading)
+        .animation(.easeOut(duration: 0.2), value: selectedIndex)
     }
 
     @ViewBuilder func tab(_ index: Int, lastIndex: Int, _ label: String, style: TabStyle) -> some View {
@@ -77,9 +78,7 @@ public struct Tabs<Content: View>: View {
             .contentShape(Rectangle())
             .accessibility(addTraits: .isButton)
             .onTapGesture {
-                withAnimation(.easeOut(duration: 0.25)) {
-                    selectedIndex = index
-                }
+                selectedIndex = index
             }
     }
 

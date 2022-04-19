@@ -50,8 +50,18 @@ public struct Skeleton: View {
                 }
             case .text(let lines, let lineHeight, let spacing):
                 VStack(spacing: spacing) {
-                    ForEach(0 ..< lines, id: \.self) { _ in
-                        roundedRectangle.fill(shapeStyle).frame(height: lineHeight)
+                    ForEach(0 ..< lines, id: \.self) { index in
+                        if index == lines - 1 {
+                            Color.clear.frame(height: lineHeight)
+                                .overlay(
+                                    GeometryReader { geometry in
+                                        line(height: lineHeight)
+                                            .frame(width: geometry.size.width * 0.7)
+                                    }
+                                )
+                        } else {
+                            line(height: lineHeight)
+                        }
                     }
                 }
         }
@@ -63,6 +73,10 @@ public struct Skeleton: View {
 
     var roundedRectangle: RoundedRectangle {
         RoundedRectangle(cornerRadius: borderRadius)
+    }
+
+    @ViewBuilder func line(height: CGFloat) -> some View {
+        roundedRectangle.fill(shapeStyle).frame(height: height)
     }
 }
 

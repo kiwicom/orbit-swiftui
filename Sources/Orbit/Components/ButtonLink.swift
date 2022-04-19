@@ -19,27 +19,29 @@ public struct ButtonLink: View {
     let action: () -> Void
 
     public var body: some View {
-        SwiftUI.Button(
-            action: {
-                HapticsProvider.sendHapticFeedback(.light(0.5))
-                action()
-            },
-            label: {
-                HStack(spacing: .xSmall) {
-                    Icon(iconContent, size: iconSize)
-                    
-                    Text(
-                        label,
-                        size: .normal,
-                        color: nil,
-                        weight: .medium,
-                        accentColor: style.color.normal,
-                        linkColor: style.color.normal
-                    )
+        if label.isEmpty == false {
+            SwiftUI.Button(
+                action: {
+                    HapticsProvider.sendHapticFeedback(.light(0.5))
+                    action()
+                },
+                label: {
+                    HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+                        Icon(iconContent, size: iconSize)
+
+                        Text(
+                            label,
+                            size: .normal,
+                            color: nil,
+                            weight: .medium,
+                            accentColor: style.color.normal,
+                            linkColor: style.color.normal
+                        )
+                    }
                 }
-            }
-        )
-        .buttonStyle(OrbitStyle(style: style, size: size))
+            )
+            .buttonStyle(OrbitStyle(style: style, size: size))
+        }
     }
     
     var iconSize: Icon.Size {

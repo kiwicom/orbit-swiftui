@@ -40,7 +40,7 @@ public struct Icon: View {
                         }
                 case .sfSymbol(let systemName):
                     Image(systemName: systemName)
-                        .font(.system(size: size.value * 0.85))
+                        .font(.system(size: size.value * 0.75))
                         .alignmentGuide(.firstTextBaseline) { dimensions in
                             size.textLineHeight * Text.firstBaselineRatio + dimensions.height / 2
                         }

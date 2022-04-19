@@ -73,6 +73,7 @@ extension SocialButton {
         case apple
         case google
         case facebook
+        case email
 
         @ViewBuilder var logo: some View {
             switch self {
@@ -88,6 +89,7 @@ extension SocialButton {
                     }
                 case .google:                               SocialButton.googleLogo
                 case .facebook:                             SocialButton.facebookLogo
+                case .email:                                Icon(.email, size: .large)
             }
         }
 
@@ -96,6 +98,7 @@ extension SocialButton {
                 case .apple:                                return (.black, .inkNormal)
                 case .google:                               return (.cloudDark, .cloudNormalActive)
                 case .facebook:                             return (.cloudDark, .cloudNormalActive)
+                case .email:                                return (.cloudDark, .cloudNormalActive)
             }
         }
 
@@ -104,6 +107,7 @@ extension SocialButton {
                 case .apple:                                return .white
                 case .google:                               return .inkNormal
                 case .facebook:                             return .inkNormal
+                case .email:                                return .inkNormal
             }
         }
     }

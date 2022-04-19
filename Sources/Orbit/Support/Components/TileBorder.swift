@@ -27,9 +27,9 @@ public struct TileBorderModifier: ViewModifier {
         content
             .background(backgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-            .shadow(color: shadowColor.opacity(shadowOpacity.primary), radius: shadowRadius.primary, x: 0, y: 2)
+            .shadow(color: shadowColor.opacity(shadowOpacity.primary), radius: shadowRadius.primary, x: 0, y: 0.75)
             .shadow(color: shadowColor.opacity(shadowOpacity.secondary), radius: shadowRadius.secondary, x: 0, y: 5)
-            .overlay(outerBorder)
+            .overlay(outerBorder.animation(.easeIn(duration: 0.1), value: isSelected))
             .overlay(verticalBorder, alignment: .top)
             .overlay(verticalBorder, alignment: .bottom)
     }
@@ -54,7 +54,7 @@ public struct TileBorderModifier: ViewModifier {
                         .strokeBorder(Color.blueNormal, lineWidth: borderWidth)
                 } else {
                     outerBorderShape
-                        .strokeBorder(outerBorderGradient, lineWidth: borderWidth)
+                        .stroke(borderColor, lineWidth: borderWidth)
                         .blendMode(.darken)
                 }
             default:
@@ -78,17 +78,9 @@ public struct TileBorderModifier: ViewModifier {
     var shadowOpacity: (primary: CGFloat, secondary: CGFloat) {
         switch shadow {
             case .none:         return (0, 0)
-            case .default:      return (0.3, 0.6)
+            case .default:      return (0.3, 0.5)
             case .small:        return (0.5, 0.2)
         }
-    }
-
-    var outerBorderGradient: LinearGradient {
-        LinearGradient(
-            colors: [bottomBorderColor, bottomBorderColor.opacity(0.5)],
-            startPoint: .bottom,
-            endPoint: .top
-        )
     }
 
     var cornerRadius: CGFloat {
@@ -119,8 +111,8 @@ public struct TileBorderModifier: ViewModifier {
         switch (style, status, horizontalSizeClass) {
             case (.default, _?, _):         return BorderWidth.emphasis
             case (.iOS, _?, .regular):      return BorderWidth.emphasis
-            case (.default, .none, _):      return BorderWidth.thin
-            case (.iOS, .none, .regular):   return BorderWidth.thin
+            case (.default, .none, _):      return BorderWidth.hairline
+            case (.iOS, .none, .regular):   return BorderWidth.hairline
             default:                        return 0
         }
     }
@@ -129,15 +121,11 @@ public struct TileBorderModifier: ViewModifier {
         switch (style, status, horizontalSizeClass) {
             case (.default, let status?, _):    return status.color
             case (.iOS, let status?, _):        return status.color
-            case (.default, .none, _):          return bottomBorderColor
+            case (.default, .none, _):          return .cloudDark
             case (.iOS, .none, .regular):       return .cloudNormalActive
             case (.iOS, .none, _):              return .cloudDarker
             default:                            return .clear
         }
-    }
-
-    var bottomBorderColor: Color {
-        .cloudDarker.opacity(0.65)
     }
 }
 

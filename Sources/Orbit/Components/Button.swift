@@ -69,7 +69,7 @@ public struct Button: View {
     }
     
     var iconSize: Icon.Size {
-        size == .small ? .small : .large
+        size == .small ? .small : .normal
     }
 
     func presentHapticFeedback() {

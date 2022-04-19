@@ -121,9 +121,9 @@ public extension Badge {
 
         public var outlineColor: Color {
             switch self {
-                case .light:                                return .cloudNormalHover
+                case .light:                                return .cloudDark
                 case .lightInverted:                        return .inkNormal
-                case .neutral:                              return .cloudLightHover
+                case .neutral:                              return .cloudDark
                 case .status(.info, false):                 return .blueLightHover
                 case .status(.info, true):                  return .blueNormal
                 case .status(.success, false):              return .greenLightHover

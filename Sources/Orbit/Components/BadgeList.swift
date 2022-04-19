@@ -20,21 +20,23 @@ public struct BadgeList: View {
     let labelColor: LabelColor
 
     public var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: Self.spacing) {
-            badgeBackground
-                .overlay(
-                    Icon(iconContent, size: .small)
-                )
-                .alignmentGuide(.firstTextBaseline) { size in
-                    Text.Size.small.lineHeight * Text.firstBaselineRatio + size.height / 2
-                }
+        if isEmpty == false {
+            HStack(alignment: .firstTextBaseline, spacing: Self.spacing) {
+                badgeBackground
+                    .overlay(
+                        Icon(iconContent, size: .small)
+                    )
+                    .alignmentGuide(.firstTextBaseline) { size in
+                        Text.Size.small.lineHeight * Text.firstBaselineRatio + size.height / 2
+                    }
 
-            Text(
-                label,
-                size: .small,
-                color: .custom(labelColor.color),
-                linkColor: labelColor.color
-            )
+                Text(
+                    label,
+                    size: .small,
+                    color: .custom(labelColor.color),
+                    linkColor: labelColor.color
+                )
+            }
         }
     }
 
@@ -42,6 +44,10 @@ public struct BadgeList: View {
         style.backgroundColor
             .clipShape(Circle())
             .frame(width: Self.badgeDiameter, height: Self.badgeDiameter)
+    }
+
+    var isEmpty: Bool {
+        label.isEmpty && iconContent.isEmpty
     }
 }
 

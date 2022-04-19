@@ -43,6 +43,7 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
             .padding(ChoiceTileAlignment.padding)
             .tileBorder(
                 isSelected: isSelected,
+                status: errorShouldHighlightBorder ? .critical : nil,
                 backgroundColor: backgroundColor(isPressed: configuration.isPressed),
                 shadow: shadow(isPressed: configuration.isPressed))
     }
@@ -56,9 +57,21 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
     @ViewBuilder var indicatorElement: some View {
         switch indicator {
             case .none:         EmptyView()
-            case .radio:        Radio(state: isError ? .error : .normal, isChecked: isSelected)
-            case .checkbox:     Checkbox(state: isError ? .error : .normal, isChecked: isSelected)
+            case .radio:        Radio(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: shouldSelectIndicator)
+            case .checkbox:     Checkbox(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: shouldSelectIndicator)
         }
+    }
+
+    var shouldSelectIndicator: Bool {
+        isSelected && isError == false
+    }
+
+    var errorShouldHighlightIndicator: Bool {
+        isError && isSelected == false
+    }
+
+    var errorShouldHighlightBorder: Bool {
+        isError && isSelected
     }
     
     var indicatorAlignment: Alignment {
@@ -73,10 +86,6 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
     }
     
     func shadow(isPressed: Bool) -> TileBorderModifier.Shadow {
-        if isError {
-            return .none
-        }
-        
         switch (isSelected, isPressed) {
             case (false, false):    return .small
             case (false, true):     return .default
@@ -155,10 +164,11 @@ public struct ChoiceTile<Content: View>: View {
                     VStack(spacing: .xxSmall) {
                         if illustration == .none {
                             Icon(iconContent, size: .heading(titleStyle))
-                                .padding(.bottom, .xxxSmall)
+                                .padding(.bottom, .xxSmall)
                         } else {
                             Illustration(illustration, layout: .resizeable)
-                                .frame(height: .xxLarge)
+                                .frame(height: 68)
+                                .padding(.bottom, .xxSmall)
                         }
                         Heading(title, style: titleStyle, alignment: .center)
                         Text(description, color: .inkLight, alignment: .center)
@@ -182,7 +192,7 @@ public struct ChoiceTile<Content: View>: View {
     }
     
     @ViewBuilder var badgeOverlayView: some View {
-        Badge(badgeOverlay, style: .status(.info, inverted: true))
+        Badge(badgeOverlay, style: .status(isError && isSelected ? .critical : .info, inverted: true))
             .offset(y: -Badge.Size.default.height / 2)
     }
 

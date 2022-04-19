@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct StorybookMenu: View {
+public struct Storybook: View {
 
     static var foundationItems: [Item] {
         Self.Item.allCases.filter { $0.section == .foundation }
@@ -129,9 +129,9 @@ extension String {
 struct StorybookMenuPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
-            StorybookMenu()
+            Storybook()
             
-            StorybookMenu().content
+            Storybook().content
                 .previewLayout(.sizeThatFits)
 
         }

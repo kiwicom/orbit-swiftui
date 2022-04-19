@@ -5,6 +5,13 @@ public enum AlertButtons {
     case primary(Button.Content)
     case secondary(Button.Content)
     case primaryAndSecondary(Button.Content, Button.Content)
+
+    var isVisible: Bool {
+        switch self {
+            case .primary, .secondary, .primaryAndSecondary:    return true
+            case .none:                                         return false
+        }
+    }
 }
 
 /// Breaks the main user flow to present information.
@@ -42,10 +49,12 @@ public struct Alert<Content: View>: View {
             Icon(icon, size: .normal, color: status.color)
             
             VStack(alignment: .leading, spacing: .medium) {
-                
-                VStack(alignment: .leading, spacing: .xxSmall) {
-                    Text(title, weight: .bold)
-                    Text(description, linkColor: .inkNormal, linkAction: descriptionLinkAction)
+
+                if isHeaderEmpty == false {
+                    VStack(alignment: .leading, spacing: .xxSmall) {
+                        Text(title, weight: .bold)
+                        Text(description, linkColor: .inkNormal, linkAction: descriptionLinkAction)
+                    }
                 }
                 
                 content()
@@ -90,7 +99,7 @@ public struct Alert<Content: View>: View {
         backgroundColor
             .overlay(
                 RoundedRectangle(cornerRadius: BorderRadius.default)
-                    .strokeBorder(strokeColor)
+                    .strokeBorder(strokeColor, lineWidth: 1)
             )
             .overlay(
                 status.color
@@ -136,6 +145,10 @@ public struct Alert<Content: View>: View {
         isSuppressed
             ? .secondary
             : .status(status, subtle: true)
+    }
+
+    var isHeaderEmpty: Bool {
+        title.isEmpty && description.isEmpty
     }
 }
 

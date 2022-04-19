@@ -29,9 +29,6 @@ public struct TileGroup<Content: View>: View {
 public extension TileGroup {
     
     /// Creates Orbit TileGroup component as a wrapper for Tile content.
-    ///
-    /// - Parameters:
-    ///   - style: Appearance of TileGroup. Can be styled to match iOS default table section.
     init(
         status: Status? = nil,
         backgroundColor: Color? = nil,
