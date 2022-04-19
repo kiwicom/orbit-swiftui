@@ -132,25 +132,23 @@ struct SocialButtonPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            snapshots
+            storybook
         }
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         SocialButton("Sign in with Facebook", service: .facebook)
+            .padding(.medium)
     }
 
-    static var orbit: some View {
+    static var storybook: some View {
         VStack(spacing: .medium) {
+            SocialButton("Sign in with E-mail", service: .email)
             SocialButton("Sign in with Facebook", service: .facebook)
             SocialButton("Sign in with Google", service: .google)
             SocialButton("Sign in with Apple", service: .apple)
         }
-    }
-
-    static var snapshots: some View {
-        orbit
-            .padding()
+        .padding(.medium)
     }
 }

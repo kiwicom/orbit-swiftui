@@ -131,12 +131,22 @@ struct DialogPreviews: PreviewProvider {
     
     static var previews: some View {
         PreviewWrapper {
-            normal
-            critical
-            titleOnly
-            descriptionOnly
+            content
         }
         .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        normal
+        critical
+        titleOnly
+        descriptionOnly
+    }
+
+    static var storybook: some View {
+        VStack(spacing: 0) {
+            content
+        }
     }
 
     static var normal: some View {
@@ -144,7 +154,7 @@ struct DialogPreviews: PreviewProvider {
             illustration: .noNotification,
             title: title1,
             description: description1,
-            buttons: .primarySecondaryAndTertiary("Allow", "Ask later", "Cancel")
+            buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
         )
         .background(Color.white)
     }
@@ -155,7 +165,7 @@ struct DialogPreviews: PreviewProvider {
             title: title2,
             description: description2,
             style: .critical,
-            buttons: .primarySecondaryAndTertiary("Delete", "Ask later", "Cancel")
+            buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
         )
         .background(Color.white)
     }
@@ -163,7 +173,7 @@ struct DialogPreviews: PreviewProvider {
     static var titleOnly: some View {
         Dialog(
             title: title1,
-            buttons: .primaryAndSecondary("Allow", "Deny")
+            buttons: .primaryAndSecondary("Main CTA", "Secondary")
         )
         .background(Color.white)
     }
@@ -171,7 +181,7 @@ struct DialogPreviews: PreviewProvider {
     static var descriptionOnly: some View {
         Dialog(
             description: description1,
-            buttons: .primary("Allow")
+            buttons: .primary("Main CTA")
         )
         .background(Color.white)
     }

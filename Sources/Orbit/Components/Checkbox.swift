@@ -162,81 +162,54 @@ public extension Checkbox {
 // MARK: - Previews
 struct CheckboxPreviews: PreviewProvider {
 
+    static let label = "Label"
+    static let description = "Additional information for this choice"
+
     static var previews: some View {
-        PreviewWrapperWithState(initialState: (Checkbox.State.normal, false)) { state in
-            Group {
-                standalone
-
-                snapshots
-
-                VStack(spacing: .large) {
-                    Checkbox()
-                    Checkbox(isChecked: true)
-                }
-                .padding()
-                .previewDisplayName("Standalone Indicator")
-
-                VStack(spacing: .large) {
-                    Checkbox(
-                        "Label",
-                        description: "Tap to check or uncheck.",
-                        state: state.wrappedValue.0,
-                        isChecked: state.wrappedValue.1
-                    ) {
-                        state.wrappedValue.1.toggle()
-                    }
-
-                    ButtonLink("Change State") {
-                        switch state.wrappedValue.0 {
-                            case .normal:   state.wrappedValue.0 = .disabled
-                            case .disabled: state.wrappedValue.0 = .error
-                            case .error:    state.wrappedValue.0 = .normal
-                                
-                        }
-                    }
-                }
-                .padding()
-                .previewDisplayName("Live Preview")
-            }
-            .previewLayout(PreviewLayout.sizeThatFits)
+        PreviewWrapper {
+            standalone
+            content(standalone: false)
+            content(standalone: true)
         }
+        .previewLayout(PreviewLayout.sizeThatFits)
     }
 
     static var standalone: some View {
-        PreviewWrapperWithState(initialState: true) { state in
-            Checkbox("Label", description: "Description", isChecked: state.wrappedValue) {
-                state.wrappedValue.toggle()
-            }
-            .previewLayout(.sizeThatFits)
-            .previewDisplayName("Standalone")
+        StateWrapper(initialState: true) { isSelected in
+            checkbox(standalone: false, state: .normal, checked: isSelected.wrappedValue)
+                .padding(.medium)
         }
     }
 
-    static var orbit: some View {
-        HStack(alignment: .top, spacing: .medium) {
-            VStack(alignment: .leading, spacing: .medium) {
-                Checkbox("Label", description: "Normal & Unchecked")
-                Checkbox("Label", description: "Error & Unchecked", state: .error)
-                Checkbox("Label", description: "Disabled & Unchecked", state: .disabled)
-            }
-
-            VStack(alignment: .leading, spacing: .medium) {
-                Checkbox("Label", description: "Normal & Checked", isChecked: true)
-                Checkbox("Label", description: "Error & Checked", state: .error, isChecked: true)
-                Checkbox("Label", description: "Disabled & Checked", state: .disabled, isChecked: true)
-            }
+    static var storybook: some View {
+        VStack(alignment: .leading, spacing: .large) {
+            content(standalone: false)
+            content(standalone: true)
         }
     }
 
-    static var snapshots: some View {
-        VStack(spacing: .large) {
-            orbit
+    static func content(standalone: Bool) -> some View {
+        HStack(alignment: .top, spacing: .xLarge) {
+            VStack(alignment: .leading, spacing: .xLarge) {
+                checkbox(standalone: standalone, state: .normal, checked: false)
+                checkbox(standalone: standalone, state: .error, checked: false)
+                checkbox(standalone: standalone, state: .disabled, checked: false)
+            }
 
-            Separator()
-
-            Checkbox("Multiline long checkbox label", description: "Multiline and very long description")
-                .frame(maxWidth: 140)
+            VStack(alignment: .leading, spacing: .xLarge) {
+                checkbox(standalone: standalone, state: .normal, checked: true)
+                checkbox(standalone: standalone, state: .error, checked: true)
+                checkbox(standalone: standalone, state: .disabled, checked: true)
+            }
         }
-        .padding()
+        .padding(.medium)
+    }
+
+    static func checkbox(standalone: Bool, state: Checkbox.State, checked: Bool) -> some View {
+        StateWrapper(initialState: checked) { isSelected in
+            Checkbox(standalone ? "" : label, description: standalone ? "" : description, state: state, isChecked: isSelected.wrappedValue) {
+                isSelected.wrappedValue.toggle()
+            }
+        }
     }
 }

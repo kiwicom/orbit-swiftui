@@ -117,24 +117,14 @@ struct TagPreviews: PreviewProvider {
 
             snapshots
                 .previewDisplayName("Tags")
-        }
-        .previewLayout(PreviewLayout.sizeThatFits)
 
-        PreviewWrapperWithState(initialState: false) { state in
-            Tag("Tag", isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
-                .previewDisplayName("Live Preview")
-
-            Tag("Removable Tag", isSelected: state.wrappedValue, style: .removable()) {
-                state.wrappedValue.toggle()
-            }
-            .previewDisplayName("Live Preview - Removable")
+            live
         }
-        .padding()
         .previewLayout(PreviewLayout.sizeThatFits)
     }
 
     static var standalone: some View {
-        PreviewWrapperWithState(initialState: true) { state in
+        StateWrapper(initialState: true) { state in
             Tag("Label", isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
         }
     }
@@ -156,5 +146,18 @@ struct TagPreviews: PreviewProvider {
         }
         .frame(width: 180)
         .padding(.vertical)
+    }
+
+    static var live: some View {
+        StateWrapper(initialState: false) { state in
+            Tag("Tag", isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
+                .previewDisplayName("Live Preview")
+
+            Tag("Removable Tag", isSelected: state.wrappedValue, style: .removable()) {
+                state.wrappedValue.toggle()
+            }
+            .previewDisplayName("Live Preview - Removable")
+        }
+        .padding()
     }
 }

@@ -76,9 +76,49 @@ public struct TextLink: UIViewRepresentable {
 
 // MARK: - Previews
 struct TextLinkPreviews: PreviewProvider {
- 
+
     static var previews: some View {
-        PreviewWrapperWithState(initialState: (0, "")) { state in
+        PreviewWrapper {
+            standalone
+            storybook
+            storybookLive
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    static var standalone: some View {
+        TextLink(
+            TagAttributedStringBuilder.all.attributedStringForLinks(
+                link("Text link"),
+                fontSize: Text.Size.normal.value,
+                fontWeight: .regular,
+                lineSpacing: nil,
+                alignment: .leading
+            ),
+            bounds: .zero
+        )
+        .padding(.medium)
+        .frame(width: 100, height: 60)
+    }
+
+    static var storybook: some View {
+        VStack(alignment: .leading, spacing: .large) {
+            Text(link("Primary link"), linkColor: .primary)
+            Text(link("Secondary link"), linkColor: .secondary)
+            Text(link("Info link"), linkColor: .status(.info))
+            Text(link("Success link"), linkColor: .status(.success))
+            Text(link("Warning link"), linkColor: .status(.warning))
+            Text(link("Critical link"), linkColor: .status(.critical))
+        }
+        .padding(.medium)
+    }
+
+    static func link(_ content: String) -> String {
+        "<a href=\"...\">\(content)</a>"
+    }
+
+    static var storybookLive: some View {
+        StateWrapper(initialState: (0, "")) { state in
             VStack(spacing: .xLarge) {
                 Text("Text containing <a href=\"...\">Some TextLink</a> and <a href=\"...\">Another TextLink</a>") { link, text in
                     state.wrappedValue.0 += 1
@@ -87,19 +127,18 @@ struct TextLinkPreviews: PreviewProvider {
                 
                 ButtonLink("ButtonLink") {
                     state.wrappedValue.0 += 1
-                    state.wrappedValue.1 = ""
+                    state.wrappedValue.1 = "ButtonLink"
                 }
                 
                 Button("Button") {
                     state.wrappedValue.0 += 1
-                    state.wrappedValue.1 = ""
+                    state.wrappedValue.1 = "Button"
                 }
                 
                 Text("Tapped \(state.wrappedValue.0)x", color: .inkLight)
-                Text("Link text: \(state.wrappedValue.1)", color: .inkLight)
+                Text("Tapped \(state.wrappedValue.1)", color: .inkLight)
             }
-            .padding()
+            .padding(.medium)
         }
-        .previewLayout(.sizeThatFits)
     }
 }

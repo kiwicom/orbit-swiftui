@@ -241,13 +241,16 @@ extension TextAlignment {
 // MARK: - Previews
 struct TextPreviews: PreviewProvider {
 
+    static let multilineText = "Text longer and multiline with no links"
+    static let multilineFormattedText = "Text longer and <u>multiline</u> with <a href=\"...\">text link</a>"
+
     static var previews: some View {
         PreviewWrapper {
             standalone
-            selectable
-            strikethroughKerning
-            formatted
-            snapshots
+            storybook
+            sizes
+            multiline
+            custom
             attributedTextSnapshots
             attributedTextInteractive
         }
@@ -255,92 +258,95 @@ struct TextPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Text("Text plain")
+        Text("Plain text with no formatting")
             .previewDisplayName("Standalone")
     }
 
-    static var selectable: some View {
-        Text("Text selectable", isSelectable: true)
-            .previewDisplayName("Selectable")
-    }
-
-    static var strikethroughKerning: some View {
-        Text("Text with strikethrough and kerning", strikethrough: true, kerning: 10)
-            .previewDisplayName("Kerning + strikethrough")
-    }
-
-    static var multilineText: String {
-        "Text longer and multiline with no links"
-    }
-
-    static var multilineFormattedText: String {
-        "Text longer and <u>multiline</u> with <a href=\"...\">text link</a>"
-    }
-
-    @ViewBuilder static var formatted: some View {
-
-        Text("Text <u>formatted</u>", accentColor: .orangeNormal)
-            .border(Color.cloudDark)
-            .previewDisplayName("Text - formatted")
-
-        Group {
-            Text(multilineText)
-                .previewDisplayName("Text - multiline")
-
-            Text(multilineFormattedText)
-                .previewDisplayName("Text - formatted multiline")
-            
-            Text(multilineFormattedText, color: .none)
-                .foregroundColor(.blueDark)
-                .previewDisplayName("Text - formatted multiline with color override")
-
-            Text(multilineText, alignment: .trailing)
-                .previewDisplayName("Text - multiline")
-
-            Text(multilineFormattedText, alignment: .trailing)
-                .previewDisplayName("Text - formatted multiline")
-        }
-        .border(Color.cloudDark)
-        .frame(width: 150)
-    }
-
-    @ViewBuilder static var figma: some View {
-        Group {
-            Text("Text Small", size: .small)
-            Text("Text Normal")
-            Text("Text Large", size: .large)
-            Text("Text Extra Large", size: .xLarge)
-        }
-
-        Separator()
-
-        Group {
-            Text("Text Medium Small", size: .small, weight: .medium)
-            Text("Text Medium Normal", size: .normal, weight: .medium)
-            Text("Text Medium Large", size: .large, weight: .medium)
-            Text("Text Medium Extra Large", size: .xLarge, weight: .medium)
-        }
-
-        Separator()
-
-        Group {
-            Text("Text Bold Small", size: .small, weight: .bold)
-            Text("Text Bold Normal", size: .normal, weight: .bold)
-            Text("Text Bold Large", size: .large, weight: .bold)
-            Text("Text Bold Extra Large", size: .xLarge, weight: .bold)
-        }
-    }
-
-    static var snapshots: some View {
+    @ViewBuilder static var storybook: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            figma
+            Group {
+                standalone
+                Text("Selectable text (on long tap)", isSelectable: true)
+                Text("Text <u>formatted</u> <strong>and</strong> <ref>accented</ref>", accentColor: .orangeNormal)
+                Text(multilineText)
+                Text(multilineFormattedText)
+                Text(multilineFormattedText, color: .none)
+                    .foregroundColor(.blueDark)
+                Text(multilineText, alignment: .trailing)
+                Text(multilineFormattedText, alignment: .trailing)
+                Text("Text with strikethrough and kerning", strikethrough: true, kerning: 6)
+            }
+            .border(Color.cloudDark)
+        }
+        .frame(width: 150)
+        .padding(.medium)
+        .previewDisplayName("Formatted")
+    }
+
+    @ViewBuilder static var sizes: some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            Group {
+                text("Text Small", size: .small, weight: .regular)
+                text("Text Normal", size: .normal, weight: .regular)
+                text("Text Large", size: .large, weight: .regular)
+                text("Text Extra Large", size: .xLarge, weight: .regular)
+            }
 
             Separator()
 
-            Text("Very very very very very very very very very very very very long text.", size: .large, weight: .bold)
+            Group {
+                text("Text Medium Small", size: .small, weight: .medium)
+                text("Text Medium Normal", size: .normal, weight: .medium)
+                text("Text Medium Large", size: .large, weight: .medium)
+                text("Text Medium Extra Large", size: .xLarge, weight: .medium)
+            }
 
             Separator()
 
+            Group {
+                text("Text Bold Small", size: .small, weight: .bold)
+                text("Text Bold Normal", size: .normal, weight: .bold)
+                text("Text Bold Large", size: .large, weight: .bold)
+                text("Text Bold Extra Large", size: .xLarge, weight: .bold)
+            }
+        }
+        .padding(.medium)
+        .previewDisplayName("Sizes")
+    }
+
+    @ViewBuilder static var multiline: some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            Group {
+                text("Text Small with a very very very very large and multine content", size: .small, weight: .regular)
+                text("Text Normal with a very very very very large and multine content", size: .normal, weight: .regular)
+                text("Text Large with a very very very very large and multine content", size: .large, weight: .regular)
+                text("Text Extra Large with a very very very very large and multine content", size: .xLarge, weight: .regular)
+            }
+
+            Separator()
+
+            Group {
+                text("Text Medium Small with a very very very very large and multine content", size: .small, weight: .medium)
+                text("Text Medium Normal with a very very very very large and multine content", size: .normal, weight: .medium)
+                text("Text Medium Large with a very very very very large and multine content", size: .large, weight: .medium)
+                text("Text Medium Extra Large with a very very very very large and multine content", size: .xLarge, weight: .medium)
+            }
+
+            Separator()
+
+            Group {
+                text("Text Bold Small with a very very very very large and multine content", size: .small, weight: .bold)
+                text("Text Bold Normal with a very very very very large and multine content", size: .normal, weight: .bold)
+                text("Text Bold Large with a very very very very large and multine content", size: .large, weight: .bold)
+                text("Text Bold Extra Large with a very very very very large and multine content", size: .xLarge, weight: .bold)
+            }
+        }
+        .padding(.medium)
+        .previewDisplayName("Multiline")
+    }
+
+    static var custom: some View {
+        VStack(alignment: .leading, spacing: .medium) {
             Group {
                 Text("Text custom size", size: .custom(5))
                 Text("Text custom size", size: .custom(21))
@@ -378,18 +384,19 @@ struct TextPreviews: PreviewProvider {
         }
         .padding()
         .previewLayout(.sizeThatFits)
+        .previewDisplayName("Custom")
     }
 
     static var snapshotsSizing: some View {
         VStack(spacing: .medium) {
             standalone
                 .border(Color.cloudDark)
-            formatted
+            storybook
         }
     }
 
     static var attributedTextInteractive: some View {
-        PreviewWrapperWithState(initialState: (0.7, 0.7, 0.7)) { state in
+        StateWrapper(initialState: (0.7, 0.7, 0.7)) { state in
             ScrollView {
                 VStack(alignment: .leading, spacing: .medium) {
                     Text(
@@ -526,5 +533,13 @@ struct TextPreviews: PreviewProvider {
         .background(Color.cloudLight)
         .previewDisplayName("Attributed Text")
         .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static func text(_ content: String, size: Text.Size, weight: Font.Weight) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: .small) {
+            Text(content, size: size, weight: weight)
+            Spacer()
+            Text("\(Int(size.value))/\(Int(size.lineHeight))", color: .inkLight, weight: .medium)
+        }
     }
 }

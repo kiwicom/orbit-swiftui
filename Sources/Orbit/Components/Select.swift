@@ -87,83 +87,92 @@ struct SelectPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            snapshots
+            storybook
+            storybookMix
         }
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
-        Select("Label", prefix: .icon(.grid), value: "Value")
+        Select(InputFieldPreviews.label, prefix: .icon(.grid), value: InputFieldPreviews.value)
+            .padding(.medium)
     }
 
-    @ViewBuilder static var orbit: some View {
-        VStack(spacing: Spacing.medium) {
-            Select("Label", value: "Value")
-            Select("", prefix: .icon(.grid), value: "Value")
-            Select("", prefix: .icon(.airplane), value: nil, placeholder: "Please select")
-            Select("Label (Empty Value)", prefix: .icon(.airplane), value: "")
-            Select("Label (No Value)", prefix: .icon(.airplane), value: nil, placeholder: "Please select")
-            Select("Label", prefix: .icon(.phone), value: "Value")
-            Select("Label", prefix: .countryFlag("us"), value: "Value")
+    static var storybook: some View {
+        VStack(spacing: .medium) {
+            select(value: "", message: .none)
+            select(value: "", message: .help(InputFieldPreviews.helpMessage))
+            select(value: "", message: .error(InputFieldPreviews.errorMessage))
+            Separator()
+            select(value: InputFieldPreviews.value, message: .none)
+            select(value: InputFieldPreviews.value, message: .help(InputFieldPreviews.helpMessage))
+            select(value: InputFieldPreviews.value, message: .error(InputFieldPreviews.errorMessage))
         }
-        .padding(.vertical)
-        .previewDisplayName("Select")
-
-        VStack(spacing: Spacing.medium) {
-            Select("Label (Disabled)", prefix: .icon(.airplane), value: "Value", state: .disabled)
-            Select(
-                "Label (Disabled)",
-                prefix: .icon(.airplane),
-                value: nil,
-                placeholder: "Please select",
-                state: .disabled
-            )
-        }
-        .padding(.vertical)
-        .previewDisplayName("Select - Disabled")
-
-        VStack(spacing: Spacing.medium) {
-            Select("Label (Modified)", prefix: .icon(.airplane), value: "Modified Value", state: .modified)
-            Select(
-                "Label (Modified)",
-                prefix: .icon(.airplane),
-                value: nil,
-                placeholder: "Please select",
-                state: .modified
-            )
-        }
-        .padding(.vertical)
-        .previewDisplayName("Select - Modified")
-
-        VStack(spacing: Spacing.medium) {
-            Select(
-                "Label (Info)",
-                prefix: .icon(.informationCircle),
-                value: "Value",
-                message: .help("Help message, also very long and multi-line to test that it works.")
-            )
-
-            Select(
-                "Label (Error) with a long multiline label to test that it works",
-                prefix: .image(.orbit(.google)),
-                value: "Bad Value with a very long text that should overflow",
-                message: .error("Error message, but also very long and multi-line to test that it works.")
-            )
-        }
-        .padding(.vertical)
-        .previewDisplayName("Select - States")
+        .padding(.medium)
     }
 
-    static var snapshots: some View {
-        orbit
-            .padding(.horizontal)
+    static func select(value: String, message: MessageType) -> some View {
+        Select(InputFieldPreviews.label, prefix: .icon(.grid), value: value, placeholder: InputFieldPreviews.placeholder, message: message)
+    }
+
+    @ViewBuilder static var storybookMix: some View {
+        VStack(spacing: Spacing.medium) {
+            Group {
+                Select("Label", value: "Value")
+                Select("", prefix: .icon(.grid), value: "Value")
+                Select("", prefix: .icon(.airplane), value: nil, placeholder: "Please select")
+                Select("Label (Empty Value)", prefix: .icon(.airplane), value: "")
+                Select("Label (No Value)", prefix: .icon(.airplane), value: nil, placeholder: "Please select")
+                Select("Label", prefix: .icon(.phone), value: "Value")
+                Select("Label", prefix: .countryFlag("us"), value: "Value")
+            }
+
+            Group {
+                Select("Label (Disabled)", prefix: .icon(.airplane), value: "Value", state: .disabled)
+                Select(
+                    "Label (Disabled)",
+                    prefix: .icon(.airplane),
+                    value: nil,
+                    placeholder: "Please select",
+                    state: .disabled
+                )
+                Select("Label (Modified)", prefix: .icon(.airplane), value: "Modified Value", state: .modified)
+                Select(
+                    "Label (Modified)",
+                    prefix: .icon(.airplane),
+                    value: nil,
+                    placeholder: "Please select",
+                    state: .modified
+                )
+                Select(
+                    "Label (Info)",
+                    prefix: .icon(.informationCircle),
+                    value: "Value",
+                    message: .help("Help message, also very long and multi-line to test that it works.")
+                )
+
+                Select(
+                    "Label (Error) with a long multiline label to test that it works",
+                    prefix: .image(.orbit(.google)),
+                    value: "Bad Value with a very long text that should overflow",
+                    message: .error("Error message, but also very long and multi-line to test that it works.")
+                )
+            }
+        }
+        .padding(.medium)
     }
 }
 
 struct SelectLivePreviews: PreviewProvider {
 
     static var previews: some View {
-        PreviewWrapperWithState(initialState: false) { state in
+        PreviewWrapper {
+            live
+        }
+    }
+
+    static var live: some View {
+        StateWrapper(initialState: false) { state in
             NavigationView {
                 ScrollView {
                     VStack(alignment: .leading, spacing: .xxSmall) {

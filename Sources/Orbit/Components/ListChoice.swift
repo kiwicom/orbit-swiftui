@@ -294,55 +294,34 @@ extension ListChoice {
 // MARK: - Previews
 struct ListChoicePreviews: PreviewProvider {
 
+    static let title = "ListChoice tile"
+    static let description = "Further description"
+    static let value = "Value"
+    static let badge = Badge("3", style: .status(.info, inverted: false))
+    static let addButton = ListChoiceDisclosure.button(type: .add)
+    static let removeButton = ListChoiceDisclosure.button(type: .remove)
+    static let uncheckedCheckbox = ListChoiceDisclosure.checkbox(isChecked: false)
+    static let checkedCheckbox = ListChoiceDisclosure.checkbox(isChecked: true)
+
     static var previews: some View {
         PreviewWrapper {
             standalone
+            storybook
+            storybookButton
+            storybookCheckbox
             plain
-            chevron
-            button
-            checkbox
             white
             backgroundColor
         }
         .background(Color.cloudLight)
         .previewLayout(.sizeThatFits)
     }
-    
-    static let title = "ListChoice tile"
-    static let description = "Further description"
-    static let value = "value"
-    static let badge = Badge("3", style: .status(.info, inverted: false))
-    static let addButton = ListChoiceDisclosure.button(type: .add)
-    static let removeButton = ListChoiceDisclosure.button(type: .remove)
-    static let uncheckedCheckbox = ListChoiceDisclosure.checkbox(isChecked: false)
-    static let checkedCheckbox = ListChoiceDisclosure.checkbox(isChecked: true)
-    
+
     static var standalone: some View {
-        ListChoice(title, description: description, icon: .grid, value: "100")
+        ListChoice(title, description: description, icon: .grid, value: value)
     }
     
-    static var plain: some View {
-        Card(contentLayout: .fill) {
-            ListChoice(title, disclosure: .none)
-            ListChoice(title, description: description, disclosure: .none)
-            ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
-            ListChoice(title, icon: .airplane, disclosure: .none)
-            ListChoice(title, icon: .icon(.airplane, color: .blueNormal), disclosure: .none)
-            ListChoice(title, description: description, icon: .countryFlag("cs"), disclosure: .none)
-            ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none)
-            ListChoice(title, description: description, disclosure: .none) {
-                badge
-            }
-            ListChoice(disclosure: .none) {
-                customContentPlaceholder
-            }
-        }
-        .padding(.vertical)
-        .background(Color.cloudLight)
-        .previewDisplayName("No disclosure")
-    }
-    
-    static var chevron: some View {
+    static var storybook: some View {
         Card(contentLayout: .fill) {
             ListChoice(title)
             ListChoice(title, value: "10")
@@ -359,12 +338,9 @@ struct ListChoicePreviews: PreviewProvider {
                 badge
             }
         }
-        .padding(.vertical)
-        .background(Color.cloudLight)
-        .previewDisplayName("Chevron")
     }
     
-    static var button: some View {
+    static var storybookButton: some View {
         Card(contentLayout: .fill) {
             ListChoice(title, disclosure: addButton)
             ListChoice(title, disclosure: removeButton)
@@ -382,7 +358,7 @@ struct ListChoicePreviews: PreviewProvider {
         .previewDisplayName("Button")
     }
 
-    static var checkbox: some View {
+    static var storybookCheckbox: some View {
         Card(contentLayout: .fill) {
             ListChoice(title, disclosure: uncheckedCheckbox)
             ListChoice(title, disclosure: checkedCheckbox)
@@ -397,48 +373,71 @@ struct ListChoicePreviews: PreviewProvider {
                 customContentPlaceholder
             }
         }
-        .padding(.vertical)
-        .background(Color.cloudLight)
         .previewDisplayName("Checkbox")
+    }
+
+    static var storybookMix: some View {
+        VStack(spacing: .xLarge) {
+            plain
+            white
+            backgroundColor
+        }
+    }
+
+    static var plain: some View {
+        Card(contentLayout: .fill) {
+            ListChoice(title, disclosure: .none)
+            ListChoice(title, description: description, disclosure: .none)
+            ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
+            ListChoice(title, icon: .airplane, disclosure: .none)
+            ListChoice(title, icon: .icon(.airplane, color: .blueNormal), disclosure: .none)
+            ListChoice(title, description: description, icon: .countryFlag("cs"), disclosure: .none)
+            ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none)
+            ListChoice(title, description: description, disclosure: .none) {
+                badge
+            }
+            ListChoice(disclosure: .none) {
+                customContentPlaceholder
+            }
+        }
+        .previewDisplayName("No disclosure")
     }
     
     static var white: some View {
         VStack(spacing: .small) {
-            ListChoice(title, disclosure: .none)
-                .background(Color.white)
-            ListChoice(title, description: description, disclosure: .none)
-                .background(Color.white)
-            ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
-                .background(Color.white)
-            ListChoice(title, icon: .airplane, disclosure: .none)
-                .background(Color.white)
-            ListChoice(title, icon: .icon(.airplane, color: .inkLighter), disclosure: .none)
-                .background(Color.white)
-            ListChoice(title, description: description, icon: .airplane, disclosure: .none)
-                .background(Color.white)
-            ListChoice(title, description: description, disclosure: .none) {
-                customContentPlaceholder
+            Group {
+                ListChoice(title, disclosure: .none)
+                ListChoice(disclosure: .none)
+                ListChoice(title, description: description, disclosure: .none)
+                ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
+                ListChoice(title, icon: .airplane, disclosure: .none)
+                ListChoice(title, icon: .icon(.airplane, color: .inkLighter), disclosure: .none)
+                ListChoice(title, description: description, icon: .airplane, disclosure: .none)
+                ListChoice(title, description: description, disclosure: .none) {
+                    customContentPlaceholder
+                }
             }
             .background(Color.white)
         }
         .padding()
+        .background(Color.cloudLight)
         .previewDisplayName("White background")
     }
     
     static var backgroundColor: some View {
         VStack(spacing: .small) {
-            ListChoice(title, value: value, disclosure: .none)
-                .background(Color.orangeLight)
-            
-            ListChoice(title, icon: .grid, value: value)
-                .background(Color.blueLight)
-            
-            ListChoice(title, icon: .grid) {
-                customContentPlaceholder
+            Group {
+                ListChoice(title, value: value, disclosure: .none)
+                ListChoice(disclosure: .none)
+                ListChoice(title, icon: .grid, value: value)
+                ListChoice(title, icon: .grid) {
+                    customContentPlaceholder
+                }
             }
-            .background(Color.redLight)
+            .background(Color.orangeLight)
         }
         .padding()
+        .background(Color.cloudLight)
         .previewDisplayName("Custom background")
     }
 }

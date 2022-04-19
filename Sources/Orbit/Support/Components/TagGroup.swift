@@ -128,7 +128,7 @@ struct TagGroupPreviews: PreviewProvider {
 
         ScrollView {
             VStack(alignment: .leading, spacing: .xxSmall) {
-                PreviewWrapperWithState(
+                StateWrapper(
                     initialState: [
                         TagModelPreview(id: 1, label: "One"),
                         TagModelPreview(id: 2, label: "Two", isSelected: true),
@@ -140,7 +140,7 @@ struct TagGroupPreviews: PreviewProvider {
 
                 Separator()
 
-                PreviewWrapperWithState(
+                StateWrapper(
                     initialState: [
                         TagModelPreview(id: 1, label: "Bags", isRemovable: true, isSelected: false),
                         TagModelPreview(id: 2, label: "Price", isRemovable: false, isSelected: true),
@@ -165,7 +165,7 @@ struct TagGroupPreviews: PreviewProvider {
 
                 Separator()
 
-                PreviewWrapperWithState(
+                StateWrapper(
                     initialState: [
                         TagModelPreview(id: 1, label: "Fun 🎢", isRemovable: false, isSelected: false),
                         TagModelPreview(id: 2, label: "Adventure 🏕", isRemovable: false, isSelected: true),
@@ -180,7 +180,7 @@ struct TagGroupPreviews: PreviewProvider {
 
                 Separator()
 
-                PreviewWrapperWithState(
+                StateWrapper(
                     initialState: [
                         TagModelPreview(id: 1, label: "Prague", isRemovable: true),
                         TagModelPreview(id: 2, label: "Vienna", isRemovable: true, isSelected: true),

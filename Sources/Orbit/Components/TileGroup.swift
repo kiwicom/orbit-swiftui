@@ -50,46 +50,39 @@ struct TileGroupPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            snapshots
+            standalone
+            storybook
         }
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         TileGroup {
-            defaultTiles
+            tiles
         }
+        .padding(.medium)
     }
 
-    static var figma: some View {
+    static var storybook: some View {
         VStack(spacing: .large) {
-            standalone
-                .padding(.horizontal, .medium)
-        }
-        .previewLayout(.sizeThatFits)
-        .previewDisplayName("Figma")
-    }
-
-    static var snapshots: some View {
-        VStack(spacing: .large) {
-            standalone
+            TileGroup {
+                tiles
+            }
 
             TileGroup(status: .critical) {
-                defaultTiles
+                tiles
             }
         }
-        .padding()
-        .background(Color.cloudLight)
-        .previewDisplayName("Style - Default")
+        .padding(.medium)
     }
 
-    @ViewBuilder static var defaultTiles: some View {
+    @ViewBuilder static var tiles: some View {
         Tile("Title", border: .separator)
-
+        Tile("Title", border: .separator) {
+            customContentPlaceholder
+        }
         Tile("Title", icon: .notification, border: .separator)
-
         Tile("No Separator", icon: .notification, border: .none)
-
         Tile(
             "Title",
             description: TilePreviews.description,

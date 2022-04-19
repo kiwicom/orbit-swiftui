@@ -105,69 +105,49 @@ struct SkeletonPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            atomicCircle
-            atomicRectangle
-            atomicRectangleCustom
-            button
-            card
-            image
-            list
-            text
+            content(animated: false)
+            contentAtomic(animated: false)
             livePreview
         }
         .previewLayout(.sizeThatFits)
     }
 
-    static var atomicCircle: some View {
-        Skeleton(.atomic(.circle), animated: false)
-            .frame(height: 60)
-            .padding()
+    static var storybook: some View {
+        content(animated: true)
     }
 
-    static var atomicRectangle: some View {
-        Skeleton(.atomic(.rectangle), animated: false)
-            .frame(height: 60)
-            .padding()
+    static var storybookAtomic: some View {
+        contentAtomic(animated: true)
     }
 
-    static var atomicRectangleCustom: some View {
-        Skeleton(.atomic(.rectangle), borderRadius: 20, animated: false)
-            .frame(height: 60)
-            .padding()
+    static func contentAtomic(animated: Bool) -> some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            Skeleton(.atomic(.circle), animated: animated)
+                .frame(height: 60)
+            Skeleton(.atomic(.rectangle), animated: animated)
+                .frame(height: 60)
+            Skeleton(.atomic(.rectangle), borderRadius: 20, animated: animated)
+                .frame(height: 60)
+        }
+        .padding(.medium)
+        .previewDisplayName("Atomic")
     }
 
-    static var button: some View {
-        Skeleton(.button(), animated: false)
-            .padding()
-    }
-
-    static var card: some View {
-        Skeleton(.card(), animated: false)
-            .padding()
-    }
-
-    static var image: some View {
-        Skeleton(.image(), animated: false)
-            .padding()
-    }
-
-    static var list: some View {
-        Skeleton(.list(rows: 5), animated: false)
-            .padding()
-    }
-
-    static var text: some View {
-        Skeleton(.text(lines: 5), animated: false)
-            .padding()
+    static func content(animated: Bool) -> some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            Skeleton(.list(rows: 3), animated: animated)
+            Skeleton(.image(), animated: animated)
+            Skeleton(.card(), animated: animated)
+            Skeleton(.button(), animated: animated)
+            Skeleton(.text(lines: 4), animated: animated)
+        }
+        .padding(.medium)
     }
 
     static var livePreview: some View {
-        VStack(spacing: .medium) {
+        VStack(spacing: .large) {
             Heading("Loading...", style: .title3)
-            Skeleton(.text(lines: 5))
-            Skeleton(.image())
-            Skeleton(.list(rows: 3))
-            Skeleton(.button())
+            content(animated: true)
         }
         .padding()
     }

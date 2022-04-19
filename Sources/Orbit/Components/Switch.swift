@@ -63,33 +63,39 @@ struct SwitchPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-
-            VStack {
-                orbit
-                    .padding()
-            }
+            storybook
         }
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
-        PreviewWrapperWithState(initialState: true) { state in
+        StateWrapper(initialState: true) { state in
             Switch(isOn: state)
         }
+        .padding(.medium)
     }
 
-    @ViewBuilder static var orbit: some View {
-        HStack(spacing: .large) {
-            Switch(isOn: .constant(true))
-            Switch(isOn: .constant(false))
+    static var storybook: some View {
+        VStack(spacing: .large) {
+            HStack(spacing: .large) {
+                switchView(isOn: true)
+                switchView(isOn: true, hasIcon: true)
+                switchView(isOn: true, isEnabled: false)
+                switchView(isOn: true, hasIcon: true, isEnabled: false)
+            }
+            HStack(spacing: .large) {
+                switchView(isOn: false)
+                switchView(isOn: false, hasIcon: true)
+                switchView(isOn: false, isEnabled: false)
+                switchView(isOn: false, hasIcon: true, isEnabled: false)
+            }
         }
-        HStack(spacing: .large) {
-            Switch(isOn: .constant(true), isEnabled: false)
-            Switch(isOn: .constant(false), isEnabled: false)
-        }
+        .padding(.medium)
     }
 
-    static var snapshots: some View {
-        orbit
+    static func switchView(isOn: Bool, hasIcon: Bool = false, isEnabled: Bool = true) -> some View {
+        StateWrapper(initialState: isOn) { isOnState in
+            Switch(isOn: isOnState, hasIcon: hasIcon, isEnabled: isEnabled)
+        }
     }
 }

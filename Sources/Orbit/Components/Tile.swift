@@ -305,7 +305,9 @@ public extension Tile {
 // MARK: - Previews
 struct TilePreviews: PreviewProvider {
 
-    static let description = """
+    static let title = "Title"
+    static let description = "Description"
+    static let descriptionMultiline = """
         Description with <strong>very</strong> <ref>very</ref> <u>very</u> long multiline \
         description and <u>formatting</u> with <applink1>links</applink1>
         """
@@ -313,83 +315,67 @@ struct TilePreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            snapshots
+            storybook
+            storybookMix
         }
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
-        Tile("Title", description: "Description", icon: .airplane)
+        Tile(title, description: description, icon: .grid)
             .padding(.medium)
             .previewDisplayName("Standalone")
     }
 
-    static var figma: some View {
-        VStack(spacing: .small) {
-            standalone        
-        }
-        .previewDisplayName("Figma")
-    }
-
-    static var snapshots: some View {
+    static var storybook: some View {
         VStack(spacing: .large) {
-            Tile("Full border")
-            
-            Tile("Full border", disclosure: .buttonLink("Edit"), status: .info) {
-                customContentPlaceholder
-            }
-            
-            Tile("Full border", disclosure: .buttonLink("Edit", style: .critical), status: .critical) {
-                customContentPlaceholder
-            }
-            
+            Tile(title)
+            Tile(title, icon: .airplane)
+            Tile(title, description: description)
+            Tile(title, description: description, icon: .airplane)
             Tile {
                 customContentPlaceholder
             }
+        }
+        .padding(.medium)
+    }
+
+    @ViewBuilder static var storybookMix: some View {
+        VStack(spacing: .large) {
+            Tile("Title with very very very very very long multiline text", description: descriptionMultiline, icon: .airplane) {
+                customContentPlaceholder
+            }
+            Tile(title, description: description, icon: .airplane, status: .info)
+            Tile(title, description: description, icon: .airplane, status: .critical)
+            Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .primary))
+            Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .critical))
+            Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid))
             Tile(disclosure: .none) {
                 customContentPlaceholder
             }
             Tile("Tile with custom content", disclosure: .none) {
                 customContentPlaceholder
             }
-            Tile("Tile with custom content", description: "Description", status: .warning) {
-                customContentPlaceholder
-            }
-            
-            Tile("Tile with HUGE TITLE", description: "Short description", icon: .circle, status: .warning, titleStyle: .title1) {
-                customContentPlaceholder
-            }
-
             VStack(spacing: 0) {
                 Tile(
-                    "Bottom separator",
-                    description: description,
+                    "Tile with no separator",
+                    description: descriptionMultiline,
+                    icon: .grid,
+                    border: .none
+                )
+                Tile(
+                    "Tile with bottom separator",
+                    description: descriptionMultiline,
                     border: .separator
                 )
-
                 Tile(
-                    "Bottom separator",
-                    description: description,
-                    icon: .circle,
-                    disclosure: .buttonLink("Edit"),
+                    "Tile with bottom separator",
+                    description: descriptionMultiline,
+                    icon: .grid,
                     border: .separator
                 )
             }
-
-            Tile(
-                "No borders",
-                description: description,
-                icon: .settings,
-                border: .none
-            )
-
         }
-        .padding()
-        .background(background)
-        .previewDisplayName("Style - Default")
-    }
-
-    static var background: some View {
-        Color.cloudLight.opacity(0.8)
+        .padding(.medium)
     }
 }

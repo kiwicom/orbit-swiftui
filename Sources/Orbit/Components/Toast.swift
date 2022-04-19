@@ -226,41 +226,56 @@ public struct ToastWrapper: View {
 // MARK: - Previews
 struct ToastPreviews: PreviewProvider {
 
+    static let description = "Toast shows a brief message that's clear & understandable."
     static let toastQueue = ToastQueue()
     
     static var previews: some View {
         PreviewWrapper {
-            VStack(spacing: .medium) {
-                ToastContent("Toast description", progress: 0.01)
-                ToastContent("Toast description", progress: 0.2)
-                ToastContent("Toast description", progress: 0.8)
-                ToastContent("Toast description", progress: 1.1)
-                ToastContent("Toast shows a brief message that's clear & understandable.", icon: .checkCircle, progress: 0.6)
-            }
+            standalone
+            standaloneWrapper
+            storybook
         }
-        .padding()
         .previewLayout(.sizeThatFits)
-        .previewDisplayName("ToastContent")
-        
+
         PreviewWrapper {
-            ToastWrapper("Toast shows a brief message that's clear & understandable.", icon: .checkCircle, progress: 0.6)
+            storybookLive
+                .overlay(Toast(toastQueue: toastQueue), alignment: .top)
         }
-        .padding()
-        .previewLayout(.sizeThatFits)
-        .previewDisplayName("ToastWrapper")
-        
-        PreviewWrapper {
-            VStack(alignment: .leading, spacing: .medium) {
-                Heading("Toast enabled screen", style: .title2)
-                
-                Spacer()
-                
-                Button("Add toast 1") { toastQueue.add("Toast shows a brief message that's clear & understandable.")}
-                Button("Add toast 2") { toastQueue.add("Another toast message.")}
-            }
+    }
+
+    static var standalone: some View {
+        Toast(toastQueue: toastQueue)
+    }
+
+    static var standaloneWrapper: some View {
+        ToastWrapper(description, icon: .checkCircle, progress: 0.6)
             .padding(.medium)
-            .overlay(Toast(toastQueue: toastQueue), alignment: .top)
+            .previewDisplayName("ToastWrapper")
+    }
+
+    static var storybook: some View {
+        VStack(alignment: .leading, spacing: .xxxLarge) {
+            ToastContent(description, progress: 0.01)
+            ToastContent(description, progress: 0.2)
+            ToastContent(description, progress: 0.8)
+            ToastContent(description, progress: 1.1)
+            ToastContent("Toast shows a brief message that's clear & understandable.", icon: .checkCircle, progress: 0.6)
         }
+        .padding(.medium)
+        .padding(.top, .large)
+        .padding(.bottom, .xxxLarge)
+    }
+
+    static var storybookLive: some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            Heading("Toast enabled screen", style: .title2)
+
+            Spacer()
+
+            Button("Add toast 1") { toastQueue.add(description)}
+            Button("Add toast 2") { toastQueue.add("Another toast message.")}
+        }
+        .padding(.medium)
         .previewDisplayName("Live Preview")
     }
 }

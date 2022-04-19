@@ -104,26 +104,55 @@ public struct CarrierLogo: View {
 struct CarrierLogoPreviews: PreviewProvider {
     
     static let square = Image(systemName: "square.fill")
+    static let plane1 = Image(systemName: "airplane.circle.fill")
+    static let plane2 = Image(systemName: "paperplane.circle.fill")
+    static let plane3 = Image(systemName: "airplane")
     
     static var previews: some View {
-        Group {
-            HStack {
-                CarrierLogo(image: square, size: .small)
-                CarrierLogo(image: square, size: .normal)
-                CarrierLogo(image: square, size: .large)
-            }
-            .padding()
-            .previewDisplayName("Sizes")
-            
-            CarrierLogo(images: [square, square])
-                .previewDisplayName("Two logos")
-            
-            CarrierLogo(images: [square, square, square])
-                .previewDisplayName("Three logos")
-            
-            CarrierLogo(images: [square, square, square, square])
-                .previewDisplayName("Four logos")
+        PreviewWrapper {
+            standalone
+            content
         }
         .previewLayout(.sizeThatFits)
+    }
+
+    static var standalone: some View {
+        VStack {
+            CarrierLogo(images: [square, plane1, plane2, plane3])
+            CarrierLogo(images: []) // EmptyView
+        }
+        .padding(.medium)
+    }
+
+    @ViewBuilder static var content: some View {
+        HStack(alignment: .top, spacing: .medium) {
+            CarrierLogo(image: square, size: .small)
+            CarrierLogo(image: square, size: .normal)
+            CarrierLogo(image: square, size: .large)
+        }
+        .previewDisplayName("Sizes")
+
+        HStack(alignment: .top, spacing: .medium) {
+            CarrierLogo(image: plane1, size: .small)
+            CarrierLogo(image: plane1, size: .normal)
+            CarrierLogo(image: plane1, size: .large)
+        }
+        .previewDisplayName("Sizes")
+
+        CarrierLogo(images: [square, square])
+            .previewDisplayName("Two logos")
+
+        CarrierLogo(images: [square, square, square])
+            .previewDisplayName("Three logos")
+
+        CarrierLogo(images: [square, square, square, square])
+            .previewDisplayName("Four logos")
+    }
+
+    static var storybook: some View {
+        VStack(alignment: .leading, spacing: .xxLarge) {
+            content
+        }
+        .padding(.medium)
     }
 }

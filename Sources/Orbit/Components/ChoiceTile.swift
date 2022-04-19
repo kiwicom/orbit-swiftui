@@ -287,56 +287,38 @@ public extension ChoiceTile {
 // MARK: - Previews
 struct ChoiceTilePreviews: PreviewProvider {
 
+    static let title = "ChoiceTile title"
+    static let description = "Additional information for this choice."
+
     static var previews: some View {
-        PreviewWrapperWithState(initialState: false) { state in
+        PreviewWrapper {
             standalone
             standaloneCentered
-            standaloneNarrow
-            standaloneNarrowCentered
 
-            snapshots
-            snapshotsCentered
-
-            VStack(spacing: .large) {
-                ChoiceTile(
-                    "ChoiceTile",
-                    icon: .grid,
-                    isSelected: state.wrappedValue,
-                    message: .help("Helpful message"),
-                    action: {
-                        state.wrappedValue.toggle()
-                    },
-                    content: {
-                        VStack(alignment: .leading) {
-                            Heading("Label", style: .title4, color: .inkNormal)
-                            Text("Tap to check or uncheck", size: .small, color: .inkLight)
-                        }
-                    }
-                )
-            }
-            .padding()
-            .previewDisplayName("Live Preview")
+            storybook
+            storybookCentered
+            storybookMix
         }
-        .previewLayout(PreviewLayout.sizeThatFits)
+        .previewLayout(.sizeThatFits)
     }
-    
+
     static var standalone: some View {
         ChoiceTile(
-            "Title",
-            description: "Description",
+            title,
+            description: description,
             icon: .grid,
             badge: "Popular",
             message: .help("Message")
         ) {
             customContentPlaceholder
         }
-        .padding()
+        .padding(.medium)
     }
-    
+
     static var standaloneCentered: some View {
         ChoiceTile(
-            "Title",
-            description: "Description",
+            title,
+            description: description,
             illustration: .priorityBoarding,
             badge: "Included",
             badgeOverlay: "Recommended",
@@ -345,154 +327,117 @@ struct ChoiceTilePreviews: PreviewProvider {
         ) {
             customContentPlaceholder
         }
-        .padding()
+        .padding(.medium)
         .previewDisplayName("Centered")
     }
 
-    static var standaloneNarrow: some View {
-        HStack {
-            ChoiceTile(
-                "Title with very long multiline text",
-                description: "Description with very long text",
-                icon: .grid,
-                badge: "Popular",
-                message: .help("Message with very long multiline text")
-            ) {
-                customContentPlaceholder
+    static var storybook: some View {
+        VStack(spacing: 0) {
+            content
+        }
+    }
+
+    static var storybookCentered: some View {
+        VStack(spacing: 0) {
+            contentCentered
+        }
+    }
+
+    static var storybookMix: some View {
+        VStack(spacing: .medium) {
+            StateWrapper(initialState: false) { isSelected in
+                ChoiceTile(
+                    "Checkbox indictor with long and multiline title",
+                    icon: .grid,
+                    indicator: .checkbox,
+                    isSelected: isSelected.wrappedValue,
+                    message: .help("Info multiline and very very very very long message")
+                ) {
+                    customContentPlaceholder
+                }
             }
-            
-            ChoiceTile(
-                "Title with very long multiline text",
-                description: "Description with very long text",
-                icon: .grid,
-                badge: "Popular",
-                isSelected: true,
-                message: .help("Message with very long multiline text")
-            ) {
-                customContentPlaceholder
+            StateWrapper(initialState: false) { isSelected in
+                ChoiceTile(
+                    description: "Long and multiline description with no title",
+                    icon: .grid,
+                    isSelected: isSelected.wrappedValue,
+                    message: .warning("Warning multiline and very very very very long message")
+                ) {
+                    customContentPlaceholder
+                }
+            }
+            StateWrapper(initialState: false) { isSelected in
+                ChoiceTile(isSelected: isSelected.wrappedValue) {
+                    Color.greenLight
+                        .overlay(Text("Custom content, no header"))
+                }
             }
         }
-        .frame(width: 400)
-        .padding()
-        .previewDisplayName("Multiline")
+        .padding(.medium)
     }
-    
-    static var standaloneNarrowCentered: some View {
-        HStack {
+
+    @ViewBuilder static var content: some View {
+        choiceTile(titleStyle: .title4, showHeader: true, isError: false, isSelected: false)
+        choiceTile(titleStyle: .title4, showHeader: true, isError: false, isSelected: true)
+        choiceTile(titleStyle: .title3, showHeader: true, isError: false, isSelected: false)
+        choiceTile(titleStyle: .title3, showHeader: true, isError: false, isSelected: true)
+        choiceTile(titleStyle: .title4, showHeader: false, isError: false, isSelected: false)
+        choiceTile(titleStyle: .title4, showHeader: false, isError: false, isSelected: true)
+        choiceTile(titleStyle: .title4, showHeader: true, isError: true, isSelected: false)
+        choiceTile(titleStyle: .title4, showHeader: true, isError: true, isSelected: true)
+    }
+
+    @ViewBuilder static var contentCentered: some View {
+        choiceTileCentered(titleStyle: .title4, showIllustration: true, isError: false, isSelected: false)
+        choiceTileCentered(titleStyle: .title4, showIllustration: true, isError: false, isSelected: true)
+        choiceTileCentered(titleStyle: .title3, showIllustration: true, isError: false, isSelected: false)
+        choiceTileCentered(titleStyle: .title3, showIllustration: true, isError: false, isSelected: true)
+        choiceTileCentered(titleStyle: .title3, showIllustration: false, isError: false, isSelected: false)
+        choiceTileCentered(titleStyle: .title3, showIllustration: false, isError: false, isSelected: true)
+        choiceTileCentered(titleStyle: .title4, showIllustration: true, isError: true, isSelected: false)
+        choiceTileCentered(titleStyle: .title4, showIllustration: true, isError: true, isSelected: true)
+    }
+
+    static func choiceTile(titleStyle: Heading.Style, showHeader: Bool, isError: Bool, isSelected: Bool) -> some View {
+        StateWrapper(initialState: isSelected) { state in
             ChoiceTile(
-                "Title with very long multiline text",
-                description: "Description with very long text",
-                icon: .grid,
-                badge: "Included",
+                showHeader ? title : "",
+                description: showHeader ? description : "",
+                icon: showHeader ? .grid : .none,
+                titleStyle: titleStyle,
+                isSelected: state.wrappedValue,
+                isError: isError,
+                action: {
+                    state.wrappedValue.toggle()
+                },
+                content: {
+                    customContentPlaceholder
+                }
+            )
+        }
+        .padding(.medium)
+    }
+
+    static func choiceTileCentered(titleStyle: Heading.Style, showIllustration: Bool, isError: Bool, isSelected: Bool) -> some View {
+        StateWrapper(initialState: isSelected) { state in
+            ChoiceTile(
+                title,
+                description: description,
+                icon: showIllustration ? .none : .grid,
+                illustration: showIllustration ? .priorityBoarding : .none,
                 badgeOverlay: "Recommended",
-                message: .help("Message with very long multiline text"),
-                alignment: .center
-            ) {
-                customContentPlaceholder
-            }
-            
-            ChoiceTile(
-                "Title with very long multiline text",
-                description: "Description with very long text",
-                icon: .grid,
-                badge: "Included",
-                badgeOverlay: "Recommended",
-                isSelected: true,
-                message: .help("Message with very long multiline text"),
-                alignment: .center
-            ) {
-                customContentPlaceholder
-            }
+                titleStyle: titleStyle,
+                isSelected: state.wrappedValue,
+                isError: isError,
+                alignment: .center,
+                action: {
+                    state.wrappedValue.toggle()
+                },
+                content: {
+                    customContentPlaceholder
+                }
+            )
         }
-        .frame(width: 400)
-        .padding()
-        .previewDisplayName("Multiline centered")
-    }
-
-    static var snapshots: some View {
-        VStack(spacing: .large) {
-            HStack(alignment: .top, spacing: .medium) {
-                VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", description: "Unchecked Radio", iconContent: .countryFlag("cz"), message: .help("Helpful message")) {}
-
-                    ChoiceTile("Label", indicator: .checkbox, isError: true) {
-                        customContentPlaceholder
-                    }
-                }
-
-                VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", description: "Checked Checkbox", isSelected: true, message: .help("Helpful message")) {}
-
-                    ChoiceTile("Label", description: "Checked Checkbox", indicator: .checkbox, isSelected: true, isError: true, message: .error("Error message")) {}
-                }
-            }
-
-            ChoiceTile(
-                "Multiline long choice title label",
-                description: "Multiline and very very very long description",
-                icon: .grid,
-                titleStyle: .title1,
-                message: .help("Helpful multiline message")
-            ) {
-                customContentPlaceholder
-            }
-            .frame(maxWidth: 250)
-            
-            ChoiceTile("ChoiceTile", indicator: .radio, isSelected: true) {
-                customContentPlaceholder
-            }
-            
-            ChoiceTile(indicator: .checkbox, isSelected: true, isError: true) {
-                customContentPlaceholder
-            }
-            
-            ChoiceTile(indicator: .none, isSelected: true) {
-                customContentPlaceholder
-            }
-        }
-        .padding()
-    }
-    
-    static var snapshotsCentered: some View {
-        VStack(spacing: .large) {
-            HStack(alignment: .top, spacing: .medium) {
-                VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", description: "Checked Radio", iconContent: .countryFlag("cz"), message: .help("Helpful message"), alignment: .center) {}
-
-                    ChoiceTile("Label", description: "Unchecked Checkbox", indicator: .checkbox, message: .help("Helpful message"), alignment: .center) {}
-                }
-
-                VStack(alignment: .leading, spacing: .medium) {
-                    ChoiceTile("Label", description: "Unchecked Radio", isSelected: true, message: .help("Helpful message"), alignment: .center) {}
-
-                    ChoiceTile("Label", description: "Checked Checkbox", indicator: .checkbox, isSelected: true, isError: true, message: .error("Error message"), alignment: .center) {}
-                }
-            }
-
-            ChoiceTile(
-                "Multiline long choice title label",
-                description: "Multiline and very very very long description",
-                icon: .grid,
-                titleStyle: .title1,
-                message: .help("Helpful multiline message"),
-                alignment: .center
-            ) {
-                customContentPlaceholder
-            }
-            .frame(maxWidth: 250)
-            
-            ChoiceTile("ChoiceTile", indicator: .radio, isSelected: true, alignment: .center) {
-                customContentPlaceholder
-            }
-            
-            ChoiceTile(indicator: .checkbox, isSelected: true, alignment: .center) {
-                customContentPlaceholder
-            }
-            
-            ChoiceTile(indicator: .none, isSelected: true, alignment: .center) {
-                customContentPlaceholder
-            }
-        }
-        .padding()
+        .padding(.medium)
     }
 }

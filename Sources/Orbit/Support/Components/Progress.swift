@@ -38,25 +38,23 @@ struct ProgressPreviews: PreviewProvider {
                 Progress(1)
                 Progress(3)
             }
-            .padding()
-            .previewLayout(.sizeThatFits)
             .previewDisplayName("Progress")
-        }
 
-        PreviewWrapperWithState(initialState: CGFloat(0)) { progress in
-            VStack(spacing: .large) {
-                Progress(progress.wrappedValue)
-                Button("Change") {
-                    progress.wrappedValue += 0.25
+            StateWrapper(initialState: CGFloat(0)) { progress in
+                VStack(spacing: .large) {
+                    Progress(progress.wrappedValue)
+                    Button("Change") {
+                        progress.wrappedValue += 0.25
 
-                    if progress.wrappedValue > 1 {
-                        progress.wrappedValue = 0
+                        if progress.wrappedValue > 1 {
+                            progress.wrappedValue = 0
+                        }
                     }
                 }
+                .previewDisplayName("Live Preview")
             }
-            .padding()
-            .previewLayout(.sizeThatFits)
-            .previewDisplayName("Live Preview")
         }
+        .padding()
+        .previewLayout(.sizeThatFits)
     }
 }
