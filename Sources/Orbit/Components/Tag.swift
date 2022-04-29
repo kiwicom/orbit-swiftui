@@ -13,22 +13,28 @@ public struct Tag: View {
     public static let minWidth = Spacing.xLarge
 
     let label: String
-    let isSelected: Bool
     let style: Style
+    let isFocused: Bool
+    let isSelected: Bool
+    let isActive: Bool
     let action: () -> Void
 
     public var body: some View {
-        SwiftUI.Button(
-            action: {
-                HapticsProvider.sendHapticFeedback(.light(0.5))
-                action()
-            },
-            label: {
-                Text(label, color: nil, weight: .medium)
-                    .fixedSize()
-            }
-        )
-        .buttonStyle(OrbitStyle(isSelected: isSelected, style: style))
+        if label.isEmpty == false {
+            SwiftUI.Button(
+                action: {
+                    HapticsProvider.sendHapticFeedback(.light(0.5))
+                    action()
+                },
+                label: {
+                    Text(label, color: nil, weight: .medium)
+                        .fixedSize()
+                }
+            )
+            .buttonStyle(
+                OrbitStyle(style: style, isFocused: isFocused, isSelected: isSelected, isActive: isActive)
+            )
+        }
     }
 }
 
@@ -36,10 +42,12 @@ public struct Tag: View {
 public extension Tag {
     
     /// Creates Orbit Tag component.
-    init(_ label: String, isSelected: Bool = false, style: Style = .default, action: @escaping () -> Void = {}) {
+    init(_ label: String, style: Style = .default, isFocused: Bool = true, isSelected: Bool = false, isActive: Bool = false, action: @escaping () -> Void = {}) {
         self.label = label
-        self.isSelected = isSelected
         self.style = style
+        self.isFocused = isFocused
+        self.isSelected = isSelected
+        self.isActive = isActive
         self.action = action
     }
 }
@@ -47,16 +55,26 @@ public extension Tag {
 // MARK: - Types
 extension Tag {
 
-    public enum Style {
+    public enum Style: Equatable {
         case `default`
         case removable(action: () -> Void = {})
+
+        public static func == (lhs: Tag.Style, rhs: Tag.Style) -> Bool {
+            switch (lhs, rhs) {
+                case (.default, .default):      return true
+                case (.removable, .removable):  return true
+                default:                        return false
+            }
+        }
     }
 
-    struct OrbitStyle: ButtonStyle {
-        let isSelected: Bool
+    public struct OrbitStyle: ButtonStyle {
         let style: Style
+        let isFocused: Bool
+        let isSelected: Bool
+        let isActive: Bool
 
-        func makeBody(configuration: Configuration) -> some View {
+        public func makeBody(configuration: Configuration) -> some View {
             HStack(spacing: .xSmall) {
                 configuration.label
                     .foregroundColor(labelColor)
@@ -79,30 +97,48 @@ extension Tag {
         }
 
         var labelColor: Color {
-            switch (style, isSelected) {
-                case (.default, false):             return .inkNormal
-                case (.removable, false):           return .blueDarker
-                case (_, _):                        return .white
+            switch (isFocused, isSelected) {
+                case (_, true):                 return .white
+                case (true, false):             return .blueDarker
+                case (false, false):            return .inkNormal
             }
         }
 
+        /// Creates ButtonStyle matching Orbit Tag component.
+        public init(
+            style: Style,
+            isFocused: Bool,
+            isSelected: Bool,
+            isActive: Bool = false
+        ) {
+            self.style = style
+            self.isFocused = isFocused
+            self.isSelected = isSelected
+            self.isActive = isActive
+        }
+
         func backgroundColor(isPressed: Bool) -> Color {
-            switch (style, isSelected, isPressed) {
-                case (.default, false, false):      return .cloudDark
-                case (.default, false, true):       return .cloudNormalActive
-                case (.removable, false, false):    return .blueLight
-                case (.removable, false, true):     return .blueLightActive
-                case (_, true, false):              return .blueNormal
-                case (_, true, true):               return .blueNormalActive
+            switch (isFocused, isSelected, isPressed || isActive) {
+                case (true, false, false):      return .blueLight
+                case (true, true, false):       return .blueNormal
+                case (false, false, false):     return .cloudDark
+                case (false, true, false):      return .inkLighterHover
+                // Pressed
+                case (true, false, true):       return .blueLightActive
+                case (true, true, true):        return .blueNormalActive
+                case (false, false, true):      return .cloudNormalActive
+                case (false, true, true):       return .inkLightHover
             }
         }
 
         func iconColor(isPressed: Bool) -> Color {
-            switch (isSelected, isPressed) {
-                case (false, false):                return .blueDarker.opacity(0.3)
-                case (false, true):                 return .blueDarker
-                case (true, false):                 return .white.opacity(0.6)
-                case (true, true):                  return .white
+            switch (isSelected, isFocused, isPressed || isActive) {
+                case (true, _, _):              return .white
+                case (false, true, false):      return .blueDarker.opacity(0.3)
+                case (false, false, false):     return .inkNormal.opacity(0.3)
+                // Pressed
+                case (false, true, true):       return .blueDarker
+                case (false, false, true):      return .inkNormal
             }
         }
     }
@@ -111,53 +147,61 @@ extension Tag {
 // MARK: - Previews
 struct TagPreviews: PreviewProvider {
 
+    static let label = "Prague"
+
     static var previews: some View {
         PreviewWrapper {
             standalone
-
-            snapshots
-                .previewDisplayName("Tags")
-
-            live
+            storybook
         }
         .previewLayout(PreviewLayout.sizeThatFits)
     }
 
     static var standalone: some View {
         StateWrapper(initialState: true) { state in
-            Tag("Label", isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
+            Tag(label, isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
+            Tag("") // EmptyView
         }
+        .padding(.medium)
     }
 
-    @ViewBuilder static var orbit: some View {
-        HStack(spacing: .large) {
-            Tag("Prague", isSelected: false)
-            Tag("Prague", isSelected: false, style: .removable())
+    @ViewBuilder static var storybook: some View {
+        VStack(alignment: .leading, spacing: .large) {
+            stack(style: .default, isFocused: true)
+            stack(style: .default, isFocused: false)
+            stack(style: .removable(), isFocused: true)
+            stack(style: .removable(), isFocused: false)
         }
-        HStack(spacing: .large) {
-            Tag("Prague", isSelected: true)
-            Tag("Prague", isSelected: true, style: .removable())
-        }
+        .padding(.medium)
     }
 
-    static var snapshots: some View {
-        VStack(spacing: .small) {
-            orbit
-        }
-        .frame(width: 180)
-        .padding(.vertical)
-    }
-
-    static var live: some View {
-        StateWrapper(initialState: false) { state in
-            Tag("Tag", isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
-                .previewDisplayName("Live Preview")
-
-            Tag("Removable Tag", isSelected: state.wrappedValue, style: .removable()) {
-                state.wrappedValue.toggle()
+    @ViewBuilder static func stack(style: Tag.Style, isFocused: Bool) -> some View {
+        HStack(spacing: style == .default ? 48 : .large) {
+            VStack(spacing: .small) {
+                tag(style: style, isFocused: isFocused, isSelected: false, isActive: false)
+                tag(style: style, isFocused: isFocused, isSelected: true, isActive: false)
             }
-            .previewDisplayName("Live Preview - Removable")
+
+            VStack(spacing: .small) {
+                tag(style: style, isFocused: isFocused, isSelected: false, isActive: true)
+                tag(style: style, isFocused: isFocused, isSelected: true, isActive: true)
+            }
         }
-        .padding()
+    }
+
+    @ViewBuilder static func tag(style: Tag.Style, isFocused: Bool, isSelected: Bool, isActive: Bool) -> some View {
+        StateWrapper(initialState: (style, isSelected, true)) { state in
+            Tag(
+                label,
+                style: style == .default ? .default : .removable(action: { state.wrappedValue.2 = false }),
+                isFocused: isFocused,
+                isSelected: state.wrappedValue.1,
+                isActive: isActive
+            ) {
+                state.wrappedValue.1.toggle()
+            }
+            .disabled(isActive)
+            .opacity(state.wrappedValue.2 ? 1 : 0)
+        }
     }
 }

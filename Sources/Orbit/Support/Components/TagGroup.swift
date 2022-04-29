@@ -81,8 +81,8 @@ public struct TagGroup<TM: TagModel>: View {
         if let index = tags.firstIndex(of: tag), showRemovedTags || tag.isRemoved == false {
             Tag(
                 tag.label,
-                isSelected: $tags[index].isSelected.wrappedValue,
-                style: tag.isRemovable ? .removable(action: { tags[index].isRemoved = true }) : .default
+                style: tag.isRemovable ? .removable(action: { tags[index].isRemoved = true }) : .default,
+                isSelected: $tags[index].isSelected.wrappedValue
             ) {
                 $tags[index].isSelected.wrappedValue.toggle()
             }
