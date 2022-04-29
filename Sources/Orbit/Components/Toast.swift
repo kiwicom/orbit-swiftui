@@ -124,14 +124,11 @@ public struct ToastWrapper: View {
     let dismissAction: () -> Void
     
     @State private var offsetY: CGFloat = 0
-    @State private var showDismissHint: Bool = false
     @State private var gaveFeedback: Bool = false
     
     public var body: some View {
         ToastContent(description, icon: icon, progress: progress)
-            .padding(.bottom, 30)
             .opacity(opacity)
-            .overlay(dismissIndicator, alignment: .bottom)
             .offset(y: cappedOffsetY)
             .gesture(
                 DragGesture(minimumDistance: 0)
@@ -143,7 +140,6 @@ public struct ToastWrapper: View {
                     .onEnded { _ in
                         if isOffsetDismiss {
                             dismissAction()
-                            showDismissHint = false
                         } else {
                             resumeAction()
                             withAnimation(ToastQueue.animationIn) {
@@ -152,18 +148,6 @@ public struct ToastWrapper: View {
                         }
                     }
             )
-    }
-    
-    @ViewBuilder var dismissIndicator: some View {
-        if showDismissHint {
-            Icon(.closeCircle, color: .inkNormal)
-                .background(
-                    Color.white
-                        .clipShape(Circle())
-                        .padding(.xxxSmall)
-                )
-                .transition(.move(edge: .top).combined(with: .opacity))
-        }
     }
     
     var isOffsetDismiss: Bool {
@@ -207,18 +191,6 @@ public struct ToastWrapper: View {
         
         if dismissProgress == 0 {
             gaveFeedback = false
-        }
-        
-        if isOffsetDismiss == false, showDismissHint {
-            withAnimation(.easeOut(duration: 0.1)) {
-                showDismissHint = false
-            }
-        }
-        
-        if isOffsetDismiss, showDismissHint == false {
-            withAnimation(.easeOut(duration: 0.2).delay(0.4)) {
-                showDismissHint = true
-            }
         }
     }
 }
