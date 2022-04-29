@@ -99,7 +99,7 @@ public struct Tabs<Content: View>: View {
 
     @ViewBuilder func activeTabBackground(style: TabStyle) -> some View {
         VStack(spacing: 0) {
-            Color.white
+            Color.whiteNormal
             underline(style: style)
                 .frame(height: .xxxSmall)
         }

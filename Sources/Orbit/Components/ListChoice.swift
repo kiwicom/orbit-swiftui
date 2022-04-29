@@ -417,7 +417,7 @@ struct ListChoicePreviews: PreviewProvider {
                     customContentPlaceholder
                 }
             }
-            .background(Color.white)
+            .background(Color.whiteNormal)
         }
         .padding()
         .background(Color.cloudLight)

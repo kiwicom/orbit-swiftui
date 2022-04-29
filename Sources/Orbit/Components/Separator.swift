@@ -19,7 +19,7 @@ public struct Separator: View {
                 HStack(spacing: 0) {
                     if label.isEmpty == false {
                         LinearGradient(
-                            colors: [.white.opacity(0), .white],
+                            colors: [.whiteNormal.opacity(0), .whiteNormal],
                             startPoint: .leading,
                             endPoint: .trailing
                         )
@@ -27,12 +27,12 @@ public struct Separator: View {
 
                         Text(label, size: .small, weight: .medium)
                             .padding(.horizontal, Spacing.xxSmall)
-                            .background(Color.white)
+                            .background(Color.whiteNormal)
                     }
 
                     if label.isEmpty == false {
                         LinearGradient(
-                            colors: [.white.opacity(0), .white],
+                            colors: [.whiteNormal.opacity(0), .whiteNormal],
                             startPoint: .trailing,
                             endPoint: .leading
                         )

@@ -82,7 +82,7 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
     }
     
     func backgroundColor(isPressed: Bool) -> Color {
-        isPressed ? .whiteHover : .white
+        isPressed ? .whiteHover : .whiteNormal
     }
     
     func shadow(isPressed: Bool) -> TileBorderModifier.Shadow {

@@ -139,7 +139,7 @@ public extension Badge {
 
         @ViewBuilder public var background: some View {
             switch self {
-                case .light:                                Color.white
+                case .light:                                Color.whiteNormal
                 case .lightInverted:                        Color.inkNormal
                 case .neutral:                              Color.cloudLight
                 case .status(.info, false):                 Color.blueLight
@@ -158,18 +158,18 @@ public extension Badge {
         public var labelColor: UIColor {
             switch self {
                 case .light:                                return .inkNormal
-                case .lightInverted:                        return .white
+                case .lightInverted:                        return .whiteNormal
                 case .neutral:                              return .inkNormal
                 case .status(.info, false):                 return .blueDark
-                case .status(.info, true):                  return .white
+                case .status(.info, true):                  return .whiteNormal
                 case .status(.success, false):              return .greenDark
-                case .status(.success, true):               return .white
+                case .status(.success, true):               return .whiteNormal
                 case .status(.warning, false):              return .orangeDark
-                case .status(.warning, true):               return .white
+                case .status(.warning, true):               return .whiteNormal
                 case .status(.critical, false):             return .redDark
-                case .status(.critical, true):              return .white
+                case .status(.critical, true):              return .whiteNormal
                 case .custom(let labelColor, _, _):         return labelColor
-                case .gradient:                             return .white
+                case .gradient:                             return .whiteNormal
             }
         }
     }
@@ -233,7 +233,7 @@ struct BadgePreviews: PreviewProvider {
                     style: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
-                        backgroundColor: .white
+                        backgroundColor: .whiteNormal
                     )
                 )
 

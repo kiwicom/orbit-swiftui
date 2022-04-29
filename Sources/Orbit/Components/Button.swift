@@ -180,20 +180,20 @@ extension Button {
 
         public var foregroundUIColor: UIColor {
             switch self {
-                case .primary:                  return .white
+                case .primary:                  return .whiteNormal
                 case .primarySubtle:            return .productDark
                 case .secondary:                return .inkNormal
-                case .critical:                 return .white
+                case .critical:                 return .whiteNormal
                 case .criticalSubtle:           return .redDark
-                case .status(.critical, false): return .white
+                case .status(.critical, false): return .whiteNormal
                 case .status(.critical, true):  return .redDarkHover
-                case .status(.info, false):     return .white
+                case .status(.info, false):     return .whiteNormal
                 case .status(.info, true):      return .blueDarkHover
-                case .status(.success, false):  return .white
+                case .status(.success, false):  return .whiteNormal
                 case .status(.success, true):   return .greenDarkHover
-                case .status(.warning, false):  return .white
+                case .status(.warning, false):  return .whiteNormal
                 case .status(.warning, true):   return .orangeDarkHover
-                case .gradient:                 return .white
+                case .gradient:                 return .whiteNormal
             }
         }
 

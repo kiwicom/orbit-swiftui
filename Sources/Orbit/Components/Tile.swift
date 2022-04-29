@@ -20,7 +20,7 @@ public struct TileButtonStyle: SwiftUI.ButtonStyle {
             case (let backgroundColor?, true):          return backgroundColor.active
             case (let backgroundColor?, false):         return backgroundColor.normal
             case (.none, true):                         return .whiteHover
-            case (.none, false):                        return .white
+            case (.none, false):                        return .whiteNormal
         }
     }
 }

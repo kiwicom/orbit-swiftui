@@ -48,7 +48,7 @@ struct StorybookColors {
         Card("White", borderStyle: .default, contentLayout: .fill) {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
-                    color(.white, label: "White")
+                    color(.whiteNormal, label: "White")
                     color(.whiteHover, label: "White: hover")
                     color(.whiteActive, label: "White: active")
                 }
@@ -232,7 +232,7 @@ struct StorybookColors {
                 Text(
                     label,
                     size: .small,
-                    color: .custom(color.brightness > 0.6 ? .inkNormal : .white),
+                    color: .custom(color.brightness > 0.6 ? .inkNormal : .whiteNormal),
                     weight: .medium
                 )
                 .padding(.horizontal, .medium)

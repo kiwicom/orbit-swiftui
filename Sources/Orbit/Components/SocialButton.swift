@@ -81,7 +81,7 @@ extension SocialButton {
                     if #available(iOS 14.0, *) {
                         SocialButton.appleLogo
                             .font(.system(size: 20))
-                            .foregroundColor(.white)
+                            .foregroundColor(.whiteNormal)
                             .padding(.horizontal, .xxxSmall)
                             .padding(.bottom, .xxSmall)
                     } else {
@@ -104,7 +104,7 @@ extension SocialButton {
 
         var labelColor: Color {
             switch self {
-                case .apple:                                return .white
+                case .apple:                                return .whiteNormal
                 case .google:                               return .inkNormal
                 case .facebook:                             return .inkNormal
                 case .email:                                return .inkNormal

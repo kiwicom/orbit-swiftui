@@ -212,7 +212,7 @@ public extension Text {
             switch self {
                 case .inkNormal:            return .inkNormal
                 case .inkLight:             return .inkLight
-                case .white:                return .white
+                case .white:                return .whiteNormal
                 case .custom(let color):    return color
             }
         }

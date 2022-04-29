@@ -159,17 +159,17 @@ struct TileBorderModifierPreviews: PreviewProvider {
 
             Text("Content")
                 .padding()
-                .tileBorder(backgroundColor: .white)
+                .tileBorder(backgroundColor: .whiteNormal)
                 .padding()
 
             Text("Content")
                 .padding()
-                .tileBorder(style: .iOS, backgroundColor: .white)
+                .tileBorder(style: .iOS, backgroundColor: .whiteNormal)
                 .padding()
 
             Text("Content")
                 .padding()
-                .tileBorder(backgroundColor: .white, shadow: .default)
+                .tileBorder(backgroundColor: .whiteNormal, shadow: .default)
                 .padding()
 
             Text("Content")

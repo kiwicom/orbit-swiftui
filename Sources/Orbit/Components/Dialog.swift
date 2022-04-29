@@ -30,7 +30,7 @@ public struct Dialog: View {
         .padding(.medium)
         .background(
             RoundedRectangle(cornerRadius: .small)
-                .fill(.white)
+                .fill(Color.whiteNormal)
                 .shadow(color: Self.shadowColor.opacity(0.7), radius: .xxxLarge, x: 0, y: .xxxLarge / 2)
         )
         .frame(maxWidth: Layout.readableMaxWidth / 2)
@@ -156,7 +156,7 @@ struct DialogPreviews: PreviewProvider {
             description: description1,
             buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
         )
-        .background(Color.white)
+        .background(Color.whiteNormal)
     }
 
     static var critical: some View {
@@ -167,7 +167,7 @@ struct DialogPreviews: PreviewProvider {
             style: .critical,
             buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
         )
-        .background(Color.white)
+        .background(Color.whiteNormal)
     }
 
     static var titleOnly: some View {
@@ -175,7 +175,7 @@ struct DialogPreviews: PreviewProvider {
             title: title1,
             buttons: .primaryAndSecondary("Main CTA", "Secondary")
         )
-        .background(Color.white)
+        .background(Color.whiteNormal)
     }
 
     static var descriptionOnly: some View {
@@ -183,6 +183,6 @@ struct DialogPreviews: PreviewProvider {
             description: description1,
             buttons: .primary("Main CTA")
         )
-        .background(Color.white)
+        .background(Color.whiteNormal)
     }
 }

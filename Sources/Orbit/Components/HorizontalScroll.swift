@@ -124,7 +124,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
     static var storybook: some View {
         VStack(spacing: .large) {
             content
-                .background(Color.white)
+                .background(Color.whiteNormal)
         }
         .background(Color.cloudLight)
     }

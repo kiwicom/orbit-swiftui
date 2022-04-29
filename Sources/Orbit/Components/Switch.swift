@@ -38,7 +38,7 @@ public struct Switch: View {
     @ViewBuilder var indicator: some View {
         Circle()
             .frame(width: Self.circleDiameter, height: Self.circleDiameter)
-            .foregroundColor(.white)
+            .foregroundColor(.whiteNormal)
             .shadow(color: Self.shadowColor.opacity(isEnabled ? 1 : 0), radius: 2.5, y: 1.5)
             .overlay(
                 Circle()

@@ -174,7 +174,7 @@ public extension Card {
         titleStyle: Heading.Style = .title4,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
-        backgroundColor: Color? = .white,
+        backgroundColor: Color? = .whiteNormal,
         contentLayout: CardContentLayout = .default(),
         contentAlignment: HorizontalAlignment = .leading,
         @ViewBuilder content: @escaping () -> Content
@@ -205,7 +205,7 @@ public extension Card {
         titleStyle: Heading.Style = .title4,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
-        backgroundColor: Color? = .white
+        backgroundColor: Color? = .whiteNormal
     ) where Content == EmptyView {
         self.init(
             title,
@@ -233,7 +233,7 @@ public extension Card {
         titleStyle: Heading.Style = .title4,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
-        backgroundColor: Color? = .white,
+        backgroundColor: Color? = .whiteNormal,
         contentLayout: CardContentLayout = .default(),
         contentAlignment: HorizontalAlignment = .leading,
         @ViewBuilder content: @escaping () -> Content
@@ -264,7 +264,7 @@ public extension Card {
         titleStyle: Heading.Style = .title4,
         status: Status? = nil,
         width: ContainerWidth = .expanding(),
-        backgroundColor: Color? = .white
+        backgroundColor: Color? = .whiteNormal
     ) where Content == EmptyView {
         self.init(
             title,
