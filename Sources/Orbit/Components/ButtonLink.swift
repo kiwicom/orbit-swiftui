@@ -35,7 +35,7 @@ public struct ButtonLink: View {
                             color: nil,
                             weight: .medium,
                             accentColor: style.color.normal,
-                            linkColor: style.color.normal
+                            linkColor: .custom(style.color.normal)
                         )
                     }
                 }

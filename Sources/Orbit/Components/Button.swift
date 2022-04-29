@@ -38,7 +38,7 @@ public struct Button: View {
                             size: size.textSize,
                             color: .custom(style.foregroundUIColor),
                             weight: .medium,
-                            linkColor: style.foregroundUIColor
+                            linkColor: .custom(style.foregroundUIColor)
                         )
                     } else {
                         Text(
@@ -46,7 +46,7 @@ public struct Button: View {
                             size: size.textSize,
                             color: .custom(style.foregroundUIColor),
                             weight: .medium,
-                            linkColor: style.foregroundUIColor
+                            linkColor: .custom(style.foregroundUIColor)
                         )
                         // Prevents text value animation issue due to different iOS13 behavior
                         .animation(nil)

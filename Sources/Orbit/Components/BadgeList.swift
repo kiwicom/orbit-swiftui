@@ -34,7 +34,7 @@ public struct BadgeList: View {
                     label,
                     size: .small,
                     color: .custom(labelColor.color),
-                    linkColor: labelColor.color
+                    linkColor: .custom(labelColor.color)
                 )
             }
         }

@@ -12,11 +12,10 @@ public struct TextLink: UIViewRepresentable {
 
     /// An action handler for a link tapped inside the ``Text`` component.
     public typealias Action = (URL, String) -> Void
-    public static let defaultColor: UIColor = .productDark
 
     let content: NSAttributedString
-    let size: CGSize
-    let color: UIColor
+    let bounds: CGSize
+    let color: Color
     let action: Action
     
     public func makeCoordinator() -> Coordinator {
@@ -24,7 +23,7 @@ public struct TextLink: UIViewRepresentable {
     }
 
     public func makeUIView(context: UIViewRepresentableContext<TextLink>) -> TextLinkView {
-        let textLinkView = TextLinkView(layoutManager: NSLayoutManager(), size: size, action: action)
+        let textLinkView = TextLinkView(layoutManager: NSLayoutManager(), size: bounds, action: action)
         
         let tapRecognizer = UITapGestureRecognizer(
             target: context.coordinator,
@@ -38,9 +37,9 @@ public struct TextLink: UIViewRepresentable {
     public func updateUIView(_ uiView: TextLinkView, context: UIViewRepresentableContext<TextLink>) {
         uiView.update(
             content: content,
-            size: size,
+            size: bounds,
             lineLimit: context.environment.lineLimit ?? 0,
-            color: color
+            color: color.uiValue
         )
     }
     
@@ -69,6 +68,46 @@ public struct TextLink: UIViewRepresentable {
                     parent.action(url, text)
                     return
                 }
+            }
+        }
+    }
+}
+
+// MARK: - Inits
+extension TextLink {
+
+    /// Creates an Orbit TextLink layer that only contains links (ignoring any non-link content) inside specified bounds.
+    public init(_ content: NSAttributedString, bounds: CGSize, color: TextLink.Color = .primary, action: @escaping TextLink.Action = {_, _ in }) {
+        self.content = content
+        self.bounds = bounds
+        self.color = color
+        self.action = action
+    }
+}
+
+// MARK: - Types
+extension TextLink {
+
+    /// Orbit TextLink color.
+    public enum Color: Equatable {
+        case primary
+        case secondary
+        case status(Status)
+        case custom(UIColor)
+
+        public var value: SwiftUI.Color {
+            SwiftUI.Color(uiValue)
+        }
+
+        public var uiValue: UIColor {
+            switch self {
+                case .primary:              return .productDark
+                case .secondary:            return .inkNormal
+                case .status(.info):        return .blueDark
+                case .status(.success):     return .greenDark
+                case .status(.warning):     return .orangeDark
+                case .status(.critical):    return .redDark
+                case .custom(let color):    return color
             }
         }
     }

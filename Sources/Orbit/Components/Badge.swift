@@ -29,7 +29,7 @@ public struct Badge: View {
                     size: .small,
                     color: .custom(style.labelColor),
                     weight: .medium,
-                    linkColor: style.labelColor
+                    linkColor: .custom(style.labelColor)
                 )
                 .lineLimit(1)
             }

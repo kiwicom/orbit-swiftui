@@ -19,7 +19,7 @@ public struct Text: View {
     let lineSpacing: CGFloat?
     let alignment: TextAlignment
     let accentColor: UIColor
-    let linkColor: UIColor
+    let linkColor: TextLink.Color
     let linkAction: TextLink.Action
     let isSelectable: Bool
     let kerning: CGFloat
@@ -53,7 +53,7 @@ public struct Text: View {
     @ViewBuilder var textLinks: some View {
         if content.containsTextLinks {
             GeometryReader { geometry in
-                TextLink(content: textLinkContent, size: geometry.size, color: linkColor) { url, text in
+                TextLink(content: textLinkContent, bounds: geometry.size, color: linkColor) { url, text in
                     HapticsProvider.sendHapticFeedback(.light(0.5))
                     linkAction(url, text)
                 }
@@ -135,7 +135,7 @@ public extension Text {
         lineSpacing: CGFloat? = nil,
         alignment: TextAlignment = .leading,
         accentColor: UIColor? = nil,
-        linkColor: UIColor = TextLink.defaultColor,
+        linkColor: TextLink.Color = .primary,
         isSelectable: Bool = false,
         strikethrough: Bool = false,
         kerning: CGFloat = 0,

@@ -53,7 +53,7 @@ public struct Alert<Content: View>: View {
                 if isHeaderEmpty == false {
                     VStack(alignment: .leading, spacing: .xxSmall) {
                         Text(title, weight: .bold)
-                        Text(description, linkColor: .inkNormal, linkAction: descriptionLinkAction)
+                        Text(description, linkColor: .secondary, linkAction: descriptionLinkAction)
                     }
                 }
                 
