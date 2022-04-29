@@ -17,6 +17,7 @@ import json
 import re
 import pathlib
 import shutil
+import colorsys
 from urllib.request import urlopen
 
 ORBIT_URL = 'https://unpkg.com/@kiwicom/orbit-design-tokens/output/theo-spec.json'
@@ -45,6 +46,24 @@ xcassets_color_template = '''{{
         }}
       }},
       "idiom" : "universal"
+    }},
+    {{
+      "appearances" : [
+        {{
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }}
+      ],
+      "color" : {{
+        "color-space" : "srgb",
+        "components" : {{
+          "alpha" : "1.000",
+          "blue" : "0x{iB}",
+          "green" : "0x{iG}",
+          "red" : "0x{iR}"
+        }}
+      }},
+      "idiom" : "universal"
     }}
   ],
   "info" : {{
@@ -56,23 +75,21 @@ xcassets_color_template = '''{{
 
 source_filename_plural = f'Colors'
 source_group_template = '\n    // MARK: - {group}'
-source_line_template = '    static let {name} = Color("{description}", bundle: .current)'
-source_line_template_uicolor = '    static let {name} = fromResource(named: "{description}")'
-source_template = '''/// Generated and updated by 'Automation/orbit/update_colors.py'
-// swiftlint:disable:previous orphaned_doc_comment
-
+source_line_template = '    /// Orbit {description} color.\n    static let {name} = Color("{description}", bundle: .current)'
+source_line_template_uicolor = '    /// Orbit {description} color.\n    static let {name} = fromResource(named: "{description}")'
+source_template = '''
 import SwiftUI
 
+// Generated and updated by 'Automation/orbit/update_colors.py'
 public extension Color {{
 {colorList}
 }}
 '''
 
-source_template_uicolor = '''/// Generated and updated by 'Automation/orbit/update_colors.py'
-// swiftlint:disable:previous orphaned_doc_comment
-
+source_template_uicolor = '''
 import UIKit
 
+// Generated and updated by 'Automation/orbit/update_colors.py'
 public extension UIColor {{
 {colorList}
 }}
@@ -86,6 +103,12 @@ def camel_case_split(str):
 
 def str_to_hexa(str):
   return '{0:0{1}x}'.format(int(str),2).upper()
+
+def get_inversed_colors(colors):
+  r, g, b = [float(c)/255.0 for c in colors]
+  h, l, s = colorsys.rgb_to_hls(r, g, b)
+  rgb_inverted = colorsys.hls_to_rgb(h, 1.0 - l, s)
+  return [float(c)*255.0 for c in rgb_inverted]
 
 def get_updated_colors():
   r = urlopen(ORBIT_URL).read()
@@ -135,13 +158,16 @@ if __name__ == "__main__":
       name = lowercase_first_letter("".join(key_tokens[0:]))
 
       if name == "white":
-        # default system white color will be used due to name clash
-        continue
+        # Workaround for system white color name clash
+        name = "whiteNormal"
 
       description = " ".join(key_tokens[0:])
-      rgb_hex_colors = list(map(lambda c: str_to_hexa(c), re.findall(r'\d+', value)))
-      
-      assert len(rgb_hex_colors) == 3, "Expected 3 decimal RGB values from JSON"
+
+      colors = re.findall(r'\d+', value)
+      assert len(colors) == 3, "Expected 3 decimal RGB values from JSON"
+      colors_inverse = get_inversed_colors(colors)
+      rgb_hex_colors = list(map(lambda c: str_to_hexa(c), colors))
+      rgb_hex_inverse_colors = list(map(lambda c: str_to_hexa(c), colors_inverse))
 
       if group != lastColorGroup:
         sourceColorLines.append(source_group_template.format(group = group))
@@ -166,7 +192,10 @@ if __name__ == "__main__":
 
       # Create color definition file
       with open(colorSetPath.joinpath(contents_filename), "w") as colorSetFile:
-          colorSetFile.write(xcassets_color_template.format(R = rgb_hex_colors[0], G = rgb_hex_colors[1], B = rgb_hex_colors[2]))
+          colorSetFile.write(xcassets_color_template.format(
+            R = rgb_hex_colors[0], G = rgb_hex_colors[1], B = rgb_hex_colors[2],
+            iR = rgb_hex_inverse_colors[0], iG = rgb_hex_inverse_colors[1], iB = rgb_hex_inverse_colors[2])
+          )
 
   updatedSourceContent = source_template.format(colorList = '\n'.join(sourceColorLines))
   updatedSourceContentUIColor = source_template_uicolor.format(colorList = '\n'.join(sourceUIColorLines))
