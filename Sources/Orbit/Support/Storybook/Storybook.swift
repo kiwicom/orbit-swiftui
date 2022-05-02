@@ -20,17 +20,19 @@ public struct Storybook: View {
                     .background(
                         VStack {
                             ForEach(Item.allCases, id: \.rawValue) { item in
-                                NavigationLink(
-                                    tag: item,
-                                    selection: $selectedItem,
-                                    destination: {
-                                        StorybookDetail(menuItem: item, darkMode: $darkMode)
-                                    },
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
+                                if item.tabs.count > 0 {
+                                    NavigationLink(
+                                        tag: item,
+                                        selection: $selectedItem,
+                                        destination: {
+                                            StorybookDetail(menuItem: item, darkMode: $darkMode)
+                                        },
+                                        label: {
+                                            EmptyView()
+                                        }
+                                    )
+                                    .hidden()
+                                }
                             }
                         }
                     )
@@ -44,9 +46,7 @@ public struct Storybook: View {
 
     @ViewBuilder var darkModeSwitch: some View {
         BarButton(.sun) {
-            withAnimation(.easeIn(duration: 1)) {
-                darkMode.toggle()
-            }
+            darkMode.toggle()
         }
     }
 
@@ -113,8 +113,16 @@ public struct Storybook: View {
     }
 
     @ViewBuilder func tile(_ item: Item) -> some View {
-        Tile(String(describing: item).titleCased,  iconContent: .sfSymbol(item.sfSymbol), disclosure: .none, titleStyle: .title5) { selectedItem = item
+        Tile(
+            String(describing: item).titleCased,
+            iconContent: item.tabs.isEmpty ? .icon(.timelapse) : .sfSymbol(item.sfSymbol),
+            disclosure: .none,
+            titleStyle: .title5
+        ) {
+            selectedItem = item
         }
+        .opacity(item.tabs.isEmpty ? 0.4 : 1)
+        .disabled(item.tabs.isEmpty)
         .frame(maxWidth: .infinity)
     }
 }

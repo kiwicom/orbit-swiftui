@@ -18,13 +18,10 @@ struct StorybookDetail: View {
 
     @ViewBuilder var content: some View {
         VStack(alignment: .leading, spacing: 0) {
-
             if menuItem.tabs.count > 1 {
-                VStack(alignment: .leading, spacing: .large) {
-                    Tabs(selectedIndex: $selectedTab) {
-                        ForEach(menuItem.tabs, id: \.self) { tab in
-                            Tab(tab)
-                        }
+                Tabs(selectedIndex: $selectedTab) {
+                    ForEach(menuItem.tabs, id: \.self) { tab in
+                        Tab(tab)
                     }
                 }
                 .padding(.medium)
@@ -37,9 +34,7 @@ struct StorybookDetail: View {
 
     @ViewBuilder var darkModeSwitch: some View {
         BarButton(.sun) {
-            withAnimation(.easeIn(duration: 1)) {
-                darkMode.toggle()
-            }
+            darkMode.toggle()
         }
     }
 
