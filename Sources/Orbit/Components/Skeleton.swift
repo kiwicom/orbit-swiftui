@@ -12,15 +12,16 @@ public struct Skeleton: View {
 
     let preset: Preset
     let borderRadius: CGFloat
-    let animated: Bool
+    let animation: Animation
 
     public var body: some View {
         content
             .onAppear {
-                guard animated else { return }
-
-                withAnimation(.easeInOut(duration: 1.2).repeatForever()) {
-                    color = Self.lightColor
+                // https://developer.apple.com/forums/thread/670836
+                DispatchQueue.main.async {
+                    withAnimation(animation.value?.repeatForever()) {
+                        color = Self.lightColor
+                    }
                 }
             }
     }
@@ -29,22 +30,22 @@ public struct Skeleton: View {
         switch preset {
             case .atomic(let atomic):
                 switch atomic {
-                    case .circle:       Circle().fill(shapeStyle)
-                    case .rectangle:    roundedRectangle.fill(shapeStyle)
+                    case .circle:       Circle().fill(color)
+                    case .rectangle:    roundedRectangle.fill(color)
                 }
             case .button(let size):
                 switch size {
-                    case .default:      roundedRectangle.fill(shapeStyle).frame(height: Layout.preferredButtonHeight)
-                    case .small:        roundedRectangle.fill(shapeStyle).frame(height: Layout.preferredSmallButtonHeight)
+                    case .default:      roundedRectangle.fill(color).frame(height: Layout.preferredButtonHeight)
+                    case .small:        roundedRectangle.fill(color).frame(height: Layout.preferredSmallButtonHeight)
                 }
             case .card(let height), .image(let height):
-                roundedRectangle.fill(shapeStyle).frame(height: height)
+                roundedRectangle.fill(color).frame(height: height)
             case .list(let rows, let rowHeight, let spacing):
                 VStack(spacing: spacing) {
                     ForEach(0 ..< rows, id: \.self) { _ in
                         HStack(spacing: spacing) {
-                            roundedRectangle.fill(shapeStyle).frame(width: rowHeight, height: rowHeight)
-                            roundedRectangle.fill(shapeStyle).frame(height: rowHeight)
+                            roundedRectangle.fill(color).frame(width: rowHeight, height: rowHeight)
+                            roundedRectangle.fill(color).frame(height: rowHeight)
                         }
                     }
                 }
@@ -67,16 +68,12 @@ public struct Skeleton: View {
         }
     }
 
-    var shapeStyle: some ShapeStyle {
-        color
-    }
-
     var roundedRectangle: RoundedRectangle {
         RoundedRectangle(cornerRadius: borderRadius)
     }
 
     @ViewBuilder func line(height: CGFloat) -> some View {
-        roundedRectangle.fill(shapeStyle).frame(height: height)
+        roundedRectangle.fill(color).frame(height: height)
     }
 }
 
@@ -97,6 +94,20 @@ extension Skeleton {
         case list(rows: Int, rowHeight: CGFloat = 20, spacing: CGFloat = .xSmall)
         case text(lines: Int, lineHeight: CGFloat = 20, spacing: CGFloat = .xSmall)
     }
+
+    public enum Animation {
+        case none
+        case `default`
+        case custom(SwiftUI.Animation)
+
+        var value: SwiftUI.Animation? {
+            switch self {
+                case .none:                     return nil
+                case .default:                  return .easeInOut(duration: 1.2)
+                case .custom(let animation):    return animation
+            }
+        }
+    }
 }
 
 // MARK: - Inits
@@ -106,11 +117,11 @@ public extension Skeleton {
     init(
         _ preset: Preset,
         borderRadius: CGFloat = BorderRadius.desktop,
-        animated: Bool = true
+        animation: Animation = .default
     ) {
         self.preset = preset
         self.borderRadius = borderRadius
-        self.animated = animated
+        self.animation = animation
     }
 }
 
@@ -119,41 +130,41 @@ struct SkeletonPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            content(animated: false)
-            contentAtomic(animated: false)
+            content(animation: .none)
+            contentAtomic(animation: .none)
             livePreview
         }
         .previewLayout(.sizeThatFits)
     }
 
     static var storybook: some View {
-        content(animated: true)
+        content()
     }
 
     static var storybookAtomic: some View {
-        contentAtomic(animated: true)
+        contentAtomic()
     }
 
-    static func contentAtomic(animated: Bool) -> some View {
+    static func contentAtomic(animation: Skeleton.Animation = .default) -> some View {
         VStack(alignment: .leading, spacing: .medium) {
-            Skeleton(.atomic(.circle), animated: animated)
+            Skeleton(.atomic(.circle), animation: animation)
                 .frame(height: 60)
-            Skeleton(.atomic(.rectangle), animated: animated)
+            Skeleton(.atomic(.rectangle), animation: animation)
                 .frame(height: 60)
-            Skeleton(.atomic(.rectangle), borderRadius: 20, animated: animated)
+            Skeleton(.atomic(.rectangle), borderRadius: 20, animation: animation)
                 .frame(height: 60)
         }
         .padding(.medium)
         .previewDisplayName("Atomic")
     }
 
-    static func content(animated: Bool) -> some View {
+    static func content(animation: Skeleton.Animation = .default) -> some View {
         VStack(alignment: .leading, spacing: .medium) {
-            Skeleton(.list(rows: 3), animated: animated)
-            Skeleton(.image(), animated: animated)
-            Skeleton(.card(), animated: animated)
-            Skeleton(.button(), animated: animated)
-            Skeleton(.text(lines: 4), animated: animated)
+            Skeleton(.list(rows: 3), animation: animation)
+            Skeleton(.image(), animation: animation)
+            Skeleton(.card(), animation: animation)
+            Skeleton(.button(), animation: animation)
+            Skeleton(.text(lines: 4), animation: animation)
         }
         .padding(.medium)
     }
@@ -161,7 +172,7 @@ struct SkeletonPreviews: PreviewProvider {
     static var livePreview: some View {
         VStack(spacing: .large) {
             Heading("Loading...", style: .title3)
-            content(animated: true)
+            content()
         }
         .padding()
     }
