@@ -6,6 +6,8 @@ public extension Icon {
     enum Symbol: Comparable, CaseIterable {
         case accommodation
         case accountCircle
+        case admin
+        case ai
         case airConditioning
         case airplane
         case airplaneDown
@@ -17,7 +19,9 @@ public extension Icon {
         case airportSecurity
         case alert
         case alertCircle
+        case alertOctagon
         case all
+        case android
         case anywhere
         case apple
         case arrowDown
@@ -73,11 +77,17 @@ public extension Icon {
         case code
         case coffee
         case colorPicker
+        case coloredFacebook
+        case coloredImessage
+        case coloredMessenger
+        case coloredTwitter
+        case coloredWhatsapp
         case compare
         case compass
         case contactEmail
         case creditCard
         case customerSupport
+        case dashboard
         case deals
         case dealsV2
         case deviceDesktop
@@ -94,6 +104,7 @@ public extension Icon {
         case facebook
         case feedback
         case filters
+        case flash
         case flightDirect
         case flightMulticity
         case flightNomad
@@ -160,6 +171,7 @@ public extension Icon {
         case moon
         case musicalInstruments
         case newWindow
+        case noKiwicomGuarantee
         case nonstop
         case notification
         case notificationAdd
@@ -262,6 +274,8 @@ public extension Icon {
             switch self {
                 case .accommodation: return "\u{e085}"
                 case .accountCircle: return "\u{e134}"
+                case .admin: return "\u{e253}"
+                case .ai: return "\u{e254}"
                 case .airConditioning: return "\u{e184}"
                 case .airplane: return "\u{0061}"
                 case .airplaneDown: return "\u{e101}"
@@ -273,7 +287,9 @@ public extension Icon {
                 case .airportSecurity: return "\u{e035}"
                 case .alert: return "\u{e07f}"
                 case .alertCircle: return "\u{0055}"
+                case .alertOctagon: return "\u{e207}"
                 case .all: return "\u{e061}"
+                case .android: return "\u{e255}"
                 case .anywhere: return "\u{0067}"
                 case .apple: return "\u{e199}"
                 case .arrowDown: return "\u{e0a0}"
@@ -329,11 +345,17 @@ public extension Icon {
                 case .code: return "\u{e141}"
                 case .coffee: return "\u{e02f}"
                 case .colorPicker: return "\u{e200}"
+                case .coloredFacebook: return "\u{e257}"
+                case .coloredImessage: return "\u{e260}"
+                case .coloredMessenger: return "\u{e259}"
+                case .coloredTwitter: return "\u{e261}"
+                case .coloredWhatsapp: return "\u{e262}"
                 case .compare: return "\u{e155}"
                 case .compass: return "\u{e07e}"
                 case .contactEmail: return "\u{0076}"
                 case .creditCard: return "\u{0075}"
                 case .customerSupport: return "\u{e194}"
+                case .dashboard: return "\u{e252}"
                 case .deals: return "\u{e142}"
                 case .dealsV2: return "\u{e206}"
                 case .deviceDesktop: return "\u{e158}"
@@ -350,6 +372,7 @@ public extension Icon {
                 case .facebook: return "\u{e002}"
                 case .feedback: return "\u{e140}"
                 case .filters: return "\u{0026}"
+                case .flash: return "\u{e220}"
                 case .flightDirect: return "\u{0043}"
                 case .flightMulticity: return "\u{005d}"
                 case .flightNomad: return "\u{e150}"
@@ -416,6 +439,7 @@ public extension Icon {
                 case .moon: return "\u{e090}"
                 case .musicalInstruments: return "\u{e086}"
                 case .newWindow: return "\u{e05e}"
+                case .noKiwicomGuarantee: return "\u{e208}"
                 case .nonstop: return "\u{e120}"
                 case .notification: return "\u{e018}"
                 case .notificationAdd: return "\u{e195}"
