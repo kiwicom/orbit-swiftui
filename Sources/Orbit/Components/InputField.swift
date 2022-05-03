@@ -209,43 +209,67 @@ public extension InputField {
 // MARK: - Previews
 struct InputFieldPreviews: PreviewProvider {
 
+    static let label = "Field label"
+    static let value = "Value"
+    static let placeholder = "Placeholder"
+    static let helpMessage = "Help message"
+    static let errorMessage = "Error message"
+
     static var previews: some View {
         PreviewWrapper {
             standalone
-            snapshots
+            storybook
+            storybookMix
         }
-        .previewLayout(PreviewLayout.sizeThatFits)
+        .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
-        PreviewWrapperWithState(initialState: "Value") { state in
-            InputField("Label", value: state, prefix: .icon(.grid), suffix: .icon(.grid), placeholder: "Placeholder", state: .default)
+        StateWrapper(initialState: value) { state in
+            InputField(label, value: state, prefix: .icon(.grid), suffix: .icon(.grid), placeholder: placeholder, state: .default)
+                .padding(.medium)
         }
     }
 
-    @ViewBuilder static var orbit: some View {
-        InputField("Empty", value: .constant(""), placeholder: "Placeholder")
-        InputField("Disabled, Empty", value: .constant(""), placeholder: "Placeholder", state: .disabled)
-        InputField("Disabled", value: .constant("Disabled Value"), placeholder: "Placeholder", state: .disabled)
-        InputField("Default", value: .constant("InputField Value"))
-        InputField("Modified", value: .constant("Modified value"), state: .modified)
-        InputField("Focused", value: .constant("Focus / Help"), message: .help("Help message"))
-        InputField("Secured", value: .constant("password"), isSecure: true)
-        InputField(
-            "InputField with a long multiline label to test that it works",
-            value: .constant("Error value with a very long length to test that it works"),
-            message: .error("Error message, also very long and multi-line to test that it works.")
-        )
-        InputField(value: .constant("InputField with no label"))
-        InputField(value: .constant("InputField with CountryFlag prefix"), prefix: .countryFlag("us"))
+    static var storybook: some View {
+        VStack(spacing: .medium) {
+            inputField(value: "", message: .none)
+            inputField(value: "", message: .help(helpMessage))
+            inputField(value: "", message: .error(errorMessage))
+            Separator()
+            inputField(value: value, message: .none)
+            inputField(value: value, message: .help(helpMessage))
+            inputField(value: value, message: .error(errorMessage))
+        }
+        .padding(.medium)
     }
 
-    static var snapshots: some View {
-        VStack(spacing: Spacing.medium) {
-            orbit
+    static func inputField(value: String, message: MessageType) -> some View {
+        StateWrapper(initialState: value) { state in
+            InputField(label, value: state, prefix: .icon(.grid), suffix: .icon(.grid), placeholder: placeholder, message: message)
         }
-        .padding()
-        .previewDisplayName("Orbit")
+    }
+
+    static var storybookMix: some View {
+        VStack(spacing: .medium) {
+            InputField("Empty", value: .constant(""), placeholder: placeholder)
+            InputField("Disabled, Empty", value: .constant(""), placeholder: placeholder, state: .disabled)
+            InputField("Disabled", value: .constant("Disabled Value"), placeholder: placeholder, state: .disabled)
+            InputField("Default", value: .constant("InputField Value"))
+            InputField("Modified", value: .constant("Modified value"), state: .modified)
+            InputField("Focused", value: .constant("Focus / Help"), message: .help("Help message"))
+            InputField("Secured", value: .constant("password"), isSecure: true)
+            InputField(
+                "InputField with a long multiline label to test that it works",
+                value: .constant("Error value with a very long length to test that it works"),
+                message: .error("Error message, also very long and multi-line to test that it works.")
+            )
+            HStack(spacing: .medium) {
+                InputField(value: .constant("No label"))
+                InputField(value: .constant("Flag prefix"), prefix: .countryFlag("us"))
+            }
+        }
+        .padding(.medium)
     }
 }
 
@@ -309,7 +333,7 @@ struct InputFieldLivePreviews: PreviewProvider {
 
     static var securedWrapper: some View {
 
-        PreviewWrapperWithState(initialState: "") { state in
+        StateWrapper(initialState: "") { state in
 
             VStack(alignment: .leading, spacing: .medium) {
                 Heading("Heading", style: .title2)

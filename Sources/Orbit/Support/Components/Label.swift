@@ -97,7 +97,7 @@ public extension Label {
             weight: Font.Weight = .regular,
             color: Text.Color? = .inkNormal,
             accentColor: UIColor = .inkNormal,
-            linkColor: UIColor = TextLink.defaultColor,
+            linkColor: TextLink.Color = .primary,
             linkAction: TextLink.Action = { _, _ in }
         )
     

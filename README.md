@@ -50,11 +50,27 @@ Font.orbitFonts = [
 ]
 ```
 
-1. Import fonts that are used in orbit-components.
+To use fonts in Orbit components, register fonts once during app start (or use a `PreviewWrapper` wrapper for previews).
 
 ```swift
 Font.registerOrbitFonts()
 ```
+
+1. (Optional) Browse Orbit `Storybook` (using preview or empty app) to see all available components.
+
+```
+@main struct DemoApp: App {
+    var body: some Scene {
+        WindowGroup {
+            PreviewWrapper {
+                Storybook()
+            }
+        }
+    }
+}
+```
+
+![image](/Documentation/storybook.png)
 
 2. Include any of our components in your project and use them.
 

@@ -38,7 +38,7 @@ public struct Button: View {
                             size: size.textSize,
                             color: .custom(style.foregroundUIColor),
                             weight: .medium,
-                            linkColor: style.foregroundUIColor
+                            linkColor: .custom(style.foregroundUIColor)
                         )
                     } else {
                         Text(
@@ -46,7 +46,7 @@ public struct Button: View {
                             size: size.textSize,
                             color: .custom(style.foregroundUIColor),
                             weight: .medium,
-                            linkColor: style.foregroundUIColor
+                            linkColor: .custom(style.foregroundUIColor)
                         )
                         // Prevents text value animation issue due to different iOS13 behavior
                         .animation(nil)
@@ -69,7 +69,7 @@ public struct Button: View {
     }
     
     var iconSize: Icon.Size {
-        size == .small ? .small : .large
+        size == .small ? .small : .normal
     }
 
     func presentHapticFeedback() {
@@ -180,20 +180,20 @@ extension Button {
 
         public var foregroundUIColor: UIColor {
             switch self {
-                case .primary:                  return .white
+                case .primary:                  return .whiteNormal
                 case .primarySubtle:            return .productDark
                 case .secondary:                return .inkNormal
-                case .critical:                 return .white
+                case .critical:                 return .whiteNormal
                 case .criticalSubtle:           return .redDark
-                case .status(.critical, false): return .white
+                case .status(.critical, false): return .whiteNormal
                 case .status(.critical, true):  return .redDarkHover
-                case .status(.info, false):     return .white
+                case .status(.info, false):     return .whiteNormal
                 case .status(.info, true):      return .blueDarkHover
-                case .status(.success, false):  return .white
+                case .status(.success, false):  return .whiteNormal
                 case .status(.success, true):   return .greenDarkHover
-                case .status(.warning, false):  return .white
+                case .status(.warning, false):  return .whiteNormal
                 case .status(.warning, true):   return .orangeDarkHover
-                case .gradient:                 return .white
+                case .gradient:                 return .whiteNormal
             }
         }
 
@@ -307,118 +307,92 @@ struct ButtonPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            snapshots
+            storybook
+            storybookStatus
+            storybookGradient
         }
+        .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
-        Button("Primary Button")
-            .previewLayout(.sizeThatFits)
+        Button("Button")
+            .padding(.medium)
             .previewDisplayName("Standalone")
     }
 
-    @ViewBuilder static var orbit: some View {
-        VStack(spacing: .medium) {
-            HStack(spacing: .medium) {
-                Button("Primary", style: .primary)
-                Button("Primary Subtle", style: .primarySubtle)
-            }
-            Button("Secondary", style: .secondary)
-            HStack(spacing: .medium) {
-                Button("Critical", style: .critical)
-                Button("Critical Subtle", style: .criticalSubtle)
-            }
+    @ViewBuilder static var storybook: some View {
+        VStack(alignment: .leading, spacing: .xLarge) {
+            buttons(.primary)
+            buttons(.primarySubtle)
+            buttons(.secondary)
+            buttons(.critical)
+            buttons(.criticalSubtle)
         }
-        .padding(.vertical)
-        .previewDisplayName("Main buttons")
-
-        VStack(spacing: .medium) {
-            HStack(spacing: .medium) {
-                Button("Info", style: .status(.info))
-                Button("Info Subtle", style: .status(.info, subtle: true))
-            }
-            HStack(spacing: .medium) {
-                Button("Success", style: .status(.success))
-                Button("Success Subtle", style: .status(.success, subtle: true))
-            }
-            HStack(spacing: .medium) {
-                Button("Warning", style: .status(.warning))
-                Button("Warning Subtle", style: .status(.warning, subtle: true))
-            }
-            HStack(spacing: .medium) {
-                Button("Critical", style: .status(.critical))
-                Button("Critical Subtle", style: .status(.critical, subtle: true))
-            }
-        }
-        .padding(.vertical)
-        .previewDisplayName("Status buttons")
-
-        VStack(spacing: .medium) {
-            Button("Orange Gradient", style: .gradient(.bundleBasic), icon: .email)
-            Button("Purple Gradient", style: .gradient(.bundleMedium), icon: .flightNomad, disclosureIcon: .chevronRight)
-            Button("Ink Gradient", style: .gradient(.bundleTop), icon: .flightDirect, disclosureIcon: .chevronRight)
-
-            HStack(spacing: .medium) {
-                Button("Turn on push notifications", style: .gradient(.bundleMedium))
-                Button(.close, style: .gradient(.bundleTop))
-            }
-        }
-        .padding(.vertical)
-        .previewDisplayName("Gradients")
-        
-        VStack(spacing: .medium) {
-            Button("Secondary with icon", style: .secondary, icon: .email)
-            Button("Primary with Icons", style: .primary, icon: .flightNomad, disclosureIcon: .chevronRight)
-            Button("Secondary with Icons", style: .secondary, icon: .flightDirect, disclosureIcon: .chevronRight)
-            Button("Info with Icons", style: .status(.info), icon: .flightDirect, disclosureIcon: .chevronRight)
-
-            HStack(spacing: .medium) {
-                Button("Turn on push notifications", style: .status(.info))
-                Button(.close, style: .status(.info, subtle: true))
-            }
-
-            HStack(spacing: .medium) {
-                Button("Icons", style: .secondary, icon: .anywhere, disclosureIcon: .chevronRight)
-                Button("Icons", style: .secondary, icon: .accommodation, disclosureIcon: .informationCircle)
-            }
-        }
-        .padding(.vertical)
-        .previewDisplayName("Mix")
-        
-        VStack(spacing: .medium) {
-            Button("Secondary with icon", style: .secondary, size: .small, icon: .email)
-            Button("Primary with Icons", style: .primary, size: .small, icon: .flightNomad, disclosureIcon: .chevronRight)
-            Button("Secondary with Icons", style: .secondary, size: .small, icon: .flightDirect, disclosureIcon: .chevronRight)
-            Button("Info with Icons", style: .status(.info), size: .small, icon: .flightDirect, disclosureIcon: .chevronRight)
-
-            HStack(spacing: .medium) {
-                Button("Turn on push notifications", style: .status(.info), size: .small)
-                Button(.close, style: .status(.info, subtle: true), size: .small)
-            }
-
-            HStack(spacing: .medium) {
-                Button("Icons", style: .secondary, size: .small, icon: .anywhere, disclosureIcon: .chevronRight)
-                Button("Icons", style: .secondary, size: .small, icon: .accommodation, disclosureIcon: .informationCircle)
-            }
-        }
-        .padding(.vertical)
-        .previewDisplayName("Mix - small")
+        .padding(.medium)
     }
 
-    static var snapshots: some View {
-        Group {
-            orbit
-
-            Button(
-                "Custom",
-                style: .critical,
-                iconContent: .icon(.check, color: .blueNormal)
-            )
-            .padding(.vertical)
-            .previewDisplayName("Custom")
+    @ViewBuilder static var storybookStatus: some View {
+        VStack(alignment: .leading, spacing: .xLarge) {
+            statusButtonStack(.info)
+            statusButtonStack(.success)
+            statusButtonStack(.warning)
+            statusButtonStack(.critical)
         }
-        .frame(width: 350)
-        .padding(.horizontal)
-        .previewLayout(.sizeThatFits)
+        .padding(.medium)
+    }
+
+    @ViewBuilder static var storybookGradient: some View {
+        VStack(alignment: .leading, spacing: .xLarge) {
+            buttons(.gradient(.bundleBasic)).previewDisplayName("Bundle Basic")
+            buttons(.gradient(.bundleMedium)).previewDisplayName("Bundle Medium")
+            buttons(.gradient(.bundleTop)).previewDisplayName("Bundle Top")
+        }
+        .padding(.medium)
+    }
+
+    @ViewBuilder static func buttons(_ style: Button.Style) -> some View {
+        VStack(spacing: .small) {
+            HStack(spacing: .small) {
+                Button("Label", style: style)
+                Button("Label", style: style, icon: .grid)
+            }
+            HStack(spacing: .small) {
+                Button("Label", style: style, disclosureIcon: .chevronRight)
+                Button("Label", style: style, icon: .grid, disclosureIcon: .chevronRight)
+            }
+            HStack(spacing: .small) {
+                Button("Label", style: style)
+                    .fixedSize()
+                Button(.grid, style: style)
+                Spacer()
+            }
+            HStack(spacing: .small) {
+                Button("Label", style: style, size: .small)
+                    .fixedSize()
+                Button(.grid, style: style, size: .small)
+                Spacer()
+            }
+        }
+    }
+
+    @ViewBuilder static func statusButtonStack(_ status: Status) -> some View {
+        VStack(spacing: .xSmall) {
+            statusButtons(.status(status))
+            statusButtons(.status(status, subtle: true))
+        }
+    }
+
+    @ViewBuilder static func statusButtons(_ style: Button.Style) -> some View {
+        HStack(spacing: .xSmall) {
+            Group {
+                Button("Label", style: style, size: .small)
+                Button("Label", style: style, size: .small, icon: .grid, disclosureIcon: .chevronRight)
+                Button("Label", style: style, size: .small, disclosureIcon: .chevronRight)
+                Button(.grid, style: style, size: .small)
+            }
+            .fixedSize()
+
+            Spacer(minLength: 0)
+        }
     }
 }

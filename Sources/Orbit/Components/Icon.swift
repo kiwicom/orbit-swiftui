@@ -40,7 +40,7 @@ public struct Icon: View {
                         }
                 case .sfSymbol(let systemName):
                     Image(systemName: systemName)
-                        .font(.system(size: size.value * 0.85))
+                        .font(.system(size: size.value * 0.75))
                         .alignmentGuide(.firstTextBaseline) { dimensions in
                             size.textLineHeight * Text.firstBaselineRatio + dimensions.height / 2
                         }
@@ -185,7 +185,7 @@ struct IconPreviews: PreviewProvider {
             snapshotSizesLabelText
             snapshotSizesHeading
             snapshotSizesLabelHeading
-            snapshots
+            storybookMix
         }
         .previewLayout(.sizeThatFits)
     }
@@ -194,8 +194,12 @@ struct IconPreviews: PreviewProvider {
         Icon(.informationCircle)
     }
     
-    static var orbit: some View {
-        snapshotSizes
+    static var storybook: some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            snapshotSizes
+            snapshotSizesText
+            snapshotSizesHeading
+        }
     }
     
     static var snapshotSizes: some View {
@@ -205,7 +209,7 @@ struct IconPreviews: PreviewProvider {
             
                 HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
                     Icon(.passengers, size: .small)
-                    Text("Lorem ipsum", size: .small)
+                    Text("Small text and icon size", size: .small)
                 }
                 .overlay(HairlineSeparator(), alignment: .top)
                 .overlay(HairlineSeparator(), alignment: .bottom)
@@ -215,7 +219,7 @@ struct IconPreviews: PreviewProvider {
             
                 HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
                     Icon(.passengers, size: .normal)
-                    Text("Lorem ipsum", size: .normal)
+                    Text("Normal text and icon size", size: .normal)
                 }
                 .overlay(HairlineSeparator(), alignment: .top)
                 .overlay(HairlineSeparator(), alignment: .bottom)
@@ -225,13 +229,13 @@ struct IconPreviews: PreviewProvider {
             
                 HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
                     Icon(.passengers, size: .large)
-                    Text("Lorem ipsum", size: .large)
+                    Text("Large text and icon size", size: .large)
                 }
                 .overlay(HairlineSeparator(), alignment: .top)
                 .overlay(HairlineSeparator(), alignment: .bottom)
             }
         }
-        .padding()
+        .padding(.medium)
         .previewDisplayName("Default sizes")
     }
     
@@ -281,7 +285,7 @@ struct IconPreviews: PreviewProvider {
             textStack(.xLarge)
             textStack(.custom(50))
         }
-        .padding()
+        .padding(.medium)
         .previewDisplayName("Calculated sizes for Text")
     }
     
@@ -293,7 +297,7 @@ struct IconPreviews: PreviewProvider {
             labelTextStack(.xLarge)
             labelTextStack(.custom(50))
         }
-        .padding()
+        .padding(.medium)
         .previewDisplayName("Calculated sizes for Text in Label")
     }
     
@@ -308,7 +312,7 @@ struct IconPreviews: PreviewProvider {
             headingStack(.displaySubtitle)
             headingStack(.display)
         }
-        .padding()
+        .padding(.medium)
         .previewDisplayName("Calculated sizes for Heading")
     }
     
@@ -323,11 +327,11 @@ struct IconPreviews: PreviewProvider {
             labelHeadingStack(.displaySubtitle)
             labelHeadingStack(.display)
         }
-        .padding()
+        .padding(.medium)
         .previewDisplayName("Calculated sizes for Heading in Label")
     }
 
-    static var snapshots: some View {
+    static var storybookMix: some View {
         VStack(spacing: .small) {
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
@@ -402,7 +406,6 @@ struct IconPreviews: PreviewProvider {
             .foregroundColor(.blueDark)
             .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
         }
-        .padding(.xSmall)
-        .previewDisplayName("firstTextBaseline alignment")
+        .padding(.medium)
     }
 }

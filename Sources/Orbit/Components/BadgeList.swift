@@ -20,21 +20,23 @@ public struct BadgeList: View {
     let labelColor: LabelColor
 
     public var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: Self.spacing) {
-            badgeBackground
-                .overlay(
-                    Icon(iconContent, size: .small)
-                )
-                .alignmentGuide(.firstTextBaseline) { size in
-                    Text.Size.small.lineHeight * Text.firstBaselineRatio + size.height / 2
-                }
+        if isEmpty == false {
+            HStack(alignment: .firstTextBaseline, spacing: Self.spacing) {
+                badgeBackground
+                    .overlay(
+                        Icon(iconContent, size: .small)
+                    )
+                    .alignmentGuide(.firstTextBaseline) { size in
+                        Text.Size.small.lineHeight * Text.firstBaselineRatio + size.height / 2
+                    }
 
-            Text(
-                label,
-                size: .small,
-                color: .custom(labelColor.color),
-                linkColor: labelColor.color
-            )
+                Text(
+                    label,
+                    size: .small,
+                    color: .custom(labelColor.color),
+                    linkColor: .custom(labelColor.color)
+                )
+            }
         }
     }
 
@@ -42,6 +44,10 @@ public struct BadgeList: View {
         style.backgroundColor
             .clipShape(Circle())
             .frame(width: Self.badgeDiameter, height: Self.badgeDiameter)
+    }
+
+    var isEmpty: Bool {
+        label.isEmpty && iconContent.isEmpty
     }
 }
 
@@ -128,28 +134,28 @@ public struct BadgeListPreviews: PreviewProvider {
     public static var previews: some View {
         PreviewWrapper {
             standalone
-            snapshots
-                .previewDisplayName("Orbit")
+            storybook
         }
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
-        BadgeList("Neutral BadgeList", icon: .wifi)
-    }
-
-    static var orbit: some View {
-        VStack(alignment: .leading, spacing: .xSmall) {
-            standalone
-            BadgeList("Info BadgeList", icon: .informationCircle, style: .status(.info))
-            BadgeList("Success BadgeList", icon: .checkCircle, style: .status(.success))
-            BadgeList("Warning BadgeList", icon: .alertCircle, style: .status(.warning))
-            BadgeList("Critical BadgeList", icon: .alertCircle, style: .status(.critical))
+        VStack {
+            BadgeList("Neutral BadgeList", icon: .grid)
+            BadgeList()   // EmptyView
+            BadgeList("") // EmptyView
         }
+        .padding(.medium)
     }
 
-    static var snapshots: some View {
-        orbit
-            .padding(.medium)
+    static var storybook: some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            BadgeList("This is simple Neutral BadgeList item with <u>very long</u> and <strong>formatted</strong> multiline content", icon: .grid)
+            BadgeList("This is simple Info BadgeList item", icon: .informationCircle, style: .status(.info))
+            BadgeList("This is simple Success BadgeList item", icon: .checkCircle, style: .status(.success))
+            BadgeList("This is simple Warning BadgeList item", icon: .alertCircle, style: .status(.warning))
+            BadgeList("This is simple Critical BadgeList item", icon: .alertCircle, style: .status(.critical))
+        }
+        .padding(.medium)
     }
 }

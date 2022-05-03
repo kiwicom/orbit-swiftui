@@ -5,6 +5,13 @@ public enum AlertButtons {
     case primary(Button.Content)
     case secondary(Button.Content)
     case primaryAndSecondary(Button.Content, Button.Content)
+
+    var isVisible: Bool {
+        switch self {
+            case .primary, .secondary, .primaryAndSecondary:    return true
+            case .none:                                         return false
+        }
+    }
 }
 
 /// Breaks the main user flow to present information.
@@ -42,10 +49,12 @@ public struct Alert<Content: View>: View {
             Icon(icon, size: .normal, color: status.color)
             
             VStack(alignment: .leading, spacing: .medium) {
-                
-                VStack(alignment: .leading, spacing: .xxSmall) {
-                    Text(title, weight: .bold)
-                    Text(description, linkColor: .inkNormal, linkAction: descriptionLinkAction)
+
+                if isHeaderEmpty == false {
+                    VStack(alignment: .leading, spacing: .xxSmall) {
+                        Text(title, weight: .bold)
+                        Text(description, linkColor: .secondary, linkAction: descriptionLinkAction)
+                    }
                 }
                 
                 content()
@@ -90,7 +99,7 @@ public struct Alert<Content: View>: View {
         backgroundColor
             .overlay(
                 RoundedRectangle(cornerRadius: BorderRadius.default)
-                    .strokeBorder(strokeColor)
+                    .strokeBorder(strokeColor, lineWidth: 1)
             )
             .overlay(
                 status.color
@@ -136,6 +145,10 @@ public struct Alert<Content: View>: View {
         isSuppressed
             ? .secondary
             : .status(status, subtle: true)
+    }
+
+    var isHeaderEmpty: Bool {
+        title.isEmpty && description.isEmpty
     }
 }
 
@@ -189,192 +202,158 @@ public extension Alert {
 // MARK: - Previews
 struct AlertPreviews: PreviewProvider {
 
-    private static let primaryAndSecondaryConfiguration = AlertButtons.primaryAndSecondary("Primary", "Secondary")
-    private static let primaryConfiguration = AlertButtons.primary("Primary")
-    private static let secondaryConfiguration = AlertButtons.secondary("Secondary")
+    static let title = "Title"
+    static let description = """
+        The main description message of this Alert component should be placed here. If you need to use TextLink \
+        in this component, please do it by using <a href="..">Normal Underline text style</a>.
+
+        Description message can be <strong>formatted</strong>, but if more <ref>customizaton</ref> is needed a custom \
+        description content can be provided instead.
+        """
+    static let primaryAndSecondaryConfiguration = AlertButtons.primaryAndSecondary("Primary", "Secondary")
+    static let primaryConfiguration = AlertButtons.primary("Primary")
+    static let secondaryConfiguration = AlertButtons.secondary("Secondary")
 
     static var previews: some View {
-        PreviewWrapperWithState(initialState: Self.primaryAndSecondaryConfiguration) { buttonConfiguration in
+        PreviewWrapper {
             standalone
-            snapshotSuppressed
-            snapshots
-            snapshotsNoButtons
 
-            VStack {
-                Alert(
-                    "Your message - make it short & clear",
-                    description: "Description - make it as clear as possible. Now double the length.",
-                    icon: .informationCircle,
-                    buttons: buttonConfiguration.wrappedValue
-                )
+            basic
+            basicNoIcon
+            suppressed
+            suppressedNoIcon
 
-                Spacer()
-
-                Button("Live Preview") {
-                    withAnimation(.spring()) {
-                        switch buttonConfiguration.wrappedValue {
-                            case .none:
-                                buttonConfiguration.wrappedValue = Self.primaryConfiguration
-                            case .primary:
-                                buttonConfiguration.wrappedValue = Self.secondaryConfiguration
-                            case .secondary:
-                                buttonConfiguration.wrappedValue = Self.primaryAndSecondaryConfiguration
-                            case .primaryAndSecondary:
-                                buttonConfiguration.wrappedValue = .none
-                        }
-                    }
-                }
-            }
-            .padding()
-            .previewDisplayName("Live Preview")
+            primaryButtonOnly
+            noButtons
         }
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         Alert(
-            "Title",
-            description: #"Alert description with <u>underline</u> vs <a href="..">link</a>."#,
-            icon: .informationCircle,
-            buttons: Self.primaryAndSecondaryConfiguration
+            "Alert with very very very very very very very very very very very long and <u>multiline</u> title",
+            description: description,
+            icon: .grid,
+            buttons: primaryAndSecondaryConfiguration
         ) {
             customContentPlaceholder
         }
-        .padding()
+        .padding(.medium)
     }
 
-    static var orbit: some View {
+    static var basic: some View {
+        alerts(showIcons: true, isSuppressed: false)
+            .padding(.medium)
+    }
+
+    static var basicNoIcon: some View {
+        alerts(showIcons: false, isSuppressed: false)
+            .padding(.medium)
+    }
+
+    static var suppressed: some View {
+        alerts(showIcons: true, isSuppressed: true)
+            .padding(.medium)
+    }
+
+    static var suppressedNoIcon: some View {
+        alerts(showIcons: false, isSuppressed: true)
+            .padding(.medium)
+    }
+
+    static func alert(_ title: String, status: Status, icon: Icon.Symbol, isSuppressed: Bool) -> some View {
+        Alert(
+            title,
+            description: description,
+            icon: icon,
+            buttons: primaryAndSecondaryConfiguration,
+            status: status,
+            isSuppressed: isSuppressed
+        )
+    }
+
+    static func alerts(showIcons: Bool, isSuppressed: Bool) -> some View {
         VStack(spacing: .medium) {
-            Alert(
-                "Your message - make it short & clear",
-                description: "Description - make it as clear as possible. Now double the length.",
-                icon: .informationCircle,
-                buttons: Self.primaryAndSecondaryConfiguration
-            )
-            Alert(
-                "Your message - make it short & clear",
-                description: """
-                Description - Make it as clear as possible. Now three times as long as before, because \
-                we need to test multiline variants properly as well.
-                """,
-                icon: .informationCircle,
-                buttons: Self.primaryAndSecondaryConfiguration,
-                status: .success
-            )
-            Alert(
-                """
-                Your message - make it short & clear. If you don't make the title clear enough, it will look \
-                like this
-                """,
-                description: "Description - make it as clear as possible.",
-                icon: .informationCircle,
-                buttons: Self.primaryAndSecondaryConfiguration,
-                status: .warning
-            )
-            Alert(
-                """
-                Your message - make it short & clear. If you don't make the title clear enough, it will look \
-                like this
-                """,
-                description: """
-                Description - Make it as clear as possible. Now three times as long as before, because we need \
-                to test multiline variants properly as well.
-                """,
-                icon: .informationCircle,
-                buttons: Self.primaryAndSecondaryConfiguration,
-                status: .critical
-            )
+            alert("Informational message", status: .info, icon: showIcons ? .informationCircle : .none, isSuppressed: isSuppressed)
+            alert("Success message", status: .success, icon: showIcons ? .checkCircle : .none, isSuppressed: isSuppressed)
+            alert("Warning message", status: .warning, icon: showIcons ? .alertCircle : .none, isSuppressed: isSuppressed)
+            alert("Critical message", status: .critical, icon: showIcons ? .alertCircle : .none, isSuppressed: isSuppressed)
         }
     }
 
-    static var snapshots: some View {
+    static var primaryButtonOnly: some View {
         VStack(spacing: .medium) {
-            Alert(
-                "Your message - make it short & clear",
-                description: "Description - make it as clear as possible.",
-                icon: .informationCircle,
-                buttons: Self.primaryAndSecondaryConfiguration
-            )
-            Alert(
-                "Your message - make it short & clear",
-                description: "Description - make it as clear as possible.",
-                buttons: Self.primaryAndSecondaryConfiguration,
-                status: .warning
-            )
-            Alert(
-                "Your message - make it short & clear",
-                icon: .informationCircle,
-                buttons: Self.primaryAndSecondaryConfiguration,
-                status: .critical
-            )
-            Alert(
-                "Your message - make it short & clear",
-                buttons: Self.primaryAndSecondaryConfiguration,
-                status: .success
-            )
-            Alert(
-                "Your message - make it short & clear",
-                description: "Description - make it as clear as possible.",
-                icon: .informationCircle,
-                buttons: Self.primaryConfiguration
-            )
-            Alert(
-                "Your message - make it short & clear",
-                description: "Description - make it as clear as possible.",
-                buttons: Self.primaryConfiguration
-            )
-            Alert(
-                "Your message - make it short & clear",
-                icon: .informationCircle,
-                buttons: Self.primaryConfiguration
-            )
-            Alert(
-                "Your message - make it short & clear",
-                buttons: Self.primaryConfiguration
-            )
+            Alert(title, description: description, icon: .informationCircle, buttons: Self.primaryConfiguration)
+            Alert(description: description, icon: .informationCircle, buttons: Self.primaryConfiguration)
+            Alert(title, description: description, buttons: Self.primaryConfiguration)
+            Alert(description: description, buttons: Self.primaryConfiguration)
+            Alert( title, icon: .informationCircle, buttons: Self.primaryConfiguration)
+            Alert(title, buttons: Self.primaryConfiguration)
+            Alert(icon: .informationCircle, buttons: Self.primaryConfiguration)
+            Alert(buttons: Self.primaryConfiguration)
         }
-        .padding()
-        .previewDisplayName("Layout")
+        .padding(.medium)
+        .previewDisplayName("Primary buttons")
     }
     
-    static var snapshotsNoButtons: some View {
+    static var noButtons: some View {
         VStack(spacing: .medium) {
-            Alert(
-                "Your message - make it short & clear",
-                description: "Description - make it as clear as possible.",
-                icon: .informationCircle
-            )
-            
-            Alert("Title", description: "Description")
-            Alert("Title") {
+            Alert(title, description: description, icon: .informationCircle)
+            Alert(title, description: description)
+            Alert(title) {
                 customContentPlaceholder
             }
-            Alert("Title", icon: .informationCircle)
-            Alert("Title")
+            Alert {
+                customContentPlaceholder
+            }
+            Alert(title, icon: .informationCircle)
+            Alert(icon: .informationCircle)
+            Alert(title)
+            Alert()
         }
-        .padding()
+        .padding(.medium)
         .previewDisplayName("No buttons")
     }
 
-    static var snapshotsStatuses: some View {
-        orbit
-            .padding()
-            .previewLayout(.sizeThatFits)
-            .previewDisplayName("Statuses")
-    }
-    
-    static var snapshotSuppressed: some View {
-        Alert(
-            "Title",
-            description: #"Alert description with <u>underline</u> vs <a href="..">link</a>."#,
-            icon: .informationCircle,
-            buttons: Self.primaryAndSecondaryConfiguration,
-            isSuppressed: true
-        ) {
-            customContentPlaceholder
+    static var storybook: some View {
+        VStack(alignment: .leading, spacing: .large) {
+            basic
+            basicNoIcon
+            suppressed
+            suppressedNoIcon
         }
-        .padding()
-        .previewLayout(.sizeThatFits)
-        .previewDisplayName("Status Suppressed")
+    }
+
+    static var storybookMix: some View {
+        VStack(alignment: .leading, spacing: .large) {
+            primaryButtonOnly
+            noButtons
+        }
+    }
+
+    static var storybookLive: some View {
+        StateWrapper(initialState: primaryAndSecondaryConfiguration) { buttons in
+            VStack(spacing: .large) {
+                Alert(
+                    title,
+                    description: description,
+                    icon: .informationCircle,
+                    buttons: buttons.wrappedValue
+                )
+
+                Button("Toggle buttons") {
+                    withAnimation(.spring()) {
+                        switch buttons.wrappedValue {
+                            case .none:                     buttons.wrappedValue = primaryConfiguration
+                            case .primary:                  buttons.wrappedValue = secondaryConfiguration
+                            case .secondary:                buttons.wrappedValue = primaryAndSecondaryConfiguration
+                            case .primaryAndSecondary:      buttons.wrappedValue = .none
+                        }
+                    }
+                }
+            }
+            .padding(.medium)
+            .animation(.default, value: buttons.wrappedValue.isVisible)
+        }
     }
 }

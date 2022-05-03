@@ -136,49 +136,55 @@ struct HeadingPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            snapshots
-            snapshotsMultiline
+            sizes
+            multiline
         }
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
-        Heading("Heading", style: .title1)
-    }
-
-    static var orbit: some View {
-        VStack(alignment: .leading, spacing: .xSmall) {
-            Heading("Display title", style: .display)
-            Heading("Display subtitle", style: .displaySubtitle)
-            Separator()
-            Heading("Title 1", style: .title1)
-            Heading("Title 2", style: .title2)
-            Heading("Title 3", style: .title3)
-            Heading("Title 4", style: .title4)
-            Heading("Title 5", style: .title5)
-            Heading("Title 6", style: .title6)
+        VStack {
+            Heading("Heading", style: .title1)
+            Heading("", style: .title1) // EmptyView
         }
-        .previewDisplayName("Orbit")
     }
 
-    static var snapshots: some View {
-        orbit
-            .padding()
+    static var sizes: some View {
+        VStack(alignment: .leading, spacing: .xSmall) {
+            heading("Display Title", style: .display)
+            heading("Display Subtitle", style: .displaySubtitle)
+            Separator()
+            heading("Title 1", style: .title1)
+            heading("Title 2", style: .title2)
+            heading("Title 3", style: .title3)
+            heading("Title 4", style: .title4)
+            heading("Title 5", style: .title5)
+            heading("Title 6", style: .title6)
+        }
+        .padding(.medium)
     }
     
-    static var snapshotsMultiline: some View {
+    static var multiline: some View {
         VStack(alignment: .leading, spacing: .xSmall) {
-            Heading("Display title, but very very very very very very very long", style: .display)
-            Heading("Display subtitle, also very very very very very long", style: .displaySubtitle)
+            heading("Display title with a very large and multine content", style: .display)
+            heading("Display subtitle with a very large and multine content", style: .displaySubtitle)
             Separator()
-            Heading("Title 1, also very very very very very very very verylong", style: .title1)
-            Heading("Title 2, but very very very very very very very very long", style: .title2)
-            Heading("Title 3, but very very very very very very very very long", style: .title3)
-            Heading("Title 4, but very very very very very very very very long", style: .title4)
-            Heading("Title 5, but very very very very very very very very long", style: .title5)
-            Heading("Title 6, but very very very very very very very very long", style: .title6)
+            heading("Title 1 with a very large and multine content", style: .title1)
+            heading("Title 2 with a very very large and multine content", style: .title2)
+            heading("Title 3 with a very very very very large and multine content", style: .title3)
+            heading("Title 4 with a very very very very large and multine content", style: .title4)
+            heading("Title 5 with a very very very very very large and multine content", style: .title5)
+            heading("Title 6 with a very very very very very large and multine content", style: .title6)
         }
-        .padding()
+        .padding(.medium)
         .previewDisplayName("Multiline")
+    }
+
+    @ViewBuilder static func heading(_ content: String, style: Heading.Style) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: .small) {
+            Heading(content, style: style)
+            Spacer()
+            Text("\(Int(style.size))/\(Int(style.lineHeight))", color: .inkLight, weight: .medium)
+        }
     }
 }

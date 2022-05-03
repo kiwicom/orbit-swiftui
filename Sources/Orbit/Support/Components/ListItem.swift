@@ -71,7 +71,7 @@ public extension ListItem {
     enum Style {
         case primary
         case secondary
-        case custom(color: UIColor = .inkNormal, linkColor: UIColor = TextLink.defaultColor, weight: Font.Weight = .regular)
+        case custom(color: UIColor = .inkNormal, linkColor: TextLink.Color = .primary, weight: Font.Weight = .regular)
 
         public var textColor: Text.Color {
             switch self {
@@ -81,10 +81,10 @@ public extension ListItem {
             }
         }
         
-        public var linkColor: UIColor {
+        public var linkColor: TextLink.Color {
             switch self {
-                case .primary:                      return TextLink.defaultColor
-                case .secondary:                    return TextLink.defaultColor
+                case .primary:                      return .primary
+                case .secondary:                    return .primary
                 case .custom(_, let linkColor, _):  return linkColor
             }
         }

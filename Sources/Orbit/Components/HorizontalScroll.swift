@@ -102,76 +102,76 @@ public struct HorizontalScroll<Content: View>: View {
 // MARK: - Previews
 struct HorizontalScrollPreviews: PreviewProvider {
 
-    static var intrinsicContent: some View {
-        intrinsicContent {
-            customContentPlaceholder
-        }
-    }
-
-    static func intrinsicContent<Content>(
-        @ViewBuilder content: @escaping () -> Content
-    ) -> some View where Content: View {
-        VStack(alignment: .leading) {
-            Text("Text")
-            content()
-        }
-        .border(.red)
-    }
-
     static var previews: some View {
         PreviewWrapper {
-            simpleSmallRatio
-            simpleCustom
-            ratioWidthIntrinsicHeight
-            smallRatioWidthIntrinsicHeight
-            fullWidthIntrinsicHeight
-            intrinsic
-            custom
-            pagination
-                .previewDisplayName("Live Preview - Pagination")
+            content
         }
         .previewLayout(.sizeThatFits)
     }
 
+    @ViewBuilder static var content: some View {
+        simpleSmallRatio
+        simpleCustom
+        ratioWidthIntrinsicHeight
+        smallRatioWidthIntrinsicHeight
+        fullWidthIntrinsicHeight
+        intrinsic
+        custom
+        pagination
+            .previewDisplayName("Live Preview - Pagination")
+    }
+
+    static var storybook: some View {
+        VStack(spacing: .large) {
+            content
+                .background(Color.whiteNormal)
+        }
+        .background(Color.cloudLight)
+    }
+
     static var simpleSmallRatio: some View {
-        VStack {
+        VStack(spacing: .large) {
             HorizontalScroll(spacing: .large, itemWidth: .ratio(1.01)) {
-                Color.blue.frame(height: 10)
-                Color.blue.frame(height: 30)
-                Color.blue.frame(height: 50)
+                Color.greenLight.frame(height: 10)
+                Color.greenLight.frame(height: 30)
+                Color.greenLight.frame(height: 50)
             }
+            .border(Color.cloudDarker)
 
             HorizontalScroll(spacing: .large, itemWidth: .ratio(1)) {
-                Color.blue.frame(height: 10)
-                Color.blue.frame(height: 30)
-                Color.blue.frame(height: 50)
+                Color.greenLight.frame(height: 10)
+                Color.greenLight.frame(height: 30)
+                Color.greenLight.frame(height: 50)
             }
+            .border(Color.cloudDarker)
 
             HorizontalScroll(spacing: .large, itemWidth: .ratio(0.5)) {
-                Color.blue.frame(height: 10)
-                Color.blue.frame(height: 30)
-                Color.blue.frame(height: 50)
+                Color.greenLight.frame(height: 10)
+                Color.greenLight.frame(height: 30)
+                Color.greenLight.frame(height: 50)
             }
+            .border(Color.cloudDarker)
 
             HorizontalScroll(spacing: .large, itemWidth: .ratio(0.33)) {
-                Color.blue.frame(height: 10)
-                Color.blue.frame(height: 30)
-                Color.blue.frame(height: 50)
-                Color.blue.frame(height: 20)
+                Color.greenLight.frame(height: 10)
+                Color.greenLight.frame(height: 30)
+                Color.greenLight.frame(height: 50)
+                Color.greenLight.frame(height: 20)
             }
+            .border(Color.cloudDarker)
         }
-        .background(Color.gray.frame(width: 1).padding(.leading, .xSmall), alignment: .leading)
-        .background(Color.gray.frame(width: 1).padding(.trailing, .xSmall), alignment: .trailing)
+        .background(Color.redLight.frame(width: 1).padding(.leading, .xSmall), alignment: .leading)
+        .background(Color.redLight.frame(width: 1).padding(.trailing, .xSmall), alignment: .trailing)
         .previewDisplayName("W - ratios, H - intrinsic")
     }
 
     static var simpleCustom: some View {
         HorizontalScroll(itemWidth: .custom(30), itemHeight: .custom(30)) {
-            Color.blue
-            Color.blue
-            Color.blue
+            Color.greenLight
+            Color.greenLight
+            Color.greenLight
         }
-        .border(.gray)
+        .border(Color.cloudDarker)
         .previewDisplayName("W - custom, H - custom")
     }
 
@@ -180,34 +180,34 @@ struct HorizontalScrollPreviews: PreviewProvider {
             intrinsicContent
 
             intrinsicContent {
-                Color.blue
+                Color.greenLight
                     .frame(width: 100, height: 150)
             }
 
             intrinsicContent
         }
-        .border(.gray)
+        .border(Color.cloudDarker)
         .previewDisplayName("W - ratio, H - intrinsic")
     }
 
     static var smallRatioWidthIntrinsicHeight: some View {
         HorizontalScroll(itemWidth: .ratio(0.3), itemHeight: .intrinsic) {
             intrinsicContent {
-                VStack {
-                    Text("Matching tallest item using Spacer")
+                VStack(alignment: .leading) {
+                    Text("Spacer")
                     Spacer()
                     customContentPlaceholder
                 }
             }
 
             intrinsicContent {
-                Color.blue
+                Color.greenLight
                     .frame(height: 150)
             }
 
             intrinsicContent
         }
-        .border(.gray)
+        .border(Color.cloudDarker)
         .previewDisplayName("W - small ratio, H - intrinsic")
     }
 
@@ -216,13 +216,13 @@ struct HorizontalScrollPreviews: PreviewProvider {
             intrinsicContent
 
             intrinsicContent {
-                Color.blue
+                Color.greenLight
                     .frame(height: 150)
             }
 
             intrinsicContent
         }
-        .border(.gray)
+        .border(Color.cloudDarker)
         .previewDisplayName("W - full, H - intrinsic")
     }
 
@@ -231,7 +231,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
             intrinsicContent
 
             intrinsicContent {
-                Color.blue
+                Color.greenLight
                     .frame(width: 100, height: 150)
             }
 
@@ -244,11 +244,11 @@ struct HorizontalScrollPreviews: PreviewProvider {
         HorizontalScroll(itemWidth: .custom(100), itemHeight: .custom(130)) {
             intrinsicContent {
                 Spacer()
-                Color.red
+                Color.greenLight
             }
 
             intrinsicContent {
-                Color.red
+                Color.greenLight
                 Spacer()
                 Text("Footer")
             }
@@ -257,7 +257,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
                 Text("No Spacer")
             }
         }
-        .border(.gray)
+        .border(Color.cloudDarker)
         .previewDisplayName("W - custom, H - custom")
     }
 
@@ -270,29 +270,23 @@ struct HorizontalScrollPreviews: PreviewProvider {
                     HorizontalScroll {
                         intrinsicContent {
                             Spacer()
-                            Color.red
+                            Color.greenLight
                         }
-                        .padding(16)
-                        .border(.green)
                         .id(1)
 
                         intrinsicContent {
-                            Color.red
+                            Color.greenLight
                             Spacer()
                             Text("Footer")
                         }
-                        .padding(16)
-                        .border(.green)
                         .id(2)
 
                         intrinsicContent {
                             Text("No Spacer")
                         }
-                        .padding(16)
-                        .border(.green)
                         .id(3)
                     }
-                    .border(.gray)
+                    .border(Color.cloudDarker)
 
                     HStack {
                         Button("Scroll to 1", size: .small) {
@@ -311,11 +305,26 @@ struct HorizontalScrollPreviews: PreviewProvider {
                             }
                         }
                     }
+                    .padding(.medium)
                 }
             }
 
         } else {
             Text("Pagination support only for iOS >= 14")
         }
+    }
+
+    static var intrinsicContent: some View {
+        intrinsicContent {
+            customContentPlaceholder
+        }
+    }
+
+    static func intrinsicContent<Content>(@ViewBuilder content: @escaping () -> Content) -> some View where Content: View {
+        VStack(alignment: .leading) {
+            Text("Intrinsic")
+            content()
+        }
+        .border(Color.cloudDark)
     }
 }

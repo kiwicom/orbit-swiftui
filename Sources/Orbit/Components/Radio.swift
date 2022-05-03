@@ -153,86 +153,52 @@ extension Radio {
 // MARK: - Previews
 struct RadioPreviews: PreviewProvider {
 
+    static let label = "Label"
+    static let description = "Additional information for this choice"
+
     static var previews: some View {
         PreviewWrapper {
             standalone
-
-            snapshots
-
-            VStack(spacing: .large) {
-                Radio()
-                Radio(isChecked: true)
-            }
-            .padding()
-            .previewDisplayName("Standalone Indicator")
+            content(standalone: false)
+            content(standalone: true)
         }
         .previewLayout(PreviewLayout.sizeThatFits)
     }
 
     static var standalone: some View {
-        PreviewWrapperWithState(initialState: true) { state in
-            Radio("Label", description: "Description", isChecked: state.wrappedValue) {
-                state.wrappedValue.toggle()
-            }
+        radio(standalone: false, state: .normal, checked: true)
+            .padding(.medium)
+    }
+
+    static var storybook: some View {
+        VStack(alignment: .leading, spacing: .large) {
+            content(standalone: false)
+            content(standalone: true)
         }
     }
 
-    static var orbit: some View {
-        HStack(alignment: .top, spacing: .medium) {
-            VStack(alignment: .leading, spacing: .medium) {
-                Radio("Label", description: "Normal & Unchecked")
-                Radio("Label", description: "Error & Unchecked", state: .error)
-                Radio("Label", description: "Disabled & Unchecked", state: .disabled)
+    static func content(standalone: Bool) -> some View {
+        HStack(alignment: .top, spacing: .xLarge) {
+            VStack(alignment: .leading, spacing: .xLarge) {
+                radio(standalone: standalone, state: .normal, checked: false)
+                radio(standalone: standalone, state: .error, checked: false)
+                radio(standalone: standalone, state: .disabled, checked: false)
             }
 
-            VStack(alignment: .leading, spacing: .medium) {
-                Radio("Label", description: "Normal & Checked", isChecked: true)
-                Radio("Label", description: "Error & Checked", state: .error, isChecked: true)
-                Radio("Label", description: "Disabled & Checked", state: .disabled, isChecked: true)
+            VStack(alignment: .leading, spacing: .xLarge) {
+                radio(standalone: standalone, state: .normal, checked: true)
+                radio(standalone: standalone, state: .error, checked: true)
+                radio(standalone: standalone, state: .disabled, checked: true)
             }
         }
+        .padding(.medium)
     }
 
-    static var snapshots: some View {
-        VStack(spacing: .large) {
-            orbit
-
-            Separator()
-
-            Radio("Multiline long radio label", description: "Multiline and very long description")
-                .frame(maxWidth: 140)
-        }
-        .frame(width: 300)
-        .padding()
-        .previewDisplayName("Orbit")
-    }
-}
-
-struct RadioLivePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapperWithState(initialState: (Radio.State.normal, false)) { state in
-            VStack(spacing: .large) {
-                Radio(
-                    "Label",
-                    description: "Tap to check or uncheck.",
-                    state: state.wrappedValue.0,
-                    isChecked: state.wrappedValue.1
-                ) {
-                    state.wrappedValue.1.toggle()
-                }
-
-                ButtonLink("Change State") {
-                    switch state.wrappedValue.0 {
-                        case .normal:   state.wrappedValue.0 = .disabled
-                        case .disabled: state.wrappedValue.0 = .error
-                        case .error:    state.wrappedValue.0 = .normal
-                    }
-                }
+    static func radio(standalone: Bool, state: Radio.State, checked: Bool) -> some View {
+        StateWrapper(initialState: checked) { isSelected in
+            Radio(standalone ? "" : label, description: standalone ? "" : description, state: state, isChecked: isSelected.wrappedValue) {
+                isSelected.wrappedValue.toggle()
             }
-            .padding()
-            .previewDisplayName("Live Preview")
         }
-        .previewLayout(PreviewLayout.sizeThatFits)
     }
 }

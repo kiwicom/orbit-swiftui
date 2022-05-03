@@ -98,37 +98,24 @@ struct IllustrationPreviews: PreviewProvider {
 
     public static var previews: some View {
         PreviewWrapper {
-            Group {
-                empty
+            standalone
+            intrinsic
+            customResource
 
-                standalone
-                intrinsic
-                customResource
-                
-                stackFixed
-                stackExpanding
+            stackFixed
+            stackExpanding
 
-                snapshotsExpanding
-                snapshotsSizing
-            }
-            .previewLayout(.sizeThatFits)
-
-            ScrollView {
-                orbit
-            }
-            .previewDisplayName("All illustrations")
+            snapshotsExpanding
+            snapshotsSizing
         }
-    }
-
-    static var empty: some View {
-        HStack {
-            Illustration(.none)
-            Text("No illustration")
-        }
+        .previewLayout(.sizeThatFits)
     }
     
     static var standalone: some View {
-        Illustration(.womanWithPhone)
+        VStack {
+            Illustration(.womanWithPhone)
+            Illustration(.none) // EmptyView
+        }
     }
     
     static var intrinsic: some View {
@@ -168,19 +155,19 @@ struct IllustrationPreviews: PreviewProvider {
     static var snapshotsExpanding: some View {
         Card {
             VStack {
-                Text("Expanded - Center (default)", size: .small)
+                Text("Frame - Center (default)", size: .small)
                 Illustration(.womanWithPhone, layout: .frame(maxHeight: 100))
                     .border(Color.cloudDark)
             }
             
             VStack {
-                Text("Expanded - Leading", size: .small)
+                Text("Frame - Leading", size: .small)
                 Illustration(.womanWithPhone, layout: .frame(maxHeight: 100, alignment: .leading))
                     .border(Color.cloudDark)
             }
             
             VStack {
-                Text("Expanded - Trailing", size: .small)
+                Text("Frame - Trailing", size: .small)
                 Illustration(.womanWithPhone, layout: .frame(maxHeight: 100, alignment: .trailing))
                     .border(Color.cloudDark)
             }
@@ -255,13 +242,10 @@ struct IllustrationPreviews: PreviewProvider {
         .previewDisplayName("Mixed sizes")
     }
 
-    static var orbit: some View {
-        VStack(spacing: .small) {
-            ForEach(Illustration.Image.allCases, id: \.self) { image in
-                Separator(image.assetName)
-                Illustration(image, layout: .frame(maxHeight: 60))
-            }
+    static var storybook: some View {
+        VStack {
+            snapshotsSizing
+            snapshotsExpanding
         }
-        .padding(.horizontal)
     }
 }

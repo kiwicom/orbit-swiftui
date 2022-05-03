@@ -70,40 +70,41 @@ public extension EmptyState {
 // MARK: - Previews
 struct EmptyStatePreviews: PreviewProvider {
 
+    static let title = "Sorry, we couldn't find that connection."
+    static let description = "Try changing up your search a bit. We'll try harder next time."
+    static let button = "Adjust search"
+
     static var previews: some View {
         PreviewWrapper {
-            snapshot
-            snapshotSubtle
-            snapshotNoAction
+            standalone
+            subtle
+            noAction
         }
         .previewLayout(.sizeThatFits)
     }
 
-    static var snapshot: some View {
-        EmptyState(
-            "No results",
-            description: "Empty state very long and multiline description",
-            illustration: .noResults,
-            action: .button("Back to search")
-        )
-        .padding()
+    static var storybook: some View {
+        VStack(spacing: .xxLarge) {
+            standalone
+            Separator()
+            subtle
+            Separator()
+            noAction
+        }
+    }
+
+    static var standalone: some View {
+        EmptyState(title, description: description, illustration: .noResults, action: .button(button))
+            .padding(.medium)
     }
     
-    static var snapshotSubtle: some View {
-        EmptyState(
-            "Error",
-            illustration: .error404,
-            action: .button("Back to search", style: .primarySubtle)
-        )
-        .padding()
+    static var subtle: some View {
+        EmptyState(title, description: description, illustration: .error404, action: .button(button, style: .primarySubtle))
+            .padding(.medium)
     }
     
-    static var snapshotNoAction: some View {
-        EmptyState(
-            "Offline",
-            description: "Empty state very long and multiline description",
-            illustration: .offline
-        )
-        .padding()
+    static var noAction: some View {
+        EmptyState(title, description: description, illustration: .offline)
+            .padding(.medium)
     }
 }

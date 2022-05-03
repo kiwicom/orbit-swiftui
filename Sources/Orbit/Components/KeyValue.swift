@@ -68,48 +68,47 @@ extension KeyValue {
 // MARK: - Previews
 struct KeyValuePreviews: PreviewProvider {
 
+    static let key = "Key"
+    static let value = "Value"
+    static let longValue = "Some very very very very very long value"
+
     static var previews: some View {
         PreviewWrapper {
             standalone
-            standaloneLarge
-            keyOnly
-            valueOnly
-            trailing
-            centered
-            multiline
+            storybook
         }
-        .padding()
         .previewLayout(PreviewLayout.sizeThatFits)
     }
 
     static var standalone: some View {
-        KeyValue("Key", value: "Value")
+        VStack {
+            KeyValue(key, value: value)
+            KeyValue()          // EmptyView
+            KeyValue("")        // EmptyView
+            KeyValue(value: "") // EmptyView
+        }
+        .padding(.medium)
     }
 
-    static var standaloneLarge: some View {
-        KeyValue("Key", value: "Value", size: .large)
-    }
-
-    static var keyOnly: some View {
-        KeyValue("Key")
-            .border(Color.cloudNormal)
-    }
-
-    static var valueOnly: some View {
-        KeyValue(value: "Value")
-            .border(Color.cloudNormal)
-    }
-
-    static var trailing: some View {
-        KeyValue("Trailing", value: "Some value", alignment: .trailing)
-    }
-
-    static var centered: some View {
-        KeyValue("Centered", value: "Some value", alignment: .center)
-    }
-
-    static var multiline: some View {
-        KeyValue("Multiline and very long key", value: "Multiline and very long value", alignment: .trailing)
-            .frame(width: 100)
+    static var storybook: some View {
+        VStack(alignment: .leading, spacing: .large) {
+            KeyValue("Key", value: value)
+            KeyValue("Key", value: value, size: .large)
+            Separator()
+            HStack(alignment: .firstTextBaseline, spacing: .large) {
+                KeyValue("Key with no value")
+                Spacer()
+                KeyValue(value: "Value with no key")
+            }
+            Separator()
+            HStack(alignment: .firstTextBaseline, spacing: .large) {
+                KeyValue("Trailing very long key", value: longValue, alignment: .trailing)
+                Spacer()
+                KeyValue("Centered very long key", value: longValue, alignment: .center)
+                Spacer()
+                KeyValue("Leading very long key", value: longValue, alignment: .leading)
+            }
+        }
+        .padding(.medium)
     }
 }

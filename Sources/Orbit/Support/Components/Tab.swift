@@ -17,7 +17,7 @@ public enum TabStyle {
 
     public var startColor: Color {
         switch self {
-            case .default:                              return .white
+            case .default:                              return .whiteNormal
             case .product:                              return .productNormal
             case .underlined(let color):                return color
             case .underlinedGradient(let gradient):     return gradient.startColor
@@ -26,7 +26,7 @@ public enum TabStyle {
 
     public var endColor: Color {
         switch self {
-            case .default:                              return .white
+            case .default:                              return .whiteNormal
             case .product:                              return .productNormal
             case .underlined(let color):                return color
             case .underlinedGradient(let gradient):     return gradient.endColor

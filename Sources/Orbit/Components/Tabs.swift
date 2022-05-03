@@ -35,7 +35,7 @@ public struct Tabs<Content: View>: View {
                 .frame(maxWidth: maxTabWidth, minHeight: Layout.preferredSmallButtonHeight, maxHeight: .infinity)
         }
         .fixedSize(horizontal: false, vertical: true)
-        .opacity(0)
+        .hidden()
         .backgroundPreferenceValue(Tab.PreferenceKey.self) { preferences in
             GeometryReader { geometry in
                 tabs(for: preferences, in: geometry)
@@ -66,6 +66,7 @@ public struct Tabs<Content: View>: View {
         }
         .fixedSize(horizontal: false, vertical: true)
         .background(activeTab(for: preferences, in: geometry), alignment: .leading)
+        .animation(.easeOut(duration: 0.2), value: selectedIndex)
     }
 
     @ViewBuilder func tab(_ index: Int, lastIndex: Int, _ label: String, style: TabStyle) -> some View {
@@ -77,9 +78,7 @@ public struct Tabs<Content: View>: View {
             .contentShape(Rectangle())
             .accessibility(addTraits: .isButton)
             .onTapGesture {
-                withAnimation(.easeOut(duration: 0.25)) {
-                    selectedIndex = index
-                }
+                selectedIndex = index
             }
     }
 
@@ -100,7 +99,7 @@ public struct Tabs<Content: View>: View {
 
     @ViewBuilder func activeTabBackground(style: TabStyle) -> some View {
         VStack(spacing: 0) {
-            Color.white
+            Color.whiteNormal
             underline(style: style)
                 .frame(height: .xxxSmall)
         }
@@ -173,81 +172,110 @@ struct TabsPreviews: PreviewProvider {
             intrinsicSingleline
             equalMultiline
             equalSingleline
+            live
         }
-        .padding()
         .previewLayout(.sizeThatFits)
-
-        livePreview
-            .padding()
-            .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
-        Tabs(selectedIndex: .constant(1)) {
-            Tab("One", style: .default)
-            Tab("Two", style: .default)
-            Tab("Three", style: .default)
-            Tab("Four", style: .default)
+        StateWrapper(initialState: 1) { index in
+            Tabs(selectedIndex: index, distribution: .intrinsic) {
+                Tab("One", style: .default)
+                Tab("Two", style: .default)
+            }
         }
-        .previewDisplayName("Default")
+    }
+
+    static var storybook: some View {
+        VStack(spacing: .large) {
+            standalone
+            product
+            intrinsicMultiline
+            intrinsicSingleline
+            equalMultiline
+            equalSingleline
+        }
+        .padding(.medium)
+    }
+
+    static var storybookLive: some View {
+        VStack(spacing: .large) {
+            live
+        }
+        .padding(.medium)
     }
 
     static var product: some View {
-        Tabs(selectedIndex: .constant(0)) {
-            Tab("One", style: .product)
-            Tab("Two", style: .product)
-            Tab("Three", style: .product)
-            Tab("Four", style: .product)
+        StateWrapper(initialState: 1) { index in
+            Tabs(selectedIndex: index) {
+                Tab("One", style: .product)
+                Tab("Two", style: .product)
+                Tab("Three", style: .product)
+                Tab("Four", style: .product)
+            }
         }
         .previewDisplayName("Product")
     }
 
     @ViewBuilder static var intrinsicMultiline: some View {
-        Tabs(selectedIndex: .constant(1), distribution: .intrinsic) {
-            Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
-            Tab("Comfort", style: .underlinedGradient(.bundleMedium))
-            Tab("All", style: .underlinedGradient(.bundleTop))
+        StateWrapper(initialState: 1) { index in
+            Tabs(selectedIndex: index, distribution: .intrinsic) {
+                Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
+                Tab("Comfort", style: .underlinedGradient(.bundleMedium))
+                Tab("All", style: .underlinedGradient(.bundleTop))
+            }
         }
         .previewDisplayName("Intrinsic distribution, multiline")
     }
 
     @ViewBuilder static var intrinsicSingleline: some View {
-        Tabs(selectedIndex: .constant(1), distribution: .intrinsic, lineLimit: 1) {
-            Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
-            Tab("Comfort", style: .underlined(.blueDark))
-            Tab("All")
+        StateWrapper(initialState: 1) { index in
+            Tabs(selectedIndex: index, distribution: .intrinsic, lineLimit: 1) {
+                Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
+                Tab("Comfort", style: .underlined(.blueDark))
+                Tab("All")
+            }
         }
         .previewDisplayName("Intrinsic distribution, no multiline")
     }
 
     @ViewBuilder static var equalMultiline: some View {
-        Tabs(selectedIndex: .constant(0)) {
-            Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
-            Tab("Comfort", style: .underlinedGradient(.bundleMedium))
-            Tab("All", style: .underlinedGradient(.bundleTop))
+        StateWrapper(initialState: 1) { index in
+            Tabs(selectedIndex: index) {
+                Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
+                Tab("Comfort", style: .underlinedGradient(.bundleMedium))
+                Tab("All", style: .underlinedGradient(.bundleTop))
+            }
         }
         .previewDisplayName("Equal distribution, multiline")
     }
 
     @ViewBuilder static var equalSingleline: some View {
-        Tabs(selectedIndex: .constant(2), lineLimit: 1) {
-            Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
-            Tab("Comfort", style: .underlinedGradient(.bundleMedium))
-            Tab("All", style: .underlinedGradient(.bundleTop))
+        StateWrapper(initialState: 2) { index in
+            Tabs(selectedIndex: index, lineLimit: 1) {
+                Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
+                Tab("Comfort", style: .underlinedGradient(.bundleMedium))
+                Tab("All", style: .underlinedGradient(.bundleTop))
+            }
         }
         .previewDisplayName("Equal distribution, no multiline")
     }
 
-    static var livePreview: some View {
-        PreviewWrapperWithState(initialState: 1) { state in
-            Tabs(selectedIndex: state) {
-                Tab("One", style: .default)
-                Tab("Two", style: .default)
-                Tab("Three", style: .default)
-                Tab("Four", style: .default)
+    static var live: some View {
+        StateWrapper(initialState: 1) { index in
+            VStack(spacing: .large) {
+                Tabs(selectedIndex: index) {
+                    Tab("One", style: .default)
+                    Tab("Two", style: .default)
+                    Tab("Three", style: .default)
+                    Tab("Four", style: .default)
+                }
+
+                Button("Toggle") {
+                    index.wrappedValue = index.wrappedValue == 1 ? 0 : 1
+                }
             }
         }
-        .padding()
         .previewDisplayName("Live Preview")
     }
 }

@@ -13,17 +13,19 @@ public struct CountryFlag: View {
     let border: Border
 
     public var body: some View {
-        SwiftUI.Image(countryCode.lowercased(), bundle: .current)
-            .resizable()
-            .scaledToFit()
-            .clipShape(clipShape)
-            .overlay(
-                clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
-                    .blendMode(.darken)
-            )
-            .padding(Icon.averagePadding / 2)
-            .frame(width: size.value)
-            .fixedSize()
+        if countryCode.isEmpty == false {
+            SwiftUI.Image(countryCode.lowercased(), bundle: .current)
+                .resizable()
+                .scaledToFit()
+                .clipShape(clipShape)
+                .overlay(
+                    clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
+                        .blendMode(.darken)
+                )
+                .padding(Icon.averagePadding / 2)
+                .frame(width: size.value)
+                .fixedSize()
+        }
     }
 
     var clipShape: some InsettableShape {
@@ -71,22 +73,56 @@ struct CountryFlagPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            snapshots
+            standalone
+            storybook
         }
         .previewLayout(.sizeThatFits)
     }
-    
-    static var snapshots: some View {
+
+    static var standalone: some View {
         VStack {
             CountryFlag("cz")
-            CountryFlag("cz", border: .default(cornerRadius: 10))
-            CountryFlag("cz", border: .none)
-            CountryFlag("sg")
-            CountryFlag("jp")
-            CountryFlag("de")
-            CountryFlag("us", size: .small)
-            CountryFlag("us", size: .custom(.xxxLarge))
-            CountryFlag("unknown", size: .xLarge)
+            CountryFlag("")     // EmptyView
+        }
+        .padding(.medium)
+    }
+    
+    static var storybook: some View {
+        VStack(alignment: .leading, spacing: .xLarge) {
+            HStack(spacing: .small) {
+                Text("Small")
+                CountryFlag("cz", size: .small)
+                CountryFlag("sg", size: .small)
+                CountryFlag("jp", size: .small)
+                CountryFlag("de", size: .small)
+                CountryFlag("unknown", size: .small)
+            }
+            HStack(spacing: .small) {
+                Text("Normal")
+                CountryFlag("cz")
+                CountryFlag("sg")
+                CountryFlag("jp")
+                CountryFlag("de")
+                CountryFlag("unknown")
+            }
+            HStack(spacing: .small) {
+                Text("Large")
+                CountryFlag("cz", size: .large)
+                CountryFlag("sg", size: .large)
+                CountryFlag("jp", size: .large)
+                CountryFlag("de", size: .large)
+                CountryFlag("unknown", size: .large)
+            }
+            HStack(spacing: .small) {
+                Text("Borders")
+                CountryFlag("cz", size: .xLarge, border: .default(cornerRadius: 8))
+                CountryFlag("cz", size: .xLarge, border: .default(cornerRadius: 0))
+                CountryFlag("cz", size: .xLarge, border: .none)
+            }
+            HStack(spacing: .small) {
+                Text("Custom size")
+                CountryFlag("us", size: .custom(60))
+            }
         }
         .padding()
     }

@@ -19,27 +19,29 @@ public struct ButtonLink: View {
     let action: () -> Void
 
     public var body: some View {
-        SwiftUI.Button(
-            action: {
-                HapticsProvider.sendHapticFeedback(.light(0.5))
-                action()
-            },
-            label: {
-                HStack(spacing: .xSmall) {
-                    Icon(iconContent, size: iconSize)
-                    
-                    Text(
-                        label,
-                        size: .normal,
-                        color: nil,
-                        weight: .medium,
-                        accentColor: style.color.normal,
-                        linkColor: style.color.normal
-                    )
+        if label.isEmpty == false {
+            SwiftUI.Button(
+                action: {
+                    HapticsProvider.sendHapticFeedback(.light(0.5))
+                    action()
+                },
+                label: {
+                    HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+                        Icon(iconContent, size: iconSize)
+
+                        Text(
+                            label,
+                            size: .normal,
+                            color: nil,
+                            weight: .medium,
+                            accentColor: style.color.normal,
+                            linkColor: .custom(style.color.normal)
+                        )
+                    }
                 }
-            }
-        )
-        .buttonStyle(OrbitStyle(style: style, size: size))
+            )
+            .buttonStyle(OrbitStyle(style: style, size: size))
+        }
     }
     
     var iconSize: Icon.Size {
@@ -170,82 +172,62 @@ struct ButtonLinkPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             
-            styles
-                .padding(.medium)
-                .previewDisplayName("Styles")
-            
-            withIcon
-                .padding(.medium)
-                .previewDisplayName("With icon")
-            
-            status
-                .padding(.medium)
-                .previewDisplayName("Status")
-            
-            size
-                .padding(.medium)
-                .previewDisplayName("Size")
-            
+            storybook
+            storybookStatus
+            storybookSizes
+
             snapshotsCustom
         }
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
-        ButtonLink("ButtonLink")
+        VStack {
+            ButtonLink("ButtonLink")
+            ButtonLink("") // EmptyView
+            ButtonLink()   // EmptyView
+        }
+        .padding(.medium)
     }
 
-    static var styles: some View {
-        VStack(alignment: .leading, spacing: .small) {
-            ButtonLink("Primary", style: .primary)
-            ButtonLink("Secondary", style: .secondary)
-            ButtonLink("Critical", style: .critical)
+    static var storybook: some View {
+        HStack(spacing: .xxLarge) {
+            VStack(alignment: .leading, spacing: .large) {
+                ButtonLink("ButtonLink Primary", style: .primary)
+                ButtonLink("ButtonLink Secondary", style: .secondary)
+                ButtonLink("ButtonLink Critical", style: .critical)
+            }
+            VStack(alignment: .leading, spacing: .large) {
+                ButtonLink("ButtonLink Primary", style: .primary, icon: .accommodation)
+                ButtonLink("ButtonLink Secondary", style: .secondary, icon: .airplaneDown)
+                ButtonLink("ButtonLink Critical", style: .critical, icon: .alertCircle)
+            }
         }
+        .padding(.medium)
     }
     
-    static var withIcon: some View {
-        VStack(alignment: .leading, spacing: .small) {
-            ButtonLink("Primary", style: .primary, icon: .accommodation)
-            ButtonLink("Secondary", style: .secondary, icon: .airplaneDown)
-            ButtonLink("Critical", style: .critical, icon: .alertCircle)
+    static var storybookStatus: some View {
+        VStack(alignment: .leading, spacing: .large) {
+            ButtonLink("ButtonLink Info", style: .status(.info), icon: .informationCircle)
+            ButtonLink("ButtonLink Success", style: .status(.success), icon: .checkCircle)
+            ButtonLink("ButtonLink Warning", style: .status(.warning), icon: .alert)
+            ButtonLink("ButtonLink Critical", style: .status(.critical), icon: .alertCircle)
         }
+        .padding(.medium)
+        .previewDisplayName("Status")
     }
     
-    static var status: some View {
+    static var storybookSizes: some View {
         VStack(alignment: .leading, spacing: .small) {
-            ButtonLink("Info", style: .status(.info), icon: .informationCircle)
-            ButtonLink("Success", style: .status(.success), icon: .checkCircle)
-            ButtonLink("Warning", style: .status(.warning), icon: .alert)
-            ButtonLink("Critical", style: .status(.critical), icon: .alertCircle)
-        }
-    }
-    
-    static var size: some View {
-        VStack(alignment: .leading, spacing: .small) {
-            ButtonLink("Size Default (20)", icon: .baggageSet)
+            ButtonLink("ButtonLink intrinsic size", icon: .baggageSet)
                 .border(Color.cloudNormal)
-            ButtonLink("Size ButtonSmall", icon: .baggageSet, size: .buttonSmall)
+            ButtonLink("ButtonLink small button size", icon: .baggageSet, size: .buttonSmall)
                 .border(Color.cloudNormal)
-            ButtonLink("Size Button", icon: .baggageSet, size: .button)
+            ButtonLink("ButtonLink button size", icon: .baggageSet, size: .button)
                 .border(Color.cloudNormal)
         }
-    }
-    
-    static var orbit: some View {
-        VStack(spacing: 0) {
-            styles
-            Separator()
-            withIcon
-            Separator()
-            status
-            Separator()
-            size
-        }
-        .padding()
-    }
-
-    static var snapshots: some View {
-        orbit
+        .padding(.medium)
+        .previewDisplayName("Sizes")
     }
 
     static var snapshotsCustom: some View {

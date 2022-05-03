@@ -73,6 +73,7 @@ extension SocialButton {
         case apple
         case google
         case facebook
+        case email
 
         @ViewBuilder var logo: some View {
             switch self {
@@ -80,7 +81,7 @@ extension SocialButton {
                     if #available(iOS 14.0, *) {
                         SocialButton.appleLogo
                             .font(.system(size: 20))
-                            .foregroundColor(.white)
+                            .foregroundColor(.whiteNormal)
                             .padding(.horizontal, .xxxSmall)
                             .padding(.bottom, .xxSmall)
                     } else {
@@ -88,6 +89,7 @@ extension SocialButton {
                     }
                 case .google:                               SocialButton.googleLogo
                 case .facebook:                             SocialButton.facebookLogo
+                case .email:                                Icon(.email, size: .large)
             }
         }
 
@@ -96,14 +98,16 @@ extension SocialButton {
                 case .apple:                                return (.black, .inkNormal)
                 case .google:                               return (.cloudDark, .cloudNormalActive)
                 case .facebook:                             return (.cloudDark, .cloudNormalActive)
+                case .email:                                return (.cloudDark, .cloudNormalActive)
             }
         }
 
         var labelColor: Color {
             switch self {
-                case .apple:                                return .white
+                case .apple:                                return .whiteNormal
                 case .google:                               return .inkNormal
                 case .facebook:                             return .inkNormal
+                case .email:                                return .inkNormal
             }
         }
     }
@@ -132,25 +136,23 @@ struct SocialButtonPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            snapshots
+            storybook
         }
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         SocialButton("Sign in with Facebook", service: .facebook)
+            .padding(.medium)
     }
 
-    static var orbit: some View {
+    static var storybook: some View {
         VStack(spacing: .medium) {
+            SocialButton("Sign in with E-mail", service: .email)
             SocialButton("Sign in with Facebook", service: .facebook)
             SocialButton("Sign in with Google", service: .google)
             SocialButton("Sign in with Apple", service: .apple)
         }
-    }
-
-    static var snapshots: some View {
-        orbit
-            .padding()
+        .padding(.medium)
     }
 }

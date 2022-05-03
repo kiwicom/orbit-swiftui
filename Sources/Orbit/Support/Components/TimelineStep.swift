@@ -41,7 +41,7 @@ public struct TimelineStep: View {
         icon
             .background(
                 Circle()
-                    .fill(Color.white)
+                    .fill(Color.whiteNormal)
                     .padding(.xxxSmall)
             )
     }

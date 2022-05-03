@@ -29,7 +29,7 @@ public struct Badge: View {
                     size: .small,
                     color: .custom(style.labelColor),
                     weight: .medium,
-                    linkColor: style.labelColor
+                    linkColor: .custom(style.labelColor)
                 )
                 .lineLimit(1)
             }
@@ -121,9 +121,9 @@ public extension Badge {
 
         public var outlineColor: Color {
             switch self {
-                case .light:                                return .cloudNormalHover
+                case .light:                                return .cloudDark
                 case .lightInverted:                        return .inkNormal
-                case .neutral:                              return .cloudLightHover
+                case .neutral:                              return .cloudDark
                 case .status(.info, false):                 return .blueLightHover
                 case .status(.info, true):                  return .blueNormal
                 case .status(.success, false):              return .greenLightHover
@@ -139,7 +139,7 @@ public extension Badge {
 
         @ViewBuilder public var background: some View {
             switch self {
-                case .light:                                Color.white
+                case .light:                                Color.whiteNormal
                 case .lightInverted:                        Color.inkNormal
                 case .neutral:                              Color.cloudLight
                 case .status(.info, false):                 Color.blueLight
@@ -158,18 +158,18 @@ public extension Badge {
         public var labelColor: UIColor {
             switch self {
                 case .light:                                return .inkNormal
-                case .lightInverted:                        return .white
+                case .lightInverted:                        return .whiteNormal
                 case .neutral:                              return .inkNormal
                 case .status(.info, false):                 return .blueDark
-                case .status(.info, true):                  return .white
+                case .status(.info, true):                  return .whiteNormal
                 case .status(.success, false):              return .greenDark
-                case .status(.success, true):               return .white
+                case .status(.success, true):               return .whiteNormal
                 case .status(.warning, false):              return .orangeDark
-                case .status(.warning, true):               return .white
+                case .status(.warning, true):               return .whiteNormal
                 case .status(.critical, false):             return .redDark
-                case .status(.critical, true):              return .white
+                case .status(.critical, true):              return .whiteNormal
                 case .custom(let labelColor, _, _):         return labelColor
-                case .gradient:                             return .white
+                case .gradient:                             return .whiteNormal
             }
         }
     }
@@ -181,118 +181,99 @@ struct BadgePreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            snapshots
+            storybook
+            storybookGradient
+            storybookMix
         }
         .previewLayout(.sizeThatFits)
     }
 
-    static var orbit: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                VStack(alignment: .leading) {
-                    Badge("Light", style: .light)
-                    Badge("Light Inverted", style: .lightInverted)
-                    Badge("Neutral", style: .neutral)
-                }
-                VStack(alignment: .leading) {
-                    Badge("Info", style: .status(.info))
-                    Badge("Info Inverted", style: .status(.info, inverted: true))
-                    Badge("Success", style: .status(.success))
-                    Badge("Success Inverted", style: .status(.success, inverted: true))
-                    Badge("Warning", style: .status(.warning))
-                    Badge("Warning Inverted", style: .status(.warning, inverted: true))
-                    Badge("Critical", style: .status(.critical))
-                    Badge("Critical Inverted", style: .status(.critical, inverted: true))
-                }
-                VStack(alignment: .leading) {
-                    Badge("Orange Gradient", icon: .check, style: .gradient(.bundleBasic))
-                    Badge("Purple Gradient", icon: .accommodation, style: .gradient(.bundleMedium))
-                    Badge("Ink Gradient", icon: .airplaneUp, style: .gradient(.bundleTop))
-                }
-            }
-
-            VStack(alignment: .leading) {
-                VStack(alignment: .leading) {
-                    Badge("Light", icon: .sun, style: .light)
-                    Badge("Light Inverted", icon: .moon, style: .lightInverted)
-                    Badge("Neutral", icon: .airplaneUp, style: .neutral)
-                }
-                VStack(alignment: .leading) {
-                    Badge("Info", icon: .wifi, style: .status(.info))
-                    Badge("Info Inverted", icon: .bus, style: .status(.info, inverted: true))
-                    Badge("Success", icon: .airplane, style: .status(.success))
-                    Badge("Success Inverted", icon: .baggageCabin, style: .status(.success, inverted: true))
-                    Badge("Warning", icon: .baggageCheckedNone, style: .status(.warning))
-                    Badge("Warning Inverted", icon: .accommodation, style: .status(.warning, inverted: true))
-                    Badge("Critical", icon: .accommodation, style: .status(.critical))
-                    Badge("Critical Inverted", icon: .accommodation, style: .status(.critical, inverted: true))
-                }
-                VStack(alignment: .leading) {
-                    Badge("Orange Gradient", style: .gradient(.bundleBasic))
-                    Badge("Purple Gradient", style: .gradient(.bundleMedium))
-                    Badge("Ink Gradient", style: .gradient(.bundleTop))
-                }
-            }
-        }
-    }
-
-    @ViewBuilder static var standalone: some View {
-        Badge("Label", icon: .informationCircle, style: .neutral)
-        Badge()
-        Badge("")
-    }
-
-    static var snapshots: some View {
+    static var standalone: some View {
         Group {
-            orbit
-                .padding(.vertical)
-                .previewDisplayName("Figma")
+            Badge("Label", icon: .grid)
+            Badge()    // EmptyView
+            Badge("")  // EmptyView
+        }
+        .padding(.medium)
+    }
 
-            HStack(spacing: .xxLarge) {
-                Badge(
-                    "Custom",
-                    style: .custom(
-                        labelColor: .blueDark,
-                        outlineColor: .blueDark,
-                        backgroundColor: .white
-                    )
-                )
+    static var storybook: some View {
+        VStack(alignment: .leading, spacing: .xLarge) {
+            VStack(alignment: .leading, spacing: .medium) {
+                badges(.light)
+                badges(.lightInverted)
+            }
 
+            badges(.neutral)
+
+            statusBadges(.info)
+            statusBadges(.success)
+            statusBadges(.warning)
+            statusBadges(.critical)
+        }
+        .padding(.medium)
+    }
+
+    static var storybookGradient: some View {
+        VStack(alignment: .leading, spacing: .xLarge) {
+            gradientBadge(.bundleBasic)
+            gradientBadge(.bundleMedium)
+            gradientBadge(.bundleTop)
+        }
+        .padding(.medium)
+        .previewDisplayName("Gradient")
+    }
+
+    static var storybookMix: some View {
+        VStack(alignment: .leading, spacing: .xLarge) {
+            HStack(spacing: .small) {
                 Badge(
                     "Custom",
                     iconContent: .icon(.airplane, color: .pink),
                     style: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
-                        backgroundColor: .white
+                        backgroundColor: .whiteNormal
                     )
                 )
-                
-                Badge(
-                    "Flag",
-                    iconContent: .countryFlag("us")
-                )
+
+                Badge("Flag", iconContent: .countryFlag("us"))
             }
-            .padding(.vertical)
-            .previewDisplayName("Custom")
+
+            HStack(spacing: .small) {
+                Badge("Image", iconContent: .image(.orbit(.facebook)))
+                Badge("SF Symbol", iconContent: .sfSymbol("applelogo"))
+            }
 
             HStack {
-                Badge("Only label", style: .neutral)
-                Badge("1", style: .status(.critical, inverted: true))
-                Badge("", icon: .wifi, style: .neutral)
-            }
-            .padding(.vertical)
-            .previewDisplayName("Only icon or label")
-
-            HStack {
-                Badge("Label", icon: .accommodation, style: .neutral, size: .compact)
-                Badge("Only label", style: .neutral, size: .compact)
+                Badge("Compact", icon: .accommodation, style: .neutral, size: .compact)
                 Badge("1", style: .status(.critical, inverted: true), size: .compact)
                 Badge("", icon: .wifi, style: .neutral, size: .compact)
             }
-            .padding(.vertical)
-            .previewDisplayName("Compact size")
         }
-        .padding(.horizontal)
+        .padding(.medium)
+        .previewDisplayName("Mix")
+    }
+
+    static func badges(_ style: Badge.Style) -> some View {
+        HStack(spacing: .medium) {
+            Badge("label", style: style)
+            Badge("label", icon: .grid, style: style)
+            Badge(icon: .grid, style: style)
+            Badge("1", style: style)
+        }
+    }
+
+    static func statusBadges(_ status: Status) -> some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            badges(.status(status))
+            badges(.status(status, inverted: true))
+        }
+        .previewDisplayName("\(String(describing: status).titleCased)")
+    }
+
+    static func gradientBadge(_ gradient: Gradient) -> some View {
+        badges(.gradient(gradient))
+            .previewDisplayName("\(String(describing: gradient).titleCased)")
     }
 }
