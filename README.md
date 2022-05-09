@@ -40,23 +40,29 @@ Add Orbit package to your project by adding the package dependency:
 
 ## Usage
 
-0. (Optional) Set Circular Pro or custom fonts. [Circular Pro must be licensed](https://orbit.kiwi/foundation/typography/circular-pro/#circular-pro-in-non-kiwicom-projects). If you omit this step, the default iOS system font will be used.
+0. (Optional) Set Circular Pro or custom fonts to be used in Orbit components. [Circular Pro must be licensed](https://orbit.kiwi/foundation/typography/circular-pro/#circular-pro-in-non-kiwicom-projects). If you omit this step, the default iOS system font will be used.
 
 ```swift
 Font.orbitFonts = [
-    .regular: URL(fileURLWithPath: "file://User/Joe/Developer/orbit-swift-ui/Foundation/Typography/CircularPro-Book.otf"),
-    .medium: URL(fileURLWithPath: ...),
-    .bold: URL(fileURLWithPath: ...)
+    .regular: Bundle.main.url(forResource: "CircularPro-Book.otf", withExtension: nil),
+    .medium: Bundle.main.url(forResource: "CircularPro-Medium.otf", withExtension: nil),
+    .bold: Bundle.main.url(forResource: "CircularPro-Bold.otf", withExtension: nil)
 ]
 ```
 
-To use fonts in Orbit components, register fonts once during app start (or use a `PreviewWrapper` wrapper for previews).
+Register fonts once at app start (or use a `PreviewWrapper` wrapper for previews).
 
 ```swift
 Font.registerOrbitFonts()
 ```
 
-1. (Optional) Browse Orbit `Storybook` (using preview or empty app) to see all available components.
+2. Include Orbit package in SwiftUI file to use Orbit foundations and components.
+
+![Usage in code](/Documentation/usage.png)
+
+### Storybook catalogue screen
+
+The `Storybook` views can be checked (using previews or an empty app) to browse a catalogue of all components. The app is also available for download on ![AppStore](https://apps.apple.com/us/app/orbit-storybook/id1622225639).
 
 ```
 @main struct DemoApp: App {
@@ -71,12 +77,6 @@ Font.registerOrbitFonts()
 ```
 
 ![image](/Documentation/storybook.png)
-
-2. Include any of our components in your project and use them.
-
-![Usage in code](/Documentation/usage.png)
-
-You can also check the `OrbitStorybookComponentsScreen` preview to see all supported components.
 
 ### File structure and naming conventions
 
@@ -142,5 +142,5 @@ Use `BorderRadius` and `BorderWidth` enums.
 
 #### Typography
 
-Use `Font` and `UIFont` extensions. 
-Orbit components use the Orbit font automatically.
+Use `Font` extensions. 
+Orbit components use the Orbit font (configured in step 0) automatically.
