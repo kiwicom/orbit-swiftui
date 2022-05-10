@@ -64,11 +64,9 @@ public struct InputField: View {
                     }
                 }
             }
-            
-            if message.isEmpty == false {
-                ContentHeightReader(height: $messageHeight.animation(.easeOut(duration: 0.2))) {
-                    FormFieldMessage(message)
-                }
+
+            ContentHeightReader(height: $messageHeight.animation(.easeOut(duration: 0.2))) {
+                FormFieldMessage(message)
             }
         }
     }
