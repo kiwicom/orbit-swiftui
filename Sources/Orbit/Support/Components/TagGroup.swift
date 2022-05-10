@@ -124,8 +124,38 @@ struct TagGroupPreviews: PreviewProvider {
     }
 
     static var previews: some View {
-        snapshots
+        PreviewWrapper {
+            snapshots
+            live
+        }
+        .padding(.medium)
+        .previewLayout(.sizeThatFits)
+    }
 
+    static let snapshotTags = [
+        TagModelPreview(id: 1, label: "Prague", isRemovable: true),
+        TagModelPreview(id: 2, label: "Vienna", isRemovable: true, isSelected: true),
+        TagModelPreview(id: 3, label: "Paris", isRemovable: false),
+        TagModelPreview(id: 4, label: "Milan", isRemovable: false),
+        TagModelPreview(id: 5, label: "New York", isRemovable: false),
+        TagModelPreview(id: 6, label: "Delhi", isRemovable: true),
+        TagModelPreview(id: 7, label: "Sutton-under-Whitestonecliffe", isRemovable: true),
+        TagModelPreview(id: 8, label: "Hongkong", isRemovable: true),
+        TagModelPreview(id: 9, label: "Chaussée-Notre-Dame-Louvignies", isRemovable: true),
+    ]
+
+    static var snapshots: some View {
+        Group {
+            TagGroup(tags: .constant(snapshotTags), layout: .singleLineScrollable)
+                .previewDisplayName("Single line scrollable")
+
+            TagGroup(tags: .constant(snapshotTags), layout: .multiLine)
+                .frame(height: 200)
+                .previewDisplayName("Multi line")
+        }
+    }
+
+    static var live: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: .xxSmall) {
                 StateWrapper(
@@ -198,36 +228,6 @@ struct TagGroupPreviews: PreviewProvider {
                 }
             }
         }
-        .padding()
-        .previewLayout(.sizeThatFits)
         .previewDisplayName("Live Preview")
-    }
-
-    static let snapshotTags = [
-        TagModelPreview(id: 1, label: "Prague", isRemovable: true),
-        TagModelPreview(id: 2, label: "Vienna", isRemovable: true, isSelected: true),
-        TagModelPreview(id: 3, label: "Paris", isRemovable: false),
-        TagModelPreview(id: 4, label: "Milan", isRemovable: false),
-        TagModelPreview(id: 5, label: "New York", isRemovable: false),
-        TagModelPreview(id: 6, label: "Delhi", isRemovable: true),
-        TagModelPreview(id: 7, label: "Sutton-under-Whitestonecliffe", isRemovable: true),
-        TagModelPreview(id: 8, label: "Hongkong", isRemovable: true),
-        TagModelPreview(id: 9, label: "Chaussée-Notre-Dame-Louvignies", isRemovable: true),
-    ]
-
-    static var snapshots: some View {
-        Group {
-            TagGroup(tags: .constant(snapshotTags), layout: .singleLineScrollable)
-                .padding(.vertical)
-                .previewDisplayName("Single line scrollable")
-
-            TagGroup(tags: .constant(snapshotTags), layout: .multiLine)
-                .frame(height: 200)
-                .padding(.vertical)
-                .previewDisplayName("Multi line")
-        }
-        .frame(width: 300)
-        .padding(.horizontal)
-        .previewLayout(.sizeThatFits)
     }
 }

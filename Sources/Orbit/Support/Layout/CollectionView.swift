@@ -93,7 +93,6 @@ struct OverallHeightPreference: PreferenceKey {
 }
 
 /// A view that wraps content in multiline flow layout.
-@available(iOS, obsoleted: 14.0, message: "Might be possible to be replaced with a LazyVGrid")
 struct CollectionView<Data, Content>:
 View where Data: RandomAccessCollection, Data.Index: Hashable, Data.Element: Identifiable, Content: View {
 
