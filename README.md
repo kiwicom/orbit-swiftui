@@ -40,7 +40,11 @@ Add Orbit package to your project by adding the package dependency:
 
 ## Usage
 
-0. (Optional) Set Circular Pro or custom fonts to be used in Orbit components. [Circular Pro must be licensed](https://orbit.kiwi/foundation/typography/circular-pro/#circular-pro-in-non-kiwicom-projects). If you omit this step, the default iOS system font will be used.
+### Register fonts (Optional)
+
+If you omit this optional step, Orbit components will use default iOS system fonts.
+
+1. Define `Circular Pro` or any custom font to be used for each font weight variant. [Circular Pro must be licensed](https://orbit.kiwi/foundation/typography/circular-pro/#circular-pro-in-non-kiwicom-projects). 
 
 ```swift
 Font.orbitFonts = [
@@ -50,19 +54,21 @@ Font.orbitFonts = [
 ]
 ```
 
-Register fonts once at app start (or use a `PreviewWrapper` wrapper for previews).
+2. Register those fonts once at app start (or use a `PreviewWrapper` wrapper for previews).
 
 ```swift
 Font.registerOrbitFonts()
 ```
 
-2. Include Orbit package in SwiftUI file to use Orbit foundations and components.
+### Import Orbit package
+
+Include Orbit package in your package or project and include `import Orbit` in SwiftUI file to access Orbit foundations and components.
 
 ![Usage in code](/Documentation/usage.png)
 
 ### Storybook catalogue screen
 
-The `Storybook` views can be checked (using previews or an empty app) to browse a catalogue of all components. The app is also available for download on ![AppStore](https://apps.apple.com/us/app/orbit-storybook/id1622225639).
+The `Storybook` views can be checked (using previews or an empty app) to browse a catalogue of all components. The app is also available for download on [AppStore](https://apps.apple.com/us/app/orbit-storybook/id1622225639).
 
 ```
 @main struct DemoApp: App {
@@ -143,4 +149,4 @@ Use `BorderRadius` and `BorderWidth` enums.
 #### Typography
 
 Use `Font` extensions. 
-Orbit components use the Orbit font (configured in step 0) automatically.
+All Orbit components use the Orbit font (configured in step 0) automatically.
