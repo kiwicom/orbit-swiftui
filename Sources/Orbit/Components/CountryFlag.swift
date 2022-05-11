@@ -77,9 +77,6 @@ struct CountryFlagPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             storybook
-            storybook
-                .environment(\.sizeCategory, .accessibilityLarge)
-                .previewDisplayName("Dynamic Fonts - L")
         }
         .previewLayout(.sizeThatFits)
     }
@@ -130,5 +127,25 @@ struct CountryFlagPreviews: PreviewProvider {
             }
         }
         .padding()
+    }
+}
+
+struct CountryFlagDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        CountryFlagPreviews.storybook
     }
 }

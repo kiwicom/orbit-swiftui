@@ -22,8 +22,10 @@ public enum TabsDistribution {
 /// - Note: [Orbit definition](https://orbit.kiwi/components/structure/tabs/)
 public struct Tabs<Content: View>: View {
 
+    @Environment(\.sizeCategory) var sizeCategory
     @Binding var selectedIndex: Int
 
+    let underlineHeight: CGFloat = .xxxSmall
     let lineLimit: Int?
     let distribution: TabsDistribution
     let content: () -> Content
@@ -101,7 +103,7 @@ public struct Tabs<Content: View>: View {
         VStack(spacing: 0) {
             Color.whiteNormal
             underline(style: style)
-                .frame(height: .xxxSmall)
+                .frame(height: underlineHeight * sizeCategory.ratio)
         }
         .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1))
         .shadow(color: .black.opacity(0.06), radius: 1, x: 0, y: 1)
@@ -172,7 +174,7 @@ struct TabsPreviews: PreviewProvider {
             intrinsicSingleline
             equalMultiline
             equalSingleline
-            live
+            storybookLive
         }
         .previewLayout(.sizeThatFits)
     }
@@ -184,10 +186,11 @@ struct TabsPreviews: PreviewProvider {
                 Tab("Two", style: .default)
             }
         }
+        .padding(.medium)
     }
 
     static var storybook: some View {
-        VStack(spacing: .large) {
+        VStack(spacing: 0) {
             standalone
             product
             intrinsicMultiline
@@ -195,14 +198,6 @@ struct TabsPreviews: PreviewProvider {
             equalMultiline
             equalSingleline
         }
-        .padding(.medium)
-    }
-
-    static var storybookLive: some View {
-        VStack(spacing: .large) {
-            live
-        }
-        .padding(.medium)
     }
 
     static var product: some View {
@@ -214,6 +209,7 @@ struct TabsPreviews: PreviewProvider {
                 Tab("Four", style: .product)
             }
         }
+        .padding(.medium)
         .previewDisplayName("Product")
     }
 
@@ -225,6 +221,7 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
         }
+        .padding(.medium)
         .previewDisplayName("Intrinsic distribution, multiline")
     }
 
@@ -236,6 +233,7 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All")
             }
         }
+        .padding(.medium)
         .previewDisplayName("Intrinsic distribution, no multiline")
     }
 
@@ -247,6 +245,7 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
         }
+        .padding(.medium)
         .previewDisplayName("Equal distribution, multiline")
     }
 
@@ -258,10 +257,11 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
         }
+        .padding(.medium)
         .previewDisplayName("Equal distribution, no multiline")
     }
 
-    static var live: some View {
+    static var storybookLive: some View {
         StateWrapper(initialState: 1) { index in
             VStack(spacing: .large) {
                 Tabs(selectedIndex: index) {
@@ -276,6 +276,28 @@ struct TabsPreviews: PreviewProvider {
                 }
             }
         }
+        .padding(.medium)
         .previewDisplayName("Live Preview")
+    }
+}
+
+struct TabsDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        TabsPreviews.storybook
+        TabsPreviews.product
+        TabsPreviews.equalMultiline
     }
 }

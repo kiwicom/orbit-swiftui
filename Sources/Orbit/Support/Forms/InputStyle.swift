@@ -38,7 +38,7 @@ public enum InputState {
 
 /// Content for inputs that share common layout with a prefix and suffix.
 struct InputContent<Content: View>: View {
-    
+
     var prefix: Icon.Content = .none
     var suffix: Icon.Content = .none
     var state: InputState = .default
@@ -61,6 +61,9 @@ struct InputContent<Content: View>: View {
 
             Spacer(minLength: 0)
 
+            TextStrut(.normal)
+                .padding(.vertical, Button.Size.default.verticalPadding)
+
             Icon(suffix, size: .large)
                 .foregroundColor(suffixColor)
                 .padding(.horizontal, .xSmall)
@@ -68,7 +71,6 @@ struct InputContent<Content: View>: View {
                 .onTapGesture(perform: suffixAction)
         }
         .foregroundColor(state.textColor)
-        .frame(height: Layout.preferredButtonHeight)
         .background(backgroundColor(isPressed: isPressed).animation(.default, value: message))
         .cornerRadius(BorderRadius.default)
         .overlay(

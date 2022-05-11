@@ -12,6 +12,8 @@ import SwiftUI
 /// - Important: Component expands horizontally to infinity.
 public struct SocialButton: View {
 
+    @Environment(\.sizeCategory) var sizeCategory
+
     let label: String
     let service: Service
     let action: () -> Void
@@ -25,9 +27,11 @@ public struct SocialButton: View {
             label: {
                 HStack(spacing: .xSmall) {
                     service.logo
-                        .frame(width: .large)
+                        .scaledToFit()
+                        .frame(width: .large * sizeCategory.ratio)
 
                     Text(label, size: .normal, color: nil, weight: .medium)
+                        .padding(.vertical, Button.Size.default.verticalPadding)
 
                     Spacer(minLength: 0)
 
@@ -63,8 +67,8 @@ extension SocialButton {
     }
 
     private static let appleLogo = appleLogoImage
-    private static let googleLogo = Image.orbit(.google)
-    private static let facebookLogo = Image.orbit(.facebook)
+    private static let googleLogo = Image.orbit(.google).resizable()
+    private static let facebookLogo = Image.orbit(.facebook).resizable()
 
     public enum Service {
 
@@ -80,7 +84,7 @@ extension SocialButton {
                 case .apple:
                     if #available(iOS 14.0, *) {
                         SocialButton.appleLogo
-                            .font(.system(size: 20))
+                            .font(.body)
                             .foregroundColor(.whiteNormal)
                             .padding(.horizontal, .xxxSmall)
                             .padding(.bottom, .xxSmall)
@@ -118,9 +122,8 @@ extension SocialButton {
 
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .frame(minWidth: Layout.preferredButtonHeight, maxWidth: .infinity)
+                .frame(maxWidth: .infinity)
                 .padding(.horizontal, .small)
-                .frame(height: Layout.preferredButtonHeight)
                 .foregroundColor(service.labelColor)
                 .background(
                     configuration.isPressed ? service.backgroundColor.active : service.backgroundColor.normal
@@ -154,5 +157,24 @@ struct SocialButtonPreviews: PreviewProvider {
             SocialButton("Sign in with Apple", service: .apple)
         }
         .padding(.medium)
+    }
+}
+
+struct SocialButtonDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        SocialButtonPreviews.storybook
     }
 }

@@ -280,6 +280,7 @@ struct TextPreviews: PreviewProvider {
 
     static var standalone: some View {
         Text("Plain text with no formatting")
+            .padding(.medium)
             .previewDisplayName("Standalone")
     }
 

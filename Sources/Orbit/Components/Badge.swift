@@ -14,40 +14,50 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/badge/)
 public struct Badge: View {
 
+    public static let verticalPadding: CGFloat = 4 + 1/3 // Makes height exactly 24 at normal text size
+    public static let textSize: Text.Size = .small
+
     let label: String
     let iconContent: Icon.Content
     var style: Style
-    let size: Size
 
     public var body: some View {
         if isEmpty == false {
-            HStack(spacing: size.spacing) {
-                Icon(iconContent, size: .small)
-                
-                Text(
-                    label,
-                    size: .small,
-                    color: .custom(style.labelColor),
-                    weight: .medium,
-                    linkColor: .custom(style.labelColor)
-                )
-                .lineLimit(1)
+            HStack(spacing: 0) {
+                HStack(spacing: .xxSmall) {
+                    Icon(iconContent, size: .small)
+
+                    Text(
+                        label,
+                        size: Self.textSize,
+                        color: .custom(style.labelColor),
+                        weight: .medium,
+                        linkColor: .custom(style.labelColor)
+                    )
+                    .padding(.vertical, Self.verticalPadding)
+                }
+
+                TextStrut(Self.textSize)
+                    .padding(.vertical, Self.verticalPadding)
             }
-            .padding(.horizontal, size.padding)
-            .frame(minWidth: size.height)
-            .frame(height: size.height)
+            .padding(.horizontal, .xSmall)
+            .frameWidthAtLeastHeight()
             .background(
                 style.background
-                    .clipShape(Capsule())
+                    .clipShape(shape)
             )
             .overlay(
-                Capsule()
+                shape
                     .strokeBorder(style.outlineColor, lineWidth: BorderWidth.thin)
             )
             .fixedSize()
         }
     }
-    
+
+    var shape: some InsettableShape {
+        Capsule()
+    }
+
     var isEmpty: Bool {
         iconContent.isEmpty && label.isEmpty
     }
@@ -57,58 +67,29 @@ public struct Badge: View {
 public extension Badge {
     
     /// Creates Orbit Badge component.
-    init(_ label: String = "", iconContent: Icon.Content = .none, style: Style = .neutral, size: Size = .default) {
+    init(_ label: String = "", iconContent: Icon.Content = .none, style: Style = .neutral) {
         self.label = label
         self.iconContent = iconContent
         self.style = style
-        self.size = size
     }
     
     /// Creates Orbit Badge component with icon symbol.
-    init(_ label: String = "", icon: Icon.Symbol = .none, style: Style = .neutral, size: Size = .default) {
+    init(_ label: String = "", icon: Icon.Symbol = .none, style: Style = .neutral) {
         self.init(
             label,
             iconContent: .icon(icon, color: Color(style.labelColor)),
-            style: style,
-            size: size
+            style: style
         )
     }
     
     /// Creates Orbit Badge component with no icon.
-    init(_ label: String = "", style: Style = .neutral, size: Size = .default) {
-        self.init(label, iconContent: .none, style: style, size: size)
+    init(_ label: String = "", style: Style = .neutral) {
+        self.init(label, iconContent: .none, style: style)
     }
 }
 
 // MARK: - Types
 public extension Badge {
-
-    enum Size {
-        case `default`
-        /// Compact size suitable for usage inside ``Tile``.
-        case compact
-
-        public var height: CGFloat {
-            switch self {
-                case .default:      return .large
-                case .compact:      return 18
-            }
-        }
-
-        public var padding: CGFloat {
-            switch self {
-                case .default:      return .xSmall
-                case .compact:      return 6
-            }
-        }
-
-        public var spacing: CGFloat {
-            switch self {
-                case .default:      return 5
-                case .compact:      return 3
-            }
-        }
-    }
 
     enum Style {
 
@@ -122,18 +103,18 @@ public extension Badge {
         public var outlineColor: Color {
             switch self {
                 case .light:                                return .cloudDark
-                case .lightInverted:                        return .inkNormal
+                case .lightInverted:                        return .clear
                 case .neutral:                              return .cloudDark
                 case .status(.info, false):                 return .blueLightHover
-                case .status(.info, true):                  return .blueNormal
+                case .status(.info, true):                  return .clear
                 case .status(.success, false):              return .greenLightHover
-                case .status(.success, true):               return .greenNormal
+                case .status(.success, true):               return .clear
                 case .status(.warning, false):              return .orangeLightHover
-                case .status(.warning, true):               return .orangeNormal
+                case .status(.warning, true):               return .clear
                 case .status(.critical, false):             return .redLightHover
-                case .status(.critical, true):              return .redNormal
+                case .status(.critical, true):              return .clear
                 case .custom(_, let outlineColor, _):       return outlineColor
-                case .gradient(let gradient):               return gradient.color
+                case .gradient:                             return .clear
             }
         }
 
@@ -181,6 +162,7 @@ struct BadgePreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            sizing
             storybook
             storybookGradient
             storybookMix
@@ -189,10 +171,26 @@ struct BadgePreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Group {
-            Badge("Label", icon: .grid)
+        VStack(spacing: 0) {
+            Badge("label", icon: .grid)
             Badge()    // EmptyView
             Badge("")  // EmptyView
+        }
+        .padding(.medium)
+    }
+
+    static var sizing: some View {
+        VStack(spacing: .xSmall) {
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    Badge("Badge height \(state.wrappedValue)")
+                }
+            }
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    Badge("Badge height \(state.wrappedValue)", icon: .grid)
+                }
+            }
         }
         .padding(.medium)
     }
@@ -244,12 +242,6 @@ struct BadgePreviews: PreviewProvider {
                 Badge("Image", iconContent: .image(.orbit(.facebook)))
                 Badge("SF Symbol", iconContent: .sfSymbol("applelogo"))
             }
-
-            HStack {
-                Badge("Compact", icon: .accommodation, style: .neutral, size: .compact)
-                Badge("1", style: .status(.critical, inverted: true), size: .compact)
-                Badge("", icon: .wifi, style: .neutral, size: .compact)
-            }
         }
         .padding(.medium)
         .previewDisplayName("Mix")
@@ -275,5 +267,27 @@ struct BadgePreviews: PreviewProvider {
     static func gradientBadge(_ gradient: Gradient) -> some View {
         badges(.gradient(gradient))
             .previewDisplayName("\(String(describing: gradient).titleCased)")
+    }
+}
+
+struct BadgeDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        BadgePreviews.standalone
+        BadgePreviews.sizing
+        Badge("1")
     }
 }

@@ -221,7 +221,7 @@ struct ToastPreviews: PreviewProvider {
 
     static var standaloneWrapper: some View {
         ToastWrapper(description, icon: .checkCircle, progress: 0.6)
-            .padding(.medium)
+            .padding(.xLarge)
             .previewDisplayName("ToastWrapper")
     }
 
@@ -249,5 +249,24 @@ struct ToastPreviews: PreviewProvider {
         }
         .padding(.medium)
         .previewDisplayName("Live Preview")
+    }
+}
+
+struct ToastDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        ToastPreviews.standaloneWrapper
     }
 }

@@ -52,7 +52,6 @@ public struct InputField: View {
                         .keyboardType(keyboard)
                         .font(.orbit(size: Text.Size.normal.value, weight: .regular))
                         .accentColor(.blueNormal)
-                        .frame(height: Layout.preferredButtonHeight)
                         .background(textFieldPlaceholder, alignment: .leading)
                         .disabled(state == .disabled)
                     if isSecure {
@@ -124,6 +123,7 @@ public struct InputField: View {
     @ViewBuilder var securedSuffix: some View {
         if value.isEmpty == false, state != .disabled {
             Icon(isSecureTextEntry ? .visibility : .visibilityOff, size: .normal)
+                .padding(.vertical, .xSmall)
                 .padding(.horizontal, .small)
                 .contentShape(Rectangle())
                 .onTapGesture {
@@ -343,4 +343,23 @@ struct InputFieldLivePreviews: PreviewProvider {
         }
     }
 
+}
+
+struct InputFieldDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        InputFieldPreviews.standalone
+    }
 }

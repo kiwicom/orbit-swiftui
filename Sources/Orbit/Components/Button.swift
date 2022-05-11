@@ -12,10 +12,10 @@ import SwiftUI
 public struct Button: View {
 
     let label: String
-    let style: Style
-    let size: Size
     let iconContent: Icon.Content
     let disclosureIconContent: Icon.Content
+    let style: Style
+    let size: Size
     let action: () -> Void
 
     public var body: some View {
@@ -25,43 +25,52 @@ public struct Button: View {
                 action()
             },
             label: {
-                HStack(spacing: .xSmall) {
+                HStack(spacing: 0) {
                     if disclosureIconContent.isEmpty {
                         Spacer(minLength: 0)
                     }
 
-                    Icon(iconContent, size: iconSize)
-
-                    if #available(iOS 14.0, *) {
-                        Text(
-                            label,
-                            size: size.textSize,
-                            color: .custom(style.foregroundUIColor),
-                            weight: .medium,
-                            linkColor: .custom(style.foregroundUIColor)
-                        )
-                    } else {
-                        Text(
-                            label,
-                            size: size.textSize,
-                            color: .custom(style.foregroundUIColor),
-                            weight: .medium,
-                            linkColor: .custom(style.foregroundUIColor)
-                        )
-                        // Prevents text value animation issue due to different iOS13 behavior
-                        .animation(nil)
+                    HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+                        Icon(iconContent, size: iconSize)
+                        text
+                            .padding(.vertical, size.verticalPadding)
                     }
 
                     Spacer(minLength: 0)
 
+                    TextStrut(size.textSize)
+                        .padding(.vertical, size.verticalPadding)
+
                     Icon(disclosureIconContent, size: iconSize)
                 }
-                .padding(.horizontal, label.isEmpty ? 0 : size.padding)
+                .padding(.leading, leadingPadding)
+                .padding(.trailing, trailingPadding)
             }
         )
         .buttonStyle(ButtonStyle(style: style, size: size))
-        .frame(minWidth: size.height, maxWidth: .infinity)
-        .frame(width: isIconOnly ? size.height : nil)
+        .frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder var text: some View {
+        if #available(iOS 14.0, *) {
+            Text(
+                label,
+                size: size.textSize,
+                color: .custom(style.foregroundUIColor),
+                weight: .medium,
+                linkColor: .custom(style.foregroundUIColor)
+            )
+        } else {
+            Text(
+                label,
+                size: size.textSize,
+                color: .custom(style.foregroundUIColor),
+                weight: .medium,
+                linkColor: .custom(style.foregroundUIColor)
+            )
+            // Prevents text value animation issue due to different iOS13 behavior
+            .animation(nil)
+        }
     }
 
     var isIconOnly: Bool {
@@ -70,6 +79,14 @@ public struct Button: View {
     
     var iconSize: Icon.Size {
         size == .small ? .small : .normal
+    }
+
+    var leadingPadding: CGFloat {
+        label.isEmpty == false && iconContent.isEmpty ? size.horizontalPadding : size.horizontalIconPadding
+    }
+
+    var trailingPadding: CGFloat {
+        label.isEmpty == false && disclosureIconContent.isEmpty ? size.horizontalPadding : size.horizontalIconPadding
     }
 
     func presentHapticFeedback() {
@@ -94,35 +111,35 @@ public extension Button {
     /// Creates Orbit Button component.
     init(
         _ label: String,
-        style: Style = .primary,
-        size: Size = .default,
         iconContent: Icon.Content = .none,
         disclosureIconContent: Icon.Content = .none,
+        style: Style = .primary,
+        size: Size = .default,
         action: @escaping () -> Void = {}
     ) {
         self.label = label
-        self.style = style
-        self.size = size
         self.iconContent = iconContent
         self.disclosureIconContent = disclosureIconContent
+        self.style = style
+        self.size = size
         self.action = action
     }
 
     /// Creates Orbit Button component with icon symbol.
     init(
         _ label: String,
-        style: Style = .primary,
-        size: Size = .default,
         icon: Icon.Symbol = .none,
         disclosureIcon: Icon.Symbol = .none,
+        style: Style = .primary,
+        size: Size = .default,
         action: @escaping () -> Void = {}
     ) {
         self.init(
             label,
-            style: style,
-            size: size,
             iconContent: .icon(icon, color: style.foregroundColor),
             disclosureIconContent: .icon(disclosureIcon, color: style.foregroundColor),
+            style: style,
+            size: size,
             action: action
         )
     }
@@ -136,10 +153,10 @@ public extension Button {
     ) {
         self.init(
             label,
-            style: style,
-            size: size,
             iconContent: .none,
             disclosureIconContent: .none,
+            style: style,
+            size: size,
             action: action
         )
     }
@@ -153,10 +170,10 @@ public extension Button {
     ) {
         self.init(
             "",
-            style: style,
-            size: size,
             icon: icon,
             disclosureIcon: .none,
+            style: style,
+            size: size,
             action: action
         )
     }
@@ -237,16 +254,10 @@ extension Button {
     }
     
     public enum Size {
+
         case `default`
         case small
-        
-        public var height: CGFloat {
-            switch self {
-                case .default:      return Layout.preferredButtonHeight
-                case .small:        return Layout.preferredSmallButtonHeight
-            }
-        }
-        
+
         public var textSize: Text.Size {
             switch self {
                 case .default:      return .normal
@@ -254,10 +265,24 @@ extension Button {
             }
         }
         
-        public var padding: CGFloat {
+        public var horizontalPadding: CGFloat {
+            switch self {
+                case .default:      return .medium
+                case .small:        return .small
+            }
+        }
+
+        public var horizontalIconPadding: CGFloat {
             switch self {
                 case .default:      return .small
-                case .small:        return .xSmall
+                case .small:        return verticalPadding
+            }
+        }
+
+        public var verticalPadding: CGFloat {
+            switch self {
+                case .default:      return .small + 1          // Makes height exactly 44 at normal text size
+                case .small:        return .xSmall + 1/3       // Makes height exactly 32 at normal text size
             }
         }
     }
@@ -269,7 +294,6 @@ extension Button {
 
         public func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .frame(height: size.height)
                 .contentShape(Rectangle())
                 .background(background(for: configuration))
                 .cornerRadius(BorderRadius.default)
@@ -307,6 +331,9 @@ struct ButtonPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            standaloneCombinations
+            sizing
+
             storybook
             storybookStatus
             storybookGradient
@@ -315,9 +342,49 @@ struct ButtonPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Button("Button")
+        Button("Button", icon: .grid)
             .padding(.medium)
-            .previewDisplayName("Standalone")
+    }
+
+    static var standaloneCombinations: some View {
+        VStack(spacing: .medium) {
+            Button("Button", icon: .grid)
+            Button("Button", icon: .grid, disclosureIcon: .grid)
+            Button("Button")
+            Button(.grid)
+            Button(.grid)
+                .fixedSize()
+            Button(.arrowUp)
+                .fixedSize()
+        }
+        .padding(.medium)
+    }
+
+    static var sizing: some View {
+        VStack(spacing: .medium) {
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    Button("Button height \(state.wrappedValue)")
+                }
+            }
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    Button("Button height \(state.wrappedValue)", icon: .grid)
+                }
+            }
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    Button("Button small height \(state.wrappedValue)", size: .small)
+                }
+            }
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    Button("Button small height \(state.wrappedValue)", icon: .grid, size: .small)
+                }
+            }
+        }
+        .padding(.medium)
+        .previewDisplayName("Sizing")
     }
 
     @ViewBuilder static var storybook: some View {
@@ -354,11 +421,11 @@ struct ButtonPreviews: PreviewProvider {
         VStack(spacing: .small) {
             HStack(spacing: .small) {
                 Button("Label", style: style)
-                Button("Label", style: style, icon: .grid)
+                Button("Label", icon: .grid, style: style)
             }
             HStack(spacing: .small) {
-                Button("Label", style: style, disclosureIcon: .chevronRight)
-                Button("Label", style: style, icon: .grid, disclosureIcon: .chevronRight)
+                Button("Label", disclosureIcon: .chevronRight, style: style)
+                Button("Label", icon: .grid, disclosureIcon: .chevronRight, style: style)
             }
             HStack(spacing: .small) {
                 Button("Label", style: style)
@@ -386,13 +453,36 @@ struct ButtonPreviews: PreviewProvider {
         HStack(spacing: .xSmall) {
             Group {
                 Button("Label", style: style, size: .small)
-                Button("Label", style: style, size: .small, icon: .grid, disclosureIcon: .chevronRight)
-                Button("Label", style: style, size: .small, disclosureIcon: .chevronRight)
+                Button("Label", icon: .grid, disclosureIcon: .chevronRight, style: style, size: .small)
+                Button("Label", disclosureIcon: .chevronRight, style: style, size: .small)
                 Button(.grid, style: style, size: .small)
             }
             .fixedSize()
 
             Spacer(minLength: 0)
         }
+    }
+}
+
+struct ButtonDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        ButtonPreviews.standaloneCombinations
+        ButtonPreviews.sizing
+        ButtonPreviews.buttons(.primary)
+            .padding(.medium)
     }
 }

@@ -89,13 +89,12 @@ struct TabPreviews: PreviewProvider {
             styles
             gradients
         }
-        .background(Color.cloudNormal)
-        .padding()
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         Tab("Light", style: .underlinedGradient(.bundleBasic))
+            .padding(.medium)
     }
 
     static var styles: some View {
@@ -107,6 +106,7 @@ struct TabPreviews: PreviewProvider {
             }
             .border(Color.cloudDark)
         }
+        .padding(.medium)
         .previewDisplayName("TabStyle")
     }
 
@@ -121,6 +121,7 @@ struct TabPreviews: PreviewProvider {
             }
             .border(Color.cloudDark)
         }
+        .padding(.medium)
         .previewDisplayName("TabStyle - Gradients")
     }
 }

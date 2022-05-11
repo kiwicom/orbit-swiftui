@@ -9,7 +9,7 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tag/)
 public struct Tag: View {
 
-    public static let height: CGFloat = .xLarge
+    public static let verticalPadding: CGFloat = 7
     public static let minWidth: CGFloat = .xLarge
 
     let label: String
@@ -27,8 +27,13 @@ public struct Tag: View {
                     action()
                 },
                 label: {
-                    Text(label, color: nil, weight: .medium)
-                        .fixedSize()
+                    HStack(spacing: 0) {
+                        Text(label, color: nil, weight: .medium)
+                            .padding(.vertical, Self.verticalPadding)
+                        TextStrut(.normal)
+                            .padding(.vertical, Self.verticalPadding)
+                    }
+                    .fixedSize()
                 }
             )
             .buttonStyle(
@@ -88,7 +93,6 @@ extension Tag {
             .foregroundColor(labelColor)
             .frame(minWidth: Tag.minWidth)
             .padding(.horizontal, .xSmall)
-            .frame(height: Tag.height)
             .background(
                 backgroundColor(isPressed: configuration.isPressed)
                     .animation(nil)
@@ -153,6 +157,7 @@ struct TagPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             storybook
+            sizing
         }
         .previewLayout(PreviewLayout.sizeThatFits)
     }
@@ -171,6 +176,22 @@ struct TagPreviews: PreviewProvider {
             stack(style: .default, isFocused: false)
             stack(style: .removable(), isFocused: true)
             stack(style: .removable(), isFocused: false)
+        }
+        .padding(.medium)
+    }
+
+    static var sizing: some View {
+        VStack {
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    Button("Button small height \(state.wrappedValue)", size: .small)
+                }
+            }
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    Tag("Tag height \(state.wrappedValue)")
+                }
+            }
         }
         .padding(.medium)
     }
@@ -203,5 +224,25 @@ struct TagPreviews: PreviewProvider {
             .disabled(isActive)
             .opacity(state.wrappedValue.2 ? 1 : 0)
         }
+    }
+}
+
+struct TagDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        TagPreviews.storybook
+        TagPreviews.sizing
     }
 }

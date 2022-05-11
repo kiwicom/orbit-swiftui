@@ -13,86 +13,8 @@ public enum ChoiceTileIndicator {
 }
 
 public enum ChoiceTileAlignment {
-
-    public static let padding: CGFloat = .small
-    
     case `default`
     case center
-}
-
-/// Button style wrapper for ``ChoiceTile``.
-/// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
-public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
-
-    let indicator: ChoiceTileIndicator
-    let alignment: ChoiceTileAlignment
-    let isError: Bool
-    let isSelected: Bool
-
-    /// Creates button style wrapper for ``ChoiceTile``.
-    public init(indicator: ChoiceTileIndicator, alignment: ChoiceTileAlignment, isError: Bool, isSelected: Bool) {
-        self.indicator = indicator
-        self.alignment = alignment
-        self.isError = isError
-        self.isSelected = isSelected
-    }
-
-    public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .overlay(indicatorOverlay, alignment: indicatorAlignment)
-            .padding(ChoiceTileAlignment.padding)
-            .tileBorder(
-                isSelected: isSelected,
-                status: errorShouldHighlightBorder ? .critical : nil,
-                backgroundColor: backgroundColor(isPressed: configuration.isPressed),
-                shadow: shadow(isPressed: configuration.isPressed))
-    }
-
-    @ViewBuilder var indicatorOverlay: some View {
-        indicatorElement
-            .disabled(true)
-            .padding(.xxxSmall)
-    }
-    
-    @ViewBuilder var indicatorElement: some View {
-        switch indicator {
-            case .none:         EmptyView()
-            case .radio:        Radio(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: shouldSelectIndicator)
-            case .checkbox:     Checkbox(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: shouldSelectIndicator)
-        }
-    }
-
-    var shouldSelectIndicator: Bool {
-        isSelected && isError == false
-    }
-
-    var errorShouldHighlightIndicator: Bool {
-        isError && isSelected == false
-    }
-
-    var errorShouldHighlightBorder: Bool {
-        isError && isSelected
-    }
-    
-    var indicatorAlignment: Alignment {
-        switch alignment {
-            case .default:      return .bottomTrailing
-            case .center:       return .bottom
-        }
-    }
-    
-    func backgroundColor(isPressed: Bool) -> Color {
-        isPressed ? .whiteHover : .whiteNormal
-    }
-    
-    func shadow(isPressed: Bool) -> TileBorderModifier.Shadow {
-        switch (isSelected, isPressed) {
-            case (false, false):    return .small
-            case (false, true):     return .default
-            case (true, false):     return .small
-            case (true, true):      return .default
-        }
-    }
 }
 
 /// Enables users to encapsulate radio or checkbox to pick exactly one option from a group.
@@ -104,7 +26,10 @@ public struct ChoiceTileButtonStyle: SwiftUI.ButtonStyle {
 /// - Note: [Orbit definition](https://orbit.kiwi/components/choice-tile/)
 /// - Important: Component expands horizontally to infinity.
 public struct ChoiceTile<Content: View>: View {
-    
+
+    public let padding: CGFloat = .small
+    public let verticalTextPadding: CGFloat = .xxSmall - 1/6    // Makes height exactly 52 at normal text size
+
     let title: String
     let description: String
     let badge: String
@@ -127,16 +52,23 @@ public struct ChoiceTile<Content: View>: View {
                 action()
             },
             label: {
-                VStack(alignment: .leading, spacing: ChoiceTileAlignment.padding) {
-                    header
-                    content()
-                    messageView
+                HStack(spacing: 0) {
+                    TextStrut(.large)
+                        .padding(.vertical, verticalTextPadding)
+
+                    VStack(alignment: .leading, spacing: padding) {
+                        header
+                        content()
+                        messageView
+                    }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, badgeOverlay.isEmpty ? 0 : .small)
+                .overlay(indicatorOverlay, alignment: indicatorAlignment)
+                .padding(padding)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         )
-        .buttonStyle(ChoiceTileButtonStyle(indicator: indicator, alignment: alignment, isError: isError, isSelected: isSelected))
+        .buttonStyle(TileButtonStyle(isSelected: isSelected, status: errorShouldHighlightBorder ? .critical : nil))
         .accessibility(removeTraits: isSelected == false ? .isSelected : [])
         .accessibility(addTraits: isSelected ? .isSelected : [])
         .overlay(badgeOverlayView, alignment: .top)
@@ -156,7 +88,7 @@ public struct ChoiceTile<Content: View>: View {
                             Text(description, color: .inkLight)
                         }
                         
-                        Spacer(minLength: 0)
+                        Spacer(minLength: .xSmall)
                         
                         Badge(badge, style: .status(.info))
                     }
@@ -193,32 +125,60 @@ public struct ChoiceTile<Content: View>: View {
     
     @ViewBuilder var badgeOverlayView: some View {
         Badge(badgeOverlay, style: .status(isError && isSelected ? .critical : .info, inverted: true))
-            .offset(y: -Badge.Size.default.height / 2)
+            .alignmentGuide(.top) { dimensions in
+                dimensions.height / 2
+            }
+    }
+
+    @ViewBuilder var indicatorOverlay: some View {
+        indicatorElement
+            .disabled(true)
+            .padding(.xxxSmall)
+    }
+
+    @ViewBuilder var indicatorElement: some View {
+        switch indicator {
+            case .none:         EmptyView()
+            case .radio:        Radio(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: shouldSelectIndicator)
+            case .checkbox:     Checkbox(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: shouldSelectIndicator)
+        }
     }
 
     var isHeaderContentEmpty: Bool {
         title.isEmpty && description.isEmpty && iconContent.isEmpty && badge.isEmpty
     }
+
+    var shouldSelectIndicator: Bool {
+        isSelected && isError == false
+    }
+
+    var errorShouldHighlightIndicator: Bool {
+        isError && isSelected == false
+    }
+
+    var errorShouldHighlightBorder: Bool {
+        isError && isSelected
+    }
+
+    var indicatorAlignment: Alignment {
+        switch alignment {
+            case .default:      return .bottomTrailing
+            case .center:       return .bottom
+        }
+    }
     
-    var indicatorSize: CGSize {
+    var indicatorSize: CGFloat {
         switch indicator {
-            case .none:             return .zero
+            case .none:             return 0
             case .radio:            return Radio.ButtonStyle.size
             case .checkbox:         return Checkbox.ButtonStyle.size
         }
     }
     
     var messagePadding: CGFloat {
-        switch alignment {
-            case .default:
-                return indicatorSize.width > 0
-                    ? (indicatorSize.width + ChoiceTileAlignment.padding + .xSmall)
-                    : 0
-            case .center:
-                return indicatorSize.height > 0
-                    ? (indicatorSize.height + ChoiceTileAlignment.padding + .xSmall)
-                    : 0
-        }
+        indicatorSize > 0
+            ? (indicatorSize + padding + .xSmall)
+            : 0
     }
 }
 
@@ -304,6 +264,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             standaloneCentered
+            sizing
 
             storybook
             storybookCentered
@@ -323,6 +284,35 @@ struct ChoiceTilePreviews: PreviewProvider {
             customContentPlaceholder
         }
         .padding(.medium)
+    }
+
+    static var sizing: some View {
+        VStack(spacing: .medium) {
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    ChoiceTile("Height \(state.wrappedValue)", description: description, icon: .grid) { EmptyView() }
+                }
+            }
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    ChoiceTile("Height \(state.wrappedValue)", icon: .grid) { EmptyView() }
+                }
+            }
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    ChoiceTile(description: "Height \(state.wrappedValue)", icon: .grid) { EmptyView() }
+                }
+            }
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    ChoiceTile("Height \(state.wrappedValue)") { EmptyView() }
+                }
+            }
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.medium)
+        .background(Color.whiteNormal)
+        .previewDisplayName("Sizing")
     }
 
     static var standaloneCentered: some View {
@@ -449,5 +439,25 @@ struct ChoiceTilePreviews: PreviewProvider {
             )
         }
         .padding(.medium)
+    }
+}
+
+struct ChoiceTileDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        ChoiceTilePreviews.standalone
     }
 }

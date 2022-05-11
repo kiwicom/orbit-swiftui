@@ -1,18 +1,31 @@
 import SwiftUI
 
-/// Button style wrapper for Tile.
+/// Button style wrapper for Tile-like components.
 /// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
 public struct TileButtonStyle: SwiftUI.ButtonStyle {
 
+    let style: TileBorderStyle
+    let isSelected: Bool
+    let status: Status?
     let backgroundColor: Tile.BackgroundColor?
 
-    public init(backgroundColor: Tile.BackgroundColor? = nil) {
+    /// Creates button style wrapper for Tile-like components.
+    public init(style: TileBorderStyle = .default, isSelected: Bool = false, status: Status? = nil, backgroundColor: Tile.BackgroundColor? = nil) {
+        self.style = style
+        self.isSelected = isSelected
+        self.status = status
         self.backgroundColor = backgroundColor
     }
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .background(backgroundColor(isPressed: configuration.isPressed))
+            .tileBorder(
+                style: style,
+                isSelected: isSelected,
+                status: status,
+                backgroundColor: backgroundColor(isPressed: configuration.isPressed),
+                shadow: shadow(isPressed: configuration.isPressed))
     }
 
     func backgroundColor(isPressed: Bool) -> Color {
@@ -22,6 +35,10 @@ public struct TileButtonStyle: SwiftUI.ButtonStyle {
             case (.none, true):                         return .whiteHover
             case (.none, false):                        return .whiteNormal
         }
+    }
+
+    func shadow(isPressed: Bool) -> TileBorderModifier.Shadow {
+        isPressed ? .small : .default
     }
 }
 
@@ -40,8 +57,6 @@ public enum TileBorder {
     case `default`
     /// Bottom separator only. To be used inside a ``TileGroup``.
     case separator
-    /// Error style border.
-    case error
 }
 
 /// Groups actionable content to make it easy to scan.
@@ -56,6 +71,8 @@ public enum TileBorder {
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tile/)
 /// - Important: Component expands horizontally to infinity up to a ``Layout/readableMaxWidth``.
 public struct Tile<Content: View>: View {
+
+    public let verticalTextPadding: CGFloat = .medium - 1/6    // Makes height exactly 52 at normal text size
 
     let title: String
     let description: String
@@ -79,8 +96,7 @@ public struct Tile<Content: View>: View {
                 buttonContent
             }
         )
-        .buttonStyle(TileButtonStyle(backgroundColor: backgroundColor))
-        .tileBorder(style: tileBorderStyle, status: status, shadow: shadow)
+        .buttonStyle(TileButtonStyle(style: tileBorderStyle, status: status, backgroundColor: backgroundColor))
         .accessibility(label: SwiftUI.Text(title))
         .accessibility(hint: SwiftUI.Text(description))
     }
@@ -93,7 +109,8 @@ public struct Tile<Content: View>: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Strut(56)
+            TextStrut(.large)
+                .padding(.vertical, verticalTextPadding)
 
             disclosureIcon
                 .padding(.trailing, .medium)
@@ -112,7 +129,7 @@ public struct Tile<Content: View>: View {
                     Heading(title, style: titleStyle)
                     Text(description, color: .inkLight)
                 }
-                .padding(.vertical, .medium)
+                .padding(.vertical, verticalTextPadding)
 
                 Spacer(minLength: 0)
 
@@ -161,10 +178,6 @@ public struct Tile<Content: View>: View {
     
     var isHeaderEmpty: Bool {
         title.isEmpty && description.isEmpty && iconContent.isEmpty
-    }
-    
-    var shadow: TileBorderModifier.Shadow {
-        status == nil ? .small : .none
     }
 }
 
@@ -315,10 +328,38 @@ struct TilePreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            sizing
             storybook
             storybookMix
         }
         .previewLayout(.sizeThatFits)
+    }
+
+    static var sizing: some View {
+        VStack(spacing: .medium) {
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    Tile("Height \(state.wrappedValue)", description: description, icon: .grid)
+                }
+            }
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    Tile("Height \(state.wrappedValue)", icon: .grid)
+                }
+            }
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    Tile(description: "Height \(state.wrappedValue)", icon: .grid)
+                }
+            }
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    Tile("Height \(state.wrappedValue)")
+                }
+            }
+        }
+        .padding(.medium)
+        .previewDisplayName("Sizing")
     }
 
     static var standalone: some View {
@@ -356,9 +397,9 @@ struct TilePreviews: PreviewProvider {
             Tile("Tile with custom content", disclosure: .none) {
                 customContentPlaceholder
             }
-            VStack(spacing: 0) {
+            VStack(spacing: .medium) {
                 Tile(
-                    "Tile with no separator",
+                    "Tile with no border",
                     description: descriptionMultiline,
                     icon: .grid,
                     border: .none
@@ -368,14 +409,27 @@ struct TilePreviews: PreviewProvider {
                     description: descriptionMultiline,
                     border: .separator
                 )
-                Tile(
-                    "Tile with bottom separator",
-                    description: descriptionMultiline,
-                    icon: .grid,
-                    border: .separator
-                )
             }
         }
         .padding(.medium)
+    }
+}
+
+struct TileDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        TilePreviews.storybook
     }
 }

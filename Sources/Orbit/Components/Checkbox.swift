@@ -83,7 +83,9 @@ public extension Checkbox {
     /// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
     struct ButtonStyle: SwiftUI.ButtonStyle {
 
-        public static let size = CGSize(width: 20, height: 20)
+        public static let size: CGFloat = 20
+
+        @Environment(\.sizeCategory) var sizeCategory
 
         let state: Checkbox.State
         let isChecked: Bool
@@ -99,7 +101,7 @@ public extension Checkbox {
             shape
                 .strokeBorder(
                     indicatorStrokeColor(isPressed: isPressed),
-                    lineWidth: 2
+                    lineWidth: indicatorStrokeWidth
                 )
                 .background(
                     shape
@@ -111,23 +113,23 @@ public extension Checkbox {
                 )
                 .overlay(
                     shape
-                        .inset(by: -0.5)
-                        .stroke(state == .error ? Color.redLight : Color.clear, lineWidth: 3)
+                        .inset(by: -inset)
+                        .stroke(state == .error ? Color.redLight : Color.clear, lineWidth: errorStrokeWidth)
                 )
                 .overlay(
                     shape
-                        .strokeBorder(indicatorOverlayStrokeColor(isPressed: isPressed), lineWidth: 2)
+                        .strokeBorder(indicatorOverlayStrokeColor(isPressed: isPressed), lineWidth: indicatorStrokeWidth)
                 )
-                .frame(width: Self.size.width, height: Self.size.height)
+                .frame(width: size, height: size)
                 .animation(.easeOut(duration: 0.2), value: state)
                 .animation(.easeOut(duration: 0.15), value: isChecked)
                 .alignmentGuide(.firstTextBaseline) { _ in
-                    Self.size.height * 0.75
+                    size * 0.75
                 }
         }
 
         var shape: some InsettableShape {
-            RoundedRectangle(cornerRadius: BorderRadius.default, style: .continuous)
+            RoundedRectangle(cornerRadius: BorderRadius.default * sizeCategory.ratio, style: .continuous)
         }
 
         func indicatorStrokeColor(isPressed: Bool) -> some ShapeStyle {
@@ -155,6 +157,22 @@ public extension Checkbox {
                 case (.error, false):                       return Color.redNormal
                 case (_, _):                                return Color.clear
             }
+        }
+
+        var size: CGFloat {
+            Self.size * sizeCategory.ratio
+        }
+
+        var inset: CGFloat {
+            0.5 * sizeCategory.ratio
+        }
+
+        var errorStrokeWidth: CGFloat {
+            3 * sizeCategory.ratio
+        }
+
+        var indicatorStrokeWidth: CGFloat {
+            2 * sizeCategory.ratio
         }
     }
 }
@@ -211,5 +229,24 @@ struct CheckboxPreviews: PreviewProvider {
                 isSelected.wrappedValue.toggle()
             }
         }
+    }
+}
+
+struct CheckboxDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        CheckboxPreviews.standalone
     }
 }
