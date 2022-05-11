@@ -13,7 +13,7 @@ public extension Font {
     ]
 
     /// Creates Orbit font.
-    static func orbit(size: CGFloat, weight: Weight = .regular) -> Font {
+    static func orbit(size: CGFloat, weight: Weight = .regular, style: Font.TextStyle = .body) -> Font {
 
         if orbitFontNames.isEmpty {
             return .system(size: size, weight: weight)
@@ -24,7 +24,11 @@ public extension Font {
             return .system(size: size, weight: weight)
         }
 
-        return .custom(fontName, size: size)
+        if #available(iOS 14.0, *) {
+            return .custom(fontName, size: size, relativeTo: style)
+        } else {
+            return .custom(fontName, size: size)
+        }
     }
 
     /// Creates Orbit icon font.

@@ -41,7 +41,7 @@ public struct Text: View {
                     .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
                     .kerning(kerning)
                     .foregroundColor(foregroundColor.map(SwiftUI.Color.init))
-                    .font(.orbit(size: scaledSize, weight: weight))
+                    .font(.orbit(size: scaledSize, weight: weight, style: size.textStyle))
                     .lineSpacing(lineSpacing ?? 0)
                     .multilineTextAlignment(alignment)
                     .fixedSize(horizontal: false, vertical: true)
@@ -177,6 +177,21 @@ public extension Text {
                 case .large:                return 16
                 case .xLarge:               return 18
                 case .custom(let size):     return size
+            }
+        }
+
+        public var textStyle: Font.TextStyle {
+            switch self {
+                case .small:                return .footnote
+                case .normal:               return .body
+                case .large:                return .callout
+                case .xLarge:
+                    if #available(iOS 14.0, *) {
+                        return .title3
+                    } else {
+                        return .callout
+                    }
+                case .custom:               return .body
             }
         }
         
