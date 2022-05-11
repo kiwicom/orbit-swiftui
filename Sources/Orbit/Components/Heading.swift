@@ -97,14 +97,16 @@ public extension Heading {
 
         var textStyle: Font.TextStyle {
             switch self {
-                case .display:          return .largeTitle
+                case .display:
+                    return .largeTitle
                 case .displaySubtitle:
                     if #available(iOS 14.0, *) {
                         return .title2
                     } else {
                         return .headline
                     }
-                case .title1:           return .title
+                case .title1:
+                    return .title
                 case .title2:
                     if #available(iOS 14.0, *) {
                         return .title2
@@ -117,9 +119,12 @@ public extension Heading {
                     } else {
                         return .callout
                     }
-                case .title4:           return .callout
-                case .title5:           return .headline
-                case .title6:           return .headline
+                case .title4:
+                    return .callout
+                case .title5:
+                    return .headline
+                case .title6:
+                    return .headline
             }
         }
         

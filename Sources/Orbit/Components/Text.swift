@@ -12,6 +12,8 @@ import SwiftUI
 /// - Important: Component has fixed vertical size.
 public struct Text: View {
 
+    @Environment(\.sizeCategory) var sizeCategory
+
     let content: String
     let size: Size
     let color: Color?
@@ -41,7 +43,7 @@ public struct Text: View {
                     .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
                     .kerning(kerning)
                     .foregroundColor(foregroundColor.map(SwiftUI.Color.init))
-                    .font(.orbit(size: scaledSize, weight: weight, style: size.textStyle))
+                    .font(.orbit(size: size.value, weight: weight, style: size.textStyle))
                     .lineSpacing(lineSpacing ?? 0)
                     .multilineTextAlignment(alignment)
                     .fixedSize(horizontal: false, vertical: true)
@@ -77,7 +79,7 @@ public struct Text: View {
     var textLinkContent: NSAttributedString {
         TagAttributedStringBuilder.all.attributedStringForLinks(
             content,
-            fontSize: size.value,
+            fontSize: attributedTextScaledSize,
             fontWeight: weight,
             lineSpacing: lineSpacing,
             alignment: alignment
@@ -91,7 +93,7 @@ public struct Text: View {
     var attributedText: NSAttributedString {
         TagAttributedStringBuilder.all.attributedString(
             content,
-            fontSize: size.value,
+            fontSize: attributedTextScaledSize,
             fontWeight: weight,
             lineSpacing: lineSpacing,
             color: foregroundColor,
@@ -100,12 +102,16 @@ public struct Text: View {
         )
     }
 
-    var scaledSize: CGFloat {
-        #if DEBUG
-        return UIFontMetrics.default.scaledValue(for: size.value)
-        #else
-        return size.value
-        #endif
+    var attributedTextScaledSize: CGFloat {
+        size.value * sizeCategory.ratio * attributedTextScaledSizeAdjustment
+    }
+
+    var attributedTextScaledSizeAdjustment: CGFloat {
+        switch sizeCategory.ratio {
+            case ..<1:      return 1.07
+            case 1:         return 1
+            default:        return 0.94
+        }
     }
 }
 
@@ -295,7 +301,6 @@ struct TextPreviews: PreviewProvider {
         }
         .frame(width: 150)
         .padding(.medium)
-        .previewDisplayName("Formatted")
     }
 
     @ViewBuilder static var sizes: some View {
@@ -556,5 +561,34 @@ struct TextPreviews: PreviewProvider {
             Spacer()
             Text("\(Int(size.value))/\(Int(size.lineHeight))", color: .inkLight, weight: .medium)
         }
+    }
+}
+
+struct TextDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        HStack(alignment: .top, spacing: 0) {
+            Group {
+                Text("M")
+                Text("<strong>M</strong>")
+                Text("<a href=\"..\">M</a>")
+            }
+            .border(Color.cloudDark)
+        }
+        .padding(.xSmall)
+
+        TextPreviews.storybook
     }
 }
