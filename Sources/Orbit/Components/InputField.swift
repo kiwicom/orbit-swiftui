@@ -34,9 +34,7 @@ public struct InputField: View {
     let suffixAction: () -> Void
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: .xxSmall) {
-            FormFieldLabel(label)
-
+        FormFieldWrapper(label, message: message, messageHeight: $messageHeight) {
             InputContent(
                 prefix: prefix,
                 suffix: suffix,
@@ -63,10 +61,6 @@ public struct InputField: View {
                         clearButton
                     }
                 }
-            }
-
-            ContentHeightReader(height: $messageHeight.animation(.easeOut(duration: 0.2))) {
-                FormFieldMessage(message)
             }
         }
     }
