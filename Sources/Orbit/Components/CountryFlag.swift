@@ -7,7 +7,9 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/countryflag/)
 public struct CountryFlag: View {
-    
+
+    @Environment(\.sizeCategory) var sizeCategory
+
     let countryCode: String
     let size: Icon.Size
     let border: Border
@@ -22,8 +24,8 @@ public struct CountryFlag: View {
                     clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
                         .blendMode(.darken)
                 )
-                .padding(Icon.averagePadding / 2)
-                .frame(width: size.value)
+                .padding(Icon.averageIconContentPadding / 2)
+                .frame(width: size.value * sizeCategory.ratio)
                 .fixedSize()
         }
     }
@@ -75,6 +77,9 @@ struct CountryFlagPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             storybook
+            storybook
+                .environment(\.sizeCategory, .accessibilityLarge)
+                .previewDisplayName("Dynamic Fonts - L")
         }
         .previewLayout(.sizeThatFits)
     }

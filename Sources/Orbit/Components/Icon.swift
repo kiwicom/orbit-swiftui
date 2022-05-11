@@ -8,45 +8,42 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/icon/)
 public struct Icon: View {
 
-    public static let averagePadding: CGFloat = .xxxSmall
-    
+    public static let sfSymbolToOrbitSizeRatio: CGFloat = 0.75
+    public static let averageIconContentPadding: CGFloat = .xxxSmall
+
+    @Environment(\.sizeCategory) var sizeCategory
+
     let content: Content
     let size: Size
 
     public var body: some View {
-        if content.isEmpty {
-            EmptyView()
-        } else {
-            switch content {
-                case .icon(let symbol, let color):
-                    SwiftUI.Text(verbatim: symbol.value)
-                        .foregroundColor(color)
-                        .font(.orbitIcon(size: size.value))
-                        .alignmentGuide(.firstTextBaseline) { dimensions in
-                            size.textLineHeight * Text.firstBaselineRatio + dimensions.height / 2
-                        }
-                case .image(let image, let mode):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: mode)
-                        .frame(width: size.value, height: size.value)
-                        .alignmentGuide(.firstTextBaseline) { dimensions in
-                            size.textLineHeight * Text.firstBaselineRatio + dimensions.height / 2
-                        }
-                case .countryFlag(let countryCode):
-                    CountryFlag(countryCode, size: size)
-                        .alignmentGuide(.firstTextBaseline) { dimensions in
-                            size.textLineHeight * Text.firstBaselineRatio + dimensions.height / 2
-                        }
-                case .sfSymbol(let systemName):
-                    Image(systemName: systemName)
-                        .font(.system(size: size.value * 0.75))
-                        .alignmentGuide(.firstTextBaseline) { dimensions in
-                            size.textLineHeight * Text.firstBaselineRatio + dimensions.height / 2
-                        }
-                case .none:
-                    EmptyView()
-            }
+        if content.isEmpty == false {
+            iconContent
+                .alignmentGuide(.firstTextBaseline) { dimensions in
+                    size.textBaselineAlignmentGuide(sizeCategory: sizeCategory, height: dimensions.height)
+                }
+                .alignmentGuide(.lastTextBaseline) { dimensions in
+                    size.textBaselineAlignmentGuide(sizeCategory: sizeCategory, height: dimensions.height)
+                }
+        }
+    }
+
+    @ViewBuilder var iconContent: some View {
+        switch content {
+            case .icon(let symbol, let color):
+                SwiftUI.Text(verbatim: symbol.value)
+                    .foregroundColor(color)
+                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+            case .image(let image, let mode):
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: mode)
+                    .frame(width: size.value, height: size.value * sizeCategory.ratio)
+            case .countryFlag(let countryCode):
+                CountryFlag(countryCode, size: size)
+            case .sfSymbol(let systemName):
+                Image(systemName: systemName)
+                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
         }
     }
 }
@@ -96,7 +93,6 @@ public extension Icon {
     ///
     /// Icon size is determined by enclosing component.
     enum Content: Equatable {
-        case none
         /// Orbit icon symbol with overridable color.
         case icon(Symbol, color: Color? = nil)
         /// Icon using custom Image with overridable size.
@@ -105,10 +101,11 @@ public extension Icon {
         case countryFlag(String)
         /// SwiftUI SF Symbol with overridable color.
         case sfSymbol(String)
-        
+
+        public static var none: Self = .icon(.none)
+
         public var isEmpty: Bool {
             switch self {
-                case .none:                             return true
                 case .icon(let symbol, _):              return symbol == .none
                 case .image:                            return false
                 case .countryFlag(let countryCode):     return countryCode.isEmpty
@@ -143,18 +140,32 @@ public extension Icon {
                 case .normal:                           return 20
                 case .large:                            return 24
                 case .xLarge:                           return 28
-                case .fontSize(let size):               return size * 1.31
+                case .fontSize(let size):               return round(size * 1.31)
                 case .text(let size):                   return size.iconSize
                 case .heading(let style):               return style.iconSize
                 case .label(let style):                 return style.iconSize
                 case .custom(let size):                 return size
             }
         }
+
+        public var textStyle: Font.TextStyle {
+            switch self {
+                case .small:                            return Text.Size.small.textStyle
+                case .normal:                           return Text.Size.normal.textStyle
+                case .large:                            return Text.Size.large.textStyle
+                case .xLarge:                           return Text.Size.xLarge.textStyle
+                case .fontSize:                         return .body
+                case .text(let size):                   return size.textStyle
+                case .heading(let style):               return style.textStyle
+                case .label(let style):                 return style.textStyle
+                case .custom:                           return .body
+            }
+        }
         
         public static func == (lhs: Icon.Size, rhs: Icon.Size) -> Bool {
             lhs.value == rhs.value
         }
-        
+
         /// Default text line height for icon size.
         public var textLineHeight: CGFloat {
             switch self {
@@ -162,12 +173,21 @@ public extension Icon {
                 case .normal:                           return Text.Size.normal.iconSize
                 case .large:                            return Text.Size.large.iconSize
                 case .xLarge:                           return Text.Size.xLarge.iconSize
-                case .fontSize(let size):               return size * 1.31
+                case .fontSize(let size):               return round(size * 1.31)
                 case .text(let size):                   return size.iconSize
                 case .heading(let style):               return style.iconSize
                 case .label(let style):                 return style.iconSize
                 case .custom(let size):                 return size
             }
+        }
+
+        /// Text line height for icon size for specified ContentSizeCategory.
+        public func dynamicTextLineHeight(sizeCategory: ContentSizeCategory) -> CGFloat {
+            round(textLineHeight * sizeCategory.ratio)
+        }
+
+        public func textBaselineAlignmentGuide(sizeCategory: ContentSizeCategory, height: CGFloat) -> CGFloat {
+            round(dynamicTextLineHeight(sizeCategory: sizeCategory) * Text.firstBaselineRatio + height / 2)
         }
     }
 }
@@ -175,6 +195,7 @@ public extension Icon {
 // MARK: - Previews
 struct IconPreviews: PreviewProvider {
 
+    static let multilineText = "Multiline\nlong\ntext"
     static let sfSymbol = "info.circle.fill"
     
     static var previews: some View {
@@ -185,6 +206,7 @@ struct IconPreviews: PreviewProvider {
             snapshotSizesLabelText
             snapshotSizesHeading
             snapshotSizesLabelHeading
+            alignments
             storybookMix
         }
         .previewLayout(.sizeThatFits)
@@ -199,6 +221,7 @@ struct IconPreviews: PreviewProvider {
             snapshotSizes
             snapshotSizesText
             snapshotSizesHeading
+            alignments
         }
     }
     
@@ -236,7 +259,6 @@ struct IconPreviews: PreviewProvider {
             }
         }
         .padding(.medium)
-        .previewDisplayName("Default sizes")
     }
     
     static func headingStack(_ style: Heading.Style) -> some View {
@@ -401,11 +423,48 @@ struct IconPreviews: PreviewProvider {
             HStack(alignment: .firstTextBaseline) {
                 Icon(.grid, size: .xLarge, color: nil)
                 Icon(.grid)
-                Icon(.grid, size: .small, color: .red)
+                Icon(.grid, size: .small, color: .blueNormal)
             }
             .foregroundColor(.blueDark)
             .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
         }
         .padding(.medium)
+    }
+
+    static var alignments: some View {
+        VStack(spacing: .medium) {
+            HStack(spacing: .medium) {
+                HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+                    Icon(.icon(.grid))
+                    Text(multilineText)
+                }
+                HStack(alignment: .lastTextBaseline, spacing: .xSmall) {
+                    Icon(.icon(.grid))
+                    Text(multilineText)
+                }
+            }
+            Label("Multiline\nlong\nLabel", icon: .grid, style: .text())
+        }
+        .padding(.medium)
+    }
+}
+
+struct IconDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        IconPreviews.snapshotSizes
+        IconPreviews.storybookMix
     }
 }
