@@ -12,6 +12,8 @@ import SwiftUI
 /// - Important: Component expands horizontally to infinity.
 public struct Select: View {
 
+    @Binding private var messageHeight: CGFloat
+    
     let label: String
     let prefix: Icon.Content
     let value: String?
@@ -22,9 +24,7 @@ public struct Select: View {
     let action: () -> Void
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: .xxSmall) {
-            FormFieldLabel(label)
-
+        FormFieldWrapper(label, message: message, messageHeight: $messageHeight) {
             SwiftUI.Button(
                 action: {
                     HapticsProvider.sendHapticFeedback(.light(0.5))
@@ -44,8 +44,6 @@ public struct Select: View {
                     message: message
                 )
             )
-
-            FormFieldMessage(message)
         }
     }
 
@@ -68,6 +66,7 @@ public extension Select {
         suffix: Icon.Content = .icon(.chevronDown),
         state: InputState = .default,
         message: MessageType = .none,
+        messageHeight: Binding<CGFloat> = .constant(0),
         action: @escaping () -> Void = {}
     ) {
         self.label = label
@@ -77,6 +76,7 @@ public extension Select {
         self.suffix = suffix
         self.state = state
         self.message = message
+        self._messageHeight = messageHeight
         self.action = action
     }
 }
