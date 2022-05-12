@@ -116,7 +116,7 @@ struct SelectPreviews: PreviewProvider {
     }
 
     @ViewBuilder static var storybookMix: some View {
-        VStack(spacing: Spacing.medium) {
+        VStack(spacing: .medium) {
             Group {
                 Select("Label", value: "Value")
                 Select("", prefix: .icon(.grid), value: "Value")

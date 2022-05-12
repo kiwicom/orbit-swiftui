@@ -11,8 +11,8 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/badgelist/)
 public struct BadgeList: View {
 
-    public static let badgeDiameter = Spacing.large
-    public static let spacing = Spacing.xSmall
+    public static let badgeDiameter: CGFloat = .large
+    public static let spacing: CGFloat = .xSmall
 
     let label: String
     let iconContent: Icon.Content

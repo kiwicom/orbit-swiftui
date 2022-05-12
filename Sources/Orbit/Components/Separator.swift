@@ -23,10 +23,10 @@ public struct Separator: View {
                             startPoint: .leading,
                             endPoint: .trailing
                         )
-                        .frame(width: Spacing.large)
+                        .frame(width: .large)
 
                         Text(label, size: .small, weight: .medium)
-                            .padding(.horizontal, Spacing.xxSmall)
+                            .padding(.horizontal, .xxSmall)
                             .background(Color.whiteNormal)
                     }
 
@@ -52,7 +52,7 @@ public extension Separator {
         _ label: String = "",
         color: Color = .cloudDark,
         height: CGFloat = 1,
-        verticalPadding: CGFloat = Spacing.small
+        verticalPadding: CGFloat = .small
     ) {
         self.label = label
         self.color = color

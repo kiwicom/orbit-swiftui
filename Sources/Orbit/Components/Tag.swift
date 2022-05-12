@@ -9,8 +9,8 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tag/)
 public struct Tag: View {
 
-    public static let height = Spacing.xLarge
-    public static let minWidth = Spacing.xLarge
+    public static let height: CGFloat = .xLarge
+    public static let minWidth: CGFloat = .xLarge
 
     let label: String
     let style: Style

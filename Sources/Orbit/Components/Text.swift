@@ -501,7 +501,7 @@ struct TextPreviews: PreviewProvider {
                 Custom line height set to 12pt.
                 Custom line height set to 12pt.
                 """,
-                lineSpacing: Spacing.small
+                lineSpacing: .small
             )
             .padding()
 
@@ -511,7 +511,7 @@ struct TextPreviews: PreviewProvider {
                 <b>Custom line height</b> set to 12pt.
                 <b>Custom line height</b> set to 12pt.
                 """,
-                lineSpacing: Spacing.small
+                lineSpacing: .small
             )
             .padding()
 
