@@ -5,6 +5,8 @@ var orbitFontNames: [Font.Weight: String] = [:]
 
 public extension Font {
 
+    static let orbitIconFontName = "orbit-icons"
+
     /// Fonts used for rendering text in Orbit.
     static var orbitFonts: [Font.Weight: URL?] = [
         .regular: Bundle.current.url(forResource: "CircularPro-Book.otf", withExtension: nil),
@@ -13,7 +15,7 @@ public extension Font {
     ]
 
     /// Creates Orbit font.
-    static func orbit(size: CGFloat, weight: Weight = .regular) -> Font {
+    static func orbit(size: CGFloat, weight: Weight = .regular, style: Font.TextStyle = .body) -> Font {
 
         if orbitFontNames.isEmpty {
             return .system(size: size, weight: weight)
@@ -24,12 +26,12 @@ public extension Font {
             return .system(size: size, weight: weight)
         }
 
-        return .custom(fontName, size: size)
+        return customFont(fontName, size: size, style: style)
     }
 
     /// Creates Orbit icon font.
-    static func orbitIcon(size: CGFloat) -> Font {
-        .custom("orbit-icons", size: size)
+    static func orbitIcon(size: CGFloat, style: Font.TextStyle = .body) -> Font {
+        customFont(orbitIconFontName, size: size, style: style)
     }
 
     /// Registers Orbit fonts set in the `orbitTextFonts` property
@@ -62,6 +64,14 @@ public extension Font {
 
         return font
     }
+
+    private static func customFont(_ name: String, size: CGFloat, style: Font.TextStyle = .body) -> Font {
+        if #available(iOS 14.0, *) {
+            return .custom(name, size: size, relativeTo: style)
+        } else {
+            return .custom(name, size: size)
+        }
+    }
 }
 
 extension Font.Weight {
@@ -72,6 +82,28 @@ extension Font.Weight {
             case .bold:     return .bold
             case .medium:   return .medium
             default:        return .regular
+        }
+    }
+}
+
+public extension ContentSizeCategory {
+
+    /// Size ratio for custom calculations.
+    var ratio: CGFloat {
+        switch self {
+            case .extraSmall:                           return 0.8
+            case .small:                                return 0.85
+            case .medium:                               return 0.9
+            case .large:                                return 1        // Default
+            case .extraLarge:                           return 1.1
+            case .extraExtraLarge:                      return 1.2
+            case .extraExtraExtraLarge:                 return 1.35
+            case .accessibilityMedium:                  return 1.6
+            case .accessibilityLarge:                   return 1.9
+            case .accessibilityExtraLarge:              return 2.35
+            case .accessibilityExtraExtraLarge:         return 2.75
+            case .accessibilityExtraExtraExtraLarge:    return 3.1
+            @unknown default:                           return 1
         }
     }
 }

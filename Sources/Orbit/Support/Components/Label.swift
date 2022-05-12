@@ -124,6 +124,13 @@ public extension Label {
                 case .text(let size, _, _, _, _, _):    return size.value
             }
         }
+
+        var textStyle: Font.TextStyle {
+            switch self {
+                case .heading(let style, _):            return style.textStyle
+                case .text(let size, _, _, _, _, _):    return size.textStyle
+            }
+        }
         
         var iconSize: CGFloat {
             switch self {

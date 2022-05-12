@@ -17,7 +17,7 @@ public struct Heading: View {
     public var body: some View {
         if text.isEmpty == false {
             SwiftUI.Text(verbatim: text)
-                .font(.orbit(size: style.size, weight: style.weight))
+                .font(.orbit(size: style.size, weight: style.weight, style: style.textStyle))
                 .foregroundColor(color?.value)
                 .multilineTextAlignment(alignment)
                 .fixedSize(horizontal: false, vertical: true)
@@ -92,6 +92,39 @@ public extension Heading {
                 case .title4:           return Text.Size.large.value
                 case .title5:           return Text.Size.normal.value
                 case .title6:           return Text.Size.small.value
+            }
+        }
+
+        var textStyle: Font.TextStyle {
+            switch self {
+                case .display:
+                    return .largeTitle
+                case .displaySubtitle:
+                    if #available(iOS 14.0, *) {
+                        return .title2
+                    } else {
+                        return .headline
+                    }
+                case .title1:
+                    return .title
+                case .title2:
+                    if #available(iOS 14.0, *) {
+                        return .title2
+                    } else {
+                        return .headline
+                    }
+                case .title3:
+                    if #available(iOS 14.0, *) {
+                        return .title3
+                    } else {
+                        return .callout
+                    }
+                case .title4:
+                    return .callout
+                case .title5:
+                    return .headline
+                case .title6:
+                    return .headline
             }
         }
         
