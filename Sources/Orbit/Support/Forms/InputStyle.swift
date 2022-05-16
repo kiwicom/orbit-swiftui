@@ -89,16 +89,19 @@ struct InputContent<Content: View>: View {
     }
 
     private var prefixColor: Color {
-        switch (value, state) {
-            case (_, .disabled):        return .cloudDarkerActive
-            case (.none, _):            return .inkNormal
-            case (_, .modified):        return .blueDark
-            default:                    return .inkNormal
+        switch state {
+            case .disabled:             return .cloudDarkerActive
+            case .modified:             return .blueDark
+            case .default:              return .inkNormal
         }
     }
 
     private var suffixColor: Color {
-        prefixColor
+        switch state {
+            case .disabled:             return .cloudDarkerActive
+            case .modified:             return .blueDark
+            case .default:              return .inkLight
+        }
     }
 
     private func outlineColor(isPressed: Bool) -> Color {
