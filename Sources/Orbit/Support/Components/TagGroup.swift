@@ -2,14 +2,18 @@ import SwiftUI
 
 public protocol TagModel: Identifiable, Equatable {
     var label: String { get }
+    var icon: Icon.Content { get }
     var accessibilityIdentifier: String { get }
     var isRemovable: Bool { get }
+    var isFocused: Bool { get }
     var isRemoved: Bool { get set }
     var isSelected: Bool { get set }
 }
 
 public extension TagModel {
     var accessibilityIdentifier: String { "" }
+    var icon: Icon.Content { .none }
+    var isFocused: Bool { isSelected }
 }
 
 /// Collection of Orbit tags with binding through `TagModel` protocol.
@@ -81,8 +85,9 @@ public struct TagGroup<TM: TagModel>: View {
         if let index = tags.firstIndex(of: tag), showRemovedTags || tag.isRemoved == false {
             Tag(
                 tag.label,
+                iconContent: tags[index].icon,
                 style: tag.isRemovable ? .removable(action: { tags[index].isRemoved = true }) : .default,
-                isFocused: false,
+                isFocused: tags[index].isFocused,
                 isSelected: $tags[index].isSelected.wrappedValue
             ) {
                 $tags[index].isSelected.wrappedValue.toggle()
@@ -119,6 +124,7 @@ struct TagGroupPreviews: PreviewProvider {
     struct TagModelPreview: TagModel {
         let id: Int
         let label: String
+        var icon: Icon.Content = .none
         var isRemovable = false
         var isRemoved = false
         var isSelected = false
@@ -134,7 +140,8 @@ struct TagGroupPreviews: PreviewProvider {
     }
 
     static let snapshotTags = [
-        TagModelPreview(id: 1, label: "Prague", isRemovable: true),
+        TagModelPreview(id: 0, label: "Sorting", icon: .icon(.sort), isRemovable: true, isSelected: true),
+        TagModelPreview(id: 1, label: "Pricing", icon: .icon(.money), isRemovable: true),
         TagModelPreview(id: 2, label: "Vienna", isRemovable: true, isSelected: true),
         TagModelPreview(id: 3, label: "Paris", isRemovable: false),
         TagModelPreview(id: 4, label: "Milan", isRemovable: false),

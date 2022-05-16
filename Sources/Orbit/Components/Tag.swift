@@ -9,10 +9,11 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tag/)
 public struct Tag: View {
 
+    public static let horizontalPadding: CGFloat = .xSmall
     public static let verticalPadding: CGFloat = 7
-    public static let minWidth: CGFloat = .xLarge
 
     let label: String
+    let iconContent: Icon.Content
     let style: Style
     let isFocused: Bool
     let isSelected: Bool
@@ -20,7 +21,7 @@ public struct Tag: View {
     let action: () -> Void
 
     public var body: some View {
-        if label.isEmpty == false {
+        if isEmpty == false {
             SwiftUI.Button(
                 action: {
                     HapticsProvider.sendHapticFeedback(.light(0.5))
@@ -28,8 +29,11 @@ public struct Tag: View {
                 },
                 label: {
                     HStack(spacing: 0) {
-                        Text(label, color: nil, weight: .medium)
-                            .padding(.vertical, Self.verticalPadding)
+                        HStack(alignment: .firstTextBaseline, spacing: 6) {
+                            Icon(iconContent)
+                            Text(label, color: nil, weight: .medium)
+                                .padding(.vertical, Self.verticalPadding)
+                        }
                         TextStrut(.normal)
                             .padding(.vertical, Self.verticalPadding)
                     }
@@ -41,19 +45,52 @@ public struct Tag: View {
             )
         }
     }
+
+    var isEmpty: Bool {
+        label.isEmpty && iconContent.isEmpty
+    }
 }
 
 // MARK: - Inits
 public extension Tag {
     
     /// Creates Orbit Tag component.
-    init(_ label: String, style: Style = .default, isFocused: Bool = true, isSelected: Bool = false, isActive: Bool = false, action: @escaping () -> Void = {}) {
+    init(
+        _ label: String = "",
+        iconContent: Icon.Content = .none,
+        style: Style = .default,
+        isFocused: Bool = true,
+        isSelected: Bool = false,
+        isActive: Bool = false,
+        action: @escaping () -> Void = {}
+    ) {
         self.label = label
+        self.iconContent = iconContent
         self.style = style
         self.isFocused = isFocused
         self.isSelected = isSelected
         self.isActive = isActive
         self.action = action
+    }
+
+    /// Creates Orbit Tag component with icon symbol.
+    init(
+        _ label: String = "",
+        icon: Icon.Symbol,
+        style: Style = .default,
+        isFocused: Bool = true,
+        isSelected: Bool = false,
+        isActive: Bool = false,
+        action: @escaping () -> Void = {}
+    ) {
+        self.init(
+            label: label,
+            iconContent: .icon(icon, color: nil),
+            style: style,
+            isFocused: isFocused,
+            isSelected: isSelected,
+            isActive: isActive, action: action
+        )
     }
 }
 
@@ -91,8 +128,7 @@ extension Tag {
                 }
             }
             .foregroundColor(labelColor)
-            .frame(minWidth: Tag.minWidth)
-            .padding(.horizontal, .xSmall)
+            .padding(.horizontal, Tag.horizontalPadding)
             .background(
                 backgroundColor(isPressed: configuration.isPressed)
                     .animation(nil)
@@ -164,7 +200,7 @@ struct TagPreviews: PreviewProvider {
 
     static var standalone: some View {
         StateWrapper(initialState: true) { state in
-            Tag(label, isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
+            Tag(label, icon: .grid, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
             Tag("") // EmptyView
         }
         .padding(.medium)
@@ -172,6 +208,12 @@ struct TagPreviews: PreviewProvider {
 
     @ViewBuilder static var storybook: some View {
         VStack(alignment: .leading, spacing: .large) {
+            StateWrapper(initialState: true) { state in
+                Tag(label, icon: .sort, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
+            }
+            StateWrapper(initialState: false) { state in
+                Tag(icon: .notificationAdd, isFocused: false, isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
+            }
             stack(style: .default, isFocused: true)
             stack(style: .default, isFocused: false)
             stack(style: .removable(), isFocused: true)
