@@ -200,6 +200,7 @@ struct ToastPreviews: PreviewProvider {
 
     static let description = "Toast shows a brief message that's clear & understandable."
     static let toastQueue = ToastQueue()
+    static let toastLiveQueue = ToastQueue()
     
     static var previews: some View {
         PreviewWrapper {
@@ -211,7 +212,7 @@ struct ToastPreviews: PreviewProvider {
 
         PreviewWrapper {
             storybookLive
-                .overlay(Toast(toastQueue: toastQueue), alignment: .top)
+                .overlay(Toast(toastQueue: toastLiveQueue), alignment: .top)
         }
     }
 
@@ -244,8 +245,8 @@ struct ToastPreviews: PreviewProvider {
 
             Spacer()
 
-            Button("Add toast 1") { toastQueue.add(description)}
-            Button("Add toast 2") { toastQueue.add("Another toast message.")}
+            Button("Add toast 1") { toastLiveQueue.add(description) }
+            Button("Add toast 2") { toastLiveQueue.add("Another toast message.") }
         }
         .padding(.medium)
         .previewDisplayName("Live Preview")
