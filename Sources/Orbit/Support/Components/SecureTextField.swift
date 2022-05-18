@@ -21,24 +21,25 @@ struct SecureTextField: UIViewRepresentable {
     var onCommit = {}
 
     func makeUIView(context: Context) -> UITextField {
-        let textFied = UITextField()
-        textFied.autocorrectionType = .no
-        textFied.delegate = context.coordinator
+        let textField = UITextField()
+        textField.autocorrectionType = .no
+        textField.delegate = context.coordinator
 
-        textFied.text = text
-        textFied.isSecureTextEntry = isSecured
-        textFied.textContentType = style.textContentType
-        textFied.keyboardType = style.keyboardType
-        textFied.font = style.font
-        textFied.textColor = style.state.textUIColor
-        textFied.clearsOnBeginEditing = false
-        textFied.isEnabled = style.state != .disabled
+        textField.text = text
+        textField.isSecureTextEntry = isSecured
+        textField.textContentType = style.textContentType
+        textField.keyboardType = style.keyboardType
+        textField.font = style.font
+        textField.textColor = style.state.textUIColor
+        textField.clearsOnBeginEditing = false
+        textField.isEnabled = style.state != .disabled
+        textField.setContentHuggingPriority(.defaultHigh, for: .vertical)
 
-        if isEditing && textFied.canBecomeFirstResponder {
-            textFied.becomeFirstResponder()
+        if isEditing && textField.canBecomeFirstResponder {
+            textField.becomeFirstResponder()
         }
 
-        return textFied
+        return textField
     }
 
     func updateUIView(_ uiView: UITextField, context: Context) {
@@ -122,7 +123,7 @@ struct SecureTextFieldPreviews: PreviewProvider {
             SecureTextField(text: .constant("value"), isSecured: .constant(true), isEditing: .constant(false))
             SecureTextField(text: .constant("value"), isSecured: .constant(false), isEditing: .constant(false))
         }
-        .padding()
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 }

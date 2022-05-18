@@ -122,7 +122,7 @@ public struct InputField: View {
 
     @ViewBuilder var securedSuffix: some View {
         if value.isEmpty == false, state != .disabled {
-            Icon(isSecureTextEntry ? .visibility : .visibilityOff, size: .normal)
+            Icon(isSecureTextEntry ? .visibility : .visibilityOff, size: .normal, color: .inkLight)
                 .padding(.vertical, .xSmall)
                 .padding(.horizontal, .small)
                 .contentShape(Rectangle())
@@ -219,8 +219,8 @@ struct InputFieldPreviews: PreviewProvider {
     static var standalone: some View {
         StateWrapper(initialState: value) { state in
             InputField(label, value: state, prefix: .icon(.grid), suffix: .icon(.grid), placeholder: placeholder, state: .default)
-                .padding(.medium)
         }
+        .padding(.medium)
     }
 
     static var storybook: some View {
@@ -251,6 +251,7 @@ struct InputFieldPreviews: PreviewProvider {
             InputField("Modified", value: .constant("Modified value"), state: .modified)
             InputField("Focused", value: .constant("Focus / Help"), message: .help("Help message"))
             InputField("Secured", value: .constant("password"), isSecure: true)
+            InputField("Secured", value: .constant(""), placeholder: "Input password", isSecure: true)
             InputField(
                 "InputField with a long multiline label to test that it works",
                 value: .constant("Error value with a very long length to test that it works"),
@@ -356,10 +357,14 @@ struct InputFieldDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
     @ViewBuilder static var content: some View {
-        InputFieldPreviews.standalone
+        StateWrapper(initialState: InputFieldPreviews.value) { state in
+            InputField(InputFieldPreviews.label, value: state, prefix: .icon(.grid), suffix: .icon(.grid), placeholder: InputFieldPreviews.placeholder, state: .default)
+        }
+        InputField("Secured", value: .constant(""), placeholder: "Input password", isSecure: true)
     }
 }
