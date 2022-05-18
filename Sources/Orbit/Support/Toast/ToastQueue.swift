@@ -96,34 +96,24 @@ public final class ToastQueue: ObservableObject {
                 .map { _ in () }
                 .eraseToAnyPublisher()
         }
-        
-        func incrementProgress(forAction action: ToastAction) -> TimeInterval {
-            switch action {
-                case .run:          return 0.1
-                case .pause:        return 0
-                case .dismiss:      return 1
-            }
+
+        var progressPublisher: AnyPublisher<TimeInterval, Never> {
+            Publishers.CombineLatest(timerPublisher, currentToastActionSubject)
+                .map(\.1.incrementProgress)
+                .scan(0, +)
+                .map { (progress: Double) -> Double in
+                    progress / Self.dismissTimeout
+                }
+                .prepend(0)
+                .eraseToAnyPublisher()
         }
         
-        return Publishers.CombineLatest(timerPublisher, currentToastActionSubject)
-            .map(\.1)
-            .map(incrementProgress(forAction:))
-            .scan(0, +)
-            .map { (progress: Double) -> Double in
-                progress / Self.dismissTimeout
-            }
-            .prepend(0)
-            .combineLatest(currentToastActionSubject)
-            .prefix { (_, action: ToastAction) -> Bool in
-                action != .dismiss
+        return Publishers.CombineLatest(progressPublisher, currentToastActionSubject)
+            .prefix { (progress: Double, action: ToastAction) in
+                progress <= 1 && action != .dismiss
             }
             .map(\.0)
-            .prefix { (progress: Double) -> Bool in
-                progress <= 1
-            }
-            .map { (progress: Double) -> Toast? in
-                toast.withProgress(progress)
-            }
+            .map(toast.withProgress)
             .append(Just(nil))
             .eraseToAnyPublisher()
     }
@@ -155,6 +145,17 @@ public final class ToastQueue: ObservableObject {
     private func hideCurrentToast() {
         withAnimation(Self.animationOut) {
             self.toast = nil
+        }
+    }
+}
+
+private extension ToastQueue.ToastAction {
+
+    var incrementProgress: TimeInterval {
+        switch self {
+            case .run:          return 0.1
+            case .pause:        return 0
+            case .dismiss:      return 1
         }
     }
 }
