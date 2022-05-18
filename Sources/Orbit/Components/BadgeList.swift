@@ -11,8 +11,7 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/badgelist/)
 public struct BadgeList: View {
 
-    public static let badgeDiameter = Spacing.large
-    public static let spacing = Spacing.xSmall
+    public static let spacing: CGFloat = .xSmall
 
     let label: String
     let iconContent: Icon.Content
@@ -22,13 +21,9 @@ public struct BadgeList: View {
     public var body: some View {
         if isEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: Self.spacing) {
-                badgeBackground
-                    .overlay(
-                        Icon(iconContent, size: .small)
-                    )
-                    .alignmentGuide(.firstTextBaseline) { size in
-                        Text.Size.small.lineHeight * Text.firstBaselineRatio + size.height / 2
-                    }
+                Icon(iconContent, size: .small)
+                    .padding(.xxSmall)
+                    .background(badgeBackground)
 
                 Text(
                     label,
@@ -43,7 +38,6 @@ public struct BadgeList: View {
     @ViewBuilder var badgeBackground: some View {
         style.backgroundColor
             .clipShape(Circle())
-            .frame(width: Self.badgeDiameter, height: Self.badgeDiameter)
     }
 
     var isEmpty: Bool {
@@ -140,7 +134,7 @@ public struct BadgeListPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 0) {
             BadgeList("Neutral BadgeList", icon: .grid)
             BadgeList()   // EmptyView
             BadgeList("") // EmptyView
@@ -157,5 +151,25 @@ public struct BadgeListPreviews: PreviewProvider {
             BadgeList("This is simple Critical BadgeList item", icon: .alertCircle, style: .status(.critical))
         }
         .padding(.medium)
+    }
+}
+
+struct BadgeListDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        BadgeListPreviews.standalone
     }
 }

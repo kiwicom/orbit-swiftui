@@ -22,6 +22,8 @@ public enum ListChoiceDisclosure: Equatable {
 /// - Important: Component expands horizontally up to ``Layout/readableMaxWidth``.
 public struct ListChoice<Content: View>: View {
 
+    public let verticalPadding: CGFloat = .small + 1/3   // Makes height exactly 45 at normal text size
+
     let title: String
     let description: String
     let icon: Icon.Content
@@ -37,14 +39,7 @@ public struct ListChoice<Content: View>: View {
                 action()
             },
             label: {
-                HStack(spacing: .medium) {
-                    headerWithValue
-                    
-                    disclosureView
-                        .padding(.trailing, .medium)
-                }
-                .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
-                .overlay(separator, alignment: .bottom)
+                buttonContent
             }
         )
         .buttonStyle(ListChoiceButtonStyle())
@@ -53,6 +48,17 @@ public struct ListChoice<Content: View>: View {
         .accessibility(removeTraits: accessibilityTraitsToRemove)
         .accessibility(addTraits: accessibilityTraitsToAdd)
     }
+
+    @ViewBuilder var buttonContent: some View {
+        HStack(spacing: .medium) {
+            headerWithValue
+
+            disclosureView
+                .padding(.trailing, .medium)
+        }
+        .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
+        .overlay(separator, alignment: .bottom)
+    }
     
     @ViewBuilder var headerWithValue: some View {
         HStack(spacing: 0) {
@@ -60,7 +66,8 @@ public struct ListChoice<Content: View>: View {
             if isHeaderEmpty == false {
                 Spacer(minLength: .xSmall)
             }
-            Strut(48)
+            TextStrut(.large)
+                .padding(.vertical, verticalPadding)
             content()
         }
         .padding(.leading, .medium)
@@ -79,7 +86,7 @@ public struct ListChoice<Content: View>: View {
                     }
                 }
             }
-            .padding(.vertical, .small)
+            .padding(.vertical, verticalPadding)
         }
     }
 
@@ -102,8 +109,8 @@ public struct ListChoice<Content: View>: View {
     
     @ViewBuilder func disclosureButton(type: ListChoiceDisclosure.ButtonType) -> some View {
         switch type {
-            case .add:      Button(.plus, style: .primarySubtle, size: .small)
-            case .remove:   Button(.close, style: .criticalSubtle, size: .small)
+            case .add:      Button(.plus, style: .primarySubtle, size: .small).fixedSize()
+            case .remove:   Button(.close, style: .criticalSubtle, size: .small).fixedSize()
         }
     }
 
@@ -306,6 +313,7 @@ struct ListChoicePreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            sizing
             storybook
             storybookButton
             storybookCheckbox
@@ -319,6 +327,38 @@ struct ListChoicePreviews: PreviewProvider {
 
     static var standalone: some View {
         ListChoice(title, description: description, icon: .grid, value: value)
+    }
+
+    static var sizing: some View {
+        VStack(spacing: .medium) {
+            Group {
+                StateWrapper(initialState: CGFloat(0)) { state in
+                    ContentHeightReader(height: state) {
+                        ListChoice("Height \(state.wrappedValue)", description: description, icon: .grid, value: value)
+                    }
+                }
+                StateWrapper(initialState: CGFloat(0)) { state in
+                    ContentHeightReader(height: state) {
+                        ListChoice("Height \(state.wrappedValue)", icon: .grid, value: value)
+                    }
+                }
+                StateWrapper(initialState: CGFloat(0)) { state in
+                    ContentHeightReader(height: state) {
+                        ListChoice(description: "Height \(state.wrappedValue)", icon: .grid)
+                    }
+                }
+                StateWrapper(initialState: CGFloat(0)) { state in
+                    ContentHeightReader(height: state) {
+                        ListChoice("Height \(state.wrappedValue)")
+                    }
+                }
+            }
+            .border(Color.cloudLight)
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.medium)
+        .background(Color.whiteNormal)
+        .previewDisplayName("Sizing")
     }
     
     static var storybook: some View {
@@ -439,5 +479,26 @@ struct ListChoicePreviews: PreviewProvider {
         .padding()
         .background(Color.cloudLight)
         .previewDisplayName("Custom background")
+    }
+}
+
+struct ListChoiceDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        ListChoicePreviews.standalone
+        ListChoice(ListChoicePreviews.title, disclosure: ListChoicePreviews.addButton)
+        ListChoice(ListChoicePreviews.title, disclosure: ListChoicePreviews.uncheckedCheckbox)
     }
 }

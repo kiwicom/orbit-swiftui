@@ -76,7 +76,7 @@ public struct Alert<Content: View>: View {
     }
 
     @ViewBuilder var buttonsView: some View {
-        HStack(spacing: .small) {
+        HStack(alignment: .top, spacing: .small) {
             switch buttons {
                 case .primary(let primaryButton),
                      .primaryAndSecondary(let primaryButton, _):
@@ -355,5 +355,25 @@ struct AlertPreviews: PreviewProvider {
             .padding(.medium)
             .animation(.default, value: buttons.wrappedValue.isVisible)
         }
+    }
+}
+
+struct AlertDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        AlertPreviews.standalone
     }
 }

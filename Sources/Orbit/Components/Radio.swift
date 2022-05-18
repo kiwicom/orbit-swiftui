@@ -84,7 +84,9 @@ extension Radio {
     /// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
     struct ButtonStyle: SwiftUI.ButtonStyle {
 
-        public static let size = CGSize(width: 20, height: 20)
+        public static let size: CGFloat = 20
+
+        @Environment(\.sizeCategory) var sizeCategory
 
         let state: Radio.State
         let isChecked: Bool
@@ -98,7 +100,7 @@ extension Radio {
 
         func indicator(isPressed: Bool) -> some View {
             indicatorShape
-                .strokeBorder(indicatorStrokeColor(isPressed: isPressed), lineWidth: isChecked ? 6 : 2)
+                .strokeBorder(indicatorStrokeColor(isPressed: isPressed), lineWidth: strokeWidth)
                 .background(
                     indicatorShape
                         .fill(indicatorBackgroundColor)
@@ -106,17 +108,17 @@ extension Radio {
                 .overlay(
                     indicatorShape
                         .inset(by: -0.5)
-                        .stroke(state == .error ? Color.redLight : Color.clear, lineWidth: 3)
+                        .stroke(state == .error ? Color.redLight : Color.clear, lineWidth: errorStrokeWidth)
                 )
                 .overlay(
                     indicatorShape
-                        .strokeBorder(indicatorOverlayStrokeColor(isPressed: isPressed), lineWidth: 2)
+                        .strokeBorder(indicatorOverlayStrokeColor(isPressed: isPressed), lineWidth: indicatorStrokeWidth)
                 )
-                .frame(width: Self.size.width, height: Self.size.height)
+                .frame(width: size, height: size)
                 .animation(.easeOut(duration: 0.2), value: state)
                 .animation(.easeOut(duration: 0.15), value: isChecked)
                 .alignmentGuide(.firstTextBaseline) { _ in
-                    Self.size.height * 0.75
+                    size * 0.75
                 }
         }
 
@@ -146,6 +148,22 @@ extension Radio {
                 case (.error, false):                       return Color.redNormal
                 case (_, _):                                return Color.clear
             }
+        }
+
+        var size: CGFloat {
+            Self.size * sizeCategory.ratio
+        }
+
+        var strokeWidth: CGFloat {
+            (isChecked ? 6 : 2) * sizeCategory.ratio
+        }
+
+        var errorStrokeWidth: CGFloat {
+            3 * sizeCategory.ratio
+        }
+
+        var indicatorStrokeWidth: CGFloat {
+            2 * sizeCategory.ratio
         }
     }
 }
@@ -200,5 +218,24 @@ struct RadioPreviews: PreviewProvider {
                 isSelected.wrappedValue.toggle()
             }
         }
+    }
+}
+
+struct RadioDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        RadioPreviews.standalone
     }
 }

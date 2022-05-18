@@ -280,6 +280,7 @@ struct TextPreviews: PreviewProvider {
 
     static var standalone: some View {
         Text("Plain text with no formatting")
+            .padding(.medium)
             .previewDisplayName("Standalone")
     }
 
@@ -501,7 +502,7 @@ struct TextPreviews: PreviewProvider {
                 Custom line height set to 12pt.
                 Custom line height set to 12pt.
                 """,
-                lineSpacing: Spacing.small
+                lineSpacing: .small
             )
             .padding()
 
@@ -511,7 +512,7 @@ struct TextPreviews: PreviewProvider {
                 <b>Custom line height</b> set to 12pt.
                 <b>Custom line height</b> set to 12pt.
                 """,
-                lineSpacing: Spacing.small
+                lineSpacing: .small
             )
             .padding()
 

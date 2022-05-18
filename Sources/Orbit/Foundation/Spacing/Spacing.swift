@@ -1,52 +1,52 @@
-import CoreGraphics
+import SwiftUI
 
 /// Consistent spacing makes an interface more clear and easy to scan.
 ///
 /// Our spacing is based on a 4-pixel grid.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/foundation/spacing/)
-public enum Spacing {
+public enum Spacing: CGFloat {
     /// 2 pts.
-    public static let xxxSmall: CGFloat = 2
+    case xxxSmall = 2
     /// 4 pts.
-    public static let xxSmall: CGFloat = 4
+    case xxSmall = 4
     /// 8 pts.
-    public static let xSmall: CGFloat = 8
+    case xSmall = 8
     /// 12 pts.
-    public static let small: CGFloat = 12
+    case small = 12
     /// 16 pts.
-    public static let medium: CGFloat = 16
+    case medium = 16
     /// 20 pts.
-    public static let xMedium: CGFloat = 20
+    case xMedium = 20
     /// 24 pts.
-    public static let large: CGFloat = 24
+    case large = 24
     /// 32 pts.
-    public static let xLarge: CGFloat = 32
+    case xLarge = 32
     /// 44 pts.
-    public static let xxLarge: CGFloat = 44
+    case xxLarge = 44
     /// 60 pts.
-    public static let xxxLarge: CGFloat = 60
+    case xxxLarge = 60
 }
 
 public extension CGFloat {
     /// 2 pts
-    static let xxxSmall = Spacing.xxxSmall
+    static let xxxSmall = Spacing.xxxSmall.rawValue
     /// 4 pts.
-    static let xxSmall = Spacing.xxSmall
+    static let xxSmall = Spacing.xxSmall.rawValue
     /// 8 pts.
-    static let xSmall = Spacing.xSmall
+    static let xSmall = Spacing.xSmall.rawValue
     /// 12 pts.
-    static let small = Spacing.small
+    static let small = Spacing.small.rawValue
     /// 16 pts.
-    static let medium = Spacing.medium
+    static let medium = Spacing.medium.rawValue
     /// 20 pts.
-    static let xMedium = Spacing.xMedium
+    static let xMedium = Spacing.xMedium.rawValue
     /// 24 pts.
-    static let large = Spacing.large
+    static let large = Spacing.large.rawValue
     /// 32 pts.
-    static let xLarge = Spacing.xLarge
+    static let xLarge = Spacing.xLarge.rawValue
     /// 44 pts.
-    static let xxLarge = Spacing.xxLarge
+    static let xxLarge = Spacing.xxLarge.rawValue
     /// 60 pts.
-    static let xxxLarge = Spacing.xxxLarge
+    static let xxxLarge = Spacing.xxxLarge.rawValue
 }

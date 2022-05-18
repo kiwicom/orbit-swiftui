@@ -116,7 +116,7 @@ struct SelectPreviews: PreviewProvider {
     }
 
     @ViewBuilder static var storybookMix: some View {
-        VStack(spacing: Spacing.medium) {
+        VStack(spacing: .medium) {
             Group {
                 Select("Label", value: "Value")
                 Select("", prefix: .icon(.grid), value: "Value")
@@ -206,5 +206,24 @@ struct SelectLivePreviews: PreviewProvider {
             }
             .previewDisplayName("Live Preview")
         }
+    }
+}
+
+struct SelectDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        SelectPreviews.standalone
     }
 }

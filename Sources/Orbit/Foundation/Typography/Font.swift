@@ -88,7 +88,7 @@ extension Font.Weight {
 
 public extension ContentSizeCategory {
 
-    /// Size ratio for custom calculations.
+    /// Effective font size ratio.
     var ratio: CGFloat {
         switch self {
             case .extraSmall:                           return 0.8

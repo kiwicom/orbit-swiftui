@@ -11,8 +11,10 @@ public struct Switch: View {
     
     static let borderColor = Color(white: 0.2, opacity: 0.25)
     static let shadowColor: Color = .inkNormal.opacity(0.2)
-    
+
+    @Environment(\.sizeCategory) var sizeCategory
     @Binding private var isOn: Bool
+
     let hasIcon: Bool
     let isEnabled: Bool
 
@@ -31,13 +33,13 @@ public struct Switch: View {
 
     @ViewBuilder var capsule: some View {
         Capsule(style: .circular)
-            .frame(width: Self.size.width, height: Self.size.height)
+            .frame(width: width, height: height)
             .foregroundColor(tint)
     }
 
     @ViewBuilder var indicator: some View {
         Circle()
-            .frame(width: Self.circleDiameter, height: Self.circleDiameter)
+            .frame(width: circleDiameter, height: circleDiameter)
             .foregroundColor(.whiteNormal)
             .shadow(color: Self.shadowColor.opacity(isEnabled ? 1 : 0), radius: 2.5, y: 1.5)
             .overlay(
@@ -45,7 +47,7 @@ public struct Switch: View {
                     .strokeBorder(Self.borderColor, lineWidth: BorderWidth.hairline)
             )
             .overlay(indicatorSymbol)
-            .offset(x: isOn ? Self.size.width / 5 : -Self.size.width / 5)
+            .offset(x: isOn ? width / 5 : -width / 5)
     }
 
     @ViewBuilder var indicatorSymbol: some View {
@@ -54,7 +56,7 @@ public struct Switch: View {
         } else {
             Circle()
                 .foregroundColor(tint)
-                .frame(width: Self.dotDiameter, height: Self.dotDiameter)
+                .frame(width: dotDiameter, height: dotDiameter)
         }
     }
 
@@ -66,6 +68,22 @@ public struct Switch: View {
     var iconTint: Color {
         (isOn ? Color.blueNormal : Color.inkLight)
             .opacity(isEnabled ? 1 : 0.5)
+    }
+
+    var width: CGFloat {
+        Self.size.width * sizeCategory.ratio
+    }
+
+    var height: CGFloat {
+        Self.size.height * sizeCategory.ratio
+    }
+
+    var circleDiameter: CGFloat {
+        Self.circleDiameter * sizeCategory.ratio
+    }
+
+    var dotDiameter: CGFloat {
+        Self.dotDiameter * sizeCategory.ratio
     }
 
     /// Creates Orbit Switch component.
@@ -116,5 +134,24 @@ struct SwitchPreviews: PreviewProvider {
         StateWrapper(initialState: isOn) { isOnState in
             Switch(isOn: isOnState, hasIcon: hasIcon, isEnabled: isEnabled)
         }
+    }
+}
+
+struct SwitchDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        SwitchPreviews.storybook
     }
 }

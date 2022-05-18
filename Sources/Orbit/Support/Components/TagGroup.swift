@@ -82,6 +82,7 @@ public struct TagGroup<TM: TagModel>: View {
             Tag(
                 tag.label,
                 style: tag.isRemovable ? .removable(action: { tags[index].isRemoved = true }) : .default,
+                isFocused: false,
                 isSelected: $tags[index].isSelected.wrappedValue
             ) {
                 $tags[index].isSelected.wrappedValue.toggle()

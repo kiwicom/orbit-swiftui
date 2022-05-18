@@ -7,11 +7,8 @@ import SwiftUI
 ///   - ``TextLink``
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/buttonlink/)
-/// - Important: Component has the same height as a ``Button``, but does not expand horizontally.
 public struct ButtonLink: View {
 
-    public static let defaultHeight: CGFloat = 20
-    
     let label: String
     let style: Style
     let iconContent: Icon.Content
@@ -26,17 +23,23 @@ public struct ButtonLink: View {
                     action()
                 },
                 label: {
-                    HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-                        Icon(iconContent, size: iconSize)
+                    HStack(spacing: 0) {
+                        HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+                            Icon(iconContent, size: iconSize)
 
-                        Text(
-                            label,
-                            size: .normal,
-                            color: nil,
-                            weight: .medium,
-                            accentColor: style.color.normal,
-                            linkColor: .custom(style.color.normal)
-                        )
+                            Text(
+                                label,
+                                size: .normal,
+                                color: nil,
+                                weight: .medium,
+                                accentColor: style.color.normal,
+                                linkColor: .custom(style.color.normal)
+                            )
+                            .padding(.vertical, verticalPadding)
+                        }
+
+                        TextStrut(.normal)
+                            .padding(.vertical, verticalPadding)
                     }
                 }
             )
@@ -49,6 +52,14 @@ public struct ButtonLink: View {
             case .default:          return .normal
             case .button:           return .large
             case .buttonSmall:      return .small
+        }
+    }
+
+    var verticalPadding: CGFloat {
+        switch size {
+            case .default:              return 0
+            case .button:               return Button.Size.default.verticalPadding
+            case .buttonSmall:          return .xSmall - 1
         }
     }
 }
@@ -133,14 +144,6 @@ public extension ButtonLink {
         case `default`
         case button
         case buttonSmall
-
-        public var height: CGFloat {
-            switch self {
-                case .default:              return ButtonLink.defaultHeight
-                case .button:               return Layout.preferredButtonHeight
-                case .buttonSmall:          return Layout.preferredSmallButtonHeight
-            }
-        }
         
         public var maxWidth: CGFloat? {
             switch self {
@@ -158,7 +161,6 @@ public extension ButtonLink {
         public func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .foregroundColor(Color(configuration.isPressed ? style.color.active : style.color.normal))
-                .frame(height: size.height)
                 .frame(maxWidth: size.maxWidth)
                 .contentShape(Rectangle())
         }
@@ -171,10 +173,12 @@ struct ButtonLinkPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            
+            sizing
             storybook
             storybookStatus
+                .previewDisplayName("Status")
             storybookSizes
+                .previewDisplayName("Sizes")
 
             snapshotsCustom
         }
@@ -182,10 +186,49 @@ struct ButtonLinkPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        VStack {
+        VStack(spacing: 0) {
             ButtonLink("ButtonLink")
             ButtonLink("") // EmptyView
             ButtonLink()   // EmptyView
+        }
+        .padding(.medium)
+    }
+
+    static var sizing: some View {
+        VStack(alignment: .leading, spacing: .xSmall) {
+            Group {
+                StateWrapper(initialState: CGFloat(0)) { state in
+                    ContentHeightReader(height: state) {
+                        ButtonLink("ButtonLink height \(state.wrappedValue)")
+                    }
+                }
+                StateWrapper(initialState: CGFloat(0)) { state in
+                    ContentHeightReader(height: state) {
+                        ButtonLink("ButtonLink height \(state.wrappedValue)", icon: .grid)
+                    }
+                }
+                StateWrapper(initialState: CGFloat(0)) { state in
+                    ContentHeightReader(height: state) {
+                        ButtonLink("ButtonLink button height \(state.wrappedValue)", size: .button)
+                    }
+                }
+                StateWrapper(initialState: CGFloat(0)) { state in
+                    ContentHeightReader(height: state) {
+                        ButtonLink("ButtonLink button height \(state.wrappedValue)", icon: .grid, size: .button)
+                    }
+                }
+                StateWrapper(initialState: CGFloat(0)) { state in
+                    ContentHeightReader(height: state) {
+                        ButtonLink("ButtonLink small height \(state.wrappedValue)", size: .buttonSmall)
+                    }
+                }
+                StateWrapper(initialState: CGFloat(0)) { state in
+                    ContentHeightReader(height: state) {
+                        ButtonLink("ButtonLink small height \(state.wrappedValue)", icon: .grid, size: .buttonSmall)
+                    }
+                }
+            }
+            .border(Color.cloudNormal)
         }
         .padding(.medium)
     }
@@ -214,7 +257,6 @@ struct ButtonLinkPreviews: PreviewProvider {
             ButtonLink("ButtonLink Critical", style: .status(.critical), icon: .alertCircle)
         }
         .padding(.medium)
-        .previewDisplayName("Status")
     }
     
     static var storybookSizes: some View {
@@ -227,7 +269,6 @@ struct ButtonLinkPreviews: PreviewProvider {
                 .border(Color.cloudNormal)
         }
         .padding(.medium)
-        .previewDisplayName("Sizes")
     }
 
     static var snapshotsCustom: some View {
@@ -249,5 +290,26 @@ struct ButtonLinkPreviews: PreviewProvider {
                 .previewDisplayName("Country flag")
         }
         .padding(.horizontal)
+    }
+}
+
+struct ButtonLinkDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            content
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic Type - XS")
+
+            content
+                .environment(\.sizeCategory, .accessibilityExtraLarge)
+                .previewDisplayName("Dynamic Type - XL")
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var content: some View {
+        ButtonLinkPreviews.standalone
+        ButtonLinkPreviews.storybookSizes
     }
 }
