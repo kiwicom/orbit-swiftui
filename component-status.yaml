@@ -44,6 +44,8 @@
   ios: Released
 - component: ListChoice
   ios: Released
+- component: NotificationBadge
+  ios: Released
 - component: Radio
   ios: Released
 - component: Select
