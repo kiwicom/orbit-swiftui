@@ -2,7 +2,7 @@ name: Design Tokens Updater
 
 on:
   schedule:
-    - cron: '0 6 * * 1-5' # every work-day at 6:00am
+    - cron: '0 0 * * MON' # every Monday
   workflow_dispatch:
   
 env:
