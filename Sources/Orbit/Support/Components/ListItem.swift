@@ -19,7 +19,13 @@ public struct ListItem: View {
         Label(
             text,
             iconContent: iconContent,
-            style: .text(size, weight: style.weight, color: style.textColor, linkAction: linkAction),
+            style: .text(
+                size,
+                weight: style.weight,
+                color: style.textColor,
+                linkColor: style.linkColor,
+                linkAction: linkAction
+            ),
             spacing: spacing
         )
     }
@@ -148,7 +154,7 @@ struct ListItemPreviews: PreviewProvider {
         List {
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#)
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, size: .small, style: .secondary)
-            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, style: .custom(color: .greenNormal))
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, style: .custom(color: .greenNormal, linkColor: .custom(.orangeDark)))
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, iconContent: .icon(.circleSmall, color: .inkNormal), style: .custom(color: .greenNormal))
         }
         .padding()
