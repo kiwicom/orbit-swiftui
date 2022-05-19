@@ -31,7 +31,7 @@ public struct InputField: View {
     let message: MessageType
     let onEditingChanged: (Bool) -> Void
     let onCommit: () -> Void
-    let suffixAction: () -> Void
+    let suffixAction: (() -> Void)?
 
     public var body: some View {
         FormFieldWrapper(label, message: message, messageHeight: $messageHeight) {
@@ -142,6 +142,7 @@ public extension InputField {
     /// - Parameters:
     ///     - message: Message below InputField.
     ///     - messageHeight: Binding to the current height of message.
+    ///     - suffixAction: Optional separate action on suffix icon tap.
     init(
         _ label: String = "",
         value: Binding<String>,
@@ -158,7 +159,7 @@ public extension InputField {
         messageHeight: Binding<CGFloat> = .constant(0),
         onEditingChanged: @escaping (Bool) -> Void = { _ in },
         onCommit: @escaping () -> Void = {},
-        suffixAction: @escaping () -> Void = {}
+        suffixAction: (() -> Void)? = nil
     ) {
         self.label = label
         self._value = value

@@ -186,7 +186,9 @@ struct SelectLivePreviews: PreviewProvider {
                             message: state.wrappedValue
                                 ? .error("Error message, but also very long and multi-line to test that it works.")
                                 : .none
-                        )
+                        ) {
+                            state.wrappedValue.toggle()
+                        }
                         .padding(.vertical, .medium)
 
                         Heading("Some content", style: .title3)

@@ -46,7 +46,7 @@ struct InputContent<Content: View>: View {
     var message: MessageType = .none
     var isPressed: Bool = false
     var isEditing: Bool = false
-    var suffixAction = {}
+    var suffixAction: (() -> Void)? = nil
     let label: () -> Content
     
     var body: some View {
@@ -64,11 +64,12 @@ struct InputContent<Content: View>: View {
             TextStrut(.normal)
                 .padding(.vertical, Button.Size.default.verticalPadding)
 
-            Icon(suffix, size: .large)
-                .foregroundColor(suffixColor)
-                .padding(.horizontal, .xSmall)
-                .contentShape(Rectangle())
-                .onTapGesture(perform: suffixAction)
+            if let suffixAction = suffixAction {
+                suffixIcon
+                    .onTapGesture(perform: suffixAction)
+            } else {
+                suffixIcon
+            }
         }
         .foregroundColor(state.textColor)
         .background(backgroundColor(isPressed: isPressed).animation(.default, value: message))
@@ -78,6 +79,13 @@ struct InputContent<Content: View>: View {
                 .strokeBorder(outlineColor(isPressed: isPressed), lineWidth: BorderWidth.emphasis)
         )
         .disabled(state == .disabled)
+    }
+
+    @ViewBuilder var suffixIcon: some View {
+        Icon(suffix, size: .large)
+            .foregroundColor(suffixColor)
+            .padding(.horizontal, .xSmall)
+            .contentShape(Rectangle())
     }
     
     private func backgroundColor(isPressed: Bool) -> Color {
