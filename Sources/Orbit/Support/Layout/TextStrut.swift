@@ -10,6 +10,7 @@ public struct TextStrut: View {
     public var body: some View {
         Text("I", size: textSize, color: .custom(.clear))
             .frame(width: 0)
+            .accessibility(hidden: true)
     }
 
     /// Creates invisible strut of height of text based on provided text size.
