@@ -125,6 +125,7 @@ extension Tag {
                 if case .removable(let removeAction) = style {
                     Icon(.closeCircle, size: .small, color: iconColor(isPressed: configuration.isPressed))
                         .onTapGesture(perform: removeAction)
+                        .accessibility(addTraits: .isButton)
                 }
             }
             .foregroundColor(labelColor)

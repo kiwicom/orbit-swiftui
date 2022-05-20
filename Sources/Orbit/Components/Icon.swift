@@ -34,11 +34,13 @@ public struct Icon: View {
                 SwiftUI.Text(verbatim: symbol.value)
                     .foregroundColor(color)
                     .font(.orbitIcon(size: size.value, style: size.textStyle))
+                    .accessibility(label: SwiftUI.Text(String(describing: symbol)))
             case .image(let image, let mode):
                 image
                     .resizable()
                     .aspectRatio(contentMode: mode)
                     .frame(width: size.value, height: size.value * sizeCategory.ratio)
+                    .accessibility(hidden: true)
             case .countryFlag(let countryCode):
                 CountryFlag(countryCode, size: size)
             case .sfSymbol(let systemName):
