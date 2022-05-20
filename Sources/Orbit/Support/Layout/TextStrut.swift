@@ -8,9 +8,9 @@ public struct TextStrut: View {
     let textSize: Text.Size
     
     public var body: some View {
-        Text("I", size: textSize, color: .custom(.clear))
-            .frame(width: 0)
+        Text("I", size: textSize, color: .custom(.clear), isAccessibilityElement: false)
             .accessibility(hidden: true)
+            .frame(width: 0)
     }
 
     /// Creates invisible strut of height of text based on provided text size.

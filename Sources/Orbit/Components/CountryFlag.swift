@@ -27,6 +27,7 @@ public struct CountryFlag: View {
                 .padding(Icon.averageIconContentPadding / 2)
                 .frame(width: size.value * sizeCategory.ratio)
                 .fixedSize()
+                .accessibility(label: SwiftUI.Text(countryCode))
         }
     }
 

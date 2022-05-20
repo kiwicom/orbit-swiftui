@@ -26,34 +26,24 @@ public struct Text: View {
     let isSelectable: Bool
     let kerning: CGFloat
     let strikethrough: Bool
+    let isAccessibilityElement: Bool
 
     public var body: some View {
         if content.isEmpty == false {
-            if content.containsHtmlFormatting {
-                SwiftUI.Text(attributedText)
-                    .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
-                    .kerning(kerning)
-                    .multilineTextAlignment(alignment)
-                    .lineSpacing(lineSpacing ?? 0)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .overlay(selectableText)
-                    .overlay(textLinks)
-            } else {
-                SwiftUI.Text(verbatim: content)
-                    .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
-                    .kerning(kerning)
-                    .foregroundColor(foregroundColor.map(SwiftUI.Color.init))
-                    .font(.orbit(size: size.value, weight: weight, style: size.textStyle))
-                    .lineSpacing(lineSpacing ?? 0)
-                    .multilineTextAlignment(alignment)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .overlay(selectableText)
-            }
+            text
+                .lineSpacing(lineSpacing ?? 0)
+                .multilineTextAlignment(alignment)
+                .fixedSize(horizontal: false, vertical: true)
+                .overlay(selectableText)
+                .overlay(textLinks)
+                .accessibility(hidden: isAccessibilityElement == false)
+                .accessibility(removeTraits: isAccessibilityElement ? [] : [.isStaticText])
+                .accessibility(label: isAccessibilityElement ? SwiftUI.Text(content) : SwiftUI.Text(""))
         }
     }
 
     @ViewBuilder var textLinks: some View {
-        if content.containsTextLinks {
+        if content.containsHtmlFormatting, content.containsTextLinks {
             GeometryReader { geometry in
                 TextLink(content: textLinkContent, bounds: geometry.size, color: linkColor) { url, text in
                     HapticsProvider.sendHapticFeedback(.light(0.5))
@@ -73,6 +63,20 @@ public struct Text: View {
                         height: geometry.size.height
                     )
             }
+        }
+    }
+
+    var text: SwiftUI.Text {
+        if content.containsHtmlFormatting {
+            return SwiftUI.Text(attributedText)
+                .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
+                .kerning(kerning)
+        } else {
+            return SwiftUI.Text(verbatim: content)
+                .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
+                .kerning(kerning)
+                .foregroundColor(foregroundColor.map(SwiftUI.Color.init))
+                .font(.orbit(size: size.value, weight: weight, style: size.textStyle))
         }
     }
 
@@ -132,6 +136,7 @@ public extension Text {
     /// - Parameter linkAction: Handler for any detected TextLink tap action.
     /// - Parameter isSelectable: Determines if text is copyable using long tap gesture.
     /// - Parameter kerning: Additional spacing between characters.
+    /// - Parameter isAccessibilityElement: Makes it possible to remove the default accessibility traits.
     /// - Parameter strikethrough: Determines if strikethrough should be applied.
     init(
         _ content: String,
@@ -145,6 +150,7 @@ public extension Text {
         isSelectable: Bool = false,
         strikethrough: Bool = false,
         kerning: CGFloat = 0,
+        isAccessibilityElement: Bool = true,
         linkAction: @escaping TextLink.Action = { _, _ in }
     ) {
         self.content = content
@@ -158,6 +164,7 @@ public extension Text {
         self.isSelectable = isSelectable
         self.strikethrough = strikethrough
         self.kerning = kerning
+        self.isAccessibilityElement = isAccessibilityElement
         self.linkAction = linkAction
     }
 }
