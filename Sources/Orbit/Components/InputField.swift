@@ -13,6 +13,11 @@ import UIKit
 /// - Important: Component expands horizontally to infinity.
 public struct InputField: View {
 
+    private enum Mode {
+        case actionsHandler(onEditingChanged: (Bool) -> Void, onCommit: () -> Void, isSecure: Bool)
+        case formatter(formatter: Formatter)
+    }
+
     @Binding private var value: String
     @Binding private var messageHeight: CGFloat
     @State private var isEditing: Bool = false
@@ -27,12 +32,11 @@ public struct InputField: View {
     let keyboard: UIKeyboardType
     let autocapitalization: UITextAutocapitalizationType
     let isAutocompleteEnabled: Bool
-    let isSecure: Bool
     let passwordStrength: PasswordStrengthIndicator.PasswordStrength
     let message: MessageType
-    let onEditingChanged: (Bool) -> Void
-    let onCommit: () -> Void
     let suffixAction: (() -> Void)?
+
+    private let mode: Mode
 
     public var body: some View {
         FormFieldWrapper(label, message: message, messageHeight: $messageHeight) {
@@ -74,40 +78,16 @@ public struct InputField: View {
     }
 
     @ViewBuilder var input: some View {
-        if isSecure {
-            secureField
-        } else {
-            textField
+        switch mode {
+            case .actionsHandler(let onEditingChanged, let onCommit, let isSecure):
+                if isSecure {
+                    secureField(onEditingChanged: onEditingChanged, onCommit: onCommit)
+                } else {
+                    textField(onEditingChanged: onEditingChanged, onCommit: onCommit)
+                }
+            case .formatter(let formatter):
+                TextField("", value: $value, formatter: formatter)
         }
-    }
-
-    @ViewBuilder var secureField: some View {
-        SecureTextField(
-            text: $value,
-            isSecured: $isSecureTextEntry,
-            isEditing: $isEditing,
-            style: .init(
-                textContentType: textContent,
-                keyboardType: keyboard,
-                font: .orbit(size: Text.Size.normal.value, weight: .regular),
-                state: state
-            ),
-            onEditingChanged: onEditingChanged,
-            onCommit: onCommit
-        )
-        .background(textFieldPlaceholder, alignment: .leading)
-    }
-
-    @ViewBuilder var textField: some View {
-        TextField(
-            "",
-            text: $value,
-            onEditingChanged: { isEditing in
-                self.isEditing = isEditing
-                onEditingChanged(isEditing)
-            },
-            onCommit: onCommit
-        )
     }
 
     @ViewBuilder var textFieldPlaceholder: some View {
@@ -143,6 +123,50 @@ public struct InputField: View {
                 .accessibility(.inputFieldPasswordToggle)
         }
     }
+
+    @ViewBuilder func secureField(
+        onEditingChanged: @escaping (Bool) -> Void,
+        onCommit: @escaping () -> Void
+    ) -> some View {
+        SecureTextField(
+            text: $value,
+            isSecured: $isSecureTextEntry,
+            isEditing: $isEditing,
+            style: .init(
+                textContentType: textContent,
+                keyboardType: keyboard,
+                font: .orbit(size: Text.Size.normal.value, weight: .regular),
+                state: state
+            ),
+            onEditingChanged: onEditingChanged,
+            onCommit: onCommit
+        )
+        .background(textFieldPlaceholder, alignment: .leading)
+    }
+
+    @ViewBuilder func textField(
+        onEditingChanged: @escaping (Bool) -> Void,
+        onCommit: @escaping () -> Void
+    ) -> some View {
+        TextField(
+            "",
+            text: $value,
+            onEditingChanged: { isEditing in
+                self.isEditing = isEditing
+                onEditingChanged(isEditing)
+            },
+            onCommit: onCommit
+        )
+    }
+
+    var isSecure: Bool {
+        switch mode {
+            case .actionsHandler(_, _, let isSecure):
+                return isSecure
+            case .formatter(_):
+                return false
+        }
+    }
 }
 
 
@@ -174,6 +198,90 @@ public extension InputField {
         onCommit: @escaping () -> Void = {},
         suffixAction: (() -> Void)? = nil
     ) {
+        self.init(
+            label,
+            value: value,
+            prefix: prefix,
+            suffix: suffix,
+            placeholder: placeholder,
+            state: state,
+            textContent: textContent,
+            keyboard: keyboard,
+            autocapitalization: autocapitalization,
+            isAutocompleteEnabled: isAutocompleteEnabled,
+            passwordStrength: passwordStrength,
+            message: message,
+            messageHeight: messageHeight,
+            mode: .actionsHandler(onEditingChanged: onEditingChanged, onCommit: onCommit, isSecure: isSecure),
+            suffixAction: suffixAction
+        )
+    }
+
+    /// Creates Orbit InputField component.
+    ///
+    /// - Parameters:
+    ///     - message: Message below InputField.
+    ///     - messageHeight: Binding to the current height of message.
+    ///     - formatter: A formatter to use when converting between the
+    ///     string the user edits and the underlying String value.
+    ///     If `formatter` can't perform the conversion, the text field doesn't
+    ///     modify `binding.value`.
+    ///     - suffixAction: Optional separate action on suffix icon tap.
+    init(
+        _ label: String = "",
+        value: Binding<String>,
+        prefix: Icon.Content = .none,
+        suffix: Icon.Content = .none,
+        placeholder: String = "",
+        state: InputState = .default,
+        textContent: UITextContentType? = nil,
+        keyboard: UIKeyboardType = .default,
+        autocapitalization: UITextAutocapitalizationType = .none,
+        isAutocompleteEnabled: Bool = false,
+        passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
+        message: MessageType = .none,
+        messageHeight: Binding<CGFloat> = .constant(0),
+        formatter: Formatter,
+        suffixAction: (() -> Void)? = nil
+    ) {
+        self.init(
+            label,
+            value: value,
+            prefix: prefix,
+            suffix: suffix,
+            placeholder: placeholder,
+            state: state,
+            textContent: textContent,
+            keyboard: keyboard,
+            autocapitalization: autocapitalization,
+            isAutocompleteEnabled: isAutocompleteEnabled,
+            passwordStrength: passwordStrength,
+            message: message,
+            messageHeight: messageHeight,
+            mode: .formatter(formatter: formatter),
+            suffixAction: suffixAction
+        )
+    }
+}
+
+extension InputField {
+    private init(
+        _ label: String = "",
+        value: Binding<String>,
+        prefix: Icon.Content = .none,
+        suffix: Icon.Content = .none,
+        placeholder: String = "",
+        state: InputState = .default,
+        textContent: UITextContentType? = nil,
+        keyboard: UIKeyboardType = .default,
+        autocapitalization: UITextAutocapitalizationType = .none,
+        isAutocompleteEnabled: Bool = false,
+        passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
+        message: MessageType = .none,
+        messageHeight: Binding<CGFloat> = .constant(0),
+        mode: Mode,
+        suffixAction: (() -> Void)? = nil
+    ) {
         self.label = label
         self._value = value
         self.prefix = prefix
@@ -186,10 +294,8 @@ public extension InputField {
         self.keyboard = keyboard
         self.autocapitalization = autocapitalization
         self.isAutocompleteEnabled = isAutocompleteEnabled
-        self.isSecure = isSecure
         self.passwordStrength = passwordStrength
-        self.onEditingChanged = onEditingChanged
-        self.onCommit = onCommit
+        self.mode = mode
         self.suffixAction = suffixAction
     }
 }
