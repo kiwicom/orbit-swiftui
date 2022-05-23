@@ -17,6 +17,7 @@ public struct BadgeList: View {
     let iconContent: Icon.Content
     let style: Style
     let labelColor: LabelColor
+    let linkAction: TextLink.Action
 
     public var body: some View {
         if isEmpty == false {
@@ -29,7 +30,8 @@ public struct BadgeList: View {
                     label,
                     size: .small,
                     color: .custom(labelColor.color),
-                    linkColor: .custom(labelColor.color)
+                    linkColor: .custom(labelColor.color),
+                    linkAction: linkAction
                 )
             }
         }
@@ -53,27 +55,47 @@ public extension BadgeList {
         _ label: String = "",
         iconContent: Icon.Content = .none,
         style: Style = .neutral,
-        labelColor: LabelColor = .default
+        labelColor: LabelColor = .default,
+        linkAction: @escaping TextLink.Action = { _, _ in }
     ) {
         self.label = label
         self.iconContent = iconContent
         self.style = style
         self.labelColor = labelColor
+        self.linkAction = linkAction
     }
 
     /// Creates Orbit BadgeList component with icon symbol.
-    init(_ label: String = "", icon: Icon.Symbol = .none, style: Style = .neutral, labelColor: LabelColor = .default) {
+    init(
+        _ label: String = "",
+        icon: Icon.Symbol = .none,
+        style: Style = .neutral,
+        labelColor: LabelColor = .default,
+        linkAction: @escaping TextLink.Action = { _, _ in }
+    ) {
         self.init(
             label,
             iconContent: .icon(icon, color: style.iconColor),
             style: style,
-            labelColor: labelColor
+            labelColor: labelColor,
+            linkAction: linkAction
         )
     }
 
     /// Creates Orbit BadgeList component with no icon.
-    init(_ label: String = "", style: Style = .neutral, labelColor: LabelColor = .default) {
-        self.init(label, iconContent: .none, style: style, labelColor: labelColor)
+    init(
+        _ label: String = "",
+        style: Style = .neutral,
+        labelColor: LabelColor = .default,
+        linkAction: @escaping TextLink.Action = { _, _ in }
+    ) {
+        self.init(
+            label,
+            iconContent: .none,
+            style: style,
+            labelColor: labelColor,
+            linkAction: linkAction
+        )
     }
 }
 
@@ -144,7 +166,7 @@ public struct BadgeListPreviews: PreviewProvider {
 
     static var storybook: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            BadgeList("This is simple Neutral BadgeList item with <u>very long</u> and <strong>formatted</strong> multiline content", icon: .grid)
+            BadgeList("This is simple Neutral BadgeList item with <u>very long</u> and <strong>formatted</strong> multiline content with a <a href=\".\">TextLink</a>", icon: .grid)
             BadgeList("This is simple Info BadgeList item", icon: .informationCircle, style: .status(.info))
             BadgeList("This is simple Success BadgeList item", icon: .checkCircle, style: .status(.success))
             BadgeList("This is simple Warning BadgeList item", icon: .alertCircle, style: .status(.warning))
