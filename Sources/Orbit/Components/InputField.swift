@@ -28,6 +28,7 @@ public struct InputField: View {
     let autocapitalization: UITextAutocapitalizationType
     let isAutocompleteEnabled: Bool
     let isSecure: Bool
+    let passwordStrength: PasswordStrengthIndicator.PasswordStrength
     let message: MessageType
     let onEditingChanged: (Bool) -> Void
     let onCommit: () -> Void
@@ -35,31 +36,36 @@ public struct InputField: View {
 
     public var body: some View {
         FormFieldWrapper(label, message: message, messageHeight: $messageHeight) {
-            InputContent(
-                prefix: prefix,
-                suffix: suffix,
-                state: state,
-                message: message,
-                isEditing: isEditing,
-                suffixAction: suffixAction
-            ) {
-                HStack(spacing: 0) {
-                    input
-                        .textFieldStyle(TextFieldStyle(leadingPadding: 0))
-                        .autocapitalization(autocapitalization)
-                        .disableAutocorrection(isAutocompleteEnabled == false)
-                        .textContentType(textContent)
-                        .keyboardType(keyboard)
-                        .font(.orbit(size: Text.Size.normal.value, weight: .regular))
-                        .accentColor(.blueNormal)
-                        .background(textFieldPlaceholder, alignment: .leading)
-                        .disabled(state == .disabled)
-                    if isSecure {
-                        securedSuffix
-                    } else {
-                        clearButton
+            VStack(alignment: .leading, spacing: .xxSmall) {
+                InputContent(
+                    prefix: prefix,
+                    suffix: suffix,
+                    state: state,
+                    message: message,
+                    isEditing: isEditing,
+                    suffixAction: suffixAction
+                ) {
+                    HStack(spacing: 0) {
+                        input
+                            .textFieldStyle(TextFieldStyle(leadingPadding: 0))
+                            .autocapitalization(autocapitalization)
+                            .disableAutocorrection(isAutocompleteEnabled == false)
+                            .textContentType(textContent)
+                            .keyboardType(keyboard)
+                            .font(.orbit(size: Text.Size.normal.value, weight: .regular))
+                            .accentColor(.blueNormal)
+                            .background(textFieldPlaceholder, alignment: .leading)
+                            .disabled(state == .disabled)
+                        if isSecure {
+                            securedSuffix
+                        } else {
+                            clearButton
+                        }
                     }
                 }
+
+                PasswordStrengthIndicator(passwordStrength: passwordStrength)
+                    .padding(.top, .xxSmall)
             }
         }
     }
@@ -155,6 +161,7 @@ public extension InputField {
         autocapitalization: UITextAutocapitalizationType = .none,
         isAutocompleteEnabled: Bool = false,
         isSecure: Bool = false,
+        passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
         message: MessageType = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
         onEditingChanged: @escaping (Bool) -> Void = { _ in },
@@ -174,6 +181,7 @@ public extension InputField {
         self.autocapitalization = autocapitalization
         self.isAutocompleteEnabled = isAutocompleteEnabled
         self.isSecure = isSecure
+        self.passwordStrength = passwordStrength
         self.onEditingChanged = onEditingChanged
         self.onCommit = onCommit
         self.suffixAction = suffixAction
@@ -251,13 +259,23 @@ struct InputFieldPreviews: PreviewProvider {
             InputField("Default", value: .constant("InputField Value"))
             InputField("Modified", value: .constant("Modified value"), state: .modified)
             InputField("Focused", value: .constant("Focus / Help"), message: .help("Help message"))
-            InputField("Secured", value: .constant("password"), isSecure: true)
-            InputField("Secured", value: .constant(""), placeholder: "Input password", isSecure: true)
             InputField(
                 "InputField with a long multiline label to test that it works",
                 value: .constant("Error value with a very long length to test that it works"),
                 message: .error("Error message, also very long and multi-line to test that it works.")
-            )
+            ).padding(.bottom, .small)
+
+            VStack(spacing: .medium) {
+                InputField("Secured", value: .constant("password"), isSecure: true)
+                InputField("Secured", value: .constant(""), placeholder: "Input password", isSecure: true)
+                InputField(
+                    "Secured",
+                    value: .constant("password"),
+                    isSecure: true,
+                    passwordStrength: .medium(title: "Medium")
+                )
+            }
+
             HStack(spacing: .medium) {
                 InputField(value: .constant("No label"))
                 InputField(value: .constant("Flag prefix"), prefix: .countryFlag("us"))
@@ -336,7 +354,8 @@ struct InputFieldLivePreviews: PreviewProvider {
                     value: state,
                     suffix: .none,
                     textContent: .password,
-                    isSecure: true
+                    isSecure: true,
+                    passwordStrength: validate(password: state.wrappedValue)
                 )
             }
             .padding()
@@ -345,6 +364,14 @@ struct InputFieldLivePreviews: PreviewProvider {
         }
     }
 
+    static func validate(password: String) -> PasswordStrengthIndicator.PasswordStrength {
+        switch password.count {
+            case 0:         return .empty
+            case 1...3:     return .weak(title: "Weak")
+            case 4...6:     return .medium(title: "Medium")
+            default:        return .strong(title: "Strong")
+        }
+    }
 }
 
 struct InputFieldDynamicTypePreviews: PreviewProvider {
