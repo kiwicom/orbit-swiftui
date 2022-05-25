@@ -14,23 +14,26 @@ public enum ListChoiceDisclosure: Equatable {
     case button(type: ButtonType)
     /// A non-interactive checkbox.
     case checkbox(isChecked: Bool = true, state: Checkbox.State = .normal)
+    /// A non-interactive radio.
+    case radio(isChecked: Bool = true, state: Radio.State = .normal)
 }
 
 /// Shows one of a selectable list of items with similar structures.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/listchoice/)
 /// - Important: Component expands horizontally up to ``Layout/readableMaxWidth``.
-public struct ListChoice<Content: View>: View {
+public struct ListChoice<HeaderContent: View, Content: View>: View {
 
     public let verticalPadding: CGFloat = .small + 1/3   // Makes height exactly 45 at normal text size
 
     let title: String
     let description: String
-    let icon: Icon.Content
+    let iconContent: Icon.Content
     let disclosure: ListChoiceDisclosure
     let showSeparator: Bool
     let action: () -> Void
     let content: () -> Content
+    let headerContent: () -> HeaderContent
 
     public var body: some View {
         SwiftUI.Button(
@@ -50,34 +53,39 @@ public struct ListChoice<Content: View>: View {
     }
 
     @ViewBuilder var buttonContent: some View {
-        HStack(spacing: .medium) {
-            headerWithValue
+        HStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                header
+                content()
+            }
 
             disclosureView
-                .padding(.trailing, .medium)
+                .padding(.horizontal, .medium)
         }
         .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
         .overlay(separator, alignment: .bottom)
     }
     
-    @ViewBuilder var headerWithValue: some View {
+    @ViewBuilder var header: some View {
         HStack(spacing: 0) {
-            header
+            headerTexts
+
             if isHeaderEmpty == false {
                 Spacer(minLength: .xSmall)
             }
+
             TextStrut(.large)
                 .padding(.vertical, verticalPadding)
-            content()
+
+            headerContent()
+                .padding(.trailing, disclosure == .none ? .medium : 0)
         }
-        .padding(.leading, .medium)
-        .padding(.trailing, disclosure == .none ? .medium : 0)
     }
     
-    @ViewBuilder var header: some View {
+    @ViewBuilder var headerTexts: some View {
         if isHeaderEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-                Icon(icon)
+                Icon(iconContent)
                 
                 if isHeaderTextEmpty == false {
                     VStack(alignment: .labelTextLeading, spacing: .xxxSmall) {
@@ -86,6 +94,7 @@ public struct ListChoice<Content: View>: View {
                     }
                 }
             }
+            .padding(.leading, .medium)
             .padding(.vertical, verticalPadding)
         }
     }
@@ -103,6 +112,9 @@ public struct ListChoice<Content: View>: View {
                     .disabled(true)
             case .checkbox(let isChecked, let state):
                 Checkbox(state: state, isChecked: isChecked)
+                    .disabled(true)
+            case .radio(let isChecked, let state):
+                Radio(state: state, isChecked: isChecked)
                     .disabled(true)
         }
     }
@@ -126,7 +138,7 @@ public struct ListChoice<Content: View>: View {
             return 0
         }
         
-        if icon.isEmpty {
+        if iconContent.isEmpty {
             return .medium
         }
         
@@ -134,7 +146,7 @@ public struct ListChoice<Content: View>: View {
     }
     
     var isHeaderEmpty: Bool {
-        icon.isEmpty && isHeaderTextEmpty
+        iconContent.isEmpty && isHeaderTextEmpty
     }
 
     var isHeaderTextEmpty: Bool {
@@ -143,15 +155,15 @@ public struct ListChoice<Content: View>: View {
     
     var accessibilityTraitsToAdd: AccessibilityTraits {
         switch disclosure {
-            case .none, .disclosure, .button, .checkbox(false, _):     return []
-            case .checkbox(true, _):                                   return .isSelected
+            case .none, .disclosure, .button, .checkbox(false, _), .radio(false, _):    return []
+            case .checkbox(true, _), .radio(true, _):                                   return .isSelected
         }
     }
     
     var accessibilityTraitsToRemove: AccessibilityTraits {
         switch disclosure {
-            case .none, .disclosure, .button, .checkbox(true, _):      return []
-            case .checkbox(false, _):                                  return .isSelected
+            case .none, .disclosure, .button, .checkbox(true, _), .radio(true, _):      return []
+            case .checkbox(false, _), .radio(false, _):                                 return .isSelected
         }
     }
 }
@@ -163,19 +175,21 @@ public extension ListChoice {
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content,
+        iconContent: Icon.Content,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {},
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder headerContent: @escaping () -> HeaderContent
     ) {
         self.title = title
         self.description = description
-        self.icon = icon
+        self.iconContent = iconContent
         self.disclosure = disclosure
         self.showSeparator = showSeparator
         self.action = action
         self.content = content
+        self.headerContent = headerContent
     }
     
     /// Creates Orbit ListChoice component with custom content.
@@ -186,24 +200,164 @@ public extension ListChoice {
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {},
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder headerContent: @escaping () -> HeaderContent
+    ) {
+        self.init(
+            title,
+            description: description,
+            iconContent: .icon(icon, color: .inkNormal),
+            disclosure: disclosure,
+            showSeparator: showSeparator,
+            action: action,
+            content: content,
+            headerContent: headerContent
+        )
+    }
+
+    /// Creates Orbit ListChoice component.
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Symbol = .none,
+        disclosure: ListChoiceDisclosure = .disclosure(),
+        showSeparator: Bool = true,
+        action: @escaping () -> Void = {},
+        @ViewBuilder headerContent: @escaping () -> HeaderContent
+    ) where Content == EmptyView {
+        self.init(
+            title,
+            description: description,
+            iconContent: .icon(icon, color: .inkNormal),
+            disclosure: disclosure,
+            showSeparator: showSeparator,
+            action: action,
+            content: { EmptyView() },
+            headerContent: headerContent
+        )
+    }
+
+    /// Creates Orbit ListChoice component.
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Symbol = .none,
+        disclosure: ListChoiceDisclosure = .disclosure(),
+        showSeparator: Bool = true,
+        action: @escaping () -> Void = {},
+        @ViewBuilder content: @escaping () -> Content
+    ) where HeaderContent == EmptyView {
+        self.init(
+            title,
+            description: description,
+            iconContent: .icon(icon, color: .inkNormal),
+            disclosure: disclosure,
+            showSeparator: showSeparator,
+            action: action,
+            content: content,
+            headerContent: { EmptyView() }
+        )
+    }
+}
+
+public extension ListChoice where HeaderContent == EmptyView, Content == EmptyView {
+
+    /// Creates Orbit ListChoice component with custom icon content.
+    init(
+        _ title: String = "",
+        description: String = "",
+        iconContent: Icon.Content,
+        disclosure: ListChoiceDisclosure = .disclosure(),
+        showSeparator: Bool = true,
+        action: @escaping () -> Void = {}
+    ) {
+        self.init(
+            title,
+            description: description,
+            iconContent: iconContent,
+            disclosure: disclosure,
+            showSeparator: showSeparator,
+            action: action,
+            content: { EmptyView() },
+            headerContent: { EmptyView() }
+        )
+    }
+
+    /// Creates Orbit ListChoice component.
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Symbol = .none,
+        disclosure: ListChoiceDisclosure = .disclosure(),
+        showSeparator: Bool = true,
+        action: @escaping () -> Void = {}
+    ) {
+        self.init(
+            title,
+            description: description,
+            iconContent: .icon(icon, color: .inkNormal),
+            disclosure: disclosure,
+            showSeparator: showSeparator,
+            action: action
+        )
+    }
+}
+
+public extension ListChoice where HeaderContent == Text {
+
+    /// Creates Orbit ListChoice component with custom icon content and text based value.
+    init(
+        _ title: String = "",
+        description: String = "",
+        iconContent: Icon.Content,
+        value: String,
+        disclosure: ListChoiceDisclosure = .disclosure(),
+        showSeparator: Bool = true,
+        action: @escaping () -> Void = {},
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.init(
             title,
             description: description,
-            icon: .icon(icon, color: .inkNormal),
+            iconContent: iconContent,
+            disclosure: disclosure,
+            showSeparator: showSeparator,
+            action: action,
+            content: content
+        ) {
+            Text(value, weight: .medium)
+        }
+    }
+
+    /// Creates Orbit ListChoice component with text based value and custom content.
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Symbol = .none,
+        value: String,
+        disclosure: ListChoiceDisclosure = .disclosure(),
+        showSeparator: Bool = true,
+        action: @escaping () -> Void = {},
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.init(
+            title,
+            description: description,
+            iconContent: .icon(icon, color: .inkNormal),
+            value: value,
             disclosure: disclosure,
             showSeparator: showSeparator,
             action: action,
             content: content
         )
     }
-    
-    /// Creates Orbit ListChoice component.
+
+    /// Creates Orbit ListChoice component with text based value.
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content,
+        iconContent: Icon.Content,
+        value: String,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {}
@@ -211,19 +365,21 @@ public extension ListChoice {
         self.init(
             title,
             description: description,
-            icon: icon,
+            iconContent: iconContent,
+            value: value,
             disclosure: disclosure,
             showSeparator: showSeparator,
             action: action,
             content: { EmptyView() }
         )
     }
-    
-    /// Creates Orbit ListChoice component.
+
+    /// Creates Orbit ListChoice component with text based value.
     init(
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol = .none,
+        value: String,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {}
@@ -231,45 +387,7 @@ public extension ListChoice {
         self.init(
             title,
             description: description,
-            icon: .icon(icon, color: .inkNormal),
-            disclosure: disclosure,
-            showSeparator: showSeparator,
-            action: action
-        )
-    }
-    
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Content,
-        value: String,
-        disclosure: ListChoiceDisclosure = .disclosure(),
-        showSeparator: Bool = true,
-        action: @escaping () -> Void = {}
-    ) where Content == Text {
-        self.title = title
-        self.description = description
-        self.icon = icon
-        self.disclosure = disclosure
-        self.showSeparator = showSeparator
-        self.action = action
-        self.content = { Text(value, weight: .medium) }
-    }
-    
-    /// Creates Orbit ListChoice component with custom content.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Symbol = .none,
-        value: String,
-        disclosure: ListChoiceDisclosure = .disclosure(),
-        showSeparator: Bool = true,
-        action: @escaping () -> Void = {}
-    ) where Content == Text {
-        self.init(
-            title,
-            description: description,
-            icon: .icon(icon, color: .inkNormal),
+            iconContent: .icon(icon, color: .inkNormal),
             value: value,
             disclosure: disclosure,
             showSeparator: showSeparator,
@@ -317,6 +435,7 @@ struct ListChoicePreviews: PreviewProvider {
             storybook
             storybookButton
             storybookCheckbox
+            storybookRadio
             plain
             white
             backgroundColor
@@ -326,7 +445,11 @@ struct ListChoicePreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        ListChoice(title, description: description, icon: .grid, value: value)
+        ListChoice(title, description: description, icon: .grid) {
+            customContentPlaceholder
+        } headerContent: {
+            headerContent
+        }
     }
 
     static var sizing: some View {
@@ -371,12 +494,12 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, icon: .airplane, value: value)
             ListChoice(title, description: description, icon: .airplane)
             ListChoice(title, description: description, icon: .airplane, value: value)
-            ListChoice(title, description: description) {
+            ListChoice(title, description: description, headerContent: {
                 badge
-            }
-            ListChoice(title, description: description, icon: .grid) {
+            })
+            ListChoice(title, description: description, icon: .grid, headerContent: {
                 badge
-            }
+            })
         }
     }
     
@@ -393,6 +516,8 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: addButton)
             ListChoice(title, description: description, icon: .airplane, disclosure: removeButton) {
                 customContentPlaceholder
+            } headerContent: {
+                headerContent
             }
         }
         .previewDisplayName("Button")
@@ -411,6 +536,25 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: uncheckedCheckbox)
             ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox) {
                 customContentPlaceholder
+            } headerContent: {
+                headerContent
+            }
+        }
+        .previewDisplayName("Checkbox")
+    }
+
+    static var storybookRadio: some View {
+        Card(contentLayout: .fill) {
+            ListChoice(title, description: description, disclosure: .radio(isChecked: false))
+            ListChoice(title, description: description, disclosure: .radio(isChecked: true))
+            ListChoice(title, description: description, disclosure: .radio(state: .error))
+            ListChoice(title, description: description, disclosure: .radio(state: .disabled))
+            ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false, state: .error))
+            ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false, state: .disabled))
+            ListChoice(title, description: description, icon: .airplane, disclosure: .radio(isChecked: false)) {
+                customContentPlaceholder
+            } headerContent: {
+                headerContent
             }
         }
         .previewDisplayName("Checkbox")
@@ -430,14 +574,16 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, disclosure: .none)
             ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
             ListChoice(title, icon: .airplane, disclosure: .none)
-            ListChoice(title, icon: .icon(.airplane, color: .blueNormal), disclosure: .none)
-            ListChoice(title, description: description, icon: .countryFlag("cs"), disclosure: .none)
+            ListChoice(title, iconContent: .icon(.airplane, color: .blueNormal), disclosure: .none)
+            ListChoice(title, description: description, iconContent: .countryFlag("cs"), disclosure: .none)
             ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none)
-            ListChoice(title, description: description, disclosure: .none) {
+            ListChoice(title, description: description, disclosure: .none, headerContent: {
                 badge
-            }
+            })
             ListChoice(disclosure: .none) {
                 customContentPlaceholder
+            } headerContent: {
+                headerContent
             }
         }
         .previewDisplayName("No disclosure")
@@ -451,10 +597,12 @@ struct ListChoicePreviews: PreviewProvider {
                 ListChoice(title, description: description, disclosure: .none)
                 ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
                 ListChoice(title, icon: .airplane, disclosure: .none)
-                ListChoice(title, icon: .icon(.airplane, color: .inkLighter), disclosure: .none)
+                ListChoice(title, iconContent: .icon(.airplane, color: .inkLighter), disclosure: .none)
                 ListChoice(title, description: description, icon: .airplane, disclosure: .none)
                 ListChoice(title, description: description, disclosure: .none) {
                     customContentPlaceholder
+                } headerContent: {
+                    headerContent
                 }
             }
             .background(Color.whiteNormal)
@@ -470,15 +618,22 @@ struct ListChoicePreviews: PreviewProvider {
                 ListChoice(title, value: value, disclosure: .none)
                 ListChoice(disclosure: .none)
                 ListChoice(title, icon: .grid, value: value)
-                ListChoice(title, icon: .grid) {
+                ListChoice(title, icon: .grid, content: {
                     customContentPlaceholder
-                }
+                })
             }
             .background(Color.orangeLight)
         }
         .padding()
         .background(Color.cloudLight)
         .previewDisplayName("Custom background")
+    }
+
+    static var headerContent: some View {
+        Text("Custom\nheader content")
+            .padding(.vertical, .medium)
+            .frame(maxWidth: .infinity)
+            .background(Color.blueLightActive)
     }
 }
 
