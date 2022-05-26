@@ -1,6 +1,16 @@
 import SwiftUI
 import UIKit
 
+class InputInnerState: ObservableObject {
+    @Published var isEditing: Bool
+    @Published var isSecureTextEntry: Bool
+
+    init(isEditing: Bool, isSecureTextEntry: Bool = false) {
+        self.isEditing = isEditing
+        self.isSecureTextEntry = isSecureTextEntry
+    }
+}
+
 /// Also known as textbox. Offers users a simple input for a form.
 ///
 /// When you have additional information or helpful examples, include placeholder text to help users along.
@@ -11,12 +21,11 @@ import UIKit
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/inputfield/)
 /// - Important: Component expands horizontally to infinity.
-public struct InputField: View {
+public struct InputField<Input>: View where Input: View {
 
+    @ObservedObject var innerState: InputInnerState
     @Binding private var value: String
     @Binding private var messageHeight: CGFloat
-    @State private var isEditing: Bool = false
-    @State private var isSecureTextEntry: Bool = true
 
     let label: String
     let placeholder: String
@@ -27,12 +36,12 @@ public struct InputField: View {
     let keyboard: UIKeyboardType
     let autocapitalization: UITextAutocapitalizationType
     let isAutocompleteEnabled: Bool
-    let isSecure: Bool
     let passwordStrength: PasswordStrengthIndicator.PasswordStrength
     let message: MessageType
-    let onEditingChanged: (Bool) -> Void
-    let onCommit: () -> Void
     let suffixAction: (() -> Void)?
+    let isSecure: Bool
+
+    let inputBuilder: () -> Input
 
     public var body: some View {
         FormFieldWrapper(label, message: message, messageHeight: $messageHeight) {
@@ -42,7 +51,7 @@ public struct InputField: View {
                     suffix: suffix,
                     state: state,
                     message: message,
-                    isEditing: isEditing,
+                    isEditing: innerState.isEditing,
                     suffixAction: suffixAction
                 ) {
                     HStack(spacing: 0) {
@@ -71,40 +80,7 @@ public struct InputField: View {
     }
 
     @ViewBuilder var input: some View {
-        if isSecure {
-            secureField
-        } else {
-            textField
-        }
-    }
-
-    @ViewBuilder var secureField: some View {
-        SecureTextField(
-            text: $value,
-            isSecured: $isSecureTextEntry,
-            isEditing: $isEditing,
-            style: .init(
-                textContentType: textContent,
-                keyboardType: keyboard,
-                font: .orbit(size: Text.Size.normal.value, weight: .regular),
-                state: state
-            ),
-            onEditingChanged: onEditingChanged,
-            onCommit: onCommit
-        )
-        .background(textFieldPlaceholder, alignment: .leading)
-    }
-
-    @ViewBuilder var textField: some View {
-        TextField(
-            "",
-            text: $value,
-            onEditingChanged: { isEditing in
-                self.isEditing = isEditing
-                onEditingChanged(isEditing)
-            },
-            onCommit: onCommit
-        )
+        inputBuilder()
     }
 
     @ViewBuilder var textFieldPlaceholder: some View {
@@ -128,12 +104,12 @@ public struct InputField: View {
 
     @ViewBuilder var securedSuffix: some View {
         if value.isEmpty == false, state != .disabled {
-            Icon(isSecureTextEntry ? .visibility : .visibilityOff, size: .normal, color: .inkLight)
+            Icon(innerState.isSecureTextEntry ? .visibility : .visibilityOff, size: .normal, color: .inkLight)
                 .padding(.vertical, .xSmall)
                 .padding(.horizontal, .small)
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    isSecureTextEntry.toggle()
+                    innerState.isSecureTextEntry.toggle()
                 }
         }
     }
@@ -141,7 +117,7 @@ public struct InputField: View {
 
 
 // MARK: - Inits
-public extension InputField {
+public extension InputField where Input == TextField<SwiftUI.Text> {
 
     /// Creates Orbit InputField component.
     ///
@@ -160,7 +136,6 @@ public extension InputField {
         keyboard: UIKeyboardType = .default,
         autocapitalization: UITextAutocapitalizationType = .none,
         isAutocompleteEnabled: Bool = false,
-        isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
         message: MessageType = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
@@ -168,25 +143,192 @@ public extension InputField {
         onCommit: @escaping () -> Void = {},
         suffixAction: (() -> Void)? = nil
     ) {
-        self.label = label
-        self._value = value
-        self.prefix = prefix
-        self.suffix = suffix
-        self.placeholder = placeholder
-        self.state = state
-        self.message = message
-        self._messageHeight = messageHeight
-        self.textContent = textContent
-        self.keyboard = keyboard
-        self.autocapitalization = autocapitalization
-        self.isAutocompleteEnabled = isAutocompleteEnabled
-        self.isSecure = isSecure
-        self.passwordStrength = passwordStrength
-        self.onEditingChanged = onEditingChanged
-        self.onCommit = onCommit
-        self.suffixAction = suffixAction
+        let innerState = InputInnerState(isEditing: false)
+
+        self.init(
+            innerState: innerState,
+            value: value,
+            messageHeight: messageHeight,
+            label: label,
+            placeholder: placeholder,
+            prefix: prefix,
+            suffix: suffix,
+            state: state,
+            textContent: textContent,
+            keyboard: keyboard,
+            autocapitalization: autocapitalization,
+            isAutocompleteEnabled: isAutocompleteEnabled,
+            passwordStrength: passwordStrength,
+            message: message,
+            suffixAction: suffixAction,
+            isSecure: false,
+            inputBuilder: {
+                TextField(
+                    "",
+                    text: value,
+                    onEditingChanged: { value in
+                        innerState.isEditing = value
+                        onEditingChanged(value)
+                    },
+                    onCommit: onCommit
+                )
+            }
+        )
+    }
+
+    init(
+        _ label: String = "",
+        value: Binding<String>,
+        prefix: Icon.Content = .none,
+        suffix: Icon.Content = .none,
+        placeholder: String = "",
+        state: InputState = .default,
+        textContent: UITextContentType? = nil,
+        keyboard: UIKeyboardType = .default,
+        autocapitalization: UITextAutocapitalizationType = .none,
+        isAutocompleteEnabled: Bool = false,
+        passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
+        message: MessageType = .none,
+        messageHeight: Binding<CGFloat> = .constant(0),
+        formatter: Formatter,
+        suffixAction: (() -> Void)? = nil
+    ) {
+        let innerState = InputInnerState(isEditing: false)
+
+        self.init(
+            innerState: innerState,
+            value: value,
+            messageHeight: messageHeight,
+            label: label,
+            placeholder: placeholder,
+            prefix: prefix,
+            suffix: suffix,
+            state: state,
+            textContent: textContent,
+            keyboard: keyboard,
+            autocapitalization: autocapitalization,
+            isAutocompleteEnabled: isAutocompleteEnabled,
+            passwordStrength: passwordStrength,
+            message: message,
+            suffixAction: suffixAction,
+            isSecure: false,
+            inputBuilder: {
+                TextField("", value: value, formatter: formatter)
+            }
+        )
+    }
+
+    @available(iOS 15, *)
+    init<Format: FormatStyle & ParseableFormatStyle>(
+        _ label: String = "",
+        value: Binding<String>,
+        prefix: Icon.Content = .none,
+        suffix: Icon.Content = .none,
+        placeholder: String = "",
+        state: InputState = .default,
+        textContent: UITextContentType? = nil,
+        keyboard: UIKeyboardType = .default,
+        autocapitalization: UITextAutocapitalizationType = .none,
+        isAutocompleteEnabled: Bool = false,
+        passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
+        message: MessageType = .none,
+        messageHeight: Binding<CGFloat> = .constant(0),
+        formatStyle: Format,
+        suffixAction: (() -> Void)? = nil
+    ) where Format.FormatInput == String, Format.FormatOutput == String {
+
+        let innerState = InputInnerState(isEditing: false)
+
+        self.init(
+            innerState: innerState,
+            value: value,
+            messageHeight: messageHeight,
+            label: label,
+            placeholder: placeholder,
+            prefix: prefix,
+            suffix: suffix,
+            state: state,
+            textContent: textContent,
+            keyboard: keyboard,
+            autocapitalization: autocapitalization,
+            isAutocompleteEnabled: isAutocompleteEnabled,
+            passwordStrength: passwordStrength,
+            message: message,
+            suffixAction: suffixAction,
+            isSecure: false,
+            inputBuilder: {
+                TextField("", value: value, format: formatStyle)
+            }
+        )
     }
 }
+
+public extension InputField where Input == SecureTextField {
+
+    /// Creates Orbit InputField component.
+    ///
+    /// - Parameters:
+    ///     - message: Message below InputField.
+    ///     - messageHeight: Binding to the current height of message.
+    ///     - suffixAction: Optional separate action on suffix icon tap.
+    init(
+        _ label: String = "",
+        securedValue value: Binding<String>,
+        prefix: Icon.Content = .none,
+        suffix: Icon.Content = .none,
+        placeholder: String = "",
+        state: InputState = .default,
+        textContent: UITextContentType? = nil,
+        keyboard: UIKeyboardType = .default,
+        autocapitalization: UITextAutocapitalizationType = .none,
+        isAutocompleteEnabled: Bool = false,
+        passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
+        message: MessageType = .none,
+        messageHeight: Binding<CGFloat> = .constant(0),
+        onEditingChanged: @escaping (Bool) -> Void = { _ in },
+        onCommit: @escaping () -> Void = {},
+        suffixAction: (() -> Void)? = nil
+    ) {
+        let innerState = InputInnerState(isEditing: false, isSecureTextEntry: true)
+
+        self.init(
+            innerState: innerState,
+            value: value,
+            messageHeight: messageHeight,
+            label: label,
+            placeholder: placeholder,
+            prefix: prefix,
+            suffix: suffix,
+            state: state,
+            textContent: textContent,
+            keyboard: keyboard,
+            autocapitalization: autocapitalization,
+            isAutocompleteEnabled: isAutocompleteEnabled,
+            passwordStrength: passwordStrength,
+            message: message,
+            suffixAction: suffixAction,
+            isSecure: true,
+            inputBuilder: {
+                SecureTextField(
+                    text: value,
+                    innerState: innerState,
+                    style: .init(
+                        textContentType: textContent,
+                        keyboardType: keyboard,
+                        font: .orbit(size: Text.Size.normal.value, weight: .regular),
+                        state: state
+                    ),
+                    onEditingChanged: { isEditing in
+                        innerState.isEditing = isEditing
+                        onEditingChanged(isEditing)
+                    },
+                    onCommit: onCommit
+                )
+            }
+        )
+    }
+}
+
 
 // MARK: - Types
 public extension InputField {
@@ -266,14 +408,9 @@ struct InputFieldPreviews: PreviewProvider {
             ).padding(.bottom, .small)
 
             VStack(spacing: .medium) {
-                InputField("Secured", value: .constant("password"), isSecure: true)
-                InputField("Secured", value: .constant(""), placeholder: "Input password", isSecure: true)
-                InputField(
-                    "Secured",
-                    value: .constant("password"),
-                    isSecure: true,
-                    passwordStrength: .medium(title: "Medium")
-                )
+                InputField("Secured", securedValue: .constant("password"))
+                InputField("Secured", securedValue: .constant(""), placeholder: "Input password")
+                InputField("Secured", securedValue: .constant("password"), passwordStrength: .medium(title: "Medium"))
             }
 
             HStack(spacing: .medium) {
@@ -286,6 +423,38 @@ struct InputFieldPreviews: PreviewProvider {
 }
 
 struct InputFieldLivePreviews: PreviewProvider {
+
+    class UppercaseAlphabetFormatter: Formatter {
+
+        override func string(for obj: Any?) -> String? {
+            guard let string = obj as? String else { return nil }
+
+            return string.uppercased()
+        }
+
+        override func getObjectValue(
+            _ obj: AutoreleasingUnsafeMutablePointer<AnyObject?>?,
+            for string: String,
+            errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?
+        ) -> Bool {
+            obj?.pointee = string.lowercased() as AnyObject
+            return true
+        }
+    }
+
+    struct UppercaseAlphabetFormatStyle: FormatStyle, ParseableFormatStyle {
+
+        var parseStrategy = LowercasedParseStrategy()
+
+        func format(_ value: String) -> String {
+            value.uppercased()
+        }
+    }
+    struct LowercasedParseStrategy: ParseStrategy {
+        func parse(_ value: String) throws -> String {
+            value.lowercased()
+        }
+    }
 
     static var previews: some View {
         PreviewWrapper()
@@ -316,6 +485,28 @@ struct InputFieldLivePreviews: PreviewProvider {
 
                 Text("Some text, but also very long and multi-line to test that it works.")
 
+                Spacer()
+
+                VStack(alignment: .leading) {
+                    Text("InputField uppercasing the input")
+
+                    InputField(
+                        value: $value,
+                        placeholder: "Use Formatter subclass",
+                        formatter: UppercaseAlphabetFormatter()
+                    )
+
+                    if #available(iOS 15, *) {
+                        InputField(
+                            value: $value,
+                            placeholder: "Use FormatStyle conformances",
+                            formatStyle: UppercaseAlphabetFormatStyle()
+                        )
+                    }
+                }
+
+                Spacer()
+                Spacer()
                 Spacer()
 
                 Button("Change") {
@@ -351,10 +542,9 @@ struct InputFieldLivePreviews: PreviewProvider {
                 Heading("Heading", style: .title2)
 
                 InputField(
-                    value: state,
+                    securedValue: state,
                     suffix: .none,
                     textContent: .password,
-                    isSecure: true,
                     passwordStrength: validate(password: state.wrappedValue)
                 )
             }
@@ -393,6 +583,6 @@ struct InputFieldDynamicTypePreviews: PreviewProvider {
         StateWrapper(initialState: InputFieldPreviews.value) { state in
             InputField(InputFieldPreviews.label, value: state, prefix: .icon(.grid), suffix: .icon(.grid), placeholder: InputFieldPreviews.placeholder, state: .default)
         }
-        InputField("Secured", value: .constant(""), placeholder: "Input password", isSecure: true)
+        InputField("Secured", securedValue: .constant(""), placeholder: "Input password")
     }
 }

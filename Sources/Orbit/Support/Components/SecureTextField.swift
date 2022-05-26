@@ -9,24 +9,23 @@ struct SecureTextFieldStyle {
     let state: InputState
 }
 
-struct SecureTextField: UIViewRepresentable {
-    typealias UIViewType = UITextField
+public struct SecureTextField: UIViewRepresentable {
+    public typealias UIViewType = UITextField
 
     @Binding var text: String
-    @Binding var isSecured: Bool
-    @Binding var isEditing: Bool
+    @ObservedObject var innerState: InputInnerState
 
     var style: SecureTextFieldStyle = .init(textContentType: nil, keyboardType: .default, font: .orbit, state: .default)
     var onEditingChanged: (Bool) -> Void = { _ in }
     var onCommit = {}
 
-    func makeUIView(context: Context) -> UITextField {
+    public  func makeUIView(context: Context) -> UITextField {
         let textField = UITextField()
         textField.autocorrectionType = .no
         textField.delegate = context.coordinator
 
         textField.text = text
-        textField.isSecureTextEntry = isSecured
+        textField.isSecureTextEntry = innerState.isSecureTextEntry
         textField.textContentType = style.textContentType
         textField.keyboardType = style.keyboardType
         textField.font = style.font
@@ -35,15 +34,15 @@ struct SecureTextField: UIViewRepresentable {
         textField.isEnabled = style.state != .disabled
         textField.setContentHuggingPriority(.defaultHigh, for: .vertical)
 
-        if isEditing && textField.canBecomeFirstResponder {
+        if innerState.isEditing && textField.canBecomeFirstResponder {
             textField.becomeFirstResponder()
         }
 
         return textField
     }
 
-    func updateUIView(_ uiView: UITextField, context: Context) {
-        uiView.isSecureTextEntry = isSecured
+    public func updateUIView(_ uiView: UITextField, context: Context) {
+        uiView.isSecureTextEntry = innerState.isSecureTextEntry
 
         guard uiView.isFirstResponder else {
             uiView.text = text
@@ -59,11 +58,11 @@ struct SecureTextField: UIViewRepresentable {
         }
     }
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator(text: $text, isEditing: $isEditing, onEditingChanged: onEditingChanged, onCommit: onCommit)
+    public func makeCoordinator() -> Coordinator {
+        Coordinator(text: $text, isEditing: $innerState.isEditing, onEditingChanged: onEditingChanged, onCommit: onCommit)
     }
 
-    class Coordinator: NSObject, UITextFieldDelegate {
+    public class Coordinator: NSObject, UITextFieldDelegate {
         var text: Binding<String>
         var isEditing: Binding<Bool>
         let onEditingChanged: (Bool) -> Void
@@ -82,12 +81,12 @@ struct SecureTextField: UIViewRepresentable {
             self.onCommit = onCommit
         }
 
-        func textFieldDidBeginEditing(_ textField: UITextField) {
+        public func textFieldDidBeginEditing(_ textField: UITextField) {
             isEditing.wrappedValue = true
             onEditingChanged(isEditing.wrappedValue)
         }
 
-        func textFieldDidEndEditing(_ textField: UITextField) {
+        public func textFieldDidEndEditing(_ textField: UITextField) {
             if textField.isFirstResponder {
                 textField.resignFirstResponder()
             }
@@ -100,12 +99,12 @@ struct SecureTextField: UIViewRepresentable {
             onEditingChanged(isEditing.wrappedValue)
         }
 
-        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
             textField.resignFirstResponder()
             return true
         }
 
-        func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
             text.wrappedValue = ((textField.text ?? "") as NSString).replacingCharacters(in: range, with: string)
             textFieldInput = text.wrappedValue
             
@@ -119,9 +118,9 @@ struct SecureTextFieldPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            SecureTextField(text: .constant(""), isSecured: .constant(true), isEditing: .constant(false))
-            SecureTextField(text: .constant("value"), isSecured: .constant(true), isEditing: .constant(false))
-            SecureTextField(text: .constant("value"), isSecured: .constant(false), isEditing: .constant(false))
+            SecureTextField(text: .constant(""), innerState: .init(isEditing: false, isSecureTextEntry: true))
+            SecureTextField(text: .constant("value"), innerState: .init(isEditing: false, isSecureTextEntry: true))
+            SecureTextField(text: .constant("value"), innerState: .init(isEditing: false, isSecureTextEntry: false))
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
