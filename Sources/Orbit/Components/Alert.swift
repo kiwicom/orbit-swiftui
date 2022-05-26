@@ -316,7 +316,7 @@ struct AlertPreviews: PreviewProvider {
     }
 
     static var storybook: some View {
-        VStack(alignment: .leading, spacing: .large) {
+        LazyVStackIfAvailable(alignment: .leading, spacing: .large) {
             basic
             basicNoIcon
             suppressed
@@ -325,7 +325,7 @@ struct AlertPreviews: PreviewProvider {
     }
 
     static var storybookMix: some View {
-        VStack(alignment: .leading, spacing: .large) {
+        LazyVStackIfAvailable(alignment: .leading, spacing: .large) {
             primaryButtonOnly
             noButtons
         }
