@@ -85,7 +85,7 @@ public struct TagGroup<TM: TagModel>: View {
         if let index = tags.firstIndex(of: tag), showRemovedTags || tag.isRemoved == false {
             Tag(
                 tag.label,
-                iconContent: tags[index].icon,
+                icon: tags[index].icon,
                 style: tag.isRemovable ? .removable(action: { tags[index].isRemoved = true }) : .default,
                 isFocused: tags[index].isFocused,
                 isSelected: $tags[index].isSelected.wrappedValue
@@ -140,8 +140,8 @@ struct TagGroupPreviews: PreviewProvider {
     }
 
     static let snapshotTags = [
-        TagModelPreview(id: 0, label: "Sorting", icon: .icon(.sort), isRemovable: true, isSelected: true),
-        TagModelPreview(id: 1, label: "Pricing", icon: .icon(.money), isRemovable: true),
+        TagModelPreview(id: 0, label: "Sorting", icon: .sort, isRemovable: true, isSelected: true),
+        TagModelPreview(id: 1, label: "Pricing", icon: .money, isRemovable: true),
         TagModelPreview(id: 2, label: "Vienna", isRemovable: true, isSelected: true),
         TagModelPreview(id: 3, label: "Paris", isRemovable: false),
         TagModelPreview(id: 4, label: "Milan", isRemovable: false),

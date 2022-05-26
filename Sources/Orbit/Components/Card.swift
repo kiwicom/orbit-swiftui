@@ -167,7 +167,7 @@ public extension Card {
     init(
         _ title: String = "",
         description: String = "",
-        iconContent: Icon.Content,
+        icon: Icon.Content = .none,
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
@@ -181,7 +181,7 @@ public extension Card {
     ) {
         self.title = title
         self.description = description
-        self.iconContent = iconContent
+        self.iconContent = icon
         self.action = action
         self.headerSpacing = headerSpacing
         self.borderStyle = borderStyle
@@ -198,66 +198,7 @@ public extension Card {
     init(
         _ title: String = "",
         description: String = "",
-        iconContent: Icon.Content,
-        action: CardAction = .none,
-        headerSpacing: CGFloat = .medium,
-        borderStyle: TileBorderStyle = .iOS,
-        titleStyle: Heading.Style = .title4,
-        status: Status? = nil,
-        width: ContainerWidth = .expanding(),
-        backgroundColor: Color? = .whiteNormal
-    ) where Content == EmptyView {
-        self.init(
-            title,
-            description: description,
-            iconContent: iconContent,
-            action: action,
-            headerSpacing: headerSpacing,
-            borderStyle: borderStyle,
-            titleStyle: titleStyle,
-            status: status,
-            width: width,
-            backgroundColor: backgroundColor,
-            content: { EmptyView() }
-        )
-    }
-    
-    /// Creates Orbit Card wrapper component over a custom content.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Symbol = .none,
-        action: CardAction = .none,
-        headerSpacing: CGFloat = .medium,
-        borderStyle: TileBorderStyle = .iOS,
-        titleStyle: Heading.Style = .title4,
-        status: Status? = nil,
-        width: ContainerWidth = .expanding(),
-        backgroundColor: Color? = .whiteNormal,
-        contentLayout: CardContentLayout = .default(),
-        contentAlignment: HorizontalAlignment = .leading,
-        @ViewBuilder content: @escaping () -> Content
-    ) {
-        self.title = title
-        self.description = description
-        self.iconContent = .icon(icon)
-        self.action = action
-        self.headerSpacing = headerSpacing
-        self.borderStyle = borderStyle
-        self.titleStyle = titleStyle
-        self.status = status
-        self.width = width
-        self.backgroundColor = backgroundColor
-        self.contentLayout = contentLayout
-        self.contentAlignment = contentAlignment
-        self.content = { content() }
-    }
-
-    /// Creates Orbit Card wrapper component with empty content.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Symbol = .none,
+        icon: Icon.Content = .none,
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
         borderStyle: TileBorderStyle = .iOS,
@@ -276,8 +217,9 @@ public extension Card {
             titleStyle: titleStyle,
             status: status,
             width: width,
-            backgroundColor: backgroundColor
-        ) { EmptyView() }
+            backgroundColor: backgroundColor,
+            content: { EmptyView() }
+        )
     }
 }
 
@@ -332,16 +274,31 @@ struct CardPreviews: PreviewProvider {
     }
     
     static var standaloneIntrinsic: some View {
-        HStack(spacing: .medium) {
-            Card("Card title", description: "Intrinsic width", icon: .grid, borderStyle: .iOS, width: .intrinsic) {
-                Text("Content")
-                    .padding(.medium)
-                    .background(Color.greenLight)
+        VStack(spacing: .medium) {
+            HStack(spacing: .medium) {
+                Card("Card title", description: "Intrinsic width", icon: .grid, borderStyle: .iOS, width: .intrinsic) {
+                    Text("Content")
+                        .padding(.medium)
+                        .background(Color.greenLight)
+                }
+                Card("Card title", description: "Intrinsic width", icon: .symbol(.grid, color: .greenNormal), borderStyle: .default, width: .intrinsic) {
+                    Text("Content")
+                        .padding(.medium)
+                        .background(Color.greenLight)
+                }
             }
-            Card("Card title", description: "Intrinsic width", icon: .grid, borderStyle: .default, width: .intrinsic) {
-                Text("Content")
-                    .padding(.medium)
-                    .background(Color.greenLight)
+
+            HStack(spacing: .medium) {
+                Card("Card with SF Symbol", description: "Intrinsic width", icon: .sfSymbol("info.circle.fill", color: .greenNormal), borderStyle: .iOS, width: .intrinsic) {
+                    Text("Content")
+                        .padding(.medium)
+                        .background(Color.greenLight)
+                }
+                Card("Card with flag", description: "Intrinsic width", icon: .countryFlag("cz"), borderStyle: .default, width: .intrinsic) {
+                    Text("Content")
+                        .padding(.medium)
+                        .background(Color.greenLight)
+                }
             }
         }
         .padding(.medium)
@@ -472,7 +429,7 @@ struct CardPreviews: PreviewProvider {
         ) {
             VStack(spacing: 0) {
                 ListChoice("ListChoice")
-                ListChoice("ListChoice", iconContent: .countryFlag("us"))
+                ListChoice("ListChoice", icon: .countryFlag("us"))
                 ListChoice("ListChoice", description: "ListChoice description", icon: .airplane)
             }
             .padding(.top, .xSmall)

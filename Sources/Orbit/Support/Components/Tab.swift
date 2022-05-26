@@ -40,22 +40,27 @@ public enum TabStyle {
 public struct Tab: View {
 
     let label: String
+    let iconContent: Icon.Content
     let style: TabStyle
 
     public var body: some View {
         // FIXME: Convert to Button with .title4 style for a background touch feedback
-        Text(label, color: .none, weight: .medium, alignment: .center)
-            .padding(.horizontal, .medium)
-            .padding(.vertical, .xSmall)
-            .contentShape(Rectangle())
-            .anchorPreference(key: PreferenceKey.self, value: .bounds) {
-                [TabPreference(label: label, style: style, bounds: $0)]
-            }
+        HStack(spacing: .xSmall) {
+            Icon(iconContent)
+            Text(label, color: .none, weight: .medium, alignment: .center)
+        }
+        .padding(.horizontal, .medium)
+        .padding(.vertical, .xSmall)
+        .contentShape(Rectangle())
+        .anchorPreference(key: PreferenceKey.self, value: .bounds) {
+            [TabPreference(label: label, style: style, bounds: $0)]
+        }
     }
 
     /// Creates Orbit Tab component, a building block for Tabs component.
-    public init(_ label: String, style: TabStyle = .default) {
+    public init(_ label: String, icon: Icon.Content = .none, style: TabStyle = .default) {
         self.label = label
+        self.iconContent = icon
         self.style = style
     }
 }
@@ -93,7 +98,7 @@ struct TabPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Tab("Light", style: .underlinedGradient(.bundleBasic))
+        Tab("Light", icon: .grid, style: .underlinedGradient(.bundleBasic))
             .padding(.medium)
     }
 

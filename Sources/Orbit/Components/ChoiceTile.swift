@@ -81,6 +81,7 @@ public struct ChoiceTile<Content: View>: View {
                     HStack(alignment: .firstTextBaseline, spacing: 0) {
                         
                         Icon(iconContent, size: .heading(titleStyle))
+                            .foregroundColor(.inkNormal)
                             .padding(.trailing, .xSmall)
                         
                         VStack(alignment: .leading, spacing: .xxSmall) {
@@ -189,7 +190,7 @@ public extension ChoiceTile {
     init(
         _ title: String = "",
         description: String = "",
-        iconContent: Icon.Content,
+        icon: Icon.Content = .none,
         illustration: Illustration.Image = .none,
         badge: String = "",
         badgeOverlay: String = "",
@@ -204,7 +205,7 @@ public extension ChoiceTile {
     ) {
         self.title = title
         self.description = description
-        self.iconContent = iconContent
+        self.iconContent = icon
         self.illustration = illustration
         self.badge = badge
         self.badgeOverlay = badgeOverlay
@@ -216,41 +217,6 @@ public extension ChoiceTile {
         self.alignment = alignment
         self.action = action
         self.content = content
-    }
-
-    /// Creates Orbit ChoiceTile component over custom content.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Symbol = .none,
-        illustration: Illustration.Image = .none,
-        badge: String = "",
-        badgeOverlay: String = "",
-        indicator: ChoiceTileIndicator = .radio,
-        titleStyle: Heading.Style = .title3,
-        isSelected: Bool = false,
-        isError: Bool = false,
-        message: MessageType = .none,
-        alignment: ChoiceTileAlignment = .default,
-        action: @escaping () -> Void = {},
-        @ViewBuilder content: @escaping () -> Content
-    ) {
-        self.init(
-            title,
-            description: description,
-            iconContent: .icon(icon),
-            illustration: illustration,
-            badge: badge,
-            badgeOverlay: badgeOverlay,
-            indicator: indicator,
-            titleStyle: titleStyle,
-            isSelected: isSelected,
-            isError: isError,
-            message: message,
-            alignment: alignment,
-            action: action,
-            content: content
-        )
     }
 }
 
@@ -348,7 +314,7 @@ struct ChoiceTilePreviews: PreviewProvider {
             StateWrapper(initialState: false) { isSelected in
                 ChoiceTile(
                     "Checkbox indictor with long and multiline title",
-                    icon: .grid,
+                    icon: .symbol(.grid, color: .greenNormal),
                     indicator: .checkbox,
                     isSelected: isSelected.wrappedValue,
                     message: .help("Info multiline and very very very very long message")
@@ -359,7 +325,7 @@ struct ChoiceTilePreviews: PreviewProvider {
             StateWrapper(initialState: false) { isSelected in
                 ChoiceTile(
                     description: "Long and multiline description with no title",
-                    icon: .grid,
+                    icon: .countryFlag("cz"),
                     isSelected: isSelected.wrappedValue,
                     message: .warning("Warning multiline and very very very very long message")
                 ) {

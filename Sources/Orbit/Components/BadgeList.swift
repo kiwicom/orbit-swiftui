@@ -23,6 +23,7 @@ public struct BadgeList: View {
         if isEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: Self.spacing) {
                 Icon(iconContent, size: .small)
+                    .foregroundColor(style.iconColor)
                     .padding(.xxSmall)
                     .background(badgeBackground)
 
@@ -53,49 +54,16 @@ public extension BadgeList {
     /// Creates Orbit BadgeList component.
     init(
         _ label: String = "",
-        iconContent: Icon.Content = .none,
+        icon: Icon.Content = .none,
         style: Style = .neutral,
         labelColor: LabelColor = .default,
         linkAction: @escaping TextLink.Action = { _, _ in }
     ) {
         self.label = label
-        self.iconContent = iconContent
+        self.iconContent = icon
         self.style = style
         self.labelColor = labelColor
         self.linkAction = linkAction
-    }
-
-    /// Creates Orbit BadgeList component with icon symbol.
-    init(
-        _ label: String = "",
-        icon: Icon.Symbol = .none,
-        style: Style = .neutral,
-        labelColor: LabelColor = .default,
-        linkAction: @escaping TextLink.Action = { _, _ in }
-    ) {
-        self.init(
-            label,
-            iconContent: .icon(icon, color: style.iconColor),
-            style: style,
-            labelColor: labelColor,
-            linkAction: linkAction
-        )
-    }
-
-    /// Creates Orbit BadgeList component with no icon.
-    init(
-        _ label: String = "",
-        style: Style = .neutral,
-        labelColor: LabelColor = .default,
-        linkAction: @escaping TextLink.Action = { _, _ in }
-    ) {
-        self.init(
-            label,
-            iconContent: .none,
-            style: style,
-            labelColor: labelColor,
-            linkAction: linkAction
-        )
     }
 }
 
@@ -151,6 +119,7 @@ public struct BadgeListPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             storybook
+            storybookMix
         }
         .previewLayout(.sizeThatFits)
     }
@@ -171,6 +140,15 @@ public struct BadgeListPreviews: PreviewProvider {
             BadgeList("This is simple Success BadgeList item", icon: .checkCircle, style: .status(.success))
             BadgeList("This is simple Warning BadgeList item", icon: .alertCircle, style: .status(.warning))
             BadgeList("This is simple Critical BadgeList item", icon: .alertCircle, style: .status(.critical))
+        }
+        .padding(.medium)
+    }
+
+    static var storybookMix: some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            BadgeList("This is simple Info BadgeList item with SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.info))
+            BadgeList("This is simple Info BadgeList item with CountryFlag", icon: .countryFlag("cz"), style: .status(.critical))
+            BadgeList("This is simple Info BadgeList item with custom image", icon: .image(.orbit(.facebook)), style: .status(.success))
         }
         .padding(.medium)
     }

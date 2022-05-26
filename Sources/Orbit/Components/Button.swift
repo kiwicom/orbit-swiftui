@@ -47,6 +47,7 @@ public struct Button: View {
                 .padding(.trailing, trailingPadding)
             }
         )
+        .foregroundColor(Color(style.foregroundUIColor))
         .buttonStyle(ButtonStyle(style: style, size: size))
         .frame(maxWidth: .infinity)
     }
@@ -56,7 +57,7 @@ public struct Button: View {
             Text(
                 label,
                 size: size.textSize,
-                color: .custom(style.foregroundUIColor),
+                color: .none,
                 weight: .medium,
                 linkColor: .custom(style.foregroundUIColor)
             )
@@ -64,7 +65,7 @@ public struct Button: View {
             Text(
                 label,
                 size: size.textSize,
-                color: .custom(style.foregroundUIColor),
+                color: .none,
                 weight: .medium,
                 linkColor: .custom(style.foregroundUIColor)
             )
@@ -111,59 +112,23 @@ public extension Button {
     /// Creates Orbit Button component.
     init(
         _ label: String,
-        iconContent: Icon.Content = .none,
-        disclosureIconContent: Icon.Content = .none,
+        icon: Icon.Content = .none,
+        disclosureIcon: Icon.Content = .none,
         style: Style = .primary,
         size: Size = .default,
         action: @escaping () -> Void = {}
     ) {
         self.label = label
-        self.iconContent = iconContent
-        self.disclosureIconContent = disclosureIconContent
+        self.iconContent = icon
+        self.disclosureIconContent = disclosureIcon
         self.style = style
         self.size = size
         self.action = action
     }
 
-    /// Creates Orbit Button component with icon symbol.
-    init(
-        _ label: String,
-        icon: Icon.Symbol = .none,
-        disclosureIcon: Icon.Symbol = .none,
-        style: Style = .primary,
-        size: Size = .default,
-        action: @escaping () -> Void = {}
-    ) {
-        self.init(
-            label,
-            iconContent: .icon(icon, color: style.foregroundColor),
-            disclosureIconContent: .icon(disclosureIcon, color: style.foregroundColor),
-            style: style,
-            size: size,
-            action: action
-        )
-    }
-    
-    /// Creates Orbit Button component with no icon.
-    init(
-        _ label: String,
-        style: Style = .primary,
-        size: Size = .default,
-        action: @escaping () -> Void = {}
-    ) {
-        self.init(
-            label,
-            iconContent: .none,
-            disclosureIconContent: .none,
-            style: style,
-            size: size,
-            action: action
-        )
-    }
-
     /// Creates Orbit Button component with icon only.
     init(
-        _ icon: Icon.Symbol = .none,
+        _ icon: Icon.Content = .none,
         style: Style = .primary,
         size: Size = .default,
         action: @escaping () -> Void = {}
@@ -337,6 +302,7 @@ struct ButtonPreviews: PreviewProvider {
             storybook
             storybookStatus
             storybookGradient
+            storybookMix
         }
         .previewLayout(.sizeThatFits)
     }
@@ -413,6 +379,15 @@ struct ButtonPreviews: PreviewProvider {
             buttons(.gradient(.bundleBasic)).previewDisplayName("Bundle Basic")
             buttons(.gradient(.bundleMedium)).previewDisplayName("Bundle Medium")
             buttons(.gradient(.bundleTop)).previewDisplayName("Bundle Top")
+        }
+        .padding(.medium)
+    }
+
+    @ViewBuilder static var storybookMix: some View {
+        VStack(alignment: .leading, spacing: .xLarge) {
+            Button("Button with SF Symbol", icon: .sfSymbol("info.circle.fill"))
+            Button("Button with Flag", icon: .countryFlag("cz"))
+            Button("Button with Image", icon: .image(.orbit(.facebook)))
         }
         .padding(.medium)
     }

@@ -30,12 +30,13 @@ public struct Badge: View {
                     Text(
                         label,
                         size: Self.textSize,
-                        color: .custom(style.labelColor),
+                        color: .none,
                         weight: .medium,
                         linkColor: .custom(style.labelColor)
                     )
                     .padding(.vertical, Self.verticalPadding)
                 }
+                .foregroundColor(Color(style.labelColor))
 
                 TextStrut(Self.textSize)
                     .padding(.vertical, Self.verticalPadding)
@@ -67,24 +68,10 @@ public struct Badge: View {
 public extension Badge {
     
     /// Creates Orbit Badge component.
-    init(_ label: String = "", iconContent: Icon.Content = .none, style: Style = .neutral) {
+    init(_ label: String = "", icon: Icon.Content = .none, style: Style = .neutral) {
         self.label = label
-        self.iconContent = iconContent
+        self.iconContent = icon
         self.style = style
-    }
-    
-    /// Creates Orbit Badge component with icon symbol.
-    init(_ label: String = "", icon: Icon.Symbol = .none, style: Style = .neutral) {
-        self.init(
-            label,
-            iconContent: .icon(icon, color: Color(style.labelColor)),
-            style: style
-        )
-    }
-    
-    /// Creates Orbit Badge component with no icon.
-    init(_ label: String = "", style: Style = .neutral) {
-        self.init(label, iconContent: .none, style: style)
     }
 }
 
@@ -227,7 +214,7 @@ struct BadgePreviews: PreviewProvider {
             HStack(spacing: .small) {
                 Badge(
                     "Custom",
-                    iconContent: .icon(.airplane, color: .pink),
+                    icon: .symbol(.airplane, color: .pink),
                     style: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
@@ -235,12 +222,15 @@ struct BadgePreviews: PreviewProvider {
                     )
                 )
 
-                Badge("Flag", iconContent: .countryFlag("us"))
+                Badge("Flag", icon: .countryFlag("us"))
+                Badge("Flag", icon: .countryFlag("us"), style: .status(.critical, inverted: true))
             }
 
             HStack(spacing: .small) {
-                Badge("Image", iconContent: .image(.orbit(.facebook)))
-                Badge("SF Symbol", iconContent: .sfSymbol("applelogo"))
+                Badge("Image", icon: .image(.orbit(.facebook)))
+                Badge("Image", icon: .image(.orbit(.facebook)), style: .status(.success, inverted: true))
+                Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
+                Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
             }
         }
         .padding(.medium)

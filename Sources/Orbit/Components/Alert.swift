@@ -36,7 +36,7 @@ public struct Alert<Content: View>: View {
 
     let title: String
     let description: String
-    let icon: Icon.Symbol
+    let iconContent: Icon.Content
     let buttons: AlertButtons
     let status: Status
     let isSuppressed: Bool
@@ -46,7 +46,8 @@ public struct Alert<Content: View>: View {
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
             
-            Icon(icon, size: .normal, color: status.color)
+            Icon(iconContent, size: .normal)
+                .foregroundColor(status.color)
             
             VStack(alignment: .leading, spacing: .medium) {
 
@@ -70,7 +71,7 @@ public struct Alert<Content: View>: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding([.vertical, .trailing], .medium)
-        .padding(.leading, icon == .none ? .medium : .small)
+        .padding(.leading, iconContent.isEmpty ? .medium : .small)
         .background(background)
         .cornerRadius(BorderRadius.default)
     }
@@ -159,7 +160,7 @@ public extension Alert {
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Symbol = .none,
+        icon: Icon.Content = .none,
         buttons: AlertButtons = .none,
         status: Status = .info,
         isSuppressed: Bool = false,
@@ -168,7 +169,7 @@ public extension Alert {
     ) {
         self.title = title
         self.description = description
-        self.icon = icon
+        self.iconContent = icon
         self.buttons = buttons
         self.status = status
         self.isSuppressed = isSuppressed
@@ -180,7 +181,7 @@ public extension Alert {
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Symbol = .none,
+        icon: Icon.Content = .none,
         buttons: AlertButtons = .none,
         status: Status = .info,
         isSuppressed: Bool = false,
@@ -265,7 +266,7 @@ struct AlertPreviews: PreviewProvider {
         Alert(
             title,
             description: description,
-            icon: icon,
+            icon: .symbol(icon),
             buttons: primaryAndSecondaryConfiguration,
             status: status,
             isSuppressed: isSuppressed

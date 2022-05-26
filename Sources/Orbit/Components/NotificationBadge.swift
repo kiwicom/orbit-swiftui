@@ -28,12 +28,13 @@ public struct NotificationBadge: View {
                     Text(
                         label,
                         size: Self.textSize,
-                        color: .custom(style.labelColor),
+                        color: .none,
                         weight: .medium,
                         linkColor: .custom(style.labelColor)
                     )
                     .padding(.vertical, Self.verticalPadding)
                 }
+                .foregroundColor(Color(style.labelColor))
 
                 TextStrut(Self.textSize)
                     .padding(.vertical, Self.verticalPadding)
@@ -65,24 +66,10 @@ public struct NotificationBadge: View {
 public extension NotificationBadge {
     
     /// Creates Orbit NotificationBadge component.
-    init(_ label: String = "", iconContent: Icon.Content = .none, style: Badge.Style = .neutral) {
+    init(_ label: String = "", icon: Icon.Content = .none, style: Badge.Style = .neutral) {
         self.label = label
-        self.iconContent = iconContent
+        self.iconContent = icon
         self.style = style
-    }
-    
-    /// Creates Orbit NotificationBadge component with icon symbol.
-    init(_ label: String = "", icon: Icon.Symbol = .none, style: Badge.Style = .neutral) {
-        self.init(
-            label,
-            iconContent: .icon(icon, color: Color(style.labelColor)),
-            style: style
-        )
-    }
-    
-    /// Creates Orbit NotificationBadge component with no icon.
-    init(_ label: String = "", style: Badge.Style = .neutral) {
-        self.init(label, iconContent: .none, style: style)
     }
 }
 
@@ -150,7 +137,7 @@ struct NotificationBadgePreviews: PreviewProvider {
             HStack(spacing: .small) {
                 NotificationBadge(
                     "Custom",
-                    iconContent: .icon(.airplane, color: .pink),
+                    icon: .symbol(.airplane, color: .pink),
                     style: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
@@ -158,12 +145,12 @@ struct NotificationBadgePreviews: PreviewProvider {
                     )
                 )
 
-                NotificationBadge("Flag", iconContent: .countryFlag("us"))
+                NotificationBadge("Flag", icon: .countryFlag("us"))
             }
 
             HStack(spacing: .small) {
-                NotificationBadge("Image", iconContent: .image(.orbit(.facebook)))
-                NotificationBadge("SF Symbol", iconContent: .sfSymbol("applelogo"))
+                NotificationBadge("Image", icon: .image(.orbit(.facebook)))
+                NotificationBadge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
             }
         }
         .padding(.medium)

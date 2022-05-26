@@ -57,7 +57,7 @@ public extension Tag {
     /// Creates Orbit Tag component.
     init(
         _ label: String = "",
-        iconContent: Icon.Content = .none,
+        icon: Icon.Content = .none,
         style: Style = .default,
         isFocused: Bool = true,
         isSelected: Bool = false,
@@ -65,32 +65,12 @@ public extension Tag {
         action: @escaping () -> Void = {}
     ) {
         self.label = label
-        self.iconContent = iconContent
+        self.iconContent = icon
         self.style = style
         self.isFocused = isFocused
         self.isSelected = isSelected
         self.isActive = isActive
         self.action = action
-    }
-
-    /// Creates Orbit Tag component with icon symbol.
-    init(
-        _ label: String = "",
-        icon: Icon.Symbol,
-        style: Style = .default,
-        isFocused: Bool = true,
-        isSelected: Bool = false,
-        isActive: Bool = false,
-        action: @escaping () -> Void = {}
-    ) {
-        self.init(
-            label: label,
-            iconContent: .icon(icon, color: nil),
-            style: style,
-            isFocused: isFocused,
-            isSelected: isSelected,
-            isActive: isActive, action: action
-        )
     }
 }
 
@@ -123,7 +103,8 @@ extension Tag {
                     .lineLimit(1)
 
                 if case .removable(let removeAction) = style {
-                    Icon(.closeCircle, size: .small, color: iconColor(isPressed: configuration.isPressed))
+                    Icon(.closeCircle, size: .small)
+                        .foregroundColor(iconColor(isPressed: configuration.isPressed))
                         .onTapGesture(perform: removeAction)
                         .accessibility(addTraits: .isButton)
                 }

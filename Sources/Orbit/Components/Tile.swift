@@ -45,7 +45,7 @@ public struct TileButtonStyle: SwiftUI.ButtonStyle {
 public enum TileDisclosure {
     case none
     /// Icon with optional color override.
-    case icon(Icon.Symbol, color: Color? = nil, alignment: VerticalAlignment = .center)
+    case icon(Icon.Content, alignment: VerticalAlignment = .center)
     /// ButtonLink indicator.
     case buttonLink(_ label: String, style: ButtonLink.Style = .primary)
 }
@@ -123,6 +123,7 @@ public struct Tile<Content: View>: View {
         if isHeaderEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Icon(iconContent, size: .heading(titleStyle))
+                    .foregroundColor(.inkNormal)
                     .padding(.trailing, .xSmall)
 
                 VStack(alignment: .labelTextLeading, spacing: .xxSmall) {
@@ -155,8 +156,9 @@ public struct Tile<Content: View>: View {
         switch disclosure {
             case .none, .buttonLink:
                 EmptyView()
-            case .icon(let icon, let color, _):
-                Icon(icon, color: color ?? .inkLight)
+            case .icon(let icon, _):
+                Icon(icon)
+                    .foregroundColor(.inkLight)
                     .padding(.leading, .xSmall)
         }
     }
@@ -191,7 +193,7 @@ public extension Tile {
     init(
         _ title: String = "",
         description: String = "",
-        iconContent: Icon.Content,
+        icon: Icon.Content = .none,
         disclosure: TileDisclosure = .icon(.chevronRight),
         border: TileBorder = .default,
         status: Status? = nil,
@@ -203,38 +205,7 @@ public extension Tile {
     ) {
         self.title = title
         self.description = description
-        self.iconContent = iconContent
-        self.disclosure = disclosure
-        self.border = border
-        self.status = status
-        self.backgroundColor = backgroundColor
-        self.titleStyle = titleStyle
-        self.descriptionColor = descriptionColor
-        self.action = action
-        self.content = content
-    }
-    
-    /// Creates Orbit Tile component with custom content.
-    ///
-    /// - Parameters:
-    ///   - style: Appearance of tile. Can be styled to match iOS default table row.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Symbol = .none,
-        disclosure: TileDisclosure = .icon(.chevronRight),
-        border: TileBorder = .default,
-        status: Status? = nil,
-        backgroundColor: BackgroundColor? = nil,
-        titleStyle: Heading.Style = .title4,
-        descriptionColor: Text.Color = .inkLight,
-        iconColor: Color = .inkNormal,
-        action: @escaping () -> Void = {},
-        @ViewBuilder content: @escaping () -> Content
-    ) {
-        self.title = title
-        self.description = description
-        self.iconContent = .icon(icon, color: iconColor)
+        self.iconContent = icon
         self.disclosure = disclosure
         self.border = border
         self.status = status
@@ -252,7 +223,7 @@ public extension Tile {
     init(
         _ title: String = "",
         description: String = "",
-        iconContent: Icon.Content,
+        icon: Icon.Content = .none,
         disclosure: TileDisclosure = .icon(.chevronRight),
         border: TileBorder = .default,
         status: Status? = nil,
@@ -262,41 +233,9 @@ public extension Tile {
         action: @escaping () -> Void = {}
     ) where Content == EmptyView {
         self.init(
-            title: title,
+            title,
             description: description,
-            iconContent: iconContent,
-            disclosure: disclosure,
-            border: border,
-            status: status,
-            backgroundColor: backgroundColor,
-            titleStyle: titleStyle,
-            descriptionColor: descriptionColor,
-            action: action,
-            content: { EmptyView() }
-        )
-    }
-    
-    /// Creates Orbit Tile component.
-    ///
-    /// - Parameters:
-    ///   - style: Appearance of tile. Can be styled to match iOS default table row.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Symbol = .none,
-        disclosure: TileDisclosure = .icon(.chevronRight),
-        border: TileBorder = .default,
-        status: Status? = nil,
-        backgroundColor: BackgroundColor? = nil,
-        titleStyle: Heading.Style = .title4,
-        descriptionColor: Text.Color = .inkLight,
-        iconColor: Color = .inkNormal,
-        action: @escaping () -> Void = {}
-    ) where Content == EmptyView {
-        self.init(
-            title: title,
-            description: description,
-            iconContent: .icon(icon, color: iconColor),
+            icon: icon,
             disclosure: disclosure,
             border: border,
             status: status,
@@ -386,9 +325,9 @@ struct TilePreviews: PreviewProvider {
             Tile("Title with very very very very very long multiline text", description: descriptionMultiline, icon: .airplane) {
                 customContentPlaceholder
             }
-            Tile(title, description: description, icon: .airplane, status: .info)
-            Tile(title, description: description, icon: .airplane, status: .critical)
-            Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .primary))
+            Tile(title, description: description, icon: .symbol(.airplane, color: .blueNormal), status: .info)
+            Tile("SF Symbol", description: description, icon: .sfSymbol("info.circle.fill"), status: .critical)
+            Tile("Country Flag", description: description, icon: .countryFlag("cz"), disclosure: .buttonLink("Action", style: .primary))
             Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .critical))
             Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid))
             Tile(disclosure: .none) {

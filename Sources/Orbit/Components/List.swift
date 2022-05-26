@@ -49,8 +49,8 @@ struct ListPreviews: PreviewProvider {
     static var standalone: some View {
         List {
             ListItem(listItemText)
-            ListItem(listItemText, iconContent: .icon(.grid))
-            ListItem(listItemText, iconContent: .icon(.check, color: .greenNormal))
+            ListItem(listItemText, icon: .grid)
+            ListItem(listItemText, icon: .symbol(.check, color: .greenNormal))
             ListItem(listItemText, icon: .none)
         }
         .padding(.medium)
@@ -87,10 +87,10 @@ struct ListPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .medium) {
             List {
                 ListItem(listItemText)
-                ListItem(listItemText, iconContent: .icon(.grid))
-                ListItem(listItemText, iconContent: .icon(.check, color: .greenNormal))
+                ListItem(listItemText, icon: .grid)
+                ListItem(listItemText, icon: .symbol(.check, color: .greenNormal))
                 ListItem(listItemText, icon: .none)
-                ListItem(listItemText, iconContent: .icon(.accountCircle, color: .orangeNormal))
+                ListItem(listItemText, icon: .symbol(.accountCircle, color: .orangeNormal))
             }
 
             Separator()

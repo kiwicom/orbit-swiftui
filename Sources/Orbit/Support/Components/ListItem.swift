@@ -18,56 +18,38 @@ public struct ListItem: View {
     public var body: some View {
         Label(
             text,
-            iconContent: iconContent,
+            icon: iconContent,
             style: .text(
                 size,
                 weight: style.weight,
-                color: style.textColor,
+                color: nil,
                 linkColor: style.linkColor,
                 linkAction: linkAction
             ),
             spacing: spacing
         )
+        .foregroundColor(style.textColor.value)
     }
 }
 
 // MARK: - Inits
 public extension ListItem {
 
-    /// Creates Orbit ListItem component with custom icon content.
+    /// Creates Orbit ListItem component.
     init(
         _ text: String = "",
-        iconContent: Icon.Content,
+        icon: Icon.Content = .circleSmall,
         size: Text.Size = .normal,
         spacing: CGFloat = .xxSmall,
         style: ListItem.Style = .primary,
         linkAction: @escaping TextLink.Action = { _, _ in }
     ) {
         self.text = text
-        self.iconContent = iconContent
+        self.iconContent = icon
         self.size = size
         self.spacing = spacing
         self.style = style
         self.linkAction = linkAction
-    }
-
-    /// Creates Orbit ListItem component.
-    init(
-        _ text: String = "",
-        icon: Icon.Symbol = .circleSmall,
-        size: Text.Size = .normal,
-        spacing: CGFloat = .xxSmall,
-        style: ListItem.Style = .primary,
-        linkAction: @escaping TextLink.Action = { _, _ in }
-    ) {
-        self.init(
-            text,
-            iconContent: .icon(icon, color: style.textColor.value),
-            size: size,
-            spacing: spacing,
-            style: style,
-            linkAction: linkAction
-        )
     }
 }
 
@@ -155,7 +137,7 @@ struct ListItemPreviews: PreviewProvider {
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#)
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, size: .small, style: .secondary)
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, style: .custom(color: .greenNormal, linkColor: .custom(.orangeDark)))
-            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, iconContent: .icon(.circleSmall, color: .inkNormal), style: .custom(color: .greenNormal))
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, icon: .symbol(.circleSmall, color: .blueNormal), style: .custom(color: .greenNormal))
         }
         .padding()
         .previewDisplayName("Snapshots - Links")
@@ -163,9 +145,12 @@ struct ListItemPreviews: PreviewProvider {
     
     static var snapshotsCustom: some View {
         List {
-            ListItem("ListItem with custom icon", iconContent: .icon(.check, color: .greenNormal))
-            ListItem("ListItem with custom icon", iconContent: .icon(.check))
+            ListItem("ListItem with custom icon", icon: .symbol(.check, color: .greenNormal))
             ListItem("ListItem with custom icon", icon: .check)
+            ListItem("ListItem with custom icon", icon: .check)
+            ListItem("ListItem with SF Symbol", icon: .sfSymbol("info.circle.fill"))
+            ListItem("ListItem with SF Symbol", icon: .sfSymbol("info.circle.fill", color: .blueDark))
+            ListItem("ListItem with flag", icon: .countryFlag("cz"))
             ListItem("ListItem with custom icon", icon: .check, style: .custom(color: .blueDark))
             ListItem("ListItem with no icon", icon: .none)
         }
