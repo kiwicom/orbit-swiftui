@@ -150,3 +150,19 @@ Use `BorderRadius` and `BorderWidth` enums.
 
 Use `Font` extensions. 
 All Orbit components use the Orbit font (configured in step 0) automatically.
+
+## Contributing
+
+Feel free to create bug and feature requests via Issues tab.
+
+If you want to directly contribute by fixing a bug or implementing a feature or enhancement, you are welcome to do so. Pull request review has following priorities to check:
+
+1) API consistency with other components (similar components should have similar API)
+2) Component variants matching design variants (components should have same properties as design)
+3) Visual match to designs
+4) Internal code structure consistency (button-like components should use consistent mechanism, haptics etc.)
+5) Previews / Storybook consistency (a new component needs to be added to the Storybook)
+
+## Feedback
+
+We want to provide high quality and easy to use components. We can’t do that without your feedback. If you have any suggestions about what we can do to improve, please report it directly as an issue or write to us at #orbit-components on Slack.
