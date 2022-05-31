@@ -153,7 +153,7 @@ All Orbit components use the Orbit font (configured in step 0) automatically.
 
 ## Contributing
 
-Feel free to create bug and feature requests via Issues tab.
+Feel free to create bug reports and feature requests via the Issues tab.
 
 If you want to directly contribute by fixing a bug or implementing a feature or enhancement, you are welcome to do so. Pull request review has following priorities to check:
 
