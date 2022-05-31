@@ -53,7 +53,7 @@ public struct TimelineStep: View {
                     .strokeBorder(Color.cloudNormalHover, lineWidth: 2)
                     .frame(width: .small, height: .small)
             case .status:
-                Icon(style.icon, size: .large, color: style.color)
+                Icon(.symbol(style.iconSymbol, color: style.color), size: .large)
         }
     }
 
@@ -84,7 +84,7 @@ extension TimelineStep {
         case `default`
         case status(Status)
 
-        public var icon: Icon.Symbol {
+        public var iconSymbol: Icon.Symbol {
             switch self {
                 case .default:              return .none
                 case .status(.success):     return .checkCircle

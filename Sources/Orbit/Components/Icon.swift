@@ -30,9 +30,14 @@ public struct Icon: View {
 
     @ViewBuilder var iconContent: some View {
         switch content {
-            case .icon(let symbol, let color):
+            case .symbol(let symbol, let color?):
                 SwiftUI.Text(verbatim: symbol.value)
                     .foregroundColor(color)
+                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+                    .accessibility(label: SwiftUI.Text(String(describing: symbol)))
+            case .symbol(let symbol, nil):
+                SwiftUI.Text(verbatim: symbol.value)
+                    // foregroundColor(nil) prevents further overrides
                     .font(.orbitIcon(size: size.value, style: size.textStyle))
                     .accessibility(label: SwiftUI.Text(String(describing: symbol)))
             case .image(let image, let mode):
@@ -43,8 +48,13 @@ public struct Icon: View {
                     .accessibility(hidden: true)
             case .countryFlag(let countryCode):
                 CountryFlag(countryCode, size: size)
-            case .sfSymbol(let systemName):
+            case .sfSymbol(let systemName, let color?):
                 Image(systemName: systemName)
+                    .foregroundColor(color)
+                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
+            case .sfSymbol(let systemName, nil):
+                Image(systemName: systemName)
+                    // foregroundColor(nil) prevents further overrides
                     .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
         }
     }
@@ -55,15 +65,19 @@ public extension Icon {
     
     /// Creates Orbit Icon component for provided icon content.
     ///
-    /// Color can be overriden using `foregroundColor` modifier when content color is set to `nil`.
+    /// - Parameters:
+    ///     - content: Icon content. Can optionally include the color override.
     init(_ content: Icon.Content, size: Size = .normal) {
         self.content = content
         self.size = size
     }
-    
-    /// Creates Orbit Icon component for provided icon symbol.
+
+    /// Creates Orbit Icon component for provided Orbit icon symbol with specified color.
+    ///
+    /// - Parameters:
+    ///     - color: Icon color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
     init(_ symbol: Icon.Symbol, size: Size = .normal, color: Color? = .inkNormal) {
-        self.content = .icon(symbol, color: color)
+        self.content = .symbol(symbol, color: color)
         self.size = size
     }
     
@@ -79,11 +93,12 @@ public extension Icon {
         self.size = size
     }
     
-    /// Creates Orbit Icon component for provided SF Symbol.
+    /// Creates Orbit Icon component for provided SF Symbol with specified color.
     ///
-    /// Color is configurable using `foregroundColor` modifier.
-    init(sfSymbol: String, size: Size = .normal) {
-        self.content = .sfSymbol(sfSymbol)
+    /// - Parameters:
+    ///     - color: SF Symbol color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
+    init(sfSymbol: String, size: Size = .normal, color: Color? = .inkNormal) {
+        self.content = .sfSymbol(sfSymbol, color: color)
         self.size = size
     }
 }
@@ -92,26 +107,25 @@ public extension Icon {
 public extension Icon {
 
     /// Defines content of an Icon for use in other components.
+    /// An optional color can be provided. If not provided, color can be specified later, using `.foregroundColor()` modifier.
     ///
-    /// Icon size is determined by enclosing component.
+    /// Icon size in Orbit components is determined by enclosing component.
     enum Content: Equatable {
-        /// Orbit icon symbol with overridable color.
-        case icon(Symbol, color: Color? = nil)
+        /// Orbit icon symbol with optional overridable color.
+        case symbol(Symbol, color: Color? = nil)
         /// Icon using custom Image with overridable size.
         case image(Image, mode: ContentMode = .fit)
         /// Orbit CountryFlag.
         case countryFlag(String)
-        /// SwiftUI SF Symbol with overridable color.
-        case sfSymbol(String)
-
-        public static var none: Self = .icon(.none)
+        /// SwiftUI SF Symbol with optional overridable color.
+        case sfSymbol(String, color: Color? = nil)
 
         public var isEmpty: Bool {
             switch self {
-                case .icon(let symbol, _):              return symbol == .none
+                case .symbol(let symbol, _):            return symbol == .none
                 case .image:                            return false
                 case .countryFlag(let countryCode):     return countryCode.isEmpty
-                case .sfSymbol(let sfSymbol):           return sfSymbol.isEmpty
+                case .sfSymbol(let sfSymbol, _):        return sfSymbol.isEmpty
             }
         }
     }
@@ -362,9 +376,9 @@ struct IconPreviews: PreviewProvider {
                     Icon(.sfSymbol(sfSymbol), size: .custom(Text.Size.xLarge.iconSize))
                     Icon(.sfSymbol(sfSymbol), size: .fontSize(Text.Size.xLarge.value))
                     Icon(.sfSymbol(sfSymbol), size: .label(.text(.xLarge)))
-                    Icon(.informationCircle, size: .custom(Text.Size.xLarge.iconSize), color: nil)
-                    Icon(.informationCircle, size: .fontSize(Text.Size.xLarge.value), color: nil)
-                    Icon(.informationCircle, size: .label(.text(.xLarge)), color: nil)
+                    Icon(.informationCircle, size: .custom(Text.Size.xLarge.iconSize))
+                    Icon(.informationCircle, size: .fontSize(Text.Size.xLarge.value))
+                    Icon(.informationCircle, size: .label(.text(.xLarge)))
                     Text("XLarge", size: .xLarge, color: nil)
                 }
                 .foregroundColor(.blueNormal)
@@ -377,9 +391,9 @@ struct IconPreviews: PreviewProvider {
                     Icon(.sfSymbol(sfSymbol), size: .custom(Text.Size.small.iconSize))
                     Icon(.sfSymbol(sfSymbol), size: .fontSize(Text.Size.small.value))
                     Icon(.sfSymbol(sfSymbol), size: .label(.text(.small)))
-                    Icon(.informationCircle, size: .custom(Text.Size.small.iconSize), color: nil)
-                    Icon(.informationCircle, size: .fontSize(Text.Size.small.value), color: nil)
-                    Icon(.informationCircle, size: .label(.text(.small)), color: nil)
+                    Icon(.informationCircle, size: .custom(Text.Size.small.iconSize))
+                    Icon(.informationCircle, size: .fontSize(Text.Size.small.value))
+                    Icon(.informationCircle, size: .label(.text(.small)))
                     Text("Small", size: .small, color: nil)
                 }
                 .foregroundColor(.blueNormal)
@@ -423,9 +437,9 @@ struct IconPreviews: PreviewProvider {
             .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
             
             HStack(alignment: .firstTextBaseline) {
-                Icon(.grid, size: .xLarge, color: nil)
-                Icon(.grid)
-                Icon(.grid, size: .small, color: .blueNormal)
+                Icon(.grid, size: .xLarge)
+                Icon(.symbol(.grid, color: nil))
+                Icon(.symbol(.grid, color: .blueNormal), size: .small)
             }
             .foregroundColor(.blueDark)
             .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
@@ -437,11 +451,11 @@ struct IconPreviews: PreviewProvider {
         VStack(spacing: .medium) {
             HStack(spacing: .medium) {
                 HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-                    Icon(.icon(.grid))
+                    Icon(.grid)
                     Text(multilineText)
                 }
                 HStack(alignment: .lastTextBaseline, spacing: .xSmall) {
-                    Icon(.icon(.grid))
+                    Icon(.grid)
                     Text(multilineText)
                 }
             }

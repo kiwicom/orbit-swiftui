@@ -86,6 +86,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
         if isHeaderEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
                 Icon(iconContent)
+                    .foregroundColor(.inkNormal)
                 
                 if isHeaderTextEmpty == false {
                     VStack(alignment: .labelTextLeading, spacing: .xxxSmall) {
@@ -104,7 +105,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
             case .none:
                 EmptyView()
             case .disclosure(let color):
-                Icon(.chevronRight, color: color)
+                Icon(.symbol(.chevronRight, color: color))
                     .padding(.leading, -.xSmall)
             case .button(let type):
                 disclosureButton(type: type)
@@ -171,11 +172,11 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
 // MARK: - Inits
 public extension ListChoice {
     
-    /// Creates Orbit ListChoice component with custom icon and content.
+    /// Creates Orbit ListChoice component with optional content and header content.
     init(
         _ title: String = "",
         description: String = "",
-        iconContent: Icon.Content,
+        icon: Icon.Content = .none,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {},
@@ -184,42 +185,19 @@ public extension ListChoice {
     ) {
         self.title = title
         self.description = description
-        self.iconContent = iconContent
+        self.iconContent = icon
         self.disclosure = disclosure
         self.showSeparator = showSeparator
         self.action = action
         self.content = content
         self.headerContent = headerContent
     }
-    
-    /// Creates Orbit ListChoice component with custom content.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Symbol = .none,
-        disclosure: ListChoiceDisclosure = .disclosure(),
-        showSeparator: Bool = true,
-        action: @escaping () -> Void = {},
-        @ViewBuilder content: @escaping () -> Content,
-        @ViewBuilder headerContent: @escaping () -> HeaderContent
-    ) {
-        self.init(
-            title,
-            description: description,
-            iconContent: .icon(icon, color: .inkNormal),
-            disclosure: disclosure,
-            showSeparator: showSeparator,
-            action: action,
-            content: content,
-            headerContent: headerContent
-        )
-    }
 
-    /// Creates Orbit ListChoice component.
+    /// Creates Orbit ListChoice component with optional header content.
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Symbol = .none,
+        icon: Icon.Content = .none,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {},
@@ -228,7 +206,7 @@ public extension ListChoice {
         self.init(
             title,
             description: description,
-            iconContent: .icon(icon, color: .inkNormal),
+            icon: icon,
             disclosure: disclosure,
             showSeparator: showSeparator,
             action: action,
@@ -237,11 +215,11 @@ public extension ListChoice {
         )
     }
 
-    /// Creates Orbit ListChoice component.
+    /// Creates Orbit ListChoice component with optional content.
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Symbol = .none,
+        icon: Icon.Content = .none,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {},
@@ -250,35 +228,11 @@ public extension ListChoice {
         self.init(
             title,
             description: description,
-            iconContent: .icon(icon, color: .inkNormal),
+            icon: icon,
             disclosure: disclosure,
             showSeparator: showSeparator,
             action: action,
             content: content,
-            headerContent: { EmptyView() }
-        )
-    }
-}
-
-public extension ListChoice where HeaderContent == EmptyView, Content == EmptyView {
-
-    /// Creates Orbit ListChoice component with custom icon content.
-    init(
-        _ title: String = "",
-        description: String = "",
-        iconContent: Icon.Content,
-        disclosure: ListChoiceDisclosure = .disclosure(),
-        showSeparator: Bool = true,
-        action: @escaping () -> Void = {}
-    ) {
-        self.init(
-            title,
-            description: description,
-            iconContent: iconContent,
-            disclosure: disclosure,
-            showSeparator: showSeparator,
-            action: action,
-            content: { EmptyView() },
             headerContent: { EmptyView() }
         )
     }
@@ -287,29 +241,31 @@ public extension ListChoice where HeaderContent == EmptyView, Content == EmptyVi
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Symbol = .none,
+        icon: Icon.Content = .none,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {}
-    ) {
+    ) where HeaderContent == EmptyView, Content == EmptyView {
         self.init(
             title,
             description: description,
-            iconContent: .icon(icon, color: .inkNormal),
+            icon: icon,
             disclosure: disclosure,
             showSeparator: showSeparator,
-            action: action
+            action: action,
+            content: { EmptyView() },
+            headerContent: { EmptyView() }
         )
     }
 }
 
 public extension ListChoice where HeaderContent == Text {
 
-    /// Creates Orbit ListChoice component with custom icon content and text based value.
+    /// Creates Orbit ListChoice component with text based header value and optional custom content.
     init(
         _ title: String = "",
         description: String = "",
-        iconContent: Icon.Content,
+        icon: Icon.Content = .none,
         value: String,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
@@ -319,7 +275,7 @@ public extension ListChoice where HeaderContent == Text {
         self.init(
             title,
             description: description,
-            iconContent: iconContent,
+            icon: icon,
             disclosure: disclosure,
             showSeparator: showSeparator,
             action: action,
@@ -329,34 +285,11 @@ public extension ListChoice where HeaderContent == Text {
         }
     }
 
-    /// Creates Orbit ListChoice component with text based value and custom content.
+    /// Creates Orbit ListChoice component with text based header value.
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Symbol = .none,
-        value: String,
-        disclosure: ListChoiceDisclosure = .disclosure(),
-        showSeparator: Bool = true,
-        action: @escaping () -> Void = {},
-        @ViewBuilder content: @escaping () -> Content
-    ) {
-        self.init(
-            title,
-            description: description,
-            iconContent: .icon(icon, color: .inkNormal),
-            value: value,
-            disclosure: disclosure,
-            showSeparator: showSeparator,
-            action: action,
-            content: content
-        )
-    }
-
-    /// Creates Orbit ListChoice component with text based value.
-    init(
-        _ title: String = "",
-        description: String = "",
-        iconContent: Icon.Content,
+        icon: Icon.Content = .none,
         value: String,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
@@ -365,33 +298,12 @@ public extension ListChoice where HeaderContent == Text {
         self.init(
             title,
             description: description,
-            iconContent: iconContent,
+            icon: icon,
             value: value,
             disclosure: disclosure,
             showSeparator: showSeparator,
             action: action,
             content: { EmptyView() }
-        )
-    }
-
-    /// Creates Orbit ListChoice component with text based value.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Symbol = .none,
-        value: String,
-        disclosure: ListChoiceDisclosure = .disclosure(),
-        showSeparator: Bool = true,
-        action: @escaping () -> Void = {}
-    ) where Content == EmptyView {
-        self.init(
-            title,
-            description: description,
-            iconContent: .icon(icon, color: .inkNormal),
-            value: value,
-            disclosure: disclosure,
-            showSeparator: showSeparator,
-            action: action
         )
     }
 }
@@ -574,8 +486,8 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, disclosure: .none)
             ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
             ListChoice(title, icon: .airplane, disclosure: .none)
-            ListChoice(title, iconContent: .icon(.airplane, color: .blueNormal), disclosure: .none)
-            ListChoice(title, description: description, iconContent: .countryFlag("cs"), disclosure: .none)
+            ListChoice(title, icon: .symbol(.airplane, color: .blueNormal), disclosure: .none)
+            ListChoice(title, description: description, icon: .countryFlag("cs"), disclosure: .none)
             ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none)
             ListChoice(title, description: description, disclosure: .none, headerContent: {
                 badge
@@ -597,7 +509,7 @@ struct ListChoicePreviews: PreviewProvider {
                 ListChoice(title, description: description, disclosure: .none)
                 ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
                 ListChoice(title, icon: .airplane, disclosure: .none)
-                ListChoice(title, iconContent: .icon(.airplane, color: .inkLighter), disclosure: .none)
+                ListChoice(title, icon: .symbol(.airplane, color: .inkLighter), disclosure: .none)
                 ListChoice(title, description: description, icon: .airplane, disclosure: .none)
                 ListChoice(title, description: description, disclosure: .none) {
                     customContentPlaceholder

@@ -128,7 +128,8 @@ public struct InputField: View {
 
     @ViewBuilder var securedSuffix: some View {
         if value.isEmpty == false, state != .disabled {
-            Icon(isSecureTextEntry ? .visibility : .visibilityOff, size: .normal, color: .inkLight)
+            Icon(isSecureTextEntry ? .visibility : .visibilityOff)
+                .foregroundColor(.inkLight)
                 .padding(.vertical, .xSmall)
                 .padding(.horizontal, .small)
                 .contentShape(Rectangle())
@@ -227,7 +228,7 @@ struct InputFieldPreviews: PreviewProvider {
 
     static var standalone: some View {
         StateWrapper(initialState: value) { state in
-            InputField(label, value: state, prefix: .icon(.grid), suffix: .icon(.grid), placeholder: placeholder, state: .default)
+            InputField(label, value: state, prefix: .grid, suffix: .grid, placeholder: placeholder, state: .default)
         }
         .padding(.medium)
     }
@@ -247,15 +248,15 @@ struct InputFieldPreviews: PreviewProvider {
 
     static func inputField(value: String, message: MessageType) -> some View {
         StateWrapper(initialState: value) { state in
-            InputField(label, value: state, prefix: .icon(.grid), suffix: .icon(.grid), placeholder: placeholder, message: message)
+            InputField(label, value: state, prefix: .grid, suffix: .grid, placeholder: placeholder, message: message)
         }
     }
 
     static var storybookMix: some View {
         VStack(spacing: .medium) {
-            InputField("Empty", value: .constant(""), placeholder: placeholder)
-            InputField("Disabled, Empty", value: .constant(""), placeholder: placeholder, state: .disabled)
-            InputField("Disabled", value: .constant("Disabled Value"), placeholder: placeholder, state: .disabled)
+            InputField("Empty", value: .constant(""), prefix: .symbol(.grid, color: .blueDark), suffix: .symbol(.grid, color: .blueDark), placeholder: placeholder)
+            InputField("Disabled, Empty", value: .constant(""), prefix: .countryFlag("cz"), suffix: .countryFlag("us"), placeholder: placeholder, state: .disabled)
+            InputField("Disabled", value: .constant("Disabled Value"), prefix: .sfSymbol("info.circle.fill"), suffix: .sfSymbol("info.circle.fill"), placeholder: placeholder, state: .disabled)
             InputField("Default", value: .constant("InputField Value"))
             InputField("Modified", value: .constant("Modified value"), state: .modified)
             InputField("Focused", value: .constant("Focus / Help"), message: .help("Help message"))
@@ -391,7 +392,7 @@ struct InputFieldDynamicTypePreviews: PreviewProvider {
 
     @ViewBuilder static var content: some View {
         StateWrapper(initialState: InputFieldPreviews.value) { state in
-            InputField(InputFieldPreviews.label, value: state, prefix: .icon(.grid), suffix: .icon(.grid), placeholder: InputFieldPreviews.placeholder, state: .default)
+            InputField(InputFieldPreviews.label, value: state, prefix: .grid, suffix: .grid, placeholder: InputFieldPreviews.placeholder, state: .default)
         }
         InputField("Secured", value: .constant(""), placeholder: "Input password", isSecure: true)
     }

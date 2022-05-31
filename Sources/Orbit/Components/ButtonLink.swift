@@ -71,48 +71,15 @@ public extension ButtonLink {
     init(
         _ label: String = "",
         style: Style = .primary,
-        iconContent: Icon.Content = .none,
+        icon: Icon.Content = .none,
         size: Size = .default,
         action: @escaping () -> Void = {}
     ) {
         self.label = label
         self.style = style
-        self.iconContent = iconContent
+        self.iconContent = icon
         self.size = size
         self.action = action
-    }
-
-    /// Creates Orbit ButtonLink component with icon symbol.
-    init(
-        _ label: String = "",
-        style: Style = .primary,
-        icon: Icon.Symbol = .none,
-        size: Size = .default,
-        action: @escaping () -> Void = {}
-    ) {
-        self.init(
-            label,
-            style: style,
-            iconContent: .icon(icon),
-            size: size,
-            action: action
-        )
-    }
-    
-    /// Creates Orbit ButtonLink component with no icon.
-    init(
-        _ label: String = "",
-        style: Style = .primary,
-        size: Size = .default,
-        action: @escaping () -> Void = {}
-    ) {
-        self.init(
-            label,
-            style: style,
-            iconContent: .none,
-            size: size,
-            action: action
-        )
     }
 }
 
@@ -285,7 +252,7 @@ struct ButtonLinkPreviews: PreviewProvider {
                 .padding(.vertical)
                 .previewDisplayName("Icon only")
             
-            ButtonLink("Flag", iconContent: .countryFlag("us"))
+            ButtonLink("Flag", icon: .countryFlag("us"))
                 .padding(.vertical)
                 .previewDisplayName("Country flag")
         }

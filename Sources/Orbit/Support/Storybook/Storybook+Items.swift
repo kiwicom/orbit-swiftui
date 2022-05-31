@@ -79,8 +79,8 @@ extension Storybook {
 
                 case .alert:                return ["Basic", "Inline", "Mix", "Live"]
                 case .badge:                return ["Basic", "Gradient", "Mix"]
-                case .badgeList:            return ["Basic"]
-                case .button:               return ["Basic", "Status", "Gradient"]
+                case .badgeList:            return ["Basic", "Mix"]
+                case .button:               return ["Basic", "Status", "Gradient", "Mix"]
                 case .buttonLink:           return ["Basic", "Status", "Sizes"]
                 case .card:                 return ["Basic"]
                 case .carrierLogo:          return ["Basic"]
@@ -132,10 +132,12 @@ extension Storybook {
                 case (.badge, 0):               BadgePreviews.storybook
                 case (.badge, 1):               BadgePreviews.storybookGradient
                 case (.badge, 2):               BadgePreviews.storybookMix
-                case (.badgeList, _):           BadgeListPreviews.storybook
+                case (.badgeList, 0):           BadgeListPreviews.storybook
+                case (.badgeList, 1):           BadgeListPreviews.storybookMix
                 case (.button, 0):              ButtonPreviews.storybook
                 case (.button, 1):              ButtonPreviews.storybookStatus
                 case (.button, 2):              ButtonPreviews.storybookGradient
+                case (.button, 3):              ButtonPreviews.storybookMix
                 case (.buttonLink, 0):          ButtonLinkPreviews.storybook
                 case (.buttonLink, 1):          ButtonLinkPreviews.storybookStatus
                 case (.buttonLink, 2):          ButtonLinkPreviews.storybookSizes
@@ -223,7 +225,7 @@ extension Storybook {
                 case .select:               return "rectangle.arrowtriangle.2.outward"
                 case .separator:            return "directcurrent"
                 case .skeleton:             return "rectangle.dashed"
-                case .socialButton:         return "applelogo"
+                case .socialButton:         return "lock.icloud"
                 case .`switch`:             return "switch.2"
                 case .tabs:                 return "menubar.rectangle"
                 case .tag:                  return "123.rectangle.fill"

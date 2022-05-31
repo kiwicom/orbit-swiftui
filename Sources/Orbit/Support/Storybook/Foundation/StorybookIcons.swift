@@ -5,20 +5,10 @@ struct StorybookIcons {
     static var icons: [Icon.Symbol] { Icon.Symbol.allCases }
 
     @ViewBuilder static var storybook: some View {
-        content
-            .padding(.xSmall)
-    }
-
-    @ViewBuilder static var content: some View {
-        if #available(iOS 14, *) {
-            LazyVStack(alignment: .leading, spacing: .xSmall) {
-                stackContent
-            }
-        } else {
-            VStack(alignment: .leading, spacing: .xSmall) {
-                stackContent
-            }
+        LazyVStackIfAvailable(alignment: .leading, spacing: .xSmall) {
+            stackContent
         }
+        .padding(.xSmall)
     }
 
     @ViewBuilder static var stackContent: some View {
@@ -33,7 +23,8 @@ struct StorybookIcons {
 
     @ViewBuilder static func icon(_ icon: Icon.Symbol) -> some View {
         VStack(spacing: .xxSmall) {
-            Icon(icon)
+            Icon(.symbol(icon))
+                .foregroundColor(.inkNormal)
             Text(String(describing: icon).titleCased, size: .custom(10), color: .inkLight, isSelectable: true)
             Text(String(icon.value.unicodeCodePoint), size: .custom(10), isSelectable: true)
                 .padding(.horizontal, .xxSmall)

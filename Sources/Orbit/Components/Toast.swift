@@ -57,17 +57,18 @@ public struct Toast: View {
 public struct ToastContent: View {
         
     let description: String
-    let icon: Icon.Symbol
+    let iconContent: Icon.Content
     let progress: CGFloat
     
     public var body: some View {
         HStack {
             Label(
                 description,
-                iconContent: .icon(icon, color: .whiteNormal),
-                style: .text(weight: .regular, color: .white),
+                icon: iconContent,
+                style: .text(weight: .regular, color: .none),
                 spacing: .xSmall
             )
+            .foregroundColor(.whiteNormal)
             .padding(.small)
             
             Spacer()
@@ -103,9 +104,9 @@ public struct ToastContent: View {
     }
     
     /// Creates Orbit `Toast` component variant with no gesture handling or queue management.
-    public init(_ description: String, icon: Icon.Symbol = .none, progress: CGFloat = 0) {
+    public init(_ description: String, icon: Icon.Content = .none, progress: CGFloat = 0) {
         self.description = description
-        self.icon = icon
+        self.iconContent = icon
         self.progress = progress
     }
 }
@@ -117,7 +118,7 @@ public struct ToastWrapper: View {
     static let maxOffsetY: CGFloat = 10
     
     let description: String
-    let icon: Icon.Symbol
+    let iconContent: Icon.Content
     let progress: CGFloat
     let pauseAction: () -> Void
     let resumeAction: () -> Void
@@ -127,7 +128,7 @@ public struct ToastWrapper: View {
     @State private var gaveFeedback: Bool = false
     
     public var body: some View {
-        ToastContent(description, icon: icon, progress: progress)
+        ToastContent(description, icon: iconContent, progress: progress)
             .opacity(opacity)
             .offset(y: cappedOffsetY)
             .gesture(
@@ -169,14 +170,14 @@ public struct ToastWrapper: View {
     /// Creates Orbit `Toast` component variant with gesture handling.
     public init(
         _ description: String,
-        icon: Icon.Symbol = .none,
+        icon: Icon.Content = .none,
         progress: CGFloat = 0,
         pauseAction: @escaping () -> Void = {},
         resumeAction: @escaping() -> Void = {},
         dismissAction: @escaping () -> Void = {}
     ) {
         self.description = description
-        self.icon = icon
+        self.iconContent = icon
         self.progress = progress
         self.pauseAction = pauseAction
         self.resumeAction = resumeAction

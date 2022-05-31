@@ -101,21 +101,20 @@ public struct Storybook: View {
 
     @ViewBuilder func tileStack(items: [Item]) -> some View {
         ForEach(0 ..< items.count / 2, id: \.self) { rowIndex in
-            HStack(alignment: .top, spacing: .xSmall) {
+            HStack(alignment: .top, spacing: .small) {
                 tile(items[rowIndex * 2])
                 tile(items[rowIndex * 2 + 1])
             }
             .padding(.horizontal, .medium)
             .padding(.top, .xxxSmall)
-            .padding(.bottom, .xSmall)
-            .drawingGroup()
+            .padding(.bottom, .small)
         }
     }
 
     @ViewBuilder func tile(_ item: Item) -> some View {
         Tile(
             String(describing: item).titleCased,
-            iconContent: item.tabs.isEmpty ? .icon(.timelapse) : .sfSymbol(item.sfSymbol),
+            icon: item.tabs.isEmpty ? .timelapse : .sfSymbol(item.sfSymbol),
             disclosure: .none,
             titleStyle: .title5
         ) {

@@ -127,7 +127,7 @@ public extension Text {
     /// - Parameter content: String to display. Supports html formatting tags
     /// `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
     /// - Parameter size: Font size.
-    /// - Parameter color: Font color (overridable by formatting).
+    /// - Parameter color: Font color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
     /// - Parameter weight: Base font weight (overridable by formatting).
     /// - Parameter lineSpacing: Distance in points between the bottom of one line fragment and the top of the next.
     /// - Parameter alignment: Horizontal alignment.

@@ -19,12 +19,21 @@ public struct Label: View {
     public var body: some View {
         if isEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: spacing) {
-                Icon(iconContent, size: .label(style))
+                icon
                     .alignmentGuide(.labelIconCenter) { $0[HorizontalAlignment.center] }
 
                 titleView
                     .alignmentGuide(.labelTextLeading) { $0[.leading] }
             }
+        }
+    }
+
+    @ViewBuilder var icon: some View {
+        if let color = style.color {
+            Icon(iconContent, size: .label(style))
+                .foregroundColor(color)
+        } else {
+            Icon(iconContent, size: .label(style))
         }
     }
     
@@ -60,29 +69,14 @@ public extension Label {
     /// Creates Orbit Label component.
     init(
         _ title: String = "",
-        iconContent: Icon.Content,
+        icon: Icon.Content = .none,
         style: Style = .title4,
         spacing: CGFloat = Self.defaultSpacing
     ) {
         self.title = title
-        self.iconContent = iconContent
+        self.iconContent = icon
         self.style = style
         self.spacing = spacing
-    }
-
-    /// Creates Orbit Label component.
-    init(
-        _ title: String = "",
-        icon: Icon.Symbol = .none,
-        style: Style = .title4,
-        spacing: CGFloat = Self.defaultSpacing
-    ) {
-        self.init(
-            title: title,
-            iconContent: .icon(icon, color: style.color),
-            style: style,
-            spacing: spacing
-        )
     }
 }
 
@@ -209,10 +203,10 @@ struct LabelPreviews: PreviewProvider {
                 Heading("leading alignment", style: .title5)
                 Label("Label", icon: .grid, style: .title1)
                 Label("Label", icon: .grid, style: .text(.small))
-                Label("Label", iconContent: .countryFlag("us"), style: .title1)
-                Label("Label", iconContent: .countryFlag("us"), style: .text(.small))
-                Label("Label", iconContent: .sfSymbol("info.circle.fill"), style: .title1)
-                Label("Label", iconContent: .sfSymbol("info.circle.fill"), style: .text(.small))
+                Label("Label", icon: .countryFlag("us"), style: .title1)
+                Label("Label", icon: .countryFlag("us"), style: .text(.small))
+                Label("Label", icon: .sfSymbol("info.circle.fill"), style: .title1)
+                Label("Label", icon: .sfSymbol("info.circle.fill"), style: .text(.small))
             }
 
             
@@ -220,10 +214,10 @@ struct LabelPreviews: PreviewProvider {
                 Heading("labelTextLeading alignment", style: .title5)
                 Label("Label", icon: .grid, style: .title1)
                 Label("Label", icon: .grid, style: .text(.small))
-                Label("Label", iconContent: .countryFlag("us"), style: .title1)
-                Label("Label", iconContent: .countryFlag("us"), style: .text(.small))
-                Label("Label", iconContent: .sfSymbol("info.circle.fill"), style: .title1)
-                Label("Label", iconContent: .sfSymbol("info.circle.fill"), style: .text(.small))
+                Label("Label", icon: .countryFlag("us"), style: .title1)
+                Label("Label", icon: .countryFlag("us"), style: .text(.small))
+                Label("Label", icon: .sfSymbol("info.circle.fill"), style: .title1)
+                Label("Label", icon: .sfSymbol("info.circle.fill"), style: .text(.small))
             }
             
 
@@ -231,10 +225,10 @@ struct LabelPreviews: PreviewProvider {
                 Heading("labelIconCenter alignment", style: .title5)
                 Label("Label", icon: .grid, style: .title1)
                 Label("Label", icon: .grid, style: .text(.small))
-                Label("Label", iconContent: .countryFlag("us"), style: .title1)
-                Label("Label", iconContent: .countryFlag("us"), style: .text(.small))
-                Label("Label", iconContent: .sfSymbol("info.circle.fill"), style: .title1)
-                Label("Label", iconContent: .sfSymbol("info.circle.fill"), style: .text(.small))
+                Label("Label", icon: .countryFlag("us"), style: .title1)
+                Label("Label", icon: .countryFlag("us"), style: .text(.small))
+                Label("Label", icon: .sfSymbol("info.circle.fill"), style: .title1)
+                Label("Label", icon: .sfSymbol("info.circle.fill"), style: .text(.small))
             }
         }
         .padding()
@@ -277,11 +271,11 @@ struct LabelPreviews: PreviewProvider {
                 .foregroundColor(.blueNormal)
                 .border(Color.cloudLight)
             
-            Label("SF Symbol", iconContent: .sfSymbol("info.circle.fill"), style: .heading(.title5, color: .none))
+            Label("SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .heading(.title5, color: .none))
                 .foregroundColor(.blueNormal)
                 .border(Color.cloudLight)
             
-            Label("CountryFlag", iconContent: .countryFlag("us"), style: .heading(.title5, color: .none))
+            Label("CountryFlag", icon: .countryFlag("us"), style: .heading(.title5, color: .none))
                 .foregroundColor(.blueNormal)
                 .border(Color.cloudLight)
         }

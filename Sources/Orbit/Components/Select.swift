@@ -63,7 +63,7 @@ public extension Select {
         prefix: Icon.Content = .none,
         value: String?,
         placeholder: String = "",
-        suffix: Icon.Content = .icon(.chevronDown),
+        suffix: Icon.Content = .chevronDown,
         state: InputState = .default,
         message: MessageType = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
@@ -94,7 +94,7 @@ struct SelectPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Select(InputFieldPreviews.label, prefix: .icon(.grid), value: InputFieldPreviews.value)
+        Select(InputFieldPreviews.label, prefix: .grid, value: InputFieldPreviews.value)
             .padding(.medium)
     }
 
@@ -112,41 +112,41 @@ struct SelectPreviews: PreviewProvider {
     }
 
     static func select(value: String, message: MessageType) -> some View {
-        Select(InputFieldPreviews.label, prefix: .icon(.grid), value: value, placeholder: InputFieldPreviews.placeholder, message: message)
+        Select(InputFieldPreviews.label, prefix: .grid, value: value, placeholder: InputFieldPreviews.placeholder, message: message)
     }
 
     @ViewBuilder static var storybookMix: some View {
         VStack(spacing: .medium) {
             Group {
                 Select("Label", value: "Value")
-                Select("", prefix: .icon(.grid), value: "Value")
-                Select("", prefix: .icon(.airplane), value: nil, placeholder: "Please select")
-                Select("Label (Empty Value)", prefix: .icon(.airplane), value: "")
-                Select("Label (No Value)", prefix: .icon(.airplane), value: nil, placeholder: "Please select")
-                Select("Label", prefix: .icon(.phone), value: "Value")
+                Select("", prefix: .grid, value: "Value")
+                Select("", prefix: .airplane, value: nil, placeholder: "Please select")
+                Select("Label (Empty Value)", prefix: .airplane, value: "")
+                Select("Label (No Value)", prefix: .airplane, value: nil, placeholder: "Please select")
+                Select("Label", prefix: .phone, value: "Value")
                 Select("Label", prefix: .countryFlag("us"), value: "Value")
             }
 
             Group {
-                Select("Label (Disabled)", prefix: .icon(.airplane), value: "Value", state: .disabled)
+                Select("Label (Disabled)", prefix: .airplane, value: "Value", state: .disabled)
                 Select(
                     "Label (Disabled)",
-                    prefix: .icon(.airplane),
+                    prefix: .airplane,
                     value: nil,
                     placeholder: "Please select",
                     state: .disabled
                 )
-                Select("Label (Modified)", prefix: .icon(.airplane), value: "Modified Value", state: .modified)
+                Select("Label (Modified)", prefix: .airplane, value: "Modified Value", state: .modified)
                 Select(
                     "Label (Modified)",
-                    prefix: .icon(.airplane),
+                    prefix: .airplane,
                     value: nil,
                     placeholder: "Please select",
                     state: .modified
                 )
                 Select(
                     "Label (Info)",
-                    prefix: .icon(.informationCircle),
+                    prefix: .informationCircle,
                     value: "Value",
                     message: .help("Help message, also very long and multi-line to test that it works.")
                 )
