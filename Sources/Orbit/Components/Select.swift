@@ -40,7 +40,6 @@ public struct Select: View {
                     prefix: prefix,
                     suffix: suffix,
                     state: state,
-                    value: value,
                     message: message
                 )
             )

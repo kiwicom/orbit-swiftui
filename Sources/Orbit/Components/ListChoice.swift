@@ -91,7 +91,9 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 if isHeaderTextEmpty == false {
                     VStack(alignment: .labelTextLeading, spacing: .xxxSmall) {
                         Text(title, weight: .medium)
+                            .accessibility(.listChoiceTitle)
                         Text(description, size: .small, color: .inkLight)
+                            .accessibility(.listChoiceDescription)
                     }
                 }
             }

@@ -20,7 +20,10 @@ public struct Dialog: View {
 
             VStack(alignment: .center, spacing: .xSmall) {
                 Heading(title, style: .title3, alignment: .center)
+                    .accessibility(.dialogTitle)
+
                 Text(description, color: .inkLight, alignment: .center)
+                    .accessibility(.dialogDescription)
             }
 
             VStack(alignment: .center, spacing: .xSmall) {
@@ -46,7 +49,7 @@ public struct Dialog: View {
                  .primaryAndSecondary(let primaryButton, _),
                  .primarySecondaryAndTertiary(let primaryButton, _, _):
                 Button(primaryButton.label, style: style.buttonStyle, action: primaryButton.action)
-                    .accessibility(identifier: primaryButton.accessibilityIdentifier)
+                    .accessibility(.dialogButtonPrimary)
         }
 
         switch buttonConfiguration {
@@ -55,7 +58,7 @@ public struct Dialog: View {
             case .primaryAndSecondary(_, let secondaryButton),
                  .primarySecondaryAndTertiary(_, let secondaryButton, _):
                 ButtonLink(secondaryButton.label, style: style.buttonLinkStyle, size: .button, action: secondaryButton.action)
-                    .accessibility(identifier: secondaryButton.accessibilityIdentifier)
+                    .accessibility(.dialogButtonSecondary)
         }
 
         switch buttonConfiguration {
@@ -65,7 +68,7 @@ public struct Dialog: View {
                 EmptyView()
             case .primarySecondaryAndTertiary(_, _, let tertiaryButton):
                 ButtonLink(tertiaryButton.label, style: style.buttonLinkStyle, size: .button, action: tertiaryButton.action)
-                    .accessibility(identifier: tertiaryButton.accessibilityIdentifier)
+                    .accessibility(.dialogButtonTertiary)
         }
     }
 }

@@ -42,22 +42,23 @@ struct InputContent<Content: View>: View {
     var prefix: Icon.Content = .none
     var suffix: Icon.Content = .none
     var state: InputState = .default
-    var value: String?
     var message: MessageType = .none
     var isPressed: Bool = false
     var isEditing: Bool = false
     var suffixAction: (() -> Void)? = nil
-    let label: () -> Content
+    let value: () -> Content
     
     var body: some View {
         HStack(spacing: 0) {
             Icon(content: prefix, size: .large)
                 .foregroundColor(prefixColor)
                 .padding(.horizontal, .xSmall)
+                .accessibility(.inputPrefix)
 
-            label()
+            value()
                 .lineLimit(1)
                 .padding(.leading, prefix.isEmpty ? .small : 0)
+                .accessibility(.inputValue)
 
             Spacer(minLength: 0)
 
@@ -67,6 +68,7 @@ struct InputContent<Content: View>: View {
             if let suffixAction = suffixAction {
                 suffixIcon
                     .onTapGesture(perform: suffixAction)
+                    .accessibility(addTraits: .isButton)
             } else {
                 suffixIcon
             }
@@ -86,6 +88,7 @@ struct InputContent<Content: View>: View {
             .foregroundColor(suffixColor)
             .padding(.horizontal, .xSmall)
             .contentShape(Rectangle())
+            .accessibility(.inputSuffix)
     }
     
     private func backgroundColor(isPressed: Bool) -> Color {
@@ -133,7 +136,6 @@ struct InputStyle: ButtonStyle {
     var prefix: Icon.Content = .none
     var suffix: Icon.Content = .none
     var state: InputState = .default
-    var value: String?
     var message: MessageType = .none
     var isEditing = false
 
@@ -142,7 +144,6 @@ struct InputStyle: ButtonStyle {
             prefix: prefix,
             suffix: suffix,
             state: state,
-            value: value,
             message: message,
             isPressed: configuration.isPressed,
             isEditing: isEditing

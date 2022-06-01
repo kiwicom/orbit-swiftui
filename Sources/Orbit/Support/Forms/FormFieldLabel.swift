@@ -8,6 +8,7 @@ public struct FormFieldLabel: View {
     public var body: some View {
         Text(label, size: .normal, weight: .medium)
             .padding(.bottom, 1)
+            .accessibility(.fieldLabel)
     }
 
     public init(_ label: String) {

@@ -275,12 +275,10 @@ extension Button {
 
     public struct Content: ExpressibleByStringLiteral {
         public let label: String
-        public let accessibilityIdentifier: String
         public let action: () -> Void
 
-        public init(_ label: String, accessibilityIdentifier: String = "", action: @escaping () -> Void = {}) {
+        public init(_ label: String, action: @escaping () -> Void = {}) {
             self.label = label
-            self.accessibilityIdentifier = accessibilityIdentifier
             self.action = action
         }
 

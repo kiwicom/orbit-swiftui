@@ -121,6 +121,8 @@ public struct InputField: View {
                 .onTapGesture {
                     value = ""
                 }
+                .accessibility(addTraits: .isButton)
+                .accessibility(.inputFieldClear)
         }
     }
 
@@ -134,6 +136,8 @@ public struct InputField: View {
                 .onTapGesture {
                     isSecureTextEntry.toggle()
                 }
+                .accessibility(addTraits: .isButton)
+                .accessibility(.inputFieldPasswordToggle)
         }
     }
 }

@@ -15,6 +15,7 @@ public struct PasswordStrengthIndicator: View {
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }
             .animation(.easeOut, value: passwordStrength)
+            .accessibility(.passwordStrengthIndicator)
         }
     }
 

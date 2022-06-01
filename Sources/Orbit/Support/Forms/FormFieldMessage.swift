@@ -16,6 +16,7 @@ public struct FormFieldMessage: View {
                     }
             }
             .transition(.opacity.animation(.easeOut(duration: 0.2)))
+            .accessibility(.fieldMessage)
         }
     }
 
@@ -31,6 +32,7 @@ struct FormFieldMessagePreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             FormFieldMessage(.normal("Form Field Message", icon: .informationCircle))
+            FormFieldMessage(.help("Help Message"))
             FormFieldMessage(.error("Form Field Message", icon: .alertCircle))
         }
         .previewLayout(.sizeThatFits)
