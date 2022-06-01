@@ -15,7 +15,7 @@ jobs:
         set -o pipefail && xcodebuild docbuild \
           -scheme Orbit \
           -destination "generic/platform=iOS" \
-          OTHER_DOCC_FLAGS="--transform-for-static-hosting --output-path docs" \
+          OTHER_DOCC_FLAGS="--transform-for-static-hosting --hosting-base-path orbit-swiftui --output-path docs" \
           | xcpretty
     - name: Deploy to Github Pages
       uses: JamesIves/github-pages-deploy-action@v4.3.3
@@ -23,3 +23,6 @@ jobs:
         branch: docc
         folder: docs
         target-folder: docs
+        git-config-name: Mobile Automation
+        git-config-email: mobile.automation@kiwi.com
+        commit-message: Updated DocC documentation
