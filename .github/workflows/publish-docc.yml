@@ -1,0 +1,19 @@
+name: Publish DocC
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-11
+    steps:
+    - uses: actions/checkout@v2
+    - name: Publish DocC
+      run: |
+        mkdir -p docs
+        set -o pipefail && xcodebuild docbuild \
+          -scheme Orbit \
+          -destination "generic/platform=iOS" \
+          OTHER_DOCC_FLAGS="--transform-for-static-hosting --output-path docs" \
+          | xcpretty
