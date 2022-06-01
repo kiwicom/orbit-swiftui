@@ -85,7 +85,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     @ViewBuilder var headerTexts: some View {
         if isHeaderEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-                Icon(iconContent)
+                Icon(content: iconContent)
                     .foregroundColor(.inkNormal)
                 
                 if isHeaderTextEmpty == false {
@@ -105,7 +105,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
             case .none:
                 EmptyView()
             case .disclosure(let color):
-                Icon(.symbol(.chevronRight, color: color))
+                Icon(.chevronRight, color: color)
                     .padding(.leading, -.xSmall)
             case .button(let type):
                 disclosureButton(type: type)
@@ -463,7 +463,13 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, disclosure: .radio(state: .disabled))
             ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false, state: .error))
             ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false, state: .disabled))
-            ListChoice(title, description: description, icon: .airplane, disclosure: .radio(isChecked: false)) {
+            ListChoice(
+                title,
+                description: description,
+                icon: .airplane,
+                disclosure: .radio(isChecked: false),
+                action: {}
+            ) {
                 customContentPlaceholder
             } headerContent: {
                 headerContent

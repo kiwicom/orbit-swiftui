@@ -67,7 +67,7 @@ public extension Icon {
     ///
     /// - Parameters:
     ///     - content: Icon content. Can optionally include the color override.
-    init(_ content: Icon.Content, size: Size = .normal) {
+    init(content: Icon.Content, size: Size = .normal) {
         self.content = content
         self.size = size
     }
@@ -77,20 +77,26 @@ public extension Icon {
     /// - Parameters:
     ///     - color: Icon color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
     init(_ symbol: Icon.Symbol, size: Size = .normal, color: Color? = .inkNormal) {
-        self.content = .symbol(symbol, color: color)
-        self.size = size
+        self.init(
+            content: .symbol(symbol, color: color),
+            size: size
+        )
     }
     
     /// Creates Orbit Icon component for provided Image.
     init(image: Image, size: Size = .normal) {
-        self.content = .image(image)
-        self.size = size
+        self.init(
+            content: .image(image),
+            size: size
+        )
     }
     
     /// Creates Orbit Icon component for provided country code.
     init(countryCode: String, size: Size = .normal) {
-        self.content = .countryFlag(countryCode)
-        self.size = size
+        self.init(
+            content: .countryFlag(countryCode),
+            size: size
+        )
     }
     
     /// Creates Orbit Icon component for provided SF Symbol with specified color.
@@ -98,8 +104,10 @@ public extension Icon {
     /// - Parameters:
     ///     - color: SF Symbol color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
     init(sfSymbol: String, size: Size = .normal, color: Color? = .inkNormal) {
-        self.content = .sfSymbol(sfSymbol, color: color)
-        self.size = size
+        self.init(
+            content: .sfSymbol(sfSymbol, color: color),
+            size: size
+        )
     }
 }
 
@@ -373,12 +381,12 @@ struct IconPreviews: PreviewProvider {
         VStack(spacing: .small) {
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
-                    Icon(.sfSymbol(sfSymbol), size: .custom(Text.Size.xLarge.iconSize))
-                    Icon(.sfSymbol(sfSymbol), size: .fontSize(Text.Size.xLarge.value))
-                    Icon(.sfSymbol(sfSymbol), size: .label(.text(.xLarge)))
-                    Icon(.informationCircle, size: .custom(Text.Size.xLarge.iconSize))
-                    Icon(.informationCircle, size: .fontSize(Text.Size.xLarge.value))
-                    Icon(.informationCircle, size: .label(.text(.xLarge)))
+                    Icon(sfSymbol: sfSymbol, size: .custom(Text.Size.xLarge.iconSize), color: nil)
+                    Icon(sfSymbol: sfSymbol, size: .fontSize(Text.Size.xLarge.value), color: nil)
+                    Icon(sfSymbol: sfSymbol, size: .label(.text(.xLarge)), color: nil)
+                    Icon(.informationCircle, size: .custom(Text.Size.xLarge.iconSize), color: nil)
+                    Icon(.informationCircle, size: .fontSize(Text.Size.xLarge.value), color: nil)
+                    Icon(.informationCircle, size: .label(.text(.xLarge)), color: nil)
                     Text("XLarge", size: .xLarge, color: nil)
                 }
                 .foregroundColor(.blueNormal)
@@ -388,12 +396,12 @@ struct IconPreviews: PreviewProvider {
             
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
-                    Icon(.sfSymbol(sfSymbol), size: .custom(Text.Size.small.iconSize))
-                    Icon(.sfSymbol(sfSymbol), size: .fontSize(Text.Size.small.value))
-                    Icon(.sfSymbol(sfSymbol), size: .label(.text(.small)))
-                    Icon(.informationCircle, size: .custom(Text.Size.small.iconSize))
-                    Icon(.informationCircle, size: .fontSize(Text.Size.small.value))
-                    Icon(.informationCircle, size: .label(.text(.small)))
+                    Icon(sfSymbol: sfSymbol, size: .custom(Text.Size.small.iconSize), color: nil)
+                    Icon(sfSymbol: sfSymbol, size: .fontSize(Text.Size.small.value), color: nil)
+                    Icon(sfSymbol: sfSymbol, size: .label(.text(.small)), color: nil)
+                    Icon(.informationCircle, size: .custom(Text.Size.small.iconSize), color: nil)
+                    Icon(.informationCircle, size: .fontSize(Text.Size.small.value), color: nil)
+                    Icon(.informationCircle, size: .label(.text(.small)), color: nil)
                     Text("Small", size: .small, color: nil)
                 }
                 .foregroundColor(.blueNormal)
@@ -403,9 +411,9 @@ struct IconPreviews: PreviewProvider {
             
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
-                    Icon(.countryFlag("cz"), size: .xLarge)
-                    Icon(.image(.orbit(.facebook)), size: .xLarge)
-                    Icon(.sfSymbol(sfSymbol), size: .xLarge)
+                    Icon(countryCode: "cz", size: .xLarge)
+                    Icon(image: .orbit(.facebook), size: .xLarge)
+                    Icon(sfSymbol: sfSymbol, size: .xLarge, color: nil)
                     Text("Text", size: .custom(20), color: nil)
                 }
                 .foregroundColor(.blueNormal)
@@ -415,9 +423,9 @@ struct IconPreviews: PreviewProvider {
             
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
-                    Icon(.countryFlag("cz"), size: .small)
-                    Icon(.image(.orbit(.facebook)), size: .small)
-                    Icon(.sfSymbol(sfSymbol), size: .small)
+                    Icon(countryCode: "cz", size: .small)
+                    Icon(image: .orbit(.facebook), size: .small)
+                    Icon(sfSymbol: sfSymbol, size: .small, color: nil)
                     Text("Text", size: .small, color: nil)
                 }
                 .foregroundColor(.blueNormal)
@@ -437,9 +445,9 @@ struct IconPreviews: PreviewProvider {
             .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
             
             HStack(alignment: .firstTextBaseline) {
-                Icon(.grid, size: .xLarge)
-                Icon(.symbol(.grid, color: nil))
-                Icon(.symbol(.grid, color: .blueNormal), size: .small)
+                Icon(content: .grid, size: .xLarge)
+                Icon(content: .symbol(.grid, color: nil))
+                Icon(content: .symbol(.grid, color: .blueNormal), size: .small)
             }
             .foregroundColor(.blueDark)
             .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))

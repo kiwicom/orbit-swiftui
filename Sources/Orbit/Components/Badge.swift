@@ -25,7 +25,7 @@ public struct Badge: View {
         if isEmpty == false {
             HStack(spacing: 0) {
                 HStack(spacing: .xxSmall) {
-                    Icon(iconContent, size: .small)
+                    Icon(content: iconContent, size: .small)
 
                     Text(
                         label,

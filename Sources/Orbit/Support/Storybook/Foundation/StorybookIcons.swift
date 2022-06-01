@@ -23,7 +23,7 @@ struct StorybookIcons {
 
     @ViewBuilder static func icon(_ icon: Icon.Symbol) -> some View {
         VStack(spacing: .xxSmall) {
-            Icon(.symbol(icon))
+            Icon(icon)
                 .foregroundColor(.inkNormal)
             Text(String(describing: icon).titleCased, size: .custom(10), color: .inkLight, isSelectable: true)
             Text(String(icon.value.unicodeCodePoint), size: .custom(10), isSelectable: true)

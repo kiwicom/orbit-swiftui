@@ -80,7 +80,7 @@ public struct ChoiceTile<Content: View>: View {
                 case .default:
                     HStack(alignment: .firstTextBaseline, spacing: 0) {
                         
-                        Icon(iconContent, size: .heading(titleStyle))
+                        Icon(content: iconContent, size: .heading(titleStyle))
                             .foregroundColor(.inkNormal)
                             .padding(.trailing, .xSmall)
                         
@@ -96,7 +96,7 @@ public struct ChoiceTile<Content: View>: View {
                 case .center:
                     VStack(spacing: .xxSmall) {
                         if illustration == .none {
-                            Icon(iconContent, size: .heading(titleStyle))
+                            Icon(content: iconContent, size: .heading(titleStyle))
                                 .padding(.bottom, .xxSmall)
                         } else {
                             Illustration(illustration, layout: .resizeable)

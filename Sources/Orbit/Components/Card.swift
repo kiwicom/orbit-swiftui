@@ -73,7 +73,7 @@ public struct Card<Content: View>: View {
         if isHeaderEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: 0) {
 
-                Icon(iconContent, size: .heading(titleStyle))
+                Icon(content: iconContent, size: .heading(titleStyle))
                     .padding(.trailing, .xSmall)
                 
                 VStack(alignment: .leading, spacing: .xxSmall) {

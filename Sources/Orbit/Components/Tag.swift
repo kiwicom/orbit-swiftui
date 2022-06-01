@@ -30,7 +30,7 @@ public struct Tag: View {
                 label: {
                     HStack(spacing: 0) {
                         HStack(alignment: .firstTextBaseline, spacing: 6) {
-                            Icon(iconContent)
+                            Icon(content: iconContent)
                             Text(label, color: nil, weight: .medium)
                                 .padding(.vertical, Self.verticalPadding)
                         }

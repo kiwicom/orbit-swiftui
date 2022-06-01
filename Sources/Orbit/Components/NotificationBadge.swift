@@ -23,7 +23,7 @@ public struct NotificationBadge: View {
         if isEmpty == false {
             HStack(spacing: 0) {
                 HStack(spacing: .xxxSmall) {
-                    Icon(iconContent, size: .text(Self.textSize))
+                    Icon(content: iconContent, size: .text(Self.textSize))
                     
                     Text(
                         label,
