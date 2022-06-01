@@ -23,3 +23,4 @@ jobs:
       with:
         branch: docc
         folder: docs
+        target-folder: docs
