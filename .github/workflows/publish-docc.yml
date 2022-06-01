@@ -5,15 +5,22 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-    runs-on: macos-11
+  documentation:
+    runs-on: macos-12
     steps:
     - uses: actions/checkout@v2
-    - name: Publish DocC
+    - name: Generate DocC
       run: |
         mkdir -p docs
         set -o pipefail && xcodebuild docbuild \
           -scheme Orbit \
           -destination "generic/platform=iOS" \
-          OTHER_DOCC_FLAGS="--transform-for-static-hosting --output-path docs" \
-          | xcpretty
+          OTHER_DOCC_FLAGS="--transform-for-static-hosting --output-path docs"
+    - name: Push to repo
+      uses: s0/git-publish-subdir-action@develop
+      env:
+        REPO: self
+        BRANCH: docc
+        FOLDER: docs
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        MESSAGE: "Updated documentation."
