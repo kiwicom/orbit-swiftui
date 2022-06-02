@@ -29,3 +29,5 @@ autolabeler:
     files:
       - 'Automation/**/*'
       - '.github/**/*'
+  - label: 'documentation'
+    files: 'Sources/Orbit/Orbit.docc/**/*'
