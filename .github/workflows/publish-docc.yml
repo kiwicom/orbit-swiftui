@@ -1,8 +1,8 @@
 name: Publish DocC
 
 on:
-  push:
-    branches: [ main ]
+  release:
+    types: [published]
 
 jobs:
   documentation:
@@ -25,4 +25,4 @@ jobs:
         target-folder: docs
         git-config-name: Mobile Automation
         git-config-email: mobile.automation@kiwi.com
-        commit-message: Updated DocC documentation
+        commit-message: Updated DocC documentation for version ${{ github.event.release.tag_name }}
