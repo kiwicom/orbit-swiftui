@@ -67,18 +67,20 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     }
     
     @ViewBuilder var header: some View {
-        HStack(spacing: 0) {
-            headerTexts
+        if isHeaderEmpty == false || isCustomHeaderEmpty == false {
+            HStack(spacing: 0) {
+                headerTexts
 
-            if isHeaderEmpty == false {
-                Spacer(minLength: .xSmall)
+                if isHeaderEmpty == false {
+                    Spacer(minLength: .xSmall)
+                }
+
+                TextStrut(.large)
+                    .padding(.vertical, verticalPadding)
+
+                headerContent()
+                    .padding(.trailing, disclosure == .none ? .medium : 0)
             }
-
-            TextStrut(.large)
-                .padding(.vertical, verticalPadding)
-
-            headerContent()
-                .padding(.trailing, disclosure == .none ? .medium : 0)
         }
     }
     
@@ -150,6 +152,10 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     
     var isHeaderEmpty: Bool {
         iconContent.isEmpty && isHeaderTextEmpty
+    }
+
+    var isCustomHeaderEmpty: Bool {
+        headerContent() is EmptyView
     }
 
     var isHeaderTextEmpty: Bool {
@@ -524,6 +530,18 @@ struct ListChoicePreviews: PreviewProvider {
                 } headerContent: {
                     headerContent
                 }
+                ListChoice(
+                    disclosure: .none,
+                    content: {
+                        customContentPlaceholder
+                    }
+                )
+                ListChoice(
+                    disclosure: .none,
+                    headerContent: {
+                        headerContent
+                    }
+                )
             }
             .background(Color.whiteNormal)
         }
