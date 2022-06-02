@@ -2,7 +2,7 @@ import SwiftUI
 
 public enum CardAction {
     case none
-    case buttonLink(_ label: String, action: () -> Void = {}, accessibilityIdentifier: String = "")
+    case buttonLink(_ label: String, action: () -> Void = {})
 }
 
 /// Specifies the padding and spacing behavior of Card content.
@@ -78,7 +78,9 @@ public struct Card<Content: View>: View {
                 
                 VStack(alignment: .leading, spacing: .xxSmall) {
                     Heading(title, style: titleStyle)
+                        .accessibility(.cardTitle)
                     Text(description, color: .inkLight)
+                        .accessibility(.cardDescription)
                 }
 
                 if case .expanding = width {
@@ -86,10 +88,10 @@ public struct Card<Content: View>: View {
                 }
 
                 switch action {
-                    case .buttonLink(let label, let action, let accessibilityIdentifier):
+                    case .buttonLink(let label, let action):
                         if label.isEmpty == false {
                             ButtonLink(label, action: action)
-                                .accessibility(identifier: accessibilityIdentifier)
+                                .accessibility(.cardActionButtonLink)
                         }
                     case .none:
                         EmptyView()

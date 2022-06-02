@@ -86,12 +86,16 @@ public struct ChoiceTile<Content: View>: View {
                         
                         VStack(alignment: .leading, spacing: .xxSmall) {
                             Heading(title, style: titleStyle)
+                                .accessibility(.choiceTileTitle)
+
                             Text(description, color: .inkLight)
+                                .accessibility(.choiceTileDescription)
                         }
                         
                         Spacer(minLength: .xSmall)
                         
                         Badge(badge, style: .status(.info))
+                            .accessibility(.choiceTileBadge)
                     }
                 case .center:
                     VStack(spacing: .xxSmall) {
@@ -104,8 +108,13 @@ public struct ChoiceTile<Content: View>: View {
                                 .padding(.bottom, .xxSmall)
                         }
                         Heading(title, style: titleStyle, alignment: .center)
+                            .accessibility(.choiceTileTitle)
+
                         Text(description, color: .inkLight, alignment: .center)
+                            .accessibility(.choiceTileDescription)
+
                         Badge(badge, style: .neutral)
+                            .accessibility(.choiceTileBadge)
                     }
                     .frame(maxWidth: .infinity)
             }

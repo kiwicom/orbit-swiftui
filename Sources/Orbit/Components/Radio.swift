@@ -12,7 +12,7 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/radio/)
 public struct Radio: View {
 
-    let label: String
+    let title: String
     let description: String
     let state: State
     let isChecked: Bool
@@ -25,10 +25,12 @@ public struct Radio: View {
                 action()
             },
             label: {
-                if label.isEmpty == false || description.isEmpty == false {
+                if title.isEmpty == false || description.isEmpty == false {
                     VStack(alignment: .leading, spacing: 0) {
-                        Heading(label, style: .title5, color: labelColor)
+                        Heading(title, style: .title5, color: labelColor)
+                            .accessibility(.radioTitle)
                         Text(description, size: .small, color: descriptionColor)
+                            .accessibility(.radioDescription)
                     }
                 }
             }
@@ -53,13 +55,13 @@ public extension Radio {
     
     /// Creates Orbit Radio component.
     init(
-        _ label: String = "",
+        _ title: String = "",
         description: String = "",
         state: State = .normal,
         isChecked: Bool = false,
         action: @escaping () -> Void = {}
     ) {
-        self.label = label
+        self.title = title
         self.description = description
         self.state = state
         self.isChecked = isChecked

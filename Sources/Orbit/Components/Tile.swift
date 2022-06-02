@@ -128,7 +128,9 @@ public struct Tile<Content: View>: View {
 
                 VStack(alignment: .labelTextLeading, spacing: .xxSmall) {
                     Heading(title, style: titleStyle)
+                        .accessibility(.tileTitle)
                     Text(description, color: .inkLight)
+                        .accessibility(.tileDescription)
                 }
                 .padding(.vertical, verticalTextPadding)
 
@@ -145,10 +147,10 @@ public struct Tile<Content: View>: View {
             case .none, .icon:
                 EmptyView()
             case .buttonLink(let label, let style):
-                Spacer(minLength: 0)
                 ButtonLink(label, style: style)
                     .disabled(true)
                     .padding(.vertical, -.xxxSmall)
+                    .accessibility(.tileDisclosureButtonLink)
         }
     }
 
@@ -160,6 +162,7 @@ public struct Tile<Content: View>: View {
                 Icon(content: icon)
                     .foregroundColor(.inkLight)
                     .padding(.leading, .xSmall)
+                    .accessibility(.tileDisclosureIcon)
         }
     }
 

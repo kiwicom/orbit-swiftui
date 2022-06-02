@@ -25,7 +25,9 @@ public struct EmptyState: View {
         if title.isEmpty == false || description.isEmpty == false {
             VStack(spacing: .xSmall) {
                 Heading(title, style: .title4, alignment: .center)
+                    .accessibility(.emptyStateTitle)
                 Text(description, color: .inkLight, alignment: .center)
+                    .accessibility(.emptyStateDescription)
             }
         }
     }
@@ -37,6 +39,7 @@ public struct EmptyState: View {
             case .button(let label, let style, let action):
                 Button(label, style: style, action: action)
                     .fixedSize(horizontal: true, vertical: true)
+                    .accessibility(.emptyStateButton)
         }
     }
 }

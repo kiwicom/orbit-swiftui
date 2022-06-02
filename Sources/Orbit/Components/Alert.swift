@@ -54,7 +54,9 @@ public struct Alert<Content: View>: View {
                 if isHeaderEmpty == false {
                     VStack(alignment: .leading, spacing: .xxSmall) {
                         Text(title, weight: .bold)
+                            .accessibility(.alertTitle)
                         Text(description, linkColor: .secondary, linkAction: descriptionLinkAction)
+                            .accessibility(.alertDescription)
                     }
                 }
                 
@@ -82,6 +84,7 @@ public struct Alert<Content: View>: View {
                 case .primary(let primaryButton),
                      .primaryAndSecondary(let primaryButton, _):
                     Button(primaryButton.label, style: primaryButtonStyle, size: .small, action: primaryButton.action)
+                        .accessibility(.alertButtonPrimary)
                 case .none, .secondary:
                     EmptyView()
             }
@@ -90,6 +93,7 @@ public struct Alert<Content: View>: View {
                 case .secondary(let secondaryButton),
                      .primaryAndSecondary(_, let secondaryButton):
                     Button(secondaryButton.label, style: secondaryButtonStyle, size: .small, action: secondaryButton.action)
+                        .accessibility(.alertButtonSecondary)
                 case .none, .primary:
                     EmptyView()
             }
