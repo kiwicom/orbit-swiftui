@@ -129,7 +129,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
 
     @ViewBuilder var separator: some View {
         if showSeparator {
-            HairlineSeparator()
+            Separator(thickness: .hairline)
                 .padding(.leading, separatorPadding)
         }
     }

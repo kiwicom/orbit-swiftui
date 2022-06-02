@@ -51,13 +51,31 @@ public extension Separator {
     init(
         _ label: String = "",
         color: Color = .cloudDark,
-        height: CGFloat = 1,
+        thickness: Thickness = .default,
         verticalPadding: CGFloat = .small
     ) {
         self.label = label
         self.color = color
-        self.height = height
+        self.height = thickness.value
         self.verticalPadding = verticalPadding
+    }
+}
+
+// MARK: - Types
+public extension Separator {
+
+    enum Thickness {
+        case `default`
+        case hairline
+        case custom(CGFloat)
+
+        var value: CGFloat {
+            switch self {
+                case .`default`:            return 1
+                case .hairline:             return .hairline
+                case .custom(let value):    return value
+            }
+        }
     }
 }
 
@@ -90,8 +108,8 @@ struct SeparatorPreviews: PreviewProvider {
         VStack(spacing: .medium) {
             Group {
                 Separator("Custom color", color: .inkNormal)
-                Separator("Hairline", height: .hairline)
-                Separator("Custom height", height: .xSmall)
+                Separator("Hairline", thickness: .hairline)
+                Separator("Custom height", thickness: .custom(.xSmall))
                 Separator("No vertical padding", verticalPadding: 0)
                 Separator("Default vertical padding")
                 Separator("Custom vertical padding", verticalPadding: .large)

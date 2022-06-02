@@ -250,8 +250,8 @@ struct IconPreviews: PreviewProvider {
                     Icon(.passengers, size: .small)
                     Text("Small text and icon size", size: .small)
                 }
-                .overlay(HairlineSeparator(), alignment: .top)
-                .overlay(HairlineSeparator(), alignment: .bottom)
+                .overlay(Separator(thickness: .hairline), alignment: .top)
+                .overlay(Separator(thickness: .hairline), alignment: .bottom)
             }
             HStack(spacing: .xSmall) {
                 Text("20", color: .custom(.orangeNormal))
@@ -260,8 +260,8 @@ struct IconPreviews: PreviewProvider {
                     Icon(.passengers, size: .normal)
                     Text("Normal text and icon size", size: .normal)
                 }
-                .overlay(HairlineSeparator(), alignment: .top)
-                .overlay(HairlineSeparator(), alignment: .bottom)
+                .overlay(Separator(thickness: .hairline), alignment: .top)
+                .overlay(Separator(thickness: .hairline), alignment: .bottom)
             }
             HStack(spacing: .xSmall) {
                 Text("24", color: .custom(.greenNormal))
@@ -270,8 +270,8 @@ struct IconPreviews: PreviewProvider {
                     Icon(.passengers, size: .large)
                     Text("Large text and icon size", size: .large)
                 }
-                .overlay(HairlineSeparator(), alignment: .top)
-                .overlay(HairlineSeparator(), alignment: .bottom)
+                .overlay(Separator(thickness: .hairline), alignment: .top)
+                .overlay(Separator(thickness: .hairline), alignment: .bottom)
             }
         }
         .padding(.medium)
@@ -283,24 +283,24 @@ struct IconPreviews: PreviewProvider {
                 Icon(.passengers, size: .heading(style))
                 Heading("Heading", style: style)
             }
-            .overlay(HairlineSeparator(), alignment: .top)
-            .overlay(HairlineSeparator(), alignment: .bottom)
+            .overlay(Separator(thickness: .hairline), alignment: .top)
+            .overlay(Separator(thickness: .hairline), alignment: .bottom)
         }
     }
     
     static func labelHeadingStack(_ style: Heading.Style) -> some View {
         HStack(spacing: .xSmall) {
             Label("Label Heading", icon: .passengers, style: .heading(style))
-                .overlay(HairlineSeparator(), alignment: .top)
-                .overlay(HairlineSeparator(), alignment: .bottom)
+                .overlay(Separator(thickness: .hairline), alignment: .top)
+                .overlay(Separator(thickness: .hairline), alignment: .bottom)
         }
     }
     
     static func labelTextStack(_ size: Text.Size) -> some View {
         HStack(spacing: .xSmall) {
             Label("Label Text", icon: .passengers, style: .text(size))
-                .overlay(HairlineSeparator(), alignment: .top)
-                .overlay(HairlineSeparator(), alignment: .bottom)
+                .overlay(Separator(thickness: .hairline), alignment: .top)
+                .overlay(Separator(thickness: .hairline), alignment: .bottom)
         }
     }
     
@@ -310,8 +310,8 @@ struct IconPreviews: PreviewProvider {
                 Icon(.passengers, size: .text(size))
                 Text("Text", size: size)
             }
-            .overlay(HairlineSeparator(), alignment: .top)
-            .overlay(HairlineSeparator(), alignment: .bottom)
+            .overlay(Separator(thickness: .hairline), alignment: .top)
+            .overlay(Separator(thickness: .hairline), alignment: .bottom)
         }
     }
     
@@ -384,7 +384,7 @@ struct IconPreviews: PreviewProvider {
                 .foregroundColor(.blueNormal)
                 .border(Color.cloudLightActive, width: .hairline)
             }
-            .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
+            .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
             
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
@@ -399,7 +399,7 @@ struct IconPreviews: PreviewProvider {
                 .foregroundColor(.blueNormal)
                 .border(Color.cloudLightActive, width: .hairline)
             }
-            .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
+            .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
             
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
@@ -411,7 +411,7 @@ struct IconPreviews: PreviewProvider {
                 .foregroundColor(.blueNormal)
                 .border(Color.cloudLightActive, width: .hairline)
             }
-            .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
+            .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
             
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
@@ -423,7 +423,7 @@ struct IconPreviews: PreviewProvider {
                 .foregroundColor(.blueNormal)
                 .border(Color.cloudLightActive, width: .hairline)
             }
-            .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
+            .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
             
             HStack(alignment: .firstTextBaseline) {
                 Group {
@@ -434,7 +434,7 @@ struct IconPreviews: PreviewProvider {
                 }
                 .border(Color.cloudLightActive, width: .hairline)
             }
-            .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
+            .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
             
             HStack(alignment: .firstTextBaseline) {
                 Icon(.grid, size: .xLarge)
@@ -442,7 +442,7 @@ struct IconPreviews: PreviewProvider {
                 Icon(.symbol(.grid, color: .blueNormal), size: .small)
             }
             .foregroundColor(.blueDark)
-            .background(HairlineSeparator(), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
+            .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
         }
         .padding(.medium)
     }
