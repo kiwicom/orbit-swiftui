@@ -30,7 +30,7 @@ public struct PasswordStrengthIndicator: View {
         HStack(spacing: 0) {
             Capsule()
                 .fill(Color(uiColor))
-                .frame(width: .infinity, alignment: .leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             ForEach(0 ..< spacers, id: \.self) { _ in
                 Spacer()

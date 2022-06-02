@@ -53,7 +53,7 @@ public struct TimelineStep: View {
                     .strokeBorder(Color.cloudNormalHover, lineWidth: 2)
                     .frame(width: .small, height: .small)
             case .status:
-                Icon(.symbol(style.iconSymbol, color: style.color), size: .large)
+                Icon(style.iconSymbol, size: .large, color: style.color)
         }
     }
 

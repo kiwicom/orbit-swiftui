@@ -9,7 +9,7 @@ public struct FormFieldMessage: View {
     public var body: some View {
         if message.isEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: spacing) {
-                Icon(.symbol(message.icon, color: message.color), size: .small)
+                Icon(message.icon, size: .small, color: message.color)
                 Text(message.description, color: .custom(message.uiColor))
                     .alignmentGuide(.firstTextBaseline) { _ in
                         Text.Size.small.value * 1.1

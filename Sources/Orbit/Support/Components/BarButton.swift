@@ -12,7 +12,7 @@ public struct BarButton: View {
                 action()
             },
             label: {
-                Icon(.symbol(symbol), size: .large)
+                Icon(symbol, size: .large)
             }
         )
         .buttonStyle(NavigateButton.OrbitStyle())

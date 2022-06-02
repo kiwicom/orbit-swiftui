@@ -22,7 +22,7 @@ public struct BadgeList: View {
     public var body: some View {
         if isEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: Self.spacing) {
-                Icon(iconContent, size: .small)
+                Icon(content: iconContent, size: .small)
                     .foregroundColor(style.iconColor)
                     .padding(.xxSmall)
                     .background(badgeBackground)

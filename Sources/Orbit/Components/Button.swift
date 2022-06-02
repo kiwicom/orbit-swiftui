@@ -31,7 +31,7 @@ public struct Button: View {
                     }
 
                     HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-                        Icon(iconContent, size: iconSize)
+                        Icon(content: iconContent, size: iconSize)
                         text
                             .padding(.vertical, size.verticalPadding)
                     }
@@ -41,7 +41,7 @@ public struct Button: View {
                     TextStrut(size.textSize)
                         .padding(.vertical, size.verticalPadding)
 
-                    Icon(disclosureIconContent, size: iconSize)
+                    Icon(content: disclosureIconContent, size: iconSize)
                 }
                 .padding(.leading, leadingPadding)
                 .padding(.trailing, trailingPadding)

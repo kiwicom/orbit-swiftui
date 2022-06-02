@@ -51,7 +51,7 @@ struct InputContent<Content: View>: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            Icon(prefix, size: .large)
+            Icon(content: prefix, size: .large)
                 .foregroundColor(prefixColor)
                 .padding(.horizontal, .xSmall)
 
@@ -82,7 +82,7 @@ struct InputContent<Content: View>: View {
     }
 
     @ViewBuilder var suffixIcon: some View {
-        Icon(suffix, size: .large)
+        Icon(content: suffix, size: .large)
             .foregroundColor(suffixColor)
             .padding(.horizontal, .xSmall)
             .contentShape(Rectangle())

@@ -36,37 +36,35 @@ public struct InputField: View {
 
     public var body: some View {
         FormFieldWrapper(label, message: message, messageHeight: $messageHeight) {
-            VStack(alignment: .leading, spacing: .xxSmall) {
-                InputContent(
-                    prefix: prefix,
-                    suffix: suffix,
-                    state: state,
-                    message: message,
-                    isEditing: isEditing,
-                    suffixAction: suffixAction
-                ) {
-                    HStack(spacing: 0) {
-                        input
-                            .textFieldStyle(TextFieldStyle(leadingPadding: 0))
-                            .autocapitalization(autocapitalization)
-                            .disableAutocorrection(isAutocompleteEnabled == false)
-                            .textContentType(textContent)
-                            .keyboardType(keyboard)
-                            .font(.orbit(size: Text.Size.normal.value, weight: .regular))
-                            .accentColor(.blueNormal)
-                            .background(textFieldPlaceholder, alignment: .leading)
-                            .disabled(state == .disabled)
-                        if isSecure {
-                            securedSuffix
-                        } else {
-                            clearButton
-                        }
+            InputContent(
+                prefix: prefix,
+                suffix: suffix,
+                state: state,
+                message: message,
+                isEditing: isEditing,
+                suffixAction: suffixAction
+            ) {
+                HStack(spacing: 0) {
+                    input
+                        .textFieldStyle(TextFieldStyle(leadingPadding: 0))
+                        .autocapitalization(autocapitalization)
+                        .disableAutocorrection(isAutocompleteEnabled == false)
+                        .textContentType(textContent)
+                        .keyboardType(keyboard)
+                        .font(.orbit(size: Text.Size.normal.value, weight: .regular))
+                        .accentColor(.blueNormal)
+                        .background(textFieldPlaceholder, alignment: .leading)
+                        .disabled(state == .disabled)
+                    if isSecure {
+                        securedSuffix
+                    } else {
+                        clearButton
                     }
                 }
-
-                PasswordStrengthIndicator(passwordStrength: passwordStrength)
-                    .padding(.top, .xxSmall)
             }
+        } messageContent: {
+            PasswordStrengthIndicator(passwordStrength: passwordStrength)
+                .padding(.top, .xxSmall)
         }
     }
 
@@ -221,6 +219,7 @@ struct InputFieldPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             storybook
+            storybookPassword
             storybookMix
         }
         .previewLayout(.sizeThatFits)
@@ -252,6 +251,34 @@ struct InputFieldPreviews: PreviewProvider {
         }
     }
 
+    static var storybookPassword: some View {
+        VStack(spacing: .medium) {
+            InputField("Password", value: .constant("password"), isSecure: true)
+            InputField("Password", value: .constant(""), placeholder: "Input password", isSecure: true)
+            InputField(
+                "Password",
+                value: .constant("password"),
+                isSecure: true,
+                passwordStrength: .strong(title: "Strong")
+            )
+            InputField(
+                "Password",
+                value: .constant("password"),
+                isSecure: true,
+                passwordStrength: .medium(title: "Medium"),
+                message: .help("Help message")
+            )
+            InputField(
+                "Password",
+                value: .constant("password"),
+                isSecure: true,
+                passwordStrength: .weak(title: "Weak"),
+                message: .error("Error message")
+            )
+        }
+        .padding(.medium)
+    }
+
     static var storybookMix: some View {
         VStack(spacing: .medium) {
             InputField("Empty", value: .constant(""), prefix: .symbol(.grid, color: .blueDark), suffix: .symbol(.grid, color: .blueDark), placeholder: placeholder)
@@ -265,17 +292,6 @@ struct InputFieldPreviews: PreviewProvider {
                 value: .constant("Error value with a very long length to test that it works"),
                 message: .error("Error message, also very long and multi-line to test that it works.")
             ).padding(.bottom, .small)
-
-            VStack(spacing: .medium) {
-                InputField("Secured", value: .constant("password"), isSecure: true)
-                InputField("Secured", value: .constant(""), placeholder: "Input password", isSecure: true)
-                InputField(
-                    "Secured",
-                    value: .constant("password"),
-                    isSecure: true,
-                    passwordStrength: .medium(title: "Medium")
-                )
-            }
 
             HStack(spacing: .medium) {
                 InputField(value: .constant("No label"))

@@ -1,13 +1,14 @@
 import SwiftUI
 
 /// Orbit wrapper around form fields. Provides optional label and message.
-public struct FormFieldWrapper<Content: View>: View {
+public struct FormFieldWrapper<Content: View, MessageContent: View>: View {
 
     @Binding private var messageHeight: CGFloat
 
     let label: String
     let message: MessageType
     let content: () -> Content
+    let messageContent: () -> MessageContent
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -17,22 +18,43 @@ public struct FormFieldWrapper<Content: View>: View {
             content()
 
             ContentHeightReader(height: $messageHeight.animation(.easeOut(duration: 0.2))) {
-                FormFieldMessage(message)
-                    .padding(.top, .xxSmall)
+                VStack(alignment: .leading, spacing: 0) {
+                    messageContent()
+
+                    FormFieldMessage(message)
+                        .padding(.top, .xxSmall)
+                }
             }
         }
     }
 
+    /// Creates Orbit wrapper around form field content including an additional custom message content.
     public init(
         _ label: String,
         message: MessageType = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
-        @ViewBuilder content: @escaping () -> Content)
-    {
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder messageContent: @escaping () -> MessageContent
+    ) {
         self.label = label
         self.message = message
         self._messageHeight = messageHeight
         self.content = content
+        self.messageContent = messageContent
+    }
+
+    /// Creates Orbit wrapper around form field content.
+    public init(
+        _ label: String,
+        message: MessageType = .none,
+        messageHeight: Binding<CGFloat> = .constant(0),
+        @ViewBuilder content: @escaping () -> Content
+    ) where MessageContent == EmptyView {
+        self.label = label
+        self.message = message
+        self._messageHeight = messageHeight
+        self.content = content
+        self.messageContent = { EmptyView() }
     }
 }
 

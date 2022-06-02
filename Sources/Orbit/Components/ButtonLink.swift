@@ -25,7 +25,7 @@ public struct ButtonLink: View {
                 label: {
                     HStack(spacing: 0) {
                         HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-                            Icon(iconContent, size: iconSize)
+                            Icon(content: iconContent, size: iconSize)
 
                             Text(
                                 label,

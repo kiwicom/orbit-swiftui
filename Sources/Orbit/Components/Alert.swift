@@ -46,7 +46,7 @@ public struct Alert<Content: View>: View {
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
             
-            Icon(iconContent, size: .normal)
+            Icon(content: iconContent, size: .normal)
                 .foregroundColor(status.color)
             
             VStack(alignment: .leading, spacing: .medium) {

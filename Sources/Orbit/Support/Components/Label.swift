@@ -30,10 +30,10 @@ public struct Label: View {
 
     @ViewBuilder var icon: some View {
         if let color = style.color {
-            Icon(iconContent, size: .label(style))
+            Icon(content: iconContent, size: .label(style))
                 .foregroundColor(color)
         } else {
-            Icon(iconContent, size: .label(style))
+            Icon(content: iconContent, size: .label(style))
         }
     }
     

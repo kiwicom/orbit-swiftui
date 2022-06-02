@@ -156,6 +156,7 @@ extension Storybook {
                 case (.icon, 1):                IconPreviews.storybookMix
                 case (.illustration, _):        IllustrationPreviews.storybook
                 case (.inputField, 0):          InputFieldPreviews.storybook
+                case (.inputField, 2):          InputFieldPreviews.storybookPassword
                 case (.inputField, 3):          InputFieldPreviews.storybookMix
                 case (.keyValue, _):            KeyValuePreviews.storybook
                 case (.list, 0):                ListPreviews.storybook
