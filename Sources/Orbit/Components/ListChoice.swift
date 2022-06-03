@@ -331,7 +331,7 @@ extension ListChoice {
         }
 
         func backgroundColor(isPressed: Bool) -> Color {
-            isPressed ? .inkLight.opacity(0.08) : .clear
+            isPressed ? .inkLight.opacity(0.08) : .whiteNormal
         }
     }
 }
