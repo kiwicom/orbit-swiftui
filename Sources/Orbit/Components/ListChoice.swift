@@ -12,10 +12,14 @@ public enum ListChoiceDisclosure: Equatable {
     case disclosure(Color = .inkLight)
     /// A non-interactive button.
     case button(type: ButtonType)
+    /// A non-interactive ButtonLink.
+    case buttonLink(String, style: ButtonLink.Style = .primary)
     /// A non-interactive checkbox.
     case checkbox(isChecked: Bool = true, state: Checkbox.State = .normal)
     /// A non-interactive radio.
     case radio(isChecked: Bool = true, state: Radio.State = .normal)
+    /// An icon content.
+    case icon(Icon.Content)
 }
 
 /// Shows one of a selectable list of items with similar structures.
@@ -78,6 +82,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                     .padding(.vertical, verticalPadding)
 
                 headerContent()
+                    .padding(.leading, isHeaderEmpty ? .medium : 0)
                     .padding(.trailing, disclosure == .none ? .medium : 0)
             }
         }
@@ -99,7 +104,8 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 }
             }
             .padding(.leading, .medium)
-            .padding(.vertical, verticalPadding)
+            .padding(.top, verticalPadding)
+            .padding(.bottom, isCustomContentEmpty ? verticalPadding : 0)
         }
     }
 
@@ -114,12 +120,18 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 disclosureButton(type: type)
                     .padding(.vertical, .small)
                     .disabled(true)
+            case .buttonLink(let label, let style):
+                ButtonLink(label, style: style)
+                    .padding(.vertical, .xSmall)
+                    .disabled(true)
             case .checkbox(let isChecked, let state):
                 Checkbox(state: state, isChecked: isChecked)
                     .disabled(true)
             case .radio(let isChecked, let state):
                 Radio(state: state, isChecked: isChecked)
                     .disabled(true)
+            case .icon(let content):
+                Icon(content: content)
         }
     }
     
@@ -157,14 +169,20 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
         headerContent() is EmptyView
     }
 
+    var isCustomContentEmpty: Bool {
+        content() is EmptyView
+    }
+
     var isHeaderTextEmpty: Bool {
         title.isEmpty && description.isEmpty
     }
     
     var accessibilityTraitsToAdd: AccessibilityTraits {
         switch disclosure {
-            case .none, .disclosure, .button(.add), .checkbox(false, _), .radio(false, _):      return []
-            case .button(.remove), .checkbox(true, _), .radio(true, _):                         return .isSelected
+            case .none, .disclosure, .button(.add), .buttonLink, .checkbox(false, _), .radio(false, _), .icon:
+                return []
+            case .button(.remove), .checkbox(true, _), .radio(true, _):
+                return .isSelected
         }
     }
 }
@@ -172,7 +190,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
 // MARK: - Inits
 public extension ListChoice {
     
-    /// Creates Orbit ListChoice component with optional content and header content.
+    /// Creates Orbit ListChoice component with optional content and vertically centered header content.
     init(
         _ title: String = "",
         description: String = "",
@@ -193,7 +211,7 @@ public extension ListChoice {
         self.headerContent = headerContent
     }
 
-    /// Creates Orbit ListChoice component with optional header content.
+    /// Creates Orbit ListChoice component with optional vertically centered header content.
     init(
         _ title: String = "",
         description: String = "",
@@ -512,9 +530,12 @@ struct ListChoicePreviews: PreviewProvider {
             Group {
                 ListChoice(title, disclosure: .none)
                 ListChoice(disclosure: .none)
+                ListChoice(disclosure: .icon(.symbol(.alert, color: .orangeNormal)))
                 ListChoice(title, description: description, disclosure: .none)
                 ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
                 ListChoice(title, icon: .airplane, disclosure: .none)
+            }
+            Group {
                 ListChoice(title, icon: .symbol(.airplane, color: .inkLighter), disclosure: .none)
                 ListChoice(title, description: description, icon: .airplane, disclosure: .none)
                 ListChoice(title, description: description, disclosure: .none) {
