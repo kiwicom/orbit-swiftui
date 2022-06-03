@@ -168,8 +168,8 @@ public struct Tile<Content: View>: View {
 
     @ViewBuilder var separator: some View {
         if border == .separator {
-            Color.cloudNormal
-                .frame(height: BorderWidth.thin)
+            Separator()
+                .padding(.leading, .medium)
         }
     }
 
@@ -301,6 +301,7 @@ struct TilePreviews: PreviewProvider {
             }
         }
         .padding(.medium)
+        .fixedSize(horizontal: false, vertical: true)
         .previewDisplayName("Sizing")
     }
 

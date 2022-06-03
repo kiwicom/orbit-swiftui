@@ -341,7 +341,7 @@ struct CardPreviews: PreviewProvider {
     static var cardWithFillLayoutContent: some View {
         Card("Card with fill layout content", action: .buttonLink("Edit"), contentLayout: .fill) {
             customContentPlaceholder
-            Separator(thickness: .hairline)
+            Separator()
             customContentPlaceholder
         }
         .padding(.vertical, .medium)
@@ -351,7 +351,7 @@ struct CardPreviews: PreviewProvider {
     static var cardWithFillLayoutContentNoHeader: some View {
         Card(contentLayout: .fill) {
             customContentPlaceholder
-            Separator(thickness: .hairline)
+            Separator()
             customContentPlaceholder
         }
         .padding(.vertical, .medium)

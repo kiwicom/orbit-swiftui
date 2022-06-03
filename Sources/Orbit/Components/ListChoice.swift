@@ -141,7 +141,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
 
     @ViewBuilder var separator: some View {
         if showSeparator {
-            Separator(thickness: .hairline)
+            Separator()
                 .padding(.leading, separatorPadding)
         }
     }
@@ -412,6 +412,7 @@ struct ListChoicePreviews: PreviewProvider {
             .border(Color.cloudLight)
         }
         .padding(.medium)
+        .fixedSize(horizontal: false, vertical: true)
         .background(Color.whiteNormal)
         .previewDisplayName("Sizing")
     }
