@@ -104,8 +104,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 }
             }
             .padding(.leading, .medium)
-            .padding(.top, verticalPadding)
-            .padding(.bottom, isCustomContentEmpty ? verticalPadding : 0)
+            .padding(.vertical, verticalPadding)
         }
     }
 
@@ -122,13 +121,15 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                     .disabled(true)
             case .buttonLink(let label, let style):
                 ButtonLink(label, style: style)
-                    .padding(.vertical, .xSmall)
+                    .padding(.vertical, .small)
                     .disabled(true)
             case .checkbox(let isChecked, let state):
                 Checkbox(state: state, isChecked: isChecked)
+                    .padding(.vertical, .small)
                     .disabled(true)
             case .radio(let isChecked, let state):
                 Radio(state: state, isChecked: isChecked)
+                    .padding(.vertical, .small)
                     .disabled(true)
             case .icon(let content):
                 Icon(content: content)
@@ -408,7 +409,6 @@ struct ListChoicePreviews: PreviewProvider {
             }
             .border(Color.cloudLight)
         }
-        .fixedSize(horizontal: false, vertical: true)
         .padding(.medium)
         .background(Color.whiteNormal)
         .previewDisplayName("Sizing")
