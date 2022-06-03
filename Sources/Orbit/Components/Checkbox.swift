@@ -110,7 +110,7 @@ public extension Checkbox {
                         .fill(indicatorBackgroundColor(isPressed: isPressed))
                 )
                 .overlay(
-                    Icon(.check, size: .small)
+                    Icon(.check, size: .small, color: .whiteNormal)
                         .foregroundColor(state == .disabled ? .cloudNormal : .whiteNormal)
                         .opacity(isChecked ? 1 : 0)
                 )

@@ -86,7 +86,7 @@ public extension ButtonLink {
 // MARK: - Types
 public extension ButtonLink {
 
-    enum Style {
+    enum Style: Equatable {
         case primary
         case secondary
         case critical
@@ -103,6 +103,21 @@ public extension ButtonLink {
                 case .status(.warning):     return (.orangeNormal, .orangeLightActive)
                 case .status(.critical):    return (.redNormal, .redLightActive)
                 case .custom(let colors):   return colors
+            }
+        }
+
+        public static func ==(lhs: Self, rhs: Self) -> Bool {
+            switch (lhs, rhs) {
+                case
+                    (.primary, .primary),
+                    (.secondary, .secondary),
+                    (.critical, .critical),
+                    (.custom, .custom):
+                    return true
+                case (.status(let lstatus), .status(let rstatus)) where lstatus == rstatus:
+                    return true
+                default:
+                    return false
             }
         }
     }
