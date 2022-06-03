@@ -48,7 +48,6 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
         .buttonStyle(ListChoiceButtonStyle())
         .accessibility(label: SwiftUI.Text(title))
         .accessibility(hint: SwiftUI.Text(description))
-        .accessibility(removeTraits: accessibilityTraitsToRemove)
         .accessibility(addTraits: accessibilityTraitsToAdd)
     }
 
@@ -164,15 +163,8 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     
     var accessibilityTraitsToAdd: AccessibilityTraits {
         switch disclosure {
-            case .none, .disclosure, .button, .checkbox(false, _), .radio(false, _):    return []
-            case .checkbox(true, _), .radio(true, _):                                   return .isSelected
-        }
-    }
-    
-    var accessibilityTraitsToRemove: AccessibilityTraits {
-        switch disclosure {
-            case .none, .disclosure, .button, .checkbox(true, _), .radio(true, _):      return []
-            case .checkbox(false, _), .radio(false, _):                                 return .isSelected
+            case .none, .disclosure, .button(.add), .checkbox(false, _), .radio(false, _):      return []
+            case .button(.remove), .checkbox(true, _), .radio(true, _):                         return .isSelected
         }
     }
 }
