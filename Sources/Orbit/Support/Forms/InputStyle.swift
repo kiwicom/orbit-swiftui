@@ -50,10 +50,7 @@ struct InputContent<Content: View>: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            Icon(content: prefix, size: .large)
-                .foregroundColor(prefixColor)
-                .padding(.horizontal, .xSmall)
-                .accessibility(.inputPrefix)
+            prefixIcon
 
             value()
                 .lineLimit(1)
@@ -81,6 +78,13 @@ struct InputContent<Content: View>: View {
                 .strokeBorder(outlineColor(isPressed: isPressed), lineWidth: BorderWidth.emphasis)
         )
         .disabled(state == .disabled)
+    }
+
+    @ViewBuilder var prefixIcon: some View {
+        Icon(content: prefix, size: .large)
+            .foregroundColor(prefixColor)
+            .padding(.horizontal, .xSmall)
+            .accessibility(.inputPrefix)
     }
 
     @ViewBuilder var suffixIcon: some View {

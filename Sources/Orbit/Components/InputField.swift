@@ -114,8 +114,7 @@ public struct InputField: View {
     
     @ViewBuilder var clearButton: some View {
         if value.isEmpty == false, state != .disabled {
-            Icon(sfSymbol: "multiply.circle.fill")
-                .foregroundColor(.inkLighter)
+            Icon(sfSymbol: "multiply.circle.fill", color: .inkLighter)
                 .padding(.small)
                 .contentShape(Rectangle())
                 .onTapGesture {
@@ -128,8 +127,7 @@ public struct InputField: View {
 
     @ViewBuilder var securedSuffix: some View {
         if value.isEmpty == false, state != .disabled {
-            Icon(isSecureTextEntry ? .visibility : .visibilityOff)
-                .foregroundColor(.inkLight)
+            Icon(isSecureTextEntry ? .visibility : .visibilityOff, color: .inkLight)
                 .padding(.vertical, .xSmall)
                 .padding(.horizontal, .small)
                 .contentShape(Rectangle())

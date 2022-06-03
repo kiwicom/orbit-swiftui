@@ -103,8 +103,7 @@ extension Tag {
                     .lineLimit(1)
 
                 if case .removable(let removeAction) = style {
-                    Icon(.closeCircle, size: .small)
-                        .foregroundColor(iconColor(isPressed: configuration.isPressed))
+                    Icon(.closeCircle, size: .small, color: iconColor(isPressed: configuration.isPressed))
                         .onTapGesture(perform: removeAction)
                         .accessibility(addTraits: .isButton)
                 }
