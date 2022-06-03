@@ -6,41 +6,46 @@ import SwiftUI
 public struct Separator: View {
 
     let label: String
+    let labelColor: Text.Color
     let color: Color
-    let height: CGFloat
-    let verticalPadding: CGFloat
+    let thickness: CGFloat
 
     public var body: some View {
+        if label.isEmpty {
+            line
+        } else {
+            HStack(spacing: .xxxSmall) {
+                leadingLine
+
+                Text(label, size: .small, color: labelColor, weight: .medium, alignment: .center)
+                    .layoutPriority(1)
+
+                trailingLine
+            }
+        }
+    }
+
+    @ViewBuilder var line: some View {
         color
-            .frame(height: height)
-            .frame(minWidth: .small)
-            .padding(.vertical, verticalPadding)
-            .overlay(
-                HStack(spacing: 0) {
-                    if label.isEmpty == false {
-                        LinearGradient(
-                            colors: [.whiteNormal.opacity(0), .whiteNormal],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                        .frame(width: .large)
+            .frame(height: thickness)
+    }
 
-                        Text(label, size: .small, weight: .medium)
-                            .padding(.horizontal, .xxSmall)
-                            .background(Color.whiteNormal)
-                    }
+    @ViewBuilder var leadingLine: some View {
+        HStack(spacing: 0) {
+            line
+            LinearGradient(colors: [color, color.opacity(0)], startPoint: .leading, endPoint: .trailing)
+                .frame(width: .large)
+                .frame(height: thickness)
+        }
+    }
 
-                    if label.isEmpty == false {
-                        LinearGradient(
-                            colors: [.whiteNormal.opacity(0), .whiteNormal],
-                            startPoint: .trailing,
-                            endPoint: .leading
-                        )
-                        .frame(width: .large)
-                    }
-                }
-            )
-            .frame(minWidth: .small, maxWidth: .infinity)
+    @ViewBuilder var trailingLine: some View {
+        HStack(spacing: 0) {
+            LinearGradient(colors: [color, color.opacity(0)], startPoint: .trailing, endPoint: .leading)
+                .frame(width: .large)
+                .frame(height: thickness)
+            line
+        }
     }
 }
 
@@ -50,14 +55,14 @@ public extension Separator {
     /// Creates Orbit Separator component.
     init(
         _ label: String = "",
+        labelColor: Text.Color = .inkLight,
         color: Color = .cloudDark,
-        thickness: Thickness = .default,
-        verticalPadding: CGFloat = .small
+        thickness: Thickness = .default
     ) {
         self.label = label
+        self.labelColor = labelColor
         self.color = color
-        self.height = thickness.value
-        self.verticalPadding = verticalPadding
+        self.thickness = thickness.value
     }
 }
 
@@ -97,7 +102,7 @@ struct SeparatorPreviews: PreviewProvider {
     }
 
     static var storybook: some View {
-        VStack {
+        VStack(spacing: .xLarge) {
             Separator()
             Separator("Separator with label")
         }
@@ -105,16 +110,11 @@ struct SeparatorPreviews: PreviewProvider {
     }
 
     static var storybookMix: some View {
-        VStack(spacing: .medium) {
-            Group {
-                Separator("Custom color", color: .inkNormal)
-                Separator("Hairline", thickness: .hairline)
-                Separator("Custom height", thickness: .custom(.xSmall))
-                Separator("No vertical padding", verticalPadding: 0)
-                Separator("Default vertical padding")
-                Separator("Custom vertical padding", verticalPadding: .large)
-            }
-            .border(Color.redLight)
+        VStack(spacing: .xLarge) {
+            Separator("Custom colors", labelColor: .custom(.productDark), color: .blueNormal)
+            Separator("Separator with very very very very very long and multiline label")
+            Separator("Hairline thickness", thickness: .hairline)
+            Separator("Custom thickness", thickness: .custom(.xSmall))
         }
         .padding(.medium)
     }
