@@ -1,0 +1,18 @@
+name: Snapshot Updater
+
+on:
+  pull_request:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+jobs:
+  update snapshots:
+    runs-on: macos-12
+    steps:
+      - uses: khan/pull-request-comment-trigger@v1.1.0
+        id: check
+        with:
+          trigger: 'update_snapshots'
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
