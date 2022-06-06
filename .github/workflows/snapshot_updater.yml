@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ SNAPSHOT_PUSH_TOKEN }}
+          token: ${{ secrets.SNAPSHOT_PUSH_TOKEN }}
       - name: generate
         run: |
           Automation/generate_snapshots.sh
