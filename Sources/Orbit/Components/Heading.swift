@@ -21,6 +21,7 @@ public struct Heading: View {
                 .foregroundColor(color?.value)
                 .multilineTextAlignment(alignment)
                 .fixedSize(horizontal: false, vertical: true)
+                .accessibility(addTraits: .isHeader)
         }
     }
 

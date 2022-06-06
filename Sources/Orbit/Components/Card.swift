@@ -67,6 +67,7 @@ public struct Card<Content: View>: View {
         )
         .frame(maxWidth: maxOuterWidth)
         .padding(.horizontal, horizontalPadding)
+        .accessibilityElement(children: .contain)
     }
 
     @ViewBuilder var header: some View {
@@ -75,6 +76,7 @@ public struct Card<Content: View>: View {
 
                 Icon(content: iconContent, size: .heading(titleStyle))
                     .padding(.trailing, .xSmall)
+                    .accessibility(.cardIcon)
                 
                 VStack(alignment: .leading, spacing: .xxSmall) {
                     Heading(title, style: titleStyle)

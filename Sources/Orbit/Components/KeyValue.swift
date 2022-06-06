@@ -13,12 +13,10 @@ public struct KeyValue: View {
     let value: String
     let size: Size
     let alignment: HorizontalAlignment
-    let valueAccessibilityIdentifier: String
 
     public var body: some View {
         KeyValueField(key, size: size, alignment: alignment) {
             Text(value, size: size.valueSize, weight: .medium, alignment: .init(alignment), isSelectable: true)
-                .accessibility(identifier: valueAccessibilityIdentifier)
         }
     }
 }
@@ -31,14 +29,12 @@ extension KeyValue {
         _ key: String = "",
         value: String = "",
         size: Size = .normal,
-        alignment: HorizontalAlignment = .leading,
-        valueAccessibilityIdentifier: String = ""
+        alignment: HorizontalAlignment = .leading
     ) {
         self.key = key
         self.value = value
         self.size = size
         self.alignment = alignment
-        self.valueAccessibilityIdentifier = valueAccessibilityIdentifier
     }
 }
 

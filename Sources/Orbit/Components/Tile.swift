@@ -97,8 +97,6 @@ public struct Tile<Content: View>: View {
             }
         )
         .buttonStyle(TileButtonStyle(style: tileBorderStyle, status: status, backgroundColor: backgroundColor))
-        .accessibility(label: SwiftUI.Text(title))
-        .accessibility(hint: SwiftUI.Text(description))
     }
 
     @ViewBuilder var buttonContent: some View {
@@ -125,6 +123,7 @@ public struct Tile<Content: View>: View {
                 Icon(content: iconContent, size: .heading(titleStyle))
                     .foregroundColor(.inkNormal)
                     .padding(.trailing, .xSmall)
+                    .accessibility(.tileIcon)
 
                 VStack(alignment: .labelTextLeading, spacing: .xxSmall) {
                     Heading(title, style: titleStyle)

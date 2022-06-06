@@ -50,8 +50,6 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
             }
         )
         .buttonStyle(ListChoiceButtonStyle())
-        .accessibility(label: SwiftUI.Text(title))
-        .accessibility(hint: SwiftUI.Text(description))
         .accessibility(addTraits: accessibilityTraitsToAdd)
     }
 
@@ -97,6 +95,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
                 Icon(content: iconContent)
                     .foregroundColor(.inkNormal)
+                    .accessibility(.listChoiceIcon)
                 
                 if isHeaderTextEmpty == false {
                     VStack(alignment: .labelTextLeading, spacing: .xxxSmall) {

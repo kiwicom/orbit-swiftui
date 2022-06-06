@@ -8,8 +8,9 @@ public struct TextStrut: View {
     let textSize: Text.Size
     
     public var body: some View {
-        Text("I", size: textSize, color: .custom(.clear), isAccessibilityElement: false)
+        Text("I", size: textSize, color: .custom(.clear))
             .accessibility(hidden: true)
+            .accessibility(removeTraits: .isStaticText)
             .frame(width: 0)
     }
 

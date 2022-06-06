@@ -41,6 +41,7 @@ public struct Dialog: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.inkNormal.opacity(0.45))
         .edgesIgnoringSafeArea(.all)
+        .accessibilityElement(children: .contain)
     }
 
     @ViewBuilder var buttons: some View {

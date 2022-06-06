@@ -66,6 +66,11 @@ public struct InputField: View {
             PasswordStrengthIndicator(passwordStrength: passwordStrength)
                 .padding(.top, .xxSmall)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibility(label: SwiftUI.Text(label))
+        .accessibility(value: SwiftUI.Text(value))
+        .accessibility(hint: SwiftUI.Text(placeholder))
+        .accessibility(addTraits: state != .disabled ? .isButton : [])
     }
 
     @ViewBuilder var input: some View {

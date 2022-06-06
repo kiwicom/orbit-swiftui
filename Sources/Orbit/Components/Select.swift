@@ -44,6 +44,11 @@ public struct Select: View {
                 )
             )
         }
+        .accessibilityElement(children: .ignore)
+        .accessibility(label: SwiftUI.Text(label))
+        .accessibility(value: SwiftUI.Text(value ?? ""))
+        .accessibility(hint: SwiftUI.Text(placeholder))
+        .accessibility(addTraits: .isButton)
     }
 
     var textColor: Color {

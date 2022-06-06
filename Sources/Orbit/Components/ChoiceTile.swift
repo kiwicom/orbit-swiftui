@@ -69,7 +69,6 @@ public struct ChoiceTile<Content: View>: View {
             }
         )
         .buttonStyle(TileButtonStyle(isSelected: isSelected, status: errorShouldHighlightBorder ? .critical : nil))
-        .accessibility(removeTraits: isSelected == false ? .isSelected : [])
         .accessibility(addTraits: isSelected ? .isSelected : [])
         .overlay(badgeOverlayView, alignment: .top)
     }
@@ -83,6 +82,7 @@ public struct ChoiceTile<Content: View>: View {
                         Icon(content: iconContent, size: .heading(titleStyle))
                             .foregroundColor(.inkNormal)
                             .padding(.trailing, .xSmall)
+                            .accessibility(.choiceTileIcon)
                         
                         VStack(alignment: .leading, spacing: .xxSmall) {
                             Heading(title, style: titleStyle)
