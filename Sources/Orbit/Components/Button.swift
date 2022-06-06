@@ -344,6 +344,7 @@ struct ButtonPreviews: PreviewProvider {
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
                     Button("Button small height \(state.wrappedValue)", icon: .grid, size: .small)
+                        .fixedSize()
                 }
             }
         }

@@ -12,6 +12,12 @@ let package = Package(
         .library(name: "OrbitDynamic", type: .dynamic, targets: ["Orbit"]),
         .library(name: "OrbitStatic", type: .static, targets: ["Orbit"]),
     ],
+    dependencies: [
+        .package(
+            url: "https://github.com/pointfreeco/swift-snapshot-testing.git",
+            from: "1.9.0"
+        ),
+    ],
     targets: [
         .target(
             name: "Orbit",
@@ -25,5 +31,12 @@ let package = Package(
                       ]
                     : [.copy("Foundation/Icons/Icons.ttf")]
         ),
+        .testTarget(
+            name: "SnapshotTests",
+            dependencies: [
+                "Orbit",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ]
+        )
     ]
 )

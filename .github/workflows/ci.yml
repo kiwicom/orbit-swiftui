@@ -1,4 +1,4 @@
-name: Build
+name: ci
 
 on:
   push:
@@ -8,8 +8,22 @@ on:
 
 jobs:
   build:
-    runs-on: macos-11
+    runs-on: macos-12
     steps:
     - uses: actions/checkout@v2
     - name: Build
       run: set -o pipefail && xcodebuild -scheme Orbit -destination "generic/platform=iOS Simulator" | xcpretty
+  test:
+    strategy:
+      matrix:
+        device: ["iPhone 13", "iPhone SE (1st generation)", "iPad (9th generation)"]
+        os_version: ["15.4"]
+    runs-on: macos-12
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        lfs: 'true'
+    - name: Test
+      run: |
+        id=$(Automation/get_simulator.py "${{ matrix.device }}" "${{ matrix.os_version }}")
+        set -o pipefail && xcodebuild test -scheme Orbit-Package -destination "platform=iOS Simulator,id=$id,OS=${{ matrix.os_version }}" | xcpretty
