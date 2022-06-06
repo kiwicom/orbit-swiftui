@@ -17,5 +17,5 @@ jobs:
         run: |
             git config --global user.name "Mobile Automation"
             git config --global user.email "mobile.automation@kiwi.com"
-            git commit am "Updated snapshots."
+            git commit -am "Updated snapshots."
             git push
