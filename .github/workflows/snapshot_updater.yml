@@ -1,17 +1,9 @@
 name: Snapshot Updater
 
 on:
-  issue_comment:
-    types: [created]
+  workflow_dispatch:
 
 jobs:
-  update_trigger:
-    runs-on: macos-12
-    steps:
-      - uses: khan/pull-request-comment-trigger@v1.1.0
-        id: check
-        with:
-          trigger: 'update_snapshots'
   generate_snapshots:
     runs-on: macos-12
     steps:
