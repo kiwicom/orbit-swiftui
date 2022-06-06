@@ -5,14 +5,14 @@ on:
     types: [created]
 
 jobs:
-  update trigger:
+  update_trigger:
     runs-on: macos-12
     steps:
       - uses: khan/pull-request-comment-trigger@v1.1.0
         id: check
         with:
           trigger: 'update_snapshots'
-  generate snapshots:
+  generate_snapshots:
     runs-on: macos-12
     steps:
       - uses: actions/checkout@v2
