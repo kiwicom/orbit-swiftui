@@ -307,8 +307,8 @@ struct IconPreviews: PreviewProvider {
     static func labelTextStack(_ size: Text.Size) -> some View {
         HStack(spacing: .xSmall) {
             Label("Label Text", icon: .passengers, style: .text(size))
-                .overlay(Separator(thickness: .hairline), alignment: .top)
-                .overlay(Separator(thickness: .hairline), alignment: .bottom)
+                .overlay(Separator(), alignment: .top)
+                .overlay(Separator(), alignment: .bottom)
         }
     }
     
@@ -318,8 +318,8 @@ struct IconPreviews: PreviewProvider {
                 Icon(.passengers, size: .text(size))
                 Text("Text", size: size)
             }
-            .overlay(Separator(thickness: .hairline), alignment: .top)
-            .overlay(Separator(thickness: .hairline), alignment: .bottom)
+            .overlay(Separator(), alignment: .top)
+            .overlay(Separator(), alignment: .bottom)
         }
     }
     

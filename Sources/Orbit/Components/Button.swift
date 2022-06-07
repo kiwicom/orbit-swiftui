@@ -32,6 +32,7 @@ public struct Button: View {
 
                     HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
                         Icon(content: iconContent, size: iconSize)
+                            .foregroundColor(style.foregroundColor)
                         text
                             .padding(.vertical, size.verticalPadding)
                     }
@@ -42,12 +43,12 @@ public struct Button: View {
                         .padding(.vertical, size.verticalPadding)
 
                     Icon(content: disclosureIconContent, size: iconSize)
+                        .foregroundColor(style.foregroundColor)
                 }
                 .padding(.leading, leadingPadding)
                 .padding(.trailing, trailingPadding)
             }
         )
-        .foregroundColor(Color(style.foregroundUIColor))
         .buttonStyle(ButtonStyle(style: style, size: size))
         .frame(maxWidth: .infinity)
     }
@@ -57,7 +58,7 @@ public struct Button: View {
             Text(
                 label,
                 size: size.textSize,
-                color: .none,
+                color: .custom(style.foregroundUIColor),
                 weight: .medium,
                 linkColor: .custom(style.foregroundUIColor)
             )
@@ -65,7 +66,7 @@ public struct Button: View {
             Text(
                 label,
                 size: size.textSize,
-                color: .none,
+                color: .custom(style.foregroundUIColor),
                 weight: .medium,
                 linkColor: .custom(style.foregroundUIColor)
             )

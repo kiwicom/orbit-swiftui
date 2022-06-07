@@ -19,6 +19,7 @@ public struct EmptyState: View {
             
             actions
         }
+        .accessibilityElement(children: .contain)
     }
     
     @ViewBuilder var texts: some View {

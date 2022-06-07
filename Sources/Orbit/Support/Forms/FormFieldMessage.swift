@@ -10,13 +10,14 @@ public struct FormFieldMessage: View {
         if message.isEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: spacing) {
                 Icon(message.icon, size: .small, color: message.color)
+                    .accessibility(.fieldMessageIcon)
                 Text(message.description, color: .custom(message.uiColor))
+                    .accessibility(.fieldMessage)
                     .alignmentGuide(.firstTextBaseline) { _ in
                         Text.Size.small.value * 1.1
                     }
             }
             .transition(.opacity.animation(.easeOut(duration: 0.2)))
-            .accessibility(.fieldMessage)
         }
     }
 

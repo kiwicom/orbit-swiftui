@@ -21,6 +21,7 @@ public struct Heading: View {
                 .foregroundColor(color?.value)
                 .multilineTextAlignment(alignment)
                 .fixedSize(horizontal: false, vertical: true)
+                .accessibility(addTraits: .isHeader)
         }
     }
 
@@ -187,6 +188,7 @@ struct HeadingPreviews: PreviewProvider {
             heading("Display Title", style: .display)
             heading("Display Subtitle", style: .displaySubtitle)
             Separator()
+                .padding(.vertical, .small)
             heading("Title 1", style: .title1)
             heading("Title 2", style: .title2)
             heading("Title 3", style: .title3)
@@ -202,6 +204,7 @@ struct HeadingPreviews: PreviewProvider {
             heading("Display title with a very large and multine content", style: .display)
             heading("Display subtitle with a very large and multine content", style: .displaySubtitle)
             Separator()
+                .padding(.vertical, .small)
             heading("Title 1 with a very large and multine content", style: .title1)
             heading("Title 2 with a very very large and multine content", style: .title2)
             heading("Title 3 with a very very very very large and multine content", style: .title3)

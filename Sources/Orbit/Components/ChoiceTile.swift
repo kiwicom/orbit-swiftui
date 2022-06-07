@@ -69,7 +69,6 @@ public struct ChoiceTile<Content: View>: View {
             }
         )
         .buttonStyle(TileButtonStyle(isSelected: isSelected, status: errorShouldHighlightBorder ? .critical : nil))
-        .accessibility(removeTraits: isSelected == false ? .isSelected : [])
         .accessibility(addTraits: isSelected ? .isSelected : [])
         .overlay(badgeOverlayView, alignment: .top)
     }
@@ -83,6 +82,7 @@ public struct ChoiceTile<Content: View>: View {
                         Icon(content: iconContent, size: .heading(titleStyle))
                             .foregroundColor(.inkNormal)
                             .padding(.trailing, .xSmall)
+                            .accessibility(.choiceTileIcon)
                         
                         VStack(alignment: .leading, spacing: .xxSmall) {
                             Heading(title, style: titleStyle)
@@ -227,6 +227,40 @@ public extension ChoiceTile {
         self.action = action
         self.content = content
     }
+
+    /// Creates Orbit ChoiceTile component.
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Content = .none,
+        illustration: Illustration.Image = .none,
+        badge: String = "",
+        badgeOverlay: String = "",
+        indicator: ChoiceTileIndicator = .radio,
+        titleStyle: Heading.Style = .title3,
+        isSelected: Bool = false,
+        isError: Bool = false,
+        message: MessageType = .none,
+        alignment: ChoiceTileAlignment = .default,
+        action: @escaping () -> Void = {}
+    ) where Content == EmptyView {
+        self.init(
+            title,
+            description: description,
+            icon: icon,
+            illustration: illustration,
+            badge: badge,
+            badgeOverlay: badgeOverlay,
+            indicator: indicator,
+            titleStyle: titleStyle,
+            isSelected: isSelected,
+            isError: isError,
+            message: message,
+            alignment: alignment,
+            action: action,
+            content: { EmptyView() }
+        )
+    }
 }
 
 // MARK: - Previews
@@ -239,7 +273,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             standaloneCentered
-            sizing
+//            sizing
 
             storybook
             storybookCentered
@@ -265,22 +299,22 @@ struct ChoiceTilePreviews: PreviewProvider {
         VStack(spacing: .medium) {
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    ChoiceTile("Height \(state.wrappedValue)", description: description, icon: .grid) { EmptyView() }
+                    ChoiceTile("Height \(state.wrappedValue)", description: description, icon: .grid)
                 }
             }
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    ChoiceTile("Height \(state.wrappedValue)", icon: .grid) { EmptyView() }
+                    ChoiceTile("Height \(state.wrappedValue)", icon: .grid)
                 }
             }
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    ChoiceTile(description: "Height \(state.wrappedValue)", icon: .grid) { EmptyView() }
+                    ChoiceTile(description: "Height \(state.wrappedValue)", icon: .grid)
                 }
             }
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    ChoiceTile("Height \(state.wrappedValue)") { EmptyView() }
+                    ChoiceTile("Height \(state.wrappedValue)")
                 }
             }
         }
@@ -381,14 +415,12 @@ struct ChoiceTilePreviews: PreviewProvider {
                 icon: showHeader ? .grid : .none,
                 titleStyle: titleStyle,
                 isSelected: state.wrappedValue,
-                isError: isError,
-                action: {
-                    state.wrappedValue.toggle()
-                },
-                content: {
-                    customContentPlaceholder
-                }
-            )
+                isError: isError
+            ) {
+                state.wrappedValue.toggle()
+            } content: {
+                customContentPlaceholder
+            }
         }
         .padding(.medium)
     }
@@ -404,14 +436,12 @@ struct ChoiceTilePreviews: PreviewProvider {
                 titleStyle: titleStyle,
                 isSelected: state.wrappedValue,
                 isError: isError,
-                alignment: .center,
-                action: {
-                    state.wrappedValue.toggle()
-                },
-                content: {
-                    customContentPlaceholder
-                }
-            )
+                alignment: .center
+            ) {
+                state.wrappedValue.toggle()
+            } content: {
+                customContentPlaceholder
+            }
         }
         .padding(.medium)
     }

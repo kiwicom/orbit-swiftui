@@ -48,6 +48,7 @@ public struct Alert<Content: View>: View {
             
             Icon(content: iconContent, size: .normal)
                 .foregroundColor(status.color)
+                .accessibility(.alertIcon)
             
             VStack(alignment: .leading, spacing: .medium) {
 
@@ -76,6 +77,7 @@ public struct Alert<Content: View>: View {
         .padding(.leading, iconContent.isEmpty ? .medium : .small)
         .background(background)
         .cornerRadius(BorderRadius.default)
+        .accessibilityElement(children: .contain)
     }
 
     @ViewBuilder var buttonsView: some View {

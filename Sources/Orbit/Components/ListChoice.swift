@@ -50,23 +50,25 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
             }
         )
         .buttonStyle(ListChoiceButtonStyle())
-        .accessibility(label: SwiftUI.Text(title))
-        .accessibility(hint: SwiftUI.Text(description))
         .accessibility(addTraits: accessibilityTraitsToAdd)
     }
 
     @ViewBuilder var buttonContent: some View {
-        HStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: 0) {
-                header
-                content()
-            }
+        if isEmpty == false {
+            HStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 0) {
+                    header
+                    content()
+                }
 
-            disclosureView
-                .padding(.horizontal, .medium)
+                disclosureView
+                    .padding(.horizontal, .medium)
+                    .padding(.vertical, .small)
+                    .disabled(true)
+            }
+            .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
+            .overlay(separator, alignment: .bottom)
         }
-        .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
-        .overlay(separator, alignment: .bottom)
     }
     
     @ViewBuilder var header: some View {
@@ -93,6 +95,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
                 Icon(content: iconContent)
                     .foregroundColor(.inkNormal)
+                    .accessibility(.listChoiceIcon)
                 
                 if isHeaderTextEmpty == false {
                     VStack(alignment: .labelTextLeading, spacing: .xxxSmall) {
@@ -104,8 +107,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 }
             }
             .padding(.leading, .medium)
-            .padding(.top, verticalPadding)
-            .padding(.bottom, isCustomContentEmpty ? verticalPadding : 0)
+            .padding(.vertical, verticalPadding)
         }
     }
 
@@ -118,18 +120,12 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                     .padding(.leading, -.xSmall)
             case .button(let type):
                 disclosureButton(type: type)
-                    .padding(.vertical, .small)
-                    .disabled(true)
             case .buttonLink(let label, let style):
                 ButtonLink(label, style: style)
-                    .padding(.vertical, .xSmall)
-                    .disabled(true)
             case .checkbox(let isChecked, let state):
                 Checkbox(state: state, isChecked: isChecked)
-                    .disabled(true)
             case .radio(let isChecked, let state):
                 Radio(state: state, isChecked: isChecked)
-                    .disabled(true)
             case .icon(let content):
                 Icon(content: content)
         }
@@ -144,7 +140,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
 
     @ViewBuilder var separator: some View {
         if showSeparator {
-            Separator(thickness: .hairline)
+            Separator()
                 .padding(.leading, separatorPadding)
         }
     }
@@ -159,6 +155,10 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
         }
         
         return .xxLarge
+    }
+
+    var isEmpty: Bool {
+        isHeaderEmpty && isCustomHeaderEmpty && isCustomContentEmpty && disclosure == .none
     }
     
     var isHeaderEmpty: Bool {
@@ -362,23 +362,25 @@ struct ListChoicePreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             sizing
+            plain
+            radio
             storybook
             storybookButton
             storybookCheckbox
-            storybookRadio
-            plain
-            white
-            backgroundColor
         }
-        .background(Color.cloudLight)
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
-        ListChoice(title, description: description, icon: .grid) {
-            customContentPlaceholder
-        } headerContent: {
-            headerContent
+        VStack {
+            ListChoice(title, description: description, icon: .grid) {
+                customContentPlaceholder
+            } headerContent: {
+                headerContent
+            }
+
+            // Empty
+            ListChoice(disclosure: .none)
         }
     }
 
@@ -408,8 +410,8 @@ struct ListChoicePreviews: PreviewProvider {
             }
             .border(Color.cloudLight)
         }
-        .fixedSize(horizontal: false, vertical: true)
         .padding(.medium)
+        .fixedSize(horizontal: false, vertical: true)
         .background(Color.whiteNormal)
         .previewDisplayName("Sizing")
     }
@@ -473,7 +475,7 @@ struct ListChoicePreviews: PreviewProvider {
         .previewDisplayName("Checkbox")
     }
 
-    static var storybookRadio: some View {
+    static var radio: some View {
         Card(contentLayout: .fill) {
             ListChoice(title, description: description, disclosure: .radio(isChecked: false))
             ListChoice(title, description: description, disclosure: .radio(isChecked: true))
@@ -493,15 +495,7 @@ struct ListChoicePreviews: PreviewProvider {
                 headerContent
             }
         }
-        .previewDisplayName("Checkbox")
-    }
-
-    static var storybookMix: some View {
-        VStack(spacing: .xLarge) {
-            plain
-            white
-            backgroundColor
-        }
+        .previewDisplayName("Radio")
     }
 
     static var plain: some View {
@@ -522,62 +516,13 @@ struct ListChoicePreviews: PreviewProvider {
                 headerContent
             }
         }
-        .previewDisplayName("No disclosure")
     }
-    
-    static var white: some View {
-        VStack(spacing: .small) {
-            Group {
-                ListChoice(title, disclosure: .none)
-                ListChoice(disclosure: .none)
-                ListChoice(disclosure: .icon(.symbol(.alert, color: .orangeNormal)))
-                ListChoice(title, description: description, disclosure: .none)
-                ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
-                ListChoice(title, icon: .airplane, disclosure: .none)
-            }
-            Group {
-                ListChoice(title, icon: .symbol(.airplane, color: .inkLighter), disclosure: .none)
-                ListChoice(title, description: description, icon: .airplane, disclosure: .none)
-                ListChoice(title, description: description, disclosure: .none) {
-                    customContentPlaceholder
-                } headerContent: {
-                    headerContent
-                }
-                ListChoice(
-                    disclosure: .none,
-                    content: {
-                        customContentPlaceholder
-                    }
-                )
-                ListChoice(
-                    disclosure: .none,
-                    headerContent: {
-                        headerContent
-                    }
-                )
-            }
-            .background(Color.whiteNormal)
+
+    static var storybookMix: some View {
+        VStack(alignment: .leading, spacing: .large) {
+            plain
+            radio
         }
-        .padding()
-        .background(Color.cloudLight)
-        .previewDisplayName("White background")
-    }
-    
-    static var backgroundColor: some View {
-        VStack(spacing: .small) {
-            Group {
-                ListChoice(title, value: value, disclosure: .none)
-                ListChoice(disclosure: .none)
-                ListChoice(title, icon: .grid, value: value)
-                ListChoice(title, icon: .grid, content: {
-                    customContentPlaceholder
-                })
-            }
-            .background(Color.orangeLight)
-        }
-        .padding()
-        .background(Color.cloudLight)
-        .previewDisplayName("Custom background")
     }
 
     static var headerContent: some View {

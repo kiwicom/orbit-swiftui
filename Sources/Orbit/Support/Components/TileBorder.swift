@@ -29,42 +29,36 @@ public struct TileBorderModifier: ViewModifier {
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             .shadow(color: shadowColor.opacity(shadowOpacity.primary), radius: shadowRadius.primary, x: 0, y: 0.75)
             .shadow(color: shadowColor.opacity(shadowOpacity.secondary), radius: shadowRadius.secondary, x: 0, y: 5)
-            .overlay(outerBorder.animation(.easeIn(duration: 0.1), value: isSelected))
-            .overlay(verticalBorder, alignment: .top)
-            .overlay(verticalBorder, alignment: .bottom)
+            .overlay(
+                outerBorder
+                    .animation(.easeIn(duration: 0.1), value: isSelected)
+            )
+            .overlay(compactSeparatorBorder, alignment: .top)
+            .overlay(compactSeparatorBorder, alignment: .bottom)
     }
 
-    @ViewBuilder var verticalBorder: some View {
-        if style == .iOS, horizontalSizeClass != .regular {
+    @ViewBuilder var compactSeparatorBorder: some View {
+        if isCompact {
             borderColor
-                .frame(height: status == nil ? BorderWidth.hairline : BorderWidth.emphasis)
+                .frame(height: status == nil ? 1 : BorderWidth.emphasis)
+                .animation(.easeIn(duration: 0.1), value: isSelected)
         }
     }
 
     @ViewBuilder var outerBorder: some View {
-        switch (style, status) {
-            case (.none, _):
-                EmptyView()
-            case (.default, let status?):
-                outerBorderShape
-                    .strokeBorder(status.color, lineWidth: borderWidth)
-            case (.default, .none):
-                if isSelected {
-                    outerBorderShape
-                        .strokeBorder(Color.blueNormal, lineWidth: borderWidth)
-                } else {
-                    outerBorderShape
-                        .stroke(borderColor, lineWidth: borderWidth)
-                        .blendMode(.darken)
-                }
-            default:
-                outerBorderShape
-                    .strokeBorder(borderColor, lineWidth: borderWidth)
+        if isCompact == false, style != .none {
+            outerBorderShape
+                .strokeBorder(borderColor, lineWidth: borderWidth)
+                .blendMode(isSelected ? .normal : .darken)
         }
     }
 
     @ViewBuilder var outerBorderShape: some InsettableShape {
         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+    }
+
+    var isCompact: Bool {
+        (style == .iOS) && horizontalSizeClass == .compact
     }
     
     var shadowRadius: (primary: CGFloat, secondary: CGFloat) {
@@ -107,25 +101,24 @@ public struct TileBorderModifier: ViewModifier {
         if isSelected {
             return BorderWidth.selection
         }
-        
-        switch (style, status, horizontalSizeClass) {
-            case (.default, _?, _):         return BorderWidth.emphasis
-            case (.iOS, _?, .regular):      return BorderWidth.emphasis
-            case (.default, .none, _):      return BorderWidth.hairline
-            case (.iOS, .none, .regular):   return BorderWidth.hairline
-            default:                        return 0
+
+        if status != nil {
+            return BorderWidth.emphasis
         }
+        
+        return 1
     }
 
     var borderColor: Color {
-        switch (style, status, horizontalSizeClass) {
-            case (.default, let status?, _):    return status.color
-            case (.iOS, let status?, _):        return status.color
-            case (.default, .none, _):          return .cloudDark
-            case (.iOS, .none, .regular):       return .cloudNormalActive
-            case (.iOS, .none, _):              return .cloudDarker
-            default:                            return .clear
+        if let status = status {
+            return status.color
         }
+
+        if isSelected {
+            return .blueNormal
+        }
+
+        return .cloudDark
     }
 }
 
@@ -152,31 +145,39 @@ struct TileBorderModifierPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            Text("Content")
-                .padding()
+            content
                 .tileBorder()
-                .padding()
 
-            Text("Content")
-                .padding()
+            content
                 .tileBorder(backgroundColor: .whiteNormal)
-                .padding()
 
-            Text("Content")
-                .padding()
+            content
                 .tileBorder(style: .iOS, backgroundColor: .whiteNormal)
-                .padding()
 
-            Text("Content")
-                .padding()
+            content
                 .tileBorder(backgroundColor: .whiteNormal, shadow: .default)
-                .padding()
 
-            Text("Content")
-                .padding()
+            content
+                .tileBorder(backgroundColor: .blueLight, shadow: .small)
+
+            content
                 .tileBorder(isSelected: true, backgroundColor: .blueLight, shadow: .small)
-                .padding()
+
+            content
+                .tileBorder(status: .critical, backgroundColor: .blueLight, shadow: .small)
+
+            content
+                .tileBorder(isSelected: true, status: .critical, backgroundColor: .blueLight, shadow: .small)
+
+            ListChoice("ListChoice")
+                .tileBorder()
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
+    }
+
+    static var content: some View {
+        Text("Content")
+            .padding(.medium)
     }
 }

@@ -67,6 +67,7 @@ public struct Card<Content: View>: View {
         )
         .frame(maxWidth: maxOuterWidth)
         .padding(.horizontal, horizontalPadding)
+        .accessibilityElement(children: .contain)
     }
 
     @ViewBuilder var header: some View {
@@ -75,6 +76,7 @@ public struct Card<Content: View>: View {
 
                 Icon(content: iconContent, size: .heading(titleStyle))
                     .padding(.trailing, .xSmall)
+                    .accessibility(.cardIcon)
                 
                 VStack(alignment: .leading, spacing: .xxSmall) {
                     Heading(title, style: titleStyle)
@@ -341,7 +343,7 @@ struct CardPreviews: PreviewProvider {
     static var cardWithFillLayoutContent: some View {
         Card("Card with fill layout content", action: .buttonLink("Edit"), contentLayout: .fill) {
             customContentPlaceholder
-            Separator(thickness: .hairline)
+            Separator()
             customContentPlaceholder
         }
         .padding(.vertical, .medium)
@@ -351,7 +353,7 @@ struct CardPreviews: PreviewProvider {
     static var cardWithFillLayoutContentNoHeader: some View {
         Card(contentLayout: .fill) {
             customContentPlaceholder
-            Separator(thickness: .hairline)
+            Separator()
             customContentPlaceholder
         }
         .padding(.vertical, .medium)
