@@ -38,6 +38,7 @@ public enum AccessibilityID: String {
     case listChoiceTitle                = "orbit.listchoice.title"
     case listChoiceIcon                 = "orbit.listchoice.icon"
     case listChoiceDescription          = "orbit.listchoice.description"
+    case listChoiceValue                = "orbit.listchoice.value"
     case passwordStrengthIndicator      = "orbit.passwordstrengthindicator"
     case radioTitle                     = "orbit.radio.title"
     case radioDescription               = "orbit.radio.description"

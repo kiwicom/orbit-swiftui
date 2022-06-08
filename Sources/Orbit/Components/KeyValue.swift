@@ -18,6 +18,10 @@ public struct KeyValue: View {
         KeyValueField(key, size: size, alignment: alignment) {
             Text(value, size: size.valueSize, weight: .medium, alignment: .init(alignment), isSelectable: true)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibility(label: .init(key))
+        .accessibility(value: .init(value))
+        .accessibility(addTraits: .isStaticText)
     }
 }
 

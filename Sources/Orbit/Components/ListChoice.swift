@@ -33,6 +33,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     let title: String
     let description: String
     let iconContent: Icon.Content
+    let value: String
     let disclosure: ListChoiceDisclosure
     let showSeparator: Bool
     let action: () -> Void
@@ -40,35 +41,40 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     let headerContent: () -> HeaderContent
 
     public var body: some View {
-        SwiftUI.Button(
-            action: {
-                HapticsProvider.sendHapticFeedback(.light(0.5))
-                action()
-            },
-            label: {
-                buttonContent
-            }
-        )
-        .buttonStyle(ListChoiceButtonStyle())
-        .accessibility(addTraits: accessibilityTraitsToAdd)
+        if isEmpty == false {
+            SwiftUI.Button(
+                action: {
+                    HapticsProvider.sendHapticFeedback(.light(0.5))
+                    action()
+                },
+                label: {
+                    buttonContent
+                }
+            )
+            .buttonStyle(ListChoiceButtonStyle())
+            .accessibilityElement(children: .ignore)
+            .accessibility(label: .init(title))
+            .accessibility(value: .init(value))
+            .accessibility(hint: .init(description))
+            .accessibility(addTraits: .isButton)
+            .accessibility(addTraits: accessibilityTraitsToAdd)
+        }
     }
 
     @ViewBuilder var buttonContent: some View {
-        if isEmpty == false {
-            HStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 0) {
-                    header
-                    content()
-                }
-
-                disclosureView
-                    .padding(.horizontal, .medium)
-                    .padding(.vertical, .small)
-                    .disabled(true)
+        HStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                header
+                content()
             }
-            .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
-            .overlay(separator, alignment: .bottom)
+
+            disclosureView
+                .padding(.horizontal, .medium)
+                .padding(.vertical, .small)
+                .disabled(true)
         }
+        .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
+        .overlay(separator, alignment: .bottom)
     }
     
     @ViewBuilder var header: some View {
@@ -86,6 +92,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 headerContent()
                     .padding(.leading, isHeaderEmpty ? .medium : 0)
                     .padding(.trailing, disclosure == .none ? .medium : 0)
+                    .accessibility(.listChoiceValue)
             }
         }
     }
@@ -185,6 +192,28 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 return .isSelected
         }
     }
+
+    private init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Content = .none,
+        value: String = "",
+        disclosure: ListChoiceDisclosure = .disclosure(),
+        showSeparator: Bool = true,
+        action: @escaping () -> Void = {},
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder headerContent: @escaping () -> HeaderContent
+    ) {
+        self.title = title
+        self.description = description
+        self.value = value
+        self.iconContent = icon
+        self.disclosure = disclosure
+        self.showSeparator = showSeparator
+        self.action = action
+        self.content = content
+        self.headerContent = headerContent
+    }
 }
 
 // MARK: - Inits
@@ -201,14 +230,17 @@ public extension ListChoice {
         @ViewBuilder content: @escaping () -> Content,
         @ViewBuilder headerContent: @escaping () -> HeaderContent
     ) {
-        self.title = title
-        self.description = description
-        self.iconContent = icon
-        self.disclosure = disclosure
-        self.showSeparator = showSeparator
-        self.action = action
-        self.content = content
-        self.headerContent = headerContent
+        self.init(
+            title,
+            description: description,
+            icon: icon,
+            value: "",
+            disclosure: disclosure,
+            showSeparator: showSeparator,
+            action: action,
+            content: content,
+            headerContent: headerContent
+        )
     }
 
     /// Creates Orbit ListChoice component with optional vertically centered header content.
@@ -294,6 +326,7 @@ public extension ListChoice where HeaderContent == Text {
             title,
             description: description,
             icon: icon,
+            value: value,
             disclosure: disclosure,
             showSeparator: showSeparator,
             action: action,

@@ -67,10 +67,10 @@ public struct InputField: View {
                 .padding(.top, .xxSmall)
         }
         .accessibilityElement(children: .ignore)
-        .accessibility(label: SwiftUI.Text(label))
-        .accessibility(value: SwiftUI.Text(value))
-        .accessibility(hint: SwiftUI.Text(placeholder))
-        .accessibility(addTraits: state != .disabled ? .isButton : [])
+        .accessibility(label: .init(label))
+        .accessibility(value: .init(value))
+        .accessibility(hint: .init(message.description.isEmpty ? placeholder : message.description))
+        .accessibility(addTraits: .isButton)
     }
 
     @ViewBuilder var input: some View {
