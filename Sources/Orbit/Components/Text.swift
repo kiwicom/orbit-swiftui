@@ -34,18 +34,21 @@ public struct Text: View {
                 .multilineTextAlignment(alignment)
                 .fixedSize(horizontal: false, vertical: true)
                 .overlay(selectableText)
+                .accessibility(removeTraits: showTextLinks ? .isStaticText : [])
+                .accessibility(hidden: showTextLinks)
                 .overlay(textLinks)
         }
     }
 
     @ViewBuilder var textLinks: some View {
-        if content.containsHtmlFormatting, content.containsTextLinks {
+        if showTextLinks {
             GeometryReader { geometry in
                 TextLink(content: textLinkContent, bounds: geometry.size, color: linkColor) { url, text in
                     HapticsProvider.sendHapticFeedback(.light(0.5))
                     linkAction(url, text)
                 }
                 .accessibility(addTraits: .isLink)
+                .accessibility(label: .init(content))
             }
         }
     }
@@ -74,6 +77,10 @@ public struct Text: View {
                 .foregroundColor(foregroundColor.map(SwiftUI.Color.init))
                 .font(.orbit(size: size.value, weight: weight, style: size.textStyle))
         }
+    }
+
+    var showTextLinks: Bool {
+        content.containsHtmlFormatting && content.containsTextLinks
     }
 
     var textLinkContent: NSAttributedString {
