@@ -22,7 +22,6 @@ public struct KeyValueField<Content: View>: View {
             content()
                 .accessibility(.keyValueValue)
         }
-        .accessibilityElement(children: .contain)
     }
 }
 

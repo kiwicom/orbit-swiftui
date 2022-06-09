@@ -69,8 +69,13 @@ public struct ChoiceTile<Content: View>: View {
             }
         )
         .buttonStyle(TileButtonStyle(isSelected: isSelected, status: errorShouldHighlightBorder ? .critical : nil))
-        .accessibility(addTraits: isSelected ? .isSelected : [])
         .overlay(badgeOverlayView, alignment: .top)
+        .accessibilityElement(children: .ignore)
+        .accessibility(label: .init(title))
+        .accessibility(value: .init(badgeOverlay.isEmpty ?  badge : badgeOverlay))
+        .accessibility(hint: .init(message.description.isEmpty ? description : message.description))
+        .accessibility(addTraits: .isButton)
+        .accessibility(addTraits: isSelected ? .isSelected : [])
     }
     
     @ViewBuilder var header: some View {
@@ -273,7 +278,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             standaloneCentered
-//            sizing
+            sizing
 
             storybook
             storybookCentered
