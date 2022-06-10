@@ -417,6 +417,24 @@ struct InputFieldPreviews: PreviewProvider {
 
 struct InputFieldLivePreviews: PreviewProvider {
 
+    class UppercaseAlphabetFormatter: Formatter {
+
+        override func string(for obj: Any?) -> String? {
+            guard let string = obj as? String else { return nil }
+
+            return string.uppercased()
+        }
+
+        override func getObjectValue(
+            _ obj: AutoreleasingUnsafeMutablePointer<AnyObject?>?,
+            for string: String,
+            errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?
+        ) -> Bool {
+            obj?.pointee = string.lowercased() as AnyObject
+            return true
+        }
+    }
+
     static var previews: some View {
         PreviewWrapper()
         securedWrapper
@@ -446,6 +464,19 @@ struct InputFieldLivePreviews: PreviewProvider {
 
                 Text("Some text, but also very long and multi-line to test that it works.")
 
+                Spacer()
+
+                VStack(alignment: .leading, spacing: .medium) {
+                    Text("InputField uppercasing the input, but not changing projected value:")
+                    
+                    InputField(
+                        value: $value,
+                        placeholder: "Use Formatter subclass",
+                        formatter: UppercaseAlphabetFormatter()
+                    )
+                }
+
+                Spacer()
                 Spacer()
 
                 Button("Change") {
