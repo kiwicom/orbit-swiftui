@@ -33,6 +33,7 @@ public struct Select: View {
                 label: {
                     Text(value ?? placeholder, color: .none)
                         .foregroundColor(textColor)
+                        .accessibility(.inputValue)
                 }
             )
             .buttonStyle(
