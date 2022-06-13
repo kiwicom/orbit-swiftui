@@ -5,7 +5,7 @@ struct StorybookIcons {
     static var icons: [Icon.Symbol] { Icon.Symbol.allCases }
 
     @ViewBuilder static var storybook: some View {
-        LazyVStackIfAvailable(alignment: .leading, spacing: .xSmall) {
+        LazyVStack(alignment: .leading, spacing: .xSmall) {
             stackContent
         }
         .padding(.xSmall)

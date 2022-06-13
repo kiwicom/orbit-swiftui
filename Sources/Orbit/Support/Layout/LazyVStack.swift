@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct LazyVStackIfAvailable<Content: View>: View {
+struct LazyVStack<Content: View>: View {
 
     var alignment: HorizontalAlignment = .center
     var spacing: CGFloat? = nil
@@ -8,7 +8,7 @@ struct LazyVStackIfAvailable<Content: View>: View {
 
     var body: some View {
         if #available(iOS 14.0, *) {
-            LazyVStack(alignment: alignment, spacing: spacing) {
+            SwiftUI.LazyVStack(alignment: alignment, spacing: spacing) {
                 content
             }
         } else {
@@ -31,7 +31,7 @@ struct LazyVStackIfAvailablePreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        LazyVStackIfAvailable {
+        LazyVStack {
             Text("Text 1")
             Text("Text 2")
         }
