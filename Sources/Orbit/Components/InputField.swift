@@ -11,14 +11,14 @@ import UIKit
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/inputfield/)
 /// - Important: Component expands horizontally to infinity.
-public struct InputField: View {
+public struct InputField<Value>: View where Value: LosslessStringConvertible {
 
     private enum Mode {
         case actionsHandler(onEditingChanged: (Bool) -> Void, onCommit: () -> Void, isSecure: Bool)
         case formatter(formatter: Formatter)
     }
 
-    @Binding private var value: String
+    @Binding private var value: Value
     @Binding private var messageHeight: CGFloat
     @State private var isEditing: Bool = false
     @State private var isSecureTextEntry: Bool = true
@@ -59,11 +59,7 @@ public struct InputField: View {
                         .accentColor(.blueNormal)
                         .background(textFieldPlaceholder, alignment: .leading)
                         .disabled(state == .disabled)
-                    if isSecure {
-                        securedSuffix
-                    } else {
-                        clearButton
-                    }
+                    button
                 }
             }
         } messageContent: {
@@ -72,11 +68,20 @@ public struct InputField: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(label))
-        .accessibility(value: .init(value))
+        .accessibility(value: .init(value.description))
         .accessibility(hint: .init(message.description.isEmpty ? placeholder : message.description))
         .accessibility(addTraits: .isButton)
     }
 
+    @ViewBuilder var button: some View {
+        if case .actionsHandler = mode {
+            if isSecure {
+                securedSuffix
+            } else {
+                clearButton
+            }
+        }
+    }
     @ViewBuilder var input: some View {
         switch mode {
             case .actionsHandler(let onEditingChanged, let onCommit, let isSecure):
@@ -91,19 +96,19 @@ public struct InputField: View {
     }
 
     @ViewBuilder var textFieldPlaceholder: some View {
-        if value.isEmpty {
+        if value.description.isEmpty {
             Text(placeholder, color: .none)
                 .foregroundColor(state.placeholderColor)
         }
     }
     
     @ViewBuilder var clearButton: some View {
-        if value.isEmpty == false, state != .disabled {
+        if value.description.isEmpty == false, state != .disabled {
             Icon(sfSymbol: "multiply.circle.fill", color: .inkLighter)
                 .padding(.small)
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    value = ""
+                    value = Value.init("") ?? value
                 }
                 .accessibility(addTraits: .isButton)
                 .accessibility(.inputFieldClear)
@@ -111,7 +116,7 @@ public struct InputField: View {
     }
 
     @ViewBuilder var securedSuffix: some View {
-        if value.isEmpty == false, state != .disabled {
+        if value.description.isEmpty == false, state != .disabled {
             Icon(isSecureTextEntry ? .visibility : .visibilityOff, color: .inkLight)
                 .padding(.vertical, .xSmall)
                 .padding(.horizontal, .small)
@@ -129,7 +134,10 @@ public struct InputField: View {
         onCommit: @escaping () -> Void
     ) -> some View {
         SecureTextField(
-            text: $value,
+            text: Binding(
+                get: { self.value.description },
+                set: { self.value = Value.init($0) ?? self.value }
+            ),
             isSecured: $isSecureTextEntry,
             isEditing: $isEditing,
             style: .init(
@@ -150,7 +158,10 @@ public struct InputField: View {
     ) -> some View {
         TextField(
             "",
-            text: $value,
+            text: Binding(
+                get: { self.value.description },
+                set: { self.value = Value.init($0) ?? self.value }
+            ),
             onEditingChanged: { isEditing in
                 self.isEditing = isEditing
                 onEditingChanged(isEditing)
@@ -181,7 +192,7 @@ public extension InputField {
     ///     - suffixAction: Optional separate action on suffix icon tap.
     init(
         _ label: String = "",
-        value: Binding<String>,
+        value: Binding<Value>,
         prefix: Icon.Content = .none,
         suffix: Icon.Content = .none,
         placeholder: String = "",
@@ -197,7 +208,7 @@ public extension InputField {
         onEditingChanged: @escaping (Bool) -> Void = { _ in },
         onCommit: @escaping () -> Void = {},
         suffixAction: (() -> Void)? = nil
-    ) {
+    ) where Value == String {
         self.init(
             label,
             value: value,
@@ -217,19 +228,20 @@ public extension InputField {
         )
     }
 
-    /// Creates Orbit InputField component.
+    /// Creates Orbit InputField component using a provided Formatter
+    /// that will format an input without changing underlying value when it's committed
     ///
     /// - Parameters:
     ///     - message: Message below InputField.
     ///     - messageHeight: Binding to the current height of message.
     ///     - formatter: A formatter to use when converting between the
-    ///     string the user edits and the underlying String value.
+    ///     string the user edits and the underlying value.
     ///     If `formatter` can't perform the conversion, the text field doesn't
     ///     modify `binding.value`.
     ///     - suffixAction: Optional separate action on suffix icon tap.
     init(
         _ label: String = "",
-        value: Binding<String>,
+        value: Binding<Value>,
         prefix: Icon.Content = .none,
         suffix: Icon.Content = .none,
         placeholder: String = "",
@@ -238,7 +250,6 @@ public extension InputField {
         keyboard: UIKeyboardType = .default,
         autocapitalization: UITextAutocapitalizationType = .none,
         isAutocompleteEnabled: Bool = false,
-        passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
         message: MessageType = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
         formatter: Formatter,
@@ -255,7 +266,7 @@ public extension InputField {
             keyboard: keyboard,
             autocapitalization: autocapitalization,
             isAutocompleteEnabled: isAutocompleteEnabled,
-            passwordStrength: passwordStrength,
+            passwordStrength: .empty,
             message: message,
             messageHeight: messageHeight,
             mode: .formatter(formatter: formatter),
@@ -267,7 +278,7 @@ public extension InputField {
 extension InputField {
     private init(
         _ label: String = "",
-        value: Binding<String>,
+        value: Binding<Value>,
         prefix: Icon.Content = .none,
         suffix: Icon.Content = .none,
         placeholder: String = "",
@@ -443,7 +454,8 @@ struct InputFieldLivePreviews: PreviewProvider {
     struct PreviewWrapper: View {
 
         @State var message: MessageType = .none
-        @State var value = ""
+        @State var textValue = ""
+        @State var intValue = 0
 
         init() {
             Font.registerOrbitFonts()
@@ -457,7 +469,7 @@ struct InputFieldLivePreviews: PreviewProvider {
 
                 InputField(
                     "InputField",
-                    value: $value,
+                    value: $textValue,
                     placeholder: "Placeholder",
                     message: message
                 )
@@ -470,9 +482,17 @@ struct InputFieldLivePreviews: PreviewProvider {
                     Text("InputField uppercasing the input, but not changing projected value:")
                     
                     InputField(
-                        value: $value,
-                        placeholder: "Use Formatter subclass",
+                        value: $textValue,
+                        placeholder: "Uppercased",
                         formatter: UppercaseAlphabetFormatter()
+                    )
+
+                    Text("Number: \(intValue)")
+
+                    InputField(
+                        value: $intValue,
+                        placeholder: "Decimal formatter",
+                        formatter: formatter
                     )
                 }
 
@@ -502,6 +522,12 @@ struct InputFieldLivePreviews: PreviewProvider {
             .padding()
             .previewDisplayName("Run Live Preview with Input Field")
         }
+
+        let formatter: NumberFormatter = {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            return formatter
+        }()
     }
 
     static var securedWrapper: some View {
