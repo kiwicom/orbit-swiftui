@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Button for NavigationBar.
 public struct BarButton: View {
 
     private let symbol: Icon.Symbol

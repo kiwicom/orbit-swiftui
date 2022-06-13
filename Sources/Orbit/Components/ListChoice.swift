@@ -36,9 +36,9 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     let value: String
     let disclosure: ListChoiceDisclosure
     let showSeparator: Bool
+    let content: Content
     let action: () -> Void
-    let content: () -> Content
-    let headerContent: () -> HeaderContent
+    @ViewBuilder let headerContent: HeaderContent
 
     public var body: some View {
         if isEmpty == false {
@@ -65,7 +65,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
                 header
-                content()
+                content
             }
 
             disclosureView
@@ -89,7 +89,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 TextStrut(.large)
                     .padding(.vertical, verticalPadding)
 
-                headerContent()
+                headerContent
                     .padding(.leading, isHeaderEmpty ? .medium : 0)
                     .padding(.trailing, disclosure == .none ? .medium : 0)
                     .accessibility(.listChoiceValue)
@@ -173,11 +173,11 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     }
 
     var isCustomHeaderEmpty: Bool {
-        headerContent() is EmptyView
+        headerContent is EmptyView
     }
 
     var isCustomContentEmpty: Bool {
-        content() is EmptyView
+        content is EmptyView
     }
 
     var isHeaderTextEmpty: Bool {
@@ -201,8 +201,8 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {},
-        @ViewBuilder content: @escaping () -> Content,
-        @ViewBuilder headerContent: @escaping () -> HeaderContent
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder headerContent: () -> HeaderContent
     ) {
         self.title = title
         self.description = description
@@ -211,8 +211,8 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
         self.disclosure = disclosure
         self.showSeparator = showSeparator
         self.action = action
-        self.content = content
-        self.headerContent = headerContent
+        self.content = content()
+        self.headerContent = headerContent()
     }
 }
 
@@ -227,8 +227,8 @@ public extension ListChoice {
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {},
-        @ViewBuilder content: @escaping () -> Content,
-        @ViewBuilder headerContent: @escaping () -> HeaderContent
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder headerContent: () -> HeaderContent
     ) {
         self.init(
             title,
@@ -251,7 +251,7 @@ public extension ListChoice {
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {},
-        @ViewBuilder headerContent: @escaping () -> HeaderContent
+        @ViewBuilder headerContent: () -> HeaderContent
     ) where Content == EmptyView {
         self.init(
             title,
@@ -273,7 +273,7 @@ public extension ListChoice {
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {},
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder content: () -> Content
     ) where HeaderContent == EmptyView {
         self.init(
             title,
@@ -320,7 +320,7 @@ public extension ListChoice where HeaderContent == Text {
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void = {},
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder content: () -> Content
     ) {
         self.init(
             title,

@@ -28,11 +28,11 @@ public struct Tabs<Content: View>: View {
     let underlineHeight: CGFloat = .xxxSmall
     let lineLimit: Int?
     let distribution: TabsDistribution
-    let content: () -> Content
+    @ViewBuilder let content: Content
 
     public var body: some View {
-        HStack(alignment: .center, spacing: 0) {
-            content()
+        HStack(spacing: 0) {
+            content
                 .lineLimit(lineLimit)
                 .frame(maxWidth: maxTabWidth, minHeight: Layout.preferredSmallButtonHeight, maxHeight: .infinity)
         }
@@ -154,12 +154,12 @@ extension Tabs {
         selectedIndex: Binding<Int>,
         distribution: TabsDistribution = .equal,
         lineLimit: Int? = nil,
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder content: () -> Content
     ) {
         self._selectedIndex = selectedIndex
         self.distribution = distribution
         self.lineLimit = lineLimit
-        self.content = content
+        self.content = content()
     }
 }
 

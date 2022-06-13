@@ -4,11 +4,11 @@ import SwiftUI
 public struct ContentHeightReader<Content: View>: View {
 
     @Binding var height: CGFloat
-    let content: () -> Content
+    @ViewBuilder let content: Content
 
     public var body: some View {
         ZStack {
-            content()
+            content
                 .background(
                     GeometryReader { proxy in
                         Color.clear
@@ -21,9 +21,9 @@ public struct ContentHeightReader<Content: View>: View {
         }
     }
 
-    public init(height: Binding<CGFloat>, @ViewBuilder content: @escaping  () -> Content) {
+    public init(height: Binding<CGFloat>, @ViewBuilder content: () -> Content) {
         self._height = height
-        self.content = content
+        self.content = content()
     }
 }
 

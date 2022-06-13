@@ -2,34 +2,20 @@ import SwiftUI
 
 struct LazyVStackIfAvailable<Content: View>: View {
 
-    let content: () -> Content
-    let alignment: HorizontalAlignment
-    let spacing: CGFloat?
+    var alignment: HorizontalAlignment = .center
+    var spacing: CGFloat? = nil
+    @ViewBuilder let content: Content
 
     var body: some View {
         if #available(iOS 14.0, *) {
             LazyVStack(alignment: alignment, spacing: spacing) {
-                content()
+                content
             }
         } else {
             VStack(alignment: alignment, spacing: spacing) {
-                content()
+                content
             }
         }
-    }
-}
-
-// MARK: - Inits
-extension LazyVStackIfAvailable {
-
-    init(
-        alignment: HorizontalAlignment = .leading,
-        spacing: CGFloat? = nil,
-        @ViewBuilder content: @escaping () -> Content
-    ) {
-        self.alignment = alignment
-        self.spacing = spacing
-        self.content = content
     }
 }
 

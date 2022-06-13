@@ -11,15 +11,15 @@ public struct KeyValueField<Content: View>: View {
 
     let key: String
     let size: KeyValue.Size
-    let content: () -> Content
     let alignment: HorizontalAlignment
+    @ViewBuilder let content: Content
 
     public var body: some View {
         VStack(alignment: alignment, spacing: 0) {
             Text(key, size: size.keySize, color: .inkLight, alignment: .init(alignment))
                 .accessibility(.keyValueKey)
 
-            content()
+            content
                 .accessibility(.keyValueValue)
         }
     }
@@ -33,12 +33,12 @@ extension KeyValueField {
         _ key: String = "",
         size: KeyValue.Size = .normal,
         alignment: HorizontalAlignment = .leading,
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder content: () -> Content
     ) {
         self.key = key
         self.size = size
         self.alignment = alignment
-        self.content = content
+        self.content = content()
     }
 }
 

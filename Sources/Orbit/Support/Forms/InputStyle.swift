@@ -46,13 +46,13 @@ struct InputContent<Content: View>: View {
     var isPressed: Bool = false
     var isEditing: Bool = false
     var suffixAction: (() -> Void)? = nil
-    let content: () -> Content
+    @ViewBuilder let content: Content
     
     var body: some View {
         HStack(spacing: 0) {
             prefixIcon
 
-            content()
+            content
                 .lineLimit(1)
                 .padding(.leading, prefix.isEmpty ? .small : 0)
 
