@@ -8,27 +8,33 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/timeline/)
 public struct Timeline<Content: View>: View {
 
-    let content: () -> Content
+    @ViewBuilder let content: Content
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: Self.spacing) {
-            content()
-        }
-        .backgroundPreferenceValue(TimelineStep.PreferenceKey.self) { preferences in
-            GeometryReader { geometry in
-                VStack(spacing: 0) {
-                    ForEach(preferences.indices.dropFirst(), id: \.self) { index in
-                        preferences[index].style.color
-                            .frame(width: 2)
-                            .frame(
-                                width: TimelineStep.indicatorDiameter,
-                                height: progressLineHeight(for: index - 1, in: preferences, geometry: geometry)
-                            )
+        if isEmpty == false {
+            VStack(alignment: .leading, spacing: Self.spacing) {
+                content
+            }
+            .backgroundPreferenceValue(TimelineStep.PreferenceKey.self) { preferences in
+                GeometryReader { geometry in
+                    VStack(spacing: 0) {
+                        ForEach(preferences.indices.dropFirst(), id: \.self) { index in
+                            preferences[index].style.color
+                                .frame(width: 2)
+                                .frame(
+                                    width: TimelineStep.indicatorDiameter,
+                                    height: progressLineHeight(for: index - 1, in: preferences, geometry: geometry)
+                                )
+                        }
                     }
+                    .padding(.top, TimelineStep.indicatorDiameter / 2)
                 }
-                .padding(.top, TimelineStep.indicatorDiameter / 2)
             }
         }
+    }
+
+    var isEmpty: Bool {
+        content is EmptyView
     }
 
     func progressLineHeight(
@@ -42,8 +48,8 @@ public struct Timeline<Content: View>: View {
     }
 
     /// Creates Orbit TimelineStep component.
-    public init(@ViewBuilder content: @escaping () -> Content) {
-        self.content = content
+    public init(@ViewBuilder content: () -> Content) {
+        self.content = content()
     }
 }
 

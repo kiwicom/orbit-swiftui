@@ -59,6 +59,8 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                         .accentColor(.blueNormal)
                         .background(textFieldPlaceholder, alignment: .leading)
                         .disabled(state == .disabled)
+                        .accessibility(.inputValue)
+
                     button
                 }
             }

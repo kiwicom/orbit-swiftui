@@ -7,19 +7,19 @@ public struct FormFieldWrapper<Content: View, MessageContent: View>: View {
 
     let label: String
     let message: MessageType
-    let content: () -> Content
-    let messageContent: () -> MessageContent
+    @ViewBuilder let content: Content
+    @ViewBuilder let messageContent: MessageContent
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             FormFieldLabel(label)
                 .padding(.bottom, .xxSmall)
 
-            content()
+            content
 
             ContentHeightReader(height: $messageHeight.animation(.easeOut(duration: 0.2))) {
                 VStack(alignment: .leading, spacing: 0) {
-                    messageContent()
+                    messageContent
 
                     FormFieldMessage(message)
                         .padding(.top, .xxSmall)
@@ -33,14 +33,14 @@ public struct FormFieldWrapper<Content: View, MessageContent: View>: View {
         _ label: String,
         message: MessageType = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
-        @ViewBuilder content: @escaping () -> Content,
-        @ViewBuilder messageContent: @escaping () -> MessageContent
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder messageContent: () -> MessageContent
     ) {
         self.label = label
         self.message = message
         self._messageHeight = messageHeight
-        self.content = content
-        self.messageContent = messageContent
+        self.content = content()
+        self.messageContent = messageContent()
     }
 
     /// Creates Orbit wrapper around form field content.
@@ -48,13 +48,16 @@ public struct FormFieldWrapper<Content: View, MessageContent: View>: View {
         _ label: String,
         message: MessageType = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder content: () -> Content
     ) where MessageContent == EmptyView {
-        self.label = label
-        self.message = message
-        self._messageHeight = messageHeight
-        self.content = content
-        self.messageContent = { EmptyView() }
+        self.init(
+            label,
+            message: message,
+            messageHeight: messageHeight,
+            content: content
+        ) {
+            EmptyView()
+        }
     }
 }
 

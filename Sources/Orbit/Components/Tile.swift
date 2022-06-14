@@ -84,7 +84,7 @@ public struct Tile<Content: View>: View {
     let titleStyle: Heading.Style
     let descriptionColor: Text.Color
     let action: () -> Void
-    let content: () -> Content
+    @ViewBuilder let content: Content
 
     public var body: some View {
         SwiftUI.Button(
@@ -107,7 +107,7 @@ public struct Tile<Content: View>: View {
         HStack(spacing: 0) {
             VStack(spacing: 0) {
                 header
-                content()
+                content
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -207,7 +207,7 @@ public extension Tile {
         titleStyle: Heading.Style = .title4,
         descriptionColor: Text.Color = .inkLight,
         action: @escaping () -> Void = {},
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder content: () -> Content
     ) {
         self.title = title
         self.description = description
@@ -219,7 +219,7 @@ public extension Tile {
         self.titleStyle = titleStyle
         self.descriptionColor = descriptionColor
         self.action = action
-        self.content = content
+        self.content = content()
     }
     
     /// Creates Orbit Tile component.

@@ -16,12 +16,18 @@ public struct TileGroup<Content: View>: View {
     let status: Status?
     let backgroundColor: Color?
     let width: ContainerWidth
-    let content: () -> Content
+    @ViewBuilder let content: Content
 
     public var body: some View {
-        Card(borderStyle: .default, status: status, width: width, backgroundColor: backgroundColor, contentLayout: .fill) {
-            content()
+        if isEmpty == false {
+            Card(borderStyle: .default, status: status, width: width, backgroundColor: backgroundColor, contentLayout: .fill) {
+                content
+            }
         }
+    }
+
+    var isEmpty: Bool {
+        content is EmptyView
     }
 }
 
@@ -33,12 +39,12 @@ public extension TileGroup {
         status: Status? = nil,
         backgroundColor: Color? = nil,
         width: ContainerWidth = .expanding(),
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder content: () -> Content
     ) {
         self.status = status
         self.backgroundColor = backgroundColor
         self.width = width
-        self.content = content
+        self.content = content()
     }
 }
 

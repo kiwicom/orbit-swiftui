@@ -41,7 +41,7 @@ public struct Alert<Content: View>: View {
     let status: Status
     let isSuppressed: Bool
     let descriptionLinkAction: TextLink.Action
-    let content: () -> Content
+    @ViewBuilder let content: Content
 
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
@@ -61,7 +61,7 @@ public struct Alert<Content: View>: View {
                     }
                 }
                 
-                content()
+                content
                 
                 switch buttons {
                     case .primary, .secondary, .primaryAndSecondary:
@@ -171,7 +171,7 @@ public extension Alert {
         status: Status = .info,
         isSuppressed: Bool = false,
         descriptionLinkAction: @escaping TextLink.Action = { _, _ in },
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder content: () -> Content
     ) {
         self.title = title
         self.description = description
@@ -180,7 +180,7 @@ public extension Alert {
         self.status = status
         self.isSuppressed = isSuppressed
         self.descriptionLinkAction = descriptionLinkAction
-        self.content = content
+        self.content = content()
     }
     
     /// Creates Orbit Alert component.
@@ -323,7 +323,7 @@ struct AlertPreviews: PreviewProvider {
     }
 
     static var storybook: some View {
-        LazyVStackIfAvailable(alignment: .leading, spacing: .large) {
+        LazyVStack(alignment: .leading, spacing: .large) {
             basic
             basicNoIcon
             suppressed
@@ -332,7 +332,7 @@ struct AlertPreviews: PreviewProvider {
     }
 
     static var storybookMix: some View {
-        LazyVStackIfAvailable(alignment: .leading, spacing: .large) {
+        LazyVStack(alignment: .leading, spacing: .large) {
             primaryButtonOnly
             noButtons
         }

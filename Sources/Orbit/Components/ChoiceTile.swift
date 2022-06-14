@@ -43,7 +43,7 @@ public struct ChoiceTile<Content: View>: View {
     let message: MessageType
     let alignment: ChoiceTileAlignment
     let action: () -> Void
-    let content: () -> Content
+    @ViewBuilder let content: Content
 
     public var body: some View {
         SwiftUI.Button(
@@ -58,7 +58,7 @@ public struct ChoiceTile<Content: View>: View {
 
                     VStack(alignment: .leading, spacing: padding) {
                         header
-                        content()
+                        content
                         messageView
                     }
                 }
@@ -215,7 +215,7 @@ public extension ChoiceTile {
         message: MessageType = .none,
         alignment: ChoiceTileAlignment = .default,
         action: @escaping () -> Void = {},
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder content: () -> Content
     ) {
         self.title = title
         self.description = description
@@ -230,7 +230,7 @@ public extension ChoiceTile {
         self.message = message
         self.alignment = alignment
         self.action = action
-        self.content = content
+        self.content = content()
     }
 
     /// Creates Orbit ChoiceTile component.

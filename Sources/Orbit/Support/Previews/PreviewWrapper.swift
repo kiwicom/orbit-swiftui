@@ -3,15 +3,15 @@ import SwiftUI
 /// Wrapper for preview content with Orbit fonts applied.
 public struct PreviewWrapper<Content: View>: View {
 
-    var content: () -> Content
-
-    public init(@ViewBuilder content: @escaping () -> Content) {
-        Font.registerOrbitFonts()
-        self.content = content
-    }
+    @ViewBuilder let content: Content
 
     public var body: some View {
-        content()
+        content
+    }
+
+    public init(@ViewBuilder content: () -> Content) {
+        Font.registerOrbitFonts()
+        self.content = content()
     }
 }
 

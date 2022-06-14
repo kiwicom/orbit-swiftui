@@ -11,18 +11,18 @@ import SwiftUI
 public struct List<Content: View>: View {
 
     let spacing: CGFloat
-    let content: () -> Content
+    @ViewBuilder let content: Content
 
     public var body: some View {
         VStack(alignment: .listTextLeading, spacing: spacing) {
-            content()
+            content
         }
     }
 
     /// Creates Orbit List component, wrapping ListItem content.
-    public init(spacing: CGFloat = .xSmall, @ViewBuilder content: @escaping () -> Content) {
+    public init(spacing: CGFloat = .xSmall, @ViewBuilder content: () -> Content) {
         self.spacing = spacing
-        self.content = content
+        self.content = content()
     }
 }
 

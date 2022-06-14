@@ -44,7 +44,7 @@ public struct Card<Content: View>: View {
     let status: Status?
     let width: ContainerWidth
     let backgroundColor: Color?
-    let content: () -> Content
+    @ViewBuilder let content: Content
 
     public var body: some View {
         VStack(alignment: .leading, spacing: headerSpacing) {
@@ -52,7 +52,7 @@ public struct Card<Content: View>: View {
 
             if isContentEmpty == false {
                 VStack(alignment: contentAlignment, spacing: contentSpacing) {
-                    content()
+                    content
                 }
                 .padding(.top, isHeaderEmpty ? contentPadding : 0)
                 .padding([.horizontal, .bottom], contentPadding)
@@ -140,7 +140,7 @@ public struct Card<Content: View>: View {
     }
 
     var isContentEmpty: Bool {
-        content() is EmptyView
+        content is EmptyView
     }
     
     var shadow: TileBorderModifier.Shadow {
@@ -181,7 +181,7 @@ public extension Card {
         backgroundColor: Color? = .whiteNormal,
         contentLayout: CardContentLayout = .default(),
         contentAlignment: HorizontalAlignment = .leading,
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder content: () -> Content
     ) {
         self.title = title
         self.description = description
@@ -195,7 +195,7 @@ public extension Card {
         self.backgroundColor = backgroundColor
         self.contentLayout = contentLayout
         self.contentAlignment = contentAlignment
-        self.content = { content() }
+        self.content = content()
     }
 
     /// Creates Orbit Card wrapper component with empty content.

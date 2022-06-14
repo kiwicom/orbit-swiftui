@@ -33,13 +33,13 @@ public struct HorizontalScroll<Content: View>: View {
     let minHeight: CGFloat?
     let horizontalPadding: CGFloat
     let verticalPadding: CGFloat
-    let content: () -> Content
+    @ViewBuilder let content: Content
 
     public var body: some View {
         SingleAxisGeometryReader(axis: .horizontal, alignment: .top) { width in
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: spacing) {
-                    content()
+                    content
                         .frame(width: itemWidth(forContentWidth: width), alignment: .leading)
                         .frame(maxWidth: maxItemWidth, alignment: .leading)
                         .frame(height: resolvedItemHeight, alignment: .top)
@@ -78,7 +78,7 @@ public struct HorizontalScroll<Content: View>: View {
         minHeight: CGFloat? = nil,
         horizontalPadding: CGFloat = .xSmall,
         verticalPadding: CGFloat = .xSmall,
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder content: () -> Content
     ) {
         self.spacing = spacing
         self.itemWidth = itemWidth
@@ -87,7 +87,7 @@ public struct HorizontalScroll<Content: View>: View {
         self.minHeight = minHeight
         self.horizontalPadding = horizontalPadding
         self.verticalPadding = verticalPadding
-        self.content = content
+        self.content = content()
     }
 
     func itemWidth(forContentWidth contentWidth: CGFloat) -> CGFloat? {
@@ -320,7 +320,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
         }
     }
 
-    static func intrinsicContent<Content>(@ViewBuilder content: @escaping () -> Content) -> some View where Content: View {
+    static func intrinsicContent<Content>(@ViewBuilder content: () -> Content) -> some View where Content: View {
         VStack(alignment: .leading) {
             Text("Intrinsic")
             content()
