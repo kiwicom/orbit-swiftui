@@ -10,6 +10,7 @@ public struct ListItem: View {
 
     let text: String
     let iconContent: Icon.Content
+    let iconSize: Icon.Size?
     let size: Text.Size
     let spacing: CGFloat
     let style: ListItem.Style
@@ -19,6 +20,7 @@ public struct ListItem: View {
         Label(
             text,
             icon: iconContent,
+            iconSize: iconSize,
             style: .text(
                 size,
                 weight: style.weight,
@@ -35,11 +37,12 @@ public struct ListItem: View {
 // MARK: - Inits
 public extension ListItem {
 
-    /// Creates Orbit ListItem component.
+    /// Creates Orbit ListItem component using the provided icon.
     init(
         _ text: String = "",
-        icon: Icon.Content = .circleSmall,
+        icon: Icon.Content,
         size: Text.Size = .normal,
+        iconSize: Icon.Size? = nil,
         spacing: CGFloat = .xxSmall,
         style: ListItem.Style = .primary,
         linkAction: @escaping TextLink.Action = { _, _ in }
@@ -47,9 +50,29 @@ public extension ListItem {
         self.text = text
         self.iconContent = icon
         self.size = size
+        self.iconSize = iconSize
         self.spacing = spacing
         self.style = style
         self.linkAction = linkAction
+    }
+
+    /// Creates Orbit ListItem component with default appearance, using the `circleSmall` icon.
+    init(
+        _ text: String = "",
+        size: Text.Size = .normal,
+        spacing: CGFloat = .xSmall,
+        style: ListItem.Style = .primary,
+        linkAction: @escaping TextLink.Action = { _, _ in }
+    ) {
+        self.init(
+            text,
+            icon: .circleSmall,
+            size: size,
+            iconSize: .small,
+            spacing: spacing,
+            style: style,
+            linkAction: linkAction
+        )
     }
 }
 
