@@ -37,7 +37,7 @@ public struct ListItem: View {
 // MARK: - Inits
 public extension ListItem {
 
-    /// Creates Orbit ListItem component using provided icon.
+    /// Creates Orbit ListItem component using the provided icon.
     init(
         _ text: String = "",
         icon: Icon.Content,
