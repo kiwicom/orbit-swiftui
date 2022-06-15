@@ -13,6 +13,7 @@ public struct Label: View {
     
     let title: String
     let iconContent: Icon.Content
+    let iconSize: Icon.Size?
     let style: Style
     let spacing: CGFloat
 
@@ -30,11 +31,15 @@ public struct Label: View {
 
     @ViewBuilder var icon: some View {
         if let color = style.color {
-            Icon(content: iconContent, size: .label(style))
+            iconView
                 .foregroundColor(color)
         } else {
-            Icon(content: iconContent, size: .label(style))
+            iconView
         }
+    }
+
+    @ViewBuilder var iconView: some View {
+        Icon(content: iconContent, size: iconSize ?? .label(style))
     }
     
     @ViewBuilder var titleView: some View {
@@ -54,10 +59,6 @@ public struct Label: View {
         }
     }
     
-    var iconSize: CGFloat {
-        style.iconSize
-    }
-    
     var isEmpty: Bool {
         title.isEmpty && iconContent.isEmpty
     }
@@ -70,11 +71,13 @@ public extension Label {
     init(
         _ title: String = "",
         icon: Icon.Content = .none,
+        iconSize: Icon.Size? = nil,
         style: Style = .title4,
         spacing: CGFloat = Self.defaultSpacing
     ) {
         self.title = title
         self.iconContent = icon
+        self.iconSize = iconSize
         self.style = style
         self.spacing = spacing
     }
@@ -196,7 +199,6 @@ struct LabelPreviews: PreviewProvider {
 
             Label(icon: .grid)
             
-            Label("Label", icon: .grid)
             Label("Label", icon: .informationCircle)
             
             VStack(alignment: .leading, spacing: 0) {
