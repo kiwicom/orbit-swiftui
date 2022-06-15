@@ -56,7 +56,7 @@ public extension ListItem {
         self.linkAction = linkAction
     }
 
-    /// Creates Orbit ListItem component with default appearance, using `circleSmall` icon.
+    /// Creates Orbit ListItem component with default appearance, using the `circleSmall` icon.
     init(
         _ text: String = "",
         size: Text.Size = .normal,
