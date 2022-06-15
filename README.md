@@ -40,7 +40,13 @@ Add Orbit package to your project by adding the package dependency:
 
 ## Documentation
 
-The [online documentation](https://kiwicom.github.io/orbit-swiftui/documentation/orbit/) contains instructions on how to get started with the library once you integrate it into your project, as well as examples and pages for individual components.
+<p>
+  <a href="https://kiwicom.github.io/orbit-swiftui/documentation/orbit/"><img src="Documentation/docc.png"></a>
+  <br>
+  <a href="https://kiwicom.github.io/orbit-swiftui/documentation/orbit/">DocC documentation</a>
+</p>
+
+The online documentation contains instructions on how to get started with the library once you integrate it into your project, as well as examples and pages for individual components.
 
 You can also build this documentation locally in Xcode (Product -> Build Documentation).
 
