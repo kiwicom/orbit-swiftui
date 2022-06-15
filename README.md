@@ -40,7 +40,7 @@ Add Orbit package to your project by adding the package dependency:
 
 ## Documentation
 
-![DocC](Documentation/docc.png)
+[![DocC](Documentation/docc.png)](https://kiwicom.github.io/orbit-swiftui/documentation/orbit/)
 <br>
 [DocC documentation](https://kiwicom.github.io/orbit-swiftui/documentation/orbit/)
 
