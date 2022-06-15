@@ -60,8 +60,8 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                         .background(textFieldPlaceholder, alignment: .leading)
                         .disabled(state == .disabled)
                         .accessibility(.inputValue)
-
                     button
+                        .opacity(state == .disabled ? 0 : 1)
                 }
             }
         } messageContent: {
@@ -456,7 +456,7 @@ struct InputFieldLivePreviews: PreviewProvider {
     struct PreviewWrapper: View {
 
         @State var message: MessageType = .none
-        @State var textValue = ""
+        @State var textValue = "12"
         @State var intValue = 0
 
         init() {
@@ -472,9 +472,12 @@ struct InputFieldLivePreviews: PreviewProvider {
                 InputField(
                     "InputField",
                     value: $textValue,
+                    suffix: .email,
                     placeholder: "Placeholder",
-                    message: message
-                )
+                    state: .disabled,
+                    message: message) {
+                        intValue = 1
+                    }
 
                 Text("Some text, but also very long and multi-line to test that it works.")
 
