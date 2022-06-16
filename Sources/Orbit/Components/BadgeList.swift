@@ -113,9 +113,9 @@ public extension BadgeList {
 }
 
 // MARK: - Previews
-public struct BadgeListPreviews: PreviewProvider {
+struct BadgeListPreviews: PreviewProvider {
 
-    public static var previews: some View {
+    static var previews: some View {
         PreviewWrapper {
             standalone
             storybook
