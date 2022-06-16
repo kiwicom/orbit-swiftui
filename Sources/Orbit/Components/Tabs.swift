@@ -71,7 +71,7 @@ public struct Tabs<Content: View>: View {
         .animation(.easeOut(duration: 0.2), value: selectedIndex)
     }
 
-    @ViewBuilder func tab(_ index: Int, lastIndex: Int, _ label: String, style: TabStyle) -> some View {
+    @ViewBuilder func tab(_ index: Int, lastIndex: Int, _ label: String, style: Tab.TabStyle) -> some View {
         Tab(label, style: style)
             .foregroundColor(index == selectedIndex ? style.textColor : .inkNormal)
             .lineLimit(lineLimit)
@@ -99,7 +99,7 @@ public struct Tabs<Content: View>: View {
             .frame(maxHeight: .infinity)
     }
 
-    @ViewBuilder func activeTabBackground(style: TabStyle) -> some View {
+    @ViewBuilder func activeTabBackground(style: Tab.TabStyle) -> some View {
         VStack(spacing: 0) {
             Color.whiteNormal
             underline(style: style)
@@ -111,7 +111,7 @@ public struct Tabs<Content: View>: View {
         .padding(.xxxSmall)
     }
 
-    @ViewBuilder func underline(style: TabStyle) -> some View {
+    @ViewBuilder func underline(style: Tab.TabStyle) -> some View {
         LinearGradient(
             colors: [style.startColor, style.endColor],
             startPoint: .bottomLeading,
