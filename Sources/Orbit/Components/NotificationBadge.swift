@@ -2,12 +2,6 @@ import SwiftUI
 
 /// Shows simple, non-interactive information in a circular badge.
 ///
-/// - Related components:
-///   - ``Badge``
-///   - ``Tag``
-///   - ``Alert``
-///   - ``Button``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/notificationbadge/)
 public struct NotificationBadge: View {
 

@@ -5,10 +5,6 @@ import UIKit
 ///
 /// When you have additional information or helpful examples, include placeholder text to help users along.
 ///
-/// - Related components:
-///   - ``InputGroup``
-///   - ``TextArea``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/inputfield/)
 /// - Important: Component expands horizontally to infinity.
 public struct InputField<Value>: View where Value: LosslessStringConvertible {

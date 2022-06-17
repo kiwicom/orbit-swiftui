@@ -2,10 +2,6 @@ import SwiftUI
 
 /// Displays a single, less important action a user can take.
 ///
-/// - Related components:
-///   - ``Button``
-///   - ``TextLink``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/buttonlink/)
 public struct ButtonLink: View {
 

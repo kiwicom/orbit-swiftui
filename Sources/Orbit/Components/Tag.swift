@@ -2,10 +2,6 @@ import SwiftUI
 
 /// Offers a label that can optionally be selected and unselected or removed.
 ///
-/// - Related components:
-///   - ``Badge``
-///   - ``Button``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tag/)
 public struct Tag: View {
 

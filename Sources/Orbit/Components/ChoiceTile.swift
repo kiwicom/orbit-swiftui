@@ -19,10 +19,6 @@ public enum ChoiceTileAlignment {
 
 /// Enables users to encapsulate radio or checkbox to pick exactly one option from a group.
 ///
-/// - Related components:
-///   - ``Tile``
-///   - ``TileGroup``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/choice-tile/)
 /// - Important: Component expands horizontally to infinity.
 public struct ChoiceTile<Content: View>: View {

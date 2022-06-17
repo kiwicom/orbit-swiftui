@@ -2,11 +2,6 @@ import SwiftUI
 
 /// Displays a single important action a user can take.
 ///
-/// - Related components:
-///   - ``ButtonLink``
-///   - ``TextLink``
-///   - ``SocialButton``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/button/)
 /// - Important: Component expands horizontally to infinity.
 public struct Button: View {

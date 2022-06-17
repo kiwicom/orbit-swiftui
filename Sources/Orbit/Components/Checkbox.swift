@@ -3,11 +3,7 @@ import SwiftUI
 /// Enables users to pick multiple options from a group.
 ///
 /// Can be also used to display just the checkbox with no label or description.
-///
-/// - Related components:
-///   - ``Radio``
-///   - ``ChoiceGroup``
-///
+/// 
 /// - Note: [Orbit definition](https://orbit.kiwi/components/checkbox/)
 public struct Checkbox: View {
 

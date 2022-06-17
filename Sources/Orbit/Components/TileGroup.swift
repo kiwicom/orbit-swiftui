@@ -2,11 +2,6 @@ import SwiftUI
 
 /// Wraps tiles to show related interactions.
 ///
-/// - Related components:
-///   - ``Tile``
-///   - ``Card``
-///   - ``ChoiceTile``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tilegroup/)
 /// - Important: Expands horizontally up to ``Layout/readableMaxWidth`` by default and then centered. Can be adjusted by `width` property.
 public struct TileGroup<Content: View>: View {

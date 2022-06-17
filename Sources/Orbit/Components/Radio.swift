@@ -4,11 +4,6 @@ import SwiftUI
 ///
 /// Can be also used to display just the radio rounded indicator.
 ///
-/// - Related components:
-///   - ``Checkbox``
-///   - ``Select``
-///   - ``ChoiceGroup``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/radio/)
 public struct Radio: View {
 

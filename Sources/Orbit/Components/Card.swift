@@ -20,12 +20,6 @@ public enum CardContentLayout {
 /// Card is a wrapping component around a custom content.
 /// Card uses the same style as ``Tile`` - either Orbit default or an iOS-like style.
 ///
-/// - Related components:
-///   - ``Accordion``
-///   - ``Tile``, ``TileGroup``
-///   - ``Collapse``
-///   - ``Table``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/card/)
 /// - Important: Expands horizontally up to ``Layout/readableMaxWidth`` by default and then centered. Can be adjusted by `width` property.
 public struct Card<Content: View>: View {

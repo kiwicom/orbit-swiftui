@@ -2,11 +2,6 @@ import SwiftUI
 
 /// Shows related items.
 ///
-/// A wrapper for ``ListItem`` components.
-///
-/// - Related components:
-///   - ``ListItem``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/list/)
 public struct List<Content: View>: View {
 
