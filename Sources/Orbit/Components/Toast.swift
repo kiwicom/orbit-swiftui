@@ -3,23 +3,25 @@ import SwiftUI
 
 /// Toast shows a brief message that’s clear & understandable.
 ///
-/// - Usage:
-///   - Apply the `Toast` component as a `.top` overlay to existing view.
-///   - Provide an instance of `ToastQueue` class which manages a queue of toasts
+/// Apply ``Toast`` as a `.top` overlay to an existing view.
+/// Provide an instance of ``ToastQueue``, which manages a queue of toasts.
 ///
-/// The following example shows a Toast applied on view:
+/// The following example shows a ``Toast`` applied to a view:
 ///
-///     let toastQueue = ToastQueue()
+///    ```swift
+///    let toastQueue = ToastQueue()
 ///
-///     var body: some View {
-///         VStack {
-///             // content over which to display Toasts
-///         }
-///         .overlay(Toast(toastQueue: toastQueue))
-///     }
+///    var body: some View {
+///        VStack {
+///            // content over which to display Toasts
+///        }
+///        .overlay(Toast(toastQueue: toastQueue))
+///    }
+///    ```
 ///
-/// For standalone usage with gesture handling, but no queue management, a ``ToastWrapper`` component can be used.
-/// For standalone usage with no queue management and gesture handling, a ``ToastContent`` component can be used.
+/// Use ``ToastWrapper`` if you need gesture handling, but no queue management.
+///
+/// Use ``ToastContent`` if you don't need gesture handling or queue management.
 ///
 /// - Related components:
 ///   - ``Dialog``

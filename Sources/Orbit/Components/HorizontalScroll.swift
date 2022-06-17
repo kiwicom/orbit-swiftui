@@ -65,7 +65,8 @@ public struct HorizontalScroll<Content: View>: View {
     ///   - spacing: Spacing between items. Default value is `.small`.
     ///   - itemWidth: Horizontal sizing style of all items. Default value is `.ratio()`.
     ///   - itemHeight: Horizontal sizing style of all items. Default value is `.intrinsic`.
-    ///   - maxItemWidth: Maximal item width that caps the result of ``itemWidth``. Default value is derived from `Layout.readableMaxWidth`.
+    ///   - maxItemWidth: Maximal item width that caps the result of `itemWidth`.
+    ///                   Default value is derived from ``Layout/readableMaxWidth``.
     ///   - minHeight: Minimal height of component. Default value is `nil`.
     ///   - horizontalPadding: Horizontal padding inside the ScrollView. Default value is `.xSmall`.
     ///   - verticalPadding: Horizontal padding inside the ScrollView. Can be used to fix overlay issues. Default value is `.xSmall`.

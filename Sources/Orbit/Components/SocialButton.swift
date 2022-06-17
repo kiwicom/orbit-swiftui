@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// Social buttons are designed to ease the flow for users signing in.
 /// Don’t use them in any other case or in any complex scenarios.
-
+///
 /// - Related components:
 ///   - ``Button``
 ///

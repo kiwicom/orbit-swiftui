@@ -1,39 +1,5 @@
 import SwiftUI
 
-public enum TabStyle {
-    case `default`
-    case product
-    case underlined(Color)
-    case underlinedGradient(Orbit.Gradient)
-
-    public var textColor: Color {
-        switch self {
-            case .default:                              return .inkNormal
-            case .product:                              return .inkNormal
-            case .underlined(let color):                return color
-            case .underlinedGradient(let gradient):     return gradient.color
-        }
-    }
-
-    public var startColor: Color {
-        switch self {
-            case .default:                              return .whiteNormal
-            case .product:                              return .productNormal
-            case .underlined(let color):                return color
-            case .underlinedGradient(let gradient):     return gradient.startColor
-        }
-    }
-
-    public var endColor: Color {
-        switch self {
-            case .default:                              return .whiteNormal
-            case .product:                              return .productNormal
-            case .underlined(let color):                return color
-            case .underlinedGradient(let gradient):     return gradient.endColor
-        }
-    }
-}
-
 /// An Orbit sub-component for constructing ``Tabs`` component.
 ///
 /// - Important: The Tab can only be used as a part of ``Tabs`` component, not standalone.
@@ -68,6 +34,40 @@ public struct Tab: View {
 // MARK: - Types
 extension Tab {
 
+    public enum TabStyle {
+        case `default`
+        case product
+        case underlined(Color)
+        case underlinedGradient(Orbit.Gradient)
+
+        public var textColor: Color {
+            switch self {
+                case .default:                              return .inkNormal
+                case .product:                              return .inkNormal
+                case .underlined(let color):                return color
+                case .underlinedGradient(let gradient):     return gradient.color
+            }
+        }
+
+        public var startColor: Color {
+            switch self {
+                case .default:                              return .whiteNormal
+                case .product:                              return .productNormal
+                case .underlined(let color):                return color
+                case .underlinedGradient(let gradient):     return gradient.startColor
+            }
+        }
+
+        public var endColor: Color {
+            switch self {
+                case .default:                              return .whiteNormal
+                case .product:                              return .productNormal
+                case .underlined(let color):                return color
+                case .underlinedGradient(let gradient):     return gradient.endColor
+            }
+        }
+    }
+
     struct PreferenceKey: SwiftUI.PreferenceKey {
         typealias Value = [TabPreference]
 
@@ -81,7 +81,7 @@ extension Tab {
 
 struct TabPreference {
     let label: String
-    let style: TabStyle
+    let style: Tab.TabStyle
     let bounds: Anchor<CGRect>
 }
 
