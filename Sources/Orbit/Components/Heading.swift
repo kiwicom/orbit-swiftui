@@ -2,9 +2,6 @@ import SwiftUI
 
 /// Shows the content hierarchy and improves the reading experience. Also known as Title.
 ///
-/// - Related components:
-///   - ``Text``
-
 /// - Note: [Orbit definition](https://orbit.kiwi/components/heading/)
 /// - Important: Component has fixed vertical size.
 public struct Heading: View {

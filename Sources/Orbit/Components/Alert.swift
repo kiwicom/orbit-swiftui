@@ -24,12 +24,6 @@ public enum AlertButtons {
 ///
 /// Use at most two actions in each Alert: one primary and one subtle.
 ///
-/// - Related components:
-///   - ``Heading`` + ``Text``
-///   - ``Toast``
-///   - ``EmptyState``
-///   - ``Modal``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/alert/)
 /// - Important: Component expands horizontally to infinity.
 public struct Alert<Content: View>: View {

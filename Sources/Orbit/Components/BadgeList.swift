@@ -4,10 +4,6 @@ import SwiftUI
 ///
 /// The items in the list should all be static information, *not* actionable.
 ///
-/// - Related components:
-///   - ``Badge``
-///   - ``List``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/badgelist/)
 public struct BadgeList: View {
 

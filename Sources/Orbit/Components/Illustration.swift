@@ -2,9 +2,6 @@ import SwiftUI
 
 /// An illustration matching Orbit name.
 ///
-/// - Related components:
-///   - ``Icon``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/illustration/)
 /// - Important: The component expands horizontally to infinity in case of `.expanded` layout.
 public struct Illustration: View {

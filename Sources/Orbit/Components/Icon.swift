@@ -2,9 +2,6 @@ import SwiftUI
 
 /// An icon matching Orbit name.
 ///
-/// - Related components:
-///   - ``Illustration``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/icon/)
 public struct Icon: View {
 

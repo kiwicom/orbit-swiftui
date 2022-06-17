@@ -23,10 +23,6 @@ import SwiftUI
 ///
 /// Use ``ToastContent`` if you don't need gesture handling or queue management.
 ///
-/// - Related components:
-///   - ``Dialog``
-///   - ``Alert``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/toast/)
 /// - Important: Component expands horizontally to infinity.
 public struct Toast: View {

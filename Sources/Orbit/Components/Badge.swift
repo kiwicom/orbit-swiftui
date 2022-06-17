@@ -5,12 +5,6 @@ import SwiftUI
 /// Badges are indicators of static information.
 /// They can be updated when a status changes, but they should not be actionable.
 ///
-/// - Related components:
-///   - ``NotificationBadge``
-///   - ``Tag``
-///   - ``Alert``
-///   - ``Button``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/badge/)
 public struct Badge: View {
 

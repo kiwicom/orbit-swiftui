@@ -2,9 +2,6 @@ import SwiftUI
 
 /// Displays flags of countries from around the world.
 ///
-/// - Related components:
-///   - ``Icon``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/countryflag/)
 public struct CountryFlag: View {
 

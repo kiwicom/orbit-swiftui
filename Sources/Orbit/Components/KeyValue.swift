@@ -2,10 +2,6 @@ import SwiftUI
 
 /// A pair of label and value to display read-only information.
 ///
-/// - Related components:
-///   - ``InputField``
-///   - ``Text``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/keyvalue/)
 public struct KeyValue: View {
 

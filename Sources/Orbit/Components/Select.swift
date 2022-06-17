@@ -2,12 +2,6 @@ import SwiftUI
 
 /// Also known as dropdown. Offers a simple form control to select from many options.
 ///
-/// - Related components:
-///   - ``Radio``
-///   - ``Checkbox``
-///   - ``InputField``
-///   - ``ListChoice``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/select/)
 /// - Important: Component expands horizontally to infinity.
 public struct Select: View {

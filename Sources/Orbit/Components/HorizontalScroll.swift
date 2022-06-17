@@ -20,9 +20,6 @@ public enum HorizontalScrollItemHeight {
 ///
 /// Can be used to present similar items (such as cards with baggage options) as a single row even on small screens.
 ///
-/// - Related components:
-///   - ``ChoiceTile``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/layout/horizontalscroll/)
 public struct HorizontalScroll<Content: View>: View {
 

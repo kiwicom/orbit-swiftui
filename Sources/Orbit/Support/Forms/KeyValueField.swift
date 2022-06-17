@@ -2,10 +2,6 @@ import SwiftUI
 
 /// A `KeyValue` container with generic content.
 ///
-/// - Related components:
-///   - ``InputField``
-///   - ``Text``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/keyvalue/)
 public struct KeyValueField<Content: View>: View {
 

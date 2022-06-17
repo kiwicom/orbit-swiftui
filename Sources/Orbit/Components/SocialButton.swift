@@ -5,9 +5,6 @@ import SwiftUI
 /// Social buttons are designed to ease the flow for users signing in.
 /// Don’t use them in any other case or in any complex scenarios.
 ///
-/// - Related components:
-///   - ``Button``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/socialbutton/)
 /// - Important: Component expands horizontally to infinity.
 public struct SocialButton: View {

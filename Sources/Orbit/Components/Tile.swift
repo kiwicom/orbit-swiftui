@@ -63,11 +63,6 @@ public enum TileBorder {
 ///
 /// Can be used standalone or wrapped inside a ``TileGroup``.
 ///
-/// - Related components:
-///   - ``TileGroup``
-///   - ``Card``
-///   - ``ChoiceTile``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tile/)
 /// - Important: Component expands horizontally to infinity up to a ``Layout/readableMaxWidth``.
 public struct Tile<Content: View>: View {

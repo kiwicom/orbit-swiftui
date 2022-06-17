@@ -4,10 +4,6 @@ import SwiftUI
 ///
 /// Can contain html formatted text that will be rendered as interactive ``TextLink`` layer.
 ///
-/// - Related components:
-///   - ``Heading``
-///   - ``TextLink``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/text/)
 /// - Important: Component has fixed vertical size.
 public struct Text: View {

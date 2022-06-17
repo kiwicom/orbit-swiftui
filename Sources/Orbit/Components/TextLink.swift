@@ -3,9 +3,6 @@ import SwiftUI
 
 /// A  companion component to ``Text`` that only shows TextLinks, detected in html formatted content.
 ///
-/// - Related components:
-///   - ``Text``
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/textlink/)
 @available(iOS, deprecated: 15.0, message: "Will be replaced with a native markdown-enabled Text component")
 public struct TextLink: UIViewRepresentable {
