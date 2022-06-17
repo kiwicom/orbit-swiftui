@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Wraps tiles to show related interactions.
-
+///
 /// - Related components:
 ///   - ``Tile``
 ///   - ``Card``
