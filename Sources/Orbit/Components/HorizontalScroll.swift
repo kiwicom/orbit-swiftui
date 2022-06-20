@@ -318,6 +318,10 @@ struct HorizontalScrollPreviews: PreviewProvider {
         }
     }
 
+    static var snapshot: some View {
+        ratioWidthIntrinsicHeight
+    }
+
     static func intrinsicContent<Content>(@ViewBuilder content: () -> Content) -> some View where Content: View {
         VStack(alignment: .leading) {
             Text("Intrinsic")

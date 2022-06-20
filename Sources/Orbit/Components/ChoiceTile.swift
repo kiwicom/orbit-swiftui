@@ -408,6 +408,14 @@ struct ChoiceTilePreviews: PreviewProvider {
         choiceTileCentered(titleStyle: .title4, showIllustration: true, isError: true, isSelected: true)
     }
 
+    static var snapshot: some View {
+        VStack(spacing: .medium) {
+            standalone
+            Separator()
+            standaloneCentered
+        }
+    }
+
     static func choiceTile(titleStyle: Heading.Style, showHeader: Bool, isError: Bool, isSelected: Bool) -> some View {
         StateWrapper(initialState: isSelected) { state in
             ChoiceTile(

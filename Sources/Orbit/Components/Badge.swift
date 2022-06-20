@@ -231,6 +231,10 @@ struct BadgePreviews: PreviewProvider {
         .previewDisplayName("Mix")
     }
 
+    static var snapshot: some View {
+        storybook
+    }
+
     static func badges(_ style: Badge.Style) -> some View {
         HStack(spacing: .medium) {
             Badge("label", style: style)

@@ -559,6 +559,10 @@ struct TextPreviews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 
+    static var snapshot: some View {
+        storybook
+    }
+
     @ViewBuilder static func text(_ content: String, size: Text.Size, weight: Font.Weight) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
             Text(content, size: size, weight: weight)

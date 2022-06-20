@@ -145,6 +145,10 @@ struct SkeletonPreviews: PreviewProvider {
         contentAtomic()
     }
 
+    static var snapshot: some View {
+        content(animation: .none)
+    }
+
     static func contentAtomic(animation: Skeleton.Animation = .default) -> some View {
         VStack(alignment: .leading, spacing: .medium) {
             Skeleton(.atomic(.circle), animation: animation)

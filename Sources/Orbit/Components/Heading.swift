@@ -213,6 +213,10 @@ struct HeadingPreviews: PreviewProvider {
         .previewDisplayName("Multiline")
     }
 
+    static var snapshot: some View {
+        sizes
+    }
+
     @ViewBuilder static func heading(_ content: String, style: Heading.Style) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
             Heading(content, style: style)

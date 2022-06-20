@@ -126,6 +126,10 @@ struct CountryFlagPreviews: PreviewProvider {
         }
         .padding()
     }
+
+    static var snapshot: some View {
+        storybook
+    }
 }
 
 struct CountryFlagDynamicTypePreviews: PreviewProvider {

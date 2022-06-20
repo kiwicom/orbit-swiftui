@@ -130,6 +130,10 @@ struct SwitchPreviews: PreviewProvider {
         .padding(.medium)
     }
 
+    static var snapshot: some View {
+        storybook
+    }
+
     static func switchView(isOn: Bool, hasIcon: Bool = false, isEnabled: Bool = true) -> some View {
         StateWrapper(initialState: isOn) { isOnState in
             Switch(isOn: isOnState, hasIcon: hasIcon, isEnabled: isEnabled)

@@ -88,4 +88,8 @@ struct TileGroupPreviews: PreviewProvider {
             border: .separator
         )
     }
+
+    static var snapshot: some View {
+        standalone
+    }
 }

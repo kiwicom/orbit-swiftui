@@ -216,7 +216,8 @@ struct ToastPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Toast(toastQueue: toastQueue)
+        ToastContent(description, icon: .grid)
+            .padding(.xLarge)
     }
 
     static var standaloneWrapper: some View {
@@ -249,6 +250,10 @@ struct ToastPreviews: PreviewProvider {
         }
         .padding(.medium)
         .previewDisplayName("Live Preview")
+    }
+
+    static var snapshot: some View {
+        storybook
     }
 }
 

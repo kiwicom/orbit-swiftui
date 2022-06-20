@@ -177,6 +177,10 @@ struct TextLinkPreviews: PreviewProvider {
             .padding(.medium)
         }
     }
+
+    static var snapshot: some View {
+        storybook
+    }
 }
 
 struct TextLinkDynamicTypePreviews: PreviewProvider {

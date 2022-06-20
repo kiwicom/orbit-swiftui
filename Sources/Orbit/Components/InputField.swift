@@ -422,6 +422,14 @@ struct InputFieldPreviews: PreviewProvider {
         }
         .padding(.medium)
     }
+    
+    static var snapshot: some View {
+        VStack(spacing: .xLarge) {
+            storybook
+            Separator()
+            storybookPassword
+        }
+    }
 }
 
 struct InputFieldLivePreviews: PreviewProvider {

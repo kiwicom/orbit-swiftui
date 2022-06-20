@@ -357,6 +357,10 @@ struct AlertPreviews: PreviewProvider {
             .animation(.default, value: buttons.wrappedValue.isVisible)
         }
     }
+
+    static var snapshot: some View {
+        standalone
+    }
 }
 
 struct AlertDynamicTypePreviews: PreviewProvider {

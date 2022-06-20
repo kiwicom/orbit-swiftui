@@ -354,6 +354,10 @@ struct TilePreviews: PreviewProvider {
         }
         .padding(.medium)
     }
+
+    static var snapshot: some View {
+        storybook
+    }
 }
 
 struct TileDynamicTypePreviews: PreviewProvider {
