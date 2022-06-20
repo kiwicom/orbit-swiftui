@@ -61,13 +61,13 @@ public struct Text: View {
         }
     }
 
-    var text: SwiftUI.Text {
+    @ViewBuilder var text: some View {
         if content.containsHtmlFormatting {
-            return SwiftUI.Text(attributedText)
+            SwiftUI.Text(attributedText)
                 .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
                 .kerning(kerning)
         } else {
-            return SwiftUI.Text(verbatim: content)
+            SwiftUI.Text(verbatim: content)
                 .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
                 .kerning(kerning)
                 .foregroundColor(foregroundColor.map(SwiftUI.Color.init))
