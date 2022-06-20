@@ -279,6 +279,10 @@ struct TabsPreviews: PreviewProvider {
         .padding(.medium)
         .previewDisplayName("Live Preview")
     }
+
+    static var snapshot: some View {
+        storybook
+    }
 }
 
 struct TabsDynamicTypePreviews: PreviewProvider {

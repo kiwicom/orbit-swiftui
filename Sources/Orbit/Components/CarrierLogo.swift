@@ -155,4 +155,8 @@ struct CarrierLogoPreviews: PreviewProvider {
         }
         .padding(.medium)
     }
+
+    static var snapshot: some View {
+        standalone
+    }
 }

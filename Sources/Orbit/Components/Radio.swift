@@ -192,6 +192,10 @@ struct RadioPreviews: PreviewProvider {
         }
     }
 
+    static var snapshot: some View {
+        content(standalone: false)
+    }
+
     static func content(standalone: Bool) -> some View {
         HStack(alignment: .top, spacing: .xLarge) {
             VStack(alignment: .leading, spacing: .xLarge) {

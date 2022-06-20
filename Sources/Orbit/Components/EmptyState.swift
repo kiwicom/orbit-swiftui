@@ -111,4 +111,8 @@ struct EmptyStatePreviews: PreviewProvider {
         EmptyState(title, description: description, illustration: .offline)
             .padding(.medium)
     }
+
+    static var snapshot: some View {
+        standalone
+    }
 }

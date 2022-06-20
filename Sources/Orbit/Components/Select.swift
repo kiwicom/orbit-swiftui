@@ -160,6 +160,10 @@ struct SelectPreviews: PreviewProvider {
         }
         .padding(.medium)
     }
+
+    static var snapshot: some View {
+        storybook
+    }
 }
 
 struct SelectLivePreviews: PreviewProvider {

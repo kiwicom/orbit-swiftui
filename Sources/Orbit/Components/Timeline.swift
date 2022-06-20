@@ -144,6 +144,10 @@ struct TimelinePreviews: PreviewProvider {
         .padding(.medium)
     }
 
+    static var snapshot: some View {
+        storybook
+    }
+
     static let steps: [TimelineStepModel] = [
         .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .status(.success), content: texts[0].content),
         .init(1, texts[1].label, sublabel: texts[1].sublabel, content: texts[1].content),

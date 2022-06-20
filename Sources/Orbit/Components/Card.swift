@@ -435,6 +435,10 @@ struct CardPreviews: PreviewProvider {
         .padding(.vertical, .medium)
         .background(Color.cloudLight)
     }
+
+    static var snapshot: some View {
+        standalone
+    }
 }
 
 struct CardDynamicTypePreviews: PreviewProvider {

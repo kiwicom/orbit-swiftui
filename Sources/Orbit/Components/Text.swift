@@ -61,13 +61,13 @@ public struct Text: View {
         }
     }
 
-    var text: SwiftUI.Text {
+    @ViewBuilder var text: some View {
         if content.containsHtmlFormatting {
-            return SwiftUI.Text(attributedText)
+            SwiftUI.Text(attributedText)
                 .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
                 .kerning(kerning)
         } else {
-            return SwiftUI.Text(verbatim: content)
+            SwiftUI.Text(verbatim: content)
                 .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
                 .kerning(kerning)
                 .foregroundColor(foregroundColor.map(SwiftUI.Color.init))
@@ -557,6 +557,10 @@ struct TextPreviews: PreviewProvider {
         .background(Color.cloudLight)
         .previewDisplayName("Attributed Text")
         .previewLayout(.sizeThatFits)
+    }
+
+    static var snapshot: some View {
+        storybook
     }
 
     @ViewBuilder static func text(_ content: String, size: Text.Size, weight: Font.Weight) -> some View {

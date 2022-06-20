@@ -189,6 +189,10 @@ struct DialogPreviews: PreviewProvider {
         )
         .background(Color.whiteNormal)
     }
+
+    static var snapshot: some View {
+        normal
+    }
 }
 
 struct DialogDynamicTypePreviews: PreviewProvider {

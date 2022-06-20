@@ -468,6 +468,14 @@ struct IconPreviews: PreviewProvider {
         }
         .padding(.medium)
     }
+
+    static var snapshot: some View {
+        VStack(spacing: .medium) {
+            IconPreviews.snapshotSizes
+            Separator()
+            IconPreviews.storybookMix
+        }
+    }
 }
 
 struct IconDynamicTypePreviews: PreviewProvider {

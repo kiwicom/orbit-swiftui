@@ -564,6 +564,10 @@ struct ListChoicePreviews: PreviewProvider {
             .frame(maxWidth: .infinity)
             .background(Color.blueLightActive)
     }
+
+    static var snapshot: some View {
+        standalone
+    }
 }
 
 struct ListChoiceDynamicTypePreviews: PreviewProvider {

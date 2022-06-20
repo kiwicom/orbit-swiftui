@@ -148,6 +148,10 @@ struct BadgeListPreviews: PreviewProvider {
         }
         .padding(.medium)
     }
+
+    static var snapshot: some View {
+        storybook
+    }
 }
 
 struct BadgeListDynamicTypePreviews: PreviewProvider {

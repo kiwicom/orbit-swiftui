@@ -155,6 +155,10 @@ struct SocialButtonPreviews: PreviewProvider {
         }
         .padding(.medium)
     }
+
+    static var snapshot: some View {
+        storybook
+    }
 }
 
 struct SocialButtonDynamicTypePreviews: PreviewProvider {

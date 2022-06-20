@@ -269,6 +269,10 @@ struct ButtonLinkPreviews: PreviewProvider {
         }
         .padding(.horizontal)
     }
+
+    static var snapshot: some View {
+        storybook
+    }
 }
 
 struct ButtonLinkDynamicTypePreviews: PreviewProvider {

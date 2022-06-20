@@ -185,16 +185,19 @@ struct TagPreviews: PreviewProvider {
 
     @ViewBuilder static var storybook: some View {
         VStack(alignment: .leading, spacing: .large) {
-            StateWrapper(initialState: true) { state in
-                Tag(label, icon: .sort, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
-            }
-            StateWrapper(initialState: false) { state in
-                Tag(icon: .notificationAdd, isFocused: false, isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
-            }
             stack(style: .default, isFocused: true)
             stack(style: .default, isFocused: false)
             stack(style: .removable(), isFocused: true)
             stack(style: .removable(), isFocused: false)
+            Separator()
+            HStack(spacing: .medium) {
+                StateWrapper(initialState: true) { state in
+                    Tag(label, icon: .sort, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
+                }
+                StateWrapper(initialState: false) { state in
+                    Tag(icon: .notificationAdd, isFocused: false, isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
+                }
+            }
         }
         .padding(.medium)
     }
@@ -213,6 +216,10 @@ struct TagPreviews: PreviewProvider {
             }
         }
         .padding(.medium)
+    }
+
+    static var snapshot: some View {
+        storybook
     }
 
     @ViewBuilder static func stack(style: Tag.Style, isFocused: Bool) -> some View {

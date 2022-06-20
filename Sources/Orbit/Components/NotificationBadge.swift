@@ -151,6 +151,10 @@ struct NotificationBadgePreviews: PreviewProvider {
         .previewDisplayName("Mix")
     }
 
+    static var snapshot: some View {
+        storybook
+    }
+
     static func badges(_ style: Badge.Style) -> some View {
         HStack(spacing: .medium) {
             NotificationBadge("label", style: style)

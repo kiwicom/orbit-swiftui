@@ -102,8 +102,7 @@ struct IllustrationPreviews: PreviewProvider {
             stackFixed
             stackExpanding
 
-            snapshotsExpanding
-            snapshotsSizing
+            snapshot
         }
         .previewLayout(.sizeThatFits)
     }
@@ -126,7 +125,7 @@ struct IllustrationPreviews: PreviewProvider {
     }
     
     static var stackFixed: some View {
-        VStack {
+        VStack(spacing: .medium) {
             Illustration(.womanWithPhone)
                 .border(Color.cloudDark)
             
@@ -138,10 +137,10 @@ struct IllustrationPreviews: PreviewProvider {
     
     static var stackExpanding: some View {
         ScrollView {
-            VStack {
+            VStack(spacing: .medium) {
                 Illustration(.womanWithPhone)
                     .border(Color.cloudDark)
-                
+
                 Illustration(.womanWithPhone)
                     .border(Color.cloudDark)
             }
@@ -149,64 +148,36 @@ struct IllustrationPreviews: PreviewProvider {
         .previewDisplayName("Expanding stack")
     }
 
-    static var snapshotsExpanding: some View {
-        Card {
-            VStack {
-                Text("Frame - Center (default)", size: .small)
-                Illustration(.womanWithPhone, layout: .frame(maxHeight: 100))
-                    .border(Color.cloudDark)
-            }
-            
-            VStack {
-                Text("Frame - Leading", size: .small)
-                Illustration(.womanWithPhone, layout: .frame(maxHeight: 100, alignment: .leading))
-                    .border(Color.cloudDark)
-            }
-            
-            VStack {
-                Text("Frame - Trailing", size: .small)
-                Illustration(.womanWithPhone, layout: .frame(maxHeight: 100, alignment: .trailing))
-                    .border(Color.cloudDark)
-            }
-            
-            VStack {
-                Text("Resizeable", size: .small)
-                Illustration(.womanWithPhone, layout: .resizeable)
-                    .frame(height: 100)
-                    .border(Color.cloudDark)
-            }
-        }
-        .background(Color.cloudLight)
-        .previewDisplayName("Layout - Expanded")
-    }
-
-    static var snapshotsSizing: some View {
+    static var snapshot: some View {
         VStack(alignment: .leading, spacing: .medium) {
-
-            Card("Resizeable") {
-                VStack(alignment: .leading) {
-                    Text("Width = 80", size: .small)
-                    Illustration(.womanWithPhone, layout: .resizeable)
-                        .frame(width: 80)
+            Card("MaxHeight = 80") {
+                VStack {
+                    Text("Frame - Center (default)", size: .small)
+                    Illustration(.womanWithPhone, layout: .frame(maxHeight: 80))
                         .border(Color.cloudDark)
                 }
 
-                VStack(alignment: .leading) {
-                    Text("Height = 80", size: .small)
+                VStack {
+                    Text("Frame - Leading", size: .small)
+                    Illustration(.womanWithPhone, layout: .frame(maxHeight: 80, alignment: .leading))
+                        .border(Color.cloudDark)
+                }
+
+                VStack {
+                    Text("Frame - Trailing", size: .small)
+                    Illustration(.womanWithPhone, layout: .frame(maxHeight: 80, alignment: .trailing))
+                        .border(Color.cloudDark)
+                }
+
+                VStack {
+                    Text("Resizeable", size: .small)
                     Illustration(.womanWithPhone, layout: .resizeable)
                         .frame(height: 80)
                         .border(Color.cloudDark)
                 }
-
-                VStack(alignment: .leading) {
-                    Text("Width = 80, Height = 80", size: .small)
-                    Illustration(.womanWithPhone, layout: .resizeable)
-                        .frame(width: 80, height: 80)
-                        .border(Color.cloudDark)
-                }
             }
 
-            Card("Mix, Height = 30") {
+            Card("MaxHeight = 30") {
                 HStack {
                     VStack(alignment: .leading) {
                         Text("Leading", size: .small)
@@ -234,15 +205,39 @@ struct IllustrationPreviews: PreviewProvider {
                     }
                 }
             }
+
+            Card("Resizeable") {
+                HStack(alignment: .top, spacing: .medium) {
+                    VStack(alignment: .leading) {
+                        Text("Width = 80", size: .small)
+                        Illustration(.womanWithPhone, layout: .resizeable)
+                            .frame(width: 80)
+                            .border(Color.cloudDark)
+                    }
+
+                    VStack(alignment: .leading) {
+                        Text("Height = 80", size: .small)
+                        Illustration(.womanWithPhone, layout: .resizeable)
+                            .frame(height: 80)
+                            .border(Color.cloudDark)
+                    }
+                }
+
+                VStack(alignment: .leading) {
+                    Text("Width = 80, Height = 80", size: .small)
+                    Illustration(.womanWithPhone, layout: .resizeable)
+                        .frame(width: 80, height: 80)
+                        .border(Color.cloudDark)
+                }
+            }
         }
+        .padding(.vertical, .medium)
+        .fixedSize(horizontal: false, vertical: true)
         .background(Color.cloudLight)
         .previewDisplayName("Mixed sizes")
     }
 
     static var storybook: some View {
-        VStack {
-            snapshotsSizing
-            snapshotsExpanding
-        }
+        snapshot
     }
 }

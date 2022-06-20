@@ -107,6 +107,10 @@ struct KeyValuePreviews: PreviewProvider {
         }
         .padding(.medium)
     }
+
+    static var snapshot: some View {
+        storybook
+    }
 }
 
 struct KeyValueDynamicTypePreviews: PreviewProvider {

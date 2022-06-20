@@ -386,6 +386,10 @@ struct ButtonPreviews: PreviewProvider {
         .padding(.medium)
     }
 
+    static var snapshot: some View {
+        storybook
+    }
+
     @ViewBuilder static func buttons(_ style: Button.Style) -> some View {
         VStack(spacing: .small) {
             HStack(spacing: .small) {
