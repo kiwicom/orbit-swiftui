@@ -242,7 +242,7 @@ extension Storybook {
 
         @ViewBuilder var topOverlay: some View {
             switch self {
-                case .toast:            ToastPreviews.standalone
+                case .toast:            ToastPreviews.toast
                 default:                EmptyView()
             }
         }

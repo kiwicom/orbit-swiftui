@@ -211,7 +211,6 @@ struct ToastPreviews: PreviewProvider {
 
         PreviewWrapper {
             storybookLive
-                .overlay(Toast(toastQueue: toastLiveQueue), alignment: .top)
         }
     }
 
@@ -250,6 +249,10 @@ struct ToastPreviews: PreviewProvider {
         }
         .padding(.medium)
         .previewDisplayName("Live Preview")
+    }
+
+    static var toast: some View {
+        Toast(toastQueue: toastLiveQueue)
     }
 
     static var snapshot: some View {
