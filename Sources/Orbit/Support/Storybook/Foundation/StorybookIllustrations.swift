@@ -7,20 +7,10 @@ struct StorybookIllustrations {
     }
 
     @ViewBuilder static var storybook: some View {
-        content
-            .padding(.medium)
-    }
-
-    @ViewBuilder static var content: some View {
-        if #available(iOS 14, *) {
-            LazyVStack(alignment: .leading, spacing: .xSmall) {
-                stackContent
-            }
-        } else {
-            VStack(alignment: .leading, spacing: .xSmall) {
-                stackContent
-            }
+        LazyVStack(alignment: .leading, spacing: .xSmall) {
+            stackContent
         }
+        .padding(.medium)
     }
 
     @ViewBuilder static var stackContent: some View {

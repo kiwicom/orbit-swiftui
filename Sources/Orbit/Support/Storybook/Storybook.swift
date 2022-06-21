@@ -17,25 +17,6 @@ public struct Storybook: View {
         NavigationView {
             ScrollView {
                 content
-                    .background(
-                        VStack {
-                            ForEach(Item.allCases, id: \.rawValue) { item in
-                                if item.tabs.count > 0 {
-                                    NavigationLink(
-                                        tag: item,
-                                        selection: $selectedItem,
-                                        destination: {
-                                            StorybookDetail(menuItem: item, darkMode: $darkMode)
-                                        },
-                                        label: {
-                                            EmptyView()
-                                        }
-                                    )
-                                    .hidden()
-                                }
-                            }
-                        }
-                    )
             }
             .navigationBarItems(trailing: darkModeSwitch)
             .navigationBarTitle("Orbit Storybook", displayMode: .large)
@@ -64,36 +45,10 @@ public struct Storybook: View {
         tileStack(items: Self.componentItems)
     }
 
-    @ViewBuilder var stackContent: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            foundation
-        }
-
-        VStack(alignment: .leading, spacing: 0) {
-            components
-        }
-    }
-
-    @available(iOS 14, *)
-    @ViewBuilder var lazyStackContent: some View {
-        LazyVStack(alignment: .leading, spacing: 0) {
-            foundation
-        }
-
-        LazyVStack(alignment: .leading, spacing: 0) {
-            components
-        }
-    }
-
     @ViewBuilder var content: some View {
-        if #available(iOS 14, *) {
-            LazyVStack(alignment: .leading, spacing: .medium) {
-                lazyStackContent
-            }
-        } else {
-            VStack(alignment: .leading, spacing: .medium) {
-                stackContent
-            }
+        VStack(alignment: .leading, spacing: .medium) {
+            foundation
+            components
         }
     }
 
@@ -123,6 +78,19 @@ public struct Storybook: View {
         .opacity(item.tabs.isEmpty ? 0.4 : 1)
         .disabled(item.tabs.isEmpty)
         .frame(maxWidth: .infinity)
+        .background(
+            NavigationLink(
+                tag: item,
+                selection: $selectedItem,
+                destination: {
+                    StorybookDetail(menuItem: item, darkMode: $darkMode)
+                },
+                label: {
+                    EmptyView()
+                }
+            )
+            .hidden()
+        )
     }
 }
 
@@ -137,10 +105,12 @@ struct StorybookMenuPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             Storybook()
-            
-            Storybook().content
-                .previewLayout(.sizeThatFits)
 
+            VStack {
+                Storybook().foundation
+                Storybook().components
+            }
+            .previewLayout(.sizeThatFits)
         }
     }
 }

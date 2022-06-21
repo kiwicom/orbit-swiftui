@@ -2,7 +2,7 @@ import SwiftUI
 
 struct StorybookIcons {
 
-    static var icons: [Icon.Symbol] { Icon.Symbol.allCases }
+    static var icons: [Icon.Symbol] { Icon.Symbol.allCases.filter { $0 != .none} }
 
     @ViewBuilder static var storybook: some View {
         LazyVStack(alignment: .leading, spacing: .xSmall) {
@@ -54,7 +54,9 @@ private extension String {
 struct StorybookIconsPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
-            StorybookIcons.storybook
+            ScrollView {
+                StorybookIcons.storybook
+            }
         }
     }
 }

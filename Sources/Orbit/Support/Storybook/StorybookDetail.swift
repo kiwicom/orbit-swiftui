@@ -17,7 +17,7 @@ struct StorybookDetail: View {
     }
 
     @ViewBuilder var content: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        LazyVStack(alignment: .leading, spacing: 0) {
             if menuItem.tabs.count > 1 {
                 Tabs(selectedIndex: $selectedTab) {
                     ForEach(menuItem.tabs, id: \.self) { tab in
