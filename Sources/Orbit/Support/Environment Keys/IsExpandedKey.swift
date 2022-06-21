@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Envoronment key for driving expanded animation simultaneously with view transition.
+/// Environment key for driving expanded animation simultaneously with view transition.
 public struct IsExpandedKey: EnvironmentKey {
     public static var defaultValue: Bool = false
 }
