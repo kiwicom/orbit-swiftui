@@ -4,10 +4,20 @@ struct StorybookDetail: View {
 
     @State var selectedTab: Int = 0
     @Binding var darkMode: Bool
+    @State var filter: String = ""
 
     let menuItem: Storybook.Item
 
     var body: some View {
+        if #available(iOS 15.0, *) {
+            detailView
+                .searchable(text: $filter, prompt: "Search")
+        } else {
+            detailView
+        }
+    }
+
+    @ViewBuilder var detailView: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: .medium) {
                 if menuItem.tabs.count > 1 {
@@ -60,8 +70,8 @@ struct StorybookDetail: View {
             case (.colors, 0):              StorybookColors.storybook
             case (.colors, 1):              StorybookColors.storybookStatus
             case (.colors, 2):              StorybookColors.storybookGradient
-            case (.icons, _):               StorybookIcons.storybook
-            case (.illustrations, _):       StorybookIllustrations.storybook
+            case (.icons, _):               StorybookIcons.storybook(filter: filter)
+            case (.illustrations, _):       StorybookIllustrations.storybook(filter: filter)
             case (.typography, 0):          StorybookTypography.storybook
             case (.typography, 1):          StorybookTypography.storybookHeading
             default:                        HStack { Heading("🚧 WIP 🚧", style: .title3) }.padding(.large)
