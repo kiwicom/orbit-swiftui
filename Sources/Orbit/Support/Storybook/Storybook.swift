@@ -16,8 +16,29 @@ public struct Storybook: View {
     public var body: some View {
         NavigationView {
             ScrollView {
-                content
+                LazyVStack(alignment: .leading, spacing: .large) {
+                    foundation
+                    components
+                }
             }
+            .background(
+                NavigationLink(
+                    "",
+                    isActive: .init(
+                        get: { selectedItem != nil },
+                        set: { value in
+                            if value == false {
+                                selectedItem = nil
+                            }
+                        }
+                    )
+                ) {
+                    AnyView(
+                        StorybookDetail(menuItem: selectedItem ?? .colors, darkMode: $darkMode)
+                    )
+                }
+                .hidden()
+            )
             .navigationBarItems(trailing: darkModeSwitch)
             .navigationBarTitle("Orbit Storybook", displayMode: .large)
         }
@@ -33,25 +54,22 @@ public struct Storybook: View {
     }
 
     @ViewBuilder var foundation: some View {
-        Heading("Foundation", style: .title1)
-            .padding(.vertical, .small)
-            .padding(.horizontal, .medium)
-        tileStack(items: Self.foundationItems)
+        LazyVStack(alignment: .leading, spacing: 0) {
+            Heading("Foundation", style: .title1)
+                .padding(.vertical, .small)
+                .padding(.horizontal, .medium)
+            tileStack(items: Self.foundationItems)
+        }
     }
 
     @ViewBuilder var components: some View {
-        Heading("Components", style: .title1)
-            .padding(.vertical, .small)
-            .padding(.horizontal, .medium)
-        tileStack(items: Self.componentItems)
-            .compositingGroup()
-            .drawingGroup(opaque: false, colorMode: .extendedLinear)
-    }
-
-    @ViewBuilder var content: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            foundation
-            components
+        LazyVStack(alignment: .leading, spacing: 0) {
+            Heading("Components", style: .title1)
+                .padding(.vertical, .small)
+                .padding(.horizontal, .medium)
+            tileStack(items: Self.componentItems)
+                .compositingGroup()
+                .drawingGroup(opaque: false, colorMode: .extendedLinear)
         }
     }
 
@@ -82,19 +100,6 @@ public struct Storybook: View {
         .opacity(item.tabs.isEmpty ? 0.4 : 1)
         .disabled(item.tabs.isEmpty)
         .frame(maxWidth: .infinity)
-        .background(
-            NavigationLink(
-                tag: item,
-                selection: $selectedItem,
-                destination: {
-                    StorybookDetail(menuItem: item, darkMode: $darkMode)
-                },
-                label: {
-                    EmptyView()
-                }
-            )
-            .hidden()
-        )
     }
 }
 

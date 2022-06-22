@@ -349,7 +349,7 @@ struct ButtonPreviews: PreviewProvider {
     }
 
     @ViewBuilder static var storybook: some View {
-        VStack(alignment: .leading, spacing: .xLarge) {
+        LazyVStack(alignment: .leading, spacing: .xLarge) {
             buttons(.primary)
             buttons(.primarySubtle)
             buttons(.secondary)
@@ -360,7 +360,7 @@ struct ButtonPreviews: PreviewProvider {
     }
 
     @ViewBuilder static var storybookStatus: some View {
-        VStack(alignment: .leading, spacing: .xLarge) {
+        LazyVStack(alignment: .leading, spacing: .xLarge) {
             statusButtonStack(.info)
             statusButtonStack(.success)
             statusButtonStack(.warning)
@@ -370,7 +370,7 @@ struct ButtonPreviews: PreviewProvider {
     }
 
     @ViewBuilder static var storybookGradient: some View {
-        VStack(alignment: .leading, spacing: .xLarge) {
+        LazyVStack(alignment: .leading, spacing: .xLarge) {
             buttons(.gradient(.bundleBasic)).previewDisplayName("Bundle Basic")
             buttons(.gradient(.bundleMedium)).previewDisplayName("Bundle Medium")
             buttons(.gradient(.bundleTop)).previewDisplayName("Bundle Top")
@@ -388,7 +388,14 @@ struct ButtonPreviews: PreviewProvider {
     }
 
     static var snapshot: some View {
-        storybook
+        VStack(alignment: .leading, spacing: .xLarge) {
+            buttons(.primary)
+            buttons(.primarySubtle)
+            buttons(.secondary)
+            buttons(.critical)
+            buttons(.criticalSubtle)
+        }
+        .padding(.medium)
     }
 
     @ViewBuilder static func buttons(_ style: Button.Style) -> some View {

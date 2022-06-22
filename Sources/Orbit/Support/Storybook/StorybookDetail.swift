@@ -9,27 +9,25 @@ struct StorybookDetail: View {
 
     var body: some View {
         ScrollView {
-            content
+            LazyVStack(alignment: .leading, spacing: .medium) {
+                if menuItem.tabs.count > 1 {
+                    Tabs(selectedIndex: $selectedTab) {
+                        ForEach(menuItem.tabs, id: \.self) { tab in
+                            Tab(tab)
+                        }
+                    }
+                    .padding(.medium)
+                }
+
+                AnyView(
+                    detailContent
+                )
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
         }
         .overlay(topOverlay, alignment: .top)
         .navigationBarItems(trailing: darkModeSwitch)
         .navigationBarTitle("\(String(describing: menuItem).titleCased)", displayMode: .large)
-    }
-
-    @ViewBuilder var content: some View {
-        LazyVStack(alignment: .leading, spacing: 0) {
-            if menuItem.tabs.count > 1 {
-                Tabs(selectedIndex: $selectedTab) {
-                    ForEach(menuItem.tabs, id: \.self) { tab in
-                        Tab(tab)
-                    }
-                }
-                .padding(.medium)
-            }
-
-            detailContent
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
     }
 
     @ViewBuilder var darkModeSwitch: some View {
@@ -46,6 +44,18 @@ struct StorybookDetail: View {
     }
 
     @ViewBuilder var detailContent: some View {
+        if menuItem.section == .foundation {
+            foundationContent
+        } else {
+            if menuItem.rawValue < Storybook.Item.list.rawValue {
+                detailFirstHalfContent
+            } else {
+                detailSecondHalfContent
+            }
+        }
+    }
+
+    @ViewBuilder var foundationContent: some View {
         switch(menuItem, selectedTab) {
             case (.colors, 0):              StorybookColors.storybook
             case (.colors, 1):              StorybookColors.storybookStatus
@@ -54,6 +64,12 @@ struct StorybookDetail: View {
             case (.illustrations, _):       StorybookIllustrations.storybook
             case (.typography, 0):          StorybookTypography.storybook
             case (.typography, 1):          StorybookTypography.storybookHeading
+            default:                        HStack { Heading("🚧 WIP 🚧", style: .title3) }.padding(.large)
+        }
+    }
+
+    @ViewBuilder var detailFirstHalfContent: some View {
+        switch(menuItem, selectedTab) {
             case (.alert, 0):               AlertPreviews.storybook
             case (.alert, 2):               AlertPreviews.storybookMix
             case (.alert, 3):               AlertPreviews.storybookLive
@@ -87,6 +103,12 @@ struct StorybookDetail: View {
             case (.inputField, 2):          InputFieldPreviews.storybookPassword
             case (.inputField, 3):          InputFieldPreviews.storybookMix
             case (.keyValue, _):            KeyValuePreviews.storybook
+            default:                        HStack { Heading("🚧 WIP 🚧", style: .title3) }.padding(.large)
+        }
+    }
+
+    @ViewBuilder var detailSecondHalfContent: some View {
+        switch(menuItem, selectedTab) {
             case (.list, 0):                ListPreviews.storybook
             case (.list, 1):                ListPreviews.storybookMix
             case (.listChoice, 0):          ListChoicePreviews.storybook
