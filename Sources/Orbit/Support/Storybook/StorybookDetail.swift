@@ -11,7 +11,7 @@ struct StorybookDetail: View {
         ScrollView {
             content
         }
-        .overlay(menuItem.topOverlay, alignment: .top)
+        .overlay(topOverlay, alignment: .top)
         .navigationBarItems(trailing: darkModeSwitch)
         .navigationBarTitle("\(String(describing: menuItem).titleCased)", displayMode: .large)
     }
@@ -27,7 +27,7 @@ struct StorybookDetail: View {
                 .padding(.medium)
             }
 
-            preview
+            detailContent
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
@@ -38,7 +38,14 @@ struct StorybookDetail: View {
         }
     }
 
-    @ViewBuilder var preview: some View {
+    @ViewBuilder var topOverlay: some View {
+        switch menuItem {
+            case .toast:            ToastPreviews.toast
+            default:                EmptyView()
+        }
+    }
+
+    @ViewBuilder var detailContent: some View {
         switch(menuItem, selectedTab) {
             case (.colors, 0):              StorybookColors.storybook
             case (.colors, 1):              StorybookColors.storybookStatus

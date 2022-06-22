@@ -21,6 +21,7 @@ public struct Storybook: View {
             .navigationBarItems(trailing: darkModeSwitch)
             .navigationBarTitle("Orbit Storybook", displayMode: .large)
         }
+        .navigationViewStyle(.stack)
         .accentColor(.inkNormal)
         .environment(\.colorScheme, darkMode ? .dark : .light)
     }
@@ -43,10 +44,12 @@ public struct Storybook: View {
             .padding(.vertical, .small)
             .padding(.horizontal, .medium)
         tileStack(items: Self.componentItems)
+            .compositingGroup()
+            .drawingGroup(opaque: false, colorMode: .extendedLinear)
     }
 
     @ViewBuilder var content: some View {
-        VStack(alignment: .leading, spacing: .medium) {
+        VStack(alignment: .leading, spacing: 0) {
             foundation
             components
         }
@@ -56,13 +59,13 @@ public struct Storybook: View {
 
     @ViewBuilder func tileStack(items: [Item]) -> some View {
         ForEach(0 ..< items.count / 2, id: \.self) { rowIndex in
-            HStack(alignment: .top, spacing: .small) {
+            HStack(alignment: .top, spacing: .medium) {
                 tile(items[rowIndex * 2])
                 tile(items[rowIndex * 2 + 1])
             }
             .padding(.horizontal, .medium)
-            .padding(.top, .xxxSmall)
-            .padding(.bottom, .small)
+            .padding(.top, .xSmall)
+            .padding(.bottom, .medium)
         }
     }
 
@@ -71,6 +74,7 @@ public struct Storybook: View {
             String(describing: item).titleCased,
             icon: item.tabs.isEmpty ? .timelapse : .sfSymbol(item.sfSymbol),
             disclosure: .none,
+            border: item.tabs.isEmpty ? .none : .default,
             titleStyle: .title5
         ) {
             selectedItem = item

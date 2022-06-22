@@ -162,13 +162,6 @@ extension Storybook {
             }
         }
 
-        @ViewBuilder var topOverlay: some View {
-            switch self {
-                case .toast:            ToastPreviews.toast
-                default:                EmptyView()
-            }
-        }
-
         var section: Storybook.Section {
             rawValue <= Self.typography.rawValue ? .foundation : .components
         }
