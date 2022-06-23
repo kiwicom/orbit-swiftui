@@ -479,9 +479,11 @@ struct InputFieldLivePreviews: PreviewProvider {
                     suffix: .email,
                     placeholder: "Placeholder",
                     state: .disabled,
-                    message: message) {
+                    message: message,
+                    suffixAction: {
                         intValue = 1
                     }
+                )
 
                 Text("Some text, but also very long and multi-line to test that it works.")
 

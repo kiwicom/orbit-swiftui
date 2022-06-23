@@ -255,7 +255,7 @@ struct CardPreviews: PreviewProvider {
     }
 
     static var storybook: some View {
-        VStack(spacing: .large) {
+        LazyVStack(spacing: .large) {
             content
         }
         .background(Color.cloudLight)

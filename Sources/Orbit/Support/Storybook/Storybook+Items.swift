@@ -116,84 +116,6 @@ extension Storybook {
             }
         }
 
-        @ViewBuilder func preview(_ tabIndex: Int) -> some View {
-            switch(self, tabIndex) {
-                case (.colors, 0):              StorybookColors.storybook
-                case (.colors, 1):              StorybookColors.storybookStatus
-                case (.colors, 2):              StorybookColors.storybookGradient
-                case (.icons, 0):               StorybookIcons.storybook
-                case (.icons, 1):               StorybookIcons.storybook
-                case (.illustrations, _):       StorybookIllustrations.storybook
-                case (.typography, 0):          StorybookTypography.storybook
-                case (.typography, 1):          StorybookTypography.storybookHeading
-                case (.alert, 0):               AlertPreviews.storybook
-                case (.alert, 2):               AlertPreviews.storybookMix
-                case (.alert, 3):               AlertPreviews.storybookLive
-                case (.badge, 0):               BadgePreviews.storybook
-                case (.badge, 1):               BadgePreviews.storybookGradient
-                case (.badge, 2):               BadgePreviews.storybookMix
-                case (.badgeList, 0):           BadgeListPreviews.storybook
-                case (.badgeList, 1):           BadgeListPreviews.storybookMix
-                case (.button, 0):              ButtonPreviews.storybook
-                case (.button, 1):              ButtonPreviews.storybookStatus
-                case (.button, 2):              ButtonPreviews.storybookGradient
-                case (.button, 3):              ButtonPreviews.storybookMix
-                case (.buttonLink, 0):          ButtonLinkPreviews.storybook
-                case (.buttonLink, 1):          ButtonLinkPreviews.storybookStatus
-                case (.buttonLink, 2):          ButtonLinkPreviews.storybookSizes
-                case (.card, _):                CardPreviews.storybook
-                case (.carrierLogo, _):         CarrierLogoPreviews.storybook
-                case (.checkbox, _):            CheckboxPreviews.storybook
-                case (.choiceTile, 0):          ChoiceTilePreviews.storybook
-                case (.choiceTile, 1):          ChoiceTilePreviews.storybookCentered
-                case (.choiceTile, 2):          ChoiceTilePreviews.storybookMix
-                case (.countryFlag, _):         CountryFlagPreviews.storybook
-                case (.dialog, _):              DialogPreviews.content
-                case (.emptyState, _):          EmptyStatePreviews.storybook
-                case (.heading, _):             StorybookTypography.storybookHeading
-                case (.horizontalScroll, _):    HorizontalScrollPreviews.storybook
-                case (.icon, 0):                IconPreviews.storybook
-                case (.icon, 1):                IconPreviews.storybookMix
-                case (.illustration, _):        IllustrationPreviews.storybook
-                case (.inputField, 0):          InputFieldPreviews.storybook
-                case (.inputField, 2):          InputFieldPreviews.storybookPassword
-                case (.inputField, 3):          InputFieldPreviews.storybookMix
-                case (.keyValue, _):            KeyValuePreviews.storybook
-                case (.list, 0):                ListPreviews.storybook
-                case (.list, 1):                ListPreviews.storybookMix
-                case (.listChoice, 0):          ListChoicePreviews.storybook
-                case (.listChoice, 1):          ListChoicePreviews.storybookButton
-                case (.listChoice, 2):          ListChoicePreviews.storybookCheckbox
-                case (.listChoice, 3):          ListChoicePreviews.storybookMix
-                case (.notificationBadge, 0):   NotificationBadgePreviews.storybook
-                case (.notificationBadge, 1):   NotificationBadgePreviews.storybookGradient
-                case (.notificationBadge, 2):   NotificationBadgePreviews.storybookMix
-                case (.radio, _):               RadioPreviews.storybook
-                case (.select, 0):              SelectPreviews.storybook
-                case (.select, 1):              SelectPreviews.storybookMix
-                case (.separator, 0):           SeparatorPreviews.storybook
-                case (.separator, 1):           SeparatorPreviews.storybookMix
-                case (.skeleton, 0):            SkeletonPreviews.storybook
-                case (.skeleton, 1):            SkeletonPreviews.storybookAtomic
-                case (.socialButton, _):        SocialButtonPreviews.storybook
-                case (.`switch`, _):            SwitchPreviews.storybook
-                case (.tabs, 0):                TabsPreviews.storybook
-                case (.tabs, 1):                TabsPreviews.storybookLive
-                case (.tag, _):                 TagPreviews.storybook
-                case (.text, _):                TextPreviews.storybook
-                case (.textLink, 0):            TextLinkPreviews.storybook
-                case (.textLink, 1):            TextLinkPreviews.storybookLive
-                case (.tile, 0):                TilePreviews.storybook
-                case (.tile, 1):                TilePreviews.storybookMix
-                case (.tileGroup, _):           TileGroupPreviews.storybook
-                case (.timeline, 0):            TimelinePreviews.storybook
-                case (.timeline, 1):            TimelinePreviews.storybookMix
-                case (.toast, 0):               ToastPreviews.storybook
-                case (.toast, 1):               ToastPreviews.storybookLive
-                default:                        HStack { Heading("🚧 WIP 🚧", style: .title3) }.padding(.large)
-            }
-        }
-
         var sfSymbol: String {
             switch self {
                 case .colors:               return "paintpalette.fill"
@@ -237,13 +159,6 @@ extension Storybook {
                 case .timeline:             return "calendar.day.timeline.left"
                 case .toast:                return "ellipsis.rectangle.fill"
                 default:                    return ""
-            }
-        }
-
-        @ViewBuilder var topOverlay: some View {
-            switch self {
-                case .toast:            ToastPreviews.standalone
-                default:                EmptyView()
             }
         }
 

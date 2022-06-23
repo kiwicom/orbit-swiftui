@@ -16,30 +16,33 @@ public struct Storybook: View {
     public var body: some View {
         NavigationView {
             ScrollView {
-                content
-                    .background(
-                        VStack {
-                            ForEach(Item.allCases, id: \.rawValue) { item in
-                                if item.tabs.count > 0 {
-                                    NavigationLink(
-                                        tag: item,
-                                        selection: $selectedItem,
-                                        destination: {
-                                            StorybookDetail(menuItem: item, darkMode: $darkMode)
-                                        },
-                                        label: {
-                                            EmptyView()
-                                        }
-                                    )
-                                    .hidden()
-                                }
+                LazyVStack(alignment: .leading, spacing: .large) {
+                    foundation
+                    components
+                }
+            }
+            .background(
+                NavigationLink(
+                    "",
+                    isActive: .init(
+                        get: { selectedItem != nil },
+                        set: { value in
+                            if value == false {
+                                selectedItem = nil
                             }
                         }
                     )
-            }
+                ) {
+                    AnyView(
+                        StorybookDetail(menuItem: selectedItem ?? .colors, darkMode: $darkMode)
+                    )
+                }
+                .hidden()
+            )
             .navigationBarItems(trailing: darkModeSwitch)
             .navigationBarTitle("Orbit Storybook", displayMode: .large)
         }
+        .navigationViewStyle(.stack)
         .accentColor(.inkNormal)
         .environment(\.colorScheme, darkMode ? .dark : .light)
     }
@@ -51,49 +54,22 @@ public struct Storybook: View {
     }
 
     @ViewBuilder var foundation: some View {
-        Heading("Foundation", style: .title1)
-            .padding(.vertical, .small)
-            .padding(.horizontal, .medium)
-        tileStack(items: Self.foundationItems)
+        LazyVStack(alignment: .leading, spacing: 0) {
+            Heading("Foundation", style: .title1)
+                .padding(.vertical, .small)
+                .padding(.horizontal, .medium)
+            tileStack(items: Self.foundationItems)
+        }
     }
 
     @ViewBuilder var components: some View {
-        Heading("Components", style: .title1)
-            .padding(.vertical, .small)
-            .padding(.horizontal, .medium)
-        tileStack(items: Self.componentItems)
-    }
-
-    @ViewBuilder var stackContent: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            foundation
-        }
-
-        VStack(alignment: .leading, spacing: 0) {
-            components
-        }
-    }
-
-    @available(iOS 14, *)
-    @ViewBuilder var lazyStackContent: some View {
         LazyVStack(alignment: .leading, spacing: 0) {
-            foundation
-        }
-
-        LazyVStack(alignment: .leading, spacing: 0) {
-            components
-        }
-    }
-
-    @ViewBuilder var content: some View {
-        if #available(iOS 14, *) {
-            LazyVStack(alignment: .leading, spacing: .medium) {
-                lazyStackContent
-            }
-        } else {
-            VStack(alignment: .leading, spacing: .medium) {
-                stackContent
-            }
+            Heading("Components", style: .title1)
+                .padding(.vertical, .small)
+                .padding(.horizontal, .medium)
+            tileStack(items: Self.componentItems)
+                .compositingGroup()
+                .drawingGroup(opaque: false, colorMode: .extendedLinear)
         }
     }
 
@@ -101,13 +77,13 @@ public struct Storybook: View {
 
     @ViewBuilder func tileStack(items: [Item]) -> some View {
         ForEach(0 ..< items.count / 2, id: \.self) { rowIndex in
-            HStack(alignment: .top, spacing: .small) {
+            HStack(alignment: .top, spacing: .medium) {
                 tile(items[rowIndex * 2])
                 tile(items[rowIndex * 2 + 1])
             }
             .padding(.horizontal, .medium)
-            .padding(.top, .xxxSmall)
-            .padding(.bottom, .small)
+            .padding(.top, .xSmall)
+            .padding(.bottom, .medium)
         }
     }
 
@@ -116,6 +92,7 @@ public struct Storybook: View {
             String(describing: item).titleCased,
             icon: item.tabs.isEmpty ? .timelapse : .sfSymbol(item.sfSymbol),
             disclosure: .none,
+            border: item.tabs.isEmpty ? .none : .default,
             titleStyle: .title5
         ) {
             selectedItem = item
@@ -137,10 +114,12 @@ struct StorybookMenuPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             Storybook()
-            
-            Storybook().content
-                .previewLayout(.sizeThatFits)
 
+            VStack {
+                Storybook().foundation
+                Storybook().components
+            }
+            .previewLayout(.sizeThatFits)
         }
     }
 }

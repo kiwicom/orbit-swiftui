@@ -6,52 +6,63 @@ struct StorybookIllustrations {
         Array(Illustration.Image.allCases.dropFirst())
     }
 
-    @ViewBuilder static var storybook: some View {
-        content
-            .padding(.medium)
-    }
-
-    @ViewBuilder static var content: some View {
-        if #available(iOS 14, *) {
-            LazyVStack(alignment: .leading, spacing: .xSmall) {
-                stackContent
-            }
-        } else {
-            VStack(alignment: .leading, spacing: .xSmall) {
-                stackContent
-            }
+    @ViewBuilder static func storybook(filter: String = "") -> some View {
+        LazyVStack(alignment: .leading, spacing: .xSmall) {
+            stackContent(filter: filter)
         }
+        .padding(.medium)
     }
 
-    @ViewBuilder static var stackContent: some View {
-        ForEach(0 ..< Self.illustrations.count / 2, id: \.self) { rowIndex in
+    @ViewBuilder static func stackContent(filter: String) -> some View {
+        ForEach(0 ... illustrations(filter: filter).count / 2, id: \.self) { rowIndex in
             HStack(alignment: .top, spacing: .xSmall) {
-                illustration(Self.illustrations[rowIndex * 2])
-                illustration(Self.illustrations[rowIndex * 2 + 1])
+                illustration(index: rowIndex * 2, filter: filter)
+                illustration(index: rowIndex * 2 + 1, filter: filter)
             }
         }
     }
 
-    @ViewBuilder static func illustration(_ illustration: Illustration.Image) -> some View {
-        VStack(spacing: .xxSmall) {
-            Illustration(illustration, layout: .resizeable)
-                .frame(height: 150)
-            Text(String(describing: illustration).titleCased, size: .small, color: .inkLight, isSelectable: true)
+    @ViewBuilder static func illustration(index: Int, filter: String) -> some View {
+        if let illustration = illustrationImage(index: index, filter: filter) {
+            VStack(spacing: .xxSmall) {
+                Illustration(illustration, layout: .resizeable)
+                    .frame(height: 150)
+                Text(String(describing: illustration).titleCased, size: .small, color: .inkLight, isSelectable: true)
+            }
+            .padding(.horizontal, .xxSmall)
+            .padding(.vertical, .xSmall)
+            .frame(maxWidth: .infinity)
+            .overlay(
+                RoundedRectangle(cornerRadius: BorderRadius.default)
+                    .stroke(Color.cloudDarker, lineWidth: .hairline)
+            )
+        } else {
+            Color.whiteNormal
+                .frame(height: 1)
+                .padding(.horizontal, .xxSmall)
+                .padding(.vertical, .xSmall)
+                .frame(maxWidth: .infinity)
+
         }
-        .padding(.horizontal, .xxSmall)
-        .padding(.vertical, .xSmall)
-        .frame(maxWidth: .infinity)
-        .overlay(
-            RoundedRectangle(cornerRadius: BorderRadius.default)
-                .stroke(Color.cloudDarker, lineWidth: .hairline)
-        )
+    }
+
+    static func illustrations(filter: String) -> [Illustration.Image] {
+        illustrations.filter { filter.isEmpty || "\($0)".localizedCaseInsensitiveContains(filter) }
+    }
+
+    static func illustrationImage(index: Int, filter: String) -> Illustration.Image? {
+        let filteredImages = illustrations(filter: filter)
+        guard filteredImages.indices.contains(index) else {
+            return nil
+        }
+        return filteredImages[index]
     }
 }
 
 struct StorybookIllustrationsPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
-            StorybookIllustrations.storybook
+            StorybookIllustrations.storybook()
         }
     }
 }
