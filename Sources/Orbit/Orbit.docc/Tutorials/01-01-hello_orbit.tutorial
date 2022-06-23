@@ -1,0 +1,87 @@
+@Tutorial(time: 15) {
+    @Intro(title: "Hello Orbit") {
+        This "hello world" tutorial will show how to start using Orbit components in your SwiftUI code.
+        
+        You will learn all the necessary steps to have Orbit up and running.
+        
+        @Image(source: 01-01-hello_orbit, alt: "A snapshot of SwiftUI code next to a preview canvas showing mapping of Orbit components between code and canvas")
+    }
+    
+    @Section(title: "Create a new Orbit Enabled Project") {
+        @ContentAndMedia {
+            Create a new Xcode project that uses SwiftUI and has the Orbit package linked to it.
+        }
+        
+        @Steps {
+            @Step {
+                Create a new iOS app project in Xcode, using SwiftUI.
+                
+                @Image(source: 01-01-hello_orbit-s01, alt: "TBD")
+            }
+            
+            @Step {
+                In Project settings, add a new swift package dependency.
+                
+                @Image(source: 01-01-hello_orbit-s02, alt: "A screenshot of Xcode showing an open project with the Package Dependencies tab open, highlighting the plus button")
+            }
+            
+            @Step {
+                Search for the Orbit package and select it. Specify a dependency rule. If you want to use the development version, choose the `main` branch. 
+                
+                @Image(source: 01-01-hello_orbit-s03, alt: "A screenshot of Xcode showing the package search UI with orbit-swiftui shown in search results")
+            }
+            
+            @Step {
+                In the Package Product selection screen, choose `Orbit`.
+                
+                @Image(source: 01-01-hello_orbit-s04, alt: "A screenshot of Xcode showing the package product selection pop-up with Orbit checked")
+            }
+            
+            @Step {
+                In the Project navigator, select `ContentView.swift`.
+                
+                This will open the hello world sample SwiftUI file. If the canvas is not opened, you can toggle it using the `Cmd+Opt+Enter` keyboard shortcut.
+                
+                @Code(name: "ContentView.swift", file: 01-01-hello_orbit-s05)
+            }
+            
+            @Step {
+                Import the `Orbit` module. 
+                
+                There is no visual change yet, but if you check the quick help for the hello world `Text` view, you will see it is no longer the native SwiftUI Text component, but an Orbit one.
+                
+                @Code(name: "ContentView.swift", file: 01-01-hello_orbit-s06)
+            }
+        }
+    }
+    
+    @Section(title: "(Optional) Configure Fonts to be Used by Orbit Components") {
+        @ContentAndMedia {
+            Orbit uses a set of fonts for all its components.
+            
+            If you own a licence for Orbit's default CircularPro font family, you can set it up. Or you can use any custom fonts for each font weight.
+        }
+        
+        @Steps {
+            @Step {
+                Add an initializer where you will tell Orbit which font files it should assign to each font weight.
+                
+                For this demo project, the initializer can be added to this sample view. In a real application, this code would be run only once, near the application start. 
+                
+                @Code(name: "ContentView.swift", file: 01-01-hello_orbit-s07.swift) {
+                    @Image(source: 01-01-hello_orbit-s07.png, alt: "A screenshot from the Xcode preview as it would appear on iPhone, with the text, Hello, World!, centered in the middle of the display.")
+                }
+            }
+            
+            @Step {
+                Call the `Font.registerOrbitFonts()` method to let Orbit know you want to use them.
+                
+                Now these fonts will be used for the `Text` hello world view. If the preview is not updated, use the `Cmd+Opt+P` keyboard shortcut to refresh the canvas preview.
+                
+                @Code(name: "ContentView.swift", file: 01-01-hello_orbit-s08.swift) {
+                    @Image(source: 01-01-hello_orbit-s08.png, alt: "A screenshot from the Xcode preview as it would appear on iPhone, with the text, Hello, World!, centered in the middle of the display, using Orbit font.")
+                }
+            }
+        }
+    }
+}
