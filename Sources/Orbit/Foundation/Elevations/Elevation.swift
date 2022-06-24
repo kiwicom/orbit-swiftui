@@ -34,54 +34,30 @@ struct ElevationModifier: ViewModifier {
     let shadowColor = Color(red: 79 / 255, green: 94 / 255, blue: 113 / 255)
 
     func body(content: Content) -> some View {
-        if isElevationEnabled {
+        if isElevationEnabled, let level = level {
             if isPrerendered {
-                content
-                    .background(prerenderedShadow(content: content))
+                prerenderedShadow(content: content, level: level)
             } else {
-                liveShadow(content: content)
+                liveShadow(content: content, level: level)
             }
         } else {
             content
         }
     }
 
-    @ViewBuilder func prerenderedShadow(content: Content) -> some View {
-        switch level {
-            case .level1:
+    @ViewBuilder func prerenderedShadow(content: Content, level: Elevation) -> some View {
+        content
+            .padding(prerenderedShadowPadding(for: level))
+            .background(
                 content
-                    .shadow(color: shadowColor.opacity(0.32), radius: 2.4, y: 1.9)
-                    .padding(.small)
+                    .padding(prerenderedShadowPadding(for: level))
+                    .prerenderedShadowModifier(for: level, shadowColor: shadowColor)
                     .drawingGroup(colorMode: .extendedLinear)
-            case .level2:
-                content
-                    .shadow(color: shadowColor.opacity(0.26), radius: 3, y: 2.1)
-                    .shadow(color: shadowColor.opacity(0.1), radius: 10, y: 9)
-                    .padding(.large)
-                    .drawingGroup(colorMode: .extendedLinear)
-            case .level3:
-                content
-                    .shadow(color: shadowColor.opacity(0.28), radius: 2.8, y: 2.4)
-                    .shadow(color: shadowColor.opacity(0.16), radius: 12, y: 12)
-                    .padding(.xLarge)
-                    .drawingGroup(colorMode: .extendedLinear)
-            case .level4:
-                content
-                    .shadow(color: shadowColor.opacity(0.3), radius: 3.2, y: 2.7)
-                    .shadow(color: shadowColor.opacity(0.17), radius: 18, y: 18)
-                    .padding(.xxLarge)
-                    .drawingGroup(colorMode: .extendedLinear)
-            case .custom(let opacity, let radius, let x, let y, let padding):
-                content
-                    .shadow(color: shadowColor.opacity(opacity), radius: radius, x: x, y: y)
-                    .padding(padding ?? (radius + y))
-                    .drawingGroup(colorMode: .extendedLinear)
-            case nil:
-                content
-        }
+            )
+            .padding(-prerenderedShadowPadding(for: level))
     }
 
-    @ViewBuilder func liveShadow(content: Content) -> some View {
+    @ViewBuilder func liveShadow(content: Content, level: Elevation) -> some View {
         switch level {
             case .level1:
                 content
@@ -109,8 +85,42 @@ struct ElevationModifier: ViewModifier {
             case .custom(let opacity, let radius, let x, let y, _):
                 content
                     .shadow(color: shadowColor.opacity(opacity), radius: radius, x: x, y: y)
-            case nil:
-                content
+        }
+    }
+
+    func prerenderedShadowPadding(for level: Elevation) -> CGFloat {
+        switch level {
+            case .level1:                                       return .small
+            case .level2:                                       return .large
+            case .level3:                                       return .xLarge
+            case .level4:                                       return .xxLarge
+            case .custom(_, let radius, _, let y, let padding): return padding ?? (radius + y)
+        }
+    }
+}
+
+extension View {
+
+    @ViewBuilder func prerenderedShadowModifier(for level: Elevation, shadowColor: Color) -> some View {
+        switch level {
+            case .level1:
+                self
+                    .shadow(color: shadowColor.opacity(0.32), radius: 2.4, y: 1.9)
+            case .level2:
+                self
+                    .shadow(color: shadowColor.opacity(0.26), radius: 3, y: 2.1)
+                    .shadow(color: shadowColor.opacity(0.1), radius: 10, y: 9)
+            case .level3:
+                self
+                    .shadow(color: shadowColor.opacity(0.28), radius: 2.8, y: 2.4)
+                    .shadow(color: shadowColor.opacity(0.16), radius: 12, y: 12)
+            case .level4:
+                self
+                    .shadow(color: shadowColor.opacity(0.3), radius: 3.2, y: 2.7)
+                    .shadow(color: shadowColor.opacity(0.17), radius: 18, y: 18)
+            case .custom(let opacity, let radius, let x, let y, _):
+                self
+                    .shadow(color: shadowColor.opacity(opacity), radius: radius, x: x, y: y)
         }
     }
 }
