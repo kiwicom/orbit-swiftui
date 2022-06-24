@@ -15,10 +15,19 @@ public struct TileGroup<Content: View>: View {
 
     public var body: some View {
         if isEmpty == false {
-            Card(borderStyle: .default, status: status, width: width, backgroundColor: backgroundColor, contentLayout: .fill) {
+            VStack(alignment: .leading, spacing: 0) {
                 content
+                    .environment(\.isInsideTileGroup, true)
             }
+            .clipShape(clipShape)
+            .elevation(.level1)
         }
+    }
+
+    var clipShape: some InsettableShape {
+        RoundedRectangle(cornerRadius: BorderRadius.default)
+            // hide the last separator automatically
+            .inset(by: Separator.Thickness.default.value)
     }
 
     var isEmpty: Bool {
