@@ -25,7 +25,8 @@ public struct TileButtonStyle: SwiftUI.ButtonStyle {
                 isSelected: isSelected,
                 status: status,
                 backgroundColor: backgroundColor(isPressed: configuration.isPressed),
-                shadow: shadow(isPressed: configuration.isPressed))
+                shadow: shadow(isPressed: configuration.isPressed)
+            )
     }
 
     func backgroundColor(isPressed: Bool) -> Color {
@@ -50,15 +51,6 @@ public enum TileDisclosure {
     case buttonLink(_ label: String, style: ButtonLink.Style = .primary)
 }
 
-public enum TileBorder {
-    /// No border or separator applied. For custom usage inside other components.
-    case none
-    /// Border around the whole tile for standalone usage outside of ``TileGroup``.
-    case `default`
-    /// Bottom separator only. To be used inside a ``TileGroup``.
-    case separator
-}
-
 /// Groups actionable content to make it easy to scan.
 ///
 /// Can be used standalone or wrapped inside a ``TileGroup``.
@@ -67,13 +59,16 @@ public enum TileBorder {
 /// - Important: Component expands horizontally to infinity up to a ``Layout/readableMaxWidth``.
 public struct Tile<Content: View>: View {
 
+    @Environment(\.isInsideTileGroup) var isInsideTileGroup
+    @Environment(\.isTileSeparatorVisible) var isTileSeparatorVisible
+
     public let verticalTextPadding: CGFloat = .medium - 1/6    // Makes height exactly 52 at normal text size
 
     let title: String
     let description: String
     let iconContent: Icon.Content
     let disclosure: TileDisclosure
-    let border: TileBorder
+    let showBorder: Bool
     let status: Status?
     let backgroundColor: BackgroundColor?
     let titleStyle: Heading.Style
@@ -165,7 +160,7 @@ public struct Tile<Content: View>: View {
     }
 
     @ViewBuilder var separator: some View {
-        if border == .separator {
+        if isInsideTileGroup, isTileSeparatorVisible {
             Separator()
                 .padding(.leading, .medium)
         }
@@ -176,7 +171,7 @@ public struct Tile<Content: View>: View {
     }
     
     var tileBorderStyle: TileBorderStyle {
-        border == .default ? .default : .none
+        showBorder && isInsideTileGroup == false ? .default : .none
     }
     
     var isHeaderEmpty: Bool {
@@ -196,7 +191,7 @@ public extension Tile {
         description: String = "",
         icon: Icon.Content = .none,
         disclosure: TileDisclosure = .icon(.chevronRight),
-        border: TileBorder = .default,
+        showBorder: Bool = true,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title4,
@@ -208,7 +203,7 @@ public extension Tile {
         self.description = description
         self.iconContent = icon
         self.disclosure = disclosure
-        self.border = border
+        self.showBorder = showBorder
         self.status = status
         self.backgroundColor = backgroundColor
         self.titleStyle = titleStyle
@@ -226,7 +221,7 @@ public extension Tile {
         description: String = "",
         icon: Icon.Content = .none,
         disclosure: TileDisclosure = .icon(.chevronRight),
-        border: TileBorder = .default,
+        showBorder: Bool = true,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title4,
@@ -238,7 +233,7 @@ public extension Tile {
             description: description,
             icon: icon,
             disclosure: disclosure,
-            border: border,
+            showBorder: showBorder,
             status: status,
             backgroundColor: backgroundColor,
             titleStyle: titleStyle,
@@ -246,6 +241,20 @@ public extension Tile {
             action: action,
             content: { EmptyView() }
         )
+    }
+}
+
+// MARK: - Modifiers
+public extension Tile {
+
+    /// Sets the visibility of the separator associated with this tile.
+    ///
+    /// Only applies if this tile is contained in a ``TileGroup``.
+    ///
+    /// - Parameter isVisible: Whether the separator is visible or not.
+    func tileSeparator(_ isVisible: Bool) -> some View {
+        self
+            .environment(\.isTileSeparatorVisible, isVisible)
     }
 }
 
@@ -338,19 +347,12 @@ struct TilePreviews: PreviewProvider {
             Tile("Tile with custom content", disclosure: .none) {
                 customContentPlaceholder
             }
-            VStack(spacing: .medium) {
-                Tile(
-                    "Tile with no border",
-                    description: descriptionMultiline,
-                    icon: .grid,
-                    border: .none
-                )
-                Tile(
-                    "Tile with bottom separator",
-                    description: descriptionMultiline,
-                    border: .separator
-                )
-            }
+            Tile(
+                "Tile with no border",
+                description: descriptionMultiline,
+                icon: .grid,
+                showBorder: false
+            )
         }
         .padding(.medium)
     }

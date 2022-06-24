@@ -8,9 +8,7 @@
 
 ### Customizing Appearance
 
-- ``TileBorder``
 - ``TileBorderModifier``
 - ``TileBorderStyle``
 - ``TileButtonStyle``
 - ``TileDisclosure``
-

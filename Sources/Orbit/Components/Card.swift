@@ -378,8 +378,8 @@ struct CardPreviews: PreviewProvider {
                 .frame(height: 30).clipped()
             Tile("Tile")
             TileGroup(width: .intrinsic) {
-                Tile("Tile in TileGroup 1", border: .separator)
-                Tile("Tile in TileGroup 2", border: .none)
+                Tile("Tile in TileGroup 1")
+                Tile("Tile in TileGroup 2")
             }
             ListChoice("ListChoice 1")
             ListChoice("ListChoice 2")
