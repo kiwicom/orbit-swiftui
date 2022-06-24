@@ -41,7 +41,7 @@ public struct Switch: View {
         Circle()
             .frame(width: circleDiameter, height: circleDiameter)
             .foregroundColor(.whiteNormal)
-            .shadow(color: Self.shadowColor.opacity(isEnabled ? 1 : 0), radius: 2.5, y: 1.5)
+            .elevation(isEnabled ? .custom(opacity: 0.25, radius: 1.4, y: 1.2) : nil)
             .overlay(
                 Circle()
                     .strokeBorder(Self.borderColor, lineWidth: BorderWidth.hairline)

@@ -29,6 +29,7 @@ Supporting types and components under development.
 
 - ``IsExpandedKey``
 - ``IsFadeInKey``
+- ``IsElevationEnabledKey``
 
 ### Other
 
