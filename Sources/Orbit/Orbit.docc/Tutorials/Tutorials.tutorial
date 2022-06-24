@@ -1,0 +1,17 @@
+@Tutorials(name: "Orbit") {
+    @Intro(title: "Meet Orbit") {
+        Meet Orbit, the open source design system for your next travel project.
+        
+        These tutorials will help you get familiar with our design system while learning design foundations and components along the way.
+        
+        @Image(source: rocket.png, alt: "An illustration of a space rocket approaching orbit")
+    }
+    
+    @Chapter(name: "Orbit 101") {
+        This chapter will help you set up the environment and introduce you to basic building blocks and foundations of Orbit design system. 
+        
+        @Image(source: 01-essentials.png, alt: "A simple anatomy of Orbit button component")
+        
+        @TutorialReference(tutorial: "doc:01-01-hello_orbit")
+    }
+}

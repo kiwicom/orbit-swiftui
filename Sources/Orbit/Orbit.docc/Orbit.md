@@ -14,6 +14,7 @@ This library allows you to integrate the [Orbit design system](https://orbit.kiw
 
 ### Essentials
 
+- <doc:Tutorials>
 - <doc:GettingStarted>
 
 ### Components
