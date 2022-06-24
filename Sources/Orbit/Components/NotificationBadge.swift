@@ -5,35 +5,21 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/notificationbadge/)
 public struct NotificationBadge: View {
 
-    public static let horizontalPadding: CGFloat = 6
-    public static let verticalPadding: CGFloat = 1 + 1/3
+    public static let verticalPadding: CGFloat = 5
     public static let textSize: Text.Size = .small
 
-    let label: String
-    let iconContent: Icon.Content
-    var style: Badge.Style
+    let content: Content
+    let style: Badge.Style
 
     public var body: some View {
         if isEmpty == false {
             HStack(spacing: 0) {
-                HStack(spacing: .xxxSmall) {
-                    Icon(content: iconContent, size: .text(Self.textSize))
-                    
-                    Text(
-                        label,
-                        size: Self.textSize,
-                        color: .none,
-                        weight: .medium,
-                        linkColor: .custom(style.labelColor)
-                    )
-                    .padding(.vertical, Self.verticalPadding)
-                }
-                .foregroundColor(Color(style.labelColor))
+                contentView
+                    .foregroundColor(Color(style.labelColor))
 
                 TextStrut(Self.textSize)
                     .padding(.vertical, Self.verticalPadding)
             }
-            .padding(.horizontal, Self.horizontalPadding)
             .frameWidthAtLeastHeight()
             .background(
                 style.background
@@ -47,23 +33,54 @@ public struct NotificationBadge: View {
         }
     }
 
+    @ViewBuilder var contentView: some View {
+        switch content {
+            case .text(let text):
+                Text(
+                    text,
+                    size: Self.textSize,
+                    color: .none,
+                    weight: .medium,
+                    linkColor: .custom(style.labelColor)
+                )
+                .padding(.vertical, Self.verticalPadding)
+            case .icon(let icon):
+                Icon(content: icon, size: .text(Self.textSize))
+        }
+    }
+
     var shape: some InsettableShape {
-        Capsule()
+        Circle()
     }
 
     var isEmpty: Bool {
-        iconContent.isEmpty && label.isEmpty
+        switch content {
+            case .text(let text):   return text.isEmpty
+            case .icon(let icon):   return icon.isEmpty
+        }
     }
 }
 
 // MARK: - Inits
 public extension NotificationBadge {
     
-    /// Creates Orbit NotificationBadge component.
-    init(_ label: String = "", icon: Icon.Content = .none, style: Badge.Style = .neutral) {
-        self.label = label
-        self.iconContent = icon
-        self.style = style
+    /// Creates Orbit NotificationBadge component containing text.
+    init(_ label: String, style: Badge.Style = .neutral) {
+        self.init(content: .text(label), style: style)
+    }
+
+    /// Creates Orbit NotificationBadge component containing an icon.
+    init(_ icon: Icon.Content, style: Badge.Style = .neutral) {
+        self.init(content: .icon(icon), style: style)
+    }
+}
+
+// MARK: - Types
+public extension NotificationBadge {
+
+    enum Content {
+        case icon(Icon.Content)
+        case text(String)
     }
 }
 
@@ -83,8 +100,7 @@ struct NotificationBadgePreviews: PreviewProvider {
 
     static var standalone: some View {
         VStack(spacing: 0) {
-            NotificationBadge("label", icon: .grid)
-            NotificationBadge()    // EmptyView
+            NotificationBadge("9")
             NotificationBadge("")  // EmptyView
         }
         .padding(.medium)
@@ -93,10 +109,11 @@ struct NotificationBadgePreviews: PreviewProvider {
     static var sizing: some View {
         StateWrapper(initialState: CGFloat(0)) { state in
             ContentHeightReader(height: state) {
-                NotificationBadge("NotificationBadge height \(state.wrappedValue)")
+                NotificationBadge("\(Int(state.wrappedValue))")
             }
         }
         .padding(.medium)
+        .previewDisplayName("Bage displays height")
     }
 
     static var storybook: some View {
@@ -130,8 +147,7 @@ struct NotificationBadgePreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .xLarge) {
             HStack(spacing: .small) {
                 NotificationBadge(
-                    "Custom",
-                    icon: .symbol(.airplane, color: .pink),
+                    .symbol(.airplane, color: .pink),
                     style: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
@@ -139,12 +155,12 @@ struct NotificationBadgePreviews: PreviewProvider {
                     )
                 )
 
-                NotificationBadge("Flag", icon: .countryFlag("us"))
+                NotificationBadge(.countryFlag("us"))
             }
 
             HStack(spacing: .small) {
-                NotificationBadge("Image", icon: .image(.orbit(.facebook)))
-                NotificationBadge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
+                NotificationBadge(.image(.orbit(.facebook)))
+                NotificationBadge(.sfSymbol("ant.fill"))
             }
         }
         .padding(.medium)
@@ -157,11 +173,10 @@ struct NotificationBadgePreviews: PreviewProvider {
 
     static func badges(_ style: Badge.Style) -> some View {
         HStack(spacing: .medium) {
-            NotificationBadge("label", style: style)
-            NotificationBadge("label", icon: .grid, style: style)
-            NotificationBadge(icon: .grid, style: style)
+            NotificationBadge(.grid, style: style)
             NotificationBadge("1", style: style)
         }
+        .padding(.medium)
     }
 
     static func statusBadges(_ status: Status) -> some View {
