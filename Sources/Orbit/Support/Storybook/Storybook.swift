@@ -92,7 +92,7 @@ public struct Storybook: View {
             String(describing: item).titleCased,
             icon: item.tabs.isEmpty ? .timelapse : .sfSymbol(item.sfSymbol),
             disclosure: .none,
-            border: item.tabs.isEmpty ? .none : .default,
+            showBorder: item.tabs.isEmpty == false,
             titleStyle: .title5
         ) {
             selectedItem = item
