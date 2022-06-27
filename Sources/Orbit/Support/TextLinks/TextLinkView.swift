@@ -33,7 +33,7 @@ public final class TextLinkView: UITextView, UITextViewDelegate {
         isEditable = false
         isSelectable = true
         textDragInteraction?.isEnabled = false
-        textContainer.lineBreakMode = .byTruncatingTail
+        textContainer.lineBreakMode = .byClipping
         isScrollEnabled = false
     }
 
