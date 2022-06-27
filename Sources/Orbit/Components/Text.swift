@@ -71,7 +71,7 @@ public struct Text: View {
                 .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
                 .kerning(kerning)
                 .foregroundColor(foregroundColor.map(SwiftUI.Color.init))
-                .font(.orbit(size: size.value, weight: weight, style: size.textStyle))
+                .orbitFont(size: size.value, weight: weight, style: size.textStyle)
         }
     }
 
@@ -106,15 +106,7 @@ public struct Text: View {
     }
 
     var attributedTextScaledSize: CGFloat {
-        size.value * sizeCategory.ratio * attributedTextScaledSizeAdjustment
-    }
-
-    var attributedTextScaledSizeAdjustment: CGFloat {
-        switch sizeCategory.ratio {
-            case ..<1:      return 1.07
-            case 1:         return 1
-            default:        return 0.94
-        }
+        size.value * sizeCategory.ratio
     }
 }
 
@@ -290,7 +282,7 @@ struct TextPreviews: PreviewProvider {
     @ViewBuilder static var storybook: some View {
         VStack(alignment: .leading, spacing: .medium) {
             Group {
-                standalone
+                Text("Plain text with no formatting")
                 Text("Selectable text (on long tap)", isSelectable: true)
                 Text("Text <u>formatted</u> <strong>and</strong> <ref>accented</ref>", accentColor: .orangeNormal)
                 Text(multilineText)
@@ -301,7 +293,7 @@ struct TextPreviews: PreviewProvider {
                 Text(multilineFormattedText, alignment: .trailing)
                 Text("Text with strikethrough and kerning", strikethrough: true, kerning: 6)
             }
-            .border(Color.cloudDark)
+            .border(Color.cloudDarker, width: .hairline)
         }
         .frame(width: 150)
         .padding(.medium)
@@ -414,7 +406,7 @@ struct TextPreviews: PreviewProvider {
     static var snapshotsSizing: some View {
         VStack(spacing: .medium) {
             standalone
-                .border(Color.cloudDark)
+                .border(Color.cloudDarker, width: .hairline)
             storybook
         }
     }
@@ -431,7 +423,7 @@ struct TextPreviews: PreviewProvider {
                         """,
                         accentColor: .redNormal
                     )
-                    .border(Color.cloudDark)
+                    .border(Color.cloudDarker, width: .hairline)
                     .padding(.trailing, 200 * (1 - state.wrappedValue.0))
 
                     Slider(
@@ -494,10 +486,8 @@ struct TextPreviews: PreviewProvider {
 
     static var attributedTextSnapshots: some View {
         VStack(alignment: .leading, spacing: .medium) {
-
             Text("An <ref>attributed</ref> text <a href=\"..\">link</a>", accentColor: .orangeNormal)
                 .border(Color.cloudDarker)
-                .padding()
 
             Text(
                 """
@@ -507,7 +497,6 @@ struct TextPreviews: PreviewProvider {
                 """,
                 lineSpacing: .small
             )
-            .padding()
 
             Text(
                 """
@@ -517,43 +506,8 @@ struct TextPreviews: PreviewProvider {
                 """,
                 lineSpacing: .small
             )
-            .padding()
-
-            Button("An <ref><u>attributed</u></ref> button")
-                .padding(.horizontal)
-
-            ButtonLink("An <ref>attributed</ref> <u>button</u> <applink1>link</applink1>")
-                .padding(.horizontal)
-
-            Card("Attributed alert inside Card", action: .buttonLink("Edit")) {
-                Alert(
-                    "Alert",
-                    description: "<strong>Strong</strong> description with <a href=\"https://www.apple.com\">link</a>",
-                    icon: .alert,
-                    buttons: .primary("<strong>OK</strong> then, why <u>not</u>"),
-                    status: .warning
-                )
-            }
-
-            Card("Attributed text inside Card", action: .buttonLink("Edit")) {
-                Text(
-                    """
-                    An <ref>attributed text</ref> that can contain <a href="https://kiwi.com">multiple</a> \
-                    HTML <a href="https://www.apple.com">links</a> with \
-                    <u>underline</u> and <strong>strong</strong> support.
-                    """,
-                    accentColor: .orangeNormal
-                )
-
-                HStack {
-                    Badge("<strong>Strong</strong> badge <u>label</u>", icon: .accommodation)
-                    Badge("<strong>Strong</strong> badge <u>label</u>", style: .status(.success, inverted: true))
-                    Spacer(minLength: 0)
-                }
-                BadgeList("<strong>Strong</strong> badge <u>label</u>", icon: .accommodation, style: .status(.success))
-            }
         }
-        .padding(.vertical)
+        .padding(.medium)
         .background(Color.cloudLight)
         .previewDisplayName("Attributed Text")
         .previewLayout(.sizeThatFits)
@@ -593,7 +547,7 @@ struct TextDynamicTypePreviews: PreviewProvider {
                 Text("<strong>M</strong>")
                 Text("<a href=\"..\">M</a>")
             }
-            .border(Color.cloudDark)
+            .border(Color.cloudDarker, width: .hairline)
         }
         .padding(.xSmall)
 

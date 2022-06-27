@@ -15,15 +15,15 @@ public extension Font {
     ]
 
     /// Creates Orbit font.
-    static func orbit(size: CGFloat, weight: Weight = .regular, style: Font.TextStyle = .body) -> Font {
+    static func orbit(size: CGFloat, scaledSize: CGFloat, weight: Weight = .regular, style: Font.TextStyle = .body) -> Font {
 
         if orbitFontNames.isEmpty {
-            return .system(size: size, weight: weight)
+            return nonScalingSystemFont(size: scaledSize, weight: weight)
         }
 
         guard let fontName = orbitFontNames[weight] else {
             assertionFailure("Unsupported font weight")
-            return .system(size: size, weight: weight)
+            return nonScalingSystemFont(size: scaledSize, weight: weight)
         }
 
         return customFont(fontName, size: size, style: style)
@@ -63,6 +63,10 @@ public extension Font {
         }
 
         return font
+    }
+
+    private static func nonScalingSystemFont(size: CGFloat, weight: Font.Weight) -> Font {
+        .system(size: size, weight: weight)
     }
 
     private static func customFont(_ name: String, size: CGFloat, style: Font.TextStyle = .body) -> Font {
