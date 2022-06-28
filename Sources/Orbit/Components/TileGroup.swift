@@ -58,7 +58,9 @@ struct TileGroupPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            storybook
+
+            Tile("Standalone Tile", icon: .grid)
+                .padding(.medium)
         }
         .previewLayout(.sizeThatFits)
     }
@@ -76,10 +78,10 @@ struct TileGroupPreviews: PreviewProvider {
 
     @ViewBuilder static var tiles: some View {
         Tile("Title")
-        Tile("Title") {
+        Tile("Title with custom content", icon: .grid) {
             customContentPlaceholder
         }
-        Tile("Title", icon: .notification)
+        Tile("Title", description: "No disclosure", icon: .notification, disclosure: .none)
         Tile("No Separator", icon: .notification)
             .tileSeparator(false)
         Tile("Title", description: TilePreviews.description, icon: .airplane)

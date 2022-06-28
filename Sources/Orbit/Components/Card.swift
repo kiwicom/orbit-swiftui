@@ -56,8 +56,7 @@ public struct Card<Content: View>: View {
         .tileBorder(
             style: borderStyle,
             status: status,
-            backgroundColor: backgroundColor,
-            shadow: shadow
+            backgroundColor: backgroundColor
         )
         .frame(maxWidth: maxOuterWidth)
         .padding(.horizontal, horizontalPadding)
@@ -135,10 +134,6 @@ public struct Card<Content: View>: View {
 
     var isContentEmpty: Bool {
         content is EmptyView
-    }
-    
-    var shadow: TileBorderModifier.Shadow {
-        status == nil ? .small : .none
     }
     
     var contentPadding: CGFloat {

@@ -25,7 +25,7 @@ public struct TileButtonStyle: SwiftUI.ButtonStyle {
                 isSelected: isSelected,
                 status: status,
                 backgroundColor: backgroundColor(isPressed: configuration.isPressed),
-                shadow: shadow(isPressed: configuration.isPressed)
+                isPressed: configuration.isPressed
             )
     }
 
@@ -36,10 +36,6 @@ public struct TileButtonStyle: SwiftUI.ButtonStyle {
             case (.none, true):                         return .whiteHover
             case (.none, false):                        return .whiteNormal
         }
-    }
-
-    func shadow(isPressed: Bool) -> TileBorderModifier.Shadow {
-        isPressed ? .small : .default
     }
 }
 
