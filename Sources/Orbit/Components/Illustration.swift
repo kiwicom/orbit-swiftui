@@ -13,10 +13,11 @@ public struct Illustration: View {
     public var body: some View {
         if name.isEmpty == false {
             switch layout {
-                case .frame(let minHeight, let maxHeight, let alignment):
+                case .frame(let maxHeight, let alignment):
                     resizeableImage
-                        .frame(minHeight: minHeight, idealHeight: maxHeight, maxHeight: maxHeight)
+                        .frame(maxHeight: maxHeight)
                         .frame(maxWidth: .infinity, alignment: .init(alignment))
+                        .fixedSize(horizontal: false, vertical: true)
                 case .resizeable:
                     resizeableImage
                 case .intrinsic:
@@ -43,7 +44,8 @@ public extension Illustration {
     ///
     /// - Parameters:
     ///     - image: Orbit Illustration asset.
-    ///     - size: Sizing behavior of image content.
+    ///     - layout: Layout behavior of illustration content.
+    ///     By default, a `frame` layout is used to automatically resize the illustration and center it horizontally.
     init(
         _ image: Image,
         layout: Layout = .frame()
@@ -58,7 +60,8 @@ public extension Illustration {
     /// - Parameters:
     ///     - name: Resource name. Empty value results in no illustration.
     ///     - bundle: The bundle to search for the image resource and localization.
-    ///     - size: Sizing behavior of image content.
+    ///     - layout: Layout behavior of illustration content.
+    ///     By default, a `frame` layout is used to automatically resize the illustration and center it horizontally.
     init(
         _ name: String,
         bundle: Bundle,
@@ -72,18 +75,19 @@ public extension Illustration {
 
 // MARK: - Types
 public extension Illustration {
-    
+
+    /// Illustration layout specifies how the illustration is resized and (optionally) horizontally aligned.
     enum Layout {
-        public static let defaultMinHeight: CGFloat = 10
-        public static let defaultMaxHeight: CGFloat = 200
-        
-        /// Positions illustration, first scaled to fit height values, in a horizontally expanded frame with specified alignment.
+
+        /// Default maximal illustration height using frame layout.
+        public static let maxHeight: CGFloat = 250
+
+        /// Positions illustration, first scaled to fit the optional maxHeight, in a horizontally expanding frame with specified alignment.
         case frame(
-            minHeight: CGFloat? = Self.defaultMinHeight,
-            maxHeight: CGFloat? = Self.defaultMaxHeight,
+            maxHeight: CGFloat = maxHeight,
             alignment: HorizontalAlignment = .center
         )
-        /// Illustration with `resizable` and `scaledToFit` modifiers applied to allow further sizing.
+        /// Applies `resizable` and `scaledToFit` modifiers to allow free resizing.
         case resizeable
         /// Keeps original illustration size without applying any resize options.
         case intrinsic
