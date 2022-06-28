@@ -17,7 +17,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     @Binding private var value: Value
     @Binding private var messageHeight: CGFloat
     @State private var isEditing: Bool = false
-    @State private var isSecureTextEntry: Bool = true
+    @State private var isSecureTextRedacted: Bool = true
 
     let label: String
     let placeholder: String
@@ -44,21 +44,17 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                 isEditing: isEditing,
                 suffixAction: suffixAction
             ) {
-                HStack(spacing: 0) {
-                    input
-                        .textFieldStyle(TextFieldStyle(leadingPadding: 0))
-                        .autocapitalization(autocapitalization)
-                        .disableAutocorrection(isAutocompleteEnabled == false)
-                        .textContentType(textContent)
-                        .keyboardType(keyboard)
-                        .font(.orbit(size: Text.Size.normal.value, weight: .regular))
-                        .accentColor(.blueNormal)
-                        .background(textFieldPlaceholder, alignment: .leading)
-                        .disabled(state == .disabled)
-                        .accessibility(.inputValue)
-                    button
-                        .opacity(state == .disabled ? 0 : 1)
-                }
+                input
+                    .textFieldStyle(TextFieldStyle(leadingPadding: 0))
+                    .autocapitalization(autocapitalization)
+                    .disableAutocorrection(isAutocompleteEnabled == false)
+                    .textContentType(textContent)
+                    .keyboardType(keyboard)
+                    .font(.orbit(size: Text.Size.normal.value, weight: .regular))
+                    .accentColor(.blueNormal)
+                    .background(textFieldPlaceholder, alignment: .leading)
+                    .disabled(state == .disabled)
+                    .accessibility(.inputValue)
             }
         } messageContent: {
             PasswordStrengthIndicator(passwordStrength: passwordStrength)
@@ -71,20 +67,14 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
         .accessibility(addTraits: .isButton)
     }
 
-    @ViewBuilder var button: some View {
-        if case .actionsHandler = mode {
-            if isSecure {
-                securedSuffix
-            } else {
-                clearButton
-            }
-        }
-    }
     @ViewBuilder var input: some View {
         switch mode {
             case .actionsHandler(let onEditingChanged, let onCommit, let isSecure):
                 if isSecure {
-                    secureField(onEditingChanged: onEditingChanged, onCommit: onCommit)
+                    HStack(spacing: 0) {
+                        secureField(onEditingChanged: onEditingChanged, onCommit: onCommit)
+                        secureTextRedactedToggle
+                    }
                 } else {
                     textField(onEditingChanged: onEditingChanged, onCommit: onCommit)
                 }
@@ -99,31 +89,19 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                 .foregroundColor(state.placeholderColor)
         }
     }
-    
-    @ViewBuilder var clearButton: some View {
-        if value.description.isEmpty == false, state != .disabled {
-            Icon(sfSymbol: "multiply.circle.fill", color: .inkLighter)
-                .padding(.small)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    value = Value.init("") ?? value
-                }
-                .accessibility(addTraits: .isButton)
-                .accessibility(.inputFieldClear)
-        }
-    }
 
-    @ViewBuilder var securedSuffix: some View {
+    @ViewBuilder var secureTextRedactedToggle: some View {
         if value.description.isEmpty == false, state != .disabled {
-            Icon(isSecureTextEntry ? .visibility : .visibilityOff, color: .inkLight)
+            Icon(isSecureTextRedacted ? .visibility : .visibilityOff, color: .inkLight)
                 .padding(.vertical, .xSmall)
                 .padding(.horizontal, .small)
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    isSecureTextEntry.toggle()
+                    isSecureTextRedacted.toggle()
                 }
                 .accessibility(addTraits: .isButton)
                 .accessibility(.inputFieldPasswordToggle)
+                .opacity(state == .disabled ? 0 : 1)
         }
     }
 
@@ -136,7 +114,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                 get: { self.value.description },
                 set: { self.value = Value.init($0) ?? self.value }
             ),
-            isSecured: $isSecureTextEntry,
+            isSecured: $isSecureTextRedacted,
             isEditing: $isEditing,
             style: .init(
                 textContentType: textContent,
@@ -166,6 +144,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
             },
             onCommit: onCommit
         )
+        .padding(.trailing, suffix == .none ? .small : 0)
     }
 
     var isSecure: Bool {
@@ -333,6 +312,7 @@ struct InputFieldPreviews: PreviewProvider {
 
     static let label = "Field label"
     static let value = "Value"
+    static let longValue = "\(String(repeating: "very ", count: 15))long value"
     static let placeholder = "Placeholder"
     static let helpMessage = "Help message"
     static let errorMessage = "Error message"
@@ -360,7 +340,7 @@ struct InputFieldPreviews: PreviewProvider {
             inputField(value: "", message: .help(helpMessage))
             inputField(value: "", message: .error(errorMessage))
             Separator()
-            inputField(value: value, message: .none)
+            inputField(value: longValue, message: .none)
             inputField(value: value, message: .help(helpMessage))
             inputField(value: value, message: .error(errorMessage))
         }
@@ -411,7 +391,7 @@ struct InputFieldPreviews: PreviewProvider {
             InputField("Focused", value: .constant("Focus / Help"), message: .help("Help message"))
             InputField(
                 "InputField with a long multiline label to test that it works",
-                value: .constant("Error value with a very long length to test that it works"),
+                value: .constant(longValue),
                 message: .error("Error message, also very long and multi-line to test that it works.")
             ).padding(.bottom, .small)
 

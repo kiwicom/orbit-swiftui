@@ -31,7 +31,6 @@ public enum AccessibilityID: String {
     case inputPrefix                    = "orbit.input.prefix"
     case inputSuffix                    = "orbit.input.suffix"
     case inputValue                     = "orbit.input.value"
-    case inputFieldClear                = "orbit.inputfield.clear"
     case inputFieldPasswordToggle       = "orbit.inputfield.password.toggle"
     case keyValueKey                    = "orbit.keyvalue.key"
     case keyValueValue                  = "orbit.keyvalue.value"
