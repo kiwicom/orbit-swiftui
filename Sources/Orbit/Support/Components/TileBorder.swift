@@ -10,71 +10,53 @@ public enum TileBorderStyle {
 /// Provides decoration with ``Tile`` appearance.
 public struct TileBorderModifier: ViewModifier {
 
-    public enum Shadow {
-        case none
-        case `default`
-        case small
-    }
+    static let animation: Animation = .easeIn(duration: 0.15)
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     let style: TileBorderStyle
     let isSelected: Bool
     let status: Status?
     let backgroundColor: Color?
-    let shadow: Shadow
+    let isPressed: Bool
 
     public func body(content: Content) -> some View {
         content
             .background(backgroundColor)
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-            .shadow(color: shadowColor.opacity(shadowOpacity.primary), radius: shadowRadius.primary, x: 0, y: 0.75)
-            .shadow(color: shadowColor.opacity(shadowOpacity.secondary), radius: shadowRadius.secondary, x: 0, y: 5)
-            .overlay(
-                outerBorder
-                    .animation(.easeIn(duration: 0.1), value: isSelected)
-            )
-            .overlay(compactSeparatorBorder, alignment: .top)
-            .overlay(compactSeparatorBorder, alignment: .bottom)
+            .clipShape(clipShape)
+            .compositingGroup()
+            .elevation(elevation)
+            .animation(Self.animation, value: isPressed)
+            .overlay(border.animation(Self.animation, value: isSelected))
+    }
+
+    @ViewBuilder var border: some View {
+        switch style {
+            case .none:
+                EmptyView()
+            case .default:
+                clipShape
+                    .strokeBorder(borderColor, lineWidth: borderWidth)
+                    .blendMode(isSelected ? .normal : .darken)
+            case .iOS:
+                VStack {
+                    compactSeparatorBorder
+                    Spacer()
+                    compactSeparatorBorder
+                }
+        }
     }
 
     @ViewBuilder var compactSeparatorBorder: some View {
-        if isCompact {
-            borderColor
-                .frame(height: status == nil ? 1 : BorderWidth.emphasis)
-                .animation(.easeIn(duration: 0.1), value: isSelected)
-        }
+        borderColor
+            .frame(height: status == nil ? 1 : BorderWidth.emphasis)
     }
 
-    @ViewBuilder var outerBorder: some View {
-        if isCompact == false, style != .none {
-            outerBorderShape
-                .strokeBorder(borderColor, lineWidth: borderWidth)
-                .blendMode(isSelected ? .normal : .darken)
-        }
-    }
-
-    @ViewBuilder var outerBorderShape: some InsettableShape {
-        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+    @ViewBuilder var clipShape: some InsettableShape {
+        RoundedRectangle(cornerRadius: cornerRadius)
     }
 
     var isCompact: Bool {
         (style == .iOS) && horizontalSizeClass == .compact
-    }
-    
-    var shadowRadius: (primary: CGFloat, secondary: CGFloat) {
-        switch shadow {
-            case .none:         return (0, 0)
-            case .default:      return (1.5, 6)
-            case .small:        return (2, 6)
-        }
-    }
-    
-    var shadowOpacity: (primary: CGFloat, secondary: CGFloat) {
-        switch shadow {
-            case .none:         return (0, 0)
-            case .default:      return (0.3, 0.5)
-            case .small:        return (0.5, 0.2)
-        }
     }
 
     var cornerRadius: CGFloat {
@@ -86,15 +68,12 @@ public struct TileBorderModifier: ViewModifier {
         }
     }
 
-    var shadowColor: Color {
-        if status != .none {
-            return .clear
+    var elevation: Elevation? {
+        guard style == .default, status == .none, isPressed == false else {
+            return nil
         }
-        
-        switch style {
-            case .default:          return .inkNormal.opacity(0.15)
-            case .none, .iOS:       return .clear
-        }
+
+        return .level1
     }
 
     var borderWidth: CGFloat {
@@ -118,7 +97,11 @@ public struct TileBorderModifier: ViewModifier {
             return .blueNormal
         }
 
-        return .cloudDark
+        return showOuterBorder ? .cloudDark : .clear
+    }
+
+    var showOuterBorder: Bool {
+        style == .iOS
     }
 }
 
@@ -131,11 +114,17 @@ public extension View {
         style: TileBorderStyle = .default,
         isSelected: Bool = false,
         status: Status? = nil,
-        backgroundColor: Color? = nil,
-        shadow: TileBorderModifier.Shadow = .default
+        backgroundColor: Color? = .whiteNormal,
+        isPressed: Bool = false
     ) -> some View {
         modifier(
-            TileBorderModifier(style: style, isSelected: isSelected, status: status, backgroundColor: backgroundColor, shadow: shadow)
+            TileBorderModifier(
+                style: style,
+                isSelected: isSelected,
+                status: status,
+                backgroundColor: backgroundColor,
+                isPressed: isPressed
+            )
         )
     }
 }
@@ -149,27 +138,25 @@ struct TileBorderModifierPreviews: PreviewProvider {
                 .tileBorder()
 
             content
-                .tileBorder(backgroundColor: .whiteNormal)
+                .tileBorder(style: .iOS)
 
             content
-                .tileBorder(style: .iOS, backgroundColor: .whiteNormal)
+                .tileBorder(style: .iOS, isSelected: true)
 
             content
-                .tileBorder(backgroundColor: .whiteNormal, shadow: .default)
+                .tileBorder(backgroundColor: .blueLight)
 
             content
-                .tileBorder(backgroundColor: .blueLight, shadow: .small)
+                .tileBorder(isSelected: true, backgroundColor: .blueLight)
 
             content
-                .tileBorder(isSelected: true, backgroundColor: .blueLight, shadow: .small)
+                .tileBorder(status: .critical, backgroundColor: .blueLight)
 
             content
-                .tileBorder(status: .critical, backgroundColor: .blueLight, shadow: .small)
+                .tileBorder(isSelected: true, status: .critical, backgroundColor: .blueLight)
 
-            content
-                .tileBorder(isSelected: true, status: .critical, backgroundColor: .blueLight, shadow: .small)
-
-            ListChoice("ListChoice")
+            ListChoice("ListChoice", showSeparator: false)
+                .fixedSize()
                 .tileBorder()
         }
         .padding(.medium)

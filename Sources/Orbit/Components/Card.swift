@@ -56,8 +56,7 @@ public struct Card<Content: View>: View {
         .tileBorder(
             style: borderStyle,
             status: status,
-            backgroundColor: backgroundColor,
-            shadow: shadow
+            backgroundColor: backgroundColor
         )
         .frame(maxWidth: maxOuterWidth)
         .padding(.horizontal, horizontalPadding)
@@ -135,10 +134,6 @@ public struct Card<Content: View>: View {
 
     var isContentEmpty: Bool {
         content is EmptyView
-    }
-    
-    var shadow: TileBorderModifier.Shadow {
-        status == nil ? .small : .none
     }
     
     var contentPadding: CGFloat {
@@ -377,10 +372,11 @@ struct CardPreviews: PreviewProvider {
             customContentPlaceholder
                 .frame(height: 30).clipped()
             Tile("Tile")
-            TileGroup(width: .intrinsic) {
+            TileGroup {
                 Tile("Tile in TileGroup 1")
                 Tile("Tile in TileGroup 2")
             }
+            .fixedSize(horizontal: true, vertical: false)
             ListChoice("ListChoice 1")
             ListChoice("ListChoice 2")
             customContentPlaceholder

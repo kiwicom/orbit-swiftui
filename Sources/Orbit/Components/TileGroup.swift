@@ -22,11 +22,6 @@ import SwiftUI
 /// - Important: Expands horizontally up to ``Layout/readableMaxWidth`` by default and then centered. Can be adjusted by `width` property.
 public struct TileGroup<Content: View>: View {
 
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
-
-    let status: Status?
-    let backgroundColor: Color?
-    let width: ContainerWidth
     @ViewBuilder let content: Content
 
     public var body: some View {
@@ -36,6 +31,7 @@ public struct TileGroup<Content: View>: View {
                     .environment(\.isInsideTileGroup, true)
             }
             .clipShape(clipShape)
+            .compositingGroup()
             .elevation(.level1)
         }
     }
@@ -49,21 +45,9 @@ public struct TileGroup<Content: View>: View {
     var isEmpty: Bool {
         content is EmptyView
     }
-}
 
-// MARK: - Inits
-public extension TileGroup {
-    
     /// Creates Orbit TileGroup component as a wrapper for Tile content.
-    init(
-        status: Status? = nil,
-        backgroundColor: Color? = nil,
-        width: ContainerWidth = .expanding(),
-        @ViewBuilder content: () -> Content
-    ) {
-        self.status = status
-        self.backgroundColor = backgroundColor
-        self.width = width
+    init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
 }
@@ -74,7 +58,9 @@ struct TileGroupPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            storybook
+
+            Tile("Standalone Tile", icon: .grid)
+                .padding(.medium)
         }
         .previewLayout(.sizeThatFits)
     }
@@ -87,24 +73,15 @@ struct TileGroupPreviews: PreviewProvider {
     }
 
     static var storybook: some View {
-        VStack(spacing: .large) {
-            TileGroup {
-                tiles
-            }
-
-            TileGroup(status: .critical) {
-                tiles
-            }
-        }
-        .padding(.medium)
+        standalone
     }
 
     @ViewBuilder static var tiles: some View {
         Tile("Title")
-        Tile("Title") {
+        Tile("Title with custom content", icon: .grid) {
             customContentPlaceholder
         }
-        Tile("Title", icon: .notification)
+        Tile("Title", description: "No disclosure", icon: .notification, disclosure: .none)
         Tile("No Separator", icon: .notification)
             .tileSeparator(false)
         Tile("Title", description: TilePreviews.description, icon: .airplane)

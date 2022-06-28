@@ -105,7 +105,8 @@ extension View {
         switch level {
             case .level1:
                 self
-                    .shadow(color: shadowColor.opacity(0.32), radius: 2.4, y: 1.9)
+                    .shadow(color: shadowColor.opacity(0.22), radius: 1.8, y: 0.9)
+                    .shadow(color: shadowColor.opacity(0.09), radius: 4, y: 5.5)
             case .level2:
                 self
                     .shadow(color: shadowColor.opacity(0.26), radius: 3, y: 2.1)
@@ -205,8 +206,8 @@ struct ElevationPreviews: PreviewProvider {
 
     static func squircle(_ title: String) -> some View {
         Heading(title, style: .title1)
-            .frame(width: 240, height: 260)
+            .frame(width: 260, height: 272)
             .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: BorderRadius.large))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
