@@ -13,7 +13,7 @@ public struct CountryFlag: View {
 
     public var body: some View {
         if countryCode.isEmpty == false {
-            SwiftUI.Image(countryCode.lowercased(), bundle: .current)
+            SwiftUI.Image(imageName, bundle: .current)
                 .resizable()
                 .scaledToFit()
                 .clipShape(clipShape)
@@ -26,6 +26,10 @@ public struct CountryFlag: View {
                 .fixedSize()
                 .accessibility(label: SwiftUI.Text(countryCode))
         }
+    }
+
+    var imageName: String {
+        UIImage(named: countryCode.lowercased(), in: .current, with: nil) != nil ? countryCode.lowercased() : "unknown"
     }
 
     var clipShape: some InsettableShape {
