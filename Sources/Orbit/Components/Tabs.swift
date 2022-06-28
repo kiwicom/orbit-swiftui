@@ -168,7 +168,7 @@ struct TabsPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            product
+            standaloneIntrinsic
             intrinsicMultiline
             intrinsicSingleline
             equalMultiline
@@ -180,6 +180,18 @@ struct TabsPreviews: PreviewProvider {
 
     static var standalone: some View {
         StateWrapper(initialState: 1) { index in
+            Tabs(selectedIndex: index) {
+                Tab("One")
+                Tab("Two")
+                Tab("Three")
+                Tab("Four")
+            }
+        }
+        .padding(.medium)
+    }
+
+    static var standaloneIntrinsic: some View {
+        StateWrapper(initialState: 1) { index in
             Tabs(selectedIndex: index, distribution: .intrinsic) {
                 Tab("One", style: .default)
                 Tab("Two", style: .default)
@@ -190,26 +202,13 @@ struct TabsPreviews: PreviewProvider {
 
     static var storybook: some View {
         VStack(spacing: 0) {
+            standaloneIntrinsic
             standalone
-            product
             intrinsicMultiline
             intrinsicSingleline
             equalMultiline
             equalSingleline
         }
-    }
-
-    static var product: some View {
-        StateWrapper(initialState: 1) { index in
-            Tabs(selectedIndex: index) {
-                Tab("One", style: .product)
-                Tab("Two", style: .product)
-                Tab("Three", style: .product)
-                Tab("Four", style: .product)
-            }
-        }
-        .padding(.medium)
-        .previewDisplayName("Product")
     }
 
     @ViewBuilder static var intrinsicMultiline: some View {
@@ -300,7 +299,6 @@ struct TabsDynamicTypePreviews: PreviewProvider {
 
     @ViewBuilder static var content: some View {
         TabsPreviews.storybook
-        TabsPreviews.product
         TabsPreviews.equalMultiline
     }
 }
