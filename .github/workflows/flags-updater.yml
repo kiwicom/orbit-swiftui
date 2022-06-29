@@ -1,0 +1,23 @@
+name: Flags Updater
+
+on:
+  push:
+    paths:
+      - 'Sources/Orbit/Foundation/CountryFlags/CountryFlags.xcassets/**/*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.SNAPSHOT_PUSH_TOKEN }}
+      - name: Regenerate flags accessors
+        run: |
+            Automation/update_country_flags.py Sources/Orbit/Foundation/CountryFlags
+      - name: upload
+        run: |
+            git config --global user.name "Mobile Automation"
+            git config --global user.email "mobile.automation@kiwi.com"
+            git commit -m "Updated country flags enum."
+            git push
