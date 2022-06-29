@@ -14,7 +14,7 @@ public struct Heading: View {
     public var body: some View {
         if text.isEmpty == false {
             SwiftUI.Text(verbatim: text)
-                .font(.orbit(size: style.size, weight: style.weight, style: style.textStyle))
+                .orbitFont(size: style.size, weight: style.weight, style: style.textStyle)
                 .foregroundColor(color?.value)
                 .multilineTextAlignment(alignment)
                 .fixedSize(horizontal: false, vertical: true)

@@ -50,7 +50,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                     .disableAutocorrection(isAutocompleteEnabled == false)
                     .textContentType(textContent)
                     .keyboardType(keyboard)
-                    .font(.orbit(size: Text.Size.normal.value, weight: .regular))
+                    .orbitFont(size: Text.Size.normal.value, style: .body)
                     .accentColor(.blueNormal)
                     .background(textFieldPlaceholder, alignment: .leading)
                     .disabled(state == .disabled)
