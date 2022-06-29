@@ -14,7 +14,6 @@ Supporting types and components under development.
 
 ### Layout
 
-- ``ContainerWidth``
 - ``ContentHeightReader``
 - ``SingleAxisGeometryReader``
 - ``Strut``
@@ -27,9 +26,10 @@ Supporting types and components under development.
 
 ### SwiftUI environment
 
+- ``IsElevationEnabledKey``
 - ``IsExpandedKey``
 - ``IsFadeInKey``
-- ``IsElevationEnabledKey``
+- ``IsInsideScreenLayoutKey``
 - ``IsTileSeparatorVisibleKey``
 
 ### Other

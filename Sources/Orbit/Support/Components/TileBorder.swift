@@ -3,7 +3,7 @@ import SwiftUI
 public enum TileBorderStyle {
     case none
     case `default`
-    /// A border style that visually matches the iOS plain table section appearance.
+    /// A border style that visually matches the iOS plain table section appearance in `compact` width environment.
     case iOS
 }
 
@@ -16,28 +16,24 @@ public struct TileBorderModifier: ViewModifier {
     let style: TileBorderStyle
     let isSelected: Bool
     let status: Status?
-    let backgroundColor: Color?
-    let isPressed: Bool
 
     public func body(content: Content) -> some View {
         content
-            .background(backgroundColor)
             .clipShape(clipShape)
             .compositingGroup()
             .elevation(elevation)
-            .animation(Self.animation, value: isPressed)
             .overlay(border.animation(Self.animation, value: isSelected))
     }
 
     @ViewBuilder var border: some View {
-        switch style {
-            case .none:
+        switch (style, horizontalSizeClass) {
+            case (.none, _):
                 EmptyView()
-            case .default:
+            case (.default, _), (.iOS, .regular):
                 clipShape
                     .strokeBorder(borderColor, lineWidth: borderWidth)
                     .blendMode(isSelected ? .normal : .darken)
-            case .iOS:
+            case (.iOS, _):
                 VStack {
                     compactSeparatorBorder
                     Spacer()
@@ -69,7 +65,7 @@ public struct TileBorderModifier: ViewModifier {
     }
 
     var elevation: Elevation? {
-        guard style == .default, status == .none, isPressed == false else {
+        guard style == .default, status == .none else {
             return nil
         }
 
@@ -113,17 +109,13 @@ public extension View {
     func tileBorder(
         style: TileBorderStyle = .default,
         isSelected: Bool = false,
-        status: Status? = nil,
-        backgroundColor: Color? = .whiteNormal,
-        isPressed: Bool = false
+        status: Status? = nil
     ) -> some View {
         modifier(
             TileBorderModifier(
                 style: style,
                 isSelected: isSelected,
-                status: status,
-                backgroundColor: backgroundColor,
-                isPressed: isPressed
+                status: status
             )
         )
     }
@@ -144,16 +136,20 @@ struct TileBorderModifierPreviews: PreviewProvider {
                 .tileBorder(style: .iOS, isSelected: true)
 
             content
-                .tileBorder(backgroundColor: .blueLight)
+                .background(Color.blueLight)
+                .tileBorder()
 
             content
-                .tileBorder(isSelected: true, backgroundColor: .blueLight)
+                .background(Color.blueLight)
+                .tileBorder(isSelected: true)
 
             content
-                .tileBorder(status: .critical, backgroundColor: .blueLight)
+                .background(Color.blueLight)
+                .tileBorder(status: .critical)
 
             content
-                .tileBorder(isSelected: true, status: .critical, backgroundColor: .blueLight)
+                .background(Color.blueLight)
+                .tileBorder(isSelected: true, status: .critical)
 
             ListChoice("ListChoice", showSeparator: false)
                 .fixedSize()

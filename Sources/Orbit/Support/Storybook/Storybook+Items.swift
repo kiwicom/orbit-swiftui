@@ -165,5 +165,13 @@ extension Storybook {
         var section: Storybook.Section {
             rawValue <= Self.typography.rawValue ? .foundation : .components
         }
+
+        var isSearchable: Bool {
+            switch self {
+                case .icons:                return true
+                case .illustrations:        return true
+                default:                    return false
+            }
+        }
     }
 }

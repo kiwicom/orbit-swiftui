@@ -102,10 +102,7 @@ struct IllustrationPreviews: PreviewProvider {
             standalone
             intrinsic
             customResource
-
-            stackFixed
-            stackExpanding
-
+            stackSmallerWidth
             snapshot
         }
         .previewLayout(.sizeThatFits)
@@ -128,7 +125,7 @@ struct IllustrationPreviews: PreviewProvider {
             .previewDisplayName("Custom image resource")
     }
     
-    static var stackFixed: some View {
+    static var stackSmallerWidth: some View {
         VStack(spacing: .medium) {
             Illustration(.womanWithPhone)
                 .border(Color.cloudDark)
@@ -136,25 +133,18 @@ struct IllustrationPreviews: PreviewProvider {
             Illustration(.womanWithPhone)
                 .border(Color.cloudDark)
         }
-        .previewDisplayName("Fixed stack")
-    }
-    
-    static var stackExpanding: some View {
-        ScrollView {
-            VStack(spacing: .medium) {
-                Illustration(.womanWithPhone)
-                    .border(Color.cloudDark)
-
-                Illustration(.womanWithPhone)
-                    .border(Color.cloudDark)
-            }
-        }
-        .previewDisplayName("Expanding stack")
+        .frame(width: 150)
+        .previewDisplayName("Smaller width")
     }
 
     static var snapshot: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            Card("MaxHeight = 80") {
+            Card("Default", showBorder: false) {
+                Illustration(.womanWithPhone)
+                    .border(Color.cloudDark)
+            }
+
+            Card("MaxHeight = 80", showBorder: false) {
                 VStack {
                     Text("Frame - Center (default)", size: .small)
                     Illustration(.womanWithPhone, layout: .frame(maxHeight: 80))
@@ -181,7 +171,7 @@ struct IllustrationPreviews: PreviewProvider {
                 }
             }
 
-            Card("MaxHeight = 30") {
+            Card("MaxHeight = 30", showBorder: false) {
                 HStack {
                     VStack(alignment: .leading) {
                         Text("Leading", size: .small)
@@ -210,7 +200,7 @@ struct IllustrationPreviews: PreviewProvider {
                 }
             }
 
-            Card("Resizeable") {
+            Card("Resizeable", showBorder: false) {
                 HStack(alignment: .top, spacing: .medium) {
                     VStack(alignment: .leading) {
                         Text("Width = 80", size: .small)
@@ -235,9 +225,6 @@ struct IllustrationPreviews: PreviewProvider {
                 }
             }
         }
-        .padding(.vertical, .medium)
-        .fixedSize(horizontal: false, vertical: true)
-        .background(Color.cloudLight)
         .previewDisplayName("Mixed sizes")
     }
 

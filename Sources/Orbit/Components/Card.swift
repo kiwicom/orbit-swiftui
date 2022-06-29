@@ -18,12 +18,12 @@ public enum CardContentLayout {
 /// Separates content into sections.
 ///
 /// Card is a wrapping component around a custom content.
-/// Card uses the same style as ``Tile`` - either Orbit default or an iOS-like style.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/card/)
-/// - Important: Expands horizontally up to ``Layout/readableMaxWidth`` by default and then centered. Can be adjusted by `width` property.
+/// - Important: Component expands horizontally to infinity.
 public struct Card<Content: View>: View {
 
+    @Environment(\.isInsideScreenLayout) var isScreenLayout
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     let title: String
@@ -33,10 +33,9 @@ public struct Card<Content: View>: View {
     let headerSpacing: CGFloat
     let contentLayout: CardContentLayout
     let contentAlignment: HorizontalAlignment
-    let borderStyle: TileBorderStyle
+    let showBorder: Bool
     let titleStyle: Heading.Style
     let status: Status?
-    let width: ContainerWidth
     let backgroundColor: Color?
     @ViewBuilder let content: Content
 
@@ -52,13 +51,12 @@ public struct Card<Content: View>: View {
                 .padding([.horizontal, .bottom], contentPadding)
             }
         }
-        .frame(maxWidth: maxWidth, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(backgroundColor)
         .tileBorder(
-            style: borderStyle,
-            status: status,
-            backgroundColor: backgroundColor
+            style: showBorder ? .iOS : .none,
+            status: status
         )
-        .frame(maxWidth: maxOuterWidth)
         .padding(.horizontal, horizontalPadding)
         .accessibilityElement(children: .contain)
     }
@@ -78,9 +76,7 @@ public struct Card<Content: View>: View {
                         .accessibility(.cardDescription)
                 }
 
-                if case .expanding = width {
-                    Spacer(minLength: .xxxSmall)
-                }
+                Spacer(minLength: .xxxSmall)
 
                 switch action {
                     case .buttonLink(let label, let action):
@@ -97,31 +93,12 @@ public struct Card<Content: View>: View {
         }
     }
 
-    var cornerRadius: CGFloat {
-        horizontalSizeClass == .regular ? BorderRadius.default : 0
-    }
-    
-    var maxWidth: CGFloat? {
-        switch width {
-            case .expanding(let upTo, _):   return upTo
-            case .intrinsic:                return nil
-        }
-    }
-    
-    var maxOuterWidth: CGFloat? {
-        switch width {
-            case .expanding:                return .infinity
-            case .intrinsic:                return nil
-        }
-    }
-
     var horizontalPadding: CGFloat {
-        guard horizontalSizeClass == .regular else { return 0 }
-        
-        switch width {
-            case .expanding(_, let minimalRegularWidthPadding):     return minimalRegularWidthPadding
-            case .intrinsic:                                        return 0
+        if horizontalSizeClass == .regular {
+            return 0
         }
+
+        return isScreenLayout ? -.medium : 0
     }
 
     var isHeaderEmpty: Bool {
@@ -163,10 +140,9 @@ public extension Card {
         icon: Icon.Content = .none,
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
-        borderStyle: TileBorderStyle = .iOS,
+        showBorder: Bool = true,
         titleStyle: Heading.Style = .title4,
         status: Status? = nil,
-        width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .whiteNormal,
         contentLayout: CardContentLayout = .default(),
         contentAlignment: HorizontalAlignment = .leading,
@@ -177,10 +153,9 @@ public extension Card {
         self.iconContent = icon
         self.action = action
         self.headerSpacing = headerSpacing
-        self.borderStyle = borderStyle
+        self.showBorder = showBorder
         self.titleStyle = titleStyle
         self.status = status
-        self.width = width
         self.backgroundColor = backgroundColor
         self.contentLayout = contentLayout
         self.contentAlignment = contentAlignment
@@ -194,10 +169,9 @@ public extension Card {
         icon: Icon.Content = .none,
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
-        borderStyle: TileBorderStyle = .iOS,
+        showBorder: Bool = true,
         titleStyle: Heading.Style = .title4,
         status: Status? = nil,
-        width: ContainerWidth = .expanding(),
         backgroundColor: Color? = .whiteNormal
     ) where Content == EmptyView {
         self.init(
@@ -206,10 +180,9 @@ public extension Card {
             icon: icon,
             action: action,
             headerSpacing: headerSpacing,
-            borderStyle: borderStyle,
+            showBorder: showBorder,
             titleStyle: titleStyle,
             status: status,
-            width: width,
             backgroundColor: backgroundColor,
             content: { EmptyView() }
         )
@@ -221,112 +194,69 @@ struct CardPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
+            standalone
+                .screenLayout()
+                .background(Color.cloudLight)
+
+            standaloneIntrinsic
+
             content
-            borderlessRegular
-            borderlessRegularNarrow
+                .screenLayout()
+                .background(Color.cloudLight)
         }
         .previewLayout(.sizeThatFits)
     }
 
     @ViewBuilder static var content: some View {
-        Group {
-            standaloneIos
-            standalone
-            standaloneIntrinsic
-        }
-        Group {
-            cardWithoutContent
-            cardWithFillLayoutContent
-            cardWithFillLayoutContentNoHeader
-            cardWithOnlyCustomContent
-            cardWithCustomPaddingAndSpacing
-            cardWithTiles
-            cardMultilineCritical
-            cardMultilineDefaultCritical
-        }
-        Group {
-            borderless
-        }
+        cardWithoutContent
+        cardWithFillLayoutContent
+        cardWithFillLayoutContentNoHeader
+        cardWithOnlyCustomContent
+        cardWithTiles
+        cardMultilineCritical
+        clear
     }
 
     static var storybook: some View {
         LazyVStack(spacing: .large) {
+            standalone
             content
         }
+        .screenLayout()
         .background(Color.cloudLight)
     }
 
     static var standalone: some View {
-        Card("Card title", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink"), borderStyle: .default) {
-            customContentPlaceholder
-            customContentPlaceholder
-        }
-        .padding(.medium)
-        .background(Color.cloudLight)
-        .previewDisplayName("Standalone")
-    }
-    
-    static var standaloneIntrinsic: some View {
-        VStack(spacing: .medium) {
-            HStack(spacing: .medium) {
-                Card("Card title", description: "Intrinsic width", icon: .grid, borderStyle: .iOS, width: .intrinsic) {
-                    Text("Content")
-                        .padding(.medium)
-                        .background(Color.greenLight)
-                }
-                Card("Card title", description: "Intrinsic width", icon: .symbol(.grid, color: .greenNormal), borderStyle: .default, width: .intrinsic) {
-                    Text("Content")
-                        .padding(.medium)
-                        .background(Color.greenLight)
-                }
-            }
-
-            HStack(spacing: .medium) {
-                Card("Card with SF Symbol", description: "Intrinsic width", icon: .sfSymbol("info.circle.fill", color: .greenNormal), borderStyle: .iOS, width: .intrinsic) {
-                    Text("Content")
-                        .padding(.medium)
-                        .background(Color.greenLight)
-                }
-                Card("Card with flag", description: "Intrinsic width", icon: .countryFlag("cz"), borderStyle: .default, width: .intrinsic) {
-                    Text("Content")
-                        .padding(.medium)
-                        .background(Color.greenLight)
-                }
-            }
-        }
-        .padding(.medium)
-        .background(Color.cloudLight)
-        .previewDisplayName("Standalone Intrinsic width")
-    }
-    
-    static var standaloneIos: some View {
         Card("Card title", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink")) {
             customContentPlaceholder
             customContentPlaceholder
         }
-        .padding(.vertical, .medium)
-        .background(Color.cloudLight)
-        .previewDisplayName("Standalone (iOS)")
+        .previewDisplayName("Standalone")
     }
+    
+    static var standaloneIntrinsic: some View {
+        HStack(spacing: .medium) {
+            Card("Card title", description: "Intrinsic width", icon: .grid) {
+                Text("Content")
+                    .padding(.medium)
+                    .background(Color.greenLight)
+            }
+            .fixedSize(horizontal: true, vertical: false)
 
-    static var borderlessRegular: some View {
-        borderless
-            .environment(\.horizontalSizeClass, .regular)
-            .frame(width: Layout.readableMaxWidth + 100)
-            .previewDisplayName("Style - Borderless Regular")
-    }
-
-    static var borderlessRegularNarrow: some View {
-        borderless
-            .environment(\.horizontalSizeClass, .regular)
-            .frame(width: Layout.readableMaxWidth - 8)
-            .previewDisplayName("Style - Borderless Regular narrow")
+            Card("Card with SF Symbol", description: "Intrinsic width", icon: .sfSymbol("info.circle.fill", color: .greenNormal)) {
+                Text("Content")
+                    .padding(.medium)
+                    .background(Color.greenLight)
+            }
+            .fixedSize(horizontal: true, vertical: false)
+        }
+        .padding(.medium)
+        .background(Color.cloudNormal)
+        .previewDisplayName("Standalone Intrinsic width")
     }
 
     static var cardWithoutContent: some View {
         Card("Card with no content", action: .buttonLink("Edit"))
-            .padding(.vertical, .medium)
-            .background(Color.cloudLight)
     }
 
     static var cardWithFillLayoutContent: some View {
@@ -335,8 +265,6 @@ struct CardPreviews: PreviewProvider {
             Separator()
             customContentPlaceholder
         }
-        .padding(.vertical, .medium)
-        .background(Color.cloudLight)
     }
 
     static var cardWithFillLayoutContentNoHeader: some View {
@@ -345,30 +273,17 @@ struct CardPreviews: PreviewProvider {
             Separator()
             customContentPlaceholder
         }
-        .padding(.vertical, .medium)
-        .background(Color.cloudLight)
     }
 
     static var cardWithOnlyCustomContent: some View {
-        Card() {
+        Card {
             customContentPlaceholder
             customContentPlaceholder
         }
-        .padding(.vertical, .medium)
-        .background(Color.cloudLight)
-    }
-
-    static var cardWithCustomPaddingAndSpacing: some View {
-        Card("Card with custom spacing and padding", action: .buttonLink("ButtonLink"), contentLayout: .custom(padding: .xSmall, spacing: .large)) {
-            customContentPlaceholder
-            customContentPlaceholder
-        }
-        .padding(.vertical, .medium)
-        .background(Color.cloudLight)
     }
 
     static var cardWithTiles: some View {
-        Card("Card with Tiles", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink")) {
+        Card("Card with mixed content", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink")) {
             customContentPlaceholder
                 .frame(height: 30).clipped()
             Tile("Tile")
@@ -378,12 +293,12 @@ struct CardPreviews: PreviewProvider {
             }
             .fixedSize(horizontal: true, vertical: false)
             ListChoice("ListChoice 1")
+                .padding(.trailing, -.medium)
             ListChoice("ListChoice 2")
+                .padding(.trailing, -.medium)
             customContentPlaceholder
                 .frame(height: 30).clipped()
         }
-        .padding(.vertical, .medium)
-        .background(Color.cloudLight)
     }
 
     static var cardMultilineCritical: some View {
@@ -398,42 +313,28 @@ struct CardPreviews: PreviewProvider {
         .padding(.vertical, .medium)
         .background(Color.cloudLight)
     }
-
-    static var cardMultilineDefaultCritical: some View {
-        Card(
-            "Card with very very very very very very long and multi-line title",
-            description: "Very very very very very long and multi-line description",
-            action: .buttonLink("ButtonLink with a long description"),
-            borderStyle: .default,
-            status: .critical
-        ) {
-            customContentPlaceholder
-        }
-        .padding(.medium)
-        .background(Color.cloudLight)
-    }
     
-    static var borderless: some View {
+    static var clear: some View {
         Card(
-            "Card with no borders",
+            "Card without borders and background",
             headerSpacing: .xSmall,
-            borderStyle: .none,
+            showBorder: false,
             backgroundColor: .clear,
             contentLayout: .fill
         ) {
             VStack(spacing: 0) {
                 ListChoice("ListChoice")
                 ListChoice("ListChoice", icon: .countryFlag("us"))
-                ListChoice("ListChoice", description: "ListChoice description", icon: .airplane)
+                ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false)
             }
             .padding(.top, .xSmall)
         }
-        .padding(.vertical, .medium)
-        .background(Color.cloudLight)
     }
 
     static var snapshot: some View {
         standalone
+            .screenLayout()
+            .background(Color.cloudLight)
     }
 }
 
@@ -453,6 +354,6 @@ struct CardDynamicTypePreviews: PreviewProvider {
     }
 
     @ViewBuilder static var content: some View {
-        CardPreviews.standalone
+        CardPreviews.snapshot
     }
 }

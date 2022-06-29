@@ -15,11 +15,11 @@ public struct Tab: View {
             Icon(content: iconContent)
                 .padding(.trailing, .xSmall)
             Text(label, color: nil, weight: .medium, alignment: .center)
-                .padding(.vertical, .xxSmall)
+                .padding(.vertical, .xSmall)
             TextStrut(.normal)
-                .padding(.vertical, .xxSmall)
+                .padding(.vertical, .xSmall)
         }
-        .padding(.horizontal, .medium)
+        .padding(.horizontal, .small)
         .contentShape(Rectangle())
         .anchorPreference(key: PreferenceKey.self, value: .bounds) {
             [TabPreference(label: label, style: style, bounds: $0)]
