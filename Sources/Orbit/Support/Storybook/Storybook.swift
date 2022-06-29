@@ -68,8 +68,6 @@ public struct Storybook: View {
                 .padding(.vertical, .small)
                 .padding(.horizontal, .medium)
             tileStack(items: Self.componentItems)
-                .compositingGroup()
-                .drawingGroup(opaque: false, colorMode: .extendedLinear)
         }
     }
 
@@ -82,21 +80,23 @@ public struct Storybook: View {
                 tile(items[rowIndex * 2 + 1])
             }
             .padding(.horizontal, .medium)
-            .padding(.top, .xSmall)
-            .padding(.bottom, .medium)
+            .padding(.top, .xxSmall)
+            .padding(.bottom, .small)
         }
     }
 
     @ViewBuilder func tile(_ item: Item) -> some View {
-        Tile(
-            String(describing: item).titleCased,
-            icon: item.tabs.isEmpty ? .timelapse : .sfSymbol(item.sfSymbol),
-            disclosure: .none,
-            showBorder: item.tabs.isEmpty == false,
-            titleStyle: .title5
-        ) {
+        Tile(disclosure: .none, showBorder: item.tabs.isEmpty == false) {
             selectedItem = item
+        } content: {
+            Label(
+                String(describing: item).titleCased,
+                icon: item.tabs.isEmpty ? .timelapse : .sfSymbol(item.sfSymbol),
+                style: .title5
+            )
+            .padding(.small)
         }
+        .environment(\.isElevationEnabled, item.tabs.isEmpty == false)
         .opacity(item.tabs.isEmpty ? 0.4 : 1)
         .disabled(item.tabs.isEmpty)
         .frame(maxWidth: .infinity)
