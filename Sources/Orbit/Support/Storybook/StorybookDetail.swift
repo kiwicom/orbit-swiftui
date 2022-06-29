@@ -9,7 +9,7 @@ struct StorybookDetail: View {
     let menuItem: Storybook.Item
 
     var body: some View {
-        if #available(iOS 15.0, *) {
+        if menuItem.isSearchable, #available(iOS 15.0, *) {
             detailView
                 .searchable(text: $filter, prompt: "Search")
         } else {
