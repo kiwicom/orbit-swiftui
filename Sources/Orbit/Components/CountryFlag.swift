@@ -7,29 +7,23 @@ public struct CountryFlag: View {
 
     @Environment(\.sizeCategory) var sizeCategory
 
-    let countryCode: String
+    let countryCode: CountryCode
     let size: Icon.Size
     let border: Border
 
     public var body: some View {
-        if countryCode.isEmpty == false {
-            SwiftUI.Image(imageName, bundle: .current)
-                .resizable()
-                .scaledToFit()
-                .clipShape(clipShape)
-                .overlay(
-                    clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
-                        .blendMode(.darken)
-                )
-                .padding(Icon.averageIconContentPadding / 2)
-                .frame(width: size.value * sizeCategory.ratio)
-                .fixedSize()
-                .accessibility(label: SwiftUI.Text(countryCode))
-        }
-    }
-
-    var imageName: String {
-        UIImage(named: countryCode.lowercased(), in: .current, with: nil) != nil ? countryCode.lowercased() : "unknown"
+        SwiftUI.Image(countryCode.rawValue, bundle: .current)
+            .resizable()
+            .scaledToFit()
+            .clipShape(clipShape)
+            .overlay(
+                clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
+                    .blendMode(.darken)
+            )
+            .padding(Icon.averageIconContentPadding / 2)
+            .frame(width: size.value * sizeCategory.ratio)
+            .fixedSize()
+            .accessibility(label: SwiftUI.Text(countryCode.rawValue))
     }
 
     var clipShape: some InsettableShape {
@@ -49,8 +43,17 @@ public struct CountryFlag: View {
 public extension CountryFlag {
 
     /// Creates Orbit CountryFlag component.
-    init(_ countryCode: String, size: Icon.Size = .normal, border: Border = .default()) {
+    init(_ countryCode: CountryCode, size: Icon.Size = .normal, border: Border = .default()) {
         self.countryCode = countryCode
+        self.size = size
+        self.border = border
+    }
+
+    /// Creates Orbit CountryFlag component with a string country code.
+    ///
+    /// If a corresponding image is not found, the flag for unknown codes is used.
+    init(_ countryCode: String, size: Icon.Size = .normal, border: Border = .default()) {
+        self.countryCode = .init(rawValue: countryCode) ?? .unknown
         self.size = size
         self.border = border
     }
@@ -78,15 +81,21 @@ struct CountryFlagPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            unknown
             storybook
         }
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
+        CountryFlag("cz")
+            .padding(.medium)
+    }
+
+    static var unknown: some View {
         VStack {
-            CountryFlag("cz")
-            CountryFlag("")     // EmptyView
+            CountryFlag("")
+            CountryFlag("some invalid identifier")
         }
         .padding(.medium)
     }
