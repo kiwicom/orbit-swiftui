@@ -21,7 +21,7 @@ struct StorybookColors {
     }
 
     @ViewBuilder static var product: some View {
-        Card("Product", borderStyle: .default, contentLayout: .fill) {
+        Card("Product", showBorder: false, contentLayout: .fill) {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     color(.productLight, label: "Product Light")
@@ -41,11 +41,10 @@ struct StorybookColors {
                 color(.productDarker, label: "Product Darker")
             }
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var white: some View {
-        Card("White", borderStyle: .default, contentLayout: .fill) {
+        Card("White", showBorder: false, contentLayout: .fill) {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     color(.whiteNormal, label: "White")
@@ -54,11 +53,10 @@ struct StorybookColors {
                 }
             }
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var cloud: some View {
-        Card("Cloud", borderStyle: .default, contentLayout: .fill) {
+        Card("Cloud", showBorder: false, contentLayout: .fill) {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     color(.cloudLight, label: "Cloud Light")
@@ -78,11 +76,10 @@ struct StorybookColors {
                 }
             }
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var ink: some View {
-        Card("Ink", borderStyle: .default, contentLayout: .fill) {
+        Card("Ink", showBorder: false, contentLayout: .fill) {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     color(.inkLighter, label: "Ink Lighter")
@@ -101,11 +98,10 @@ struct StorybookColors {
                 }
             }
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var green: some View {
-        Card("Green", borderStyle: .default, contentLayout: .fill) {
+        Card("Green", showBorder: false, contentLayout: .fill) {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     color(.greenLight, label: "Green Light")
@@ -124,11 +120,10 @@ struct StorybookColors {
                 }
             }
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var orange: some View {
-        Card("Orange", borderStyle: .default, contentLayout: .fill) {
+        Card("Orange", showBorder: false, contentLayout: .fill) {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     color(.orangeLight, label: "Orange Light")
@@ -147,11 +142,10 @@ struct StorybookColors {
                 }
             }
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var red: some View {
-        Card("Red", borderStyle: .default, contentLayout: .fill) {
+        Card("Red", showBorder: false, contentLayout: .fill) {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     color(.redLight, label: "Red Light")
@@ -170,11 +164,10 @@ struct StorybookColors {
                 }
             }
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var blue: some View {
-        Card("Blue", borderStyle: .default, contentLayout: .fill) {
+        Card("Blue", showBorder: false, contentLayout: .fill) {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     color(.blueLight, label: "Blue Light")
@@ -193,11 +186,10 @@ struct StorybookColors {
                 }
             }
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var bundle: some View {
-        Card("Bundle", borderStyle: .default, contentLayout: .fill) {
+        Card("Bundle", showBorder: false, contentLayout: .fill) {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     gradient(.bundleBasic, label: "Bundle Basic")
@@ -222,7 +214,6 @@ struct StorybookColors {
                 }
             }
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static func color(_ color: UIColor, label: String) -> some View {

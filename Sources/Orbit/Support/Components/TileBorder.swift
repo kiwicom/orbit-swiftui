@@ -3,7 +3,7 @@ import SwiftUI
 public enum TileBorderStyle {
     case none
     case `default`
-    /// A border style that visually matches the iOS plain table section appearance.
+    /// A border style that visually matches the iOS plain table section appearance in `compact` width environment.
     case iOS
 }
 
@@ -26,14 +26,14 @@ public struct TileBorderModifier: ViewModifier {
     }
 
     @ViewBuilder var border: some View {
-        switch style {
-            case .none:
+        switch (style, horizontalSizeClass) {
+            case (.none, _):
                 EmptyView()
-            case .default:
+            case (.default, _), (.iOS, .regular):
                 clipShape
                     .strokeBorder(borderColor, lineWidth: borderWidth)
                     .blendMode(isSelected ? .normal : .darken)
-            case .iOS:
+            case (.iOS, _):
                 VStack {
                     compactSeparatorBorder
                     Spacer()
