@@ -23,9 +23,7 @@ public struct TileButtonStyle: SwiftUI.ButtonStyle {
             .tileBorder(
                 style: style,
                 isSelected: isSelected,
-                status: status,
-                backgroundColor: backgroundColor(isPressed: configuration.isPressed),
-                isPressed: configuration.isPressed
+                status: status
             )
     }
 
@@ -97,9 +95,6 @@ public struct Tile<Content: View>: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            TextStrut(.large)
-                .padding(.vertical, verticalTextPadding)
-
             disclosureIcon
                 .padding(.trailing, .medium)
         }
@@ -122,6 +117,9 @@ public struct Tile<Content: View>: View {
                         .accessibility(.tileDescription)
                 }
                 .padding(.vertical, verticalTextPadding)
+
+                TextStrut(.large)
+                    .padding(.vertical, verticalTextPadding)
 
                 Spacer(minLength: 0)
 
