@@ -34,7 +34,7 @@ public struct Tabs<Content: View>: View {
         HStack(spacing: 0) {
             content
                 .lineLimit(lineLimit)
-                .frame(maxWidth: maxTabWidth, minHeight: Layout.preferredSmallButtonHeight, maxHeight: .infinity)
+                .frame(maxWidth: maxTabWidth, maxHeight: .infinity)
         }
         .fixedSize(horizontal: false, vertical: true)
         .hidden()
@@ -75,7 +75,7 @@ public struct Tabs<Content: View>: View {
         Tab(label, style: style)
             .foregroundColor(index == selectedIndex ? style.textColor : .inkNormal)
             .lineLimit(lineLimit)
-            .frame(maxWidth: maxTabWidth, minHeight: Layout.preferredSmallButtonHeight, maxHeight: .infinity)
+            .frame(maxWidth: maxTabWidth, maxHeight: .infinity)
             .overlay(separator(index: index, lastIndex: lastIndex), alignment: .trailing)
             .contentShape(Rectangle())
             .accessibility(addTraits: .isButton)
