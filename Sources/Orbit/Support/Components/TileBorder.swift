@@ -5,6 +5,8 @@ public enum TileBorderStyle {
     case `default`
     /// A border style that visually matches the iOS plain table section appearance in `compact` width environment.
     case iOS
+    /// A border with no elevation.
+    case plain
 }
 
 /// Provides decoration with ``Tile`` appearance.
@@ -29,7 +31,7 @@ public struct TileBorderModifier: ViewModifier {
         switch (style, horizontalSizeClass) {
             case (.none, _):
                 EmptyView()
-            case (.default, _), (.iOS, .regular):
+            case (.default, _), (.plain, _), (.iOS, .regular):
                 clipShape
                     .strokeBorder(borderColor, lineWidth: borderWidth)
                     .blendMode(isSelected ? .normal : .darken)
@@ -58,6 +60,7 @@ public struct TileBorderModifier: ViewModifier {
     var cornerRadius: CGFloat {
         switch (style, horizontalSizeClass) {
             case (.default, _):     return BorderRadius.default
+            case (.plain, _):       return BorderRadius.default
             case (.iOS, .regular):  return BorderRadius.default
             case (.iOS, _):         return 0
             case (.none, _):        return 0
@@ -65,11 +68,16 @@ public struct TileBorderModifier: ViewModifier {
     }
 
     var elevation: Elevation? {
-        guard style == .default, status == .none else {
+        guard status == .none else {
             return nil
         }
 
-        return .level1
+        switch style {
+            case .default:
+                return .level1
+            case .none, .plain, .iOS:
+                return nil
+        }
     }
 
     var borderWidth: CGFloat {
@@ -97,17 +105,18 @@ public struct TileBorderModifier: ViewModifier {
     }
 
     var showOuterBorder: Bool {
-        style == .iOS
+        switch style {
+            case .iOS, .plain:      return true
+            case .none, .default:   return false
+        }
     }
 }
 
 public extension View {
 
-    /// Decorates content with a ``Tile`` appearance using specified style.
-    ///
-    /// - Parameter style: The style to apply. If style is nil, the view doesn’t get decorated.
+    /// Decorates content with a border similar to ``Tile`` or ``Card`` appearance using specified style.
     func tileBorder(
-        style: TileBorderStyle = .default,
+        _ style: TileBorderStyle = .default,
         isSelected: Bool = false,
         status: Status? = nil
     ) -> some View {
@@ -130,10 +139,13 @@ struct TileBorderModifierPreviews: PreviewProvider {
                 .tileBorder()
 
             content
-                .tileBorder(style: .iOS)
+                .tileBorder(.plain)
 
             content
-                .tileBorder(style: .iOS, isSelected: true)
+                .tileBorder(.iOS)
+
+            content
+                .tileBorder(.iOS, isSelected: true)
 
             content
                 .background(Color.blueLight)

@@ -21,7 +21,7 @@ public struct TileButtonStyle: SwiftUI.ButtonStyle {
         configuration.label
             .background(backgroundColor(isPressed: configuration.isPressed))
             .tileBorder(
-                style: style,
+                style,
                 isSelected: isSelected,
                 status: status
             )
