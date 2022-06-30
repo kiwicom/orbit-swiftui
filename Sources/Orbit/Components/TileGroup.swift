@@ -46,7 +46,7 @@ public struct TileGroup<Content: View>: View {
     }
 
     /// Creates Orbit TileGroup component as a wrapper for Tile content.
-    init(@ViewBuilder content: () -> Content) {
+    public init(@ViewBuilder _ content: () -> Content) {
         self.content = content()
     }
 }
