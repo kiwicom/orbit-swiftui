@@ -61,23 +61,23 @@ struct ElevationModifier: ViewModifier {
         switch level {
             case .level1:
                 content
-                    .shadow(color: shadowColor.opacity(0.12), radius: 1, y: 1)
+                    .shadow(color: shadowColor.opacity(0.12), radius: 1, y: 0.5)
                     .shadow(color: shadowColor.opacity(0.11), radius: 2, y: 2)
                     .shadow(color: shadowColor.opacity(0.10), radius: 4, y: 4)
             case .level2:
                 content
-                    .shadow(color: shadowColor.opacity(0.12), radius: 2, y: 2)
+                    .shadow(color: shadowColor.opacity(0.12), radius: 2, y: 1)
                     .shadow(color: shadowColor.opacity(0.11), radius: 4, y: 4)
                     .shadow(color: shadowColor.opacity(0.10), radius: 8, y: 8)
             case .level3:
                 content
-                    .shadow(color: shadowColor.opacity(0.12), radius: 2, y: 2)
+                    .shadow(color: shadowColor.opacity(0.12), radius: 2, y: 1)
                     .shadow(color: shadowColor.opacity(0.11), radius: 4, y: 4)
                     .shadow(color: shadowColor.opacity(0.10), radius: 8, y: 8)
                     .shadow(color: shadowColor.opacity(0.06), radius: 16, y: 16)
             case .level4:
                 content
-                    .shadow(color: shadowColor.opacity(0.12), radius: 2, y: 2)
+                    .shadow(color: shadowColor.opacity(0.12), radius: 2, y: 1)
                     .shadow(color: shadowColor.opacity(0.11), radius: 4, y: 4)
                     .shadow(color: shadowColor.opacity(0.10), radius: 8, y: 8)
                     .shadow(color: shadowColor.opacity(0.09), radius: 16, y: 16)
@@ -105,8 +105,8 @@ extension View {
         switch level {
             case .level1:
                 self
-                    .shadow(color: shadowColor.opacity(0.22), radius: 1.8, y: 0.9)
-                    .shadow(color: shadowColor.opacity(0.09), radius: 4, y: 5.5)
+                    .shadow(color: shadowColor.opacity(0.22), radius: 1.4, y: 0.6)
+                    .shadow(color: shadowColor.opacity(0.09), radius: 2.6, y: 3.6)
             case .level2:
                 self
                     .shadow(color: shadowColor.opacity(0.26), radius: 3, y: 2.1)
