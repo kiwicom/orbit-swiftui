@@ -80,7 +80,7 @@ public extension Illustration {
     enum Layout {
 
         /// Default maximal illustration height using frame layout.
-        public static let maxHeight: CGFloat = 250
+        public static let maxHeight: CGFloat = 200
 
         /// Positions illustration, first scaled to fit the optional maxHeight, in a horizontally expanding frame with specified alignment.
         case frame(
