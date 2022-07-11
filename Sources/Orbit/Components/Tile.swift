@@ -50,7 +50,7 @@ public enum TileDisclosure {
 /// Can be used standalone or wrapped inside a ``TileGroup``.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tile/)
-/// - Important: Component expands horizontally to infinity up to a ``Layout/readableMaxWidth``.
+/// - Important: Component expands horizontally.
 public struct Tile<Content: View>: View {
 
     @Environment(\.isInsideTileGroup) var isInsideTileGroup
@@ -98,7 +98,7 @@ public struct Tile<Content: View>: View {
             disclosureIcon
                 .padding(.trailing, .medium)
         }
-        .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .overlay(separator, alignment: .bottom)
     }
     
