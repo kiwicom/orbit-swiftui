@@ -50,6 +50,10 @@ struct ElevationModifier: ViewModifier {
             .padding(prerenderedShadowPadding(for: level))
             .background(
                 content
+                    .disabled(true)
+                    .accessibility(identifier: "")
+                    .accessibilityElement(children: .ignore)
+                    .accessibility(hidden: true)
                     .padding(prerenderedShadowPadding(for: level))
                     .prerenderedShadowModifier(for: level, shadowColor: shadowColor)
                     .drawingGroup(colorMode: .extendedLinear)
