@@ -20,7 +20,7 @@ public struct BadgeList: View {
         if isEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: Self.spacing) {
                 badgeOrEmptySpace
-                    .foregroundColor(style.iconColor)
+                    .foregroundColor(.init(style.iconColor))
                     .padding(.xxSmall)
                     .background(badgeBackground)
 
@@ -28,6 +28,7 @@ public struct BadgeList: View {
                     label,
                     size: size.textSize,
                     color: .custom(labelColor.color),
+                    accentColor: style.iconColor,
                     linkColor: .custom(labelColor.color),
                     linkAction: linkAction
                 )
@@ -88,7 +89,7 @@ public extension BadgeList {
 
         case neutral
         case status(_ status: Status)
-        case custom(iconColor: SwiftUI.Color, backgroundColor: SwiftUI.Color)
+        case custom(iconColor: UIColor, backgroundColor: SwiftUI.Color)
 
         public var backgroundColor: Color {
             switch self {
@@ -101,7 +102,7 @@ public extension BadgeList {
             }
         }
 
-        public var iconColor: Color {
+        public var iconColor: UIColor {
             switch self {
                 case .neutral:                              return .inkLight
                 case .status(.info):                        return .blueNormal
@@ -194,10 +195,10 @@ struct BadgeListPreviews: PreviewProvider {
 
     static var storybookMix: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            BadgeList("This is simple Info BadgeList item with SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.info))
-            BadgeList("This is simple Info BadgeList item with CountryFlag", icon: .countryFlag("cz"), style: .status(.critical))
-            BadgeList("This is simple Info BadgeList item with custom image", icon: .image(.orbit(.facebook)), style: .status(.success))
-            BadgeList("This is BadgeList item with no icon and custom color", labelColor: .custom(.blueDark))
+            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>SF Symbol</strong>", icon: .sfSymbol("info.circle.fill"), style: .status(.info))
+            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", icon: .countryFlag("cz"), style: .status(.critical))
+            BadgeList("This is simple <ref>BadgeList</ref> item with custom image", icon: .image(.orbit(.facebook)), style: .status(.success))
+            BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color", labelColor: .custom(.blueDark))
         }
         .padding(.medium)
     }
