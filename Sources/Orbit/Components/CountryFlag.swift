@@ -53,7 +53,7 @@ public extension CountryFlag {
     ///
     /// If a corresponding image is not found, the flag for unknown codes is used.
     init(_ countryCode: String, size: Icon.Size = .normal, border: Border = .default()) {
-        self.countryCode = .init(rawValue: countryCode) ?? .unknown
+        self.countryCode = .init(countryCode)
         self.size = size
         self.border = border
     }
@@ -98,6 +98,7 @@ struct CountryFlagPreviews: PreviewProvider {
             CountryFlag("some invalid identifier")
         }
         .padding(.medium)
+        .previewDisplayName("Unknown")
     }
     
     static var storybook: some View {
@@ -128,9 +129,9 @@ struct CountryFlagPreviews: PreviewProvider {
             }
             HStack(spacing: .small) {
                 Text("Borders")
-                CountryFlag("cz", size: .xLarge, border: .default(cornerRadius: 8))
-                CountryFlag("cz", size: .xLarge, border: .default(cornerRadius: 0))
-                CountryFlag("cz", size: .xLarge, border: .none)
+                CountryFlag("CZ", size: .xLarge, border: .default(cornerRadius: 8))
+                CountryFlag("cZ", size: .xLarge, border: .default(cornerRadius: 0))
+                CountryFlag("Cz", size: .xLarge, border: .none)
             }
             HStack(spacing: .small) {
                 Text("Custom size")
