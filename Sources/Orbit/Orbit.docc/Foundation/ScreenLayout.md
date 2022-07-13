@@ -22,7 +22,10 @@ VStack {
 
 The screen layout modifier adds specified maximum width (``Layout/readableMaxWidth`` by default) and padding behaviour for the provided content.
 
+### Supporting Types
+
+- ``ScreenLayoutPadding``
+
 ## Suppressing screen layout
 
 Child views can inspect the ``isInsideScreenLayout`` environment value to act upon this modifier. One example is a `Card` component that ignores horizontal paddings in `compact` environment.
-

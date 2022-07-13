@@ -29,16 +29,12 @@ public struct TileGroup<Content: View>: View {
                 content
                     .environment(\.isInsideTileGroup, true)
             }
-            .clipShape(clipShape)
+            // hide any last separator automatically by clipping it
+            .padding(.bottom, -Separator.Thickness.default.value)
+            .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default))
             .compositingGroup()
             .elevation(.level1)
         }
-    }
-
-    var clipShape: some InsettableShape {
-        RoundedRectangle(cornerRadius: BorderRadius.default)
-            // hide the last separator automatically
-            .inset(by: Separator.Thickness.default.value)
     }
 
     var isEmpty: Bool {
@@ -46,7 +42,7 @@ public struct TileGroup<Content: View>: View {
     }
 
     /// Creates Orbit TileGroup component as a wrapper for Tile content.
-    init(@ViewBuilder content: () -> Content) {
+    public init(@ViewBuilder _ content: () -> Content) {
         self.content = content()
     }
 }

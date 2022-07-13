@@ -6,9 +6,9 @@ SCHEME="Orbit-Package"
 SNAPSHOTS_DIR="Snapshots"
 
 CONFIGURATIONS=(
-    "iPhone SE (1st generation)" "15.4"
-    "iPhone 13" "15.4"
-    "iPad (9th generation)" "15.4"
+    "iPhone SE (1st generation)" "15.5"
+    "iPhone 13" "15.5"
+    "iPad (9th generation)" "15.5"
 )
 
 echo "Verifying all runtimes are available..."

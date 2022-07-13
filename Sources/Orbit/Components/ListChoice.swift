@@ -25,7 +25,7 @@ public enum ListChoiceDisclosure: Equatable {
 /// Shows one of a selectable list of items with similar structures.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/listchoice/)
-/// - Important: Component expands horizontally up to ``Layout/readableMaxWidth``.
+/// - Important: Component expands horizontally.
 public struct ListChoice<HeaderContent: View, Content: View>: View {
 
     public let verticalPadding: CGFloat = .small + 1/3   // Makes height exactly 45 at normal text size
@@ -73,7 +73,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 .padding(.vertical, .small)
                 .disabled(true)
         }
-        .frame(maxWidth: Layout.readableMaxWidth, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .overlay(separator, alignment: .bottom)
     }
     

@@ -54,7 +54,7 @@ public struct Card<Content: View>: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(backgroundColor)
         .tileBorder(
-            style: showBorder ? .iOS : .none,
+            showBorder ? .iOS : .none,
             status: status
         )
         .padding(.horizontal, horizontalPadding)
