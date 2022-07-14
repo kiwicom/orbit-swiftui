@@ -8,7 +8,7 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/badge/)
 public struct Badge: View {
 
-    public static let verticalPadding: CGFloat = 4 + 1/3 // Makes height exactly 24 at normal text size
+    public static let verticalPadding: CGFloat = 4 + 1/3 // Results in ±24 height at normal text size
     public static let textSize: Text.Size = .small
 
     let label: String
