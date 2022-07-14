@@ -36,7 +36,6 @@ public struct Badge: View {
                     .padding(.vertical, Self.verticalPadding)
             }
             .padding(.horizontal, .xSmall)
-            .frameWidthAtLeastHeight()
             .background(
                 style.background
                     .clipShape(shape)
@@ -45,7 +44,6 @@ public struct Badge: View {
                 shape
                     .strokeBorder(style.outlineColor, lineWidth: BorderWidth.thin)
             )
-            .fixedSize()
         }
     }
 
@@ -164,12 +162,17 @@ struct BadgePreviews: PreviewProvider {
         VStack(spacing: .xSmall) {
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    Badge("Badge height \(state.wrappedValue)")
+                    Badge("Height \(state.wrappedValue.rounded())")
                 }
             }
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    Badge("Badge height \(state.wrappedValue)", icon: .grid)
+                    Badge("Height \(state.wrappedValue.rounded())", icon: .grid)
+                }
+            }
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    Badge("Multiline text\nheight \(state.wrappedValue.rounded())", icon: .grid)
                 }
             }
         }
@@ -189,6 +192,11 @@ struct BadgePreviews: PreviewProvider {
             statusBadges(.success)
             statusBadges(.warning)
             statusBadges(.critical)
+
+            HStack(alignment: .top, spacing: .medium) {
+                Badge("Very very very very very long badge")
+                Badge("Very very very very very long badge")
+            }
         }
         .padding(.medium)
     }
@@ -223,6 +231,9 @@ struct BadgePreviews: PreviewProvider {
             HStack(spacing: .small) {
                 Badge("Image", icon: .image(.orbit(.facebook)))
                 Badge("Image", icon: .image(.orbit(.facebook)), style: .status(.success, inverted: true))
+            }
+
+            HStack(spacing: .small) {
                 Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
                 Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
             }
@@ -236,7 +247,7 @@ struct BadgePreviews: PreviewProvider {
     }
 
     static func badges(_ style: Badge.Style) -> some View {
-        HStack(spacing: .medium) {
+        HStack(spacing: .small) {
             Badge("label", style: style)
             Badge("label", icon: .grid, style: style)
             Badge(icon: .grid, style: style)
