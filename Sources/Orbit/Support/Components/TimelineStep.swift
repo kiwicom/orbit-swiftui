@@ -6,19 +6,18 @@ import SwiftUI
 ///   - ``Timeline``
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/timeline/)
-public struct TimelineStep: View {
-
-    public static let indicatorDiameter: CGFloat = Icon.Size.large.value
+public struct TimelineStep<Content: View>: View {
 
     let label: String
     let sublabel: String
-    let style: Style
-    let content: String
+    let style: TimelineStepStyle
+
+    @ViewBuilder let content: Content
 
     public var body: some View {
         HStack(alignment: .top, spacing: .small) {
             Color.clear
-                .frame(width: Icon.Size.large.value, height: Icon.Size.large.value)
+                .frame(width: TimelineStepStyle.indicatorDiameter, height: TimelineStepStyle.indicatorDiameter)
                 .overlay(indicator)
 
             VStack(alignment: .leading, spacing: .xSmall) {
@@ -27,11 +26,9 @@ public struct TimelineStep: View {
 
                     Text(sublabel, size: .small)
                 }
-
-                Text(content, size: .normal, color: .custom(style.textColor))
-                    .padding(.leading, .xSmall)
+                content
             }
-            .anchorPreference(key: PreferenceKey.self, value: .bounds) {
+            .anchorPreference(key: TimelineStepPreferenceKey.self, value: .bounds) {
                 [TimelineStepPreference(bounds: $0, style: style)]
             }
         }
@@ -67,62 +64,72 @@ public struct TimelineStep: View {
 
 // MARK: - Inits
 public extension TimelineStep {
-
     /// Creates Orbit TimelineStep component.
-    init(_ label: String = "", sublabel: String = "", style: Style = .default, content: String) {
+    init(_ label: String = "", sublabel: String = "", style: TimelineStepStyle = .default, @ViewBuilder content: () -> Content) {
         self.label = label
         self.sublabel = sublabel
         self.style = style
-        self.content = content
+        self.content = content()
+    }
+}
+
+public extension TimelineStep where Content == TimelineStepText {
+
+    /// Creates Orbit TimelineStep component with text details.
+    init(_ label: String = "", sublabel: String = "", style: TimelineStepStyle = .default, textContent: String) {
+        self.label = label
+        self.sublabel = sublabel
+        self.style = style
+        self.content = TimelineStepText(text: textContent, style: style)
     }
 }
 
 // MARK: - Types
-extension TimelineStep {
 
-    public enum Style: Equatable {
-        case `default`
-        case status(Status)
+public enum TimelineStepStyle: Equatable {
+    case `default`
+    case status(Status)
 
-        public var iconSymbol: Icon.Symbol {
-            switch self {
-                case .default:              return .none
-                case .status(.success):     return .checkCircle
-                case .status(.warning):     return .alertCircle
-                case .status(.critical):    return .closeCircle
-                case .status(.info):        return .check
-            }
-        }
+    public static let indicatorDiameter: CGFloat = Icon.Size.large.value
 
-        public var color: Color {
-            switch self {
-                case .default:              return .cloudNormalHover
-                case .status(let status):   return status.color
-            }
-        }
-
-        public var textColor: UIColor {
-            switch self {
-                case .default:              return .inkLight
-                case .status:               return .inkNormal
-            }
+    public var iconSymbol: Icon.Symbol {
+        switch self {
+            case .default:              return .none
+            case .status(.success):     return .checkCircle
+            case .status(.warning):     return .alertCircle
+            case .status(.critical):    return .closeCircle
+            case .status(.info):        return .check
         }
     }
 
-    struct PreferenceKey: SwiftUI.PreferenceKey {
-        typealias Value = [TimelineStepPreference]
-
-        static var defaultValue: Value = []
-
-        static func reduce(value: inout Value, nextValue: () -> Value) {
-            value.append(contentsOf: nextValue())
+    public var color: Color {
+        switch self {
+            case .default:              return .cloudNormalHover
+            case .status(let status):   return status.color
         }
+    }
+
+    public var textColor: UIColor {
+        switch self {
+            case .default:              return .inkLight
+            case .status:               return .inkNormal
+        }
+    }
+}
+
+struct TimelineStepPreferenceKey: SwiftUI.PreferenceKey {
+    typealias Value = [TimelineStepPreference]
+
+    static var defaultValue: Value = []
+
+    static func reduce(value: inout Value, nextValue: () -> Value) {
+        value.append(contentsOf: nextValue())
     }
 }
 
 struct TimelineStepPreference {
     let bounds: Anchor<CGRect>
-    let style: TimelineStep.Style
+    let style: TimelineStepStyle
 }
 
 // MARK: - Previews
@@ -141,37 +148,47 @@ struct TimelineStepPreviews: PreviewProvider {
             "Requested",
             sublabel: "3rd May 14:04",
             style: .default,
-            content: "We’ve assigned your request to one of our agents."
+            textContent: "We’ve assigned your request to one of our agents."
         )
         .padding()
     }
 
     static var snapshots: some View {
-        VStack {
+        VStack(alignment: .leading) {
             TimelineStep(
                 "Requested",
                 sublabel: "3rd May 14:04",
                 style: .default,
-                content: "We’ve assigned your request to one of our agents."
+                textContent: "We’ve assigned your request to one of our agents."
             )
             TimelineStep(
                 "Requested",
                 sublabel: "3rd May 14:04",
                 style: .status(.success),
-                content: "We’ve assigned your request to one of our agents."
+                textContent: "We’ve assigned your request to one of our agents."
             )
             TimelineStep(
                 "Requested",
                 sublabel: "3rd May 14:04",
                 style: .status(.warning),
-                content: "We’ve assigned your request to one of our agents."
+                textContent: "We’ve assigned your request to one of our agents."
             )
             TimelineStep(
                 "Requested",
                 sublabel: "3rd May 14:04",
                 style: .status(.critical),
-                content: "We’ve assigned your request to one of our agents."
+                textContent: "We’ve assigned your request to one of our agents."
             )
+
+            TimelineStep(
+                "Requested",
+                sublabel: "3rd May 14:04",
+                style: .status(.info)) {
+                    HStack {
+                        Icon(.alertCircle, size: .large, color: .red)
+                        Text("We’ve assigned your request to one of our agents.")
+                    }
+                }
         }
         .padding()
         .previewDisplayName("Snapshots")

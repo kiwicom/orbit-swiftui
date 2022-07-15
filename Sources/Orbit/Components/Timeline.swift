@@ -15,19 +15,19 @@ public struct Timeline<Content: View>: View {
             VStack(alignment: .leading, spacing: Self.spacing) {
                 content
             }
-            .backgroundPreferenceValue(TimelineStep.PreferenceKey.self) { preferences in
+            .backgroundPreferenceValue(TimelineStepPreferenceKey.self) { preferences in
                 GeometryReader { geometry in
                     VStack(spacing: 0) {
                         ForEach(preferences.indices.dropFirst(), id: \.self) { index in
                             preferences[index].style.color
                                 .frame(width: 2)
                                 .frame(
-                                    width: TimelineStep.indicatorDiameter,
+                                    width: TimelineStepStyle.indicatorDiameter,
                                     height: progressLineHeight(for: index - 1, in: preferences, geometry: geometry)
                                 )
                         }
                     }
-                    .padding(.top, TimelineStep.indicatorDiameter / 2)
+                    .padding(.top, TimelineStepStyle.indicatorDiameter / 2)
                 }
             }
         }
@@ -39,7 +39,7 @@ public struct Timeline<Content: View>: View {
 
     func progressLineHeight(
         for index: Int,
-        in preferences: TimelineStep.PreferenceKey.Value,
+        in preferences: TimelineStepPreferenceKey.Value,
         geometry: GeometryProxy
     ) -> CGFloat {
         guard preferences.indices.contains(index) else { return 0 }
@@ -76,30 +76,30 @@ struct TimelinePreviews: PreviewProvider {
                 "Booked",
                 sublabel: "January 3, 10:43",
                 style: .status(.success),
-                content: "You booked the trip and received e-tickets."
+                textContent: "You booked the trip and received e-tickets."
             )
             TimelineStep(
                 "Checked in",
                 sublabel: "May 3, 8:45",
                 style: .status(.success),
-                content: "You checked in for the trip and received boarding passes"
+                textContent: "You checked in for the trip and received boarding passes"
             )
             TimelineStep(
                 "Board",
                 sublabel: "May 4, 8:15",
                 style: .status(.warning),
-                content: "Be at your departure gate at least 30 minutes before boarding."
+                textContent: "Be at your departure gate at least 30 minutes before boarding."
             )
             TimelineStep(
                 "Board",
                 sublabel: "May 4, 8:15",
                 style: .status(.critical),
-                content: "Be at your departure gate at least 30 minutes before boarding."
+                textContent: "Be at your departure gate at least 30 minutes before boarding."
             )
             TimelineStep(
                 "Arrive",
                 sublabel: "May 4, 11:49",
-                content: "Arrive at your destination"
+                textContent: "Arrive at your destination"
             )
         }
         .padding(.medium)
@@ -113,31 +113,31 @@ struct TimelinePreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .xxLarge) {
             Timeline {
                 ForEach(steps) { step in
-                    TimelineStep(label: step.label, sublabel: step.sublabel, style: step.style, content: step.content)
+                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, textContent: step.content)
                 }
             }
 
             Timeline {
                 ForEach(steps1) { step in
-                    TimelineStep(label: step.label, sublabel: step.sublabel, style: step.style, content: step.content)
+                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, textContent: step.content)
                 }
             }
 
             Timeline {
                 ForEach(steps2) { step in
-                    TimelineStep(label: step.label, sublabel: step.sublabel, style: step.style, content: step.content)
+                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, textContent: step.content)
                 }
             }
 
             Timeline {
                 ForEach(steps3) { step in
-                    TimelineStep(label: step.label, sublabel: step.sublabel, style: step.style, content: step.content)
+                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, textContent: step.content)
                 }
             }
 
             Timeline {
                 ForEach(steps4) { step in
-                    TimelineStep(label: step.label, sublabel: step.sublabel, style: step.style, content: step.content)
+                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, textContent: step.content)
                 }
             }
         }
@@ -201,10 +201,10 @@ extension TimelinePreviews {
         let id: Int
         let label: String
         var sublabel = ""
-        var style: TimelineStep.Style = .default
+        var style: TimelineStepStyle = .default
         let content: String
 
-        init(_ id: Int, _ label: String, sublabel: String = "", style: TimelineStep.Style = .default, content: String) {
+        init(_ id: Int, _ label: String, sublabel: String = "", style: TimelineStepStyle = .default, content: String) {
             self.id = id
             self.label = label
             self.sublabel = sublabel
