@@ -523,10 +523,10 @@ struct InputFieldLivePreviews: PreviewProvider {
 
     static var securedWrapper: some View {
 
-        StateWrapper(initialState: "") { state in
+        StateWrapper(initialState: "textfield-should-respect-long-password-and-screen-bounds-1234567890") { state in
 
             VStack(alignment: .leading, spacing: .medium) {
-                Heading("Heading", style: .title2)
+                Heading("Secured TextField with long init value", style: .title2)
 
                 InputField(
                     value: state,

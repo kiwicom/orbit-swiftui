@@ -34,6 +34,7 @@ struct SecureTextField: UIViewRepresentable {
         textField.clearsOnBeginEditing = false
         textField.isEnabled = style.state != .disabled
         textField.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
         if isEditing && textField.canBecomeFirstResponder {
             textField.becomeFirstResponder()
