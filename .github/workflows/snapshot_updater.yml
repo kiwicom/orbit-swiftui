@@ -7,7 +7,7 @@ jobs:
   generate_snapshots:
     runs-on: macos-12
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           token: ${{ secrets.SNAPSHOT_PUSH_TOKEN }}
       - name: generate
