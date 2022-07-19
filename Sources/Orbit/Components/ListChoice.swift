@@ -28,7 +28,7 @@ public enum ListChoiceDisclosure: Equatable {
 /// - Important: Component expands horizontally.
 public struct ListChoice<HeaderContent: View, Content: View>: View {
 
-    public let verticalPadding: CGFloat = .small + 1/3   // Makes height exactly 45 at normal text size
+    public let verticalPadding: CGFloat = .small + 1/3   // Results in ±45 height at normal text size
 
     let title: String
     let description: String

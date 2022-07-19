@@ -24,7 +24,7 @@ public enum ChoiceTileAlignment {
 public struct ChoiceTile<Content: View>: View {
 
     public let padding: CGFloat = .small
-    public let verticalTextPadding: CGFloat = .xxSmall - 1/6    // Makes height exactly 52 at normal text size
+    public let verticalTextPadding: CGFloat = .xxSmall - 1/6    // Results in ±52 height at normal text size
 
     let title: String
     let description: String

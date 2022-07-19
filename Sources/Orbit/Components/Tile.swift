@@ -56,7 +56,7 @@ public struct Tile<Content: View>: View {
     @Environment(\.isInsideTileGroup) var isInsideTileGroup
     @Environment(\.isTileSeparatorVisible) var isTileSeparatorVisible
 
-    public let verticalTextPadding: CGFloat = .medium - 1/6    // Makes height exactly 52 at normal text size
+    public let verticalTextPadding: CGFloat = .medium - 1/6    // Results in ±52 height at normal text size
 
     let title: String
     let description: String
