@@ -110,4 +110,9 @@ public extension ContentSizeCategory {
             @unknown default:                           return 1
         }
     }
+
+    @available(iOS, deprecated: 15.0, message: "Use DynamicTypeSize.isAccessibilitySize instead from iOS 15.0")
+    var isAccessibilitySize: Bool {
+        ratio >= 1.6
+    }
 }
