@@ -1,0 +1,36 @@
+name: Update Illustrations
+
+on:
+  schedule:
+    - cron: '0 0 * * MON' # every Monday
+  workflow_dispatch:
+  
+env:
+  pr_label: "design-tokens-autoupdate"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Today env
+        run: echo "TODAY=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
+      - name: Update Illustration Tokens
+        run: bash .github/update-illustrations.sh ${{ env.pr_label }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.PRBOT_APP_ID }}
+          private_key: ${{ secrets.PRBOT_PRIVATE_KEY }}
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          labels: |
+            ${{ env.pr_label }}
+          title: Design Tokens Illustrations Update on ${{ env.TODAY }}
+          body: ""
+          base: main
+          branch: tokens-autoupdate
