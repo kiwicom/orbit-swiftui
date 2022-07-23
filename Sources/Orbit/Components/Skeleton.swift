@@ -134,6 +134,7 @@ struct SkeletonPreviews: PreviewProvider {
             contentAtomic(animation: .none)
             livePreview
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -147,6 +148,7 @@ struct SkeletonPreviews: PreviewProvider {
 
     static var snapshot: some View {
         content(animation: .none)
+            .padding(.medium)
     }
 
     static func contentAtomic(animation: Skeleton.Animation = .default) -> some View {
@@ -158,7 +160,6 @@ struct SkeletonPreviews: PreviewProvider {
             Skeleton(.atomic(.rectangle), borderRadius: 20, animation: animation)
                 .frame(height: 60)
         }
-        .padding(.medium)
         .previewDisplayName("Atomic")
     }
 
@@ -170,7 +171,6 @@ struct SkeletonPreviews: PreviewProvider {
             Skeleton(.button(), animation: animation)
             Skeleton(.text(lines: 4), animation: animation)
         }
-        .padding(.medium)
     }
 
     static var livePreview: some View {
@@ -178,6 +178,5 @@ struct SkeletonPreviews: PreviewProvider {
             Heading("Loading...", style: .title3)
             content()
         }
-        .padding()
     }
 }

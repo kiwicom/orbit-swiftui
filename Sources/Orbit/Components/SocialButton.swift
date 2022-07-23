@@ -138,12 +138,12 @@ struct SocialButtonPreviews: PreviewProvider {
             standalone
             storybook
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         SocialButton("Sign in with Facebook", service: .facebook)
-            .padding(.medium)
     }
 
     static var storybook: some View {
@@ -153,11 +153,11 @@ struct SocialButtonPreviews: PreviewProvider {
             SocialButton("Sign in with Google", service: .google)
             SocialButton("Sign in with Apple", service: .apple)
         }
-        .padding(.medium)
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 }
 
@@ -172,6 +172,7 @@ struct SocialButtonDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

@@ -177,12 +177,12 @@ struct RadioPreviews: PreviewProvider {
             content(standalone: false)
             content(standalone: true)
         }
+        .padding(.medium)
         .previewLayout(PreviewLayout.sizeThatFits)
     }
 
     static var standalone: some View {
         radio(standalone: false, state: .normal, checked: true)
-            .padding(.medium)
     }
 
     static var storybook: some View {
@@ -194,6 +194,7 @@ struct RadioPreviews: PreviewProvider {
 
     static var snapshot: some View {
         content(standalone: false)
+            .padding(.medium)
     }
 
     static func content(standalone: Bool) -> some View {
@@ -210,7 +211,6 @@ struct RadioPreviews: PreviewProvider {
                 radio(standalone: standalone, state: .disabled, checked: true)
             }
         }
-        .padding(.medium)
     }
 
     static func radio(standalone: Bool, state: Radio.State, checked: Bool) -> some View {
@@ -233,6 +233,7 @@ struct RadioDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

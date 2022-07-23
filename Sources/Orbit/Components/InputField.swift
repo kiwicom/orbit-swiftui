@@ -324,6 +324,7 @@ struct InputFieldPreviews: PreviewProvider {
             storybookPassword
             storybookMix
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -331,7 +332,6 @@ struct InputFieldPreviews: PreviewProvider {
         StateWrapper(initialState: value) { state in
             InputField(label, value: state, prefix: .grid, suffix: .grid, placeholder: placeholder, state: .default)
         }
-        .padding(.medium)
     }
 
     static var storybook: some View {
@@ -344,7 +344,6 @@ struct InputFieldPreviews: PreviewProvider {
             inputField(value: value, message: .help(helpMessage))
             inputField(value: value, message: .error(errorMessage))
         }
-        .padding(.medium)
     }
 
     static func inputField(value: String, message: MessageType) -> some View {
@@ -378,7 +377,6 @@ struct InputFieldPreviews: PreviewProvider {
                 message: .error("Error message")
             )
         }
-        .padding(.medium)
     }
 
     static var storybookMix: some View {
@@ -400,7 +398,6 @@ struct InputFieldPreviews: PreviewProvider {
                 InputField(value: .constant("Flag prefix"), prefix: .countryFlag("us"))
             }
         }
-        .padding(.medium)
     }
     
     static var snapshot: some View {
@@ -409,6 +406,7 @@ struct InputFieldPreviews: PreviewProvider {
             Separator()
             storybookPassword
         }
+        .padding(.medium)
     }
 }
 

@@ -28,13 +28,14 @@ extension View {
 
 struct ElevationModifier: ViewModifier {
 
+    @Environment(\.colorScheme) var colorScheme
     @Environment(\.isElevationEnabled) var isElevationEnabled
     let level: Elevation?
     let isPrerendered: Bool
     let shadowColor = Color(red: 79 / 255, green: 94 / 255, blue: 113 / 255)
 
     func body(content: Content) -> some View {
-        if isElevationEnabled, let level = level {
+        if colorScheme != .dark, isElevationEnabled, let level = level {
             if isPrerendered {
                 prerenderedShadow(content: content, level: level)
             } else {

@@ -148,7 +148,7 @@ struct DialogPreviews: PreviewProvider {
     }
 
     static var storybook: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: .xxLarge) {
             content
         }
     }
@@ -160,7 +160,6 @@ struct DialogPreviews: PreviewProvider {
             description: description1,
             buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
         )
-        .background(Color.whiteNormal)
     }
 
     static var critical: some View {
@@ -171,7 +170,6 @@ struct DialogPreviews: PreviewProvider {
             style: .critical,
             buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
         )
-        .background(Color.whiteNormal)
     }
 
     static var titleOnly: some View {
@@ -179,7 +177,6 @@ struct DialogPreviews: PreviewProvider {
             title: title1,
             buttons: .primaryAndSecondary("Main CTA", "Secondary")
         )
-        .background(Color.whiteNormal)
     }
 
     static var descriptionOnly: some View {
@@ -187,11 +184,11 @@ struct DialogPreviews: PreviewProvider {
             description: description1,
             buttons: .primary("Main CTA")
         )
-        .background(Color.whiteNormal)
     }
 
     static var snapshot: some View {
         normal
+            .background(Color.whiteNormal)
     }
 }
 
