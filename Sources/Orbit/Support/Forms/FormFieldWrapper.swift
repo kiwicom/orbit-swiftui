@@ -79,28 +79,32 @@ struct FormFieldWrapperPreviews: PreviewProvider {
                 customContentPlaceholder
             }
 
-            StateWrapper(initialState: (true, true, 0)) { state in
+            StateWrapper(initialState: (true, true, CGFloat(0), false)) { state in
                 VStack(alignment: .leading, spacing: .large) {
                     FormFieldWrapper(
-                        state.wrappedValue.0 ? "Form Field Label" : "",
-                        message: state.wrappedValue.1 ? .error("Error message") : .none,
-                        messageHeight: .init(get: { state.wrappedValue.2 }, set: { state.wrappedValue.2 = $0 })
+                        state.0.wrappedValue ? "Form Field Label" : "",
+                        message: state.1.wrappedValue ? .error("Error message") : .none,
+                        messageHeight: state.2
                     ) {
                         customContentPlaceholder
                     }
 
-                    Text("Message height: \(state.wrappedValue.2)")
+                    Text("Message height: \(state.2.wrappedValue)")
 
                     HStack(spacing: .medium) {
                         Button("Toggle label") {
-                            state.wrappedValue.0.toggle()
+                            state.0.wrappedValue.toggle()
+                            state.3.wrappedValue.toggle()
                         }
                         Button("Toggle message") {
-                            state.wrappedValue.1.toggle()
+                            state.1.wrappedValue.toggle()
+                            state.3.wrappedValue.toggle()
                         }
                     }
+                    
+                    Spacer()
                 }
-                .animation(.default, value: state.wrappedValue.1)
+                .animation(.easeOut(duration: 1), value: state.3.wrappedValue)
             }
             .previewDisplayName("Live preview")
         }
