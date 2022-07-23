@@ -7,15 +7,13 @@ public struct ContentHeightReader<Content: View>: View {
     @ViewBuilder let content: Content
 
     public var body: some View {
-        ZStack {
-            content
-                .background(
-                    GeometryReader { proxy in
-                        Color.clear
-                            .preference(key: SizePreferenceKey.self, value: proxy.size.height)
-                    }
-                )
-        }
+        content
+            .background(
+                GeometryReader { proxy in
+                    Color.clear
+                        .preference(key: SizePreferenceKey.self, value: proxy.size.height)
+                }
+            )
         .onPreferenceChange(SizePreferenceKey.self) { preferences in
             self.height = preferences
         }

@@ -17,13 +17,14 @@ public struct FormFieldWrapper<Content: View, MessageContent: View>: View {
 
             content
 
-            ContentHeightReader(height: $messageHeight.animation(.easeOut(duration: 0.2))) {
+            ContentHeightReader(height: $messageHeight) {
                 VStack(alignment: .leading, spacing: 0) {
                     messageContent
 
                     FormFieldMessage(message)
                         .padding(.top, .xxSmall)
                 }
+                .animation(.easeOut(duration: 0.2), value: message)
             }
         }
     }
