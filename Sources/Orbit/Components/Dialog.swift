@@ -5,8 +5,6 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/overlay/dialog/)
 public struct Dialog: View {
 
-    public static let shadowColor = Color.inkNormal
-
     let illustration: Illustration.Image
     let title: String
     let description: String
@@ -30,17 +28,14 @@ public struct Dialog: View {
                 buttons
             }
         }
-        .padding(.medium)
-        .background(
-            RoundedRectangle(cornerRadius: .small)
-                .fill(Color.whiteNormal)
-                .shadow(color: Self.shadowColor.opacity(0.7), radius: .xxxLarge, x: 0, y: .xxxLarge / 2)
-        )
         .frame(maxWidth: Layout.readableMaxWidth / 2)
+        .padding(.medium)
+        .background(Color.whiteDarker)
+        .clipShape(shape)
+        .elevation(.level4)
         .padding(.xLarge)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.inkNormal.opacity(0.45))
-        .edgesIgnoringSafeArea(.all)
+        .background(Color.inkNormal.opacity(0.45).edgesIgnoringSafeArea(.all))
         .accessibilityElement(children: .contain)
     }
 
@@ -71,6 +66,10 @@ public struct Dialog: View {
                 ButtonLink(tertiaryButton.label, style: style.buttonLinkStyle, size: .button, action: tertiaryButton.action)
                     .accessibility(.dialogButtonTertiary)
         }
+    }
+
+    var shape: some InsettableShape {
+        RoundedRectangle(cornerRadius: .small)
     }
 }
 
@@ -148,7 +147,7 @@ struct DialogPreviews: PreviewProvider {
     }
 
     static var storybook: some View {
-        VStack(spacing: .xxLarge) {
+        VStack(spacing: 0) {
             content
         }
     }
