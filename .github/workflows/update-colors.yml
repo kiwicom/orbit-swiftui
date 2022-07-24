@@ -1,4 +1,4 @@
-name: Design Tokens Updater
+name: Update Colors
 
 on:
   schedule:
@@ -15,8 +15,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Today env
         run: echo "TODAY=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
-      - name: Update Tokens
-        run: bash .github/tokens-updater.sh ${{ env.pr_label }}
+      - name: Update Color Tokens
+        run: bash .github/update-colors.sh ${{ env.pr_label }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: tibdex/github-app-token@v1
@@ -30,7 +30,7 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
           labels: |
             ${{ env.pr_label }}
-          title: Design Tokens Update on ${{ env.TODAY }}
+          title: Design Tokens Colors Update on ${{ env.TODAY }}
           body: ""
           base: main
           branch: tokens-autoupdate

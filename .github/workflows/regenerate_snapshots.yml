@@ -1,4 +1,4 @@
-name: Snapshot Updater
+name: Regenerate Snapshots
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ jobs:
           token: ${{ secrets.SNAPSHOT_PUSH_TOKEN }}
       - name: generate
         run: |
-          Automation/generate_snapshots.sh
+          Automation/regenerate_snapshots.sh
       - name: upload
         run: |
             git config --global user.name "Mobile Automation"

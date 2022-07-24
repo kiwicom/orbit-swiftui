@@ -1,4 +1,4 @@
-name: Flags Updater
+name: Update Country Flags
 
 on:
   push:
