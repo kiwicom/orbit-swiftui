@@ -405,7 +405,7 @@ struct ListChoicePreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        VStack {
+        VStack(spacing: 0) {
             ListChoice(title, description: description, icon: .grid) {
                 customContentPlaceholder
             } headerContent: {
@@ -443,7 +443,6 @@ struct ListChoicePreviews: PreviewProvider {
             }
             .border(Color.cloudLight)
         }
-        .padding(.medium)
         .fixedSize(horizontal: false, vertical: true)
         .background(Color.whiteNormal)
         .previewDisplayName("Sizing")

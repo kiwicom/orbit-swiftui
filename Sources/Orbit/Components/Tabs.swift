@@ -101,7 +101,7 @@ public struct Tabs<Content: View>: View {
 
     @ViewBuilder func activeTabBackground(style: Tab.TabStyle) -> some View {
         VStack(spacing: 0) {
-            Color.whiteNormal
+            Color.whiteDarker
             underline(style: style)
                 .frame(height: underlineHeight * sizeCategory.ratio)
         }
@@ -175,6 +175,7 @@ struct TabsPreviews: PreviewProvider {
             equalSingleline
             storybookLive
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -187,7 +188,6 @@ struct TabsPreviews: PreviewProvider {
                 Tab("Four")
             }
         }
-        .padding(.medium)
     }
 
     static var standaloneIntrinsic: some View {
@@ -197,11 +197,10 @@ struct TabsPreviews: PreviewProvider {
                 Tab("Two", style: .default)
             }
         }
-        .padding(.medium)
     }
 
     static var storybook: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: .xLarge) {
             standaloneIntrinsic
             standalone
             intrinsicMultiline
@@ -219,7 +218,6 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
         }
-        .padding(.medium)
         .previewDisplayName("Intrinsic distribution, multiline")
     }
 
@@ -231,7 +229,6 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All")
             }
         }
-        .padding(.medium)
         .previewDisplayName("Intrinsic distribution, no multiline")
     }
 
@@ -243,7 +240,6 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
         }
-        .padding(.medium)
         .previewDisplayName("Equal distribution, multiline")
     }
 
@@ -255,7 +251,6 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
         }
-        .padding(.medium)
         .previewDisplayName("Equal distribution, no multiline")
     }
 
@@ -274,12 +269,12 @@ struct TabsPreviews: PreviewProvider {
                 }
             }
         }
-        .padding(.medium)
         .previewDisplayName("Live Preview")
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 }
 
@@ -294,6 +289,7 @@ struct TabsDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

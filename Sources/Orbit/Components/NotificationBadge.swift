@@ -95,6 +95,7 @@ struct NotificationBadgePreviews: PreviewProvider {
             storybookGradient
             storybookMix
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -103,7 +104,6 @@ struct NotificationBadgePreviews: PreviewProvider {
             NotificationBadge("9")
             NotificationBadge("")  // EmptyView
         }
-        .padding(.medium)
     }
 
     static var sizing: some View {
@@ -112,7 +112,6 @@ struct NotificationBadgePreviews: PreviewProvider {
                 NotificationBadge("\(Int(state.wrappedValue))")
             }
         }
-        .padding(.medium)
         .previewDisplayName("Bage displays height")
     }
 
@@ -130,7 +129,6 @@ struct NotificationBadgePreviews: PreviewProvider {
             statusBadges(.warning)
             statusBadges(.critical)
         }
-        .padding(.medium)
     }
 
     static var storybookGradient: some View {
@@ -139,7 +137,6 @@ struct NotificationBadgePreviews: PreviewProvider {
             gradientBadge(.bundleMedium)
             gradientBadge(.bundleTop)
         }
-        .padding(.medium)
         .previewDisplayName("Gradient")
     }
 
@@ -163,12 +160,12 @@ struct NotificationBadgePreviews: PreviewProvider {
                 NotificationBadge(.sfSymbol("ant.fill"))
             }
         }
-        .padding(.medium)
         .previewDisplayName("Mix")
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 
     static func badges(_ style: Badge.Style) -> some View {
@@ -176,7 +173,6 @@ struct NotificationBadgePreviews: PreviewProvider {
             NotificationBadge(.grid, style: style)
             NotificationBadge("1", style: style)
         }
-        .padding(.medium)
     }
 
     static func statusBadges(_ status: Status) -> some View {
@@ -205,6 +201,7 @@ struct NotificationBadgeDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

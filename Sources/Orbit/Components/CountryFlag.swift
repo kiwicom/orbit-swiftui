@@ -84,12 +84,12 @@ struct CountryFlagPreviews: PreviewProvider {
             unknown
             storybook
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         CountryFlag("cz")
-            .padding(.medium)
     }
 
     static var unknown: some View {
@@ -97,7 +97,6 @@ struct CountryFlagPreviews: PreviewProvider {
             CountryFlag("")
             CountryFlag("some invalid identifier")
         }
-        .padding(.medium)
         .previewDisplayName("Unknown")
     }
     
@@ -138,11 +137,11 @@ struct CountryFlagPreviews: PreviewProvider {
                 CountryFlag("us", size: .custom(60))
             }
         }
-        .padding()
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 }
 

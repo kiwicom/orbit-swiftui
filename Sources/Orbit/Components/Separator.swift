@@ -93,12 +93,12 @@ struct SeparatorPreviews: PreviewProvider {
             storybook
             storybookMix
         }
+        .padding(.vertical, .medium)
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         Separator()
-            .padding(.medium)
     }
 
     static var storybook: some View {
@@ -106,7 +106,6 @@ struct SeparatorPreviews: PreviewProvider {
             Separator()
             Separator("Separator with label")
         }
-        .padding(.medium)
     }
 
     static var storybookMix: some View {
@@ -116,11 +115,11 @@ struct SeparatorPreviews: PreviewProvider {
             Separator("Hairline thickness", thickness: .hairline)
             Separator("Custom thickness", thickness: .custom(.xSmall))
         }
-        .padding(.medium)
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.vertical, .medium)
     }
 }
 
@@ -135,6 +134,7 @@ struct SeparatorDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.vertical, .medium)
         .previewLayout(.sizeThatFits)
     }
 

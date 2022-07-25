@@ -189,6 +189,6 @@ struct ScreenLayoutModifierPreviews: PreviewProvider {
             }
         }
         .screenLayout()
-        .background(Color.cloudNormal)
+        .background(Color.screen)
     }
 }

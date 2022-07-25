@@ -32,7 +32,7 @@ public struct TileButtonStyle: SwiftUI.ButtonStyle {
             case (let backgroundColor?, true):          return backgroundColor.active
             case (let backgroundColor?, false):         return backgroundColor.normal
             case (.none, true):                         return .whiteHover
-            case (.none, false):                        return .whiteNormal
+            case (.none, false):                        return .whiteDarker
         }
     }
 }
@@ -275,6 +275,7 @@ struct TilePreviews: PreviewProvider {
             storybook
             storybookMix
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -301,14 +302,12 @@ struct TilePreviews: PreviewProvider {
                 }
             }
         }
-        .padding(.medium)
         .fixedSize(horizontal: false, vertical: true)
         .previewDisplayName("Sizing")
     }
 
     static var standalone: some View {
         Tile(title, description: description, icon: .grid)
-            .padding(.medium)
             .previewDisplayName("Standalone")
     }
 
@@ -322,7 +321,6 @@ struct TilePreviews: PreviewProvider {
                 customContentPlaceholder
             }
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var storybookMix: some View {
@@ -348,11 +346,11 @@ struct TilePreviews: PreviewProvider {
                 showBorder: false
             )
         }
-        .padding(.medium)
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 }
 
@@ -367,6 +365,7 @@ struct TileDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

@@ -113,6 +113,7 @@ struct CarrierLogoPreviews: PreviewProvider {
             standalone
             content
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -121,7 +122,6 @@ struct CarrierLogoPreviews: PreviewProvider {
             CarrierLogo(images: [square, plane1, plane2, plane3])
             CarrierLogo(images: []) // EmptyView
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var content: some View {
@@ -153,10 +153,10 @@ struct CarrierLogoPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .xxLarge) {
             content
         }
-        .padding(.medium)
     }
 
     static var snapshot: some View {
         standalone
+            .padding(.medium)
     }
 }

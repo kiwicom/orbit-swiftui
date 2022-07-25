@@ -188,13 +188,13 @@ struct CheckboxPreviews: PreviewProvider {
             content(standalone: false)
             content(standalone: true)
         }
+        .padding(.medium)
         .previewLayout(PreviewLayout.sizeThatFits)
     }
 
     static var standalone: some View {
         StateWrapper(initialState: true) { isSelected in
             checkbox(standalone: false, state: .normal, checked: isSelected.wrappedValue)
-                .padding(.medium)
         }
     }
 
@@ -207,6 +207,7 @@ struct CheckboxPreviews: PreviewProvider {
 
     static var snapshot: some View {
         content(standalone: false)
+            .padding(.medium)
     }
 
     static func content(standalone: Bool) -> some View {
@@ -223,7 +224,6 @@ struct CheckboxPreviews: PreviewProvider {
                 checkbox(standalone: standalone, state: .disabled, checked: true)
             }
         }
-        .padding(.medium)
     }
 
     static func checkbox(standalone: Bool, state: Checkbox.State, checked: Bool) -> some View {
@@ -246,6 +246,7 @@ struct CheckboxDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

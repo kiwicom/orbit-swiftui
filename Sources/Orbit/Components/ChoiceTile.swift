@@ -280,6 +280,7 @@ struct ChoiceTilePreviews: PreviewProvider {
             storybookCentered
             storybookMix
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -293,7 +294,6 @@ struct ChoiceTilePreviews: PreviewProvider {
         ) {
             customContentPlaceholder
         }
-        .padding(.medium)
     }
 
     static var sizing: some View {
@@ -320,7 +320,6 @@ struct ChoiceTilePreviews: PreviewProvider {
             }
         }
         .fixedSize(horizontal: false, vertical: true)
-        .padding(.medium)
         .background(Color.whiteNormal)
         .previewDisplayName("Sizing")
     }
@@ -337,18 +336,17 @@ struct ChoiceTilePreviews: PreviewProvider {
         ) {
             customContentPlaceholder
         }
-        .padding(.medium)
         .previewDisplayName("Centered")
     }
 
     static var storybook: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: .medium) {
             content
         }
     }
 
     static var storybookCentered: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: .medium) {
             contentCentered
         }
     }
@@ -363,6 +361,8 @@ struct ChoiceTilePreviews: PreviewProvider {
                     isSelected: isSelected.wrappedValue,
                     message: .help("Info multiline and very very very very long message")
                 ) {
+                    isSelected.wrappedValue.toggle()
+                } content: {
                     customContentPlaceholder
                 }
             }
@@ -373,17 +373,22 @@ struct ChoiceTilePreviews: PreviewProvider {
                     isSelected: isSelected.wrappedValue,
                     message: .warning("Warning multiline and very very very very long message")
                 ) {
+                    isSelected.wrappedValue.toggle()
+                } content: {
                     customContentPlaceholder
                 }
             }
             StateWrapper(initialState: false) { isSelected in
-                ChoiceTile(isSelected: isSelected.wrappedValue) {
+                ChoiceTile(
+                    isSelected: isSelected.wrappedValue
+                ) {
+                    isSelected.wrappedValue.toggle()
+                } content: {
                     Color.greenLight
                         .overlay(Text("Custom content, no header"))
                 }
             }
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var content: some View {
@@ -414,6 +419,7 @@ struct ChoiceTilePreviews: PreviewProvider {
             Separator()
             standaloneCentered
         }
+        .padding(.medium)
     }
 
     static func choiceTile(titleStyle: Heading.Style, showHeader: Bool, isError: Bool, isSelected: Bool) -> some View {
@@ -431,7 +437,6 @@ struct ChoiceTilePreviews: PreviewProvider {
                 customContentPlaceholder
             }
         }
-        .padding(.medium)
     }
 
     static func choiceTileCentered(titleStyle: Heading.Style, showIllustration: Bool, isError: Bool, isSelected: Bool) -> some View {
@@ -452,7 +457,6 @@ struct ChoiceTilePreviews: PreviewProvider {
                 customContentPlaceholder
             }
         }
-        .padding(.medium)
     }
 }
 
@@ -468,6 +472,7 @@ struct ChoiceTileDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

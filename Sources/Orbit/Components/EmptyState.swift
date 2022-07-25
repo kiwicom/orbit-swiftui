@@ -84,6 +84,7 @@ struct EmptyStatePreviews: PreviewProvider {
             subtle
             noAction
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -99,20 +100,18 @@ struct EmptyStatePreviews: PreviewProvider {
 
     static var standalone: some View {
         EmptyState(title, description: description, illustration: .noResults, action: .button(button))
-            .padding(.medium)
     }
     
     static var subtle: some View {
         EmptyState(title, description: description, illustration: .error404, action: .button(button, style: .primarySubtle))
-            .padding(.medium)
     }
     
     static var noAction: some View {
         EmptyState(title, description: description, illustration: .offline)
-            .padding(.medium)
     }
 
     static var snapshot: some View {
         standalone
+            .padding(.medium)
     }
 }

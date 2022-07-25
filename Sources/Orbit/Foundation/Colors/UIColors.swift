@@ -174,6 +174,10 @@ public extension UIColor {
     static let whiteNormal = fromResource(named: "White")
     /// Orbit White Active color.
     static let whiteActive = fromResource(named: "White Active")
+    /// Orbit White Darker color.
+    static let whiteDarker = fromResource(named: "White Darker")
     /// Orbit White Hover color.
     static let whiteHover = fromResource(named: "White Hover")
+    /// Orbit White Lighter color.
+    static let whiteLighter = fromResource(named: "White Lighter")
 }

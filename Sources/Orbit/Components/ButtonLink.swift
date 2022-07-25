@@ -160,6 +160,7 @@ struct ButtonLinkPreviews: PreviewProvider {
 
             snapshotsCustom
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -169,7 +170,6 @@ struct ButtonLinkPreviews: PreviewProvider {
             ButtonLink("") // EmptyView
             ButtonLink()   // EmptyView
         }
-        .padding(.medium)
     }
 
     static var sizing: some View {
@@ -208,7 +208,6 @@ struct ButtonLinkPreviews: PreviewProvider {
             }
             .border(Color.cloudNormal)
         }
-        .padding(.medium)
     }
 
     static var storybook: some View {
@@ -224,7 +223,6 @@ struct ButtonLinkPreviews: PreviewProvider {
                 ButtonLink("ButtonLink Critical", style: .critical, icon: .alertCircle)
             }
         }
-        .padding(.medium)
     }
     
     static var storybookStatus: some View {
@@ -234,7 +232,6 @@ struct ButtonLinkPreviews: PreviewProvider {
             ButtonLink("ButtonLink Warning", style: .status(.warning), icon: .alert)
             ButtonLink("ButtonLink Critical", style: .status(.critical), icon: .alertCircle)
         }
-        .padding(.medium)
     }
     
     static var storybookSizes: some View {
@@ -246,32 +243,29 @@ struct ButtonLinkPreviews: PreviewProvider {
             ButtonLink("ButtonLink button size", icon: .baggageSet, size: .button)
                 .border(Color.cloudNormal)
         }
-        .padding(.medium)
     }
 
-    static var snapshotsCustom: some View {
-        Group {
-            ButtonLink(
-                "Custom <u>formatted</u> <ref>ref</ref> <applink1>https://localhost</applink1>",
-                style: .custom(colors: (normal: .blueDark, active: .blueNormal)),
-                icon: .kiwicom
-            )
-            .previewDisplayName("Custom")
+    @ViewBuilder static var snapshotsCustom: some View {
+        ButtonLink(
+            "Custom <u>formatted</u> <ref>ref</ref> <applink1>https://localhost</applink1>",
+            style: .custom(colors: (normal: .blueDark, active: .blueNormal)),
+            icon: .kiwicom
+        )
+        .previewDisplayName("Custom")
 
-            ButtonLink(icon: .kiwicom)
-                .background(Color.blueLight)
-                .padding(.vertical)
-                .previewDisplayName("Icon only")
-            
-            ButtonLink("Flag", icon: .countryFlag("us"))
-                .padding(.vertical)
-                .previewDisplayName("Country flag")
-        }
-        .padding(.horizontal)
+        ButtonLink(icon: .kiwicom)
+            .background(Color.blueLight)
+            .padding(.vertical)
+            .previewDisplayName("Icon only")
+
+        ButtonLink("Flag", icon: .countryFlag("us"))
+            .padding(.vertical)
+            .previewDisplayName("Country flag")
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 }
 
@@ -287,6 +281,7 @@ struct ButtonLinkDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

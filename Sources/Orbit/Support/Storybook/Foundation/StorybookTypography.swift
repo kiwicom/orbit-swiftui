@@ -18,6 +18,7 @@ struct StorybookTypography {
 }
 
 struct StorybookTypographyPreviews: PreviewProvider {
+    
     static var previews: some View {
         PreviewWrapper {
             StorybookTypography.storybook

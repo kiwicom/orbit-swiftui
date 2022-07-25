@@ -53,10 +53,9 @@ struct TileGroupPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-
             Tile("Standalone Tile", icon: .grid)
-                .padding(.medium)
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -64,7 +63,6 @@ struct TileGroupPreviews: PreviewProvider {
         TileGroup {
             tiles
         }
-        .padding(.medium)
     }
 
     static var storybook: some View {
@@ -84,5 +82,6 @@ struct TileGroupPreviews: PreviewProvider {
 
     static var snapshot: some View {
         standalone
+            .padding(.medium)
     }
 }

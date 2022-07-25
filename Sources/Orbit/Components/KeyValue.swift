@@ -73,6 +73,7 @@ struct KeyValuePreviews: PreviewProvider {
             standalone
             storybook
         }
+        .padding(.medium)
         .previewLayout(PreviewLayout.sizeThatFits)
     }
 
@@ -83,7 +84,6 @@ struct KeyValuePreviews: PreviewProvider {
             KeyValue("")        // EmptyView
             KeyValue(value: "") // EmptyView
         }
-        .padding(.medium)
     }
 
     static var storybook: some View {
@@ -105,11 +105,11 @@ struct KeyValuePreviews: PreviewProvider {
                 KeyValue("Leading very long key", value: longValue, alignment: .leading)
             }
         }
-        .padding(.medium)
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 }
 

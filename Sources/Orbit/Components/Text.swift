@@ -270,12 +270,12 @@ struct TextPreviews: PreviewProvider {
             attributedTextSnapshots
             attributedTextInteractive
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         Text("Plain text with no formatting")
-            .padding(.medium)
             .previewDisplayName("Standalone")
     }
 
@@ -296,7 +296,6 @@ struct TextPreviews: PreviewProvider {
             .border(Color.cloudDarker, width: .hairline)
         }
         .frame(width: 150)
-        .padding(.medium)
     }
 
     @ViewBuilder static var sizes: some View {
@@ -326,7 +325,6 @@ struct TextPreviews: PreviewProvider {
                 text("Text Bold Extra Large", size: .xLarge, weight: .bold)
             }
         }
-        .padding(.medium)
         .previewDisplayName("Sizes")
     }
 
@@ -357,7 +355,6 @@ struct TextPreviews: PreviewProvider {
                 text("Text Bold Extra Large with a very very very very large and multine content", size: .xLarge, weight: .bold)
             }
         }
-        .padding(.medium)
         .previewDisplayName("Multiline")
     }
 
@@ -398,7 +395,6 @@ struct TextPreviews: PreviewProvider {
                     .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
             }
         }
-        .padding()
         .previewLayout(.sizeThatFits)
         .previewDisplayName("Custom")
     }
@@ -478,7 +474,6 @@ struct TextPreviews: PreviewProvider {
                     .border(Color.cloudDark)
                 }
             }
-            .padding()
             .previewDisplayName("Live Preview")
             .previewLayout(.sizeThatFits)
         }
@@ -507,14 +502,13 @@ struct TextPreviews: PreviewProvider {
                 lineSpacing: .small
             )
         }
-        .padding(.medium)
-        .background(Color.cloudLight)
         .previewDisplayName("Attributed Text")
         .previewLayout(.sizeThatFits)
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 
     @ViewBuilder static func text(_ content: String, size: Text.Size, weight: Font.Weight) -> some View {
@@ -537,6 +531,7 @@ struct TextDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -549,7 +544,6 @@ struct TextDynamicTypePreviews: PreviewProvider {
             }
             .border(Color.cloudDarker, width: .hairline)
         }
-        .padding(.xSmall)
 
         TextPreviews.storybook
     }

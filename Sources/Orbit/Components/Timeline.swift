@@ -67,6 +67,7 @@ struct TimelinePreviews: PreviewProvider {
             standalone
             storybookMix
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -107,7 +108,6 @@ struct TimelinePreviews: PreviewProvider {
                 description: "Arrive at your destination"
             )
         }
-        .padding(.medium)
     }
 
     static var storybook: some View {
@@ -146,11 +146,11 @@ struct TimelinePreviews: PreviewProvider {
                 }
             }
         }
-        .padding(.medium)
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 
     static let steps: [TimelineStepModel] = [
@@ -263,6 +263,7 @@ struct TimelineDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

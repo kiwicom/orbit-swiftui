@@ -39,6 +39,7 @@ public struct Storybook: View {
                 }
                 .hidden()
             )
+            .background(Color.whiteNormal.edgesIgnoringSafeArea(.all))
             .navigationBarItems(trailing: darkModeSwitch)
             .navigationBarTitle("Orbit Storybook", displayMode: .large)
         }

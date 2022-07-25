@@ -207,6 +207,7 @@ struct ToastPreviews: PreviewProvider {
             standaloneWrapper
             storybook
         }
+        .padding(.xLarge)
         .previewLayout(.sizeThatFits)
 
         PreviewWrapper {
@@ -216,12 +217,11 @@ struct ToastPreviews: PreviewProvider {
 
     static var standalone: some View {
         ToastContent(description, icon: .grid)
-            .padding(.xLarge)
+
     }
 
     static var standaloneWrapper: some View {
         ToastWrapper(description, icon: .checkCircle, progress: 0.6)
-            .padding(.xLarge)
             .previewDisplayName("ToastWrapper")
     }
 
@@ -233,7 +233,6 @@ struct ToastPreviews: PreviewProvider {
             ToastContent(description, progress: 1.1)
             ToastContent("Toast shows a brief message that's clear & understandable.", icon: .checkCircle, progress: 0.6)
         }
-        .padding(.medium)
         .padding(.top, .large)
         .padding(.bottom, .xxxLarge)
     }
@@ -257,6 +256,7 @@ struct ToastPreviews: PreviewProvider {
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 }
 
@@ -271,6 +271,7 @@ struct ToastDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.xLarge)
         .previewLayout(.sizeThatFits)
     }
 

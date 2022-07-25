@@ -298,12 +298,12 @@ struct ButtonPreviews: PreviewProvider {
             storybookGradient
             storybookMix
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         Button("Button", icon: .grid)
-            .padding(.medium)
     }
 
     static var standaloneCombinations: some View {
@@ -317,7 +317,6 @@ struct ButtonPreviews: PreviewProvider {
             Button(.arrowUp)
                 .fixedSize()
         }
-        .padding(.medium)
     }
 
     static var sizing: some View {
@@ -344,7 +343,6 @@ struct ButtonPreviews: PreviewProvider {
                 }
             }
         }
-        .padding(.medium)
         .previewDisplayName("Sizing")
     }
 
@@ -356,7 +354,6 @@ struct ButtonPreviews: PreviewProvider {
             buttons(.critical)
             buttons(.criticalSubtle)
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var storybookStatus: some View {
@@ -366,7 +363,6 @@ struct ButtonPreviews: PreviewProvider {
             statusButtonStack(.warning)
             statusButtonStack(.critical)
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var storybookGradient: some View {
@@ -375,7 +371,6 @@ struct ButtonPreviews: PreviewProvider {
             buttons(.gradient(.bundleMedium)).previewDisplayName("Bundle Medium")
             buttons(.gradient(.bundleTop)).previewDisplayName("Bundle Top")
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var storybookMix: some View {
@@ -384,7 +379,6 @@ struct ButtonPreviews: PreviewProvider {
             Button("Button with Flag", icon: .countryFlag("cz"))
             Button("Button with Image", icon: .image(.orbit(.facebook)))
         }
-        .padding(.medium)
     }
 
     static var snapshot: some View {
@@ -457,6 +451,7 @@ struct ButtonDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -464,6 +459,5 @@ struct ButtonDynamicTypePreviews: PreviewProvider {
         ButtonPreviews.standaloneCombinations
         ButtonPreviews.sizing
         ButtonPreviews.buttons(.primary)
-            .padding(.medium)
     }
 }

@@ -10,7 +10,6 @@ public struct Switch: View {
     public static let dotDiameter: CGFloat = 10
     
     static let borderColor = Color(white: 0.2, opacity: 0.25)
-    static let shadowColor: Color = .inkNormal.opacity(0.2)
 
     @Environment(\.sizeCategory) var sizeCategory
     @Binding private var isOn: Bool
@@ -40,7 +39,7 @@ public struct Switch: View {
     @ViewBuilder var indicator: some View {
         Circle()
             .frame(width: circleDiameter, height: circleDiameter)
-            .foregroundColor(.whiteNormal)
+            .foregroundColor(.whiteDarker)
             .elevation(isEnabled ? .custom(opacity: 0.25, radius: 1.4, y: 1.2) : nil)
             .overlay(
                 Circle()
@@ -102,6 +101,7 @@ struct SwitchPreviews: PreviewProvider {
             standalone
             storybook
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -109,7 +109,6 @@ struct SwitchPreviews: PreviewProvider {
         StateWrapper(initialState: true) { state in
             Switch(isOn: state)
         }
-        .padding(.medium)
     }
 
     static var storybook: some View {
@@ -127,11 +126,11 @@ struct SwitchPreviews: PreviewProvider {
                 switchView(isOn: false, hasIcon: true, isEnabled: false)
             }
         }
-        .padding(.medium)
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 
     static func switchView(isOn: Bool, hasIcon: Bool = false, isEnabled: Bool = true) -> some View {
@@ -152,6 +151,7 @@ struct SwitchDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

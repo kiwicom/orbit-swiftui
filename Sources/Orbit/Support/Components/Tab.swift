@@ -52,7 +52,7 @@ extension Tab {
 
         public var startColor: Color {
             switch self {
-                case .default:                              return .whiteNormal
+                case .default:                              return .whiteDarker
                 case .underlined(let color):                return color
                 case .underlinedGradient(let gradient):     return gradient.startColor
             }
@@ -60,7 +60,7 @@ extension Tab {
 
         public var endColor: Color {
             switch self {
-                case .default:                              return .whiteNormal
+                case .default:                              return .whiteDarker
                 case .underlined(let color):                return color
                 case .underlinedGradient(let gradient):     return gradient.endColor
             }

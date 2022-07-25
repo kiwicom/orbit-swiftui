@@ -172,6 +172,7 @@ struct TagPreviews: PreviewProvider {
             storybook
             sizing
         }
+        .padding(.medium)
         .previewLayout(PreviewLayout.sizeThatFits)
     }
 
@@ -180,7 +181,6 @@ struct TagPreviews: PreviewProvider {
             Tag(label, icon: .grid, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
             Tag("") // EmptyView
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static var storybook: some View {
@@ -199,11 +199,10 @@ struct TagPreviews: PreviewProvider {
                 }
             }
         }
-        .padding(.medium)
     }
 
     static var sizing: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: .large) {
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
                     Button("Button small height \(state.wrappedValue)", size: .small)
@@ -215,11 +214,11 @@ struct TagPreviews: PreviewProvider {
                 }
             }
         }
-        .padding(.medium)
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 
     @ViewBuilder static func stack(style: Tag.Style, isFocused: Bool) -> some View {
@@ -264,6 +263,7 @@ struct TagDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

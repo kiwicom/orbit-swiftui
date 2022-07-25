@@ -230,6 +230,7 @@ struct IconPreviews: PreviewProvider {
             alignments
             storybookMix
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -279,7 +280,6 @@ struct IconPreviews: PreviewProvider {
                 .overlay(Separator(thickness: .hairline), alignment: .bottom)
             }
         }
-        .padding(.medium)
     }
     
     static func headingStack(_ style: Heading.Style) -> some View {
@@ -328,7 +328,6 @@ struct IconPreviews: PreviewProvider {
             textStack(.xLarge)
             textStack(.custom(50))
         }
-        .padding(.medium)
         .previewDisplayName("Calculated sizes for Text")
     }
     
@@ -340,7 +339,6 @@ struct IconPreviews: PreviewProvider {
             labelTextStack(.xLarge)
             labelTextStack(.custom(50))
         }
-        .padding(.medium)
         .previewDisplayName("Calculated sizes for Text in Label")
     }
     
@@ -355,7 +353,6 @@ struct IconPreviews: PreviewProvider {
             headingStack(.displaySubtitle)
             headingStack(.display)
         }
-        .padding(.medium)
         .previewDisplayName("Calculated sizes for Heading")
     }
     
@@ -370,20 +367,22 @@ struct IconPreviews: PreviewProvider {
             labelHeadingStack(.displaySubtitle)
             labelHeadingStack(.display)
         }
-        .padding(.medium)
         .previewDisplayName("Calculated sizes for Heading in Label")
     }
 
     static var storybookMix: some View {
-        VStack(spacing: .small) {
+        VStack(alignment: .leading, spacing: .small) {
+            Text("SF Symbol vs Orbit sizes (custom-font-label)", size: .small)
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
                     Icon(sfSymbol: sfSymbol, size: .custom(Text.Size.xLarge.iconSize), color: nil)
                     Icon(sfSymbol: sfSymbol, size: .fontSize(Text.Size.xLarge.value), color: nil)
                     Icon(sfSymbol: sfSymbol, size: .label(.text(.xLarge)), color: nil)
+                    Color.clear.frame(width: .xSmall, height: 1)
                     Icon(.informationCircle, size: .custom(Text.Size.xLarge.iconSize), color: nil)
                     Icon(.informationCircle, size: .fontSize(Text.Size.xLarge.value), color: nil)
                     Icon(.informationCircle, size: .label(.text(.xLarge)), color: nil)
+                    Color.clear.frame(width: .xSmall, height: 1)
                     Text("XLarge", size: .xLarge, color: nil)
                 }
                 .foregroundColor(.blueNormal)
@@ -396,16 +395,19 @@ struct IconPreviews: PreviewProvider {
                     Icon(sfSymbol: sfSymbol, size: .custom(Text.Size.small.iconSize), color: nil)
                     Icon(sfSymbol: sfSymbol, size: .fontSize(Text.Size.small.value), color: nil)
                     Icon(sfSymbol: sfSymbol, size: .label(.text(.small)), color: nil)
+                    Color.clear.frame(width: .xSmall, height: 1)
                     Icon(.informationCircle, size: .custom(Text.Size.small.iconSize), color: nil)
                     Icon(.informationCircle, size: .fontSize(Text.Size.small.value), color: nil)
                     Icon(.informationCircle, size: .label(.text(.small)), color: nil)
+                    Color.clear.frame(width: .xSmall, height: 1)
                     Text("Small", size: .small, color: nil)
                 }
                 .foregroundColor(.blueNormal)
                 .border(Color.cloudLightActive, width: .hairline)
             }
             .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
-            
+
+            Text("Flag - Image - SF Symbol sizes", size: .small)
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
                     Icon(countryCode: "cz", size: .xLarge)
@@ -417,7 +419,7 @@ struct IconPreviews: PreviewProvider {
                 .border(Color.cloudLightActive, width: .hairline)
             }
             .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
-            
+
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
                     Icon(countryCode: "cz", size: .small)
@@ -429,27 +431,30 @@ struct IconPreviews: PreviewProvider {
                 .border(Color.cloudLightActive, width: .hairline)
             }
             .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
-            
+
+            Text("Baseline alignment", size: .small)
             HStack(alignment: .firstTextBaseline) {
                 Group {
                     Text("O", size: .custom(30))
                     Icon(.informationCircle, size: .fontSize(30))
                     Icon(.informationCircle, size: .fontSize(8))
                     Text("O", size: .custom(8))
+                    Text("Text", size: .normal)
                 }
                 .border(Color.cloudLightActive, width: .hairline)
             }
             .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
-            
+
+            Text("Icon color override", size: .small)
             HStack(alignment: .firstTextBaseline) {
                 Icon(content: .grid, size: .xLarge)
                 Icon(content: .symbol(.grid, color: nil))
-                Icon(content: .symbol(.grid, color: .blueNormal), size: .small)
+                Icon(content: .symbol(.grid, color: .redNormal), size: .text(.small))
+                Text("Text", size: .small, color: nil)
             }
             .foregroundColor(.blueDark)
             .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
         }
-        .padding(.medium)
     }
 
     static var alignments: some View {
@@ -466,7 +471,6 @@ struct IconPreviews: PreviewProvider {
             }
             Label("Multiline\nlong\nLabel", icon: .grid, style: .text())
         }
-        .padding(.medium)
     }
 
     static var snapshot: some View {
@@ -475,6 +479,7 @@ struct IconPreviews: PreviewProvider {
             Separator()
             IconPreviews.storybookMix
         }
+        .padding(.medium)
     }
 }
 
@@ -489,6 +494,7 @@ struct IconDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

@@ -143,7 +143,7 @@ public extension Card {
         showBorder: Bool = true,
         titleStyle: Heading.Style = .title4,
         status: Status? = nil,
-        backgroundColor: Color? = .whiteNormal,
+        backgroundColor: Color? = .whiteDarker,
         contentLayout: CardContentLayout = .default(),
         contentAlignment: HorizontalAlignment = .leading,
         @ViewBuilder content: () -> Content
@@ -172,7 +172,7 @@ public extension Card {
         showBorder: Bool = true,
         titleStyle: Heading.Style = .title4,
         status: Status? = nil,
-        backgroundColor: Color? = .whiteNormal
+        backgroundColor: Color? = .whiteDarker
     ) where Content == EmptyView {
         self.init(
             title,
@@ -196,14 +196,14 @@ struct CardPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
                 .screenLayout()
-                .background(Color.cloudLight)
-
-            standaloneIntrinsic
 
             content
                 .screenLayout()
-                .background(Color.cloudLight)
+
+            standaloneIntrinsic
+                .padding(.medium)
         }
+        .background(Color.screen)
         .previewLayout(.sizeThatFits)
     }
 
@@ -222,8 +222,6 @@ struct CardPreviews: PreviewProvider {
             standalone
             content
         }
-        .screenLayout()
-        .background(Color.cloudLight)
     }
 
     static var standalone: some View {
@@ -250,8 +248,6 @@ struct CardPreviews: PreviewProvider {
             }
             .fixedSize(horizontal: true, vertical: false)
         }
-        .padding(.medium)
-        .background(Color.cloudNormal)
         .previewDisplayName("Standalone Intrinsic width")
     }
 
@@ -310,8 +306,6 @@ struct CardPreviews: PreviewProvider {
         ) {
             customContentPlaceholder
         }
-        .padding(.vertical, .medium)
-        .background(Color.cloudLight)
     }
     
     static var clear: some View {
@@ -334,7 +328,7 @@ struct CardPreviews: PreviewProvider {
     static var snapshot: some View {
         standalone
             .screenLayout()
-            .background(Color.cloudLight)
+            .background(Color.screen)
     }
 }
 

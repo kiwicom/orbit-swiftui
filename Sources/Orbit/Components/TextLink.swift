@@ -119,6 +119,7 @@ struct TextLinkPreviews: PreviewProvider {
             storybook
             storybookLive
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -133,7 +134,6 @@ struct TextLinkPreviews: PreviewProvider {
             ),
             bounds: .zero
         )
-        .padding(.medium)
         .frame(width: 100, height: 60)
     }
 
@@ -146,7 +146,6 @@ struct TextLinkPreviews: PreviewProvider {
             Text(link("Warning link"), linkColor: .status(.warning))
             Text(link("Critical link"), linkColor: .status(.critical))
         }
-        .padding(.medium)
     }
 
     static func link(_ content: String) -> String {
@@ -174,12 +173,12 @@ struct TextLinkPreviews: PreviewProvider {
                 Text("Tapped \(state.wrappedValue.0)x", color: .inkLight)
                 Text("Tapped \(state.wrappedValue.1)", color: .inkLight)
             }
-            .padding(.medium)
         }
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 }
 

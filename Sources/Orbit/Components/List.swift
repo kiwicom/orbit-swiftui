@@ -38,6 +38,7 @@ struct ListPreviews: PreviewProvider {
             storybook
             storybookMix
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -48,7 +49,6 @@ struct ListPreviews: PreviewProvider {
             ListItem(listItemText, icon: .symbol(.check, color: .greenNormal))
             ListItem(listItemText, icon: .none)
         }
-        .padding(.medium)
     }
 
     static var storybook: some View {
@@ -75,7 +75,6 @@ struct ListPreviews: PreviewProvider {
                 ListItem(listItemText, size: .large, style: .secondary)
             }
         }
-        .padding(.medium)
     }
 
     static var storybookMix: some View {
@@ -107,11 +106,11 @@ struct ListPreviews: PreviewProvider {
                 ListItem(listItemText, spacing: .small)
             }
         }
-        .padding(.medium)
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 }
 
