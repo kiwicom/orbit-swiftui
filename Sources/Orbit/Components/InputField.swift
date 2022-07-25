@@ -448,69 +448,68 @@ struct InputFieldLivePreviews: PreviewProvider {
         }
 
         var body: some View {
-            VStack(alignment: .leading, spacing: .medium) {
-                Heading("Heading", style: .title2)
-
-                Text("Some text, but also very long and multi-line to test that it works.")
-
-                InputField(
-                    "InputField",
-                    value: $textValue,
-                    suffix: .email,
-                    placeholder: "Placeholder",
-                    state: .disabled,
-                    message: message,
-                    suffixAction: {
-                        intValue = 1
-                    }
-                )
-
-                Text("Some text, but also very long and multi-line to test that it works.")
-
-                Spacer()
-
+            ScrollView {
                 VStack(alignment: .leading, spacing: .medium) {
-                    Text("InputField uppercasing the input, but not changing projected value:")
-                    
+                    Heading("Heading", style: .title2)
+
+                    Text("Some text, but also very long and multi-line to test that it works.")
+
                     InputField(
+                        "InputField",
                         value: $textValue,
-                        placeholder: "Uppercased",
-                        formatter: UppercaseAlphabetFormatter()
+                        suffix: .email,
+                        placeholder: "Placeholder",
+                        state: .disabled,
+                        message: message,
+                        suffixAction: {
+                            intValue = 1
+                        }
                     )
 
-                    Text("Number: \(intValue)")
+                    Text("Some text, but also very long and multi-line to test that it works.")
 
-                    InputField(
-                        value: $intValue,
-                        placeholder: "Decimal formatter",
-                        formatter: formatter
-                    )
-                }
+                    VStack(alignment: .leading, spacing: .medium) {
+                        Text("InputField uppercasing the input, but not changing projected value:")
 
-                Spacer()
-                Spacer()
+                        InputField(
+                            value: $textValue,
+                            placeholder: "Uppercased",
+                            formatter: UppercaseAlphabetFormatter()
+                        )
 
-                Button("Change") {
-                    switch message {
-                        case .none:
-                            message = .normal("Secondary label")
-                        case .normal:
-                            message = .help(
-                                "Help message, but also very long and multi-line to test that it works."
-                            )
-                        case .help:
-                            message = .warning("Warning text")
-                        case .warning:
-                            message = .error(
-                                "Error message, also very long and multi-line to test that it works."
-                            )
-                        case .error:
-                            message = .none
+                        Text("Number: \(intValue)")
+
+                        InputField(
+                            value: $intValue,
+                            placeholder: "Decimal formatter",
+                            formatter: formatter
+                        )
+                    }
+
+                    Spacer(minLength: 0)
+
+                    Button("Change") {
+                        switch message {
+                            case .none:
+                                message = .normal("Secondary label")
+                            case .normal:
+                                message = .help(
+                                    "Help message, but also very long and multi-line to test that it works."
+                                )
+                            case .help:
+                                message = .warning("Warning text")
+                            case .warning:
+                                message = .error(
+                                    "Error message, also very long and multi-line to test that it works."
+                                )
+                            case .error:
+                                message = .none
+                        }
                     }
                 }
+                .animation(.easeOut(duration: 0.25), value: message)
+                .padding(.medium)
             }
-            .animation(.easeOut(duration: 0.25), value: message)
-            .padding()
             .previewDisplayName("Run Live Preview with Input Field")
         }
 
@@ -522,9 +521,7 @@ struct InputFieldLivePreviews: PreviewProvider {
     }
 
     static var securedWrapper: some View {
-
         StateWrapper(initialState: "textfield-should-respect-long-password-and-screen-bounds-1234567890") { state in
-
             VStack(alignment: .leading, spacing: .medium) {
                 Heading("Secured TextField with long init value", style: .title2)
 
