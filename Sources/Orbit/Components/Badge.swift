@@ -99,7 +99,7 @@ public extension Badge {
 
         @ViewBuilder public var background: some View {
             switch self {
-                case .light:                                Color.whiteNormal
+                case .light:                                Color.whiteDarker
                 case .lightInverted:                        Color.inkNormal
                 case .neutral:                              Color.cloudLight
                 case .status(.info, false):                 Color.blueLight
