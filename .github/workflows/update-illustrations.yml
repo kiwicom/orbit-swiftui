@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   
 env:
-  pr_label: "design-tokens-autoupdate"
+  pr_label: "update-illustrations"
 
 jobs:
   build:
