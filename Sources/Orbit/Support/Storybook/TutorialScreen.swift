@@ -41,7 +41,7 @@ struct TutorialScreen: View {
             .padding(.horizontal, .medium)
         }
         .padding(.vertical, .medium)
-        .background(Color.cloudLight)
+        .background(Color.screen)
     }
 }
 

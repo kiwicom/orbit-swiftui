@@ -170,6 +170,7 @@ struct HeadingPreviews: PreviewProvider {
             sizes
             multiline
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -193,7 +194,6 @@ struct HeadingPreviews: PreviewProvider {
             heading("Title 5", style: .title5)
             heading("Title 6", style: .title6)
         }
-        .padding(.medium)
     }
     
     static var multiline: some View {
@@ -209,12 +209,12 @@ struct HeadingPreviews: PreviewProvider {
             heading("Title 5 with a very very very very very large and multine content", style: .title5)
             heading("Title 6 with a very very very very very large and multine content", style: .title6)
         }
-        .padding(.medium)
         .previewDisplayName("Multiline")
     }
 
     static var snapshot: some View {
         sizes
+            .padding(.medium)
     }
 
     @ViewBuilder static func heading(_ content: String, style: Heading.Style) -> some View {
@@ -237,6 +237,7 @@ struct HeadingDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

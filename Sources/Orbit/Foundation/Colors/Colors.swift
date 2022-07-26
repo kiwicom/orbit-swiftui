@@ -174,6 +174,10 @@ public extension Color {
     static let whiteNormal = Color("White", bundle: .current)
     /// Orbit White Active color.
     static let whiteActive = Color("White Active", bundle: .current)
+    /// Orbit White Darker color.
+    static let whiteDarker = Color("White Darker", bundle: .current)
     /// Orbit White Hover color.
     static let whiteHover = Color("White Hover", bundle: .current)
+    /// Orbit White Lighter color.
+    static let whiteLighter = Color("White Lighter", bundle: .current)
 }

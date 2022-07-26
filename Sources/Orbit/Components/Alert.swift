@@ -227,6 +227,7 @@ struct AlertPreviews: PreviewProvider {
             primaryButtonOnly
             noButtons
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -239,27 +240,22 @@ struct AlertPreviews: PreviewProvider {
         ) {
             customContentPlaceholder
         }
-        .padding(.medium)
     }
 
     static var basic: some View {
         alerts(showIcons: true, isSuppressed: false)
-            .padding(.medium)
     }
 
     static var basicNoIcon: some View {
         alerts(showIcons: false, isSuppressed: false)
-            .padding(.medium)
     }
 
     static var suppressed: some View {
         alerts(showIcons: true, isSuppressed: true)
-            .padding(.medium)
     }
 
     static var suppressedNoIcon: some View {
         alerts(showIcons: false, isSuppressed: true)
-            .padding(.medium)
     }
 
     static func alert(_ title: String, status: Status, icon: Icon.Symbol, isSuppressed: Bool) -> some View {
@@ -293,7 +289,6 @@ struct AlertPreviews: PreviewProvider {
             Alert(icon: .informationCircle, buttons: Self.primaryConfiguration)
             Alert(buttons: Self.primaryConfiguration)
         }
-        .padding(.medium)
         .previewDisplayName("Primary buttons")
     }
     
@@ -312,7 +307,6 @@ struct AlertPreviews: PreviewProvider {
             Alert(title)
             Alert()
         }
-        .padding(.medium)
         .previewDisplayName("No buttons")
     }
 
@@ -353,13 +347,13 @@ struct AlertPreviews: PreviewProvider {
                     }
                 }
             }
-            .padding(.medium)
             .animation(.default, value: buttons.wrappedValue.isVisible)
         }
     }
 
     static var snapshot: some View {
         standalone
+            .padding(.medium)
     }
 }
 
@@ -375,6 +369,7 @@ struct AlertDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

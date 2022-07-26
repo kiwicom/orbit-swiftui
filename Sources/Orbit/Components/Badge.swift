@@ -99,7 +99,7 @@ public extension Badge {
 
         @ViewBuilder public var background: some View {
             switch self {
-                case .light:                                Color.whiteNormal
+                case .light:                                Color.whiteDarker
                 case .lightInverted:                        Color.inkNormal
                 case .neutral:                              Color.cloudLight
                 case .status(.info, false):                 Color.blueLight
@@ -146,6 +146,7 @@ struct BadgePreviews: PreviewProvider {
             storybookGradient
             storybookMix
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -155,7 +156,6 @@ struct BadgePreviews: PreviewProvider {
             Badge()    // EmptyView
             Badge("")  // EmptyView
         }
-        .padding(.medium)
     }
 
     static var sizing: some View {
@@ -176,7 +176,6 @@ struct BadgePreviews: PreviewProvider {
                 }
             }
         }
-        .padding(.medium)
     }
 
     static var storybook: some View {
@@ -198,7 +197,6 @@ struct BadgePreviews: PreviewProvider {
                 Badge("Very very very very very long badge")
             }
         }
-        .padding(.medium)
     }
 
     static var storybookGradient: some View {
@@ -207,7 +205,6 @@ struct BadgePreviews: PreviewProvider {
             gradientBadge(.bundleMedium)
             gradientBadge(.bundleTop)
         }
-        .padding(.medium)
         .previewDisplayName("Gradient")
     }
 
@@ -238,12 +235,12 @@ struct BadgePreviews: PreviewProvider {
                 Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
             }
         }
-        .padding(.medium)
         .previewDisplayName("Mix")
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 
     static func badges(_ style: Badge.Style) -> some View {
@@ -281,6 +278,7 @@ struct BadgeDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

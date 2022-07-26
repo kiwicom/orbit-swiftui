@@ -152,10 +152,11 @@ struct BadgeListPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            standaloneSmalSecondary
+            standaloneSmallSecondary
             storybook
             storybookMix
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -165,12 +166,10 @@ struct BadgeListPreviews: PreviewProvider {
             BadgeList()   // EmptyView
             BadgeList("") // EmptyView
         }
-        .padding(.medium)
     }
 
-    static var standaloneSmalSecondary: some View {
+    static var standaloneSmallSecondary: some View {
         BadgeList("Neutral BadgeList", icon: .grid, labelColor: .secondary, size: .small)
-            .padding(.medium)
     }
 
     static var storybook: some View {
@@ -190,7 +189,6 @@ struct BadgeListPreviews: PreviewProvider {
                 BadgeList(label, icon: .alertCircle, style: .status(.critical), labelColor: .secondary, size: .small)
             }
         }
-        .padding(.medium)
     }
 
     static var storybookMix: some View {
@@ -200,11 +198,11 @@ struct BadgeListPreviews: PreviewProvider {
             BadgeList("This is simple <ref>BadgeList</ref> item with custom image", icon: .image(.orbit(.facebook)), style: .status(.success))
             BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color", labelColor: .custom(.blueDark))
         }
-        .padding(.medium)
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 }
 
@@ -220,6 +218,7 @@ struct BadgeListDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

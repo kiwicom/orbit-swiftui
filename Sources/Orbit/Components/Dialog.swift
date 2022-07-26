@@ -5,8 +5,6 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/overlay/dialog/)
 public struct Dialog: View {
 
-    public static let shadowColor = Color.inkNormal
-
     let illustration: Illustration.Image
     let title: String
     let description: String
@@ -30,17 +28,14 @@ public struct Dialog: View {
                 buttons
             }
         }
-        .padding(.medium)
-        .background(
-            RoundedRectangle(cornerRadius: .small)
-                .fill(Color.whiteNormal)
-                .shadow(color: Self.shadowColor.opacity(0.7), radius: .xxxLarge, x: 0, y: .xxxLarge / 2)
-        )
         .frame(maxWidth: Layout.readableMaxWidth / 2)
+        .padding(.medium)
+        .background(Color.whiteDarker)
+        .clipShape(shape)
+        .elevation(.level4)
         .padding(.xLarge)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.inkNormal.opacity(0.45))
-        .edgesIgnoringSafeArea(.all)
+        .background(Color.inkNormal.opacity(0.45).edgesIgnoringSafeArea(.all))
         .accessibilityElement(children: .contain)
     }
 
@@ -71,6 +66,10 @@ public struct Dialog: View {
                 ButtonLink(tertiaryButton.label, style: style.buttonLinkStyle, size: .button, action: tertiaryButton.action)
                     .accessibility(.dialogButtonTertiary)
         }
+    }
+
+    var shape: some InsettableShape {
+        RoundedRectangle(cornerRadius: .small)
     }
 }
 
@@ -160,7 +159,6 @@ struct DialogPreviews: PreviewProvider {
             description: description1,
             buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
         )
-        .background(Color.whiteNormal)
     }
 
     static var critical: some View {
@@ -171,7 +169,6 @@ struct DialogPreviews: PreviewProvider {
             style: .critical,
             buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
         )
-        .background(Color.whiteNormal)
     }
 
     static var titleOnly: some View {
@@ -179,7 +176,6 @@ struct DialogPreviews: PreviewProvider {
             title: title1,
             buttons: .primaryAndSecondary("Main CTA", "Secondary")
         )
-        .background(Color.whiteNormal)
     }
 
     static var descriptionOnly: some View {
@@ -187,11 +183,11 @@ struct DialogPreviews: PreviewProvider {
             description: description1,
             buttons: .primary("Main CTA")
         )
-        .background(Color.whiteNormal)
     }
 
     static var snapshot: some View {
         normal
+            .background(Color.whiteNormal)
     }
 }
 

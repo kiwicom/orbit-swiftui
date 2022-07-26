@@ -10,7 +10,6 @@ struct StorybookIllustrations {
         LazyVStack(alignment: .leading, spacing: .xSmall) {
             stackContent(filter: filter)
         }
-        .padding(.medium)
     }
 
     @ViewBuilder static func stackContent(filter: String) -> some View {
@@ -32,12 +31,10 @@ struct StorybookIllustrations {
             .padding(.horizontal, .xxSmall)
             .padding(.vertical, .xSmall)
             .frame(maxWidth: .infinity)
-            .overlay(
-                RoundedRectangle(cornerRadius: BorderRadius.default)
-                    .stroke(Color.cloudDarker, lineWidth: .hairline)
-            )
+            .background(Color.whiteDarker)
+            .tileBorder(.plain)
         } else {
-            Color.whiteNormal
+            Color.whiteDarker
                 .frame(height: 1)
                 .padding(.horizontal, .xxSmall)
                 .padding(.vertical, .xSmall)
@@ -60,6 +57,7 @@ struct StorybookIllustrations {
 }
 
 struct StorybookIllustrationsPreviews: PreviewProvider {
+    
     static var previews: some View {
         PreviewWrapper {
             StorybookIllustrations.storybook()

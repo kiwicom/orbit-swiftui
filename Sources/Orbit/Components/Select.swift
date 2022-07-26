@@ -89,12 +89,12 @@ struct SelectPreviews: PreviewProvider {
             storybook
             storybookMix
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         Select(InputFieldPreviews.label, prefix: .grid, value: InputFieldPreviews.value)
-            .padding(.medium)
     }
 
     static var storybook: some View {
@@ -107,7 +107,6 @@ struct SelectPreviews: PreviewProvider {
             select(value: InputFieldPreviews.value, message: .help(InputFieldPreviews.helpMessage))
             select(value: InputFieldPreviews.value, message: .error(InputFieldPreviews.errorMessage))
         }
-        .padding(.medium)
     }
 
     static func select(value: String, message: MessageType) -> some View {
@@ -158,11 +157,11 @@ struct SelectPreviews: PreviewProvider {
                 )
             }
         }
-        .padding(.medium)
     }
 
     static var snapshot: some View {
         storybook
+            .padding(.medium)
     }
 }
 
@@ -225,6 +224,7 @@ struct SelectDynamicTypePreviews: PreviewProvider {
                 .environment(\.sizeCategory, .accessibilityExtraLarge)
                 .previewDisplayName("Dynamic Type - XL")
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 

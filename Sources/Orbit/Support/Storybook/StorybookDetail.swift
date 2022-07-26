@@ -18,23 +18,27 @@ struct StorybookDetail: View {
     }
 
     @ViewBuilder var detailView: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: .medium) {
-                if menuItem.tabs.count > 1 {
-                    Tabs(selectedIndex: $selectedTab) {
-                        ForEach(menuItem.tabs, id: \.self) { tab in
-                            Tab(tab)
-                        }
+        VStack(alignment: .leading, spacing: 0) {
+            if menuItem.tabs.count > 1 {
+                Tabs(selectedIndex: $selectedTab) {
+                    ForEach(menuItem.tabs, id: \.self) { tab in
+                        Tab(tab)
                     }
-                    .padding(.medium)
                 }
-
-                AnyView(
-                    detailContent
-                )
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.medium)
+                .overlay(Separator(), alignment: .bottom)
             }
+
+            // Erase required to fix runtime issues
+            AnyView(
+                ScrollView {
+                    detailContent
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .screenLayout(screenLayoutEdges)
+                }
+            )
         }
+        .background(background.edgesIgnoringSafeArea(.all))
         .overlay(topOverlay, alignment: .top)
         .navigationBarItems(trailing: darkModeSwitch)
         .navigationBarTitle("\(String(describing: menuItem).titleCased)", displayMode: .large)
@@ -102,7 +106,7 @@ struct StorybookDetail: View {
             case (.choiceTile, 1):          ChoiceTilePreviews.storybookCentered
             case (.choiceTile, 2):          ChoiceTilePreviews.storybookMix
             case (.countryFlag, _):         CountryFlagPreviews.storybook
-            case (.dialog, _):              DialogPreviews.content
+            case (.dialog, _):              DialogPreviews.storybook
             case (.emptyState, _):          EmptyStatePreviews.storybook
             case (.heading, _):             StorybookTypography.storybookHeading
             case (.horizontalScroll, _):    HorizontalScrollPreviews.storybook
@@ -154,6 +158,23 @@ struct StorybookDetail: View {
         }
     }
 
+    var background: Color {
+        switch(menuItem, selectedTab) {
+            case (.card, _):                return Color.screen
+            case (.horizontalScroll, _):    return Color.screen
+            case (.icons, _):               return Color.screen
+            case (.illustrations, _):       return Color.screen
+            default:                        return Color.whiteNormal
+        }
+    }
+
+    var screenLayoutEdges: Edge.Set {
+        switch(menuItem, selectedTab) {
+            case (.dialog, _):              return []
+            default:                        return .all
+        }
+    }
+
     init(menuItem: Storybook.Item, darkMode: Binding<Bool> = .constant(false)) {
         self.menuItem = menuItem
         self._darkMode = darkMode
@@ -161,6 +182,7 @@ struct StorybookDetail: View {
 }
 
 struct StorybookDetailPreviews: PreviewProvider {
+    
     static var previews: some View {
         PreviewWrapper {
             NavigationView {
