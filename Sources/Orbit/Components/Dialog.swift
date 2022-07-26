@@ -9,26 +9,28 @@ public struct Dialog: View {
     let title: String
     let description: String
     let style: Style
+    let alignment: HorizontalAlignment
     let buttonConfiguration: Buttons
 
     public var body: some View {
-        VStack(alignment: .center, spacing: .medium) {
-            Illustration(illustration, layout: .frame(maxHeight: 120))
-                .padding(.top, .medium)
+        VStack(alignment: alignment, spacing: .medium) {
+            Illustration(illustration, layout: .resizeable)
+                .frame(height: 120)
 
-            VStack(alignment: .center, spacing: .xSmall) {
-                Heading(title, style: .title3, alignment: .center)
+            VStack(alignment: alignment, spacing: .xSmall) {
+                Heading(title, style: .title3, alignment: .init(alignment))
                     .accessibility(.dialogTitle)
 
-                Text(description, color: .inkLight, alignment: .center)
+                Text(description, color: .inkLight, alignment: .init(alignment))
                     .accessibility(.dialogDescription)
             }
 
-            VStack(alignment: .center, spacing: .xSmall) {
+            VStack(spacing: .xSmall) {
                 buttons
             }
         }
         .frame(maxWidth: Layout.readableMaxWidth / 2)
+        .padding(.top, .xSmall)
         .padding(.medium)
         .background(Color.whiteDarker)
         .clipShape(shape)
@@ -82,12 +84,14 @@ extension Dialog {
         title: String = "",
         description: String = "",
         style: Style = .primary,
+        alignment: HorizontalAlignment = .leading,
         buttons: Buttons
     ) {
         self.illustration = illustration
         self.title = title
         self.description = description
         self.style = style
+        self.alignment = alignment
         self.buttonConfiguration = buttons
     }
 }
@@ -141,6 +145,7 @@ struct DialogPreviews: PreviewProvider {
 
     @ViewBuilder static var content: some View {
         normal
+        centered
         critical
         titleOnly
         descriptionOnly
@@ -159,6 +164,17 @@ struct DialogPreviews: PreviewProvider {
             description: description1,
             buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
         )
+    }
+
+    static var centered: some View {
+        Dialog(
+            illustration: .noNotification,
+            title: title1,
+            description: description1,
+            alignment: .center,
+            buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
+        )
+        .background(Color.whiteNormal)
     }
 
     static var critical: some View {
