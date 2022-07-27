@@ -61,7 +61,7 @@ if __name__ == "__main__":
     
     zip_name = "font.zip"
     unzipped_folder_name = "orbit-icons-font"
-    urllib.request.urlretrieve("https://unpkg.com/@kiwicom/orbit-components%40latest/orbit-icons-font.zip", zip_name)  
+    urllib.request.urlretrieve("https://unpkg.com/@kiwicom/orbit-components@latest/orbit-icons-font.zip", zip_name)
     shutil.unpack_archive(zip_name, ".")    
     
     shutil.copyfile(f"{unzipped_folder_name}/orbit-icons.ttf", icon_font_path)    
