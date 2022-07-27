@@ -42,7 +42,7 @@ content_template = '''{{
 
 sizes = [200, 400, 600]
 illustration_url_template = 'https://images.kiwi.com/illustrations/0x{size}/{illustrationName}.png'
-source_filename = 'Illustrations'
+source_filename = 'Illustrations.swift'
 
 def uppercase_first_letter(s):
   return s[:1].upper() + s[1:] if str else ''
@@ -60,10 +60,11 @@ def get_illustration_names(codePath):
 
 def download_illustration(illustrationName, sizeIndex, assetDownloadedPath):
   url = illustration_url_template.format(illustrationName = illustrationName, size = sizes[sizeIndex-1])
-  path = assetDownloadedPath.joinpath("{illustrationName}@{sizeIndex}x.png".format(illustrationName = illustrationName, sizeIndex = sizeIndex))
-  print("Downloading [{url}] -> [{path}] ...".format(url = url, path = path))
+  filename = f'{illustrationName}@{sizeIndex}x.png'
+  filepath = assetDownloadedPath.joinpath(filename)
+  print(f'Downloading [{url}] -> [{filename}] ...')
   try:
-    urlretrieve(url, path)
+    urlretrieve(url, filepath)
   except Exception as e:
     print(f'❗️{e}')
 
@@ -75,12 +76,12 @@ def illustrationsFolderPath():
   else:
     # Find source files folder
     iosRootPath = pathlib.Path(__file__).absolute().parent.parent.parent
-    return next(iosRootPath.rglob(f'{source_filename}.swift')).parent
+    return next(iosRootPath.rglob(source_filename)).parent
 
 if __name__ == "__main__":
 
   folder = illustrationsFolderPath()
-  codePath = folder.joinpath(f'{source_filename}.swift')
+  codePath = folder.joinpath(source_filename)
   assetDownloadedPath = folder.joinpath('../Illustrations/Illustrations.xcassets/')
   assetDownloadedPath.mkdir(exist_ok = True)
 
@@ -93,6 +94,8 @@ if __name__ == "__main__":
     with open(folderPath.joinpath('Contents.json'), "w") as contentFile:
       contentFile.write(content_template.format(name = illustration))
 
+    time.sleep(1)
+
     for sizeIndex in range(1, 4):
       download_illustration(illustration, sizeIndex, folderPath)
-      time.sleep(0.3)
+      time.sleep(0.5)
