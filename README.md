@@ -48,6 +48,12 @@ The online documentation contains instructions on how to get started with the li
 
 You can also build this documentation locally in Xcode (Product -> Build Documentation).
 
+## App Store
+
+The app can also be downloaded from the App Store.
+
+<a href="https://apps.apple.com/us/app/orbit-storybook/id1622225639?itsct=apps_box_badge&amp;itscg=30200" style="display: inline-block; overflow: hidden; border-radius: 13px; width: 150px; height: 50px;"><img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=150x50&amp;releaseDate=1651708800&h=19b81a69aa959af2af398c51dc84737a" alt="Download on the App Store" style="border-radius: 13px; width: 150px; height: 50px;"></a>
+
 ## Contributing
 
 Feel free to create bug reports and feature requests via the Issues tab.
