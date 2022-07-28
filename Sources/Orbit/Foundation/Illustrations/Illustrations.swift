@@ -10,23 +10,27 @@ public extension Illustration {
         case airportShuttle
         case airportTransport
         case airportTransportTaxi
+        case appKiwi
         case appQRCode
         case baggageDrop
         case boarding
         case boardingPass
         case businessTravel
         case cabinBaggage
+        case chatbot
         case desktopSearch
         case enjoyApp
         case error
         case error404
         case eVisa
+        case fareLock
         case fastTrack
         case fastTrackMan
         case feedback
         case groundTransport404
         case help
         case improve
+        case insurance
         case inviteAFriend
         case login
         case lounge
@@ -37,6 +41,8 @@ public extension Illustration {
         case netVerify
         case noBookings
         case noFavoriteFlights
+        case nomad
+        case nomadNeutral
         case noNotification
         case noResults
         case offline
@@ -56,6 +62,7 @@ public extension Illustration {
         case seating
         case specialAssistance
         case success
+        case ticketFlexi
         case time
         case timelineBoarding
         case timelineDropBaggage
