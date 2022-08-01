@@ -43,6 +43,8 @@ public extension Icon {
         case android
         /// Orbit `anywhere` icon symbol.
         case anywhere
+        /// Orbit `appNotification` icon symbol.
+        case appNotification
         /// Orbit `apple` icon symbol.
         case apple
         /// Orbit `arrowDown` icon symbol.
@@ -81,6 +83,8 @@ public extension Icon {
         case boardingGate
         /// Orbit `boat` icon symbol.
         case boat
+        /// Orbit `bookmark` icon symbol.
+        case bookmark
         /// Orbit `bug` icon symbol.
         case bug
         /// Orbit `bus` icon symbol.
@@ -135,6 +139,8 @@ public extension Icon {
         case circleFilled
         /// Orbit `circleSmall` icon symbol.
         case circleSmall
+        /// Orbit `circleSmallEmpty` icon symbol.
+        case circleSmallEmpty
         /// Orbit `city` icon symbol.
         case city
         /// Orbit `clock` icon symbol.
@@ -147,6 +153,8 @@ public extension Icon {
         case cocktail
         /// Orbit `code` icon symbol.
         case code
+        /// Orbit `code.kiwi` icon symbol.
+        case code.kiwi
         /// Orbit `coffee` icon symbol.
         case coffee
         /// Orbit `colorPicker` icon symbol.
@@ -157,8 +165,14 @@ public extension Icon {
         case coloredImessage
         /// Orbit `coloredMessenger` icon symbol.
         case coloredMessenger
+        /// Orbit `coloredSignal` icon symbol.
+        case coloredSignal
+        /// Orbit `coloredTelegram` icon symbol.
+        case coloredTelegram
         /// Orbit `coloredTwitter` icon symbol.
         case coloredTwitter
+        /// Orbit `coloredViber` icon symbol.
+        case coloredViber
         /// Orbit `coloredWhatsapp` icon symbol.
         case coloredWhatsapp
         /// Orbit `compare` icon symbol.
@@ -201,6 +215,10 @@ public extension Icon {
         case exchange
         /// Orbit `facebook` icon symbol.
         case facebook
+        /// Orbit `familyAll` icon symbol.
+        case familyAll
+        /// Orbit `familyHalf` icon symbol.
+        case familyHalf
         /// Orbit `feedback` icon symbol.
         case feedback
         /// Orbit `filters` icon symbol.
@@ -229,8 +247,12 @@ public extension Icon {
         case genderMan
         /// Orbit `genderWoman` icon symbol.
         case genderWoman
+        /// Orbit `github` icon symbol.
+        case github
         /// Orbit `google` icon symbol.
         case google
+        /// Orbit `googlePlay` icon symbol.
+        case googlePlay
         /// Orbit `gpsFixed` icon symbol.
         case gpsFixed
         /// Orbit `gpsIos` icon symbol.
@@ -245,6 +267,8 @@ public extension Icon {
         case gym
         /// Orbit `history` icon symbol.
         case history
+        /// Orbit `inbox` icon symbol.
+        case inbox
         /// Orbit `infant` icon symbol.
         case infant
         /// Orbit `informationCircle` icon symbol.
@@ -267,6 +291,8 @@ public extension Icon {
         case kiwicomCare
         /// Orbit `kiwicomGuarantee` icon symbol.
         case kiwicomGuarantee
+        /// Orbit `kiwicomNoGuarantee` icon symbol.
+        case kiwicomNoGuarantee
         /// Orbit `leisure` icon symbol.
         case leisure
         /// Orbit `link` icon symbol.
@@ -339,8 +365,12 @@ public extension Icon {
         case musicalInstruments
         /// Orbit `newWindow` icon symbol.
         case newWindow
-        /// Orbit `noKiwicomGuarantee` icon symbol.
-        case noKiwicomGuarantee
+        /// Orbit `noFlash` icon symbol.
+        case noFlash
+        /// Orbit `noRefund` icon symbol.
+        case noRefund
+        /// Orbit `noRescheduling` icon symbol.
+        case noRescheduling
         /// Orbit `nonstop` icon symbol.
         case nonstop
         /// Orbit `notification` icon symbol.
@@ -381,12 +411,16 @@ public extension Icon {
         case pharmacy
         /// Orbit `phone` icon symbol.
         case phone
+        /// Orbit `placeholder` icon symbol.
+        case placeholder
         /// Orbit `playground` icon symbol.
         case playground
         /// Orbit `plus` icon symbol.
         case plus
         /// Orbit `plusCircle` icon symbol.
         case plusCircle
+        /// Orbit `plusMinus` icon symbol.
+        case plusMinus
         /// Orbit `pool` icon symbol.
         case pool
         /// Orbit `powerPlug` icon symbol.
@@ -457,10 +491,14 @@ public extension Icon {
         case showMore
         /// Orbit `sightseeing` icon symbol.
         case sightseeing
+        /// Orbit `sign` icon symbol.
+        case sign
         /// Orbit `smoking` icon symbol.
         case smoking
         /// Orbit `smokingOff` icon symbol.
         case smokingOff
+        /// Orbit `sms` icon symbol.
+        case sms
         /// Orbit `sort` icon symbol.
         case sort
         /// Orbit `spa` icon symbol.
@@ -469,6 +507,8 @@ public extension Icon {
         case sportEquipment
         /// Orbit `sports` icon symbol.
         case sports
+        /// Orbit `stackoverflow` icon symbol.
+        case stackoverflow
         /// Orbit `starEmpty` icon symbol.
         case starEmpty
         /// Orbit `starFull` icon symbol.
@@ -533,274 +573,297 @@ public extension Icon {
         case wifi
         /// Orbit `wifiOff` icon symbol.
         case wifiOff
+        /// Orbit `youtube` icon symbol.
+        case youtube
 
         public var value: String {
             switch self {
                 case .none: return ""
-                case .accommodation: return "\u{e085}"
-                case .accountCircle: return "\u{e134}"
-                case .admin: return "\u{e253}"
-                case .ai: return "\u{e254}"
-                case .airConditioning: return "\u{e184}"
-                case .airplane: return "\u{0061}"
-                case .airplaneDown: return "\u{e101}"
-                case .airplaneLanding: return "\u{0025}"
-                case .airplaneReturn: return "\u{e159}"
-                case .airplaneTakeoff: return "\u{002a}"
-                case .airplaneUp: return "\u{e160}"
-                case .airplaneUpOff: return "\u{e102}"
-                case .airportSecurity: return "\u{e035}"
-                case .alert: return "\u{e07f}"
-                case .alertCircle: return "\u{0055}"
-                case .alertOctagon: return "\u{e207}"
-                case .all: return "\u{e061}"
-                case .android: return "\u{e255}"
-                case .anywhere: return "\u{0067}"
-                case .apple: return "\u{e199}"
-                case .arrowDown: return "\u{e0a0}"
-                case .arrowUp: return "\u{e09f}"
-                case .atm: return "\u{e02c}"
-                case .attachment: return "\u{e104}"
-                case .baggageCabin: return "\u{e106}"
-                case .baggageCabinNone: return "\u{e174}"
-                case .baggageChecked10: return "\u{e204}"
-                case .baggageChecked20: return "\u{e205}"
-                case .baggageChecked30: return "\u{0068}"
-                case .baggageCheckedNone: return "\u{e021}"
-                case .baggagePersonal: return "\u{e156}"
-                case .baggagePersonalNone: return "\u{e175}"
-                case .baggageRecheck: return "\u{e105}"
-                case .baggageSet: return "\u{e107}"
-                case .baggageStorage: return "\u{e147}"
-                case .billingDetails: return "\u{e108}"
-                case .boardingGate: return "\u{e00a}"
-                case .boat: return "\u{e139}"
-                case .bug: return "\u{004e}"
-                case .bus: return "\u{003c}"
-                case .cake: return "\u{e187}"
-                case .calendar: return "\u{0066}"
-                case .calendarAnytime: return "\u{0041}"
-                case .calendarRange: return "\u{007a}"
-                case .calendarTripLength: return "\u{e109}"
-                case .camera: return "\u{e017}"
-                case .car: return "\u{e03a}"
-                case .carDoor: return "\u{e185}"
-                case .carRental: return "\u{e030}"
-                case .chart: return "\u{e176}"
-                case .chat: return "\u{0039}"
-                case .check: return "\u{0056}"
-                case .checkCircle: return "\u{0053}"
-                case .chevronDoubleLeft: return "\u{e202}"
-                case .chevronDoubleRight: return "\u{e203}"
-                case .chevronDown: return "\u{e09d}"
-                case .chevronLeft: return "\u{0021}"
-                case .chevronRight: return "\u{e01f}"
-                case .chevronUp: return "\u{006d}"
-                case .child: return "\u{e050}"
-                case .childFriendly: return "\u{e05d}"
-                case .circle: return "\u{e013}"
-                case .circleEmpty: return "\u{e179}"
-                case .circleFilled: return "\u{e180}"
-                case .circleSmall: return "\u{e148}"
-                case .city: return "\u{0063}"
-                case .clock: return "\u{0065}"
-                case .close: return "\u{0058}"
-                case .closeCircle: return "\u{0074}"
-                case .cocktail: return "\u{e038}"
-                case .code: return "\u{e141}"
-                case .coffee: return "\u{e02f}"
-                case .colorPicker: return "\u{e200}"
-                case .coloredFacebook: return "\u{e257}"
-                case .coloredImessage: return "\u{e260}"
-                case .coloredMessenger: return "\u{e259}"
-                case .coloredTwitter: return "\u{e261}"
-                case .coloredWhatsapp: return "\u{e262}"
-                case .compare: return "\u{e155}"
-                case .compass: return "\u{e07e}"
-                case .contactEmail: return "\u{0076}"
-                case .creditCard: return "\u{0075}"
-                case .customerSupport: return "\u{e194}"
-                case .dashboard: return "\u{e252}"
-                case .deals: return "\u{e142}"
-                case .dealsV2: return "\u{e206}"
-                case .deviceDesktop: return "\u{e158}"
-                case .deviceMobile: return "\u{e157}"
-                case .diamond: return "\u{e197}"
-                case .document: return "\u{e110}"
-                case .download: return "\u{e014}"
-                case .duplicate: return "\u{e154}"
-                case .edit: return "\u{0045}"
-                case .editOff: return "\u{e00d}"
-                case .email: return "\u{0047}"
-                case .entertainment: return "\u{e06e}"
-                case .exchange: return "\u{e032}"
-                case .facebook: return "\u{e002}"
-                case .feedback: return "\u{e140}"
-                case .filters: return "\u{0026}"
-                case .flash: return "\u{e220}"
-                case .flightDirect: return "\u{0043}"
-                case .flightMulticity: return "\u{005d}"
-                case .flightNomad: return "\u{e150}"
-                case .flightReturn: return "\u{0073}"
-                case .flightServices: return "\u{e049}"
-                case .fuel: return "\u{e183}"
-                case .fullScreen: return "\u{e0a6}"
-                case .fullScreenOff: return "\u{e111}"
-                case .gallery: return "\u{e064}"
-                case .genderMan: return "\u{e152}"
-                case .genderWoman: return "\u{e151}"
-                case .google: return "\u{e003}"
-                case .gpsFixed: return "\u{0022}"
-                case .gpsIos: return "\u{e161}"
-                case .gpsNotFixed: return "\u{e191}"
-                case .gpsOff: return "\u{e01c}"
-                case .grid: return "\u{e06d}"
-                case .gym: return "\u{e089}"
-                case .history: return "\u{e153}"
-                case .infant: return "\u{e186}"
-                case .informationCircle: return "\u{0052}"
-                case .instagram: return "\u{e112}"
-                case .insurance: return "\u{0027}"
-                case .insuranceConfirmed: return "\u{0072}"
-                case .insuranceOff: return "\u{003a}"
-                case .invoice: return "\u{e113}"
-                case .itemCompleted: return "\u{e149}"
-                case .kiwicom: return "\u{e143}"
-                case .kiwicomCare: return "\u{e144}"
-                case .kiwicomGuarantee: return "\u{e145}"
-                case .leisure: return "\u{e178}"
-                case .link: return "\u{e057}"
-                case .linkedin: return "\u{e114}"
-                case .list: return "\u{e115}"
-                case .location: return "\u{0024}"
-                case .locationA: return "\u{006a}"
-                case .locationAdd: return "\u{003f}"
-                case .locationB: return "\u{006b}"
-                case .locationC: return "\u{005e}"
-                case .locationD: return "\u{005f}"
-                case .locationE: return "\u{0060}"
-                case .locationF: return "\u{007b}"
-                case .locationG: return "\u{007c}"
-                case .locationH: return "\u{007d}"
-                case .locationI: return "\u{007e}"
-                case .locationJ: return "\u{005c}"
-                case .lock: return "\u{e169}"
-                case .lockOpen: return "\u{e170}"
-                case .logout: return "\u{e0a7}"
-                case .lounge: return "\u{e04e}"
-                case .map: return "\u{e001}"
-                case .markdown: return "\u{e201}"
-                case .meal: return "\u{e116}"
-                case .menuHamburger: return "\u{0044}"
-                case .menuKebab: return "\u{e117}"
-                case .menuMeatballs: return "\u{e07d}"
-                case .messages: return "\u{e135}"
-                case .messagesOutline: return "\u{e136}"
-                case .minus: return "\u{e118}"
-                case .minusCircle: return "\u{e119}"
-                case .money: return "\u{0040}"
-                case .moneyTransferIn: return "\u{e167}"
-                case .moneyTransferOut: return "\u{e168}"
-                case .moon: return "\u{e090}"
-                case .musicalInstruments: return "\u{e086}"
-                case .newWindow: return "\u{e05e}"
-                case .noKiwicomGuarantee: return "\u{e208}"
-                case .nonstop: return "\u{e120}"
-                case .notification: return "\u{e018}"
-                case .notificationAdd: return "\u{e195}"
-                case .notificationOff: return "\u{e023}"
-                case .notificationOn: return "\u{e025}"
-                case .onlineCheckin: return "\u{e00f}"
-                case .onlineCheckinOff: return "\u{e00e}"
-                case .outlook: return "\u{e181}"
-                case .paid: return "\u{e121}"
-                case .parking: return "\u{e03e}"
-                case .partners: return "\u{e164}"
-                case .passenger: return "\u{0077}"
-                case .passengerAdd: return "\u{0029}"
-                case .passengerOutline: return "\u{e137}"
-                case .passengerRemove: return "\u{e173}"
-                case .passengers: return "\u{0028}"
-                case .passport: return "\u{0051}"
-                case .pet: return "\u{e043}"
-                case .pharmacy: return "\u{e034}"
-                case .phone: return "\u{e058}"
-                case .playground: return "\u{e053}"
-                case .plus: return "\u{e122}"
-                case .plusCircle: return "\u{e027}"
-                case .pool: return "\u{e123}"
-                case .powerPlug: return "\u{e06f}"
-                case .powerPlugOff: return "\u{0033}"
-                case .priorityBoarding: return "\u{e08d}"
-                case .profit: return "\u{e166}"
-                case .promoCode: return "\u{e081}"
-                case .qrCode: return "\u{e193}"
-                case .questionCircle: return "\u{0046}"
-                case .radar: return "\u{e198}"
-                case .radiusSearch: return "\u{0064}"
-                case .refund: return "\u{e165}"
-                case .relax: return "\u{e046}"
-                case .reload: return "\u{0032}"
-                case .remove: return "\u{0057}"
-                case .replace: return "\u{0049}"
-                case .restaurant: return "\u{0031}"
-                case .routeNoStops: return "\u{006f}"
-                case .routeOneStop: return "\u{0071}"
-                case .routeTwoStops: return "\u{0070}"
-                case .search: return "\u{e07c}"
-                case .seat: return "\u{e02a}"
-                case .seatAisle: return "\u{e189}"
-                case .seatExtraLegroom: return "\u{e190}"
-                case .seatWindow: return "\u{e188}"
-                case .security: return "\u{e146}"
-                case .selfTransfer: return "\u{e020}"
-                case .send: return "\u{004d}"
-                case .settings: return "\u{0038}"
-                case .share: return "\u{e016}"
-                case .shareAndroid: return "\u{e068}"
-                case .shareIos: return "\u{e163}"
-                case .shopping: return "\u{e036}"
-                case .showLess: return "\u{e124}"
-                case .showMore: return "\u{e125}"
-                case .sightseeing: return "\u{e015}"
-                case .smoking: return "\u{e037}"
-                case .smokingOff: return "\u{e126}"
-                case .sort: return "\u{e171}"
-                case .spa: return "\u{e04a}"
-                case .sportEquipment: return "\u{e127}"
-                case .sports: return "\u{e042}"
-                case .starEmpty: return "\u{e08c}"
-                case .starFull: return "\u{0023}"
-                case .subway: return "\u{e06a}"
-                case .suitcase: return "\u{e02d}"
-                case .sun: return "\u{e096}"
-                case .sunrise: return "\u{e08e}"
-                case .taxi: return "\u{003b}"
-                case .terminal: return "\u{e196}"
-                case .termsAndConditions: return "\u{e0a4}"
-                case .thumbDown: return "\u{e128}"
-                case .thumbUp: return "\u{e01b}"
-                case .ticket: return "\u{002e}"
-                case .ticketOutline: return "\u{e138}"
-                case .timelapse: return "\u{e000}"
-                case .timer: return "\u{e177}"
-                case .tips: return "\u{e047}"
-                case .toilets: return "\u{e129}"
-                case .train: return "\u{e028}"
-                case .transmission: return "\u{e182}"
-                case .trip: return "\u{e130}"
-                case .twitter: return "\u{e131}"
-                case .uber: return "\u{e162}"
-                case .upload: return "\u{e172}"
-                case .userGroup: return "\u{e192}"
-                case .visa: return "\u{e132}"
-                case .visibility: return "\u{e005}"
-                case .visibilityOff: return "\u{e004}"
-                case .walk: return "\u{e052}"
-                case .wallet: return "\u{e133}"
-                case .wheelchair: return "\u{e088}"
-                case .wifi: return "\u{e062}"
-                case .wifiOff: return "\u{005a}"
+                case .accommodation: return "\u{4389}"
+                case .accountCircle: return "\u{7884}"
+                case .admin: return "\u{1251}"
+                case .ai: return "\u{3493}"
+                case .airConditioning: return "\u{3120}"
+                case .airplane: return "\u{2620}"
+                case .airplaneDown: return "\u{5587}"
+                case .airplaneLanding: return "\u{3208}"
+                case .airplaneReturn: return "\u{5270}"
+                case .airplaneTakeoff: return "\u{6458}"
+                case .airplaneUp: return "\u{5323}"
+                case .airplaneUpOff: return "\u{7086}"
+                case .airportSecurity: return "\u{4505}"
+                case .alert: return "\u{1366}"
+                case .alertCircle: return "\u{6774}"
+                case .alertOctagon: return "\u{7716}"
+                case .all: return "\u{3456}"
+                case .android: return "\u{5941}"
+                case .anywhere: return "\u{4517}"
+                case .appNotification: return "\u{6839}"
+                case .apple: return "\u{7217}"
+                case .arrowDown: return "\u{7613}"
+                case .arrowUp: return "\u{2436}"
+                case .atm: return "\u{2564}"
+                case .attachment: return "\u{3491}"
+                case .baggageCabin: return "\u{6767}"
+                case .baggageCabinNone: return "\u{2261}"
+                case .baggageChecked10: return "\u{4378}"
+                case .baggageChecked20: return "\u{7799}"
+                case .baggageChecked30: return "\u{5619}"
+                case .baggageCheckedNone: return "\u{7228}"
+                case .baggagePersonal: return "\u{2567}"
+                case .baggagePersonalNone: return "\u{3665}"
+                case .baggageRecheck: return "\u{6137}"
+                case .baggageSet: return "\u{2615}"
+                case .baggageStorage: return "\u{6846}"
+                case .billingDetails: return "\u{7410}"
+                case .boardingGate: return "\u{3753}"
+                case .boat: return "\u{7136}"
+                case .bookmark: return "\u{7882}"
+                case .bug: return "\u{1524}"
+                case .bus: return "\u{1349}"
+                case .cake: return "\u{1352}"
+                case .calendar: return "\u{3492}"
+                case .calendarAnytime: return "\u{6361}"
+                case .calendarRange: return "\u{2629}"
+                case .calendarTripLength: return "\u{6457}"
+                case .camera: return "\u{6780}"
+                case .car: return "\u{7870}"
+                case .carDoor: return "\u{2538}"
+                case .carRental: return "\u{7708}"
+                case .chart: return "\u{2461}"
+                case .chat: return "\u{5538}"
+                case .check: return "\u{7679}"
+                case .checkCircle: return "\u{3088}"
+                case .chevronDoubleLeft: return "\u{3849}"
+                case .chevronDoubleRight: return "\u{6819}"
+                case .chevronDown: return "\u{2454}"
+                case .chevronLeft: return "\u{7467}"
+                case .chevronRight: return "\u{2505}"
+                case .chevronUp: return "\u{7267}"
+                case .child: return "\u{4353}"
+                case .childFriendly: return "\u{2054}"
+                case .circle: return "\u{3649}"
+                case .circleEmpty: return "\u{5105}"
+                case .circleFilled: return "\u{7771}"
+                case .circleSmall: return "\u{2593}"
+                case .circleSmallEmpty: return "\u{2340}"
+                case .city: return "\u{4376}"
+                case .clock: return "\u{4469}"
+                case .close: return "\u{6292}"
+                case .closeCircle: return "\u{6824}"
+                case .cocktail: return "\u{5605}"
+                case .code: return "\u{2157}"
+                case .code.kiwi: return "\u{4288}"
+                case .coffee: return "\u{2012}"
+                case .colorPicker: return "\u{7743}"
+                case .coloredFacebook: return "\u{8217}"
+                case .coloredImessage: return "\u{5611}"
+                case .coloredMessenger: return "\u{6309}"
+                case .coloredSignal: return "\u{5871}"
+                case .coloredTelegram: return "\u{6530}"
+                case .coloredTwitter: return "\u{5150}"
+                case .coloredViber: return "\u{6742}"
+                case .coloredWhatsapp: return "\u{6477}"
+                case .compare: return "\u{7994}"
+                case .compass: return "\u{3496}"
+                case .contactEmail: return "\u{3270}"
+                case .creditCard: return "\u{2078}"
+                case .customerSupport: return "\u{2517}"
+                case .dashboard: return "\u{6778}"
+                case .deals: return "\u{6765}"
+                case .dealsV2: return "\u{7369}"
+                case .deviceDesktop: return "\u{4347}"
+                case .deviceMobile: return "\u{2738}"
+                case .diamond: return "\u{7976}"
+                case .document: return "\u{5574}"
+                case .download: return "\u{3397}"
+                case .duplicate: return "\u{2541}"
+                case .edit: return "\u{1955}"
+                case .editOff: return "\u{3284}"
+                case .email: return "\u{2584}"
+                case .entertainment: return "\u{3470}"
+                case .exchange: return "\u{6511}"
+                case .facebook: return "\u{7439}"
+                case .familyAll: return "\u{6827}"
+                case .familyHalf: return "\u{6514}"
+                case .feedback: return "\u{7645}"
+                case .filters: return "\u{4295}"
+                case .flash: return "\u{7677}"
+                case .flightDirect: return "\u{7388}"
+                case .flightMulticity: return "\u{7555}"
+                case .flightNomad: return "\u{7576}"
+                case .flightReturn: return "\u{6831}"
+                case .flightServices: return "\u{8005}"
+                case .fuel: return "\u{3660}"
+                case .fullScreen: return "\u{7552}"
+                case .fullScreenOff: return "\u{1253}"
+                case .gallery: return "\u{1338}"
+                case .genderMan: return "\u{4414}"
+                case .genderWoman: return "\u{1515}"
+                case .github: return "\u{7470}"
+                case .google: return "\u{5463}"
+                case .googlePlay: return "\u{1760}"
+                case .gpsFixed: return "\u{4387}"
+                case .gpsIos: return "\u{2120}"
+                case .gpsNotFixed: return "\u{3444}"
+                case .gpsOff: return "\u{7518}"
+                case .grid: return "\u{4487}"
+                case .gym: return "\u{1373}"
+                case .history: return "\u{7152}"
+                case .inbox: return "\u{1658}"
+                case .infant: return "\u{1284}"
+                case .informationCircle: return "\u{1512}"
+                case .instagram: return "\u{5971}"
+                case .insurance: return "\u{5298}"
+                case .insuranceConfirmed: return "\u{7867}"
+                case .insuranceOff: return "\u{3827}"
+                case .invoice: return "\u{7621}"
+                case .itemCompleted: return "\u{1610}"
+                case .kiwicom: return "\u{1252}"
+                case .kiwicomCare: return "\u{7561}"
+                case .kiwicomGuarantee: return "\u{2694}"
+                case .kiwicomNoGuarantee: return "\u{7890}"
+                case .leisure: return "\u{5037}"
+                case .link: return "\u{7930}"
+                case .linkedin: return "\u{1944}"
+                case .list: return "\u{7354}"
+                case .location: return "\u{4090}"
+                case .locationA: return "\u{2761}"
+                case .locationAdd: return "\u{3201}"
+                case .locationB: return "\u{2693}"
+                case .locationC: return "\u{7862}"
+                case .locationD: return "\u{5061}"
+                case .locationE: return "\u{2677}"
+                case .locationF: return "\u{2691}"
+                case .locationG: return "\u{7150}"
+                case .locationH: return "\u{5151}"
+                case .locationI: return "\u{6611}"
+                case .locationJ: return "\u{1894}"
+                case .lock: return "\u{1313}"
+                case .lockOpen: return "\u{5935}"
+                case .logout: return "\u{7110}"
+                case .lounge: return "\u{2118}"
+                case .map: return "\u{7983}"
+                case .markdown: return "\u{5908}"
+                case .meal: return "\u{2640}"
+                case .menuHamburger: return "\u{2009}"
+                case .menuKebab: return "\u{2176}"
+                case .menuMeatballs: return "\u{7162}"
+                case .messages: return "\u{2718}"
+                case .messagesOutline: return "\u{6790}"
+                case .minus: return "\u{1972}"
+                case .minusCircle: return "\u{2194}"
+                case .money: return "\u{5608}"
+                case .moneyTransferIn: return "\u{1341}"
+                case .moneyTransferOut: return "\u{6849}"
+                case .moon: return "\u{6138}"
+                case .musicalInstruments: return "\u{2094}"
+                case .newWindow: return "\u{1780}"
+                case .noFlash: return "\u{1933}"
+                case .noRefund: return "\u{2125}"
+                case .noRescheduling: return "\u{7378}"
+                case .nonstop: return "\u{2712}"
+                case .notification: return "\u{2051}"
+                case .notificationAdd: return "\u{6443}"
+                case .notificationOff: return "\u{2032}"
+                case .notificationOn: return "\u{1867}"
+                case .onlineCheckin: return "\u{5220}"
+                case .onlineCheckinOff: return "\u{1921}"
+                case .outlook: return "\u{5299}"
+                case .paid: return "\u{7737}"
+                case .parking: return "\u{7063}"
+                case .partners: return "\u{2168}"
+                case .passenger: return "\u{2188}"
+                case .passengerAdd: return "\u{5107}"
+                case .passengerOutline: return "\u{2179}"
+                case .passengerRemove: return "\u{6115}"
+                case .passengers: return "\u{7844}"
+                case .passport: return "\u{1232}"
+                case .pet: return "\u{7174}"
+                case .pharmacy: return "\u{2171}"
+                case .phone: return "\u{1321}"
+                case .placeholder: return "\u{7587}"
+                case .playground: return "\u{6810}"
+                case .plus: return "\u{2147}"
+                case .plusCircle: return "\u{5551}"
+                case .plusMinus: return "\u{7074}"
+                case .pool: return "\u{2148}"
+                case .powerPlug: return "\u{1618}"
+                case .powerPlugOff: return "\u{1339}"
+                case .priorityBoarding: return "\u{1126}"
+                case .profit: return "\u{1061}"
+                case .promoCode: return "\u{1606}"
+                case .qrCode: return "\u{2165}"
+                case .questionCircle: return "\u{1362}"
+                case .radar: return "\u{7558}"
+                case .radiusSearch: return "\u{7593}"
+                case .refund: return "\u{5833}"
+                case .relax: return "\u{7052}"
+                case .reload: return "\u{2076}"
+                case .remove: return "\u{5291}"
+                case .replace: return "\u{7352}"
+                case .restaurant: return "\u{1342}"
+                case .routeNoStops: return "\u{6105}"
+                case .routeOneStop: return "\u{5585}"
+                case .routeTwoStops: return "\u{2050}"
+                case .search: return "\u{1609}"
+                case .seat: return "\u{7774}"
+                case .seatAisle: return "\u{6368}"
+                case .seatExtraLegroom: return "\u{2119}"
+                case .seatWindow: return "\u{6797}"
+                case .security: return "\u{6380}"
+                case .selfTransfer: return "\u{1573}"
+                case .send: return "\u{7441}"
+                case .settings: return "\u{2189}"
+                case .share: return "\u{2134}"
+                case .shareAndroid: return "\u{1059}"
+                case .shareIos: return "\u{1082}"
+                case .shopping: return "\u{1045}"
+                case .showLess: return "\u{7699}"
+                case .showMore: return "\u{6396}"
+                case .sightseeing: return "\u{1316}"
+                case .sign: return "\u{6555}"
+                case .smoking: return "\u{5209}"
+                case .smokingOff: return "\u{5062}"
+                case .sms: return "\u{1634}"
+                case .sort: return "\u{5208}"
+                case .spa: return "\u{1054}"
+                case .sportEquipment: return "\u{5537}"
+                case .sports: return "\u{6384}"
+                case .stackoverflow: return "\u{5568}"
+                case .starEmpty: return "\u{1360}"
+                case .starFull: return "\u{5196}"
+                case .subway: return "\u{5191}"
+                case .suitcase: return "\u{2162}"
+                case .sun: return "\u{6487}"
+                case .sunrise: return "\u{5205}"
+                case .taxi: return "\u{2253}"
+                case .terminal: return "\u{1444}"
+                case .termsAndConditions: return "\u{5167}"
+                case .thumbDown: return "\u{2369}"
+                case .thumbUp: return "\u{1006}"
+                case .ticket: return "\u{2699}"
+                case .ticketOutline: return "\u{6106}"
+                case .timelapse: return "\u{4820}"
+                case .timer: return "\u{6822}"
+                case .tips: return "\u{6768}"
+                case .toilets: return "\u{5952}"
+                case .train: return "\u{6564}"
+                case .transmission: return "\u{5891}"
+                case .trip: return "\u{5730}"
+                case .twitter: return "\u{6524}"
+                case .uber: return "\u{6152}"
+                case .upload: return "\u{6192}"
+                case .userGroup: return "\u{5875}"
+                case .visa: return "\u{6858}"
+                case .visibility: return "\u{6740}"
+                case .visibilityOff: return "\u{7017}"
+                case .walk: return "\u{6026}"
+                case .wallet: return "\u{5159}"
+                case .wheelchair: return "\u{6489}"
+                case .wifi: return "\u{5275}"
+                case .wifiOff: return "\u{6837}"
+                case .youtube: return "\u{6665}"
             }
         }
     }
