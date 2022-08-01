@@ -42,6 +42,8 @@ public extension Icon.Content {
     static let android: Self = .symbol(.android)
     /// Orbit `anywhere` icon symbol with unspecified color.
     static let anywhere: Self = .symbol(.anywhere)
+    /// Orbit `appNotification` icon symbol with unspecified color.
+    static let appNotification: Self = .symbol(.appNotification)
     /// Orbit `apple` icon symbol with unspecified color.
     static let apple: Self = .symbol(.apple)
     /// Orbit `arrowDown` icon symbol with unspecified color.
@@ -80,6 +82,8 @@ public extension Icon.Content {
     static let boardingGate: Self = .symbol(.boardingGate)
     /// Orbit `boat` icon symbol with unspecified color.
     static let boat: Self = .symbol(.boat)
+    /// Orbit `bookmark` icon symbol with unspecified color.
+    static let bookmark: Self = .symbol(.bookmark)
     /// Orbit `bug` icon symbol with unspecified color.
     static let bug: Self = .symbol(.bug)
     /// Orbit `bus` icon symbol with unspecified color.
@@ -134,6 +138,8 @@ public extension Icon.Content {
     static let circleFilled: Self = .symbol(.circleFilled)
     /// Orbit `circleSmall` icon symbol with unspecified color.
     static let circleSmall: Self = .symbol(.circleSmall)
+    /// Orbit `circleSmallEmpty` icon symbol with unspecified color.
+    static let circleSmallEmpty: Self = .symbol(.circleSmallEmpty)
     /// Orbit `city` icon symbol with unspecified color.
     static let city: Self = .symbol(.city)
     /// Orbit `clock` icon symbol with unspecified color.
@@ -146,6 +152,8 @@ public extension Icon.Content {
     static let cocktail: Self = .symbol(.cocktail)
     /// Orbit `code` icon symbol with unspecified color.
     static let code: Self = .symbol(.code)
+    /// Orbit `code.kiwi` icon symbol with unspecified color.
+    static let codeKiwi: Self = .symbol(.codeKiwi)
     /// Orbit `coffee` icon symbol with unspecified color.
     static let coffee: Self = .symbol(.coffee)
     /// Orbit `colorPicker` icon symbol with unspecified color.
@@ -156,8 +164,14 @@ public extension Icon.Content {
     static let coloredImessage: Self = .symbol(.coloredImessage)
     /// Orbit `coloredMessenger` icon symbol with unspecified color.
     static let coloredMessenger: Self = .symbol(.coloredMessenger)
+    /// Orbit `coloredSignal` icon symbol with unspecified color.
+    static let coloredSignal: Self = .symbol(.coloredSignal)
+    /// Orbit `coloredTelegram` icon symbol with unspecified color.
+    static let coloredTelegram: Self = .symbol(.coloredTelegram)
     /// Orbit `coloredTwitter` icon symbol with unspecified color.
     static let coloredTwitter: Self = .symbol(.coloredTwitter)
+    /// Orbit `coloredViber` icon symbol with unspecified color.
+    static let coloredViber: Self = .symbol(.coloredViber)
     /// Orbit `coloredWhatsapp` icon symbol with unspecified color.
     static let coloredWhatsapp: Self = .symbol(.coloredWhatsapp)
     /// Orbit `compare` icon symbol with unspecified color.
@@ -200,6 +214,10 @@ public extension Icon.Content {
     static let exchange: Self = .symbol(.exchange)
     /// Orbit `facebook` icon symbol with unspecified color.
     static let facebook: Self = .symbol(.facebook)
+    /// Orbit `familyAll` icon symbol with unspecified color.
+    static let familyAll: Self = .symbol(.familyAll)
+    /// Orbit `familyHalf` icon symbol with unspecified color.
+    static let familyHalf: Self = .symbol(.familyHalf)
     /// Orbit `feedback` icon symbol with unspecified color.
     static let feedback: Self = .symbol(.feedback)
     /// Orbit `filters` icon symbol with unspecified color.
@@ -228,8 +246,12 @@ public extension Icon.Content {
     static let genderMan: Self = .symbol(.genderMan)
     /// Orbit `genderWoman` icon symbol with unspecified color.
     static let genderWoman: Self = .symbol(.genderWoman)
+    /// Orbit `github` icon symbol with unspecified color.
+    static let github: Self = .symbol(.github)
     /// Orbit `google` icon symbol with unspecified color.
     static let google: Self = .symbol(.google)
+    /// Orbit `googlePlay` icon symbol with unspecified color.
+    static let googlePlay: Self = .symbol(.googlePlay)
     /// Orbit `gpsFixed` icon symbol with unspecified color.
     static let gpsFixed: Self = .symbol(.gpsFixed)
     /// Orbit `gpsIos` icon symbol with unspecified color.
@@ -244,6 +266,8 @@ public extension Icon.Content {
     static let gym: Self = .symbol(.gym)
     /// Orbit `history` icon symbol with unspecified color.
     static let history: Self = .symbol(.history)
+    /// Orbit `inbox` icon symbol with unspecified color.
+    static let inbox: Self = .symbol(.inbox)
     /// Orbit `infant` icon symbol with unspecified color.
     static let infant: Self = .symbol(.infant)
     /// Orbit `informationCircle` icon symbol with unspecified color.
@@ -266,6 +290,8 @@ public extension Icon.Content {
     static let kiwicomCare: Self = .symbol(.kiwicomCare)
     /// Orbit `kiwicomGuarantee` icon symbol with unspecified color.
     static let kiwicomGuarantee: Self = .symbol(.kiwicomGuarantee)
+    /// Orbit `kiwicomNoGuarantee` icon symbol with unspecified color.
+    static let kiwicomNoGuarantee: Self = .symbol(.kiwicomNoGuarantee)
     /// Orbit `leisure` icon symbol with unspecified color.
     static let leisure: Self = .symbol(.leisure)
     /// Orbit `link` icon symbol with unspecified color.
@@ -338,8 +364,12 @@ public extension Icon.Content {
     static let musicalInstruments: Self = .symbol(.musicalInstruments)
     /// Orbit `newWindow` icon symbol with unspecified color.
     static let newWindow: Self = .symbol(.newWindow)
-    /// Orbit `noKiwicomGuarantee` icon symbol with unspecified color.
-    static let noKiwicomGuarantee: Self = .symbol(.noKiwicomGuarantee)
+    /// Orbit `noFlash` icon symbol with unspecified color.
+    static let noFlash: Self = .symbol(.noFlash)
+    /// Orbit `noRefund` icon symbol with unspecified color.
+    static let noRefund: Self = .symbol(.noRefund)
+    /// Orbit `noRescheduling` icon symbol with unspecified color.
+    static let noRescheduling: Self = .symbol(.noRescheduling)
     /// Orbit `nonstop` icon symbol with unspecified color.
     static let nonstop: Self = .symbol(.nonstop)
     /// Orbit `notification` icon symbol with unspecified color.
@@ -380,12 +410,16 @@ public extension Icon.Content {
     static let pharmacy: Self = .symbol(.pharmacy)
     /// Orbit `phone` icon symbol with unspecified color.
     static let phone: Self = .symbol(.phone)
+    /// Orbit `placeholder` icon symbol with unspecified color.
+    static let placeholder: Self = .symbol(.placeholder)
     /// Orbit `playground` icon symbol with unspecified color.
     static let playground: Self = .symbol(.playground)
     /// Orbit `plus` icon symbol with unspecified color.
     static let plus: Self = .symbol(.plus)
     /// Orbit `plusCircle` icon symbol with unspecified color.
     static let plusCircle: Self = .symbol(.plusCircle)
+    /// Orbit `plusMinus` icon symbol with unspecified color.
+    static let plusMinus: Self = .symbol(.plusMinus)
     /// Orbit `pool` icon symbol with unspecified color.
     static let pool: Self = .symbol(.pool)
     /// Orbit `powerPlug` icon symbol with unspecified color.
@@ -456,10 +490,14 @@ public extension Icon.Content {
     static let showMore: Self = .symbol(.showMore)
     /// Orbit `sightseeing` icon symbol with unspecified color.
     static let sightseeing: Self = .symbol(.sightseeing)
+    /// Orbit `sign` icon symbol with unspecified color.
+    static let sign: Self = .symbol(.sign)
     /// Orbit `smoking` icon symbol with unspecified color.
     static let smoking: Self = .symbol(.smoking)
     /// Orbit `smokingOff` icon symbol with unspecified color.
     static let smokingOff: Self = .symbol(.smokingOff)
+    /// Orbit `sms` icon symbol with unspecified color.
+    static let sms: Self = .symbol(.sms)
     /// Orbit `sort` icon symbol with unspecified color.
     static let sort: Self = .symbol(.sort)
     /// Orbit `spa` icon symbol with unspecified color.
@@ -468,6 +506,8 @@ public extension Icon.Content {
     static let sportEquipment: Self = .symbol(.sportEquipment)
     /// Orbit `sports` icon symbol with unspecified color.
     static let sports: Self = .symbol(.sports)
+    /// Orbit `stackoverflow` icon symbol with unspecified color.
+    static let stackoverflow: Self = .symbol(.stackoverflow)
     /// Orbit `starEmpty` icon symbol with unspecified color.
     static let starEmpty: Self = .symbol(.starEmpty)
     /// Orbit `starFull` icon symbol with unspecified color.
@@ -532,4 +572,6 @@ public extension Icon.Content {
     static let wifi: Self = .symbol(.wifi)
     /// Orbit `wifiOff` icon symbol with unspecified color.
     static let wifiOff: Self = .symbol(.wifiOff)
+    /// Orbit `youtube` icon symbol with unspecified color.
+    static let youtube: Self = .symbol(.youtube)
 }
