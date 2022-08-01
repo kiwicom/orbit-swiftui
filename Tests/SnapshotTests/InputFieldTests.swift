@@ -6,4 +6,8 @@ class InputFieldTests: SnapshotTestCase {
     func testInputFields() {
         assert(InputFieldPreviews.snapshot)
     }
+
+    func testInputFieldsPassword() {
+        assert(InputFieldPreviews.snapshotPassword)
+    }
 }

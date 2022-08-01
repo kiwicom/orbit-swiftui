@@ -9,3 +9,14 @@
 ### Adding Content
 
 - ``TimelineStep``
+- ``TimelineStepBadgeText``
+- ``TimelineStepBottomText``
+
+### Style 
+
+- ``TimelineStepStyle``
+
+### Alignment
+
+- ``TimelineStepPreference``
+- ``TimelineStepPreferenceKey``
