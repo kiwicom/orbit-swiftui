@@ -168,8 +168,8 @@ def get_inversed_colors(name, colors):
   elif name.startswith('red'):
     inverted_base = [255, 80, 80]
 
-  if name.startswith('cloudDark'):
-    inverted_base = [76, 85, 95]
+  if name.startswith('cloudDark') and not name.startswith('cloudDarker'):
+    inverted_base = [56, 65, 75]
     predefined_dark = True
   elif name.startswith('cloud'):
     inverted_base = [41, 56, 69]
@@ -179,10 +179,10 @@ def get_inversed_colors(name, colors):
     inverted_base = get_color_with_updated_luminosity(inverted_base, -0.2)
   elif inverted_base is not None and 'Light' in name and not predefined_light:
     inverted_base = get_color_with_updated_luminosity(inverted_base, -0.1)
-  elif inverted_base is not None and 'Dark' in name and not predefined_dark:
-    inverted_base = get_color_with_updated_luminosity(inverted_base, 0.07)
   elif inverted_base is not None and 'Darker' in name and not predefined_darker:
     inverted_base = get_color_with_updated_luminosity(inverted_base, 0.15)
+  elif inverted_base is not None and 'Dark' in name and not predefined_dark:
+    inverted_base = get_color_with_updated_luminosity(inverted_base, 0.07)
 
   # Generate any hover/active variants
   if inverted_base is not None and name.endswith('Hover'):
