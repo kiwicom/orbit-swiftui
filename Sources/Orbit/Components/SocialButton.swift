@@ -10,6 +10,7 @@ import SwiftUI
 public struct SocialButton: View {
 
     @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.colorScheme) var colorScheme
 
     let label: String
     let service: Service
@@ -34,10 +35,32 @@ public struct SocialButton: View {
 
                     Icon(.chevronRight, size: .large, color: nil)
                 }
+                .foregroundColor(labelColor)
             }
         )
-        .buttonStyle(OrbitStyle(service: service))
+        .buttonStyle(OrbitStyle(backgroundColor: backgroundColor))
         .fixedSize(horizontal: false, vertical: true)
+    }
+
+    var labelColor: Color {
+        switch service {
+            case .apple:        return colorScheme == .light ? .white : .black
+            case .google:       return .inkNormal
+            case .facebook:     return .inkNormal
+            case .email:        return .inkNormal
+        }
+    }
+
+    var backgroundColor: OrbitStyle.BackgroundColor {
+        switch service {
+            case .apple:        return (
+                colorScheme == .light ? .black : .white,
+                colorScheme == .light ? .inkLightActive : .inkLightActive
+            )
+            case .google:       return (.cloudDark, .cloudNormalActive)
+            case .facebook:     return (.cloudDark, .cloudNormalActive)
+            case .email:        return (.cloudDark, .cloudNormalActive)
+        }
     }
 }
 
@@ -69,8 +92,6 @@ extension SocialButton {
 
     public enum Service {
 
-        typealias BackgroundColor = (normal: Color, active: Color)
-
         case apple
         case google
         case facebook
@@ -82,7 +103,6 @@ extension SocialButton {
                     if #available(iOS 14.0, *) {
                         SocialButton.appleLogo
                             .font(.body)
-                            .foregroundColor(.whiteNormal)
                             .padding(.horizontal, .xxxSmall)
                             .padding(.bottom, .xxSmall)
                     } else {
@@ -93,37 +113,20 @@ extension SocialButton {
                 case .email:                                Icon(.email, size: .large)
             }
         }
-
-        var backgroundColor: BackgroundColor {
-            switch self {
-                case .apple:                                return (.black, .inkNormal)
-                case .google:                               return (.cloudDark, .cloudNormalActive)
-                case .facebook:                             return (.cloudDark, .cloudNormalActive)
-                case .email:                                return (.cloudDark, .cloudNormalActive)
-            }
-        }
-
-        var labelColor: Color {
-            switch self {
-                case .apple:                                return .whiteNormal
-                case .google:                               return .inkNormal
-                case .facebook:                             return .inkNormal
-                case .email:                                return .inkNormal
-            }
-        }
     }
 
     struct OrbitStyle: ButtonStyle {
 
-        var service: Service
+        typealias BackgroundColor = (normal: Color, active: Color)
+
+        let backgroundColor: BackgroundColor
 
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, .small)
-                .foregroundColor(service.labelColor)
                 .background(
-                    configuration.isPressed ? service.backgroundColor.active : service.backgroundColor.normal
+                    configuration.isPressed ? backgroundColor.active : backgroundColor.normal
                 )
                 .cornerRadius(BorderRadius.default)
         }
@@ -137,6 +140,8 @@ struct SocialButtonPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             storybook
+            storybook
+                .preferredColorScheme(.dark)
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
