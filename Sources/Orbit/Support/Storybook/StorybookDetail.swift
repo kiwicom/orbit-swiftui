@@ -3,7 +3,7 @@ import SwiftUI
 struct StorybookDetail: View {
 
     @State var selectedTab: Int = 0
-    @Binding var darkMode: Bool
+    @Binding var isColorSchemeInverted: Bool
     @State var filter: String = ""
 
     let menuItem: Storybook.Item
@@ -46,7 +46,7 @@ struct StorybookDetail: View {
 
     @ViewBuilder var darkModeSwitch: some View {
         BarButton(.sun) {
-            darkMode.toggle()
+            isColorSchemeInverted.toggle()
         }
     }
 
@@ -175,9 +175,9 @@ struct StorybookDetail: View {
         }
     }
 
-    init(menuItem: Storybook.Item, darkMode: Binding<Bool> = .constant(false)) {
+    init(menuItem: Storybook.Item, isColorSchemeInverted: Binding<Bool> = .constant(false)) {
         self.menuItem = menuItem
-        self._darkMode = darkMode
+        self._isColorSchemeInverted = isColorSchemeInverted
     }
 }
 
