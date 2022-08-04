@@ -93,12 +93,12 @@ public struct Tile<Content: View>: View {
                 header
                 content
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+
+            Spacer(minLength: 0)
 
             disclosureIcon
                 .padding(.trailing, .medium)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
         .overlay(separator, alignment: .bottom)
     }
     

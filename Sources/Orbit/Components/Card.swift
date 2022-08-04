@@ -283,11 +283,18 @@ struct CardPreviews: PreviewProvider {
             customContentPlaceholder
                 .frame(height: 30).clipped()
             Tile("Tile")
+
             TileGroup {
                 Tile("Tile in TileGroup 1")
                 Tile("Tile in TileGroup 2")
             }
+
+            TileGroup {
+                Tile("Tile in TileGroup 1 (fixed)")
+                Tile("Tile in TileGroup 2 (fixed)")
+            }
             .fixedSize(horizontal: true, vertical: false)
+
             ListChoice("ListChoice 1")
                 .padding(.trailing, -.medium)
             ListChoice("ListChoice 2")

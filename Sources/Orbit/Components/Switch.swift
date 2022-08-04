@@ -12,6 +12,7 @@ public struct Switch: View {
     static let borderColor = Color(white: 0.2, opacity: 0.25)
 
     @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.colorScheme) var colorScheme
     @Binding private var isOn: Bool
 
     let hasIcon: Bool
@@ -39,7 +40,7 @@ public struct Switch: View {
     @ViewBuilder var indicator: some View {
         Circle()
             .frame(width: circleDiameter, height: circleDiameter)
-            .foregroundColor(.whiteDarker)
+            .foregroundColor(indicatorColor)
             .elevation(isEnabled ? .custom(opacity: 0.25, radius: 1.4, y: 1.2) : nil)
             .overlay(
                 Circle()
@@ -60,13 +61,21 @@ public struct Switch: View {
     }
 
     var tint: Color {
-        (isOn ? Color.blueNormal : Color.cloudDarker)
+        (isOn ? .blueNormal : capsuleBackgroundColor)
             .opacity(isEnabled ? 1 : 0.5)
     }
 
     var iconTint: Color {
         (isOn ? Color.blueNormal : Color.inkLight)
             .opacity(isEnabled ? 1 : 0.5)
+    }
+
+    var capsuleBackgroundColor: Color {
+        colorScheme == .light ? .cloudDarker : .cloudDarker
+    }
+
+    var indicatorColor: Color {
+        colorScheme == .light ? .whiteNormal : .cloudDark
     }
 
     var width: CGFloat {
@@ -100,6 +109,8 @@ struct SwitchPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             storybook
+            storybook
+                .preferredColorScheme(.dark)
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
