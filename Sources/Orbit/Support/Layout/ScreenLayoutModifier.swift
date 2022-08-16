@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Padding to apply in a screen layout.
+/// Padding to apply in a `screenLayout` context.
 public enum ScreenLayoutPadding {
     /// Padding of `medium` size in compact horizontal size and `xxLarge` size in regular horizontal size.
     case `default`
@@ -8,6 +8,36 @@ public enum ScreenLayoutPadding {
     case compact
     /// Custom fixed padding.
     case custom(horizontal: CGFloat = .medium, top: CGFloat = .medium, bottom: CGFloat = .medium)
+
+    public func horizontal(horizontalSizeClass: UserInterfaceSizeClass?) -> CGFloat {
+        switch self {
+            case .default:                      return `default`(horizontalSizeClass: horizontalSizeClass)
+            case .compact:                      return .medium
+            case .custom(let horizontal, _, _): return horizontal
+        }
+    }
+
+    public func top(horizontalSizeClass: UserInterfaceSizeClass?) -> CGFloat {
+        switch self {
+            case .default:                      return `default`(horizontalSizeClass: horizontalSizeClass)
+            case .compact:                      return .medium
+            case .custom(_, let top, _):        return top
+        }
+    }
+
+    public func bottom(horizontalSizeClass: UserInterfaceSizeClass?) -> CGFloat {
+        switch self {
+            case .default:                      return `default`(horizontalSizeClass: horizontalSizeClass)
+            case .compact:                      return .medium
+            case .custom(_, _, let bottom):     return bottom
+        }
+    }
+
+    public func `default`(horizontalSizeClass: UserInterfaceSizeClass?) -> CGFloat {
+        horizontalSizeClass == .regular
+            ? .xxLarge
+            : .medium
+    }
 }
 
 struct ScreenLayoutModifier: ViewModifier {
@@ -20,43 +50,13 @@ struct ScreenLayoutModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .environment(\.isInsideScreenLayout, true)
-            .padding(.top, edges.contains(.top) ? topPadding : 0)
-            .padding(.leading, edges.contains(.leading) ? horizontalPadding : 0)
-            .padding(.trailing, edges.contains(.trailing) ? horizontalPadding : 0)
-            .padding(.bottom, edges.contains(.bottom) ? bottomPadding : 0)
+            .environment(\.screenLayoutPadding, padding)
+            .padding(.top, edges.contains(.top) ? padding.top(horizontalSizeClass: horizontalSizeClass) : 0)
+            .padding(.leading, edges.contains(.leading) ? padding.horizontal(horizontalSizeClass: horizontalSizeClass) : 0)
+            .padding(.trailing, edges.contains(.trailing) ? padding.horizontal(horizontalSizeClass: horizontalSizeClass) : 0)
+            .padding(.bottom, edges.contains(.bottom) ? padding.bottom(horizontalSizeClass: horizontalSizeClass) : 0)
             .frame(maxWidth: maxContentWidth)
             .frame(maxWidth: .infinity)
-    }
-
-    var horizontalPadding: CGFloat {
-        switch padding {
-            case .default:                      return defaultPadding
-            case .compact:                      return .medium
-            case .custom(let horizontal, _, _): return horizontal
-        }
-    }
-
-    var topPadding: CGFloat {
-        switch padding {
-            case .default:                      return defaultPadding
-            case .compact:                      return .medium
-            case .custom(_, let top, _):        return top
-        }
-    }
-
-    var bottomPadding: CGFloat {
-        switch padding {
-            case .default:                      return defaultPadding
-            case .compact:                      return .medium
-            case .custom(_, _, let bottom):     return bottom
-        }
-    }
-
-    var defaultPadding: CGFloat {
-        horizontalSizeClass == .regular
-            ? .xxLarge
-            : .medium
     }
 }
 
@@ -64,9 +64,9 @@ public extension View {
 
     /// Adds unified screen layout for both `regular` and `compact` width environment.
     ///
-    /// Screen layout adds maximum width and padding behaviour for provided content, horizontally expanding to `.infinity`.
+    /// Screen layout adds maximum width and padding behaviour for provided content, horizontally expanding to `infinity`.
     ///
-    /// A component can inspect the ``IsInsideScreenLayoutKey`` environment key to act upon this modifier.
+    /// A component can inspect the ``ScreenLayoutPaddingKey`` environment key to act upon this modifier.
     /// One example is a `Card` component that ignores horizontal paddings in `compact` environment.
     ///
     /// - Parameters:
