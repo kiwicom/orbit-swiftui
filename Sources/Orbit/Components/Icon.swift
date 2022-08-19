@@ -55,6 +55,43 @@ public struct Icon: View {
                     .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
         }
     }
+
+    var textRepresentation: SwiftUI.Text {
+        switch content {
+            case .symbol(let symbol, let color?):
+                return SwiftUI.Text(verbatim: symbol.value)
+                    .foregroundColor(color)
+                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+            case .symbol(let symbol, nil):
+                return SwiftUI.Text(verbatim: symbol.value)
+                    // foregroundColor(nil) prevents further overrides
+                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+            case .image(let image, _):
+                return SwiftUI.Text(image.resizable())
+//                    .aspectRatio(contentMode: mode)
+//                    .frame(width: size.value, height: size.value * sizeCategory.ratio)
+//                    .accessibility(hidden: true)
+            case .countryFlag(let countryCode):
+                return SwiftUI.Text(SwiftUI.Image(countryCode, bundle: .current).resizable())
+            case .sfSymbol(let systemName, let color?):
+                return SwiftUI.Text(Image(systemName: systemName)).foregroundColor(color)
+                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
+            case .sfSymbol(let systemName, nil):
+                return SwiftUI.Text(Image(systemName: systemName))
+                    // foregroundColor(nil) prevents further overrides
+                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
+        }
+    }
+}
+
+extension Icon: TextRepresentable {
+    var asText: SwiftUI.Text? {
+        if content.isEmpty == false {
+            return textRepresentation
+        }
+
+        return nil
+    }
 }
 
 // MARK: - Inits

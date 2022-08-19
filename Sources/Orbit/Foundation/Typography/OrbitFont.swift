@@ -23,3 +23,20 @@ public extension View {
         return self.modifier(OrbitFont(size: size, weight: weight, style: style))
     }
 }
+
+public extension SwiftUI.Text {
+
+    /// Sets the Orbit font as a default font for text in this view.
+    ///
+    /// Handles dynamic type scaling for both system and custom fonts.
+    func orbitFont(
+        size: CGFloat,
+        weight: Font.Weight = .regular,
+        style: Font.TextStyle = .body,
+        sizeCategory: ContentSizeCategory = .medium
+    ) -> SwiftUI.Text {
+        let scaledSize = sizeCategory.ratio * size
+
+        return self.font(.orbit(size: size, scaledSize: scaledSize, weight: weight, style: style))
+    }
+}
