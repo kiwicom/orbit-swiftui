@@ -1,10 +1,20 @@
 import SwiftUI
 
+protocol TextRepresentable {
+    var asText: SwiftUI.Text? { get }
+}
+
+extension TextRepresentable {
+    var asText: SwiftUI.Text? { nil }
+}
+
 /// Shows the content hierarchy and improves the reading experience. Also known as Title.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/heading/)
 /// - Important: Component has fixed vertical size.
 public struct Heading: View {
+
+    @Environment(\.sizeCategory) var sizeCategory
 
     let label: String
     let style: Style
@@ -13,13 +23,22 @@ public struct Heading: View {
 
     public var body: some View {
         if text.isEmpty == false {
-            SwiftUI.Text(verbatim: text)
-                .orbitFont(size: style.size, weight: style.weight, style: style.textStyle)
-                .foregroundColor(color?.value)
+            textContent
                 .multilineTextAlignment(alignment)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibility(addTraits: .isHeader)
         }
+    }
+
+    var textContent: SwiftUI.Text {
+        SwiftUI.Text(verbatim: text)
+            .orbitFont(
+                size: style.size,
+                weight: style.weight,
+                style: style.textStyle,
+                sizeCategory: sizeCategory
+            )
+            .foregroundColor(color?.value)
     }
 
     var text: String {
@@ -27,6 +46,16 @@ public struct Heading: View {
             case .display, .title1, .displaySubtitle, .title2, .title3, .title4, .title5:   return label
             case .title6:                                                                   return label.localizedUppercase
         }
+    }
+}
+
+extension Heading: TextRepresentable {
+    var asText: SwiftUI.Text? {
+        if text.isEmpty == false {
+            return textContent
+        }
+
+        return nil
     }
 }
 
@@ -166,6 +195,7 @@ struct HeadingPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
+            kek
             standalone
             sizes
             multiline
@@ -173,6 +203,14 @@ struct HeadingPreviews: PreviewProvider {
         .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
+
+
+    @ViewBuilder static var kek: some View {
+        Heading("Lol kek", style: .title1)
+            + Icon(.informationCircle, size: .heading(.title1))
+            + Heading("Lol kek", style: .title1)
+    }
+
 
     static var standalone: some View {
         VStack {
@@ -243,5 +281,33 @@ struct HeadingDynamicTypePreviews: PreviewProvider {
 
     @ViewBuilder static var content: some View {
         HeadingPreviews.sizes
+    }
+}
+
+extension EmptyView: TextRepresentable {}
+
+extension SwiftUI.Text: TextRepresentable {
+    var asText: SwiftUI.Text? { self }
+}
+
+@ViewBuilder func +(left: TextRepresentable, right: TextRepresentable) -> some View & TextRepresentable {
+    if let leftText = left.asText, let rightText = right.asText {
+        leftText + rightText
+    }
+
+    if let leftText = left.asText {
+        leftText
+    }
+
+    if let rightText = right.asText {
+        rightText
+    }
+
+    EmptyView()
+}
+
+extension TupleView: TextRepresentable where T == (SwiftUI.Text?, SwiftUI.Text?, SwiftUI.Text?, EmptyView) {
+    var asText: SwiftUI.Text? {
+        value.0 ?? value.1 ?? value.2
     }
 }
