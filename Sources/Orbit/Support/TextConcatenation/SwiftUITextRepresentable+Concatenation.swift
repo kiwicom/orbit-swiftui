@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Conctatenates two terms that can represented as `SwiftUI.Text`
+/// Conctatenates two terms that can be represented as `SwiftUI.Text`
 /// - Parameters:
 ///   - left: An entity, usually a view, which content can be represented as `SwiftUI.Text`
 ///   - right: An entity, usually a view, which content can be represented as `SwiftUI.Text`

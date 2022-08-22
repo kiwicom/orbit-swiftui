@@ -187,7 +187,6 @@ struct HeadingPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-//            kek
             standalone
             sizes
             multiline
@@ -195,15 +194,6 @@ struct HeadingPreviews: PreviewProvider {
         .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
-
-
-//    @ViewBuilder static var kek: some View {
-//        (Heading("Hanoi", style: .title1)
-//            + Icon(.flightReturn, size: .heading(.title1))
-//            + Heading("San Pedro de Alcantara", style: .title1))
-//            .lineLimit(2)
-//    }
-
 
     static var standalone: some View {
         VStack {
