@@ -56,7 +56,8 @@ public struct Icon: View {
         }
     }
 
-    var textRepresentation: SwiftUI.Text {
+    @available(iOS 14.0, *)
+    func textRepresentation(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
         switch content {
             case .symbol(let symbol, let color?):
                 return SwiftUI.Text(verbatim: symbol.value)
@@ -80,12 +81,34 @@ public struct Icon: View {
                     .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
         }
     }
+
+    func textRepresentationFallback(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
+        switch content {
+            case .symbol(let symbol, let color?):
+                return SwiftUI.Text(verbatim: symbol.value)
+                    .baselineOffset(-size.baselineOffset(sizeCategory: sizeCategory))
+                    .foregroundColor(color)
+                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+            case .symbol(let symbol, nil):
+                return SwiftUI.Text(verbatim: symbol.value)
+                    .baselineOffset(-size.baselineOffset(sizeCategory: sizeCategory))
+                    // foregroundColor(nil) prevents further overrides
+                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+            case .image, .countryFlag, .sfSymbol:
+                assertionFailure(".image, .countryFlag, .sfSymbol as Text are only available in iOS 14.0 or newer")
+                return nil
+        }
+    }
 }
 
 extension Icon: SwiftUITextRepresentable {
-    public var asText: SwiftUI.Text? {
+    public func asText(configuration: ContentSizeCategory) -> SwiftUI.Text? {
         if content.isEmpty == false {
-            return textRepresentation
+            if #available(iOS 14.0, *) {
+                return textRepresentation(sizeCategory: configuration)
+            } else {
+                return textRepresentationFallback(sizeCategory: configuration)
+            }
         }
 
         return nil

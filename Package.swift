@@ -6,7 +6,7 @@ let useBundledFonts = false
 
 let package = Package(
     name: "Orbit",
-    platforms: [.iOS(.v14)],
+    platforms: [.iOS(.v13)],
     products: [
         .library(name: "Orbit", targets: ["Orbit"]),
         .library(name: "OrbitDynamic", type: .dynamic, targets: ["Orbit"]),

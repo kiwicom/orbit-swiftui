@@ -15,14 +15,14 @@ public struct Heading: View {
 
     public var body: some View {
         if text.isEmpty == false {
-            textContent
+            textContent(sizeCategory: sizeCategory)
                 .multilineTextAlignment(alignment)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibility(addTraits: .isHeader)
         }
     }
 
-    var textContent: SwiftUI.Text {
+    func textContent(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
         SwiftUI.Text(verbatim: text)
             .orbitFont(
                 size: style.size,
@@ -42,9 +42,9 @@ public struct Heading: View {
 }
 
 extension Heading: SwiftUITextRepresentable {
-    public var asText: SwiftUI.Text? {
+    public func asText(configuration: ContentSizeCategory) -> SwiftUI.Text? {
         if text.isEmpty == false {
-            return textContent
+            return textContent(sizeCategory: configuration)
         }
 
         return nil
@@ -187,7 +187,7 @@ struct HeadingPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            kek
+//            kek
             standalone
             sizes
             multiline
@@ -197,12 +197,12 @@ struct HeadingPreviews: PreviewProvider {
     }
 
 
-    @ViewBuilder static var kek: some View {
-        (Heading("Hanoi", style: .title1)
-            + Icon(.flightReturn, size: .heading(.title1))
-            + Heading("San Pedro de Alcantara", style: .title1))
-            .lineLimit(2)
-    }
+//    @ViewBuilder static var kek: some View {
+//        (Heading("Hanoi", style: .title1)
+//            + Icon(.flightReturn, size: .heading(.title1))
+//            + Heading("San Pedro de Alcantara", style: .title1))
+//            .lineLimit(2)
+//    }
 
 
     static var standalone: some View {
