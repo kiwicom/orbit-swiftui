@@ -1,5 +1,23 @@
 import SwiftUI
 
+struct DynamicTextWrapper: View {
+    typealias Configuration = ContentSizeCategory
+
+    @Environment(\.sizeCategory) var sizeCategory
+
+    let texts: [(Configuration) -> SwiftUI.Text?]
+
+    var body: some View {
+        if let finalText = texts.map({ $0(sizeCategory) }).reduce(nil, accumulator(left:right:)) {
+            finalText
+        }
+    }
+
+    func accumulator(left: SwiftUI.Text?, right: SwiftUI.Text?) -> SwiftUI.Text? {
+        left.flatMap { left in right.flatMap { right in left + right } }
+    }
+}
+
 /// Conctatenates two terms that can represented as `SwiftUI.Text`
 /// - Parameters:
 ///   - left: An entity, usually a view, which content can be represented as `SwiftUI.Text`
