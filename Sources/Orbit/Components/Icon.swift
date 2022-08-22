@@ -60,17 +60,16 @@ public struct Icon: View {
         switch content {
             case .symbol(let symbol, let color?):
                 return SwiftUI.Text(verbatim: symbol.value)
+                    .baselineOffset(-size.baselineOffset(sizeCategory: sizeCategory))
                     .foregroundColor(color)
                     .font(.orbitIcon(size: size.value, style: size.textStyle))
             case .symbol(let symbol, nil):
                 return SwiftUI.Text(verbatim: symbol.value)
+                    .baselineOffset(-size.baselineOffset(sizeCategory: sizeCategory))
                     // foregroundColor(nil) prevents further overrides
                     .font(.orbitIcon(size: size.value, style: size.textStyle))
             case .image(let image, _):
                 return SwiftUI.Text(image.resizable())
-//                    .aspectRatio(contentMode: mode)
-//                    .frame(width: size.value, height: size.value * sizeCategory.ratio)
-//                    .accessibility(hidden: true)
             case .countryFlag(let countryCode):
                 return SwiftUI.Text(SwiftUI.Image(countryCode, bundle: .current).resizable())
             case .sfSymbol(let systemName, let color?):
@@ -78,14 +77,13 @@ public struct Icon: View {
                     .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
             case .sfSymbol(let systemName, nil):
                 return SwiftUI.Text(Image(systemName: systemName))
-                    // foregroundColor(nil) prevents further overrides
                     .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
         }
     }
 }
 
-extension Icon: TextRepresentable {
-    var asText: SwiftUI.Text? {
+extension Icon: SwiftUITextRepresentable {
+    public var asText: SwiftUI.Text? {
         if content.isEmpty == false {
             return textRepresentation
         }
@@ -246,6 +244,10 @@ public extension Icon {
 
         public func textBaselineAlignmentGuide(sizeCategory: ContentSizeCategory, height: CGFloat) -> CGFloat {
             round(dynamicTextLineHeight(sizeCategory: sizeCategory) * Text.firstBaselineRatio + height / 2)
+        }
+
+        public func baselineOffset(sizeCategory: ContentSizeCategory) -> CGFloat {
+            round(dynamicTextLineHeight(sizeCategory: sizeCategory) * 0.2)
         }
     }
 }
