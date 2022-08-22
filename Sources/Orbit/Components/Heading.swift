@@ -1,13 +1,5 @@
 import SwiftUI
 
-protocol TextRepresentable {
-    var asText: SwiftUI.Text? { get }
-}
-
-extension TextRepresentable {
-    var asText: SwiftUI.Text? { nil }
-}
-
 /// Shows the content hierarchy and improves the reading experience. Also known as Title.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/heading/)
@@ -49,8 +41,8 @@ public struct Heading: View {
     }
 }
 
-extension Heading: TextRepresentable {
-    var asText: SwiftUI.Text? {
+extension Heading: SwiftUITextRepresentable {
+    public var asText: SwiftUI.Text? {
         if text.isEmpty == false {
             return textContent
         }
@@ -206,9 +198,10 @@ struct HeadingPreviews: PreviewProvider {
 
 
     @ViewBuilder static var kek: some View {
-        Heading("Lol kek", style: .title1)
-            + Icon(.informationCircle, size: .heading(.title1))
-            + Heading("Lol kek", style: .title1)
+        (Heading("Hanoi", style: .title1)
+            + Icon(.flightReturn, size: .heading(.title1))
+            + Heading("San Pedro de Alcantara", style: .title1))
+            .lineLimit(2)
     }
 
 
@@ -284,30 +277,3 @@ struct HeadingDynamicTypePreviews: PreviewProvider {
     }
 }
 
-extension EmptyView: TextRepresentable {}
-
-extension SwiftUI.Text: TextRepresentable {
-    var asText: SwiftUI.Text? { self }
-}
-
-@ViewBuilder func +(left: TextRepresentable, right: TextRepresentable) -> some View & TextRepresentable {
-    if let leftText = left.asText, let rightText = right.asText {
-        leftText + rightText
-    }
-
-    if let leftText = left.asText {
-        leftText
-    }
-
-    if let rightText = right.asText {
-        rightText
-    }
-
-    EmptyView()
-}
-
-extension TupleView: TextRepresentable where T == (SwiftUI.Text?, SwiftUI.Text?, SwiftUI.Text?, EmptyView) {
-    var asText: SwiftUI.Text? {
-        value.0 ?? value.1 ?? value.2
-    }
-}
