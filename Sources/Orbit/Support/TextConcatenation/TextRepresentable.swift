@@ -1,9 +1,11 @@
 import SwiftUI
 
 public protocol SwiftUITextRepresentable {
-    var asText: SwiftUI.Text? { get }
+    func asText(configuration: ContentSizeCategory) -> SwiftUI.Text?
 }
 
-extension SwiftUI.Text: SwiftUITextRepresentable {
-    public var asText: SwiftUI.Text? { self }
+extension SwiftUITextRepresentable {
+    var wrapped: DynamicTextWrapper {
+        .init(content: asText)
+    }
 }
