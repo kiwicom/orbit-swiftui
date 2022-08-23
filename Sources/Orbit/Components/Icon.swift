@@ -102,16 +102,14 @@ public struct Icon: View {
 }
 
 extension Icon: SwiftUITextRepresentable {
-    public func asText(configuration: ContentSizeCategory) -> SwiftUI.Text? {
-        if content.isEmpty == false {
-            if #available(iOS 14.0, *) {
-                return textRepresentation(sizeCategory: configuration)
-            } else {
-                return textRepresentationFallback(sizeCategory: configuration)
-            }
-        }
+    public func swiftUITextContent(configuration: ContentSizeCategory) -> SwiftUI.Text? {
+        guard content.isEmpty == false else { return nil }
 
-        return nil
+        if #available(iOS 14.0, *) {
+            return textRepresentation(sizeCategory: configuration)
+        } else {
+            return textRepresentationFallback(sizeCategory: configuration)
+        }
     }
 }
 

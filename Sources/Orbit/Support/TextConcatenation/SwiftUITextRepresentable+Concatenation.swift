@@ -5,12 +5,12 @@ import SwiftUI
 ///   - left: An entity, usually a view, which content can be represented as `SwiftUI.Text`
 ///   - right: An entity, usually a view, which content can be represented as `SwiftUI.Text`
 /// - Returns: A view that is the result of concatenation of text representation of the parameters.
-///   if both paramters do not have a text representation, the returning view will produce `EmptyView`, preserving the standard Orbit behaviour
+///   if both paramters do not have a text representation, the returning view will produce `EmptyView`, preserving the standard Orbit behavior
 @ViewBuilder public func +(
     left: SwiftUITextRepresentable,
     right: SwiftUITextRepresentable
 ) -> some View & SwiftUITextRepresentable {
-    left.wrapped + right.wrapped
+    DynamicTextWrapper(left) + DynamicTextWrapper(right)
 }
 
 struct SwiftUITextRepresentableConcatenationPreviews: PreviewProvider {
@@ -39,3 +39,4 @@ struct SwiftUITextRepresentableConcatenationPreviews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 }
+
