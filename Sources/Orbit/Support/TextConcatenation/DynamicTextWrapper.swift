@@ -13,24 +13,40 @@ struct DynamicTextWrapper: View {
 }
 
 extension DynamicTextWrapper: SwiftUITextRepresentable {
-    func asText(configuration: ContentSizeCategory) -> SwiftUI.Text? {
+    func swiftUITextContent(configuration: ContentSizeCategory) -> SwiftUI.Text? {
         content(configuration)
-    }
-
-    var wrapped: DynamicTextWrapper {
-        self
     }
 }
 
-func +(
-    left: DynamicTextWrapper,
-    right: DynamicTextWrapper
-) -> DynamicTextWrapper {
+extension DynamicTextWrapper {
+    init(_ swiftUITextRepresentable: SwiftUITextRepresentable) {
+        if let swiftUITextRepresentable = swiftUITextRepresentable as? DynamicTextWrapper {
+            self = swiftUITextRepresentable
+        } else {
+            self.init(content: swiftUITextRepresentable.swiftUITextContent(configuration:))
+        }
+    }
+}
+
+
+func +(left: DynamicTextWrapper, right: DynamicTextWrapper) -> DynamicTextWrapper {
     .init { configration in
         transform(left: left.content(configration), right: right.content(configration))
     }
 }
 
 private func transform(left: SwiftUI.Text?, right: SwiftUI.Text?) -> SwiftUI.Text? {
-    left.flatMap { left in right.flatMap { right in left + right } }
+    if let left = left, let right = right {
+        return left + right
+    }
+
+    if let left = left, right == nil {
+        return left
+    }
+
+    if left == nil, let right = right {
+        return right
+    }
+
+    return nil
 }
