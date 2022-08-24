@@ -23,9 +23,6 @@ public enum CardContentLayout {
 /// - Important: Component expands horizontally to infinity.
 public struct Card<Content: View>: View {
 
-    @Environment(\.isInsideScreenLayout) var isScreenLayout
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
-
     let title: String
     let description: String
     let iconContent: Icon.Content
@@ -57,7 +54,7 @@ public struct Card<Content: View>: View {
             showBorder ? .iOS : .none,
             status: status
         )
-        .padding(.horizontal, horizontalPadding)
+        .ignoreScreenLayoutHorizontalPadding()
         .accessibilityElement(children: .contain)
     }
 
@@ -91,14 +88,6 @@ public struct Card<Content: View>: View {
             .padding([.horizontal, .top], .medium)
             .padding(.bottom, isContentEmpty ? .medium : 0)
         }
-    }
-
-    var horizontalPadding: CGFloat {
-        if horizontalSizeClass == .regular {
-            return 0
-        }
-
-        return isScreenLayout ? -.medium : 0
     }
 
     var isHeaderEmpty: Bool {
