@@ -81,7 +81,7 @@ public struct ToastContent: View {
         backgroundColor
             .overlay(progressIndicator, alignment: .leading)
             .clipShape(shape)
-            .elevation(.level3)
+            .elevation(.level3, shape: .roundedRectangle())
     }
     
     @ViewBuilder var progressIndicator: some View {

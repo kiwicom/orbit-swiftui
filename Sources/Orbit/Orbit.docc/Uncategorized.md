@@ -40,6 +40,7 @@ Supporting types and components under development.
 - ``ChoiceTile``
 - ``ChoiceTileAlignment``
 - ``ChoiceTileIndicator``
+- ``ElevationShape``
 - ``FormFieldLabel``
 - ``FormFieldMessage``
 - ``FormFieldWrapper``
