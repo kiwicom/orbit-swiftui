@@ -41,7 +41,7 @@ public struct Heading: View {
     }
 }
 
-extension Heading: SwiftUITextRepresentable {
+extension Heading: TextRepresentable {
     public func swiftUITextContent(configuration: ContentSizeCategory) -> SwiftUI.Text? {
         guard text.isEmpty == false else { return nil }
 

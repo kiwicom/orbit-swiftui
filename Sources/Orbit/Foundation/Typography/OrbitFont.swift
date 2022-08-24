@@ -33,7 +33,7 @@ public extension SwiftUI.Text {
         size: CGFloat,
         weight: Font.Weight = .regular,
         style: Font.TextStyle = .body,
-        sizeCategory: ContentSizeCategory = .medium
+        sizeCategory: ContentSizeCategory
     ) -> SwiftUI.Text {
         let scaledSize = sizeCategory.ratio * size
 

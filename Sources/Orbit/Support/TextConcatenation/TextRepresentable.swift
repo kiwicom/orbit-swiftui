@@ -1,5 +1,5 @@
 import SwiftUI
 
-public protocol SwiftUITextRepresentable {
+public protocol TextRepresentable {
     func swiftUITextContent(configuration: ContentSizeCategory) -> SwiftUI.Text?
 }
