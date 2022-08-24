@@ -101,7 +101,7 @@ public struct Icon: View {
     }
 }
 
-extension Icon: SwiftUITextRepresentable {
+extension Icon: TextRepresentable {
     public func swiftUITextContent(configuration: ContentSizeCategory) -> SwiftUI.Text? {
         guard content.isEmpty == false else { return nil }
 

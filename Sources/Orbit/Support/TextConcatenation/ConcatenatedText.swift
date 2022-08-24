@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct DynamicTextWrapper: View {
+struct ConcatenatedText: View {
     @Environment(\.sizeCategory) var sizeCategory
 
     let content: (ContentSizeCategory) -> SwiftUI.Text?
@@ -12,24 +12,24 @@ struct DynamicTextWrapper: View {
     }
 }
 
-extension DynamicTextWrapper: SwiftUITextRepresentable {
+extension ConcatenatedText: TextRepresentable {
     func swiftUITextContent(configuration: ContentSizeCategory) -> SwiftUI.Text? {
         content(configuration)
     }
 }
 
-extension DynamicTextWrapper {
-    init(_ swiftUITextRepresentable: SwiftUITextRepresentable) {
-        if let swiftUITextRepresentable = swiftUITextRepresentable as? DynamicTextWrapper {
-            self = swiftUITextRepresentable
+extension ConcatenatedText {
+    init(_ TextRepresentable: TextRepresentable) {
+        if let concatenatedText = TextRepresentable as? ConcatenatedText {
+            self = concatenatedText
         } else {
-            self.init(content: swiftUITextRepresentable.swiftUITextContent(configuration:))
+            self.init(content: TextRepresentable.swiftUITextContent(configuration:))
         }
     }
 }
 
 
-func +(left: DynamicTextWrapper, right: DynamicTextWrapper) -> DynamicTextWrapper {
+func +(left: ConcatenatedText, right: ConcatenatedText) -> ConcatenatedText {
     .init { configration in
         transform(left: left.content(configration), right: right.content(configration))
     }
