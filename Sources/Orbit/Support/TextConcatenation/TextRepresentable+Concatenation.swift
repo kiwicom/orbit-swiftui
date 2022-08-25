@@ -17,7 +17,7 @@ struct TextConcatenationPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            snpashot
+            snapshot
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -29,7 +29,7 @@ struct TextConcatenationPreviews: PreviewProvider {
              + Heading(" San Pedro de Alcantara", style: .title1))
         .lineLimit(2)
     }
-    static var snpashot: some View {
+    static var snapshot: some View {
         VStack(alignment: .leading, spacing: .xSmall) {
             Heading("Display Title", style: .display) + Icon(.flightReturn, size: .heading(.display))
             Heading("Display Subtitle", style: .displaySubtitle) + Icon(.flightReturn, size: .heading(.displaySubtitle))

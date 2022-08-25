@@ -4,6 +4,6 @@ import XCTest
 class TextConcatenationTests: SnapshotTestCase {
 
     func testTextConcatenation() {
-        assert(TextConcatenationPreviews.snpashot)
+        assert(TextConcatenationPreviews.snapshot)
     }
 }
