@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'Sources/Orbit/Foundation/CountryFlags/CountryFlags.xcassets/**/*'
+      - 'Automation/update_country_flags.py'
 
 jobs:
   build:
@@ -19,5 +20,5 @@ jobs:
         run: |
             git config --global user.name "Mobile Automation"
             git config --global user.email "mobile.automation@kiwi.com"
-            git commit -m "Updated country flags enum."
+            git commit -am "Updated country flags enum."
             git push
