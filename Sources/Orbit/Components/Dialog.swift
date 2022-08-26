@@ -34,7 +34,7 @@ public struct Dialog: View {
         .padding(.medium)
         .background(Color.whiteDarker)
         .clipShape(shape)
-        .elevation(.level4)
+        .elevation(.level4, shape: .roundedRectangle(borderRadius: .small))
         .padding(.xLarge)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.inkNormal.opacity(0.45).edgesIgnoringSafeArea(.all))

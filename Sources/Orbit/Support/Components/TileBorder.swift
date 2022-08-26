@@ -23,7 +23,7 @@ public struct TileBorderModifier: ViewModifier {
         content
             .clipShape(clipShape)
             .compositingGroup()
-            .elevation(elevation)
+            .elevation(elevation, shape: .roundedRectangle(borderRadius: cornerRadius))
             .overlay(border.animation(Self.animation, value: isSelected))
     }
 

@@ -106,7 +106,7 @@ public struct Tabs<Content: View>: View {
                 .frame(height: underlineHeight * sizeCategory.ratio)
         }
         .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1))
-        .elevation(.level1)
+        .elevation(.level1, shape: .roundedRectangle(borderRadius: BorderRadius.default - 1))
         .padding(.xxxSmall)
     }
 
