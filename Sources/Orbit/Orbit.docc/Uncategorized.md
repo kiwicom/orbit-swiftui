@@ -21,7 +21,6 @@ Supporting types and components under development.
 
 ### Xcode previews support
 
-- ``PreviewWrapper``
 - ``StateWrapper``
 
 ### SwiftUI environment
