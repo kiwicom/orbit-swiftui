@@ -6,6 +6,8 @@ import SwiftUI
 /// - Important: Component expands horizontally to infinity.
 public struct Button: View {
 
+    @Environment(\.idealSize) var idealSize
+
     let label: String
     let iconContent: Icon.Content
     let disclosureIconContent: Icon.Content
@@ -21,7 +23,7 @@ public struct Button: View {
             },
             label: {
                 HStack(spacing: 0) {
-                    if disclosureIconContent.isEmpty {
+                    if disclosureIconContent.isEmpty, idealSize.horizontal == false {
                         Spacer(minLength: 0)
                     }
 
@@ -32,7 +34,9 @@ public struct Button: View {
                             .padding(.vertical, size.verticalPadding)
                     }
 
-                    Spacer(minLength: 0)
+                    if idealSize.horizontal == false {
+                        Spacer(minLength: 0)
+                    }
 
                     TextStrut(size.textSize)
                         .padding(.vertical, size.verticalPadding)
