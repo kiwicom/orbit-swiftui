@@ -13,7 +13,14 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build
       run: set -o pipefail && xcodebuild -scheme Orbit -destination "generic/platform=iOS Simulator" | xcpretty
+  check-components-have-snapshots:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Check components have snapshots
+      run: Automation/check_components_have_snapshot_tests.sh
   test:
+    needs: check-components-have-snapshots
     strategy:
       matrix:
         device: ["iPhone 13", "iPhone SE (1st generation)", "iPad (9th generation)"]
