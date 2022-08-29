@@ -1,32 +1,15 @@
 import SwiftUI
 
-/// Wrapper for preview content with Orbit fonts applied.
-public struct PreviewWrapper<Content: View>: View {
+struct PreviewWrapper<Content: View>: View {
 
     @ViewBuilder let content: Content
 
-    public var body: some View {
+    var body: some View {
         content
     }
 
-    public init(@ViewBuilder content: () -> Content) {
+    init(@ViewBuilder content: () -> Content) {
         Font.registerOrbitFonts()
         self.content = content()
-    }
-}
-
-/// Wrapper for state based preview content.
-public struct StateWrapper<StateT, Content: View>: View {
-
-    @State public var state: StateT
-    private var content: (_ binding: Binding<StateT>) -> Content
-
-    public init(initialState: StateT, @ViewBuilder content: @escaping (_ binding: Binding<StateT>) -> Content) {
-        self.content = content
-        self._state = State(initialValue: initialState)
-    }
-
-    public var body: some View {
-        content($state)
     }
 }
