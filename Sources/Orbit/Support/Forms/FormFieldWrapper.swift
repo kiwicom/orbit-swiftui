@@ -6,13 +6,16 @@ public struct FormFieldWrapper<Content: View, MessageContent: View>: View {
     @Binding private var messageHeight: CGFloat
 
     let label: String
+    var accentColor: UIColor? = nil
+    var linkColor: TextLink.Color = .primary
+    var linkAction: TextLink.Action = { _, _ in }
     let message: MessageType
     @ViewBuilder let content: Content
     @ViewBuilder let messageContent: MessageContent
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            FormFieldLabel(label)
+            FormFieldLabel(label, accentColor: accentColor, linkColor: linkColor, linkAction: linkAction)
                 .padding(.bottom, .xxSmall)
 
             content
@@ -32,12 +35,18 @@ public struct FormFieldWrapper<Content: View, MessageContent: View>: View {
     /// Creates Orbit wrapper around form field content including an additional custom message content.
     public init(
         _ label: String,
+        accentColor: UIColor? = nil,
+        linkColor: TextLink.Color = .primary,
+        linkAction: @escaping TextLink.Action = { _, _ in },
         message: MessageType = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content,
         @ViewBuilder messageContent: () -> MessageContent
     ) {
         self.label = label
+        self.accentColor = accentColor
+        self.linkColor = linkColor
+        self.linkAction = linkAction
         self.message = message
         self._messageHeight = messageHeight
         self.content = content()
@@ -47,12 +56,18 @@ public struct FormFieldWrapper<Content: View, MessageContent: View>: View {
     /// Creates Orbit wrapper around form field content.
     public init(
         _ label: String,
+        accentColor: UIColor? = nil,
+        linkColor: TextLink.Color = .primary,
+        linkAction: @escaping TextLink.Action = { _, _ in },
         message: MessageType = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content
     ) where MessageContent == EmptyView {
         self.init(
             label,
+            accentColor: accentColor,
+            linkColor: linkColor,
+            linkAction: linkAction,
             message: message,
             messageHeight: messageHeight,
             content: content
@@ -71,7 +86,15 @@ struct FormFieldWrapperPreviews: PreviewProvider {
                 contentPlaceholder
             }
 
-            FormFieldWrapper("Form Field Label", message: .none) {
+            FormFieldWrapper("Form Field Label") {
+                contentPlaceholder
+            }
+
+            FormFieldWrapper(
+                "Form Field Label with <ref>accent</ref> and <applink1>TextLink</applink1>",
+                accentColor: .orangeNormal,
+                linkColor: .status(.info)
+            ) {
                 contentPlaceholder
             }
 
