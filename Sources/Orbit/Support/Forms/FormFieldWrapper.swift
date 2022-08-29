@@ -68,15 +68,15 @@ struct FormFieldWrapperPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             FormFieldWrapper("Form Field Label", message: .help("Help message")) {
-                customContentPlaceholder
+                contentPlaceholder
             }
 
             FormFieldWrapper("Form Field Label", message: .none) {
-                customContentPlaceholder
+                contentPlaceholder
             }
 
             FormFieldWrapper("", message: .none) {
-                customContentPlaceholder
+                contentPlaceholder
             }
 
             StateWrapper(initialState: (true, true, CGFloat(0), false)) { state in
@@ -86,7 +86,7 @@ struct FormFieldWrapperPreviews: PreviewProvider {
                         message: state.1.wrappedValue ? .error("Error message") : .none,
                         messageHeight: state.2
                     ) {
-                        customContentPlaceholder
+                        contentPlaceholder
                     }
 
                     Text("Message height: \(state.2.wrappedValue)")

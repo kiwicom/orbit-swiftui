@@ -173,7 +173,7 @@ struct ScreenLayoutModifierPreviews: PreviewProvider {
                     Tile("Tile 2")
                 }
                 Tile("Tile 3")
-                customContentPlaceholder
+                contentPlaceholder
             }
 
             TileGroup {

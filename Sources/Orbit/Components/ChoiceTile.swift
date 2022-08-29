@@ -20,8 +20,10 @@ public enum ChoiceTileAlignment {
 /// Enables users to encapsulate radio or checkbox to pick exactly one option from a group.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/choice-tile/)
-/// - Important: Component expands horizontally to infinity.
+/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct ChoiceTile<Content: View>: View {
+
+    @Environment(\.idealSize) var idealSize
 
     public let padding: CGFloat = .small
     public let verticalTextPadding: CGFloat = .xxSmall - 1/6    // Results in ±52 height at normal text size
@@ -61,7 +63,7 @@ public struct ChoiceTile<Content: View>: View {
                 .padding(.top, badgeOverlay.isEmpty ? 0 : .small)
                 .overlay(indicatorOverlay, alignment: indicatorAlignment)
                 .padding(padding)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: idealSize.horizontal ? nil: .infinity, alignment: .leading)
             }
         )
         .buttonStyle(TileButtonStyle(isSelected: isSelected, status: errorShouldHighlightBorder ? .critical : nil))
@@ -92,10 +94,13 @@ public struct ChoiceTile<Content: View>: View {
                             Text(description, color: .inkLight)
                                 .accessibility(.choiceTileDescription)
                         }
-                        
-                        Spacer(minLength: .xSmall)
+
+                        if idealSize.horizontal == false {
+                            Spacer(minLength: 0)
+                        }
                         
                         Badge(badge, style: .status(.info))
+                            .padding(.leading, .xSmall)
                             .accessibility(.choiceTileBadge)
                     }
                 case .center:
@@ -108,6 +113,7 @@ public struct ChoiceTile<Content: View>: View {
                                 .frame(height: 68)
                                 .padding(.bottom, .xxSmall)
                         }
+
                         Heading(title, style: titleStyle, alignment: .center)
                             .accessibility(.choiceTileTitle)
 
@@ -117,7 +123,7 @@ public struct ChoiceTile<Content: View>: View {
                         Badge(badge, style: .neutral)
                             .accessibility(.choiceTileBadge)
                     }
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: idealSize.horizontal ? nil : .infinity)
             }
         }
     }
@@ -275,6 +281,7 @@ struct ChoiceTilePreviews: PreviewProvider {
             standalone
             standaloneCentered
             sizing
+            intrinsic
 
             storybook
             storybookCentered
@@ -292,7 +299,7 @@ struct ChoiceTilePreviews: PreviewProvider {
             badge: "Popular",
             message: .help("Message")
         ) {
-            customContentPlaceholder
+            contentPlaceholder
         }
     }
 
@@ -334,9 +341,16 @@ struct ChoiceTilePreviews: PreviewProvider {
             message: .help("Message"),
             alignment: .center
         ) {
-            customContentPlaceholder
+            contentPlaceholder
         }
         .previewDisplayName("Centered")
+    }
+
+    static var intrinsic: some View {
+        ChoiceTile("Intrinsic", icon: .grid) {
+            intrinsicContentPlaceholder
+        }
+        .idealSize()
     }
 
     static var storybook: some View {
@@ -363,7 +377,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                 ) {
                     isSelected.wrappedValue.toggle()
                 } content: {
-                    customContentPlaceholder
+                    contentPlaceholder
                 }
             }
             StateWrapper(initialState: false) { isSelected in
@@ -375,7 +389,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                 ) {
                     isSelected.wrappedValue.toggle()
                 } content: {
-                    customContentPlaceholder
+                    contentPlaceholder
                 }
             }
             StateWrapper(initialState: false) { isSelected in
@@ -434,7 +448,7 @@ struct ChoiceTilePreviews: PreviewProvider {
             ) {
                 state.wrappedValue.toggle()
             } content: {
-                customContentPlaceholder
+                contentPlaceholder
             }
         }
     }
@@ -454,7 +468,7 @@ struct ChoiceTilePreviews: PreviewProvider {
             ) {
                 state.wrappedValue.toggle()
             } content: {
-                customContentPlaceholder
+                contentPlaceholder
             }
         }
     }

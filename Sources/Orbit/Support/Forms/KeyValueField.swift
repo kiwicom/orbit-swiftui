@@ -50,7 +50,7 @@ struct KeyValueFieldPreviews: PreviewProvider {
             }
 
             KeyValueField("Trailing", alignment: .trailing) {
-                customContentPlaceholder
+                contentPlaceholder
             }
 
             KeyValueField("Key") {

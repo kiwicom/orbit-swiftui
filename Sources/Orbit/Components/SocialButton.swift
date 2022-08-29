@@ -6,11 +6,12 @@ import SwiftUI
 /// Don’t use them in any other case or in any complex scenarios.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/socialbutton/)
-/// - Important: Component expands horizontally to infinity.
+/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct SocialButton: View {
 
     @Environment(\.sizeCategory) var sizeCategory
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.idealSize) var idealSize
 
     let label: String
     let service: Service
@@ -31,15 +32,16 @@ public struct SocialButton: View {
                     Text(label, size: .normal, color: nil, weight: .medium)
                         .padding(.vertical, Button.Size.default.verticalPadding)
 
-                    Spacer(minLength: 0)
+                    if idealSize.horizontal == false {
+                        Spacer(minLength: 0)
+                    }
 
                     Icon(.chevronRight, size: .large, color: nil)
                 }
                 .foregroundColor(labelColor)
             }
         )
-        .buttonStyle(OrbitStyle(backgroundColor: backgroundColor))
-        .fixedSize(horizontal: false, vertical: true)
+        .buttonStyle(OrbitStyle(backgroundColor: backgroundColor, idealSize: idealSize))
     }
 
     var labelColor: Color {
@@ -120,10 +122,11 @@ extension SocialButton {
         typealias BackgroundColor = (normal: Color, active: Color)
 
         let backgroundColor: BackgroundColor
+        let idealSize: IdealSizeValue
 
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: idealSize.horizontal ? nil : .infinity)
                 .padding(.horizontal, .small)
                 .background(
                     configuration.isPressed ? backgroundColor.active : backgroundColor.normal
@@ -139,6 +142,7 @@ struct SocialButtonPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            intrinsic
             storybook
             storybook
                 .preferredColorScheme(.dark)
@@ -149,6 +153,12 @@ struct SocialButtonPreviews: PreviewProvider {
 
     static var standalone: some View {
         SocialButton("Sign in with Facebook", service: .facebook)
+    }
+
+    static var intrinsic: some View {
+        storybook
+            .idealSize()
+            .previewDisplayName("Intrinsic")
     }
 
     static var storybook: some View {

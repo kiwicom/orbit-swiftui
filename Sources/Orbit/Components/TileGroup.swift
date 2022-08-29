@@ -53,6 +53,7 @@ struct TileGroupPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            intrinsic
             Tile("Standalone Tile", icon: .grid)
         }
         .padding(.medium)
@@ -61,18 +62,30 @@ struct TileGroupPreviews: PreviewProvider {
 
     static var standalone: some View {
         TileGroup {
-            tiles
+            tiles(intrinsic: false)
         }
+    }
+
+    static var intrinsic: some View {
+        TileGroup {
+            tiles(intrinsic: true)
+        }
+        .idealSize()
+        .previewDisplayName("Intrinsic")
     }
 
     static var storybook: some View {
         standalone
     }
 
-    @ViewBuilder static var tiles: some View {
+    @ViewBuilder static func tiles(intrinsic: Bool) -> some View {
         Tile("Title")
-        Tile("Title with custom content", icon: .grid) {
-            customContentPlaceholder
+        Tile("Custom content", icon: .grid, action: {}) {
+            if intrinsic {
+                intrinsicContentPlaceholder
+            } else {
+                contentPlaceholder
+            }
         }
         Tile("Title", description: "No disclosure", icon: .notification, disclosure: .none)
         Tile("No Separator", icon: .notification)

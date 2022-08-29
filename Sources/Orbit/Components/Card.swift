@@ -20,8 +20,10 @@ public enum CardContentLayout {
 /// Card is a wrapping component around a custom content.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/card/)
-/// - Important: Component expands horizontally to infinity.
+/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Card<Content: View>: View {
+
+    @Environment(\.idealSize) var idealSize
 
     let title: String
     let description: String
@@ -48,7 +50,7 @@ public struct Card<Content: View>: View {
                 .padding([.horizontal, .bottom], contentPadding)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: idealSize.horizontal ? nil : .infinity, alignment: .leading)
         .background(backgroundColor)
         .tileBorder(
             showBorder ? .iOS : .none,
@@ -61,7 +63,6 @@ public struct Card<Content: View>: View {
     @ViewBuilder var header: some View {
         if isHeaderEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: 0) {
-
                 Icon(content: iconContent, size: .heading(titleStyle))
                     .padding(.trailing, .xSmall)
                     .accessibility(.cardIcon)
@@ -73,12 +74,15 @@ public struct Card<Content: View>: View {
                         .accessibility(.cardDescription)
                 }
 
-                Spacer(minLength: .xxxSmall)
+                if idealSize.horizontal == false {
+                    Spacer(minLength: 0)
+                }
 
                 switch action {
                     case .buttonLink(let label, let action):
                         if label.isEmpty == false {
                             ButtonLink(label, action: action)
+                                .padding(.leading, .xxxSmall)
                                 .accessibility(.cardActionButtonLink)
                         }
                     case .none:
@@ -215,27 +219,25 @@ struct CardPreviews: PreviewProvider {
 
     static var standalone: some View {
         Card("Card title", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink")) {
-            customContentPlaceholder
-            customContentPlaceholder
+            contentPlaceholder
+            contentPlaceholder
         }
         .previewDisplayName("Standalone")
     }
     
     static var standaloneIntrinsic: some View {
         HStack(spacing: .medium) {
-            Card("Card title", description: "Intrinsic width", icon: .grid) {
-                Text("Content")
-                    .padding(.medium)
-                    .background(Color.greenLight)
+            Card("Card", description: "Intrinsic", icon: .grid) {
+                intrinsicContentPlaceholder
             }
-            .fixedSize(horizontal: true, vertical: false)
+            .idealSize(horizontal: true, vertical: false)
 
-            Card("Card with SF Symbol", description: "Intrinsic width", icon: .sfSymbol("info.circle.fill", color: .greenNormal)) {
-                Text("Content")
-                    .padding(.medium)
-                    .background(Color.greenLight)
+            Card("Card with SF Symbol", description: "Intrinsic", icon: .sfSymbol("info.circle.fill", color: .greenNormal)) {
+                intrinsicContentPlaceholder
             }
-            .fixedSize(horizontal: true, vertical: false)
+            .idealSize(horizontal: true, vertical: false)
+
+            Spacer()
         }
         .previewDisplayName("Standalone Intrinsic width")
     }
@@ -246,30 +248,30 @@ struct CardPreviews: PreviewProvider {
 
     static var cardWithFillLayoutContent: some View {
         Card("Card with fill layout content", action: .buttonLink("Edit"), contentLayout: .fill) {
-            customContentPlaceholder
+            contentPlaceholder
             Separator()
-            customContentPlaceholder
+            contentPlaceholder
         }
     }
 
     static var cardWithFillLayoutContentNoHeader: some View {
         Card(contentLayout: .fill) {
-            customContentPlaceholder
+            contentPlaceholder
             Separator()
-            customContentPlaceholder
+            contentPlaceholder
         }
     }
 
     static var cardWithOnlyCustomContent: some View {
         Card {
-            customContentPlaceholder
-            customContentPlaceholder
+            contentPlaceholder
+            contentPlaceholder
         }
     }
 
     static var cardWithTiles: some View {
         Card("Card with mixed content", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink")) {
-            customContentPlaceholder
+            contentPlaceholder
                 .frame(height: 30).clipped()
             Tile("Tile")
 
@@ -288,7 +290,7 @@ struct CardPreviews: PreviewProvider {
                 .padding(.trailing, -.medium)
             ListChoice("ListChoice 2")
                 .padding(.trailing, -.medium)
-            customContentPlaceholder
+            contentPlaceholder
                 .frame(height: 30).clipped()
         }
     }
@@ -300,7 +302,7 @@ struct CardPreviews: PreviewProvider {
             action: .buttonLink("ButtonLink with a long description"),
             status: .critical
         ) {
-            customContentPlaceholder
+            contentPlaceholder
         }
     }
     

@@ -3,7 +3,7 @@ import SwiftUI
 /// Also known as dropdown. Offers a simple form control to select from many options.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/select/)
-/// - Important: Component expands horizontally to infinity.
+/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Select: View {
 
     @Binding private var messageHeight: CGFloat
@@ -86,6 +86,7 @@ struct SelectPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            intrinsic
             storybook
             storybookMix
         }
@@ -95,6 +96,11 @@ struct SelectPreviews: PreviewProvider {
 
     static var standalone: some View {
         Select(InputFieldPreviews.label, prefix: .grid, value: InputFieldPreviews.value)
+    }
+
+    static var intrinsic: some View {
+        Select("Intrinsic", prefix: .grid, value: InputFieldPreviews.value)
+            .idealSize()
     }
 
     static var storybook: some View {

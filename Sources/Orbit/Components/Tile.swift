@@ -50,11 +50,12 @@ public enum TileDisclosure {
 /// Can be used standalone or wrapped inside a ``TileGroup``.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tile/)
-/// - Important: Component expands horizontally.
+/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Tile<Content: View>: View {
 
     @Environment(\.isInsideTileGroup) var isInsideTileGroup
     @Environment(\.isTileSeparatorVisible) var isTileSeparatorVisible
+    @Environment(\.idealSize) var idealSize
 
     public let verticalTextPadding: CGFloat = .medium - 1/6    // Results in ±52 height at normal text size
 
@@ -94,7 +95,9 @@ public struct Tile<Content: View>: View {
                 content
             }
 
-            Spacer(minLength: 0)
+            if idealSize.horizontal == false {
+                Spacer(minLength: 0)
+            }
 
             disclosureIcon
                 .padding(.trailing, .medium)
@@ -121,7 +124,9 @@ public struct Tile<Content: View>: View {
                 TextStrut(.large)
                     .padding(.vertical, verticalTextPadding)
 
-                Spacer(minLength: 0)
+                if idealSize.horizontal == false {
+                    Spacer(minLength: 0)
+                }
 
                 inactiveButtonLink
             }
@@ -271,6 +276,7 @@ struct TilePreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            intrinsic
             sizing
             storybook
             storybookMix
@@ -311,6 +317,12 @@ struct TilePreviews: PreviewProvider {
             .previewDisplayName("Standalone")
     }
 
+    static var intrinsic: some View {
+        Tile(title, description: description, icon: .grid)
+            .idealSize()
+            .previewDisplayName("Intrinsic")
+    }
+
     static var storybook: some View {
         VStack(spacing: .large) {
             Tile(title)
@@ -318,7 +330,7 @@ struct TilePreviews: PreviewProvider {
             Tile(title, description: description)
             Tile(title, description: description, icon: .airplane)
             Tile {
-                customContentPlaceholder
+                contentPlaceholder
             }
         }
     }
@@ -326,7 +338,7 @@ struct TilePreviews: PreviewProvider {
     @ViewBuilder static var storybookMix: some View {
         VStack(spacing: .large) {
             Tile("Title with very very very very very long multiline text", description: descriptionMultiline, icon: .airplane) {
-                customContentPlaceholder
+                contentPlaceholder
             }
             Tile(title, description: description, icon: .symbol(.airplane, color: .blueNormal), status: .info)
             Tile("SF Symbol", description: description, icon: .sfSymbol("info.circle.fill"), status: .critical)
@@ -334,10 +346,10 @@ struct TilePreviews: PreviewProvider {
             Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .critical))
             Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid))
             Tile(disclosure: .none) {
-                customContentPlaceholder
+                contentPlaceholder
             }
             Tile("Tile with custom content", disclosure: .none) {
-                customContentPlaceholder
+                contentPlaceholder
             }
             Tile(
                 "Tile with no border",

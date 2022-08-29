@@ -25,8 +25,10 @@ public enum AlertButtons {
 /// Use at most two actions in each Alert: one primary and one subtle.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/alert/)
-/// - Important: Component expands horizontally to infinity.
+/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Alert<Content: View>: View {
+
+    @Environment(\.idealSize) var idealSize
 
     let title: String
     let description: String
@@ -39,13 +41,11 @@ public struct Alert<Content: View>: View {
 
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-            
             Icon(content: iconContent, size: .normal)
                 .foregroundColor(status.color)
                 .accessibility(.alertIcon)
             
             VStack(alignment: .leading, spacing: .medium) {
-
                 if isHeaderEmpty == false {
                     VStack(alignment: .leading, spacing: .xxSmall) {
                         Text(title, weight: .bold)
@@ -66,7 +66,7 @@ public struct Alert<Content: View>: View {
                 }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: idealSize.horizontal ? nil : .infinity, alignment: .leading)
         .padding([.vertical, .trailing], .medium)
         .padding(.leading, iconContent.isEmpty ? .medium : .small)
         .background(background)
@@ -238,7 +238,7 @@ struct AlertPreviews: PreviewProvider {
             icon: .grid,
             buttons: primaryAndSecondaryConfiguration
         ) {
-            customContentPlaceholder
+            contentPlaceholder
         }
     }
 
@@ -288,6 +288,8 @@ struct AlertPreviews: PreviewProvider {
             Alert(title, buttons: Self.primaryConfiguration)
             Alert(icon: .informationCircle, buttons: Self.primaryConfiguration)
             Alert(buttons: Self.primaryConfiguration)
+            Alert("Intrinsic width", buttons: Self.primaryConfiguration)
+                .idealSize(horizontal: true, vertical: false)
         }
         .previewDisplayName("Primary buttons")
     }
@@ -297,15 +299,17 @@ struct AlertPreviews: PreviewProvider {
             Alert(title, description: description, icon: .informationCircle)
             Alert(title, description: description)
             Alert(title) {
-                customContentPlaceholder
+                contentPlaceholder
             }
             Alert {
-                customContentPlaceholder
+                contentPlaceholder
             }
             Alert(title, icon: .informationCircle)
             Alert(icon: .informationCircle)
             Alert(title)
             Alert()
+            Alert("Intrinsic width")
+                .idealSize(horizontal: true, vertical: false)
         }
         .previewDisplayName("No buttons")
     }

@@ -3,6 +3,8 @@ import SwiftUI
 /// Content for inputs that share common layout with a prefix and suffix.
 struct InputContent<Content: View>: View {
 
+    @Environment(\.idealSize) var idealSize
+
     var prefix: Icon.Content = .none
     var suffix: Icon.Content = .none
     var state: InputState = .default
@@ -20,7 +22,9 @@ struct InputContent<Content: View>: View {
                 .lineLimit(1)
                 .padding(.leading, prefix.isEmpty ? .small : 0)
 
-            Spacer(minLength: 0)
+            if idealSize.horizontal == false {
+                Spacer(minLength: 0)
+            }
 
             TextStrut(.normal)
                 .padding(.vertical, Button.Size.default.verticalPadding)

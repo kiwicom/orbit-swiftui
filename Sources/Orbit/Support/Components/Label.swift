@@ -241,7 +241,7 @@ struct LabelPreviews: PreviewProvider {
             VStack(alignment: .leading, spacing: .xSmall) {
                 Label("Label with long multiline text", icon: .grid, style: .title2)
                 Text("Description very very very very verylong multiline text", color: .inkLight)
-                customContentPlaceholder
+                contentPlaceholder
             }
             Spacer()
             Badge("Trailing")
@@ -257,7 +257,7 @@ struct LabelPreviews: PreviewProvider {
             VStack(alignment: .leading, spacing: .xSmall) {
                 Heading("Label with long multiline text", style: .title2)
                 Text("Description very very very very verylong multiline text", color: .inkLight)
-                customContentPlaceholder
+                contentPlaceholder
             }
             
             Spacer()
