@@ -97,7 +97,7 @@ struct TimelinePreviews: PreviewProvider {
                 style: .status(.critical),
                 description: "Be at your departure gate at least 30 minutes before boarding."
             )
-            customContentPlaceholder
+            contentPlaceholder
                 .padding(.leading, .xLarge)
                 .anchorPreference(key: TimelineStepPreferenceKey.self, value: .bounds) {
                     [TimelineStepPreference(bounds: $0, style: .default)]

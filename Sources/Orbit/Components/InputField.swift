@@ -15,7 +15,7 @@ public enum InputFieldStyle {
 /// When you have additional information or helpful examples, include placeholder text to help users along.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/inputfield/)
-/// - Important: Component expands horizontally to infinity.
+/// - Important: Component expands horizontally unless prevented by `fixedSize` modifier.
 public struct InputField<Value>: View where Value: LosslessStringConvertible {
 
     private enum Mode {

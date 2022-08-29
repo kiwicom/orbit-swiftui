@@ -194,7 +194,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
                 VStack(alignment: .leading) {
                     Text("Spacer")
                     Spacer()
-                    customContentPlaceholder
+                    contentPlaceholder
                 }
             }
 
@@ -314,7 +314,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
 
     static var intrinsicContent: some View {
         intrinsicContent {
-            customContentPlaceholder
+            contentPlaceholder
         }
     }
 

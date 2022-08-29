@@ -3,7 +3,7 @@ import SwiftUI
 /// Displays a single important action a user can take.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/button/)
-/// - Important: Component expands horizontally to infinity.
+/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Button: View {
 
     @Environment(\.idealSize) var idealSize
@@ -49,7 +49,7 @@ public struct Button: View {
             }
         )
         .buttonStyle(ButtonStyle(style: style, size: size))
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: idealSize.horizontal ? nil : .infinity)
     }
 
     @ViewBuilder var text: some View {
@@ -317,9 +317,9 @@ struct ButtonPreviews: PreviewProvider {
             Button("Button")
             Button(.grid)
             Button(.grid)
-                .fixedSize()
+                .idealSize()
             Button(.arrowUp)
-                .fixedSize()
+                .idealSize()
         }
     }
 
@@ -343,7 +343,7 @@ struct ButtonPreviews: PreviewProvider {
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
                     Button("Button small height \(state.wrappedValue)", icon: .grid, size: .small)
-                        .fixedSize()
+                        .idealSize()
                 }
             }
         }
@@ -408,13 +408,13 @@ struct ButtonPreviews: PreviewProvider {
             }
             HStack(spacing: .small) {
                 Button("Label", style: style)
-                    .fixedSize()
+                    .idealSize()
                 Button(.grid, style: style)
                 Spacer()
             }
             HStack(spacing: .small) {
                 Button("Label", style: style, size: .small)
-                    .fixedSize()
+                    .idealSize()
                 Button(.grid, style: style, size: .small)
                 Spacer()
             }
@@ -436,7 +436,7 @@ struct ButtonPreviews: PreviewProvider {
                 Button("Label", disclosureIcon: .chevronRight, style: style, size: .small)
                 Button(.grid, style: style, size: .small)
             }
-            .fixedSize()
+            .idealSize()
 
             Spacer(minLength: 0)
         }

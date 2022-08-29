@@ -3,8 +3,10 @@ import SwiftUI
 /// An illustration matching Orbit name.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/illustration/)
-/// - Important: The component expands horizontally to infinity in case of `.expanded` layout.
+/// - Important: The component expands horizontally to infinity in case of `frame` layout, unless prevented by `idealSize` modifier.
 public struct Illustration: View {
+
+    @Environment(\.idealSize) var idealSize
 
     let name: String
     let bundle: Bundle
@@ -16,7 +18,7 @@ public struct Illustration: View {
                 case .frame(let maxHeight, let alignment):
                     resizeableImage
                         .frame(maxHeight: maxHeight)
-                        .frame(maxWidth: .infinity, alignment: .init(alignment))
+                        .frame(maxWidth: idealSize.horizontal ? nil : .infinity, alignment: .init(alignment))
                         .fixedSize(horizontal: false, vertical: true)
                 case .resizeable:
                     resizeableImage
