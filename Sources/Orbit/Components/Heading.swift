@@ -6,6 +6,8 @@ import SwiftUI
 /// - Important: Component has fixed vertical size.
 public struct Heading: View {
 
+    @Environment(\.sizeCategory) var sizeCategory
+
     let label: String
     let style: Style
     let color: Color?
@@ -13,13 +15,22 @@ public struct Heading: View {
 
     public var body: some View {
         if text.isEmpty == false {
-            SwiftUI.Text(verbatim: text)
-                .orbitFont(size: style.size, weight: style.weight, style: style.textStyle)
-                .foregroundColor(color?.value)
+            textContent(sizeCategory: sizeCategory)
                 .multilineTextAlignment(alignment)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibility(addTraits: .isHeader)
         }
+    }
+
+    func textContent(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
+        SwiftUI.Text(verbatim: text)
+            .orbitFont(
+                size: style.size,
+                weight: style.weight,
+                style: style.textStyle,
+                sizeCategory: sizeCategory
+            )
+            .foregroundColor(color?.value)
     }
 
     var text: String {
@@ -27,6 +38,14 @@ public struct Heading: View {
             case .display, .title1, .displaySubtitle, .title2, .title3, .title4, .title5:   return label
             case .title6:                                                                   return label.localizedUppercase
         }
+    }
+}
+
+extension Heading: TextRepresentable {
+    public func swiftUITextContent(configuration: ContentSizeCategory) -> SwiftUI.Text? {
+        guard text.isEmpty == false else { return nil }
+
+        return textContent(sizeCategory: configuration)
     }
 }
 
@@ -245,3 +264,4 @@ struct HeadingDynamicTypePreviews: PreviewProvider {
         HeadingPreviews.sizes
     }
 }
+
