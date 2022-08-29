@@ -28,4 +28,4 @@ The screen layout modifier adds specified maximum width (``Layout/readableMaxWid
 
 ## Suppressing screen layout
 
-Child views can inspect the ``isInsideScreenLayout`` environment value to act upon this modifier. One example is a `Card` component that ignores horizontal paddings in `compact` environment.
+Child views can use `View.ignoreScreenLayoutHorizontalPadding()` to suppress the horizontal padding from screen layout.

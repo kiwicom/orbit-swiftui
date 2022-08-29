@@ -23,7 +23,7 @@ public extension View {
 
     /// Reverts any horizontal padding provided by `screenLayout` context in a compact width environment.
     ///
-    /// A typical usage is to mimic the edge-to-edge appearance of a `Card` component.
+    /// A typical usage is to mimic the edge-to-edge appearance of the `Card` component.
     func ignoreScreenLayoutHorizontalPadding() -> some View {
         modifier(IgnoreScreenLayoutHorizontalPaddingModifier())
     }
