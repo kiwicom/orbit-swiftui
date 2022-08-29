@@ -29,58 +29,58 @@ struct StorybookColors {
     @ViewBuilder static var product: some View {
         card("Product") {
             HStack(spacing: 0) {
-                color(.productLight, label: "Product Light")
-                color(.productLightHover, label: "Product Light: hover")
-                color(.productLightActive, label: "Product Light: active")
+                color(&.productLight, uiColor: &.productLight, label: "Product Light")
+                color(&.productLightHover, uiColor: &.productLightHover, label: "Product Light: hover")
+                color(&.productLightActive, uiColor: &.productLightActive, label: "Product Light: active")
             }
             HStack(spacing: 0) {
-                color(.productNormal, label: "Product Normal")
-                color(.productNormalHover, label: "Product Normal: hover")
-                color(.productNormalActive, label: "Product Normal: active")
+                color(&.productNormal, uiColor: &.productNormal, label: "Product Normal")
+                color(&.productNormalHover, uiColor: &.productNormalHover, label: "Product Normal: hover")
+                color(&.productNormalActive, uiColor: &.productNormalActive, label: "Product Normal: active")
             }
             HStack(spacing: 0) {
-                color(.productDark, label: "Product Dark")
-                color(.productDarkHover, label: "Product Dark: hover")
-                color(.productDarkActive, label: "Product Dark: active")
+                color(&.productDark, uiColor: &.productDark, label: "Product Dark")
+                color(&.productDarkHover, uiColor: &.productDarkHover, label: "Product Dark: hover")
+                color(&.productDarkActive, uiColor: &.productDarkActive, label: "Product Dark: active")
             }
             
-            color(.productDarker, label: "Product Darker")
+            color(&.productDarker, uiColor: &.productDarker, label: "Product Darker")
         }
     }
 
     @ViewBuilder static var white: some View {
         card("White") {
-            color(.whiteLighter, label: "White Lighter")
+            color(&.whiteLighter, uiColor: &.whiteLighter, label: "White Lighter")
 
             HStack(spacing: 0) {
-                color(.whiteNormal, label: "White")
-                color(.whiteHover, label: "White: hover")
-                color(.whiteActive, label: "White: active")
+                color(&.whiteNormal, uiColor: &.whiteNormal, label: "White")
+                color(&.whiteHover, uiColor: &.whiteHover, label: "White: hover")
+                color(&.whiteActive, uiColor: &.whiteActive, label: "White: active")
             }
 
-            color(.whiteDarker, label: "White Darker")
+            color(&.whiteDarker, uiColor: &.whiteDarker, label: "White Darker")
         }
     }
 
     @ViewBuilder static var cloud: some View {
         card("Cloud") {
             HStack(spacing: 0) {
-                color(.cloudLight, label: "Cloud Light")
-                color(.cloudLightHover, label: "Cloud Light: hover")
-                color(.cloudLightActive, label: "Cloud Light: active")
+                color(&.cloudLight, uiColor: &.cloudLight, label: "Cloud Light")
+                color(&.cloudLightHover, uiColor: &.cloudLightHover, label: "Cloud Light: hover")
+                color(&.cloudLightActive, uiColor: &.cloudLightActive, label: "Cloud Light: active")
             }
             HStack(spacing: 0) {
-                color(.cloudNormal, label: "Cloud Normal")
-                color(.cloudNormalHover, label: "Cloud Normal: hover")
-                color(.cloudNormalActive, label: "Cloud Normal: active")
+                color(&.cloudNormal, uiColor: &.cloudNormal, label: "Cloud Normal")
+                color(&.cloudNormalHover, uiColor: &.cloudNormalHover, label: "Cloud Normal: hover")
+                color(&.cloudNormalActive, uiColor: &.cloudNormalActive, label: "Cloud Normal: active")
             }
 
-            color(.cloudDark, label: "Cloud Dark")
+            color(&.cloudDark, uiColor: &.cloudDark, label: "Cloud Dark")
 
             HStack(spacing: 0) {
-                color(.cloudDarker, label: "Cloud Darker")
-                color(.cloudDarkerHover, label: "Cloud Darker: hover")
-                color(.cloudDarkerActive, label: "Cloud Darker: active")
+                color(&.cloudDarker, uiColor: &.cloudDarker, label: "Cloud Darker")
+                color(&.cloudDarkerHover, uiColor: &.cloudDarkerHover, label: "Cloud Darker: hover")
+                color(&.cloudDarkerActive, uiColor: &.cloudDarkerActive, label: "Cloud Darker: active")
             }
         }
     }
@@ -88,19 +88,19 @@ struct StorybookColors {
     @ViewBuilder static var ink: some View {
         card("Ink") {
             HStack(spacing: 0) {
-                color(.inkLighter, label: "Ink Lighter")
-                color(.inkLighterHover, label: "Ink Lighter: hover")
-                color(.inkLighterActive, label: "Ink Lighter: active")
+                color(&.inkLighter, uiColor: &.inkLighter, label: "Ink Lighter")
+                color(&.inkLighterHover, uiColor: &.inkLighterHover, label: "Ink Lighter: hover")
+                color(&.inkLighterActive, uiColor: &.inkLighterActive, label: "Ink Lighter: active")
             }
             HStack(spacing: 0) {
-                color(.inkLight, label: "Ink Light")
-                color(.inkLightHover, label: "Ink Light: hover")
-                color(.inkLightActive, label: "Ink Light: active")
+                color(&.inkLight, uiColor: &.inkLight, label: "Ink Light")
+                color(&.inkLightHover, uiColor: &.inkLightHover, label: "Ink Light: hover")
+                color(&.inkLightActive, uiColor: &.inkLightActive, label: "Ink Light: active")
             }
             HStack(spacing: 0) {
-                color(.inkNormal, label: "Ink Normal")
-                color(.inkNormalHover, label: "Ink Normal: hover")
-                color(.inkNormalActive, label: "Ink Normal: active")
+                color(&.inkNormal, uiColor: &.inkNormal, label: "Ink Normal")
+                color(&.inkNormalHover, uiColor: &.inkNormalHover, label: "Ink Normal: hover")
+                color(&.inkNormalActive, uiColor: &.inkNormalActive, label: "Ink Normal: active")
             }
         }
     }
@@ -108,19 +108,19 @@ struct StorybookColors {
     @ViewBuilder static var green: some View {
         card("Green") {
             HStack(spacing: 0) {
-                color(.greenLight, label: "Green Light")
-                color(.greenLightHover, label: "Green Light: hover")
-                color(.greenLightActive, label: "Green Light: active")
+                color(&.greenLight, uiColor: &.greenLight, label: "Green Light")
+                color(&.greenLightHover, uiColor: &.greenLightHover, label: "Green Light: hover")
+                color(&.greenLightActive, uiColor: &.greenLightActive, label: "Green Light: active")
             }
             HStack(spacing: 0) {
-                color(.greenNormal, label: "Green Normal")
-                color(.greenNormalHover, label: "Green Normal: hover")
-                color(.greenNormalActive, label: "Green Normal: active")
+                color(&.greenNormal, uiColor: &.greenNormal, label: "Green Normal")
+                color(&.greenNormalHover, uiColor: &.greenNormalHover, label: "Green Normal: hover")
+                color(&.greenNormalActive, uiColor: &.greenNormalActive, label: "Green Normal: active")
             }
             HStack(spacing: 0) {
-                color(.greenDark, label: "Green Dark")
-                color(.greenDarkHover, label: "Green Dark: hover")
-                color(.greenDarkActive, label: "Green Dark: active")
+                color(&.greenDark, uiColor: &.greenDark, label: "Green Dark")
+                color(&.greenDarkHover, uiColor: &.greenDarkHover, label: "Green Dark: hover")
+                color(&.greenDarkActive, uiColor: &.greenDarkActive, label: "Green Dark: active")
             }
         }
     }
@@ -128,19 +128,19 @@ struct StorybookColors {
     @ViewBuilder static var orange: some View {
         card("Orange") {
             HStack(spacing: 0) {
-                color(.orangeLight, label: "Orange Light")
-                color(.orangeLightHover, label: "Orange Light: hover")
-                color(.orangeLightActive, label: "Orange Light: active")
+                color(&.orangeLight, uiColor: &.orangeLight, label: "Orange Light")
+                color(&.orangeLightHover, uiColor: &.orangeLightHover, label: "Orange Light: hover")
+                color(&.orangeLightActive, uiColor: &.orangeLightActive, label: "Orange Light: active")
             }
             HStack(spacing: 0) {
-                color(.orangeNormal, label: "Orange Normal")
-                color(.orangeNormalHover, label: "Orange Normal: hover")
-                color(.orangeNormalActive, label: "Orange Normal: active")
+                color(&.orangeNormal, uiColor: &.orangeNormal, label: "Orange Normal")
+                color(&.orangeNormalHover, uiColor: &.orangeNormalHover, label: "Orange Normal: hover")
+                color(&.orangeNormalActive, uiColor: &.orangeNormalActive, label: "Orange Normal: active")
             }
             HStack(spacing: 0) {
-                color(.orangeDark, label: "Orange Dark")
-                color(.orangeDarkHover, label: "Orange Dark: hover")
-                color(.orangeDarkActive, label: "Orange Dark: active")
+                color(&.orangeDark, uiColor: &.orangeDark, label: "Orange Dark")
+                color(&.orangeDarkHover, uiColor: &.orangeDarkHover, label: "Orange Dark: hover")
+                color(&.orangeDarkActive, uiColor: &.orangeDarkActive, label: "Orange Dark: active")
             }
         }
     }
@@ -148,19 +148,19 @@ struct StorybookColors {
     @ViewBuilder static var red: some View {
         card("Red") {
             HStack(spacing: 0) {
-                color(.redLight, label: "Red Light")
-                color(.redLightHover, label: "Red Light: hover")
-                color(.redLightActive, label: "Red Light: active")
+                color(&.redLight, uiColor: &.redLight, label: "Red Light")
+                color(&.redLightHover, uiColor: &.redLightHover, label: "Red Light: hover")
+                color(&.redLightActive, uiColor: &.redLightActive, label: "Red Light: active")
             }
             HStack(spacing: 0) {
-                color(.redNormal, label: "Red Normal")
-                color(.redNormalHover, label: "Red Normal: hover")
-                color(.redNormalActive, label: "Red Normal: active")
+                color(&.redNormal, uiColor: &.redNormal, label: "Red Normal")
+                color(&.redNormalHover, uiColor: &.redNormalHover, label: "Red Normal: hover")
+                color(&.redNormalActive, uiColor: &.redNormalActive, label: "Red Normal: active")
             }
             HStack(spacing: 0) {
-                color(.redDark, label: "Red Dark")
-                color(.redDarkHover, label: "Red Dark: hover")
-                color(.redDarkActive, label: "Red Dark: active")
+                color(&.redDark, uiColor: &.redDark, label: "Red Dark")
+                color(&.redDarkHover, uiColor: &.redDarkHover, label: "Red Dark: hover")
+                color(&.redDarkActive, uiColor: &.redDarkActive, label: "Red Dark: active")
             }
         }
     }
@@ -168,63 +168,89 @@ struct StorybookColors {
     @ViewBuilder static var blue: some View {
         card("Blue") {
             HStack(spacing: 0) {
-                color(.blueLight, label: "Blue Light")
-                color(.blueLightHover, label: "Blue Light: hover")
-                color(.blueLightActive, label: "Blue Light: active")
+                color(&.blueLight, uiColor: &.blueLight, label: "Blue Light")
+                color(&.blueLightHover, uiColor: &.blueLightHover, label: "Blue Light: hover")
+                color(&.blueLightActive, uiColor: &.blueLightActive, label: "Blue Light: active")
             }
             HStack(spacing: 0) {
-                color(.blueNormal, label: "Blue Normal")
-                color(.blueNormalHover, label: "Blue Normal: hover")
-                color(.blueNormalActive, label: "Blue Normal: active")
+                color(&.blueNormal, uiColor: &.blueNormal, label: "Blue Normal")
+                color(&.blueNormalHover, uiColor: &.blueNormalHover, label: "Blue Normal: hover")
+                color(&.blueNormalActive, uiColor: &.blueNormalActive, label: "Blue Normal: active")
             }
             HStack(spacing: 0) {
-                color(.blueDark, label: "Blue Dark")
-                color(.blueDarkHover, label: "Blue Dark: hover")
-                color(.blueDarkActive, label: "Blue Dark: active")
+                color(&.blueDark, uiColor: &.blueDark, label: "Blue Dark")
+                color(&.blueDarkHover, uiColor: &.blueDarkHover, label: "Blue Dark: hover")
+                color(&.blueDarkActive, uiColor: &.blueDarkActive, label: "Blue Dark: active")
             }
         }
     }
 
     @ViewBuilder static var bundle: some View {
         card("Bundle") {
-            HStack(spacing: 0) {
+            VStack(spacing: 0) {
                 gradient(.bundleBasic, label: "Bundle Basic")
                 HStack(spacing: 0) {
-                    color(.bundleBasicStart, label: "Bundle Basic: start")
-                    color(.bundleBasicEnd, label: "Bundle Basic: end")
+                    color(&.bundleBasicStart, uiColor: &.bundleBasicStart, label: "Bundle Basic: start")
+                    color(&.bundleBasicEnd, uiColor: &.bundleBasicEnd, label: "Bundle Basic: end")
                 }
             }
-            HStack(spacing: 0) {
+            VStack(spacing: 0) {
                 gradient(.bundleMedium, label: "Bundle Medium")
                 HStack(spacing: 0) {
-                    color(.bundleMediumStart, label: "Bundle Medium: start")
-                    color(.bundleMediumEnd, label: "Bundle Medium: end")
+                    color(&.bundleMediumStart, uiColor: &.bundleMediumStart, label: "Bundle Medium: start")
+                    color(&.bundleMediumEnd, uiColor: &.bundleMediumEnd, label: "Bundle Medium: end")
                 }
             }
-            HStack(spacing: 0) {
+            VStack(spacing: 0) {
                 gradient(.bundleTop, label: "Bundle Top")
                 HStack(spacing: 0) {
-                    color(.bundleTopStart, label: "Bundle Top: start")
-                    color(.bundleTopEnd, label: "Bundle Top: end")
+                    color(&.bundleTopStart, uiColor: &.bundleTopStart, label: "Bundle Top: start")
+                    color(&.bundleTopEnd, uiColor: &.bundleTopEnd, label: "Bundle Top: end")
                 }
             }
         }
     }
 
-    @ViewBuilder static func color(_ color: UIColor, label: String) -> some View {
-        Color(color)
-            .frame(height: 80)
-            .overlay(
-                Text(
-                    label,
-                    size: .small,
-                    color: .custom(color.brightness > 0.6 ? .inkNormal : .whiteNormal),
-                    weight: .medium
+    @ViewBuilder static func color(
+        _ color: UnsafeMutablePointer<Color>,
+        uiColor: UnsafeMutablePointer<UIColor>,
+        label: String
+    ) -> some View {
+        if #available(iOS 14.0, *) {
+            ColorPicker(
+                selection: Binding<Color>(
+                    get: { color.pointee },
+                    set: { newColor in
+                        color.pointee = newColor
+                        uiColor.pointee = UIColor(newColor)
+                    }
                 )
-                .padding(.horizontal, .medium)
-                .padding(.vertical, .small),
-                alignment: .topLeading
-            )
+            ) {
+                colorContent(uiColor.pointee, label: label)
+            }
+            .padding(.trailing, .small)
+            .background(color.pointee)
+        } else {
+            colorContent(uiColor.pointee, label: label)
+        }
+    }
+
+    @ViewBuilder static func colorContent(_ color: UIColor, label: String) -> some View {
+        if let color = color.copy() as? UIColor {
+            Color(color)
+                .frame(height: 80)
+                .overlay(
+                    Text(
+                        label,
+                        size: .small,
+                        color: .custom(color.brightness > 0.6 ? .inkNormal : .whiteNormal),
+                        weight: .medium
+                    )
+                    .padding(.horizontal, .medium)
+                    .padding(.vertical, .small),
+                    alignment: .topLeading
+                )
+        }
     }
 
     @ViewBuilder static func gradient(_ gradient: Gradient, label: String) -> some View {
