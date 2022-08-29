@@ -29,18 +29,27 @@ struct TextConcatenationPreviews: PreviewProvider {
              + Heading(" San Pedro de Alcantara", style: .title1))
         .lineLimit(2)
     }
+
     static var snapshot: some View {
         VStack(alignment: .leading, spacing: .xSmall) {
-            Heading("Display Title", style: .display) + Icon(.flightReturn, size: .heading(.display))
-            Heading("Display Subtitle", style: .displaySubtitle) + Icon(.flightReturn, size: .heading(.displaySubtitle))
+            concatenatedText("Display Title", style: .display)
+            concatenatedText("Display Subtitle", style: .displaySubtitle)
             Separator()
                 .padding(.vertical, .small)
-            Heading("Title 1 ", style: .title1)  + Icon(.flightReturn, size: .heading(.title1))
-            Heading("Title 2 ", style: .title2) + Icon(.flightReturn, size: .heading(.title2))
-            Heading("Title 3 ", style: .title3) + Icon(.flightReturn, size: .heading(.title3))
-            Heading("Title 4 ", style: .title4) + Icon(.flightReturn, size: .heading(.title4))
-            Heading("Title 5 ", style: .title5) + Icon(.flightReturn, size: .heading(.title5))
-            Heading("Title 6 ", style: .title6) + Icon(.flightReturn, size: .heading(.title6))
+            concatenatedText("Title 1", style: .title1)
+            concatenatedText("Title 2", style: .title2)
+            concatenatedText("Title 3", style: .title3)
+            concatenatedText("Title 4", style: .title4)
+            concatenatedText("Title 5", style: .title5)
+            concatenatedText("Title 6", style: .title6)
+        }
+    }
+
+    static func concatenatedText(_ label: String, style: Heading.Style) -> some View {
+        HStack {
+            Heading(label, style: style) + Icon(.flightReturn, size: .custom(style.size)) + Heading(label, style: style)
+            Spacer()
+            Text("\(Int(style.size))/\(Int(style.lineHeight))", color: .inkLight, weight: .medium)
         }
     }
 }
