@@ -30,10 +30,16 @@ public struct FormFieldLabel: View {
 
 // MARK: - Previews
 struct FormFieldLabelPreviews: PreviewProvider {
-    
+
+    static let longLabel = """
+        <strong>Label</strong> with a \(String(repeating: "very ", count: 20))long \
+        <ref>multiline</ref> label and <applink1>TextLink</applink1>
+        """
+
     static var previews: some View {
         PreviewWrapper {
             FormFieldLabel("Form Field Label")
+            FormFieldLabel(longLabel, accentColor: .orangeNormal, linkColor: .status(.critical))
         }
         .previewLayout(.sizeThatFits)
     }

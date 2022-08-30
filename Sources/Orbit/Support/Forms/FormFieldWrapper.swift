@@ -1,21 +1,18 @@
 import SwiftUI
 
 /// Orbit wrapper around form fields. Provides optional label and message.
-public struct FormFieldWrapper<Content: View, MessageContent: View>: View {
+public struct FormFieldWrapper<LabelContent: View, Content: View, MessageContent: View>: View {
 
     @Binding private var messageHeight: CGFloat
 
-    let label: String
-    var accentColor: UIColor? = nil
-    var linkColor: TextLink.Color = .primary
-    var linkAction: TextLink.Action = { _, _ in }
     let message: MessageType
     @ViewBuilder let content: Content
+    @ViewBuilder let labelContent: LabelContent
     @ViewBuilder let messageContent: MessageContent
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            FormFieldLabel(label, accentColor: accentColor, linkColor: linkColor, linkAction: linkAction)
+            labelContent
                 .padding(.bottom, .xxSmall)
 
             content
@@ -31,49 +28,101 @@ public struct FormFieldWrapper<Content: View, MessageContent: View>: View {
             }
         }
     }
+}
 
-    /// Creates Orbit wrapper around form field content including an additional custom message content.
-    public init(
+// MARK: - Inits
+public extension FormFieldWrapper {
+
+    /// Creates Orbit wrapper around form field content with a custom label and an additional message content.
+    ///
+    /// `FormFieldLabel` is a default component for constructing custom label.
+    init(
+        message: MessageType = .none,
+        messageHeight: Binding<CGFloat> = .constant(0),
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder labelContent: () -> LabelContent,
+        @ViewBuilder messageContent: () -> MessageContent
+    ) {
+        self.message = message
+        self._messageHeight = messageHeight
+        self.content = content()
+        self.labelContent = labelContent()
+        self.messageContent = messageContent()
+    }
+}
+
+public extension FormFieldWrapper where MessageContent == EmptyView {
+
+    /// Creates Orbit wrapper around form field content with a custom label.
+    ///
+    /// `FormFieldLabel` is a default component for constructing custom label.
+    init(
+        message: MessageType = .none,
+        messageHeight: Binding<CGFloat> = .constant(0),
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder labelContent: () -> LabelContent
+    ) {
+        self.init(
+            message: message,
+            messageHeight: messageHeight,
+            content: content,
+            labelContent: labelContent,
+            messageContent: {
+                EmptyView()
+            }
+        )
+    }
+}
+
+public extension FormFieldWrapper where LabelContent == FormFieldLabel {
+
+    /// Creates Orbit wrapper around form field content with an additional message content.
+    init(
         _ label: String,
-        accentColor: UIColor? = nil,
-        linkColor: TextLink.Color = .primary,
-        linkAction: @escaping TextLink.Action = { _, _ in },
+        labelAccentColor: UIColor? = nil,
+        labelLinkColor: TextLink.Color = .primary,
+        labelLinkAction: @escaping TextLink.Action = { _, _ in },
         message: MessageType = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content,
         @ViewBuilder messageContent: () -> MessageContent
     ) {
-        self.label = label
-        self.accentColor = accentColor
-        self.linkColor = linkColor
-        self.linkAction = linkAction
-        self.message = message
-        self._messageHeight = messageHeight
-        self.content = content()
-        self.messageContent = messageContent()
+        self.init(
+            message: message,
+            messageHeight: messageHeight,
+            content: content,
+            labelContent: {
+                FormFieldLabel(label, accentColor: labelAccentColor, linkColor: labelLinkColor, linkAction: labelLinkAction)
+            },
+            messageContent: messageContent
+        )
     }
+}
+
+public extension FormFieldWrapper where LabelContent == FormFieldLabel, MessageContent == EmptyView {
 
     /// Creates Orbit wrapper around form field content.
-    public init(
+    init(
         _ label: String,
-        accentColor: UIColor? = nil,
-        linkColor: TextLink.Color = .primary,
-        linkAction: @escaping TextLink.Action = { _, _ in },
+        labelAccentColor: UIColor? = nil,
+        labelLinkColor: TextLink.Color = .primary,
+        labelLinkAction: @escaping TextLink.Action = { _, _ in },
         message: MessageType = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content
-    ) where MessageContent == EmptyView {
+    ) {
         self.init(
             label,
-            accentColor: accentColor,
-            linkColor: linkColor,
-            linkAction: linkAction,
+            labelAccentColor: labelAccentColor,
+            labelLinkColor: labelLinkColor,
+            labelLinkAction: labelLinkAction,
             message: message,
             messageHeight: messageHeight,
-            content: content
-        ) {
-            EmptyView()
-        }
+            content: content,
+            messageContent: {
+                EmptyView()
+            }
+        )
     }
 }
 
@@ -90,12 +139,10 @@ struct FormFieldWrapperPreviews: PreviewProvider {
                 contentPlaceholder
             }
 
-            FormFieldWrapper(
-                "Form Field Label with <ref>accent</ref> and <applink1>TextLink</applink1>",
-                accentColor: .orangeNormal,
-                linkColor: .status(.info)
-            ) {
+            FormFieldWrapper {
                 contentPlaceholder
+            } labelContent: {
+                FormFieldLabel("Form Field Label with <ref>accent</ref> and <applink1>TextLink</applink1>", accentColor: .orangeNormal, linkColor: .status(.info))
             }
 
             FormFieldWrapper("", message: .none) {
