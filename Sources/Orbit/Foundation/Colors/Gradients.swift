@@ -65,35 +65,47 @@ public enum Gradient {
 
 public extension LinearGradient {
 
-    static let bundleBasic = LinearGradient(
-        colors: [.bundleBasicStart, .bundleBasicEnd], startPoint: .bottomLeading, endPoint: .topTrailing
-    )
+    static var bundleBasic: LinearGradient {
+        .init(
+            colors: [.bundleBasicStart, .bundleBasicEnd],
+            startPoint: .bottomLeading,
+            endPoint: .topTrailing
+        )
+    }
     
-    static let bundleMedium = LinearGradient(
-        colors: [.bundleMediumStart, .bundleMediumEnd], startPoint: .bottomLeading, endPoint: .topTrailing
-    )
+    static var bundleMedium: LinearGradient {
+        .init(
+            colors: [.bundleMediumStart, .bundleMediumEnd],
+            startPoint: .bottomLeading,
+            endPoint: .topTrailing
+        )
+    }
     
-    static let bundleTop = LinearGradient(
-        colors: [.bundleTopStart, .bundleTopEnd], startPoint: .bottomLeading, endPoint: .topTrailing
-    )
+    static var bundleTop: LinearGradient {
+        .init(
+            colors: [.bundleTopStart, .bundleTopEnd],
+            startPoint: .bottomLeading,
+            endPoint: .topTrailing
+        )
+    }
 }
 
 public extension Color {
     
-    static let bundleBasicStart = Color(red: 0.882, green: 0.243, blue: 0.231)
-    static let bundleBasicEnd = Color(red: 0.91, green: 0.494, blue: 0.035)
-    static let bundleMediumStart = Color(red: 0.216, green: 0.098, blue: 0.671)
-    static let bundleMediumEnd = Color(red: 0.522, green: 0.224, blue: 0.859)
-    static let bundleTopStart = Color(red: 0.176, green: 0.176, blue: 0.18)
-    static let bundleTopEnd = Color(red: 0.412, green: 0.431, blue: 0.451)
+    static var bundleBasicStart = Color(red: 0.882, green: 0.243, blue: 0.231)
+    static var bundleBasicEnd = Color(red: 0.91, green: 0.494, blue: 0.035)
+    static var bundleMediumStart = Color(red: 0.216, green: 0.098, blue: 0.671)
+    static var bundleMediumEnd = Color(red: 0.522, green: 0.224, blue: 0.859)
+    static var bundleTopStart = Color(red: 0.176, green: 0.176, blue: 0.18)
+    static var bundleTopEnd = Color(red: 0.412, green: 0.431, blue: 0.451)
 }
 
 public extension UIColor {
     
-    static let bundleBasicStart = UIColor(red: 0.882, green: 0.243, blue: 0.231, alpha: 1)
-    static let bundleBasicEnd = UIColor(red: 0.91, green: 0.494, blue: 0.035, alpha: 1)
-    static let bundleMediumStart = UIColor(red: 0.216, green: 0.098, blue: 0.671, alpha: 1)
-    static let bundleMediumEnd = UIColor(red: 0.522, green: 0.224, blue: 0.859, alpha: 1)
-    static let bundleTopStart = UIColor(red: 0.176, green: 0.176, blue: 0.18, alpha: 1)
-    static let bundleTopEnd = UIColor(red: 0.412, green: 0.431, blue: 0.451, alpha: 1)
+    static var bundleBasicStart = UIColor(red: 0.882, green: 0.243, blue: 0.231, alpha: 1)
+    static var bundleBasicEnd = UIColor(red: 0.91, green: 0.494, blue: 0.035, alpha: 1)
+    static var bundleMediumStart = UIColor(red: 0.216, green: 0.098, blue: 0.671, alpha: 1)
+    static var bundleMediumEnd = UIColor(red: 0.522, green: 0.224, blue: 0.859, alpha: 1)
+    static var bundleTopStart = UIColor(red: 0.176, green: 0.176, blue: 0.18, alpha: 1)
+    static var bundleTopEnd = UIColor(red: 0.412, green: 0.431, blue: 0.451, alpha: 1)
 }
