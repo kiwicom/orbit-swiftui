@@ -25,7 +25,7 @@ public struct Text: View {
 
     public var body: some View {
         if content.isEmpty == false {
-            text
+            text(sizeCategory: sizeCategory)
                 .lineSpacing(lineSpacing ?? 0)
                 .multilineTextAlignment(alignment)
                 .fixedSize(horizontal: false, vertical: true)
@@ -61,18 +61,29 @@ public struct Text: View {
         }
     }
 
-    @ViewBuilder var text: some View {
+    func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
         if content.containsHtmlFormatting {
-            SwiftUI.Text(attributedText)
-                .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
-                .kerning(kerning)
+            return textContent {
+                SwiftUI.Text(attributedText)
+            }
         } else {
-            SwiftUI.Text(verbatim: content)
-                .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
-                .kerning(kerning)
-                .foregroundColor(foregroundColor.map(SwiftUI.Color.init))
-                .orbitFont(size: size.value, weight: weight, style: size.textStyle)
+            return textContent {
+                SwiftUI.Text(verbatim: content)
+            }
+            .foregroundColor(foregroundColor.map(SwiftUI.Color.init))
+            .orbitFont(
+                size: size.value,
+                weight: weight,
+                style: size.textStyle,
+                sizeCategory: sizeCategory
+            )
         }
+    }
+
+    func textContent(@ViewBuilder content: () -> SwiftUI.Text) -> SwiftUI.Text {
+        content()
+            .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
+            .kerning(kerning)
     }
 
     var showTextLinks: Bool {
@@ -220,11 +231,11 @@ public extension Text {
         case white
         case custom(UIColor)
 
-        var value: SwiftUI.Color {
+        public var value: SwiftUI.Color {
             SwiftUI.Color(uiValue)
         }
         
-        var uiValue: UIColor {
+        public var uiValue: UIColor {
             switch self {
                 case .inkNormal:            return .inkNormal
                 case .inkLight:             return .inkLight
@@ -251,6 +262,16 @@ extension TextAlignment {
             case .trailing:     self = .trailing
             default:            self = .center
         }
+    }
+}
+
+// MARK: - TextRepresentable
+extension Text: TextRepresentable {
+
+    public func swiftUIText(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
+        if content.isEmpty { return nil }
+
+        return text(sizeCategory: sizeCategory)
     }
 }
 

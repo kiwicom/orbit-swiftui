@@ -14,16 +14,16 @@ public struct Heading: View {
     let alignment: TextAlignment
 
     public var body: some View {
-        if text.isEmpty == false {
-            textContent(sizeCategory: sizeCategory)
+        if updatedLabel.isEmpty == false {
+            text(sizeCategory: sizeCategory)
                 .multilineTextAlignment(alignment)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibility(addTraits: .isHeader)
         }
     }
 
-    func textContent(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
-        SwiftUI.Text(verbatim: text)
+    func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
+        SwiftUI.Text(verbatim: updatedLabel)
             .orbitFont(
                 size: style.size,
                 weight: style.weight,
@@ -33,19 +33,11 @@ public struct Heading: View {
             .foregroundColor(color?.value)
     }
 
-    var text: String {
+    var updatedLabel: String {
         switch style {
             case .display, .title1, .displaySubtitle, .title2, .title3, .title4, .title5:   return label
             case .title6:                                                                   return label.localizedUppercase
         }
-    }
-}
-
-extension Heading: TextRepresentable {
-    public func swiftUITextContent(configuration: ContentSizeCategory) -> SwiftUI.Text? {
-        guard text.isEmpty == false else { return nil }
-
-        return textContent(sizeCategory: configuration)
     }
 }
 
@@ -112,7 +104,7 @@ public extension Heading {
             }
         }
 
-        var textStyle: Font.TextStyle {
+        public var textStyle: Font.TextStyle {
             switch self {
                 case .display:
                     return .largeTitle
@@ -144,7 +136,7 @@ public extension Heading {
                     return .headline
             }
         }
-        
+
         public var lineHeight: CGFloat {
             switch self {
                 case .display:          return 48
@@ -157,7 +149,7 @@ public extension Heading {
                 case .title6:           return Text.Size.small.lineHeight
             }
         }
-        
+
         public var iconSize: CGFloat {
             switch self {
                 case .display:          return 52
@@ -177,6 +169,16 @@ public extension Heading {
                 case .displaySubtitle, .title2, .title3:                return .medium
             }
         }
+    }
+}
+
+// MARK: - TextRepresentable
+extension Heading: TextRepresentable {
+
+    public func swiftUIText(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
+        if updatedLabel.isEmpty { return nil }
+
+        return text(sizeCategory: sizeCategory)
     }
 }
 

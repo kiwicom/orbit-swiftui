@@ -12,15 +12,16 @@ public struct Icon: View {
 
     let content: Content
     let size: Size
+    let baselineOffset: CGFloat
 
     public var body: some View {
         if content.isEmpty == false {
             iconContent
                 .alignmentGuide(.firstTextBaseline) { dimensions in
-                    size.textBaselineAlignmentGuide(sizeCategory: sizeCategory, height: dimensions.height)
+                    iconContentBaselineOffset(height: dimensions.height)
                 }
                 .alignmentGuide(.lastTextBaseline) { dimensions in
-                    size.textBaselineAlignmentGuide(sizeCategory: sizeCategory, height: dimensions.height)
+                    iconContentBaselineOffset(height: dimensions.height)
                 }
         }
     }
@@ -56,60 +57,8 @@ public struct Icon: View {
         }
     }
 
-    @available(iOS 14.0, *)
-    func textRepresentation(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
-        switch content {
-            case .symbol(let symbol, let color?):
-                return SwiftUI.Text(verbatim: symbol.value)
-                    .baselineOffset(-size.baselineOffset(sizeCategory: sizeCategory))
-                    .foregroundColor(color)
-                    .font(.orbitIcon(size: size.value, style: size.textStyle))
-            case .symbol(let symbol, nil):
-                return SwiftUI.Text(verbatim: symbol.value)
-                    .baselineOffset(-size.baselineOffset(sizeCategory: sizeCategory))
-                    // foregroundColor(nil) prevents further overrides
-                    .font(.orbitIcon(size: size.value, style: size.textStyle))
-            case .image(let image, _):
-                return SwiftUI.Text(image.resizable())
-            case .countryFlag(let countryCode):
-                return SwiftUI.Text(SwiftUI.Image(countryCode, bundle: .current).resizable())
-            case .sfSymbol(let systemName, let color?):
-                return SwiftUI.Text(Image(systemName: systemName)).foregroundColor(color)
-                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
-            case .sfSymbol(let systemName, nil):
-                return SwiftUI.Text(Image(systemName: systemName))
-                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
-        }
-    }
-
-    func textRepresentationFallback(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
-        switch content {
-            case .symbol(let symbol, let color?):
-                return SwiftUI.Text(verbatim: symbol.value)
-                    .baselineOffset(-size.baselineOffset(sizeCategory: sizeCategory))
-                    .foregroundColor(color)
-                    .font(.orbitIcon(size: size.value, style: size.textStyle))
-            case .symbol(let symbol, nil):
-                return SwiftUI.Text(verbatim: symbol.value)
-                    .baselineOffset(-size.baselineOffset(sizeCategory: sizeCategory))
-                    // foregroundColor(nil) prevents further overrides
-                    .font(.orbitIcon(size: size.value, style: size.textStyle))
-            case .image, .countryFlag, .sfSymbol:
-                assertionFailure(".image, .countryFlag, .sfSymbol as Text are only available in iOS 14.0 or newer")
-                return nil
-        }
-    }
-}
-
-extension Icon: TextRepresentable {
-    public func swiftUITextContent(configuration: ContentSizeCategory) -> SwiftUI.Text? {
-        guard content.isEmpty == false else { return nil }
-
-        if #available(iOS 14.0, *) {
-            return textRepresentation(sizeCategory: configuration)
-        } else {
-            return textRepresentationFallback(sizeCategory: configuration)
-        }
+    func iconContentBaselineOffset(height: CGFloat) -> CGFloat {
+        baselineOffset + size.textBaselineAlignmentGuide(sizeCategory: sizeCategory, height: height)
     }
 }
 
@@ -120,35 +69,39 @@ public extension Icon {
     ///
     /// - Parameters:
     ///     - content: Icon content. Can optionally include the color override.
-    init(content: Icon.Content, size: Size = .normal) {
+    init(content: Icon.Content, size: Size = .normal, baselineOffset: CGFloat = 0) {
         self.content = content
         self.size = size
+        self.baselineOffset = baselineOffset
     }
 
     /// Creates Orbit Icon component for provided Orbit icon symbol with specified color.
     ///
     /// - Parameters:
     ///     - color: Icon color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
-    init(_ symbol: Icon.Symbol, size: Size = .normal, color: Color? = .inkNormal) {
+    init(_ symbol: Icon.Symbol, size: Size = .normal, color: Color? = .inkNormal, baselineOffset: CGFloat = 0) {
         self.init(
             content: .symbol(symbol, color: color),
-            size: size
+            size: size,
+            baselineOffset: baselineOffset
         )
     }
     
     /// Creates Orbit Icon component for provided Image.
-    init(image: Image, size: Size = .normal) {
+    init(image: Image, size: Size = .normal, baselineOffset: CGFloat = 0) {
         self.init(
             content: .image(image),
-            size: size
+            size: size,
+            baselineOffset: baselineOffset
         )
     }
     
     /// Creates Orbit Icon component for provided country code.
-    init(countryCode: String, size: Size = .normal) {
+    init(countryCode: String, size: Size = .normal, baselineOffset: CGFloat = 0) {
         self.init(
             content: .countryFlag(countryCode),
-            size: size
+            size: size,
+            baselineOffset: baselineOffset
         )
     }
     
@@ -156,10 +109,11 @@ public extension Icon {
     ///
     /// - Parameters:
     ///     - color: SF Symbol color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
-    init(sfSymbol: String, size: Size = .normal, color: Color? = .inkNormal) {
+    init(sfSymbol: String, size: Size = .normal, color: Color? = .inkNormal, baselineOffset: CGFloat = 0) {
         self.init(
             content: .sfSymbol(sfSymbol, color: color),
-            size: size
+            size: size,
+            baselineOffset: baselineOffset
         )
     }
 }
@@ -273,6 +227,72 @@ public extension Icon {
     }
 }
 
+// MARK: - TextRepresentable
+extension Icon: TextRepresentable {
+
+    public func swiftUIText(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
+        if content.isEmpty { return nil }
+
+        if #available(iOS 14.0, *) {
+            return text(sizeCategory: sizeCategory)
+        } else {
+            return textFallback(sizeCategory: sizeCategory)
+        }
+    }
+
+    @available(iOS 14.0, *)
+    func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
+        switch content {
+            case .symbol(let symbol, let color?):
+                return SwiftUI.Text(verbatim: symbol.value)
+                    .baselineOffset(textBaselineOffset)
+                    .foregroundColor(color)
+                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+            case .symbol(let symbol, nil):
+                return SwiftUI.Text(verbatim: symbol.value)
+                    .baselineOffset(textBaselineOffset)
+                    // foregroundColor(nil) prevents further overrides
+                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+            case .image(let image, _):
+                return SwiftUI.Text(image.resizable())
+                    .baselineOffset(baselineOffset)
+            case .countryFlag(let countryCode):
+                return SwiftUI.Text(SwiftUI.Image(countryCode, bundle: .current).resizable())
+                    .baselineOffset(baselineOffset)
+            case .sfSymbol(let systemName, let color?):
+                return SwiftUI.Text(Image(systemName: systemName)).foregroundColor(color)
+                    .baselineOffset(baselineOffset)
+                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
+            case .sfSymbol(let systemName, nil):
+                return SwiftUI.Text(Image(systemName: systemName))
+                    .baselineOffset(baselineOffset)
+                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
+        }
+    }
+
+    func textFallback(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
+        switch content {
+            case .symbol(let symbol, let color?):
+                return SwiftUI.Text(verbatim: symbol.value)
+                    .baselineOffset(textBaselineOffset)
+                    .foregroundColor(color)
+                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+            case .symbol(let symbol, nil):
+                return SwiftUI.Text(verbatim: symbol.value)
+                    .baselineOffset(textBaselineOffset)
+                    // foregroundColor(nil) prevents further overrides
+                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+            case .image, .countryFlag, .sfSymbol:
+                assertionFailure(".image, .countryFlag, .sfSymbol as Text are only available in iOS 14.0 or newer")
+                return nil
+        }
+    }
+
+    var textBaselineOffset: CGFloat {
+        baselineOffset - size.baselineOffset(sizeCategory: sizeCategory)
+    }
+}
+
 // MARK: - Previews
 struct IconPreviews: PreviewProvider {
 
@@ -288,6 +308,7 @@ struct IconPreviews: PreviewProvider {
             snapshotSizesHeading
             snapshotSizesLabelHeading
             alignments
+            baseline
             storybookMix
         }
         .padding(.medium)
@@ -530,6 +551,37 @@ struct IconPreviews: PreviewProvider {
                 }
             }
             Label("Multiline\nlong\nLabel", icon: .grid, style: .text())
+        }
+    }
+
+    static var baseline: some View {
+        VStack(alignment: .leading, spacing: .large) {
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+                Text("Standalone")
+
+                Group {
+                    Icon(sfSymbol: sfSymbol, size: .small, baselineOffset: 0)
+                    Icon(sfSymbol: sfSymbol, size: .small, baselineOffset: .xxxSmall)
+                    Icon(sfSymbol: sfSymbol, size: .small, baselineOffset: -.xxxSmall)
+
+                    Icon(.flightReturn, size: .small, baselineOffset: 0)
+                    Icon(.flightReturn, size: .small, baselineOffset: .xxxSmall)
+                    Icon(.flightReturn, size: .small, baselineOffset: -.xxxSmall)
+
+                    Icon(countryCode: "us", size: .small, baselineOffset: 0)
+                    Icon(countryCode: "us", size: .small, baselineOffset: .xxxSmall)
+                    Icon(countryCode: "us", size: .small, baselineOffset: -.xxxSmall)
+                }
+                .border(Color.cloudLightActive, width: .hairline)
+            }
+
+            Text("Concatenated")
+                + Icon(sfSymbol: sfSymbol, size: .small, baselineOffset: 0)
+                + Icon(sfSymbol: sfSymbol, size: .small, baselineOffset: .xxxSmall)
+                + Icon(sfSymbol: sfSymbol, size: .small, baselineOffset: -.xxxSmall)
+                + Icon(.flightReturn, size: .small, baselineOffset: 0)
+                + Icon(.flightReturn, size: .small, baselineOffset: .xxxSmall)
+                + Icon(.flightReturn, size: .small, baselineOffset: -.xxxSmall)
         }
     }
 
