@@ -9,6 +9,9 @@ public struct Select: View {
     @Binding private var messageHeight: CGFloat
     
     let label: String
+    let labelAccentColor: UIColor?
+    let labelLinkColor: TextLink.Color
+    let labelLinkAction: TextLink.Action
     let prefix: Icon.Content
     let value: String?
     let placeholder: String
@@ -18,7 +21,14 @@ public struct Select: View {
     let action: () -> Void
 
     public var body: some View {
-        FormFieldWrapper(label, message: message, messageHeight: $messageHeight) {
+        FormFieldWrapper(
+            label,
+            labelAccentColor: labelAccentColor,
+            labelLinkColor: labelLinkColor,
+            labelLinkAction: labelLinkAction,
+            message: message,
+            messageHeight: $messageHeight
+        ) {
             SwiftUI.Button(
                 action: {
                     HapticsProvider.sendHapticFeedback(.light(0.5))
@@ -59,6 +69,9 @@ public extension Select {
     /// Creates Orbit Select component.
     init(
         _ label: String,
+        labelAccentColor: UIColor? = nil,
+        labelLinkColor: TextLink.Color = .primary,
+        labelLinkAction: @escaping TextLink.Action = { _, _ in },
         prefix: Icon.Content = .none,
         value: String?,
         placeholder: String = "",
@@ -69,6 +82,9 @@ public extension Select {
         action: @escaping () -> Void = {}
     ) {
         self.label = label
+        self.labelAccentColor = labelAccentColor
+        self.labelLinkColor = labelLinkColor
+        self.labelLinkAction = labelLinkAction
         self.prefix = prefix
         self.value = value
         self.placeholder = placeholder
@@ -156,7 +172,9 @@ struct SelectPreviews: PreviewProvider {
                 )
 
                 Select(
-                    "Label (Error) with a long multiline label to test that it works",
+                    FormFieldLabelPreviews.longLabel,
+                    labelAccentColor: .orangeNormal,
+                    labelLinkColor: .status(.critical),
                     prefix: .image(.orbit(.google)),
                     value: "Bad Value with a very long text that should overflow",
                     message: .error("Error message, but also very long and multi-line to test that it works.")

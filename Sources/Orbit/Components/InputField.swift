@@ -29,6 +29,9 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     @State private var isSecureTextRedacted: Bool = true
 
     let label: String
+    let labelAccentColor: UIColor?
+    let labelLinkColor: TextLink.Color
+    let labelLinkAction: TextLink.Action
     let placeholder: String
     let prefix: Icon.Content
     let suffix: Icon.Content
@@ -45,7 +48,14 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     private let mode: Mode
 
     public var body: some View {
-        FormFieldWrapper(formFieldLabel, message: message, messageHeight: $messageHeight) {
+        FormFieldWrapper(
+            formFieldLabel,
+            labelAccentColor: labelAccentColor,
+            labelLinkColor: labelLinkColor,
+            labelLinkAction: labelLinkAction,
+            message: message,
+            messageHeight: $messageHeight
+        ) {
             InputContent(
                 prefix: prefix,
                 suffix: suffix,
@@ -192,8 +202,6 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     }
 }
 
-
-// MARK: - Inits
 public extension InputField {
 
     /// Creates Orbit InputField component.
@@ -204,6 +212,9 @@ public extension InputField {
     ///     - suffixAction: Optional separate action on suffix icon tap.
     init(
         _ label: String = "",
+        labelAccentColor: UIColor? = nil,
+        labelLinkColor: TextLink.Color = .primary,
+        labelLinkAction: @escaping TextLink.Action = { _, _ in },
         value: Binding<Value>,
         prefix: Icon.Content = .none,
         suffix: Icon.Content = .none,
@@ -224,6 +235,9 @@ public extension InputField {
     ) where Value == String {
         self.init(
             label,
+            labelAccentColor: labelAccentColor,
+            labelLinkColor: labelLinkColor,
+            labelLinkAction: labelLinkAction,
             value: value,
             prefix: prefix,
             suffix: suffix,
@@ -255,6 +269,9 @@ public extension InputField {
     ///     - suffixAction: Optional separate action on suffix icon tap.
     init(
         _ label: String = "",
+        labelAccentColor: UIColor? = nil,
+        labelLinkColor: TextLink.Color = .primary,
+        labelLinkAction: @escaping TextLink.Action = { _, _ in },
         value: Binding<Value>,
         prefix: Icon.Content = .none,
         suffix: Icon.Content = .none,
@@ -272,6 +289,9 @@ public extension InputField {
     ) {
         self.init(
             label,
+            labelAccentColor: labelAccentColor,
+            labelLinkColor: labelLinkColor,
+            labelLinkAction: labelLinkAction,
             value: value,
             prefix: prefix,
             suffix: suffix,
@@ -295,6 +315,9 @@ extension InputField {
 
     private init(
         _ label: String = "",
+        labelAccentColor: UIColor? = nil,
+        labelLinkColor: TextLink.Color = .primary,
+        labelLinkAction: @escaping TextLink.Action = { _, _ in },
         value: Binding<Value>,
         prefix: Icon.Content = .none,
         suffix: Icon.Content = .none,
@@ -312,6 +335,9 @@ extension InputField {
         suffixAction: (() -> Void)? = nil
     ) {
         self.label = label
+        self.labelAccentColor = labelAccentColor
+        self.labelLinkColor = labelLinkColor
+        self.labelLinkAction = labelLinkAction
         self._value = value
         self.prefix = prefix
         self.suffix = suffix
@@ -419,8 +445,14 @@ struct InputFieldPreviews: PreviewProvider {
             inputField("Disabled", value: "Disabled Value", prefix: .sfSymbol("info.circle.fill"), suffix: .sfSymbol("info.circle.fill"), state: .disabled)
             inputField("Modified from previous state", value: "Modified value", state: .modified)
             inputField("Focused", value: "Focused / Help", message: .help("Help message"))
-            inputField(longLabel, value: longValue, message: .error(longErrorMessage))
-            inputField("Compact (inline)")
+            inputField(
+                FormFieldLabelPreviews.longLabel,
+                labelAccentColor: .orangeNormal,
+                labelLinkColor: .status(.critical),
+                value: longValue,
+                message: .error(longErrorMessage)
+            )
+            inputField("Compact", style: .compact)
 
             HStack(spacing: .medium) {
                 inputField(value: "No label")
@@ -431,6 +463,9 @@ struct InputFieldPreviews: PreviewProvider {
 
     static func inputField(
         _ label: String = label,
+        labelAccentColor: UIColor? = nil,
+        labelLinkColor: TextLink.Color = .primary,
+        labelLinkAction: @escaping TextLink.Action = { _, _ in },
         value: String = value,
         prefix: Icon.Content = .grid,
         suffix: Icon.Content = .grid,
@@ -444,6 +479,9 @@ struct InputFieldPreviews: PreviewProvider {
         StateWrapper(initialState: value) { value in
             InputField(
                 label,
+                labelAccentColor: labelAccentColor,
+                labelLinkColor: labelLinkColor,
+                labelLinkAction: labelLinkAction,
                 value: value,
                 prefix: prefix,
                 suffix: suffix,
