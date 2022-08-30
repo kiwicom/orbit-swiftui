@@ -1,5 +1,7 @@
 import SwiftUI
 
+// A type that can be represented as `SwiftUI.Text`
 public protocol TextRepresentable {
-    func swiftUITextContent(configuration: ContentSizeCategory) -> SwiftUI.Text?
+
+    func swiftUIText(sizeCategory: ContentSizeCategory) -> SwiftUI.Text?
 }

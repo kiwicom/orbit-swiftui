@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ConcatenatedText: View {
+
     @Environment(\.sizeCategory) var sizeCategory
 
     let content: (ContentSizeCategory) -> SwiftUI.Text?
@@ -13,17 +14,19 @@ struct ConcatenatedText: View {
 }
 
 extension ConcatenatedText: TextRepresentable {
-    func swiftUITextContent(configuration: ContentSizeCategory) -> SwiftUI.Text? {
-        content(configuration)
+
+    func swiftUIText(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
+        content(sizeCategory)
     }
 }
 
 extension ConcatenatedText {
+
     init(_ TextRepresentable: TextRepresentable) {
         if let concatenatedText = TextRepresentable as? ConcatenatedText {
             self = concatenatedText
         } else {
-            self.init(content: TextRepresentable.swiftUITextContent(configuration:))
+            self.init(content: TextRepresentable.swiftUIText(sizeCategory:))
         }
     }
 }

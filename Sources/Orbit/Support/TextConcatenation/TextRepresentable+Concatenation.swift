@@ -1,6 +1,7 @@
 import SwiftUI
 
 /// Conctatenates two terms that can be represented as `SwiftUI.Text`
+///
 /// - Parameters:
 ///   - left: A content representable as `SwiftUI.Text`
 ///   - right: A content representable as `SwiftUI.Text`
@@ -14,9 +15,11 @@ import SwiftUI
 }
 
 struct TextConcatenationPreviews: PreviewProvider {
+
     static var previews: some View {
         PreviewWrapper {
             standalone
+            formatting
             snapshot
         }
         .padding(.medium)
@@ -24,10 +27,30 @@ struct TextConcatenationPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        (Heading("Hanoi ", style: .title1)
-             + Icon(.flightReturn, size: .xLarge)
-             + Heading(" San Pedro de Alcantara", style: .title1))
-        .lineLimit(2)
+        Heading("Hanoi ", style: .title1)
+            + Icon(.flightReturn, size: .xLarge)
+            + Heading(" San Pedro de Alcantara", style: .title1)
+            + Icon(countryCode: "us")
+            + Icon(sfSymbol: "info.circle", size: .large)
+            + Icon(image: .orbit(.navigateClose), baselineOffset: -1)
+            + Text(" (Delayed)", size: .xLarge, color: .inkLight)
+    }
+
+    static var formatting: some View {
+        (
+            Icon(.grid, size: .text(.xLarge), color: nil)
+            + Text(" Text", size: .xLarge, color: nil)
+            + Icon(.informationCircle, size: .large, color: nil, baselineOffset: -1)
+            + Icon(sfSymbol: "info.circle.fill", size: .large, color: nil)
+            + Text(
+                "<ref>Text</ref> with <strong>formatting</strong>",
+                size: .small,
+                color: nil,
+                accentColor: .orangeNormal
+            )
+            + Icon(.check, size: .small, color: .greenDark)
+        )
+        .foregroundColor(.blueDark)
     }
 
     static var snapshot: some View {
@@ -47,10 +70,12 @@ struct TextConcatenationPreviews: PreviewProvider {
 
     static func concatenatedText(_ label: String, style: Heading.Style) -> some View {
         HStack {
-            Heading(label, style: style) + Icon(.flightReturn, size: .custom(style.size)) + Heading(label, style: style)
-            Spacer()
-            Text("\(Int(style.size))/\(Int(style.lineHeight))", color: .inkLight, weight: .medium)
+            Heading(label, style: style)
+                + Icon(.flightReturn, size: .custom(style.size), color: .inkLight)
+                + Heading(label, style: style)
+                + Text(" and Text", color: nil)
         }
+        .foregroundColor(.blueDark)
     }
 }
 
@@ -58,16 +83,9 @@ struct TextConcatenationPreviewsDynamicTypePreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            standaloneSmall
             standaloneLarge
         }
         .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var standaloneSmall: some View {
-        TextConcatenationPreviews.standalone
-            .environment(\.sizeCategory, .extraSmall)
-            .previewDisplayName("Dynamic type — extraSmall")
     }
 
     @ViewBuilder static var standaloneLarge: some View {
