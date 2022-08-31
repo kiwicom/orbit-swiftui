@@ -10,6 +10,7 @@ public struct Switch: View {
     public static let dotDiameter: CGFloat = 10
     
     static let borderColor = Color(white: 0.2, opacity: 0.25)
+    static let animation = Animation.spring(response: 0.25, dampingFraction: 0.6)
 
     @Environment(\.sizeCategory) var sizeCategory
     @Environment(\.colorScheme) var colorScheme
@@ -24,9 +25,7 @@ public struct Switch: View {
             .accessibility(addTraits: [.isButton])
             .onTapGesture {
                 HapticsProvider.sendHapticFeedback(.light(0.5))
-                withAnimation(.spring(response: 0.25, dampingFraction: 0.6)) {
-                    isOn.toggle()
-                }
+                isOn.toggle()
             }
             .disabled(isEnabled == false)
     }
@@ -35,6 +34,7 @@ public struct Switch: View {
         Capsule(style: .circular)
             .frame(width: width, height: height)
             .foregroundColor(tint)
+            .animation(Self.animation, value: isOn)
     }
 
     @ViewBuilder var indicator: some View {
@@ -51,6 +51,7 @@ public struct Switch: View {
             )
             .overlay(indicatorSymbol)
             .offset(x: isOn ? width / 5 : -width / 5)
+            .animation(Self.animation, value: isOn)
     }
 
     @ViewBuilder var indicatorSymbol: some View {
