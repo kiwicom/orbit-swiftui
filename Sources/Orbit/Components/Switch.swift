@@ -10,6 +10,7 @@ public struct Switch: View {
     public static let dotDiameter: CGFloat = 10
     
     static let borderColor = Color(white: 0.2, opacity: 0.25)
+    static let animation = Animation.spring(response: 0.25, dampingFraction: 0.6)
 
     @Environment(\.sizeCategory) var sizeCategory
     @Environment(\.colorScheme) var colorScheme
@@ -24,9 +25,7 @@ public struct Switch: View {
             .accessibility(addTraits: [.isButton])
             .onTapGesture {
                 HapticsProvider.sendHapticFeedback(.light(0.5))
-                withAnimation(.spring(response: 0.25, dampingFraction: 0.6)) {
-                    isOn.toggle()
-                }
+                isOn.toggle()
             }
             .disabled(isEnabled == false)
     }
@@ -35,6 +34,7 @@ public struct Switch: View {
         Capsule(style: .circular)
             .frame(width: width, height: height)
             .foregroundColor(tint)
+            .animation(Self.animation, value: isOn)
     }
 
     @ViewBuilder var indicator: some View {
@@ -51,11 +51,17 @@ public struct Switch: View {
             )
             .overlay(indicatorSymbol)
             .offset(x: isOn ? width / 5 : -width / 5)
+            .animation(Self.animation, value: isOn)
     }
 
     @ViewBuilder var indicatorSymbol: some View {
         if hasIcon {
-            Icon(isOn ? .lock : .lockOpen, size: .small, color: iconTint)
+            Icon(
+                isOn ? .lock : .lockOpen,
+                size: .custom(Icon.Size.small.value * sizeCategoryRatio),
+                color: iconTint
+            )
+            .environment(\.sizeCategory, .large)
         } else {
             Circle()
                 .foregroundColor(tint)
@@ -82,19 +88,23 @@ public struct Switch: View {
     }
 
     var width: CGFloat {
-        Self.size.width * sizeCategory.ratio
+        Self.size.width * sizeCategoryRatio
     }
 
     var height: CGFloat {
-        Self.size.height * sizeCategory.ratio
+        Self.size.height * sizeCategoryRatio
     }
 
     var circleDiameter: CGFloat {
-        Self.circleDiameter * sizeCategory.ratio
+        Self.circleDiameter * sizeCategoryRatio
     }
 
     var dotDiameter: CGFloat {
-        Self.dotDiameter * sizeCategory.ratio
+        Self.dotDiameter * sizeCategoryRatio
+    }
+
+    var sizeCategoryRatio: CGFloat {
+        1 + (max(1, sizeCategory.ratio) - 1) * 0.2
     }
 
     /// Creates Orbit Switch component.

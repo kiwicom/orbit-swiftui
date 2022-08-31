@@ -68,7 +68,7 @@ public extension Select {
  
     /// Creates Orbit Select component.
     init(
-        _ label: String,
+        _ label: String = "",
         labelAccentColor: UIColor? = nil,
         labelLinkColor: TextLink.Color = .primary,
         labelLinkAction: @escaping TextLink.Action = { _, _ in },

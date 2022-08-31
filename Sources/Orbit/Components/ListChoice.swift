@@ -83,13 +83,13 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
         if isHeaderEmpty == false || isCustomHeaderEmpty == false {
             HStack(spacing: 0) {
                 headerTexts
+                    .padding(.trailing, .xSmall)
 
                 if isHeaderEmpty == false, idealSize.horizontal == false {
                     Spacer(minLength: 0)
                 }
 
                 TextStrut(.large)
-                    .padding(.leading, .xSmall)
                     .padding(.vertical, verticalPadding)
 
                 headerContent
