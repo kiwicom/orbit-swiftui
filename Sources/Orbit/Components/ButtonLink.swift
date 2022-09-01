@@ -92,7 +92,7 @@ public extension ButtonLink {
         public var color: (normal: UIColor, active: UIColor) {
             switch self {
                 case .primary:              return (.productNormal, .productLightActive)
-                case .secondary:            return (.inkNormal, .cloudDarker)
+                case .secondary:            return (.inkDark, .cloudDark)
                 case .critical:             return (.redNormal, .redLightActive)
                 case .status(.info):        return (.blueNormal, .blueLightActive)
                 case .status(.success):     return (.greenNormal, .greenLightActive)

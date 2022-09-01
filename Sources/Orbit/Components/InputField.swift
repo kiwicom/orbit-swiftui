@@ -122,7 +122,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
 
     @ViewBuilder var secureTextRedactedToggle: some View {
         if value.description.isEmpty == false, state != .disabled {
-            Icon(isSecureTextRedacted ? .visibility : .visibilityOff, color: .inkLight)
+            Icon(isSecureTextRedacted ? .visibility : .visibilityOff, color: .inkNormal)
                 .padding(.vertical, .xSmall)
                 .padding(.horizontal, .small)
                 .contentShape(Rectangle())
@@ -194,7 +194,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     }
 
     var compactLabelColor: UIColor {
-        showPlaceholder ? .inkNormal : .inkLighter
+        showPlaceholder ? .inkDark : .inkLight
     }
 
     var showPlaceholder: Bool {

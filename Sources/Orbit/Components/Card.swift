@@ -70,7 +70,7 @@ public struct Card<Content: View>: View {
                 VStack(alignment: .leading, spacing: .xxSmall) {
                     Heading(title, style: titleStyle)
                         .accessibility(.cardTitle)
-                    Text(description, color: .inkLight)
+                    Text(description, color: .inkNormal)
                         .accessibility(.cardDescription)
                 }
 

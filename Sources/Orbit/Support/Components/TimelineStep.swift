@@ -171,8 +171,8 @@ public enum TimelineStepStyle: Equatable {
 
     public var textColor: UIColor {
         switch self {
-            case .default:              return .inkLight
-            case .status:               return .inkNormal
+            case .default:              return .inkNormal
+            case .status:               return .inkDark
         }
     }
 }

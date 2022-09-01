@@ -69,7 +69,7 @@ public extension CountryFlag {
         var color: Color {
             switch self {
                 case .none:                 return .clear
-                case .default:              return .cloudDarker.opacity(0.8)
+                case .default:              return .cloudDark.opacity(0.8)
             }
         }
     }

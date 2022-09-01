@@ -12,7 +12,7 @@ public struct KeyValueField<Content: View>: View {
 
     public var body: some View {
         VStack(alignment: alignment, spacing: 0) {
-            Text(key, size: size.keySize, color: .inkLight, alignment: .init(alignment))
+            Text(key, size: size.keySize, color: .inkNormal, alignment: .init(alignment))
                 .accessibility(.keyValueKey)
 
             content

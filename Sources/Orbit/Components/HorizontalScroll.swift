@@ -134,21 +134,21 @@ struct HorizontalScrollPreviews: PreviewProvider {
                 Color.greenLight.frame(height: 30)
                 Color.greenLight.frame(height: 50)
             }
-            .border(Color.cloudDarker)
+            .border(Color.cloudDark)
 
             HorizontalScroll(spacing: .large, itemWidth: .ratio(1)) {
                 Color.greenLight.frame(height: 10)
                 Color.greenLight.frame(height: 30)
                 Color.greenLight.frame(height: 50)
             }
-            .border(Color.cloudDarker)
+            .border(Color.cloudDark)
 
             HorizontalScroll(spacing: .large, itemWidth: .ratio(0.5)) {
                 Color.greenLight.frame(height: 10)
                 Color.greenLight.frame(height: 30)
                 Color.greenLight.frame(height: 50)
             }
-            .border(Color.cloudDarker)
+            .border(Color.cloudDark)
 
             HorizontalScroll(spacing: .large, itemWidth: .ratio(0.33)) {
                 Color.greenLight.frame(height: 10)
@@ -156,7 +156,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
                 Color.greenLight.frame(height: 50)
                 Color.greenLight.frame(height: 20)
             }
-            .border(Color.cloudDarker)
+            .border(Color.cloudDark)
         }
         .background(Color.redLight.frame(width: 1).padding(.leading, .xSmall), alignment: .leading)
         .background(Color.redLight.frame(width: 1).padding(.trailing, .xSmall), alignment: .trailing)
@@ -169,7 +169,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
             Color.greenLight
             Color.greenLight
         }
-        .border(Color.cloudDarker)
+        .border(Color.cloudDark)
         .previewDisplayName("W - custom, H - custom")
     }
 
@@ -184,7 +184,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
 
             intrinsicContent
         }
-        .border(Color.cloudDarker)
+        .border(Color.cloudDark)
         .previewDisplayName("W - ratio, H - intrinsic")
     }
 
@@ -205,7 +205,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
 
             intrinsicContent
         }
-        .border(Color.cloudDarker)
+        .border(Color.cloudDark)
         .previewDisplayName("W - small ratio, H - intrinsic")
     }
 
@@ -220,7 +220,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
 
             intrinsicContent
         }
-        .border(Color.cloudDarker)
+        .border(Color.cloudDark)
         .previewDisplayName("W - full, H - intrinsic")
     }
 
@@ -255,7 +255,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
                 Text("No Spacer")
             }
         }
-        .border(Color.cloudDarker)
+        .border(Color.cloudDark)
         .previewDisplayName("W - custom, H - custom")
     }
 
@@ -284,7 +284,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
                         }
                         .id(3)
                     }
-                    .border(Color.cloudDarker)
+                    .border(Color.cloudDark)
 
                     HStack {
                         Button("Scroll to 1", size: .small) {
@@ -327,6 +327,6 @@ struct HorizontalScrollPreviews: PreviewProvider {
             Text("Intrinsic")
             content()
         }
-        .border(Color.cloudDark)
+        .border(Color.cloudNormal)
     }
 }

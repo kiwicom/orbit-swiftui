@@ -74,17 +74,17 @@ struct InputContent<Content: View>: View {
 
     private var prefixColor: Color {
         switch state {
-            case .disabled:             return .cloudDarkerActive
+            case .disabled:             return .cloudDarkActive
             case .modified:             return .blueDark
-            case .default:              return .inkNormal
+            case .default:              return .inkDark
         }
     }
 
     private var suffixColor: Color {
         switch state {
-            case .disabled:             return .cloudDarkerActive
+            case .disabled:             return .cloudDarkActive
             case .modified:             return .blueDark
-            case .default:              return .inkLight
+            case .default:              return .inkNormal
         }
     }
 

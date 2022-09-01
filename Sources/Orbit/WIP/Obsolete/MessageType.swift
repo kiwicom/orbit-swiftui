@@ -35,7 +35,7 @@ public enum MessageType: Equatable, Hashable, CustomStringConvertible {
     public var color: Color {
         switch self {
             case .none:     return .clear
-            case .normal:   return .inkLight
+            case .normal:   return .inkNormal
             case .help:     return .blueNormal
             case .warning:  return .orangeNormal
             case .error:    return .redNormal
@@ -45,7 +45,7 @@ public enum MessageType: Equatable, Hashable, CustomStringConvertible {
     public var uiColor: UIColor {
         switch self {
             case .none:     return .clear
-            case .normal:   return .inkLight
+            case .normal:   return .inkNormal
             case .help:     return .blueNormal
             case .warning:  return .orangeNormal
             case .error:    return .redNormal
@@ -55,7 +55,7 @@ public enum MessageType: Equatable, Hashable, CustomStringConvertible {
     public var darkColor: Color {
         switch self {
             case .none:     return .clear
-            case .normal:   return .inkNormal
+            case .normal:   return .inkDark
             case .help:     return .blueDark
             case .warning:  return .orangeDark
             case .error:    return .redDark

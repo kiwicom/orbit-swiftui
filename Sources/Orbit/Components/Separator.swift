@@ -55,8 +55,8 @@ public extension Separator {
     /// Creates Orbit Separator component.
     init(
         _ label: String = "",
-        labelColor: Text.Color = .inkLight,
-        color: Color = .cloudDark,
+        labelColor: Text.Color = .inkNormal,
+        color: Color = .cloudNormal,
         thickness: Thickness = .default
     ) {
         self.label = label

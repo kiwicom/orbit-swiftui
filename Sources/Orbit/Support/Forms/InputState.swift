@@ -9,8 +9,8 @@ public enum InputState {
 
     public var textColor: Color {
         switch self {
-            case .disabled:         return .cloudDarkerActive
-            case .default:          return .inkNormal
+            case .disabled:         return .cloudDarkActive
+            case .default:          return .inkDark
             case .modified:         return .blueDark
         }
     }
@@ -18,14 +18,14 @@ public enum InputState {
     public var placeholderColor: Color {
         switch self {
             case .disabled:             return textColor
-            case .default, .modified:   return .inkLighter
+            case .default, .modified:   return .inkLight
         }
     }
 
     public var textUIColor: UIColor {
         switch self {
-            case .disabled:         return .cloudDarkerActive
-            case .default:          return .inkNormal
+            case .disabled:         return .cloudDarkActive
+            case .default:          return .inkDark
             case .modified:         return .blueDark
         }
     }
@@ -33,7 +33,7 @@ public enum InputState {
     public var placeholderUIColor: UIColor {
         switch self {
             case .disabled:             return textUIColor
-            case .default, .modified:   return .inkLighter
+            case .default, .modified:   return .inkLight
         }
     }
 }

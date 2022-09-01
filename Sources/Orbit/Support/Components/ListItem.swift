@@ -82,12 +82,12 @@ public extension ListItem {
     enum Style {
         case primary
         case secondary
-        case custom(color: UIColor = .inkNormal, linkColor: TextLink.Color = .primary, weight: Font.Weight = .regular)
+        case custom(color: UIColor = .inkDark, linkColor: TextLink.Color = .primary, weight: Font.Weight = .regular)
 
         public var textColor: Text.Color {
             switch self {
-                case .primary:                      return .inkNormal
-                case .secondary:                    return .inkLight
+                case .primary:                      return .inkDark
+                case .secondary:                    return .inkNormal
                 case .custom(let color, _, _):      return .custom(color)
             }
         }

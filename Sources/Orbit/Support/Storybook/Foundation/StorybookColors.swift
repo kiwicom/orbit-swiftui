@@ -74,13 +74,10 @@ struct StorybookColors {
                 color(&.cloudNormalHover, uiColor: &.cloudNormalHover, label: "Cloud Normal: hover")
                 color(&.cloudNormalActive, uiColor: &.cloudNormalActive, label: "Cloud Normal: active")
             }
-
-            color(&.cloudDark, uiColor: &.cloudDark, label: "Cloud Dark")
-
             HStack(spacing: 0) {
-                color(&.cloudDarker, uiColor: &.cloudDarker, label: "Cloud Darker")
-                color(&.cloudDarkerHover, uiColor: &.cloudDarkerHover, label: "Cloud Darker: hover")
-                color(&.cloudDarkerActive, uiColor: &.cloudDarkerActive, label: "Cloud Darker: active")
+                color(&.cloudDark, uiColor: &.cloudDark, label: "Cloud Dark")
+                color(&.cloudDarkHover, uiColor: &.cloudDarkHover, label: "Cloud Dark: hover")
+                color(&.cloudDarkActive, uiColor: &.cloudDarkActive, label: "Cloud Dark: active")
             }
         }
     }
@@ -88,19 +85,19 @@ struct StorybookColors {
     @ViewBuilder static var ink: some View {
         card("Ink") {
             HStack(spacing: 0) {
-                color(&.inkLighter, uiColor: &.inkLighter, label: "Ink Lighter")
-                color(&.inkLighterHover, uiColor: &.inkLighterHover, label: "Ink Lighter: hover")
-                color(&.inkLighterActive, uiColor: &.inkLighterActive, label: "Ink Lighter: active")
-            }
-            HStack(spacing: 0) {
                 color(&.inkLight, uiColor: &.inkLight, label: "Ink Light")
                 color(&.inkLightHover, uiColor: &.inkLightHover, label: "Ink Light: hover")
                 color(&.inkLightActive, uiColor: &.inkLightActive, label: "Ink Light: active")
             }
             HStack(spacing: 0) {
-                color(&.inkNormal, uiColor: &.inkNormal, label: "Ink Normal")
-                color(&.inkNormalHover, uiColor: &.inkNormalHover, label: "Ink Normal: hover")
-                color(&.inkNormalActive, uiColor: &.inkNormalActive, label: "Ink Normal: active")
+                color(&.inkNormal, uiColor: &.inkNormal, label: "Ink Light")
+                color(&.inkNormalHover, uiColor: &.inkNormalHover, label: "Ink Light: hover")
+                color(&.inkNormalActive, uiColor: &.inkNormalActive, label: "Ink Light: active")
+            }
+            HStack(spacing: 0) {
+                color(&.inkDark, uiColor: &.inkDark, label: "Ink Normal")
+                color(&.inkDarkHover, uiColor: &.inkDarkHover, label: "Ink Normal: hover")
+                color(&.inkDarkActive, uiColor: &.inkDarkActive, label: "Ink Normal: active")
             }
         }
     }
@@ -243,7 +240,7 @@ struct StorybookColors {
                     Text(
                         label,
                         size: .small,
-                        color: .custom(color.brightness > 0.6 ? .inkNormal : .whiteNormal),
+                        color: .custom(color.brightness > 0.6 ? .inkDark : .whiteNormal),
                         weight: .medium
                     )
                     .padding(.horizontal, .medium)

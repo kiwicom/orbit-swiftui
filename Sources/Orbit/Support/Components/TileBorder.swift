@@ -101,7 +101,7 @@ public struct TileBorderModifier: ViewModifier {
             return .blueNormal
         }
 
-        return showOuterBorder ? .cloudDark : .clear
+        return showOuterBorder ? .cloudNormal : .clear
     }
 
     var showOuterBorder: Bool {

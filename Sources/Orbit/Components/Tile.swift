@@ -109,14 +109,14 @@ public struct Tile<Content: View>: View {
         if isHeaderEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Icon(content: iconContent, size: .heading(titleStyle))
-                    .foregroundColor(.inkNormal)
+                    .foregroundColor(.inkDark)
                     .padding(.trailing, .xSmall)
                     .accessibility(.tileIcon)
 
                 VStack(alignment: .labelTextLeading, spacing: .xxSmall) {
                     Heading(title, style: titleStyle)
                         .accessibility(.tileTitle)
-                    Text(description, color: .inkLight)
+                    Text(description, color: .inkNormal)
                         .accessibility(.tileDescription)
                 }
                 .padding(.vertical, verticalTextPadding)
@@ -152,7 +152,7 @@ public struct Tile<Content: View>: View {
                 EmptyView()
             case .icon(let icon, _):
                 Icon(content: icon)
-                    .foregroundColor(.inkLight)
+                    .foregroundColor(.inkNormal)
                     .padding(.leading, .xSmall)
                     .accessibility(.tileDisclosureIcon)
         }
@@ -194,7 +194,7 @@ public extension Tile {
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title4,
-        descriptionColor: Text.Color = .inkLight,
+        descriptionColor: Text.Color = .inkNormal,
         action: @escaping () -> Void = {},
         @ViewBuilder content: () -> Content
     ) {
@@ -224,7 +224,7 @@ public extension Tile {
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title4,
-        descriptionColor: Text.Color = .inkLight,
+        descriptionColor: Text.Color = .inkNormal,
         action: @escaping () -> Void = {}
     ) where Content == EmptyView {
         self.init(

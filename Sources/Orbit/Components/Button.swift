@@ -164,7 +164,7 @@ extension Button {
             switch self {
                 case .primary:                  return .whiteNormal
                 case .primarySubtle:            return .productDark
-                case .secondary:                return .inkNormal
+                case .secondary:                return .inkDark
                 case .critical:                 return .whiteNormal
                 case .criticalSubtle:           return .redDark
                 case .status(.critical, false): return .whiteNormal
@@ -183,7 +183,7 @@ extension Button {
             switch self {
                 case .primary:                  Color.productNormal
                 case .primarySubtle:            Color.productLight
-                case .secondary:                Color.cloudDark
+                case .secondary:                Color.cloudNormal
                 case .critical:                 Color.redNormal
                 case .criticalSubtle:           Color.redLight
                 case .status(.critical, false): Color.redNormal

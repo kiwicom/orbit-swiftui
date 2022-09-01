@@ -32,14 +32,12 @@ public extension UIColor {
     static var bundleMedium = fromResource(named: "Bundle Medium")
 
     // MARK: - Cloud
-    /// Orbit Cloud Dark color.
-    static var cloudDark = fromResource(named: "Cloud Dark")
     /// Orbit Cloud Darker color.
-    static var cloudDarker = fromResource(named: "Cloud Darker")
+    static var cloudDark = fromResource(named: "Cloud Darker")
     /// Orbit Cloud Darker Active color.
-    static var cloudDarkerActive = fromResource(named: "Cloud Darker Active")
+    static var cloudDarkActive = fromResource(named: "Cloud Darker Active")
     /// Orbit Cloud Darker Hover color.
-    static var cloudDarkerHover = fromResource(named: "Cloud Darker Hover")
+    static var cloudDarkHover = fromResource(named: "Cloud Darker Hover")
     /// Orbit Cloud Light color.
     static var cloudLight = fromResource(named: "Cloud Light")
     /// Orbit Cloud Light Active color.
@@ -77,23 +75,23 @@ public extension UIColor {
 
     // MARK: - Ink
     /// Orbit Ink Light color.
-    static var inkLight = fromResource(named: "Ink Light")
+    static var inkNormal = fromResource(named: "Ink Light")
     /// Orbit Ink Light Active color.
-    static var inkLightActive = fromResource(named: "Ink Light Active")
+    static var inkNormalActive = fromResource(named: "Ink Light Active")
     /// Orbit Ink Light Hover color.
-    static var inkLightHover = fromResource(named: "Ink Light Hover")
+    static var inkNormalHover = fromResource(named: "Ink Light Hover")
     /// Orbit Ink Lighter color.
-    static var inkLighter = fromResource(named: "Ink Lighter")
+    static var inkLight = fromResource(named: "Ink Lighter")
     /// Orbit Ink Lighter Active color.
-    static var inkLighterActive = fromResource(named: "Ink Lighter Active")
+    static var inkLightActive = fromResource(named: "Ink Lighter Active")
     /// Orbit Ink Lighter Hover color.
-    static var inkLighterHover = fromResource(named: "Ink Lighter Hover")
+    static var inkLightHover = fromResource(named: "Ink Lighter Hover")
     /// Orbit Ink Normal color.
-    static var inkNormal = fromResource(named: "Ink Normal")
+    static var inkDark = fromResource(named: "Ink Normal")
     /// Orbit Ink Normal Active color.
-    static var inkNormalActive = fromResource(named: "Ink Normal Active")
+    static var inkDarkActive = fromResource(named: "Ink Normal Active")
     /// Orbit Ink Normal Hover color.
-    static var inkNormalHover = fromResource(named: "Ink Normal Hover")
+    static var inkDarkHover = fromResource(named: "Ink Normal Hover")
 
     // MARK: - Orange
     /// Orbit Orange Dark color.

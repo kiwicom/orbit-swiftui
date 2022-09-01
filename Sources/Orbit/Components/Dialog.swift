@@ -21,7 +21,7 @@ public struct Dialog: View {
                 Heading(title, style: .title3, alignment: .init(alignment))
                     .accessibility(.dialogTitle)
 
-                Text(description, color: .inkLight, alignment: .init(alignment))
+                Text(description, color: .inkNormal, alignment: .init(alignment))
                     .accessibility(.dialogDescription)
             }
 
@@ -36,7 +36,7 @@ public struct Dialog: View {
         .elevation(.level4, shape: .roundedRectangle(borderRadius: .small))
         .padding(.xLarge)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.inkNormal.opacity(0.45).edgesIgnoringSafeArea(.all))
+        .background(Color.inkDark.opacity(0.45).edgesIgnoringSafeArea(.all))
         .accessibilityElement(children: .contain)
     }
 

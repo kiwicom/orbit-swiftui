@@ -9,7 +9,7 @@ public enum ListChoiceDisclosure: Equatable {
     
     case none
     /// An iOS-style disclosure indicator.
-    case disclosure(Color = .inkLight)
+    case disclosure(Color = .inkNormal)
     /// A non-interactive button.
     case button(type: ButtonType)
     /// A non-interactive ButtonLink.
@@ -104,14 +104,14 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
         if isHeaderEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
                 Icon(content: iconContent)
-                    .foregroundColor(.inkNormal)
+                    .foregroundColor(.inkDark)
                     .accessibility(.listChoiceIcon)
                 
                 if isHeaderTextEmpty == false {
                     VStack(alignment: .labelTextLeading, spacing: .xxxSmall) {
                         Text(title, weight: .medium)
                             .accessibility(.listChoiceTitle)
-                        Text(description, size: .small, color: .inkLight)
+                        Text(description, size: .small, color: .inkNormal)
                             .accessibility(.listChoiceDescription)
                     }
                 }
@@ -377,7 +377,7 @@ extension ListChoice {
         }
 
         func backgroundColor(isPressed: Bool) -> Color {
-            isPressed ? .inkLight.opacity(0.06) : .clear
+            isPressed ? .inkNormal.opacity(0.06) : .clear
         }
     }
 }

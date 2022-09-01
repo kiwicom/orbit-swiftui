@@ -27,7 +27,7 @@ public struct EmptyState: View {
             VStack(spacing: .xSmall) {
                 Heading(title, style: .title4, alignment: .center)
                     .accessibility(.emptyStateTitle)
-                Text(description, color: .inkLight, alignment: .center)
+                Text(description, color: .inkNormal, alignment: .center)
                     .accessibility(.emptyStateDescription)
             }
         }

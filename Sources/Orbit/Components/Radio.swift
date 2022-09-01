@@ -37,11 +37,11 @@ public struct Radio: View {
     }
 
     var labelColor: Text.Color {
-        state == .disabled ? .custom(.cloudDarkerHover) : .inkNormal
+        state == .disabled ? .custom(.cloudDarkHover) : .inkDark
     }
 
     var descriptionColor: Text.Color {
-        state == .disabled ? .custom(.cloudDarkerHover) : .inkLight
+        state == .disabled ? .custom(.cloudDarkHover) : .inkNormal
     }
 }
 
@@ -127,7 +127,7 @@ extension Radio {
             switch (state, isChecked, isPressed) {
                 case (.normal, true, false), (.error, true, false):     return Color.blueNormal
                 case (.normal, true, true), (.error, true, true):       return Color.blueLightActive
-                case (_, _, _):                                         return Color.cloudDarker
+                case (_, _, _):                                         return Color.cloudDark
             }
         }
 

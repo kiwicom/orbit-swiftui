@@ -127,7 +127,7 @@ extension Tag {
             switch (isFocused, isSelected) {
                 case (_, true):                 return .whiteNormal
                 case (true, false):             return .blueDarker
-                case (false, false):            return .inkNormal
+                case (false, false):            return .inkDark
             }
         }
 
@@ -148,13 +148,13 @@ extension Tag {
             switch (isFocused, isSelected, isPressed || isActive) {
                 case (true, false, false):      return .blueLight
                 case (true, true, false):       return .blueNormal
-                case (false, false, false):     return .cloudDark
-                case (false, true, false):      return .inkLighterHover
+                case (false, false, false):     return .cloudNormal
+                case (false, true, false):      return .inkLightHover
                 // Pressed
                 case (true, false, true):       return .blueLightActive
                 case (true, true, true):        return .blueNormalActive
                 case (false, false, true):      return .cloudNormalActive
-                case (false, true, true):       return .inkLightHover
+                case (false, true, true):       return .inkNormalHover
             }
         }
 
@@ -162,10 +162,10 @@ extension Tag {
             switch (isSelected, isFocused, isPressed || isActive) {
                 case (true, _, _):              return .whiteNormal
                 case (false, true, false):      return .blueDarker.opacity(0.3)
-                case (false, false, false):     return .inkNormal.opacity(0.3)
+                case (false, false, false):     return .inkDark.opacity(0.3)
                 // Pressed
                 case (false, true, true):       return .blueDarker
-                case (false, false, true):      return .inkNormal
+                case (false, false, true):      return .inkDark
             }
         }
     }

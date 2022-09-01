@@ -18,7 +18,7 @@ public enum Gradient {
         switch self {
             case .bundleBasic:              return .bundleBasic
             case .bundleMedium:             return .bundleMedium
-            case .bundleTop:                return .inkNormal
+            case .bundleTop:                return .inkDark
         }
     }
     
@@ -26,7 +26,7 @@ public enum Gradient {
         switch self {
             case .bundleBasic:              return .bundleBasic
             case .bundleMedium:             return .bundleMedium
-            case .bundleTop:                return .inkNormal
+            case .bundleTop:                return .inkDark
         }
     }
     

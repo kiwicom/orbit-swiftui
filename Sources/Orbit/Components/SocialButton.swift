@@ -47,9 +47,9 @@ public struct SocialButton: View {
     var labelColor: Color {
         switch service {
             case .apple:        return colorScheme == .light ? .white : .black
-            case .google:       return .inkNormal
-            case .facebook:     return .inkNormal
-            case .email:        return .inkNormal
+            case .google:       return .inkDark
+            case .facebook:     return .inkDark
+            case .email:        return .inkDark
         }
     }
 
@@ -57,11 +57,11 @@ public struct SocialButton: View {
         switch service {
             case .apple:        return (
                 colorScheme == .light ? .black : .white,
-                colorScheme == .light ? .inkLightActive : .inkLightActive
+                colorScheme == .light ? .inkNormalActive : .inkNormalActive
             )
-            case .google:       return (.cloudDark, .cloudNormalActive)
-            case .facebook:     return (.cloudDark, .cloudNormalActive)
-            case .email:        return (.cloudDark, .cloudNormalActive)
+            case .google:       return (.cloudNormal, .cloudNormalActive)
+            case .facebook:     return (.cloudNormal, .cloudNormalActive)
+            case .email:        return (.cloudNormal, .cloudNormalActive)
         }
     }
 }
