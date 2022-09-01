@@ -58,7 +58,7 @@ public struct Switch: View {
         if hasIcon {
             Icon(
                 isOn ? .lock : .lockOpen,
-                size: .custom(Icon.Size.small.value * sizeCategoryRatio),
+                size: .custom(Icon.Size.small.value * sizeCategory.controlRatio),
                 color: iconTint
             )
             .environment(\.sizeCategory, .large)
@@ -88,23 +88,19 @@ public struct Switch: View {
     }
 
     var width: CGFloat {
-        Self.size.width * sizeCategoryRatio
+        Self.size.width * sizeCategory.controlRatio
     }
 
     var height: CGFloat {
-        Self.size.height * sizeCategoryRatio
+        Self.size.height * sizeCategory.controlRatio
     }
 
     var circleDiameter: CGFloat {
-        Self.circleDiameter * sizeCategoryRatio
+        Self.circleDiameter * sizeCategory.controlRatio
     }
 
     var dotDiameter: CGFloat {
-        Self.dotDiameter * sizeCategoryRatio
-    }
-
-    var sizeCategoryRatio: CGFloat {
-        1 + (max(1, sizeCategory.ratio) - 1) * 0.2
+        Self.dotDiameter * sizeCategory.controlRatio
     }
 
     /// Creates Orbit Switch component.
