@@ -54,6 +54,7 @@ public struct Select: View {
         .accessibility(value: .init(value ?? ""))
         .accessibility(hint: .init(message.description.isEmpty ? placeholder : message.description))
         .accessibility(addTraits: .isButton)
+        .disabled(state == .disabled)
     }
 
     var textColor: Color {
