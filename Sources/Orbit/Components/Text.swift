@@ -68,9 +68,10 @@ public struct Text: View {
             }
         } else {
             return textContent {
-                SwiftUI.Text(verbatim: content)
+                plainTextContent {
+                    SwiftUI.Text(verbatim: content)
+                }
             }
-            .foregroundColor(foregroundColor.map(SwiftUI.Color.init))
             .orbitFont(
                 size: size.value,
                 weight: weight,
@@ -84,6 +85,15 @@ public struct Text: View {
         content()
             .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
             .kerning(kerning)
+    }
+
+    func plainTextContent(@ViewBuilder content: () -> SwiftUI.Text) -> SwiftUI.Text {
+        if let foregroundColor = foregroundColor {
+            return content()
+                .foregroundColor(SwiftUI.Color(foregroundColor))
+        } else {
+            return content()
+        }
     }
 
     var showTextLinks: Bool {
@@ -278,8 +288,8 @@ extension Text: TextRepresentable {
 // MARK: - Previews
 struct TextPreviews: PreviewProvider {
 
-    static let multilineText = "Text longer and multiline with no links"
-    static let multilineFormattedText = "Text longer and <u>multiline</u> with <a href=\"...\">text link</a>"
+    static let multilineText = "Text with multiline content \n with no formatting or text links"
+    static let multilineFormattedText = "Text with <ref>formatting</ref>,<br> <u>multiline</u> content <br> and <a href=\"...\">text link</a>"
 
     static var previews: some View {
         PreviewWrapper {
@@ -306,17 +316,22 @@ struct TextPreviews: PreviewProvider {
                 Text("Plain text with no formatting")
                 Text("Selectable text (on long tap)", isSelectable: true)
                 Text("Text <u>formatted</u> <strong>and</strong> <ref>accented</ref>", accentColor: .orangeNormal)
-                Text(multilineText)
-                Text(multilineFormattedText)
-                Text(multilineFormattedText, color: .none)
-                    .foregroundColor(.blueDark)
-                Text(multilineText, alignment: .trailing)
-                Text(multilineFormattedText, alignment: .trailing)
                 Text("Text with strikethrough and kerning", strikethrough: true, kerning: 6)
             }
             .border(Color.cloudDarker, width: .hairline)
+
+            Text(multilineText, color: .custom(.greenDark), alignment: .trailing)
+                .background(Color.greenLight)
+            Text(multilineText, color: nil, alignment: .trailing)
+                .foregroundColor(.blueDark)
+                .background(Color.blueLight)
+            Text(multilineFormattedText, color: .custom(.greenDark), alignment: .trailing, accentColor: .orangeDark)
+                .background(Color.greenLight)
+            Text(multilineFormattedText, color: nil, alignment: .trailing, accentColor: .orangeDark)
+                .foregroundColor(.blueDark)
+                .background(Color.blueLight)
         }
-        .frame(width: 150)
+        .previewDisplayName("Colors")
     }
 
     @ViewBuilder static var sizes: some View {
