@@ -30,7 +30,6 @@ public struct Dialog: View {
             }
         }
         .frame(maxWidth: Layout.readableMaxWidth / 2)
-        .padding(.top, .xSmall)
         .padding(.medium)
         .background(Color.whiteDarker)
         .clipShape(shape)
