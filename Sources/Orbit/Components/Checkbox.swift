@@ -21,8 +21,8 @@ public struct Checkbox: View {
             },
             label: {
                 if title.isEmpty == false || description.isEmpty == false {
-                    VStack(alignment: .leading, spacing: 0) {
-                        Heading(title, style: .title5, color: labelColor)
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(title, color: labelColor, weight: .medium)
                             .accessibility(.checkboxTitle)
                         Text(description, size: .small, color: descriptionColor)
                             .accessibility(.checkboxDescription)
@@ -36,7 +36,7 @@ public struct Checkbox: View {
         .disabled(state == .disabled)
     }
 
-    var labelColor: Heading.Color {
+    var labelColor: Text.Color {
         state == .disabled ? .custom(.cloudDarkerHover) : .inkNormal
     }
 
@@ -180,7 +180,7 @@ public extension Checkbox {
 struct CheckboxPreviews: PreviewProvider {
 
     static let label = "Label"
-    static let description = "Additional information for this choice"
+    static let description = "Additional information<br>for this choice"
 
     static var previews: some View {
         PreviewWrapper {
