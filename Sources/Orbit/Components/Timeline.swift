@@ -8,6 +8,7 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/timeline/)
 public struct Timeline<Content: View>: View {
 
+    @Environment(\.sizeCategory) var sizeCategory
     @ViewBuilder let content: Content
 
     public var body: some View {
@@ -22,12 +23,12 @@ public struct Timeline<Content: View>: View {
                             preferences[index].style.color
                                 .frame(width: 2)
                                 .frame(
-                                    width: TimelineStepStyle.indicatorDiameter,
+                                    width: TimelineStepStyle.indicatorDiameter * sizeCategory.ratio,
                                     height: progressLineHeight(for: index - 1, in: preferences, geometry: geometry)
                                 )
                         }
                     }
-                    .padding(.top, TimelineStepStyle.indicatorDiameter / 2)
+                    .padding(.top, TimelineStepStyle.indicatorDiameter * sizeCategory.ratio / 2)
                 }
             }
         }

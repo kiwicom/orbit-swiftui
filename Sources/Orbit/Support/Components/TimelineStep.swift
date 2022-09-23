@@ -48,19 +48,14 @@ public struct TimelineStep<Header: View, Content: View>: View {
                 header
                 content
             }
-            .anchorPreference(key: TimelineStepPreferenceKey.self, value: .bounds) {
-                [TimelineStepPreference(bounds: $0, style: style)]
-            }
+        }
+        .anchorPreference(key: TimelineStepPreferenceKey.self, value: .bounds) {
+            [TimelineStepPreference(bounds: $0, style: style)]
         }
     }
 
     @ViewBuilder var indicator: some View {
         icon
-            .background(
-                Circle()
-                    .fill(Color.whiteNormal)
-                    .padding(.xxxSmall)
-            )
     }
 
     @ViewBuilder var icon: some View {
@@ -68,9 +63,18 @@ public struct TimelineStep<Header: View, Content: View>: View {
             case .default:
                 Circle()
                     .strokeBorder(Color.cloudNormalHover, lineWidth: 2)
-                    .frame(width: .small, height: .small)
+                    .frame(width: .small * sizeCategory.ratio, height: .small * sizeCategory.ratio)
+                    .background(
+                        Circle()
+                            .fill(Color.whiteNormal)
+                    )
             case .status:
                 Icon(style.iconSymbol, size: .large, color: style.color)
+                    .background(
+                        Circle()
+                            .fill(Color.whiteNormal)
+                            .padding(.xxSmall + 1)
+                    )
         }
     }
 }
