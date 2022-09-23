@@ -112,8 +112,9 @@ public extension ContentSizeCategory {
     }
 
     /// Effective size ratio for controls, based on font size ratio.
+    /// The ratio is smaller than font size ratio and should be used for components or indicators that are already large enough.
     var controlRatio: CGFloat {
-        1 + (max(1, ratio) - 1) * 0.5
+        1 + (ratio - 1) * 0.5
     }
 
     @available(iOS, deprecated: 15.0, message: "Use DynamicTypeSize.isAccessibilitySize instead from iOS 15.0")

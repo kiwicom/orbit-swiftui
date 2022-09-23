@@ -115,7 +115,7 @@ extension Radio {
                 .animation(.easeOut(duration: 0.2), value: state)
                 .animation(.easeOut(duration: 0.15), value: isChecked)
                 .alignmentGuide(.firstTextBaseline) { _ in
-                    size * 0.75
+                    size * 0.75 + 3 * (sizeCategory.controlRatio - 1)
                 }
         }
 
@@ -148,19 +148,19 @@ extension Radio {
         }
 
         var size: CGFloat {
-            Self.size * sizeCategory.ratio
+            Self.size * sizeCategory.controlRatio
         }
 
         var strokeWidth: CGFloat {
-            (isChecked ? 6 : 2) * sizeCategory.ratio
+            (isChecked ? 6 : 2) * sizeCategory.controlRatio
         }
 
         var errorStrokeWidth: CGFloat {
-            3 * sizeCategory.ratio
+            3 * sizeCategory.controlRatio
         }
 
         var indicatorStrokeWidth: CGFloat {
-            2 * sizeCategory.ratio
+            2 * sizeCategory.controlRatio
         }
     }
 }

@@ -123,12 +123,12 @@ public extension Checkbox {
                 .animation(.easeOut(duration: 0.2), value: state)
                 .animation(.easeOut(duration: 0.15), value: isChecked)
                 .alignmentGuide(.firstTextBaseline) { _ in
-                    size * 0.75
+                    size * 0.75 + 3 * (sizeCategory.controlRatio - 1)
                 }
         }
 
         var shape: some InsettableShape {
-            RoundedRectangle(cornerRadius: BorderRadius.default * sizeCategory.ratio, style: .continuous)
+            RoundedRectangle(cornerRadius: BorderRadius.default * sizeCategory.controlRatio, style: .continuous)
         }
 
         func indicatorStrokeColor(isPressed: Bool) -> some ShapeStyle {
@@ -159,19 +159,19 @@ public extension Checkbox {
         }
 
         var size: CGFloat {
-            Self.size * sizeCategory.ratio
+            Self.size * sizeCategory.controlRatio
         }
 
         var inset: CGFloat {
-            0.5 * sizeCategory.ratio
+            0.5 * sizeCategory.controlRatio
         }
 
         var errorStrokeWidth: CGFloat {
-            3 * sizeCategory.ratio
+            3 * sizeCategory.controlRatio
         }
 
         var indicatorStrokeWidth: CGFloat {
-            2 * sizeCategory.ratio
+            2 * sizeCategory.controlRatio
         }
     }
 }
