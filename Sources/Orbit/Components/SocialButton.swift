@@ -32,7 +32,7 @@ public struct SocialButton: View {
                     Text(label, size: .normal, color: nil, weight: .medium)
                         .padding(.vertical, Button.Size.default.verticalPadding)
 
-                    if idealSize.horizontal == false {
+                    if idealSize.horizontal == nil {
                         Spacer(minLength: 0)
                     }
 
@@ -126,7 +126,7 @@ extension SocialButton {
 
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .frame(maxWidth: idealSize.horizontal ? nil : .infinity)
+                .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
                 .padding(.horizontal, .small)
                 .background(
                     configuration.isPressed ? backgroundColor.active : backgroundColor.normal

@@ -23,7 +23,7 @@ public struct Button: View {
             },
             label: {
                 HStack(spacing: 0) {
-                    if disclosureIconContent.isEmpty, idealSize.horizontal == false {
+                    if disclosureIconContent.isEmpty, idealSize.horizontal == nil {
                         Spacer(minLength: 0)
                     }
 
@@ -34,7 +34,7 @@ public struct Button: View {
                             .padding(.vertical, size.verticalPadding)
                     }
 
-                    if idealSize.horizontal == false {
+                    if idealSize.horizontal == nil {
                         Spacer(minLength: 0)
                     }
 
@@ -49,7 +49,7 @@ public struct Button: View {
             }
         )
         .buttonStyle(ButtonStyle(style: style, size: size))
-        .frame(maxWidth: idealSize.horizontal ? nil : .infinity)
+        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
     }
 
     @ViewBuilder var text: some View {

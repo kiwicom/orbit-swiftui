@@ -66,7 +66,7 @@ public struct Alert<Content: View>: View {
                 }
             }
         }
-        .frame(maxWidth: idealSize.horizontal ? nil : .infinity, alignment: .leading)
+        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
         .padding([.vertical, .trailing], .medium)
         .padding(.leading, iconContent.isEmpty ? .medium : .small)
         .background(background)

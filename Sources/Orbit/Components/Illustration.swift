@@ -18,7 +18,7 @@ public struct Illustration: View {
                 case .frame(let maxHeight, let alignment):
                     resizeableImage
                         .frame(maxHeight: maxHeight)
-                        .frame(maxWidth: idealSize.horizontal ? nil : .infinity, alignment: .init(alignment))
+                        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .init(alignment))
                         .fixedSize(horizontal: false, vertical: true)
                 case .resizeable:
                     resizeableImage

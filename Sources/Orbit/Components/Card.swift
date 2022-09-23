@@ -50,7 +50,7 @@ public struct Card<Content: View>: View {
                 .padding([.horizontal, .bottom], contentPadding)
             }
         }
-        .frame(maxWidth: idealSize.horizontal ? nil : .infinity, alignment: .leading)
+        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
         .background(backgroundColor)
         .tileBorder(
             showBorder ? .iOS : .none,
@@ -74,7 +74,7 @@ public struct Card<Content: View>: View {
                         .accessibility(.cardDescription)
                 }
 
-                if idealSize.horizontal == false {
+                if idealSize.horizontal == nil {
                     Spacer(minLength: 0)
                 }
 

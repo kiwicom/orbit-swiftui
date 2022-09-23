@@ -63,7 +63,7 @@ public struct ChoiceTile<Content: View>: View {
                 .padding(.top, badgeOverlay.isEmpty ? 0 : .small)
                 .overlay(indicatorOverlay, alignment: indicatorAlignment)
                 .padding(padding)
-                .frame(maxWidth: idealSize.horizontal ? nil: .infinity, alignment: .leading)
+                .frame(maxWidth: idealSize.horizontal == true ? nil: .infinity, alignment: .leading)
             }
         )
         .buttonStyle(TileButtonStyle(isSelected: isSelected, status: errorShouldHighlightBorder ? .critical : nil))
@@ -95,7 +95,7 @@ public struct ChoiceTile<Content: View>: View {
                                 .accessibility(.choiceTileDescription)
                         }
 
-                        if idealSize.horizontal == false {
+                        if idealSize.horizontal == nil {
                             Spacer(minLength: 0)
                         }
                         
@@ -123,7 +123,7 @@ public struct ChoiceTile<Content: View>: View {
                         Badge(badge, style: .neutral)
                             .accessibility(.choiceTileBadge)
                     }
-                    .frame(maxWidth: idealSize.horizontal ? nil : .infinity)
+                    .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
             }
         }
     }
