@@ -8,6 +8,8 @@ public struct Tag: View {
     public static let horizontalPadding: CGFloat = .xSmall
     public static let verticalPadding: CGFloat = 7
 
+    @Environment(\.idealSize) var idealSize
+
     let label: String
     let iconContent: Icon.Content
     let style: Style
@@ -25,15 +27,23 @@ public struct Tag: View {
                 },
                 label: {
                     HStack(spacing: 0) {
+                        if idealSize.horizontal == false {
+                            Spacer(minLength: 0)
+                        }
+
                         HStack(alignment: .firstTextBaseline, spacing: 6) {
                             Icon(content: iconContent)
                             Text(label, color: nil, weight: .medium)
                                 .padding(.vertical, Self.verticalPadding)
                         }
+
                         TextStrut(.normal)
                             .padding(.vertical, Self.verticalPadding)
+
+                        if idealSize.horizontal == false {
+                            Spacer(minLength: 0)
+                        }
                     }
-                    .fixedSize()
                 }
             )
             .buttonStyle(
@@ -169,6 +179,7 @@ struct TagPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            standaloneExpanding
             storybook
             sizing
         }
@@ -183,12 +194,22 @@ struct TagPreviews: PreviewProvider {
         }
     }
 
+    static var standaloneExpanding: some View {
+        StateWrapper(initialState: true) { state in
+            Tag(label, icon: .grid, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
+                .idealSize(horizontal: false)
+        }
+    }
+
     @ViewBuilder static var storybook: some View {
         VStack(alignment: .leading, spacing: .large) {
             stack(style: .default, isFocused: true)
             stack(style: .default, isFocused: false)
             stack(style: .removable(), isFocused: true)
             stack(style: .removable(), isFocused: false)
+            Separator()
+            stack(style: .default, isFocused: false, idealWidth: false)
+            stack(style: .removable(), isFocused: true, idealWidth: false)
             Separator()
             HStack(spacing: .medium) {
                 StateWrapper(initialState: true) { state in
@@ -221,8 +242,8 @@ struct TagPreviews: PreviewProvider {
             .padding(.medium)
     }
 
-    @ViewBuilder static func stack(style: Tag.Style, isFocused: Bool) -> some View {
-        HStack(spacing: style == .default ? 48 : .large) {
+    @ViewBuilder static func stack(style: Tag.Style, isFocused: Bool, idealWidth: Bool? = nil) -> some View {
+        HStack(spacing: .medium) {
             VStack(spacing: .small) {
                 tag(style: style, isFocused: isFocused, isSelected: false, isActive: false)
                 tag(style: style, isFocused: isFocused, isSelected: true, isActive: false)
@@ -233,6 +254,7 @@ struct TagPreviews: PreviewProvider {
                 tag(style: style, isFocused: isFocused, isSelected: true, isActive: true)
             }
         }
+        .idealSize(horizontal: idealWidth)
     }
 
     @ViewBuilder static func tag(style: Tag.Style, isFocused: Bool, isSelected: Bool, isActive: Bool) -> some View {
