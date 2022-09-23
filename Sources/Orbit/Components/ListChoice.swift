@@ -75,7 +75,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 .padding(.vertical, .small)
                 .disabled(true)
         }
-        .frame(maxWidth: idealSize.horizontal ? nil : .infinity, alignment: .leading)
+        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
         .overlay(separator, alignment: .bottom)
     }
     
@@ -85,7 +85,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 headerTexts
                     .padding(.trailing, .xSmall)
 
-                if isHeaderEmpty == false, idealSize.horizontal == false {
+                if isHeaderEmpty == false, idealSize.horizontal == nil {
                     Spacer(minLength: 0)
                 }
 

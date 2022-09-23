@@ -22,7 +22,7 @@ struct InputContent<Content: View>: View {
                 .lineLimit(1)
                 .padding(.leading, prefix.isEmpty ? .small : 0)
 
-            if idealSize.horizontal == false {
+            if idealSize.horizontal == nil {
                 Spacer(minLength: 0)
             }
 
@@ -97,5 +97,24 @@ struct InputContent<Content: View>: View {
             case (_, .default, true):   return .blueNormal
             default:                    return backgroundColor(isPressed: isPressed)
         }
+    }
+}
+
+// MARK: - Previews
+struct InputContentPreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            InputContent(prefix: .visa, suffix: .checkCircle, state: .default) {
+                contentPlaceholder
+            }
+            .padding(.medium)
+
+            InputContent(prefix: .visa, suffix: .checkCircle, state: .default, message: .error("", icon: .alertCircle)) {
+                contentPlaceholder
+            }
+            .padding(.medium)
+        }
+        .previewLayout(.sizeThatFits)
     }
 }

@@ -95,7 +95,7 @@ public struct Tile<Content: View>: View {
                 content
             }
 
-            if idealSize.horizontal == false {
+            if idealSize.horizontal == nil {
                 Spacer(minLength: 0)
             }
 
@@ -124,7 +124,7 @@ public struct Tile<Content: View>: View {
                 TextStrut(.large)
                     .padding(.vertical, verticalTextPadding)
 
-                if idealSize.horizontal == false {
+                if idealSize.horizontal == nil {
                     Spacer(minLength: 0)
                 }
 
