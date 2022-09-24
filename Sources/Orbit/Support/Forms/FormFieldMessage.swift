@@ -3,19 +3,22 @@ import SwiftUI
 /// Orbit message below form fields.
 public struct FormFieldMessage: View {
 
+    @Environment(\.sizeCategory) var sizeCategory
+
     let message: MessageType
     let spacing: CGFloat
 
     public var body: some View {
         if message.isEmpty == false {
+            // A Label should be used instead when Orbit fixes the non-matching icon to label sizing
             HStack(alignment: .firstTextBaseline, spacing: spacing) {
                 Icon(message.icon, size: .small, color: message.color)
                     .accessibility(.fieldMessageIcon)
+                    .alignmentGuide(.firstTextBaseline) { _ in
+                        Icon.Size.small.value * sizeCategory.ratio * 0.82 - 2 * (sizeCategory.ratio - 1)
+                    }
                 Text(message.description, color: .custom(message.uiColor))
                     .accessibility(.fieldMessage)
-                    .alignmentGuide(.firstTextBaseline) { _ in
-                        Text.Size.small.value * 1.1
-                    }
             }
             .transition(.opacity.animation(.easeOut(duration: 0.2)))
         }
