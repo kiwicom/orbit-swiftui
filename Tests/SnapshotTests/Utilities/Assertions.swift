@@ -190,7 +190,7 @@ private func snapshotTestsDirectoryPath(fromTestPath filePath: String) -> String
         if directoryContainsPackageFile(url) {
             return url
                 .appendingPathComponent("Snapshots")
-                .appendingPathComponent(simulatorConfigurationIdentifier)
+                .appendingPathComponent(UIDevice.current.model)
                 .path
         } else {
             url.deleteLastPathComponent()
@@ -198,18 +198,4 @@ private func snapshotTestsDirectoryPath(fromTestPath filePath: String) -> String
     }
 
     fatalError("Unable to find snapshots directory.")
-}
-
-private var simulatorConfigurationIdentifier: String {
-
-    // As specified in https://github.com/pointfreeco/swift-snapshot-testing#readme:
-    //
-    // Snapshots must be compared using a simulator with the same OS,
-    // device gamut, and scale as the simulator that originally took
-    // the reference to avoid discrepancies between images.
-
-    let iOSMajorVersion = UIDevice.current.systemVersion.split(separator: ".")[0]
-    let deviceName = UIDevice.current.name.replacingOccurrences(of: " ", with: "_")
-
-    return "iOS\(iOSMajorVersion)_\(deviceName)"
 }
