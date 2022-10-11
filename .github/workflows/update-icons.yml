@@ -33,4 +33,4 @@ jobs:
           title: Design Tokens Icons Update on ${{ env.TODAY }}
           body: ""
           base: main
-          branch: tokens-autoupdate
+          branch: tokens-update-icons

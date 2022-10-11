@@ -33,4 +33,4 @@ jobs:
           title: Design Tokens Colors Update on ${{ env.TODAY }}
           body: ""
           base: main
-          branch: tokens-autoupdate
+          branch: tokens-update-colors
