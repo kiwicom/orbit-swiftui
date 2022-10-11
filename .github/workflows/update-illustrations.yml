@@ -33,4 +33,4 @@ jobs:
           title: Design Tokens Illustrations Update on ${{ env.TODAY }}
           body: ""
           base: main
-          branch: tokens-autoupdate
+          branch: tokens-update-illustrations
