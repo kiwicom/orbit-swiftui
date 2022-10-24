@@ -34,12 +34,10 @@ public extension Color {
     // MARK: - Cloud
     /// Orbit Cloud Dark color.
     static var cloudDark = Color("Cloud Dark", bundle: .current)
-    /// Orbit Cloud Darker color.
-    static var cloudDarker = Color("Cloud Darker", bundle: .current)
-    /// Orbit Cloud Darker Active color.
-    static var cloudDarkerActive = Color("Cloud Darker Active", bundle: .current)
-    /// Orbit Cloud Darker Hover color.
-    static var cloudDarkerHover = Color("Cloud Darker Hover", bundle: .current)
+    /// Orbit Cloud Dark Active color.
+    static var cloudDarkActive = Color("Cloud Dark Active", bundle: .current)
+    /// Orbit Cloud Dark Hover color.
+    static var cloudDarkHover = Color("Cloud Dark Hover", bundle: .current)
     /// Orbit Cloud Light color.
     static var cloudLight = Color("Cloud Light", bundle: .current)
     /// Orbit Cloud Light Active color.
@@ -76,18 +74,18 @@ public extension Color {
     static var greenNormalHover = Color("Green Normal Hover", bundle: .current)
 
     // MARK: - Ink
+    /// Orbit Ink Dark color.
+    static var inkDark = Color("Ink Dark", bundle: .current)
+    /// Orbit Ink Dark Active color.
+    static var inkDarkActive = Color("Ink Dark Active", bundle: .current)
+    /// Orbit Ink Dark Hover color.
+    static var inkDarkHover = Color("Ink Dark Hover", bundle: .current)
     /// Orbit Ink Light color.
     static var inkLight = Color("Ink Light", bundle: .current)
     /// Orbit Ink Light Active color.
     static var inkLightActive = Color("Ink Light Active", bundle: .current)
     /// Orbit Ink Light Hover color.
     static var inkLightHover = Color("Ink Light Hover", bundle: .current)
-    /// Orbit Ink Lighter color.
-    static var inkLighter = Color("Ink Lighter", bundle: .current)
-    /// Orbit Ink Lighter Active color.
-    static var inkLighterActive = Color("Ink Lighter Active", bundle: .current)
-    /// Orbit Ink Lighter Hover color.
-    static var inkLighterHover = Color("Ink Lighter Hover", bundle: .current)
     /// Orbit Ink Normal color.
     static var inkNormal = Color("Ink Normal", bundle: .current)
     /// Orbit Ink Normal Active color.
