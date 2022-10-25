@@ -36,6 +36,7 @@ public struct Tag: View {
                             Text(label, color: nil, weight: .medium)
                                 .padding(.vertical, Self.verticalPadding)
                         }
+                        .fixedSize(horizontal: true, vertical: false)
 
                         TextStrut(.normal)
                             .padding(.vertical, Self.verticalPadding)
