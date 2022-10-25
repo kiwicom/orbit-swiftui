@@ -152,7 +152,7 @@ public extension Text {
     init(
         _ content: String,
         size: Size = .normal,
-        color: Color? = .inkNormal,
+        color: Color? = .inkDark,
         weight: Font.Weight = .regular,
         lineSpacing: CGFloat? = nil,
         alignment: TextAlignment = .leading,
@@ -169,7 +169,7 @@ public extension Text {
         self.weight = weight
         self.lineSpacing = lineSpacing
         self.alignment = alignment
-        self.accentColor = accentColor ?? color?.uiValue ?? .inkNormal
+        self.accentColor = accentColor ?? color?.uiValue ?? .inkDark
         self.linkColor = linkColor
         self.isSelectable = isSelectable
         self.strikethrough = strikethrough
@@ -236,8 +236,8 @@ public extension Text {
     }
 
     enum Color: Equatable {
+        case inkDark
         case inkNormal
-        case inkLight
         case white
         case custom(UIColor)
 
@@ -247,8 +247,8 @@ public extension Text {
         
         public var uiValue: UIColor {
             switch self {
+                case .inkDark:              return .inkDark
                 case .inkNormal:            return .inkNormal
-                case .inkLight:             return .inkLight
                 case .white:                return .whiteNormal
                 case .custom(let color):    return color
             }
@@ -318,7 +318,7 @@ struct TextPreviews: PreviewProvider {
                 Text("Text <u>formatted</u> <strong>and</strong> <ref>accented</ref>", accentColor: .orangeNormal)
                 Text("Text with strikethrough and kerning", strikethrough: true, kerning: 6)
             }
-            .border(Color.cloudDarker, width: .hairline)
+            .border(Color.cloudDark, width: .hairline)
 
             Text(multilineText, color: .custom(.greenDark), alignment: .trailing)
                 .background(Color.greenLight)
@@ -412,7 +412,7 @@ struct TextPreviews: PreviewProvider {
                 Text("Text Normal - Undefined color, modified to Blue", size: .normal, color: nil)
                     .foregroundColor(.blueNormal)
                     .foregroundColor(.redNormal)
-                Text("Text Normal - InkLight color", size: .normal, color: .inkLight)
+                Text("Text Normal - InkNormal color", size: .normal, color: .inkNormal)
                     .foregroundColor(.blueNormal)
                     .foregroundColor(.redNormal)
                 Text("Text Normal - Custom color", size: .normal, color: .custom(.productDark))
@@ -438,7 +438,7 @@ struct TextPreviews: PreviewProvider {
     static var snapshotsSizing: some View {
         VStack(spacing: .medium) {
             standalone
-                .border(Color.cloudDarker, width: .hairline)
+                .border(Color.cloudDark, width: .hairline)
             storybook
         }
     }
@@ -455,7 +455,7 @@ struct TextPreviews: PreviewProvider {
                         """,
                         accentColor: .redNormal
                     )
-                    .border(Color.cloudDarker, width: .hairline)
+                    .border(Color.cloudDark, width: .hairline)
                     .padding(.trailing, 200 * (1 - state.wrappedValue.0))
 
                     Slider(
@@ -474,7 +474,7 @@ struct TextPreviews: PreviewProvider {
                         weight: .bold,
                         accentColor: .blueNormal
                     )
-                    .border(Color.cloudDark)
+                    .border(Color.cloudNormal)
                     .padding(.leading, 200 * (1 - state.wrappedValue.1))
 
                     Slider(
@@ -487,7 +487,7 @@ struct TextPreviews: PreviewProvider {
                         A normal basic very very long text that contains no tags or links.
                         """
                     )
-                    .border(Color.cloudDark)
+                    .border(Color.cloudNormal)
                     .padding(.trailing, 200 * (1 - state.wrappedValue.2))
 
                     Slider(
@@ -503,11 +503,11 @@ struct TextPreviews: PreviewProvider {
                         <u>underline</u> and <strong>strong</strong> support.
                         """,
                         size: .custom(22),
-                        color: .inkLight,
+                        color: .inkNormal,
                         weight: .bold
                     )
                     .lineLimit(2)
-                    .border(Color.cloudDark)
+                    .border(Color.cloudNormal)
                 }
             }
             .previewDisplayName("Live Preview")
@@ -518,7 +518,7 @@ struct TextPreviews: PreviewProvider {
     static var attributedTextSnapshots: some View {
         VStack(alignment: .leading, spacing: .medium) {
             Text("An <ref>attributed</ref> text <a href=\"..\">link</a>", accentColor: .orangeNormal)
-                .border(Color.cloudDarker)
+                .border(Color.cloudDark)
 
             Text(
                 """
@@ -551,7 +551,7 @@ struct TextPreviews: PreviewProvider {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
             Text(content, size: size, weight: weight)
             Spacer()
-            Text("\(Int(size.value))/\(Int(size.lineHeight))", color: .inkLight, weight: .medium)
+            Text("\(Int(size.value))/\(Int(size.lineHeight))", color: .inkNormal, weight: .medium)
         }
     }
 }
@@ -578,7 +578,7 @@ struct TextDynamicTypePreviews: PreviewProvider {
                 Text("<strong>M</strong>")
                 Text("<a href=\"..\">M</a>")
             }
-            .border(Color.cloudDarker, width: .hairline)
+            .border(Color.cloudDark, width: .hairline)
         }
 
         TextPreviews.storybook

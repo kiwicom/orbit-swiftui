@@ -44,7 +44,7 @@ extension Tab {
 
         public var textColor: Color {
             switch self {
-                case .default:                              return .inkNormal
+                case .default:                              return .inkDark
                 case .underlined(let color):                return color
                 case .underlinedGradient(let gradient):     return gradient.color
             }
@@ -105,9 +105,9 @@ struct TabPreviews: PreviewProvider {
         HStack(spacing: 0) {
             Group {
                 Tab("Default", style: .default)
-                Tab("Underlined", style: .underlined(.inkNormal))
+                Tab("Underlined", style: .underlined(.inkDark))
             }
-            .border(Color.cloudDark)
+            .border(Color.cloudNormal)
         }
         .padding(.medium)
         .previewDisplayName("TabStyle")
@@ -122,7 +122,7 @@ struct TabPreviews: PreviewProvider {
                     .foregroundColor(.bundleMedium)
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
-            .border(Color.cloudDark)
+            .border(Color.cloudNormal)
         }
         .padding(.medium)
         .previewDisplayName("TabStyle - Gradients")

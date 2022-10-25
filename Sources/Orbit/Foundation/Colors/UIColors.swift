@@ -34,12 +34,10 @@ public extension UIColor {
     // MARK: - Cloud
     /// Orbit Cloud Dark color.
     static var cloudDark = fromResource(named: "Cloud Dark")
-    /// Orbit Cloud Darker color.
-    static var cloudDarker = fromResource(named: "Cloud Darker")
-    /// Orbit Cloud Darker Active color.
-    static var cloudDarkerActive = fromResource(named: "Cloud Darker Active")
-    /// Orbit Cloud Darker Hover color.
-    static var cloudDarkerHover = fromResource(named: "Cloud Darker Hover")
+    /// Orbit Cloud Dark Active color.
+    static var cloudDarkActive = fromResource(named: "Cloud Dark Active")
+    /// Orbit Cloud Dark Hover color.
+    static var cloudDarkHover = fromResource(named: "Cloud Dark Hover")
     /// Orbit Cloud Light color.
     static var cloudLight = fromResource(named: "Cloud Light")
     /// Orbit Cloud Light Active color.
@@ -76,18 +74,18 @@ public extension UIColor {
     static var greenNormalHover = fromResource(named: "Green Normal Hover")
 
     // MARK: - Ink
+    /// Orbit Ink Dark color.
+    static var inkDark = fromResource(named: "Ink Dark")
+    /// Orbit Ink Dark Active color.
+    static var inkDarkActive = fromResource(named: "Ink Dark Active")
+    /// Orbit Ink Dark Hover color.
+    static var inkDarkHover = fromResource(named: "Ink Dark Hover")
     /// Orbit Ink Light color.
     static var inkLight = fromResource(named: "Ink Light")
     /// Orbit Ink Light Active color.
     static var inkLightActive = fromResource(named: "Ink Light Active")
     /// Orbit Ink Light Hover color.
     static var inkLightHover = fromResource(named: "Ink Light Hover")
-    /// Orbit Ink Lighter color.
-    static var inkLighter = fromResource(named: "Ink Lighter")
-    /// Orbit Ink Lighter Active color.
-    static var inkLighterActive = fromResource(named: "Ink Lighter Active")
-    /// Orbit Ink Lighter Hover color.
-    static var inkLighterHover = fromResource(named: "Ink Lighter Hover")
     /// Orbit Ink Normal color.
     static var inkNormal = fromResource(named: "Ink Normal")
     /// Orbit Ink Normal Active color.

@@ -75,16 +75,16 @@ public struct Switch: View {
     }
 
     var iconTint: Color {
-        (isOn ? Color.blueNormal : Color.inkLight)
+        (isOn ? Color.blueNormal : Color.inkNormal)
             .opacity(isEnabled ? 1 : 0.5)
     }
 
     var capsuleBackgroundColor: Color {
-        colorScheme == .light ? .cloudDarker : .cloudDarker
+        colorScheme == .light ? .cloudDark : .cloudDark
     }
 
     var indicatorColor: Color {
-        colorScheme == .light ? .whiteNormal : .cloudDark
+        colorScheme == .light ? .whiteNormal : .cloudNormal
     }
 
     var width: CGFloat {

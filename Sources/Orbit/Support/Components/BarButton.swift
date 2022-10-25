@@ -32,7 +32,7 @@ private extension NavigateButton {
 
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .foregroundColor(configuration.isPressed ? .inkLighter : .inkNormal)
+                .foregroundColor(configuration.isPressed ? .inkLight : .inkDark)
         }
     }
 }

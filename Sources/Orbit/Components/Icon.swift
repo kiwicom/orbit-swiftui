@@ -79,7 +79,7 @@ public extension Icon {
     ///
     /// - Parameters:
     ///     - color: Icon color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
-    init(_ symbol: Icon.Symbol, size: Size = .normal, color: Color? = .inkNormal, baselineOffset: CGFloat = 0) {
+    init(_ symbol: Icon.Symbol, size: Size = .normal, color: Color? = .inkDark, baselineOffset: CGFloat = 0) {
         self.init(
             content: .symbol(symbol, color: color),
             size: size,
@@ -109,7 +109,7 @@ public extension Icon {
     ///
     /// - Parameters:
     ///     - color: SF Symbol color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
-    init(sfSymbol: String, size: Size = .normal, color: Color? = .inkNormal, baselineOffset: CGFloat = 0) {
+    init(sfSymbol: String, size: Size = .normal, color: Color? = .inkDark, baselineOffset: CGFloat = 0) {
         self.init(
             content: .sfSymbol(sfSymbol, color: color),
             size: size,

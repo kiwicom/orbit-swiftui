@@ -55,7 +55,7 @@ VStack(spacing: .medium) {
 Use `Color` and `UIColor` extensions to access values.
 
 ```swift
-.foregroundColor(.cloudDarker)
+.foregroundColor(.cloudDark)
 ```
 
 #### Borders

@@ -72,7 +72,7 @@ extension Storybook {
 
         var tabs: [String] {
             switch self {
-                case .colors:               return ["Basic", "Status", "Gradient"]
+                case .colors:               return ["Basic", "Status", "Product", "Bundle"]
                 case .icons:                return ["Basic"]
                 case .illustrations:        return ["Basic"]
                 case .typography:           return ["Text", "Heading"]

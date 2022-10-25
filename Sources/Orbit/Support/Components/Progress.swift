@@ -8,7 +8,7 @@ public struct Progress: View {
     public var body: some View {
         Capsule()
             .frame(height: Self.height)
-            .foregroundColor(Color.cloudDark)
+            .foregroundColor(Color.cloudNormal)
             .overlay(
                 GeometryReader { geometry in
                     Capsule()

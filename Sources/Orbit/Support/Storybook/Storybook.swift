@@ -57,7 +57,7 @@ public struct Storybook: View {
             .navigationBarTitle("Orbit Storybook", displayMode: .large)
         }
         .navigationViewStyle(.stack)
-        .accentColor(.inkNormal)
+        .accentColor(.inkDark)
     }
 
     @ViewBuilder var darkModeSwitch: some View {

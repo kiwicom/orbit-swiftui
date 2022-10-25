@@ -122,7 +122,7 @@ def get_inversed_colors(name, colors):
   if name == 'whiteNormal':
     return inverted_base
 
-  if name.startswith('inkLight'):
+  if name.startswith('inkDark'):
     # (too light) inverted_base = [186, 199, 213]
     inverted_base = [128, 152, 178]
     predefined_light = True
@@ -168,7 +168,7 @@ def get_inversed_colors(name, colors):
   elif name.startswith('red'):
     inverted_base = [255, 80, 80]
 
-  if name.startswith('cloudDark') and not name.startswith('cloudDarker'):
+  if name.startswith('cloudDark'):
     inverted_base = [56, 65, 75]
     predefined_dark = True
   elif name.startswith('cloud'):

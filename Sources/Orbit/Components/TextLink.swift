@@ -99,7 +99,7 @@ extension TextLink {
         public var uiValue: UIColor {
             switch self {
                 case .primary:              return .productDark
-                case .secondary:            return .inkNormal
+                case .secondary:            return .inkDark
                 case .status(.info):        return .blueDark
                 case .status(.success):     return .greenDark
                 case .status(.warning):     return .orangeDark
@@ -170,8 +170,8 @@ struct TextLinkPreviews: PreviewProvider {
                     state.wrappedValue.1 = "Button"
                 }
                 
-                Text("Tapped \(state.wrappedValue.0)x", color: .inkLight)
-                Text("Tapped \(state.wrappedValue.1)", color: .inkLight)
+                Text("Tapped \(state.wrappedValue.0)x", color: .inkNormal)
+                Text("Tapped \(state.wrappedValue.1)", color: .inkNormal)
             }
         }
     }

@@ -73,7 +73,7 @@ public struct Tabs<Content: View>: View {
 
     @ViewBuilder func tab(_ index: Int, lastIndex: Int, _ label: String, style: Tab.TabStyle) -> some View {
         Tab(label, style: style)
-            .foregroundColor(index == selectedIndex ? style.textColor : .inkNormal)
+            .foregroundColor(index == selectedIndex ? style.textColor : .inkDark)
             .lineLimit(lineLimit)
             .frame(maxWidth: maxTabWidth, maxHeight: .infinity)
             .overlay(separator(index: index, lastIndex: lastIndex), alignment: .trailing)
@@ -86,7 +86,7 @@ public struct Tabs<Content: View>: View {
 
     @ViewBuilder func separator(index: Int, lastIndex: Int) -> some View {
         if (0 ..< lastIndex).contains(index), [selectedIndex, selectedIndex - 1].contains(index) == false {
-            Color.cloudDarker
+            Color.cloudDark
                 .frame(width: .hairline)
                 .padding(.vertical, .xSmall)
         }

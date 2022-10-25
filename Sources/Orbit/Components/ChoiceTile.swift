@@ -83,7 +83,7 @@ public struct ChoiceTile<Content: View>: View {
                     HStack(alignment: .firstTextBaseline, spacing: 0) {
                         
                         Icon(content: iconContent, size: .heading(titleStyle))
-                            .foregroundColor(.inkNormal)
+                            .foregroundColor(.inkDark)
                             .padding(.trailing, .xSmall)
                             .accessibility(.choiceTileIcon)
                         
@@ -91,7 +91,7 @@ public struct ChoiceTile<Content: View>: View {
                             Heading(title, style: titleStyle)
                                 .accessibility(.choiceTileTitle)
 
-                            Text(description, color: .inkLight)
+                            Text(description, color: .inkNormal)
                                 .accessibility(.choiceTileDescription)
                         }
 
@@ -117,7 +117,7 @@ public struct ChoiceTile<Content: View>: View {
                         Heading(title, style: titleStyle, alignment: .center)
                             .accessibility(.choiceTileTitle)
 
-                        Text(description, color: .inkLight, alignment: .center)
+                        Text(description, color: .inkNormal, alignment: .center)
                             .accessibility(.choiceTileDescription)
 
                         Badge(badge, style: .neutral)

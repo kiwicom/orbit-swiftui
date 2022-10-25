@@ -81,9 +81,9 @@ public extension Badge {
 
         public var outlineColor: Color {
             switch self {
-                case .light:                                return .cloudDark
+                case .light:                                return .cloudNormal
                 case .lightInverted:                        return .clear
-                case .neutral:                              return .cloudDark
+                case .neutral:                              return .cloudNormal
                 case .status(.info, false):                 return .blueLightHover
                 case .status(.info, true):                  return .clear
                 case .status(.success, false):              return .greenLightHover
@@ -100,7 +100,7 @@ public extension Badge {
         @ViewBuilder public var background: some View {
             switch self {
                 case .light:                                Color.whiteDarker
-                case .lightInverted:                        Color.inkNormal
+                case .lightInverted:                        Color.inkDark
                 case .neutral:                              Color.cloudLight
                 case .status(.info, false):                 Color.blueLight
                 case .status(.info, true):                  Color.blueNormal
@@ -117,9 +117,9 @@ public extension Badge {
 
         public var labelColor: UIColor {
             switch self {
-                case .light:                                return .inkNormal
+                case .light:                                return .inkDark
                 case .lightInverted:                        return .whiteNormal
-                case .neutral:                              return .inkNormal
+                case .neutral:                              return .inkDark
                 case .status(.info, false):                 return .blueDark
                 case .status(.info, true):                  return .whiteNormal
                 case .status(.success, false):              return .greenDark

@@ -95,15 +95,15 @@ public struct ToastContent: View {
     }
 
     var foregroundColor: Color {
-        colorScheme == .light ? .whiteNormal : .inkNormal
+        colorScheme == .light ? .whiteNormal : .inkDark
     }
 
     var backgroundColor: Color {
-        colorScheme == .light ? .inkNormal : .whiteDarker
+        colorScheme == .light ? .inkDark : .whiteDarker
     }
 
     var progressColor: Color {
-        colorScheme == .light ? .inkLight : .cloudDark
+        colorScheme == .light ? .inkNormal : .cloudNormal
     }
     
     var shape: some Shape {

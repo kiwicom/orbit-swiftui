@@ -5,7 +5,7 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/skeleton/)
 public struct Skeleton: View {
 
-    public static let color: Color = .cloudDark
+    public static let color: Color = .cloudNormal
     public static let lightColor: Color = .cloudLight
 
     @State var color: Color = Self.color

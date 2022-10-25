@@ -88,12 +88,12 @@ public extension Label {
 
     enum Style {
     
-        case heading(_ style: Heading.Style = .title4, color: Heading.Color? = .inkNormal)
+        case heading(_ style: Heading.Style = .title4, color: Heading.Color? = .inkDark)
         case text(
             _ size: Text.Size = .normal,
             weight: Font.Weight = .regular,
-            color: Text.Color? = .inkNormal,
-            accentColor: UIColor = .inkNormal,
+            color: Text.Color? = .inkDark,
+            accentColor: UIColor = .inkDark,
             linkColor: TextLink.Color = .primary,
             linkAction: TextLink.Action = { _, _ in }
         )
@@ -193,7 +193,7 @@ struct LabelPreviews: PreviewProvider {
             
             // No content
             Label()
-                .border(Color.inkLighter)
+                .border(Color.inkLight)
 
             Label("Label")
 
@@ -240,7 +240,7 @@ struct LabelPreviews: PreviewProvider {
         HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
             VStack(alignment: .leading, spacing: .xSmall) {
                 Label("Label with long multiline text", icon: .grid, style: .title2)
-                Text("Description very very very very verylong multiline text", color: .inkLight)
+                Text("Description very very very very verylong multiline text", color: .inkNormal)
                 contentPlaceholder
             }
             Spacer()
@@ -256,7 +256,7 @@ struct LabelPreviews: PreviewProvider {
             
             VStack(alignment: .leading, spacing: .xSmall) {
                 Heading("Label with long multiline text", style: .title2)
-                Text("Description very very very very verylong multiline text", color: .inkLight)
+                Text("Description very very very very verylong multiline text", color: .inkNormal)
                 contentPlaceholder
             }
             

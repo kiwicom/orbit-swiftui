@@ -48,7 +48,7 @@ public extension Heading {
     init(
         _ label: String,
         style: Style,
-        color: Color? = .inkNormal,
+        color: Color? = .inkDark,
         alignment: TextAlignment = .leading
     ) {
         self.label = label
@@ -62,12 +62,12 @@ public extension Heading {
 public extension Heading {
 
     enum Color: Equatable {
-        case inkNormal
+        case inkDark
         case custom(_ color: SwiftUI.Color)
 
         public var value: SwiftUI.Color {
             switch self {
-                case .inkNormal:            return .inkNormal
+                case .inkDark:              return .inkDark
                 case .custom(let color):    return color
             }
         }
@@ -242,7 +242,7 @@ struct HeadingPreviews: PreviewProvider {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
             Heading(content, style: style)
             Spacer()
-            Text("\(Int(style.size))/\(Int(style.lineHeight))", color: .inkLight, weight: .medium)
+            Text("\(Int(style.size))/\(Int(style.lineHeight))", color: .inkNormal, weight: .medium)
         }
     }
 }

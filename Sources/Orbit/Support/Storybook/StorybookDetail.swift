@@ -71,9 +71,10 @@ struct StorybookDetail: View {
 
     @ViewBuilder var foundationContent: some View {
         switch(menuItem, selectedTab) {
-            case (.colors, 0):              StorybookColors.storybook
-            case (.colors, 1):              StorybookColors.storybookStatus
-            case (.colors, 2):              StorybookColors.storybookGradient
+            case (.colors, 0):              StorybookBasicColors()
+            case (.colors, 1):              StorybookStatusColors()
+            case (.colors, 2):              StorybookProductColors()
+            case (.colors, 3):              StorybookBundleColors()
             case (.icons, _):               StorybookIcons.storybook(filter: filter)
             case (.illustrations, _):       StorybookIllustrations.storybook(filter: filter)
             case (.typography, 0):          StorybookTypography.storybook

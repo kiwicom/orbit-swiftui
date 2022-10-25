@@ -33,7 +33,7 @@ struct TextConcatenationPreviews: PreviewProvider {
             + Icon(countryCode: "us")
             + Icon(sfSymbol: "info.circle", size: .large)
             + Icon(image: .orbit(.navigateClose), baselineOffset: -1)
-            + Text(" (Delayed)", size: .xLarge, color: .inkLight)
+            + Text(" (Delayed)", size: .xLarge, color: .inkNormal)
     }
 
     static var formatting: some View {
@@ -71,7 +71,7 @@ struct TextConcatenationPreviews: PreviewProvider {
     static func concatenatedText(_ label: String, style: Heading.Style) -> some View {
         HStack {
             Heading(label, style: style)
-                + Icon(.flightReturn, size: .custom(style.size), color: .inkLight)
+                + Icon(.flightReturn, size: .custom(style.size), color: .inkNormal)
                 + Heading(label, style: style)
                 + Text(" and Text", color: nil)
         }
