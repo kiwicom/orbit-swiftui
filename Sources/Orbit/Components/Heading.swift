@@ -8,13 +8,15 @@ public struct Heading: View {
 
     @Environment(\.sizeCategory) var sizeCategory
 
-    let label: String
+    let content: String
     let style: Style
     let color: Color?
+    let lineSpacing: CGFloat?
     let alignment: TextAlignment
+    let accentColor: UIColor
 
     public var body: some View {
-        if updatedLabel.isEmpty == false {
+        if content.isEmpty == false {
             text(sizeCategory: sizeCategory)
                 .multilineTextAlignment(alignment)
                 .fixedSize(horizontal: false, vertical: true)
@@ -23,21 +25,17 @@ public struct Heading: View {
     }
 
     func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
-        SwiftUI.Text(verbatim: updatedLabel)
-            .orbitFont(
-                size: style.size,
-                weight: style.weight,
-                style: style.textStyle,
-                sizeCategory: sizeCategory
-            )
-            .foregroundColor(color?.value)
-    }
-
-    var updatedLabel: String {
-        switch style {
-            case .display, .title1, .displaySubtitle, .title2, .title3, .title4, .title5:   return label
-            case .title6:                                                                   return label.localizedUppercase
-        }
+        Text(
+            content,
+            size: .custom(style.size),
+            color: color?.textColor,
+            weight: style.weight,
+            lineSpacing: lineSpacing,
+            alignment: alignment,
+            accentColor: accentColor,
+            isSelectable: false
+        )
+        .text(sizeCategory: sizeCategory)
     }
 }
 
@@ -45,30 +43,57 @@ public struct Heading: View {
 public extension Heading {
 
     /// Creates Orbit Heading component.
+    ///
+    /// - Parameters:
+    ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`.
+    ///   - style: Heading style.
+    ///   - color: Font color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
+    ///   - lineSpacing: Distance in points between the bottom of one line fragment and the top of the next.
+    ///   - alignment: Horizontal multi-line alignment.
+    ///   - accentColor: Color for `<ref>` formatting tag.
+    ///   - linkColor: Color for `<a href>` and `<applink>` formatting tag.
     init(
-        _ label: String,
+        _ content: String,
         style: Style,
         color: Color? = .inkDark,
-        alignment: TextAlignment = .leading
+        lineSpacing: CGFloat? = nil,
+        alignment: TextAlignment = .leading,
+        accentColor: UIColor? = nil
     ) {
-        self.label = label
+        self.content = content
         self.style = style
         self.color = color
+        self.lineSpacing = lineSpacing
         self.alignment = alignment
+        self.accentColor = accentColor ?? color?.uiValue ?? .inkDark
     }
 }
 
 // MARK: - Types
 public extension Heading {
 
+    /// Orbit Heading color.
     enum Color: Equatable {
+        /// The default Heading color.
         case inkDark
-        case custom(_ color: SwiftUI.Color)
+        /// Custom Heading color.
+        case custom(UIColor)
 
         public var value: SwiftUI.Color {
+            SwiftUI.Color(uiValue)
+        }
+
+        public var uiValue: UIColor {
             switch self {
                 case .inkDark:              return .inkDark
                 case .custom(let color):    return color
+            }
+        }
+
+        public var textColor: Text.Color? {
+            switch self {
+                case .inkDark:              return .inkDark
+                case .custom(let color):    return .custom(color)
             }
         }
     }
@@ -176,7 +201,7 @@ public extension Heading {
 extension Heading: TextRepresentable {
 
     public func swiftUIText(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
-        if updatedLabel.isEmpty { return nil }
+        if content.isEmpty { return nil }
 
         return text(sizeCategory: sizeCategory)
     }
@@ -190,6 +215,7 @@ struct HeadingPreviews: PreviewProvider {
             standalone
             sizes
             multiline
+            concatenated
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -200,6 +226,7 @@ struct HeadingPreviews: PreviewProvider {
             Heading("Heading", style: .title1)
             Heading("", style: .title1) // EmptyView
         }
+        .previewDisplayName("Heading")
     }
 
     static var sizes: some View {
@@ -213,24 +240,38 @@ struct HeadingPreviews: PreviewProvider {
             heading("Title 3", style: .title3)
             heading("Title 4", style: .title4)
             heading("Title 5", style: .title5)
-            heading("Title 6", style: .title6)
+            heading("TITLE 6", style: .title6)
         }
+        .previewDisplayName("Styles")
     }
     
     static var multiline: some View {
         VStack(alignment: .leading, spacing: .xSmall) {
-            heading("Display title with a very large and multine content", style: .display)
-            heading("Display subtitle with a very large and multine content", style: .displaySubtitle)
+            heading("<ref><u>Display title</u></ref> with a very large and <strong>multiline</strong> content", style: .display)
+            heading("<ref><u>Display subtitle</u></ref> with a very large and <strong>multiline</strong> content", style: .displaySubtitle)
             Separator()
                 .padding(.vertical, .small)
-            heading("Title 1 with a very large and multine content", style: .title1)
-            heading("Title 2 with a very very large and multine content", style: .title2)
-            heading("Title 3 with a very very very very large and multine content", style: .title3)
-            heading("Title 4 with a very very very very large and multine content", style: .title4)
-            heading("Title 5 with a very very very very very large and multine content", style: .title5)
-            heading("Title 6 with a very very very very very large and multine content", style: .title6)
+            heading("<ref><u>Title 1</u></ref> with a very large and <strong>multiline</strong> content", style: .title1)
+            heading("<ref><u>Title 2</u></ref> with a very very large and <strong>multiline</strong> content", style: .title2)
+            heading("<ref><u>Title 3</u></ref> with a very very very very large and <strong>multiline</strong> content", style: .title3)
+            heading("<ref><u>Title 4</u></ref> with a very very very very large and <strong>multiline</strong> content", style: .title4)
+            heading("<ref><u>Title 5</u></ref> with a very very very very very large and <strong>multiline</strong> content", style: .title5, color: .custom(.blueDarker))
+            heading("<ref><u>TITLE 6</u></ref> WITH A VERY VERY VERY VERY VERY LARGE AND <strong>MULTILINE</strong> CONTENT", style: .title6, color: nil)
         }
+        .foregroundColor(.inkNormal)
         .previewDisplayName("Multiline")
+    }
+
+    static var concatenated: some View {
+        Group {
+            Heading("<ref><u>Title 4</u></ref> with <strong>multiline</strong>", style: .title4)
+            +
+            Heading(" <ref><u>Title 5</u></ref> with <strong>multiline</strong>", style: .title5, color: .custom(.greenDark), accentColor: .blueDarker)
+            +
+            Heading(" <ref><u>TITLE 6</u></ref> WITH <strong>MULTILINE</strong> CONTENT", style: .title6, color: nil)
+        }
+        .foregroundColor(.inkNormal)
+        .previewDisplayName("Concatenated")
     }
 
     static var snapshot: some View {
@@ -238,32 +279,11 @@ struct HeadingPreviews: PreviewProvider {
             .padding(.medium)
     }
 
-    @ViewBuilder static func heading(_ content: String, style: Heading.Style) -> some View {
+    @ViewBuilder static func heading(_ content: String, style: Heading.Style, color: Heading.Color? = .inkDark) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
-            Heading(content, style: style)
+            Heading(content, style: style, color: color, accentColor: .blueNormal)
             Spacer()
             Text("\(Int(style.size))/\(Int(style.lineHeight))", color: .inkNormal, weight: .medium)
         }
     }
 }
-
-struct HeadingDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        HeadingPreviews.sizes
-    }
-}
-
