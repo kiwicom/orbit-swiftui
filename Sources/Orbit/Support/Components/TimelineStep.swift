@@ -24,11 +24,16 @@ public extension VerticalAlignment {
 public struct TimelineStep<Header: View, Content: View>: View {
 
     @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
+
+    let animationSpeed: CGFloat = 0.25
 
     let style: TimelineStepStyle
     let isIconFirstTextLineCentered: Bool
     @ViewBuilder let header: Header
     @ViewBuilder let content: Content
+
+    @State var isCircleAnimated = false
 
     public var body: some View {
         HStack(alignment: .timelineStepAlignment, spacing: .small) {
@@ -52,29 +57,62 @@ public struct TimelineStep<Header: View, Content: View>: View {
         .anchorPreference(key: TimelineStepPreferenceKey.self, value: .bounds) {
             [TimelineStepPreference(bounds: $0, style: style)]
         }
+        .onAppear { isCircleAnimated = !reduceMotion }
     }
 
     @ViewBuilder var indicator: some View {
-        icon
+        switch style {
+            case .inactive, .currentNormal:
+                icon
+            case .currentWarning, .currentCritical:
+                Circle()
+                    .frame(
+                        width: (isCircleAnimated ? .medium : .xMedium) * sizeCategory.ratio,
+                        height: (isCircleAnimated ? .medium : .xMedium) * sizeCategory.ratio
+                    )
+                    .foregroundColor(isCircleAnimated ? Color.clear : style.color.opacity(0.1))
+                    .animation(Animation.easeInOut.repeatForever().speed(animationSpeed))
+                    .overlay(icon)
+            case .pastSuccess, .pastWarning, .pastCritical:
+                Circle()
+                    .foregroundColor(style.color.opacity(0.1))
+                    .frame(width: .xMedium * sizeCategory.ratio, height: .xMedium * sizeCategory.ratio)
+                    .overlay(icon)
+            }
     }
 
     @ViewBuilder var icon: some View {
         switch style {
-            case .default:
+            case .inactive:
                 Circle()
-                    .strokeBorder(Color.cloudNormalHover, lineWidth: 2)
+                    .strokeBorder(style.color, lineWidth: 2)
+                    .background(Circle().fill(Color.whiteNormal))
                     .frame(width: .small * sizeCategory.ratio, height: .small * sizeCategory.ratio)
-                    .background(
-                        Circle()
-                            .fill(Color.whiteNormal)
-                    )
-            case .status:
-                Icon(style.iconSymbol, size: .large, color: style.color)
-                    .background(
-                        Circle()
-                            .fill(Color.whiteNormal)
-                            .padding(.xxSmall + 1)
-                    )
+            case .currentNormal:
+                ZStack {
+                    Circle()
+                        .frame(
+                            width: (isCircleAnimated ? .medium : .xMedium) * sizeCategory.ratio,
+                            height: (isCircleAnimated ? .medium : .xMedium) * sizeCategory.ratio
+                        )
+                        .animation(Animation.easeInOut.repeatForever().speed(animationSpeed))
+                        .foregroundColor(style.color.opacity(0.1))
+
+                    Circle()
+                        .strokeBorder(style.color, lineWidth: 2)
+                        .background(Circle().fill(Color.whiteNormal))
+                        .frame(width: .small * sizeCategory.ratio, height: .small * sizeCategory.ratio)
+
+                    Circle()
+                        .frame(width: .xxSmall * sizeCategory.ratio, height: .xxSmall * sizeCategory.ratio)
+                        .scaleEffect(isCircleAnimated ? .init(width: 0.5, height: 0.5) : .init(width: 1, height: 1))
+                        .foregroundColor(isCircleAnimated ? Color.clear : style.color)
+                        .animation(Animation.easeInOut.repeatForever().speed(animationSpeed))
+
+                }
+            case .currentWarning, .currentCritical, .pastSuccess, .pastWarning, .pastCritical:
+                Icon(style.iconSymbol, size: .small, color: style.color)
+                    .background(Circle().fill(Color.whiteNormal).padding(2))
         }
     }
 }
@@ -87,7 +125,7 @@ public extension TimelineStep where Header == TimelineStepBadgeText {
     init(
         _ label: String,
         sublabel: String = "",
-        style: TimelineStepStyle = .default,
+        style: TimelineStepStyle = .inactive,
         @ViewBuilder content: () -> Content
     ) {
         self.init(
@@ -112,7 +150,7 @@ public extension TimelineStep where Content == TimelineStepBottomText {
     /// - Parameters:
     ///   - isIconFirstTextLineCentered: center icon and first text line or align with the top
     init(
-        style: TimelineStepStyle = .default,
+        style: TimelineStepStyle = .inactive,
         isIconFirstTextLineCentered: Bool,
         description: String,
         @ViewBuilder header: () -> Header
@@ -126,7 +164,7 @@ public extension TimelineStep where Content == TimelineStepBottomText {
 public extension TimelineStep where Header == TimelineStepBadgeText, Content == TimelineStepBottomText {
 
     /// Creates Orbit TimelineStep component with text details.
-    init(_ label: String, sublabel: String = "", style: TimelineStepStyle = .default, description: String) {
+    init(_ label: String, sublabel: String = "", style: TimelineStepStyle = .inactive, description: String) {
 
         self.init(
             style: style,
@@ -147,32 +185,59 @@ public extension TimelineStep where Header == TimelineStepBadgeText, Content == 
 // MARK: - Types
 
 public enum TimelineStepStyle: Equatable {
-    case `default`
-    case status(Status)
+    case inactive
+    case currentNormal
+    case currentWarning
+    case currentCritical
+    case pastSuccess
+    case pastWarning
+    case pastCritical
 
     public static let indicatorDiameter: CGFloat = Icon.Size.large.value
 
     public var iconSymbol: Icon.Symbol {
         switch self {
-            case .default:              return .none
-            case .status(.success):     return .checkCircle
-            case .status(.warning):     return .alertCircle
-            case .status(.critical):    return .closeCircle
-            case .status(.info):        return .check
+            case .inactive:           return .none
+            case .currentNormal:      return .none
+            case .currentWarning:     return .alertCircle
+            case .currentCritical:    return .closeCircle
+            case .pastSuccess:        return .checkCircle
+            case .pastWarning:        return .alertCircle
+            case .pastCritical:       return .closeCircle
         }
     }
 
     public var color: Color {
         switch self {
-            case .default:              return .cloudNormalHover
-            case .status(let status):   return status.color
+            case .inactive:           return .cloudNormalHover
+            case .currentNormal:      return Status.success.color
+            case .currentWarning:     return Status.warning.color
+            case .currentCritical:    return Status.critical.color
+            case .pastSuccess:        return Status.success.color
+            case .pastWarning:        return Status.warning.color
+            case .pastCritical:       return Status.critical.color
+        }
+    }
+
+    public var isCurrentStep: Bool {
+        switch self {
+            case .currentNormal, .currentWarning, .currentCritical:
+                return true
+            case .inactive, .pastSuccess, .pastWarning, .pastCritical:
+                return false
         }
     }
 
     public var textColor: UIColor {
+        isCurrentStep ? .inkDark : .inkLight
+    }
+
+    public var isLineDashed: Bool {
         switch self {
-            case .default:              return .inkNormal
-            case .status:               return .inkDark
+            case .inactive:
+                return true
+            case .currentNormal, .currentWarning, .currentCritical, .pastSuccess, .pastWarning, .pastCritical:
+                return false
         }
     }
 }
@@ -214,7 +279,7 @@ struct TimelineStepPreviews: PreviewProvider {
         TimelineStep(
             "Requested",
             sublabel: "3rd May 14:04",
-            style: .status(.success),
+            style: .pastSuccess,
             description: "We’ve assigned your request to one of our agents."
         )
         .padding()
@@ -225,36 +290,42 @@ struct TimelineStepPreviews: PreviewProvider {
             TimelineStep(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .default,
+                style: .inactive,
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineStep(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .status(.success),
+                style: .currentNormal,
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineStep(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .status(.warning),
+                style: .pastSuccess,
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineStep(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .status(.critical),
+                style: .currentWarning,
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineStep(
-                style: .status(.warning),
+                "Requested",
+                sublabel: "3rd May 14:04",
+                style: .pastCritical,
+                description: "We’ve assigned your request to one of our agents."
+            )
+            TimelineStep(
+                style: .currentWarning,
                 isIconFirstTextLineCentered: true,
                 header: {
                     VStack {
                         Text(
                             "1 Passenger must check in with the airline for a possible fee",
                             size: .xLarge,
-                            color: .custom(TimelineStepStyle.status(.warning).textColor),
+                            color: .custom(TimelineStepStyle.pastWarning.textColor),
                             weight: .bold
                         )
                         .padding(.leading, .xSmall)
@@ -268,7 +339,7 @@ struct TimelineStepPreviews: PreviewProvider {
                     VStack(alignment: .leading) {
                         TimelineStepBottomText(
                             text: "We’ve assigned your request to one of our agents.",
-                            style: .status(.info)
+                            style: .inactive
                         )
                         Button("Check in")
                             .padding(.leading, .xSmall)
@@ -319,12 +390,12 @@ struct TimelineStepCustomContentPreviews: PreviewProvider {
             TimelineStep(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .status(.info)
+                style: .inactive
             ) {
                 VStack(alignment: .leading) {
                     TimelineStepBottomText(
                         text: "We’ve assigned your request to one of our agents.",
-                        style: .status(.info)
+                        style: .inactive
                     )
 
                     Button("Add info")
@@ -332,7 +403,7 @@ struct TimelineStepCustomContentPreviews: PreviewProvider {
                 }
             }
             TimelineStep(
-                style: .status(.warning),
+                style: .currentWarning,
                 isIconFirstTextLineCentered: true,
                 description: "We’ve assigned your request to one of our agents."
             ) {
@@ -341,7 +412,7 @@ struct TimelineStepCustomContentPreviews: PreviewProvider {
                     Text(
                         "1 Passenger must check in with the airline for a possible fee",
                         size: .custom(50),
-                        color: .custom(TimelineStepStyle.status(.warning).textColor),
+                        color: .custom(TimelineStepStyle.currentWarning.textColor),
                         weight: .bold
                     )
                     .padding(.leading, .xSmall)
@@ -352,7 +423,7 @@ struct TimelineStepCustomContentPreviews: PreviewProvider {
                 }
             }
             TimelineStep(
-                style: .status(.warning),
+                style: .currentWarning,
                 isIconFirstTextLineCentered: true,
                 description: "We’ve assigned your request to one of our agents."
             ) {

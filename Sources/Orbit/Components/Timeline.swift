@@ -20,12 +20,15 @@ public struct Timeline<Content: View>: View {
                 GeometryReader { geometry in
                     VStack(spacing: 0) {
                         ForEach(preferences.indices.dropFirst(), id: \.self) { index in
-                            preferences[index].style.color
-                                .frame(width: 2)
-                                .frame(
-                                    width: TimelineStepStyle.indicatorDiameter * sizeCategory.ratio,
-                                    height: progressLineHeight(for: index - 1, in: preferences, geometry: geometry)
-                                )
+                            TimelineSegmentLine(
+                                height: progressLineHeight(for: index - 1, in: preferences, geometry: geometry),
+                                startPointStyle: preferences[index - 1].style,
+                                endPointStyle: preferences[index].style
+                            )
+                            .frame(
+                                width: TimelineStepStyle.indicatorDiameter * sizeCategory.ratio,
+                                height: progressLineHeight(for: index - 1, in: preferences, geometry: geometry)
+                            )
                         }
                     }
                     .padding(.top, TimelineStepStyle.indicatorDiameter * sizeCategory.ratio / 2)
@@ -65,7 +68,29 @@ struct TimelinePreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            standalone
+            Timeline {
+                ForEach(steps1) { step in
+                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
+                }
+            }
+
+            Timeline {
+                ForEach(steps2) { step in
+                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
+                }
+            }
+
+            Timeline {
+                ForEach(steps3) { step in
+                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
+                }
+            }
+
+            Timeline {
+                ForEach(steps4) { step in
+                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
+                }
+            }
             storybookMix
         }
         .padding(.medium)
@@ -77,31 +102,31 @@ struct TimelinePreviews: PreviewProvider {
             TimelineStep(
                 "Booked",
                 sublabel: "January 3, 10:43",
-                style: .status(.success),
+                style: .pastSuccess,
                 description: "You booked the trip and received e-tickets."
             )
             TimelineStep(
                 "Checked in",
                 sublabel: "May 3, 8:45",
-                style: .status(.success),
+                style: .pastSuccess,
                 description: "You checked in for the trip and received boarding passes"
             )
             TimelineStep(
                 "Board",
                 sublabel: "May 4, 8:15",
-                style: .status(.warning),
+                style: .pastWarning,
                 description: "Be at your departure gate at least 30 minutes before boarding."
             )
             TimelineStep(
                 "Board",
                 sublabel: "May 4, 8:15",
-                style: .status(.critical),
+                style: .pastCritical,
                 description: "Be at your departure gate at least 30 minutes before boarding."
             )
             contentPlaceholder
                 .padding(.leading, .xLarge)
                 .anchorPreference(key: TimelineStepPreferenceKey.self, value: .bounds) {
-                    [TimelineStepPreference(bounds: $0, style: .default)]
+                    [TimelineStepPreference(bounds: $0, style: .inactive)]
                 }
             TimelineStep(
                 "Arrive",
@@ -155,7 +180,7 @@ struct TimelinePreviews: PreviewProvider {
     }
 
     static let steps: [TimelineStepModel] = [
-        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .status(.success), content: texts[0].content),
+        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .currentNormal, content: texts[0].content),
         .init(1, texts[1].label, sublabel: texts[1].sublabel, content: texts[1].content),
         .init(2, texts[2].label, sublabel: texts[2].sublabel, content: texts[2].content),
         .init(3, texts[3].label, sublabel: texts[3].sublabel, content: texts[3].content),
@@ -163,41 +188,41 @@ struct TimelinePreviews: PreviewProvider {
     ]
 
     static let steps1: [TimelineStepModel] = [
-        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .status(.success), content: texts[0].content),
-        .init(1, texts[1].label, sublabel: texts[1].sublabel, style: .status(.success), content: texts[1].content),
-        .init(2, texts[2].label, sublabel: texts[2].sublabel, style: .status(.success), content: texts[2].content),
-        .init(3, texts[3].label, sublabel: texts[3].sublabel, style: .status(.success), content: texts[3].content),
+        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .pastSuccess, content: texts[0].content),
+        .init(1, texts[1].label, sublabel: texts[1].sublabel, style: .pastSuccess, content: texts[1].content),
+        .init(2, texts[2].label, sublabel: texts[2].sublabel, style: .pastSuccess, content: texts[2].content),
+        .init(3, texts[3].label, sublabel: texts[3].sublabel, style: .currentNormal, content: texts[3].content),
         .init(4, texts[4].label, sublabel: texts[4].sublabel, content: texts[4].content),
     ]
 
     static let steps2: [TimelineStepModel] = [
-        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .status(.success), content: texts[0].content),
-        .init(1, texts[1].label, sublabel: texts[1].sublabel, style: .status(.success), content: texts[1].content),
-        .init(2, texts[2].label, sublabel: texts[2].sublabel, style: .status(.success), content: texts[2].content),
+        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .pastSuccess, content: texts[0].content),
+        .init(1, texts[1].label, sublabel: texts[1].sublabel, style: .pastSuccess, content: texts[1].content),
+        .init(2, texts[2].label, sublabel: texts[2].sublabel, style: .pastSuccess, content: texts[2].content),
         .init(
             3,
             "Action required",
             sublabel: texts[3].sublabel,
-            style: .status(.warning),
+            style: .currentWarning,
             content: "The carrier has sent us a refund. There might be more depending on their policy."
         ),
         .init(4, texts[4].label, sublabel: texts[4].sublabel, content: texts[4].content),
     ]
 
     static let steps3: [TimelineStepModel] = [
-        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .status(.success), content: texts[0].content),
-        .init(1, texts[1].label, sublabel: texts[1].sublabel, style: .status(.success), content: texts[1].content),
-        .init(2, texts[2].label, sublabel: texts[2].sublabel, style: .status(.success), content: texts[2].content),
-        .init(3, texts[3].label, sublabel: texts[3].sublabel, style: .status(.success), content: texts[3].content),
-        .init(4, "Non refundable", sublabel: "25th Jun 10:48", style: .status(.critical), content: texts[4].content),
+        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .pastSuccess, content: texts[0].content),
+        .init(1, texts[1].label, sublabel: texts[1].sublabel, style: .pastSuccess, content: texts[1].content),
+        .init(2, texts[2].label, sublabel: texts[2].sublabel, style: .pastSuccess, content: texts[2].content),
+        .init(3, texts[3].label, sublabel: texts[3].sublabel, style: .pastSuccess, content: texts[3].content),
+        .init(4, "Non refundable", sublabel: "25th Jun 10:48", style: .currentCritical, content: texts[4].content),
     ]
 
     static let steps4: [TimelineStepModel] = [
-        .init(1, texts[0].label, sublabel: texts[0].sublabel, style: .status(.success), content: texts[0].content),
-        .init(2, texts[1].label, sublabel: texts[1].sublabel, style: .status(.success), content: texts[1].content),
-        .init(3, texts[2].label, sublabel: texts[2].sublabel, style: .status(.success), content: texts[2].content),
-        .init(4, texts[3].label, sublabel: texts[3].sublabel, style: .status(.success), content: texts[3].content),
-        .init(5, texts[4].label, sublabel: "25th Jun 10:48", style: .status(.success), content: ""),
+        .init(1, texts[0].label, sublabel: texts[0].sublabel, style: .pastSuccess, content: texts[0].content),
+        .init(2, texts[1].label, sublabel: texts[1].sublabel, style: .pastSuccess, content: texts[1].content),
+        .init(3, texts[2].label, sublabel: texts[2].sublabel, style: .pastSuccess, content: texts[2].content),
+        .init(4, texts[3].label, sublabel: texts[3].sublabel, style: .pastSuccess, content: texts[3].content),
+        .init(5, texts[4].label, sublabel: "25th Jun 10:48", style: .pastSuccess, content: ""),
     ]
 }
 
@@ -207,10 +232,10 @@ extension TimelinePreviews {
         let id: Int
         let label: String
         var sublabel = ""
-        var style: TimelineStepStyle = .default
+        var style: TimelineStepStyle = .inactive
         let content: String
 
-        init(_ id: Int, _ label: String, sublabel: String = "", style: TimelineStepStyle = .default, content: String) {
+        init(_ id: Int, _ label: String, sublabel: String = "", style: TimelineStepStyle = .inactive, content: String) {
             self.id = id
             self.label = label
             self.sublabel = sublabel
