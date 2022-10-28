@@ -33,7 +33,7 @@ public struct TimelineStep<Header: View, Content: View>: View {
     @ViewBuilder let header: Header
     @ViewBuilder let content: Content
 
-    @State var isCircleAnimated = false
+    @State var shouldAnimate = false
 
     public var body: some View {
         HStack(alignment: .timelineStepAlignment, spacing: .small) {
@@ -57,7 +57,7 @@ public struct TimelineStep<Header: View, Content: View>: View {
         .anchorPreference(key: TimelineStepPreferenceKey.self, value: .bounds) {
             [TimelineStepPreference(bounds: $0, style: style)]
         }
-        .onAppear { isCircleAnimated = !reduceMotion }
+        .onAppear { shouldAnimate = !reduceMotion }
     }
 
     @ViewBuilder var indicator: some View {
@@ -67,10 +67,10 @@ public struct TimelineStep<Header: View, Content: View>: View {
             case .currentWarning, .currentCritical:
                 Circle()
                     .frame(
-                        width: (isCircleAnimated ? .medium : .xMedium) * sizeCategory.ratio,
-                        height: (isCircleAnimated ? .medium : .xMedium) * sizeCategory.ratio
+                        width: (shouldAnimate ? .medium : .xMedium) * sizeCategory.ratio,
+                        height: (shouldAnimate ? .medium : .xMedium) * sizeCategory.ratio
                     )
-                    .foregroundColor(isCircleAnimated ? Color.clear : style.color.opacity(0.1))
+                    .foregroundColor(shouldAnimate ? Color.clear : style.color.opacity(0.1))
                     .animation(Animation.easeInOut.repeatForever().speed(animationSpeed))
                     .overlay(icon)
             case .pastSuccess, .pastWarning, .pastCritical:
@@ -92,8 +92,8 @@ public struct TimelineStep<Header: View, Content: View>: View {
                 ZStack {
                     Circle()
                         .frame(
-                            width: (isCircleAnimated ? .medium : .xMedium) * sizeCategory.ratio,
-                            height: (isCircleAnimated ? .medium : .xMedium) * sizeCategory.ratio
+                            width: (shouldAnimate ? .medium : .xMedium) * sizeCategory.ratio,
+                            height: (shouldAnimate ? .medium : .xMedium) * sizeCategory.ratio
                         )
                         .animation(Animation.easeInOut.repeatForever().speed(animationSpeed))
                         .foregroundColor(style.color.opacity(0.1))
@@ -105,8 +105,8 @@ public struct TimelineStep<Header: View, Content: View>: View {
 
                     Circle()
                         .frame(width: .xxSmall * sizeCategory.ratio, height: .xxSmall * sizeCategory.ratio)
-                        .scaleEffect(isCircleAnimated ? .init(width: 0.5, height: 0.5) : .init(width: 1, height: 1))
-                        .foregroundColor(isCircleAnimated ? Color.clear : style.color)
+                        .scaleEffect(shouldAnimate ? .init(width: 0.5, height: 0.5) : .init(width: 1, height: 1))
+                        .foregroundColor(shouldAnimate ? Color.clear : style.color)
                         .animation(Animation.easeInOut.repeatForever().speed(animationSpeed))
 
                 }
@@ -302,13 +302,13 @@ struct TimelineStepPreviews: PreviewProvider {
             TimelineStep(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .pastSuccess,
+                style: .currentWarning,
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineStep(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .currentWarning,
+                style: .currentCritical,
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineStep(

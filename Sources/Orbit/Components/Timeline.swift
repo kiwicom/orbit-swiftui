@@ -68,29 +68,7 @@ struct TimelinePreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            Timeline {
-                ForEach(steps1) { step in
-                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
-                }
-            }
-
-            Timeline {
-                ForEach(steps2) { step in
-                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
-                }
-            }
-
-            Timeline {
-                ForEach(steps3) { step in
-                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
-                }
-            }
-
-            Timeline {
-                ForEach(steps4) { step in
-                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
-                }
-            }
+            standalone
             storybookMix
         }
         .padding(.medium)
