@@ -119,7 +119,7 @@ public struct TimelineStep<Header: View, Content: View>: View {
 
 // MARK: - Inits
 
-public extension TimelineStep where Header == TimelineStepBadgeText {
+public extension TimelineStep where Header == TimelineStepHeadingText {
 
     /// Creates Orbit TimelineStep component with custom details.
     init(
@@ -132,7 +132,7 @@ public extension TimelineStep where Header == TimelineStepBadgeText {
             style: style,
             isIconFirstTextLineCentered: true,
             header: {
-                TimelineStepBadgeText(
+                TimelineStepHeadingText(
                     label: label,
                     sublabel: sublabel,
                     style: style,
@@ -161,7 +161,7 @@ public extension TimelineStep where Content == TimelineStepBottomText {
     }
 }
 
-public extension TimelineStep where Header == TimelineStepBadgeText, Content == TimelineStepBottomText {
+public extension TimelineStep where Header == TimelineStepHeadingText, Content == TimelineStepBottomText {
 
     /// Creates Orbit TimelineStep component with text details.
     init(_ label: String, sublabel: String = "", style: TimelineStepStyle = .inactive, description: String) {
@@ -170,7 +170,7 @@ public extension TimelineStep where Header == TimelineStepBadgeText, Content == 
             style: style,
             isIconFirstTextLineCentered: true,
             header: {
-                TimelineStepBadgeText(
+                TimelineStepHeadingText(
                     label: label,
                     sublabel: sublabel,
                     style: style,

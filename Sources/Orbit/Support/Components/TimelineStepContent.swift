@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct TimelineStepBadgeText: View {
+public struct TimelineStepHeadingText: View {
 
     @Environment(\.horizontalSizeClass) var horisontalSizeClass
     @Environment(\.sizeCategory) var sizeCategory

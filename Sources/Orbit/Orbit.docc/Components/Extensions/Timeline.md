@@ -9,7 +9,7 @@
 ### Adding Content
 
 - ``TimelineStep``
-- ``TimelineStepBadgeText``
+- ``TimelineStepHeadingText``
 - ``TimelineStepBottomText``
 
 ### Style 
