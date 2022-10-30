@@ -1,4 +1,5 @@
 import SwiftUI
+import Orbit
 
 struct StorybookTypography {
 
@@ -20,7 +21,7 @@ struct StorybookTypography {
 struct StorybookTypographyPreviews: PreviewProvider {
     
     static var previews: some View {
-        PreviewWrapper {
+        OrbitPreviewWrapper {
             StorybookTypography.storybook
             StorybookTypography.storybookHeading
         }

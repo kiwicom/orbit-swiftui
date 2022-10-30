@@ -1,4 +1,5 @@
 import SwiftUI
+import Orbit
 
 struct StorybookDetail: View {
 
@@ -185,7 +186,7 @@ struct StorybookDetail: View {
 struct StorybookDetailPreviews: PreviewProvider {
     
     static var previews: some View {
-        PreviewWrapper {
+        OrbitPreviewWrapper {
             NavigationView {
                 StorybookDetail(menuItem: .text)
             }

@@ -1,4 +1,5 @@
 import SwiftUI
+import Orbit
 
 struct TutorialScreen: View {
 
@@ -47,7 +48,7 @@ struct TutorialScreen: View {
 
 struct TutorialScreenPreviews: PreviewProvider {
     static var previews: some View {
-        PreviewWrapper {
+        OrbitPreviewWrapper {
             TutorialScreen()
         }
         .previewLayout(.sizeThatFits)
