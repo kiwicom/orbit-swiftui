@@ -16,7 +16,7 @@ Font.orbitFonts = [
 ]
 ```
 
-Register those fonts once at app start (or use a ``PreviewWrapper`` wrapper for previews).
+Register those fonts once at app start (or use ``OrbitPreviewWrapper`` for previews).
 
 ```swift
 Font.registerOrbitFonts()
@@ -30,9 +30,11 @@ Include Orbit package in your package or project and include `import Orbit` in S
 
 ### Storybook catalogue screen
 
-The ``Storybook`` views can be checked (using previews or an empty app) to browse a catalogue of all components. The app is also available for download on the [AppStore](https://apps.apple.com/us/app/orbit-storybook/id1622225639).
+The `OrbitStorybook` target contains views that can be checked (using previews or an empty app) to browse a catalogue of all components. The storybook is also available for download on the [AppStore](https://apps.apple.com/us/app/orbit-storybook/id1622225639).
 
 ```swift
+import OrbitStorybook
+
 @main struct DemoApp: App {
     var body: some Scene {
         WindowGroup {

@@ -1,4 +1,5 @@
 import SwiftUI
+import Orbit
 
 public struct Storybook: View {
 
@@ -125,13 +126,6 @@ public struct Storybook: View {
     }
 }
 
-extension String {
-
-    var titleCased: String {
-        (first?.uppercased() ?? "") + dropFirst()
-    }
-}
-
 extension UIApplication {
 
     var firstKeyWindow: UIWindow? {
@@ -159,7 +153,7 @@ extension Binding {
 
 struct StorybookMenuPreviews: PreviewProvider {
     static var previews: some View {
-        PreviewWrapper {
+        OrbitPreviewWrapper {
             Storybook()
 
             VStack {

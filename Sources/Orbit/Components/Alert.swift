@@ -6,7 +6,7 @@ public enum AlertButtons {
     case secondary(Button.Content)
     case primaryAndSecondary(Button.Content, Button.Content)
 
-    var isVisible: Bool {
+    public var isVisible: Bool {
         switch self {
             case .primary, .secondary, .primaryAndSecondary:    return true
             case .none:                                         return false

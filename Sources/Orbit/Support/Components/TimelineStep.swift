@@ -192,6 +192,11 @@ public struct TimelineStepPreference {
 
     let bounds: Anchor<CGRect>
     let style: TimelineStepStyle
+
+    public init(bounds: Anchor<CGRect>, style: TimelineStepStyle) {
+        self.bounds = bounds
+        self.style = style
+    }
 }
 
 // MARK: - Previews

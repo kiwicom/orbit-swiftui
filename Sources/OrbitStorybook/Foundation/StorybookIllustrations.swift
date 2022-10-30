@@ -1,4 +1,5 @@
 import SwiftUI
+import Orbit
 
 struct StorybookIllustrations {
 
@@ -59,7 +60,7 @@ struct StorybookIllustrations {
 struct StorybookIllustrationsPreviews: PreviewProvider {
     
     static var previews: some View {
-        PreviewWrapper {
+        OrbitPreviewWrapper {
             StorybookIllustrations.storybook()
         }
     }

@@ -1,15 +1,17 @@
 import SwiftUI
 
-struct PreviewWrapper<Content: View>: View {
+public struct OrbitPreviewWrapper<Content: View>: View {
 
     @ViewBuilder let content: Content
 
-    var body: some View {
+    public var body: some View {
         content
     }
 
-    init(@ViewBuilder content: () -> Content) {
+    public init(@ViewBuilder content: () -> Content) {
         Font.registerOrbitFonts()
         self.content = content()
     }
 }
+
+typealias PreviewWrapper = OrbitPreviewWrapper

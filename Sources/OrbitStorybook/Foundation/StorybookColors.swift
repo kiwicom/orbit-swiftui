@@ -1,4 +1,5 @@
 import SwiftUI
+import Orbit
 
 struct StorybookBasicColors: View {
 
@@ -324,7 +325,7 @@ private struct ColorContent: View {
 
 private struct ColorGradientContent: View {
 
-    let gradient: Gradient
+    let gradient: Orbit.Gradient
     let label: String
 
     var body: some View {
@@ -408,7 +409,7 @@ private extension Color {
 struct StorybookColorsPreviews: PreviewProvider {
 
     static var previews: some View {
-        PreviewWrapper {
+        OrbitPreviewWrapper {
             StorybookBasicColors()
                 .previewDisplayName("Basic")
             StorybookStatusColors()
