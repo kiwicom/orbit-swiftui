@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.6
 import PackageDescription
 
 // Enable to use bundled Circular Pro fonts (for licensed usage)
@@ -10,6 +10,7 @@ let package = Package(
     products: [
         .library(name: "Orbit", targets: ["Orbit"]),
         .library(name: "OrbitStorybook", targets: ["OrbitStorybook"]),
+        .plugin(name: "CheckDocumentation", targets: ["CheckDocumentation"]),
     ],
     dependencies: [
         .package(
@@ -40,6 +41,15 @@ let package = Package(
                 "Orbit",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
             ]
+        ),
+        .plugin(
+            name: "CheckDocumentation",
+            capability: .command(
+                intent: .custom(
+                    verb: "check-documentation",
+                    description: "Check if all public types are mentioned in the DocC archive."
+                )
+            )
         )
     ]
 )
