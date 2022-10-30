@@ -19,8 +19,14 @@ jobs:
     - uses: actions/checkout@v3
     - name: Check components have snapshots
       run: Automation/check_components_have_snapshot_tests.sh
+  check-docc-referenced-types:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Check all types are referenced in DocC
+      run: swift package check-documentation
   test:
-    needs: check-components-have-snapshots
+    needs: [build, check-components-have-snapshots, check-docc-referenced-types]
     strategy:
       matrix:
         device: ["iPhone SE (3rd generation)", "iPad (9th generation)"]
