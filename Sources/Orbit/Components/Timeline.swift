@@ -106,12 +106,10 @@ struct TimelinePreviews: PreviewProvider {
                 sublabel: "May 4, 8:15",
                 style: .currentNormal,
                 description: "Be at your departure gate at least 30 minutes before boarding."
-            )
-            contentPlaceholder
-                .padding(.leading, .xLarge)
-                .anchorPreference(key: TimelineStepPreferenceKey.self, value: .bounds) {
-                    [TimelineStepPreference(bounds: $0, style: .inactive)]
-                }
+            ) {
+                contentPlaceholder
+            }
+
             TimelineStep(
                 "Arrive",
                 sublabel: "May 4, 11:49",

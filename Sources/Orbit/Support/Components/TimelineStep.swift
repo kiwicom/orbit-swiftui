@@ -21,7 +21,7 @@ public extension VerticalAlignment {
 ///   - ``Timeline``
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/timeline/)
-public struct TimelineStep<Header: View, Content: View>: View {
+public struct TimelineStep<Header: View, Content: View, Footer: View>: View {
 
     @Environment(\.sizeCategory) var sizeCategory
     @Environment(\.accessibilityReduceMotion) var reduceMotion
@@ -32,8 +32,9 @@ public struct TimelineStep<Header: View, Content: View>: View {
     let isIconFirstTextLineCentered: Bool
     @ViewBuilder let header: Header
     @ViewBuilder let content: Content
+    @ViewBuilder let footer: Footer
 
-    @State var shouldAnimate = false
+    @State var animationLoopTrigger = false
 
     public var body: some View {
         HStack(alignment: .timelineStepAlignment, spacing: .small) {
@@ -52,12 +53,13 @@ public struct TimelineStep<Header: View, Content: View>: View {
             VStack(alignment: .leading, spacing: .xSmall) {
                 header
                 content
+                footer
             }
         }
         .anchorPreference(key: TimelineStepPreferenceKey.self, value: .bounds) {
             [TimelineStepPreference(bounds: $0, style: style)]
         }
-        .onAppear { shouldAnimate = !reduceMotion }
+        .onAppear { animationLoopTrigger = !reduceMotion }
     }
 
     @ViewBuilder var indicator: some View {
@@ -67,10 +69,10 @@ public struct TimelineStep<Header: View, Content: View>: View {
             case .currentWarning, .currentCritical:
                 Circle()
                     .frame(
-                        width: (shouldAnimate ? .medium : .xMedium) * sizeCategory.ratio,
-                        height: (shouldAnimate ? .medium : .xMedium) * sizeCategory.ratio
+                        width: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio,
+                        height: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio
                     )
-                    .foregroundColor(shouldAnimate ? Color.clear : style.color.opacity(0.1))
+                    .foregroundColor(animationLoopTrigger ? Color.clear : style.color.opacity(0.1))
                     .animation(Animation.easeInOut.repeatForever().speed(animationSpeed))
                     .overlay(icon)
             case .pastSuccess, .pastWarning, .pastCritical:
@@ -92,8 +94,8 @@ public struct TimelineStep<Header: View, Content: View>: View {
                 ZStack {
                     Circle()
                         .frame(
-                            width: (shouldAnimate ? .medium : .xMedium) * sizeCategory.ratio,
-                            height: (shouldAnimate ? .medium : .xMedium) * sizeCategory.ratio
+                            width: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio,
+                            height: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio
                         )
                         .animation(Animation.easeInOut.repeatForever().speed(animationSpeed))
                         .foregroundColor(style.color.opacity(0.1))
@@ -105,8 +107,8 @@ public struct TimelineStep<Header: View, Content: View>: View {
 
                     Circle()
                         .frame(width: .xxSmall * sizeCategory.ratio, height: .xxSmall * sizeCategory.ratio)
-                        .scaleEffect(shouldAnimate ? .init(width: 0.5, height: 0.5) : .init(width: 1, height: 1))
-                        .foregroundColor(shouldAnimate ? Color.clear : style.color)
+                        .scaleEffect(animationLoopTrigger ? .init(width: 0.5, height: 0.5) : .init(width: 1, height: 1))
+                        .foregroundColor(animationLoopTrigger ? Color.clear : style.color)
                         .animation(Animation.easeInOut.repeatForever().speed(animationSpeed))
 
                 }
@@ -126,7 +128,8 @@ public extension TimelineStep where Header == TimelineStepHeadingText {
         _ label: String,
         sublabel: String = "",
         style: TimelineStepStyle = .inactive,
-        @ViewBuilder content: () -> Content
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder footer: () -> Footer = { EmptyView() }
     ) {
         self.init(
             style: style,
@@ -139,7 +142,8 @@ public extension TimelineStep where Header == TimelineStepHeadingText {
                     alignmentComputation: VerticalAlignment.TimelineStepAlignment.computeFirstLineCenter(in:)
                 )
             },
-            content: content
+            content: content,
+            footer: footer
         )
     }
 }
@@ -153,10 +157,13 @@ public extension TimelineStep where Content == TimelineStepBottomText {
         style: TimelineStepStyle = .inactive,
         isIconFirstTextLineCentered: Bool,
         description: String,
-        @ViewBuilder header: () -> Header
+        @ViewBuilder header: () -> Header,
+        @ViewBuilder footer: () -> Footer = { EmptyView() }
     ) {
         self.init(style: style, isIconFirstTextLineCentered: isIconFirstTextLineCentered, header: header) {
             TimelineStepBottomText(text: description, style: style)
+        } footer: {
+            footer()
         }
     }
 }
@@ -164,7 +171,13 @@ public extension TimelineStep where Content == TimelineStepBottomText {
 public extension TimelineStep where Header == TimelineStepHeadingText, Content == TimelineStepBottomText {
 
     /// Creates Orbit TimelineStep component with text details.
-    init(_ label: String, sublabel: String = "", style: TimelineStepStyle = .inactive, description: String) {
+    init(
+        _ label: String,
+        sublabel: String = "",
+        style: TimelineStepStyle = .inactive,
+        description: String,
+        @ViewBuilder footer: () -> Footer = { EmptyView() }
+    ) {
 
         self.init(
             style: style,
@@ -177,8 +190,29 @@ public extension TimelineStep where Header == TimelineStepHeadingText, Content =
                     alignmentComputation: VerticalAlignment.TimelineStepAlignment.computeFirstLineCenter(in:)
                 )
             },
-            content: { TimelineStepBottomText(text: description, style: style) }
+            content: { TimelineStepBottomText(text: description, style: style) },
+            footer: { footer() }
         )
+    }
+}
+
+
+public extension TimelineStep {
+    /// Creates Orbit TimelineStep component with custom a header content and footer.
+    /// - Parameters:
+    ///   - isIconFirstTextLineCentered: center icon and first text line or align with the top
+    init(
+        style: TimelineStepStyle = .inactive,
+        isIconFirstTextLineCentered: Bool,
+        @ViewBuilder header: () -> Header,
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder footer: () -> Footer = { EmptyView() }
+    ) {
+        self.style = style
+        self.isIconFirstTextLineCentered = isIconFirstTextLineCentered
+        self.header = header()
+        self.content = content()
+        self.footer = footer()
     }
 }
 
