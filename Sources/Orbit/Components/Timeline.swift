@@ -101,6 +101,12 @@ struct TimelinePreviews: PreviewProvider {
                 style: .pastCritical,
                 description: "Be at your departure gate at least 30 minutes before boarding."
             )
+            TimelineStep(
+                "Board",
+                sublabel: "May 4, 8:15",
+                style: .currentNormal,
+                description: "Be at your departure gate at least 30 minutes before boarding."
+            )
             contentPlaceholder
                 .padding(.leading, .xLarge)
                 .anchorPreference(key: TimelineStepPreferenceKey.self, value: .bounds) {
