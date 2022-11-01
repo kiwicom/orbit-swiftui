@@ -36,7 +36,6 @@ Supporting types and components under development.
 
 - ``BarButton``
 - ``BorderWidth``
-- ``ChoiceTile``
 - ``ChoiceTileAlignment``
 - ``ChoiceTileIndicator``
 - ``ElevationShape``
@@ -44,7 +43,6 @@ Supporting types and components under development.
 - ``FieldMessage``
 - ``FieldWrapper``
 - ``InputState``
-- ``KeyValue``
 - ``KeyValueField``
 - ``Label``
 - ``LazyVStack``

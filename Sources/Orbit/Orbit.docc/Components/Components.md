@@ -24,6 +24,7 @@ Our components are a collection of interface elements that can be reused across 
 - ``Alert``
 - ``Badge``
 - ``BadgeList``
+- ``KeyValue``
 - ``NotificationBadge``
 - ``Toast``
 
@@ -31,6 +32,7 @@ Our components are a collection of interface elements that can be reused across 
 
 - ``Checkbox``
 - ``ChoiceGroup``
+- ``ChoiceTile``
 - ``InputField``
 - ``InputFile``
 - ``InputGroup``
