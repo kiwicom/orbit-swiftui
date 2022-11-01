@@ -28,7 +28,7 @@ public struct ContentHeightReader<Content: View>: View {
 // MARK: - Previews
 struct ContentHeightReaderPreviews: PreviewProvider {
 
-    static let message: MessageType = .normal("Form Field Message")
+    static let message: Message = .normal("Form Field Message")
 
     static var previews: some View {
         PreviewWrapper {

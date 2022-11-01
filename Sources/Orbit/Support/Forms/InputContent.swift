@@ -8,7 +8,7 @@ struct InputContent<Content: View>: View {
     var prefix: Icon.Content = .none
     var suffix: Icon.Content = .none
     var state: InputState = .default
-    var message: MessageType = .none
+    var message: Message = .none
     var isPressed: Bool = false
     var isEditing: Bool = false
     var suffixAction: (() -> Void)? = nil

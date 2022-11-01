@@ -74,7 +74,7 @@ struct StorybookSelect {
         }
     }
 
-    static func select(value: String, message: MessageType) -> some View {
+    static func select(value: String, message: Message) -> some View {
         Select(label, prefix: .grid, value: value, placeholder: placeholder, message: message)
     }
 }

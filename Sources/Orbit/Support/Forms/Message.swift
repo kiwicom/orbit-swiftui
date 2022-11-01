@@ -1,6 +1,6 @@
 import SwiftUI
 
-public enum MessageType: Equatable, Hashable, CustomStringConvertible {
+public enum Message: Equatable, Hashable, CustomStringConvertible {
 
     case none
     case normal(String, icon: Icon.Symbol = .none)

@@ -38,7 +38,7 @@ public struct ChoiceTile<Content: View>: View {
     let titleStyle: Heading.Style
     let isSelected: Bool
     let isError: Bool
-    let message: MessageType
+    let message: Message
     let alignment: ChoiceTileAlignment
     let action: () -> Void
     @ViewBuilder let content: Content
@@ -214,7 +214,7 @@ public extension ChoiceTile {
         titleStyle: Heading.Style = .title3,
         isSelected: Bool = false,
         isError: Bool = false,
-        message: MessageType = .none,
+        message: Message = .none,
         alignment: ChoiceTileAlignment = .default,
         action: @escaping () -> Void = {},
         @ViewBuilder content: () -> Content
@@ -247,7 +247,7 @@ public extension ChoiceTile {
         titleStyle: Heading.Style = .title3,
         isSelected: Bool = false,
         isError: Bool = false,
-        message: MessageType = .none,
+        message: Message = .none,
         alignment: ChoiceTileAlignment = .default,
         action: @escaping () -> Void = {}
     ) where Content == EmptyView {

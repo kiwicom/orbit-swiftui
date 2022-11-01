@@ -41,7 +41,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     let autocapitalization: UITextAutocapitalizationType
     let isAutocompleteEnabled: Bool
     let passwordStrength: PasswordStrengthIndicator.PasswordStrength
-    let message: MessageType
+    let message: Message
     let style: InputFieldStyle
     let suffixAction: (() -> Void)?
 
@@ -226,7 +226,7 @@ public extension InputField {
         isAutocompleteEnabled: Bool = false,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
-        message: MessageType = .none,
+        message: Message = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
         style: InputFieldStyle = .default,
         onEditingChanged: @escaping (Bool) -> Void = { _ in },
@@ -281,7 +281,7 @@ public extension InputField {
         keyboard: UIKeyboardType = .default,
         autocapitalization: UITextAutocapitalizationType = .none,
         isAutocompleteEnabled: Bool = false,
-        message: MessageType = .none,
+        message: Message = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
         style: InputFieldStyle = .default,
         formatter: Formatter,
@@ -328,7 +328,7 @@ extension InputField {
         autocapitalization: UITextAutocapitalizationType = .none,
         isAutocompleteEnabled: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
-        message: MessageType = .none,
+        message: Message = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
         style: InputFieldStyle = .default,
         mode: Mode,
@@ -473,7 +473,7 @@ struct InputFieldPreviews: PreviewProvider {
         state: InputState = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
-        message: MessageType = .none,
+        message: Message = .none,
         style: InputFieldStyle = .default
     ) -> some View {
         StateWrapper(initialState: value) { value in
@@ -533,7 +533,7 @@ struct InputFieldLivePreviews: PreviewProvider {
     
     struct PreviewWrapper: View {
 
-        @State var message: MessageType = .none
+        @State var message: Message = .none
         @State var textValue = "12"
         @State var intValue = 0
 

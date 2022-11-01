@@ -5,7 +5,7 @@ public struct FieldMessage: View {
 
     @Environment(\.sizeCategory) var sizeCategory
 
-    let message: MessageType
+    let message: Message
     let spacing: CGFloat
 
     public var body: some View {
@@ -24,7 +24,7 @@ public struct FieldMessage: View {
         }
     }
 
-    public init(_ message: MessageType, spacing: CGFloat = .xxSmall) {
+    public init(_ message: Message, spacing: CGFloat = .xxSmall) {
         self.message = message
         self.spacing = spacing
     }

@@ -46,7 +46,7 @@ Supporting types and components under development.
 - ``KeyValueField``
 - ``Label``
 - ``LazyVStack``
-- ``MessageType``
+- ``Message``
 - ``NavigateButton``
 - ``PasswordStrengthIndicator``
 - ``Progress``

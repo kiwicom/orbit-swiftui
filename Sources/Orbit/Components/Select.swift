@@ -17,7 +17,7 @@ public struct Select: View {
     let placeholder: String
     let suffix: Icon.Content
     let state: InputState
-    let message: MessageType
+    let message: Message
     let action: () -> Void
 
     public var body: some View {
@@ -78,7 +78,7 @@ public extension Select {
         placeholder: String = "",
         suffix: Icon.Content = .chevronDown,
         state: InputState = .default,
-        message: MessageType = .none,
+        message: Message = .none,
         messageHeight: Binding<CGFloat> = .constant(0),
         action: @escaping () -> Void = {}
     ) {
@@ -132,7 +132,7 @@ struct SelectPreviews: PreviewProvider {
         }
     }
 
-    static func select(value: String, message: MessageType) -> some View {
+    static func select(value: String, message: Message) -> some View {
         Select(InputFieldPreviews.label, prefix: .grid, value: value, placeholder: InputFieldPreviews.placeholder, message: message)
     }
 
