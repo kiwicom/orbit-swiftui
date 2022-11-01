@@ -34,7 +34,6 @@ Supporting types and components under development.
 
 ### Other
 
-- ``AssetNameProviding``
 - ``BarButton``
 - ``BorderWidth``
 - ``ChoiceTile``

@@ -24,11 +24,11 @@ public extension Image {
 
 public extension UIImage {
 
-    /// Gets UIImage out of `AssetNameProviding` image resource enum.
-    static func image(_ image: AssetNameProviding) -> UIImage {
+    /// Gets UIImage out of image resource.
+    static func image(_ resource: String) -> UIImage {
         // swiftlint:disable:next use_orbit_not_image_named
-        guard let uiImage = UIImage(named: image.assetName, in: Bundle.current, compatibleWith: nil) else {
-            assertionFailure("Cannot find image \(image.assetName) in bundle")
+        guard let uiImage = UIImage(named: resource, in: Bundle.current, compatibleWith: nil) else {
+            assertionFailure("Cannot find image \(resource) in bundle")
             return UIImage()
         }
 
@@ -37,10 +37,10 @@ public extension UIImage {
 
     /// A shorthand for `UIImage.image()`
     static func orbit(image: Image.Symbol) -> UIImage {
-        Self.image(image)
+        Self.image(image.assetName)
     }
 
     static func orbit(illustration: Illustration.Image) -> UIImage {
-        image(illustration)
+        image(illustration.assetName)
     }
 }
