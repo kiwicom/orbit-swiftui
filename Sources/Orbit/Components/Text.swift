@@ -136,19 +136,19 @@ public extension Text {
     
     /// Creates Orbit Text component that displays a string literal.
     ///
-    /// - Parameter content: String to display. Supports html formatting tags
-    /// `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
-    /// - Parameter size: Font size.
-    /// - Parameter color: Font color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
-    /// - Parameter weight: Base font weight (overridable by formatting).
-    /// - Parameter lineSpacing: Distance in points between the bottom of one line fragment and the top of the next.
-    /// - Parameter alignment: Horizontal alignment.
-    /// - Parameter accentColor: Color for `<ref>` formatting tag.
-    /// - Parameter linkColor: Color for `<a href>` and `<applink>` formatting tag.
-    /// - Parameter linkAction: Handler for any detected TextLink tap action.
-    /// - Parameter isSelectable: Determines if text is copyable using long tap gesture.
-    /// - Parameter kerning: Additional spacing between characters.
-    /// - Parameter strikethrough: Determines if strikethrough should be applied.
+    /// - Parameters:
+    ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
+    ///   - size: Font size.
+    ///   - color: Font color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
+    ///   - weight: Base font weight (overridable by formatting).
+    ///   - lineSpacing: Distance in points between the bottom of one line fragment and the top of the next.
+    ///   - alignment: Horizontal multi-line alignment.
+    ///   - accentColor: Color for `<ref>` formatting tag.
+    ///   - linkColor: Color for `<a href>` and `<applink>` formatting tag.
+    ///   - linkAction: Handler for any detected TextLink tap action.
+    ///   - isSelectable: Determines if text is copyable using long tap gesture.
+    ///   - kerning: Additional spacing between characters.
+    ///   - strikethrough: Determines if strikethrough should be applied.
     init(
         _ content: String,
         size: Size = .normal,
