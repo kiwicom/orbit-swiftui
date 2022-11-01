@@ -28,7 +28,7 @@ public struct ContentHeightReader<Content: View>: View {
 // MARK: - Previews
 struct ContentHeightReaderPreviews: PreviewProvider {
 
-    static let message: MessageType = .normal("Form Field Message")
+    static let message: Message? = .normal("Form Field Message")
 
     static var previews: some View {
         PreviewWrapper {
@@ -37,12 +37,12 @@ struct ContentHeightReaderPreviews: PreviewProvider {
                     Text("Height: \(state.0.wrappedValue)")
 
                     ContentHeightReader(height: state.0) {
-                        FormFieldMessage(state.1.wrappedValue)
+                        FieldMessage(state.1.wrappedValue)
                     }
 
                     Button("Toggle") {
                         withAnimation(.easeInOut(duration: 1)) {
-                            state.1.wrappedValue = state.1.wrappedValue == .none ? Self.message : .none
+                            state.1.wrappedValue = state.1.wrappedValue == nil ? Self.message : nil
                         }
                     }
                 }

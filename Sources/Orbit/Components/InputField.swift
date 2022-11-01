@@ -41,15 +41,15 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     let autocapitalization: UITextAutocapitalizationType
     let isAutocompleteEnabled: Bool
     let passwordStrength: PasswordStrengthIndicator.PasswordStrength
-    let message: MessageType
+    let message: Message?
     let style: InputFieldStyle
     let suffixAction: (() -> Void)?
 
     private let mode: Mode
 
     public var body: some View {
-        FormFieldWrapper(
-            formFieldLabel,
+        FieldWrapper(
+            fieldLabel,
             labelAccentColor: labelAccentColor,
             labelLinkColor: labelLinkColor,
             labelLinkAction: labelLinkAction,
@@ -80,14 +80,14 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                         .accessibility(.inputValue)
                 }
             }
-        } messageContent: {
+        } footer: {
             PasswordStrengthIndicator(passwordStrength: passwordStrength)
                 .padding(.top, .xxSmall)
         }
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(label))
         .accessibility(value: .init(value.description))
-        .accessibility(hint: .init(message.description.isEmpty ? placeholder : message.description))
+        .accessibility(hint: .init(messageDescription.isEmpty ? placeholder : messageDescription))
         .accessibility(addTraits: .isButton)
     }
 
@@ -186,11 +186,15 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
         }
     }
 
-    var formFieldLabel: String {
+    var fieldLabel: String {
         switch style {
             case .default:          return label
             case .compact:          return ""
         }
+    }
+
+    var messageDescription: String {
+        message?.description ?? ""
     }
 
     var compactLabelColor: UIColor {
@@ -226,7 +230,7 @@ public extension InputField {
         isAutocompleteEnabled: Bool = false,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
-        message: MessageType = .none,
+        message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         style: InputFieldStyle = .default,
         onEditingChanged: @escaping (Bool) -> Void = { _ in },
@@ -281,7 +285,7 @@ public extension InputField {
         keyboard: UIKeyboardType = .default,
         autocapitalization: UITextAutocapitalizationType = .none,
         isAutocompleteEnabled: Bool = false,
-        message: MessageType = .none,
+        message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         style: InputFieldStyle = .default,
         formatter: Formatter,
@@ -328,7 +332,7 @@ extension InputField {
         autocapitalization: UITextAutocapitalizationType = .none,
         isAutocompleteEnabled: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
-        message: MessageType = .none,
+        message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         style: InputFieldStyle = .default,
         mode: Mode,
@@ -446,7 +450,7 @@ struct InputFieldPreviews: PreviewProvider {
             inputField("Modified from previous state", value: "Modified value", state: .modified)
             inputField("Focused", value: "Focused / Help", message: .help("Help message"))
             inputField(
-                FormFieldLabelPreviews.longLabel,
+                FieldLabelPreviews.longLabel,
                 labelAccentColor: .orangeNormal,
                 labelLinkColor: .status(.critical),
                 value: longValue,
@@ -473,7 +477,7 @@ struct InputFieldPreviews: PreviewProvider {
         state: InputState = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
-        message: MessageType = .none,
+        message: Message? = nil,
         style: InputFieldStyle = .default
     ) -> some View {
         StateWrapper(initialState: value) { value in
@@ -533,7 +537,7 @@ struct InputFieldLivePreviews: PreviewProvider {
     
     struct PreviewWrapper: View {
 
-        @State var message: MessageType = .none
+        @State var message: Message? = nil
         @State var textValue = "12"
         @State var intValue = 0
 

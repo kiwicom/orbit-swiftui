@@ -1,15 +1,15 @@
 import SwiftUI
 
 /// Orbit message below form fields.
-public struct FormFieldMessage: View {
+public struct FieldMessage: View {
 
     @Environment(\.sizeCategory) var sizeCategory
 
-    let message: MessageType
+    let message: Message?
     let spacing: CGFloat
 
     public var body: some View {
-        if message.isEmpty == false {
+        if let message = message, message.isEmpty == false {
             // A Label should be used instead when Orbit fixes the non-matching icon to label sizing
             HStack(alignment: .firstTextBaseline, spacing: spacing) {
                 Icon(message.icon, size: .small, color: message.color)
@@ -24,20 +24,21 @@ public struct FormFieldMessage: View {
         }
     }
 
-    public init(_ message: MessageType, spacing: CGFloat = .xxSmall) {
+    public init(_ message: Message?, spacing: CGFloat = .xxSmall) {
         self.message = message
         self.spacing = spacing
     }
 }
 
 // MARK: - Previews
-struct FormFieldMessagePreviews: PreviewProvider {
+struct FieldMessagePreviews: PreviewProvider {
     
     static var previews: some View {
         PreviewWrapper {
-            FormFieldMessage(.normal("Form Field Message", icon: .informationCircle))
-            FormFieldMessage(.help("Help Message"))
-            FormFieldMessage(.error("Form Field Message", icon: .alertCircle))
+            FieldMessage(nil)
+            FieldMessage(.normal("Form Field Message", icon: .informationCircle))
+            FieldMessage(.help("Help Message"))
+            FieldMessage(.error("Form Field Message", icon: .alertCircle))
         }
         .previewLayout(.sizeThatFits)
     }

@@ -5,7 +5,7 @@ struct StorybookInputField {
 
     static let label = "Field label"
     static let longLabel = "Very \(String(repeating: "very ", count: 8))long multiline label"
-    static let formFieldLongLabel = """
+    static let fieldLongLabel = """
         <strong>Label</strong> with a \(String(repeating: "very ", count: 20))long \
         <ref>multiline</ref> label and <applink1>TextLink</applink1>
         """
@@ -58,7 +58,7 @@ struct StorybookInputField {
             inputField("Modified from previous state", value: "Modified value", state: .modified)
             inputField("Focused", value: "Focused / Help", message: .help("Help message"))
             inputField(
-                formFieldLongLabel,
+                fieldLongLabel,
                 labelAccentColor: .orangeNormal,
                 labelLinkColor: .status(.critical),
                 value: longValue,
@@ -85,7 +85,7 @@ struct StorybookInputField {
         state: InputState = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
-        message: MessageType = .none,
+        message: Message? = nil,
         style: InputFieldStyle = .default
     ) -> some View {
         StateWrapper(initialState: value) { value in

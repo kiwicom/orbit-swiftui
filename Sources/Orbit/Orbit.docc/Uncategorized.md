@@ -34,22 +34,19 @@ Supporting types and components under development.
 
 ### Other
 
-- ``AssetNameProviding``
 - ``BarButton``
 - ``BorderWidth``
-- ``ChoiceTile``
 - ``ChoiceTileAlignment``
 - ``ChoiceTileIndicator``
 - ``ElevationShape``
-- ``FormFieldLabel``
-- ``FormFieldMessage``
-- ``FormFieldWrapper``
+- ``FieldLabel``
+- ``FieldMessage``
+- ``FieldWrapper``
 - ``InputState``
-- ``KeyValue``
 - ``KeyValueField``
 - ``Label``
 - ``LazyVStack``
-- ``MessageType``
+- ``Message``
 - ``NavigateButton``
 - ``PasswordStrengthIndicator``
 - ``Progress``

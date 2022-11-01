@@ -17,11 +17,11 @@ public struct Select: View {
     let placeholder: String
     let suffix: Icon.Content
     let state: InputState
-    let message: MessageType
+    let message: Message?
     let action: () -> Void
 
     public var body: some View {
-        FormFieldWrapper(
+        FieldWrapper(
             label,
             labelAccentColor: labelAccentColor,
             labelLinkColor: labelLinkColor,
@@ -52,7 +52,7 @@ public struct Select: View {
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(label))
         .accessibility(value: .init(value ?? ""))
-        .accessibility(hint: .init(message.description.isEmpty ? placeholder : message.description))
+        .accessibility(hint: .init(messageDescription.isEmpty ? placeholder : messageDescription))
         .accessibility(addTraits: .isButton)
         .disabled(state == .disabled)
     }
@@ -61,6 +61,10 @@ public struct Select: View {
         value == nil
             ? state.placeholderColor
             : state.textColor
+    }
+
+    var messageDescription: String {
+        message?.description ?? ""
     }
 }
 
@@ -78,7 +82,7 @@ public extension Select {
         placeholder: String = "",
         suffix: Icon.Content = .chevronDown,
         state: InputState = .default,
-        message: MessageType = .none,
+        message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         action: @escaping () -> Void = {}
     ) {
@@ -122,17 +126,17 @@ struct SelectPreviews: PreviewProvider {
 
     static var storybook: some View {
         VStack(spacing: .medium) {
-            select(value: "", message: .none)
+            select(value: "")
             select(value: "", message: .help(InputFieldPreviews.helpMessage))
             select(value: "", message: .error(InputFieldPreviews.errorMessage))
             Separator()
-            select(value: InputFieldPreviews.value, message: .none)
+            select(value: InputFieldPreviews.value)
             select(value: InputFieldPreviews.value, message: .help(InputFieldPreviews.helpMessage))
             select(value: InputFieldPreviews.value, message: .error(InputFieldPreviews.errorMessage))
         }
     }
 
-    static func select(value: String, message: MessageType) -> some View {
+    static func select(value: String, message: Message? = nil) -> some View {
         Select(InputFieldPreviews.label, prefix: .grid, value: value, placeholder: InputFieldPreviews.placeholder, message: message)
     }
 
@@ -173,7 +177,7 @@ struct SelectPreviews: PreviewProvider {
                 )
 
                 Select(
-                    FormFieldLabelPreviews.longLabel,
+                    FieldLabelPreviews.longLabel,
                     labelAccentColor: .orangeNormal,
                     labelLinkColor: .status(.critical),
                     prefix: .image(.orbit(.google)),

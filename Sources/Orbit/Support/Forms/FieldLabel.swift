@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Orbit label above form fields.
-public struct FormFieldLabel: View {
+public struct FieldLabel: View {
 
     let label: String
     let accentColor: UIColor?
@@ -29,7 +29,7 @@ public struct FormFieldLabel: View {
 }
 
 // MARK: - Previews
-struct FormFieldLabelPreviews: PreviewProvider {
+struct FieldLabelPreviews: PreviewProvider {
 
     static let longLabel = """
         <strong>Label</strong> with a \(String(repeating: "very ", count: 20))long \
@@ -38,8 +38,8 @@ struct FormFieldLabelPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            FormFieldLabel("Form Field Label")
-            FormFieldLabel(longLabel, accentColor: .orangeNormal, linkColor: .status(.critical))
+            FieldLabel("Form Field Label")
+            FieldLabel(longLabel, accentColor: .orangeNormal, linkColor: .status(.critical))
         }
         .previewLayout(.sizeThatFits)
     }

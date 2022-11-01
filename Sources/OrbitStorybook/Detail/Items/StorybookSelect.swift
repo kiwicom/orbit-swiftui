@@ -5,7 +5,7 @@ struct StorybookSelect {
 
     static let label = "Field label"
     static let longLabel = "Very \(String(repeating: "very ", count: 8))long multiline label"
-    static let formFieldLongLabel = """
+    static let fieldLongLabel = """
         <strong>Label</strong> with a \(String(repeating: "very ", count: 20))long \
         <ref>multiline</ref> label and <applink1>TextLink</applink1>
         """
@@ -16,11 +16,11 @@ struct StorybookSelect {
 
     static var basic: some View {
         VStack(spacing: .medium) {
-            select(value: "", message: .none)
+            select(value: "")
             select(value: "", message: .help(helpMessage))
             select(value: "", message: .error(errorMessage))
             Separator()
-            select(value: value, message: .none)
+            select(value: value)
             select(value: value, message: .help(helpMessage))
             select(value: value, message: .error(errorMessage))
         }
@@ -63,7 +63,7 @@ struct StorybookSelect {
                 )
 
                 Select(
-                    formFieldLongLabel,
+                    fieldLongLabel,
                     labelAccentColor: .orangeNormal,
                     labelLinkColor: .status(.critical),
                     prefix: .image(.orbit(.google)),
@@ -74,7 +74,7 @@ struct StorybookSelect {
         }
     }
 
-    static func select(value: String, message: MessageType) -> some View {
+    static func select(value: String, message: Message? = nil) -> some View {
         Select(label, prefix: .grid, value: value, placeholder: placeholder, message: message)
     }
 }
