@@ -16,11 +16,11 @@ struct StorybookSelect {
 
     static var basic: some View {
         VStack(spacing: .medium) {
-            select(value: "", message: .none)
+            select(value: "")
             select(value: "", message: .help(helpMessage))
             select(value: "", message: .error(errorMessage))
             Separator()
-            select(value: value, message: .none)
+            select(value: value)
             select(value: value, message: .help(helpMessage))
             select(value: value, message: .error(errorMessage))
         }
@@ -74,7 +74,7 @@ struct StorybookSelect {
         }
     }
 
-    static func select(value: String, message: Message) -> some View {
+    static func select(value: String, message: Message? = nil) -> some View {
         Select(label, prefix: .grid, value: value, placeholder: placeholder, message: message)
     }
 }

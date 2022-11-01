@@ -5,11 +5,11 @@ public struct FieldMessage: View {
 
     @Environment(\.sizeCategory) var sizeCategory
 
-    let message: Message
+    let message: Message?
     let spacing: CGFloat
 
     public var body: some View {
-        if message.isEmpty == false {
+        if let message = message, message.isEmpty == false {
             // A Label should be used instead when Orbit fixes the non-matching icon to label sizing
             HStack(alignment: .firstTextBaseline, spacing: spacing) {
                 Icon(message.icon, size: .small, color: message.color)
@@ -24,7 +24,7 @@ public struct FieldMessage: View {
         }
     }
 
-    public init(_ message: Message, spacing: CGFloat = .xxSmall) {
+    public init(_ message: Message?, spacing: CGFloat = .xxSmall) {
         self.message = message
         self.spacing = spacing
     }
@@ -35,6 +35,7 @@ struct FieldMessagePreviews: PreviewProvider {
     
     static var previews: some View {
         PreviewWrapper {
+            FieldMessage(nil)
             FieldMessage(.normal("Form Field Message", icon: .informationCircle))
             FieldMessage(.help("Help Message"))
             FieldMessage(.error("Form Field Message", icon: .alertCircle))

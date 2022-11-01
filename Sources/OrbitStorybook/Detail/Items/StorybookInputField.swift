@@ -85,7 +85,7 @@ struct StorybookInputField {
         state: InputState = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
-        message: Message = .none,
+        message: Message? = nil,
         style: InputFieldStyle = .default
     ) -> some View {
         StateWrapper(initialState: value) { value in

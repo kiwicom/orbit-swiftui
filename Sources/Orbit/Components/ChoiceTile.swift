@@ -38,7 +38,7 @@ public struct ChoiceTile<Content: View>: View {
     let titleStyle: Heading.Style
     let isSelected: Bool
     let isError: Bool
-    let message: Message
+    let message: Message?
     let alignment: ChoiceTileAlignment
     let action: () -> Void
     @ViewBuilder let content: Content
@@ -71,7 +71,7 @@ public struct ChoiceTile<Content: View>: View {
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(title))
         .accessibility(value: .init(badgeOverlay.isEmpty ?  badge : badgeOverlay))
-        .accessibility(hint: .init(message.description.isEmpty ? description : message.description))
+        .accessibility(hint: .init(messageDescription.isEmpty ? description : messageDescription))
         .accessibility(addTraits: .isButton)
         .accessibility(addTraits: isSelected ? .isSelected : [])
     }
@@ -139,7 +139,7 @@ public struct ChoiceTile<Content: View>: View {
                     .padding(.bottom, messagePadding)
         }
     }
-    
+
     @ViewBuilder var badgeOverlayView: some View {
         Badge(badgeOverlay, style: .status(isError && isSelected ? .critical : .info, inverted: true))
             .alignmentGuide(.top) { dimensions in
@@ -197,6 +197,10 @@ public struct ChoiceTile<Content: View>: View {
             ? (indicatorSize + padding + .xSmall)
             : 0
     }
+
+    var messageDescription: String {
+        message?.description ?? ""
+    }
 }
 
 // MARK: - Inits
@@ -214,7 +218,7 @@ public extension ChoiceTile {
         titleStyle: Heading.Style = .title3,
         isSelected: Bool = false,
         isError: Bool = false,
-        message: Message = .none,
+        message: Message? = nil,
         alignment: ChoiceTileAlignment = .default,
         action: @escaping () -> Void = {},
         @ViewBuilder content: () -> Content
@@ -247,7 +251,7 @@ public extension ChoiceTile {
         titleStyle: Heading.Style = .title3,
         isSelected: Bool = false,
         isError: Bool = false,
-        message: Message = .none,
+        message: Message? = nil,
         alignment: ChoiceTileAlignment = .default,
         action: @escaping () -> Void = {}
     ) where Content == EmptyView {

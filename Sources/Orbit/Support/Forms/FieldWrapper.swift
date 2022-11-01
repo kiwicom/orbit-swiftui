@@ -8,7 +8,7 @@ public struct FieldWrapper<Label: View, Content: View, Footer: View>: View {
     @ViewBuilder let label: Label
     @ViewBuilder let content: Content
     @ViewBuilder let footer: Footer
-    let message: Message
+    let message: Message?
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -37,7 +37,7 @@ public extension FieldWrapper {
     ///
     /// `FieldLabel` is a default component for constructing custom label.
     init(
-        message: Message = .none,
+        message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content,
         @ViewBuilder label: () -> Label,
@@ -57,7 +57,7 @@ public extension FieldWrapper where Footer == EmptyView {
     ///
     /// `FieldLabel` is a default component for constructing custom label.
     init(
-        message: Message = .none,
+        message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content,
         @ViewBuilder label: () -> Label
@@ -82,7 +82,7 @@ public extension FieldWrapper where Label == FieldLabel {
         labelAccentColor: UIColor? = nil,
         labelLinkColor: TextLink.Color = .primary,
         labelLinkAction: @escaping TextLink.Action = { _, _ in },
-        message: Message = .none,
+        message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content,
         @ViewBuilder footer: () -> Footer
@@ -107,7 +107,7 @@ public extension FieldWrapper where Label == FieldLabel, Footer == EmptyView {
         labelAccentColor: UIColor? = nil,
         labelLinkColor: TextLink.Color = .primary,
         labelLinkAction: @escaping TextLink.Action = { _, _ in },
-        message: Message = .none,
+        message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content
     ) {

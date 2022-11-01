@@ -41,7 +41,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     let autocapitalization: UITextAutocapitalizationType
     let isAutocompleteEnabled: Bool
     let passwordStrength: PasswordStrengthIndicator.PasswordStrength
-    let message: Message
+    let message: Message?
     let style: InputFieldStyle
     let suffixAction: (() -> Void)?
 
@@ -87,7 +87,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(label))
         .accessibility(value: .init(value.description))
-        .accessibility(hint: .init(message.description.isEmpty ? placeholder : message.description))
+        .accessibility(hint: .init(messageDescription.isEmpty ? placeholder : messageDescription))
         .accessibility(addTraits: .isButton)
     }
 
@@ -193,6 +193,10 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
         }
     }
 
+    var messageDescription: String {
+        message?.description ?? ""
+    }
+
     var compactLabelColor: UIColor {
         showPlaceholder ? .inkDark : .inkLight
     }
@@ -226,7 +230,7 @@ public extension InputField {
         isAutocompleteEnabled: Bool = false,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
-        message: Message = .none,
+        message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         style: InputFieldStyle = .default,
         onEditingChanged: @escaping (Bool) -> Void = { _ in },
@@ -281,7 +285,7 @@ public extension InputField {
         keyboard: UIKeyboardType = .default,
         autocapitalization: UITextAutocapitalizationType = .none,
         isAutocompleteEnabled: Bool = false,
-        message: Message = .none,
+        message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         style: InputFieldStyle = .default,
         formatter: Formatter,
@@ -328,7 +332,7 @@ extension InputField {
         autocapitalization: UITextAutocapitalizationType = .none,
         isAutocompleteEnabled: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
-        message: Message = .none,
+        message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         style: InputFieldStyle = .default,
         mode: Mode,
@@ -473,7 +477,7 @@ struct InputFieldPreviews: PreviewProvider {
         state: InputState = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
-        message: Message = .none,
+        message: Message? = nil,
         style: InputFieldStyle = .default
     ) -> some View {
         StateWrapper(initialState: value) { value in
@@ -533,7 +537,7 @@ struct InputFieldLivePreviews: PreviewProvider {
     
     struct PreviewWrapper: View {
 
-        @State var message: Message = .none
+        @State var message: Message? = nil
         @State var textValue = "12"
         @State var intValue = 0
 
