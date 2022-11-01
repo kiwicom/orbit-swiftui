@@ -48,8 +48,8 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     private let mode: Mode
 
     public var body: some View {
-        FormFieldWrapper(
-            formFieldLabel,
+        FieldWrapper(
+            fieldLabel,
             labelAccentColor: labelAccentColor,
             labelLinkColor: labelLinkColor,
             labelLinkAction: labelLinkAction,
@@ -80,7 +80,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                         .accessibility(.inputValue)
                 }
             }
-        } messageContent: {
+        } footer: {
             PasswordStrengthIndicator(passwordStrength: passwordStrength)
                 .padding(.top, .xxSmall)
         }
@@ -186,7 +186,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
         }
     }
 
-    var formFieldLabel: String {
+    var fieldLabel: String {
         switch style {
             case .default:          return label
             case .compact:          return ""
@@ -446,7 +446,7 @@ struct InputFieldPreviews: PreviewProvider {
             inputField("Modified from previous state", value: "Modified value", state: .modified)
             inputField("Focused", value: "Focused / Help", message: .help("Help message"))
             inputField(
-                FormFieldLabelPreviews.longLabel,
+                FieldLabelPreviews.longLabel,
                 labelAccentColor: .orangeNormal,
                 labelLinkColor: .status(.critical),
                 value: longValue,

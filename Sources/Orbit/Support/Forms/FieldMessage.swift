@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Orbit message below form fields.
-public struct FormFieldMessage: View {
+public struct FieldMessage: View {
 
     @Environment(\.sizeCategory) var sizeCategory
 
@@ -31,13 +31,13 @@ public struct FormFieldMessage: View {
 }
 
 // MARK: - Previews
-struct FormFieldMessagePreviews: PreviewProvider {
+struct FieldMessagePreviews: PreviewProvider {
     
     static var previews: some View {
         PreviewWrapper {
-            FormFieldMessage(.normal("Form Field Message", icon: .informationCircle))
-            FormFieldMessage(.help("Help Message"))
-            FormFieldMessage(.error("Form Field Message", icon: .alertCircle))
+            FieldMessage(.normal("Form Field Message", icon: .informationCircle))
+            FieldMessage(.help("Help Message"))
+            FieldMessage(.error("Form Field Message", icon: .alertCircle))
         }
         .previewLayout(.sizeThatFits)
     }

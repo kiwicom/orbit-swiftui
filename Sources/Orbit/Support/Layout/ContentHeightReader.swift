@@ -37,7 +37,7 @@ struct ContentHeightReaderPreviews: PreviewProvider {
                     Text("Height: \(state.0.wrappedValue)")
 
                     ContentHeightReader(height: state.0) {
-                        FormFieldMessage(state.1.wrappedValue)
+                        FieldMessage(state.1.wrappedValue)
                     }
 
                     Button("Toggle") {

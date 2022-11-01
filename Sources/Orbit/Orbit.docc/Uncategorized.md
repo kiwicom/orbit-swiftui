@@ -41,9 +41,9 @@ Supporting types and components under development.
 - ``ChoiceTileAlignment``
 - ``ChoiceTileIndicator``
 - ``ElevationShape``
-- ``FormFieldLabel``
-- ``FormFieldMessage``
-- ``FormFieldWrapper``
+- ``FieldLabel``
+- ``FieldMessage``
+- ``FieldWrapper``
 - ``InputState``
 - ``KeyValue``
 - ``KeyValueField``

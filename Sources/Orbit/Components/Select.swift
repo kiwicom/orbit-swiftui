@@ -21,7 +21,7 @@ public struct Select: View {
     let action: () -> Void
 
     public var body: some View {
-        FormFieldWrapper(
+        FieldWrapper(
             label,
             labelAccentColor: labelAccentColor,
             labelLinkColor: labelLinkColor,
@@ -173,7 +173,7 @@ struct SelectPreviews: PreviewProvider {
                 )
 
                 Select(
-                    FormFieldLabelPreviews.longLabel,
+                    FieldLabelPreviews.longLabel,
                     labelAccentColor: .orangeNormal,
                     labelLinkColor: .status(.critical),
                     prefix: .image(.orbit(.google)),

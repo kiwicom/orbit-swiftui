@@ -5,7 +5,7 @@ struct StorybookSelect {
 
     static let label = "Field label"
     static let longLabel = "Very \(String(repeating: "very ", count: 8))long multiline label"
-    static let formFieldLongLabel = """
+    static let fieldLongLabel = """
         <strong>Label</strong> with a \(String(repeating: "very ", count: 20))long \
         <ref>multiline</ref> label and <applink1>TextLink</applink1>
         """
@@ -63,7 +63,7 @@ struct StorybookSelect {
                 )
 
                 Select(
-                    formFieldLongLabel,
+                    fieldLongLabel,
                     labelAccentColor: .orangeNormal,
                     labelLinkColor: .status(.critical),
                     prefix: .image(.orbit(.google)),

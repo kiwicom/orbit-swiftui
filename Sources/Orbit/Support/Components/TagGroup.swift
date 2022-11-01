@@ -34,7 +34,7 @@ public struct TagGroup<TM: TagModel>: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: .xxSmall) {
             if label.isEmpty == false {
-                FormFieldLabel(label)
+                FieldLabel(label)
             }
 
             switch layout {

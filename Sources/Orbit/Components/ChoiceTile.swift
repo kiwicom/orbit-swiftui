@@ -131,10 +131,10 @@ public struct ChoiceTile<Content: View>: View {
     @ViewBuilder var messageView: some View {
         switch alignment {
             case .default:
-                FormFieldMessage(message, spacing: .xSmall)
+                FieldMessage(message, spacing: .xSmall)
                     .padding(.trailing, messagePadding)
             case .center:
-                FormFieldMessage(message, spacing: .xSmall)
+                FieldMessage(message, spacing: .xSmall)
                     .frame(maxWidth: .infinity)
                     .padding(.bottom, messagePadding)
         }
