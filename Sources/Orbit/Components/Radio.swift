@@ -165,6 +165,13 @@ extension Radio {
     }
 }
 
+// MARK: - Identifiers
+public extension AccessibilityID {
+
+    static let radioTitle           = Self(rawValue: "orbit.radio.title")
+    static let radioDescription     = Self(rawValue: "orbit.radio.description")
+}
+
 // MARK: - Previews
 struct RadioPreviews: PreviewProvider {
 

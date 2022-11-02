@@ -61,6 +61,13 @@ extension KeyValue {
     }
 }
 
+// MARK: - Identifiers
+public extension AccessibilityID {
+
+    static let keyValueKey      = Self(rawValue: "orbit.keyvalue.key")
+    static let keyValueValue    = Self(rawValue: "orbit.keyvalue.value")
+}
+
 // MARK: - Previews
 struct KeyValuePreviews: PreviewProvider {
 

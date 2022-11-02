@@ -274,6 +274,15 @@ public extension ChoiceTile {
     }
 }
 
+// MARK: - Identifiers
+public extension AccessibilityID {
+
+    static let choiceTileTitle          = Self(rawValue: "orbit.choicetile.title")
+    static let choiceTileIcon           = Self(rawValue: "orbit.choicetile.icon")
+    static let choiceTileDescription    = Self(rawValue: "orbit.choicetile.description")
+    static let choiceTileBadge          = Self(rawValue: "orbit.choicetile.badge")
+}
+
 // MARK: - Previews
 struct ChoiceTilePreviews: PreviewProvider {
 

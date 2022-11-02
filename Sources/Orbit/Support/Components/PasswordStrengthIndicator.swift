@@ -72,10 +72,10 @@ public struct PasswordStrengthIndicator: View {
     }
 }
 
-// MARK: Types
-extension PasswordStrengthIndicator {
+// MARK: - Types
+public extension PasswordStrengthIndicator {
 
-    public enum PasswordStrength: Equatable {
+    enum PasswordStrength: Equatable {
         case empty
         case weak(title: String)
         case medium(title: String)
@@ -83,6 +83,13 @@ extension PasswordStrengthIndicator {
     }
 }
 
+// MARK: - Identifiers
+public extension AccessibilityID {
+
+    static let passwordStrengthIndicator    = Self(rawValue: "orbit.passwordstrengthindicator")
+}
+
+// MARK: - Previews
 struct PasswordStrengthIndicatorPreviews: PreviewProvider {
 
     static var previews: some View {

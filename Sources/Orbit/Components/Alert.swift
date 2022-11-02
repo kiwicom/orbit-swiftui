@@ -200,6 +200,16 @@ public extension Alert {
     }
 }
 
+// MARK: - Identifiers
+public extension AccessibilityID {
+    
+    static let alertButtonPrimary       = Self(rawValue: "orbit.alert.button.primary")
+    static let alertButtonSecondary     = Self(rawValue: "orbit.alert.button.secondary")
+    static let alertTitle               = Self(rawValue: "orbit.alert.title")
+    static let alertIcon                = Self(rawValue: "orbit.alert.icon")
+    static let alertDescription         = Self(rawValue: "orbit.alert.description")
+}
+
 // MARK: - Previews
 struct AlertPreviews: PreviewProvider {
 

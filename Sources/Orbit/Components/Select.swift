@@ -37,13 +37,15 @@ public struct Select: View {
                 label: {
                     Text(value ?? placeholder, color: .none)
                         .foregroundColor(textColor)
-                        .accessibility(.inputValue)
+                        .accessibility(.selectValue)
                 }
             )
             .buttonStyle(
                 InputStyle(
                     prefix: prefix,
                     suffix: suffix,
+                    prefixAccessibilityID: .selectPrefix,
+                    suffixAccessibilityID: .selectSuffix,
                     state: state,
                     message: message
                 )
@@ -99,6 +101,14 @@ public extension Select {
         self._messageHeight = messageHeight
         self.action = action
     }
+}
+
+// MARK: - Identifiers
+public extension AccessibilityID {
+
+    static let selectPrefix     = Self(rawValue: "orbit.select.prefix")
+    static let selectSuffix     = Self(rawValue: "orbit.select.suffix")
+    static let selectValue      = Self(rawValue: "orbit.select.value")
 }
 
 // MARK: - Previews

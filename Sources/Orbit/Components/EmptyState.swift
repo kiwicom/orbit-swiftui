@@ -71,6 +71,14 @@ public extension EmptyState {
     }
 }
 
+// MARK: - Identifiers
+public extension AccessibilityID {
+
+    static let emptyStateTitle          = Self(rawValue: "orbit.emptystate.title")
+    static let emptyStateDescription    = Self(rawValue: "orbit.emptystate.description")
+    static let emptyStateButton         = Self(rawValue: "orbit.emptystate.button")
+}
+
 // MARK: - Previews
 struct EmptyStatePreviews: PreviewProvider {
 

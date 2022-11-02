@@ -182,6 +182,15 @@ public extension Card {
     }
 }
 
+// MARK: - Identifiers
+public extension AccessibilityID {
+
+    static let cardTitle                = Self(rawValue: "orbit.card.title")
+    static let cardIcon                 = Self(rawValue: "orbit.card.icon")
+    static let cardDescription          = Self(rawValue: "orbit.card.description")
+    static let cardActionButtonLink     = Self(rawValue: "orbit.card.action.buttonLink")
+}
+
 // MARK: - Previews
 struct CardPreviews: PreviewProvider {
 

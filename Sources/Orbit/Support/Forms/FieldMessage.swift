@@ -30,6 +30,13 @@ public struct FieldMessage: View {
     }
 }
 
+// MARK: - Identifiers
+public extension AccessibilityID {
+
+    static let fieldMessage         = Self(rawValue: "orbit.field.message")
+    static let fieldMessageIcon     = Self(rawValue: "orbit.field.message.icon")
+}
+
 // MARK: - Previews
 struct FieldMessagePreviews: PreviewProvider {
     

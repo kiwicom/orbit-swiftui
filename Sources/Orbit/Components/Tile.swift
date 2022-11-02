@@ -263,6 +263,16 @@ public extension Tile {
     typealias BackgroundColor = (normal: Color, active: Color)
 }
 
+// MARK: - Identifiers
+public extension AccessibilityID {
+
+    static let tileTitle                    = Self(rawValue: "orbit.tile.title")
+    static let tileIcon                     = Self(rawValue: "orbit.tile.icon")
+    static let tileDescription              = Self(rawValue: "orbit.tile.description")
+    static let tileDisclosureButtonLink     = Self(rawValue: "orbit.tile.disclosure.buttonlink")
+    static let tileDisclosureIcon           = Self(rawValue: "orbit.tile.disclosure.icon")
+}
+
 // MARK: - Previews
 struct TilePreviews: PreviewProvider {
 

@@ -176,6 +176,13 @@ public extension Checkbox {
     }
 }
 
+// MARK: - Identifiers
+public extension AccessibilityID {
+
+    static let checkboxTitle        = Self(rawValue: "orbit.checkbox.title")
+    static let checkboxDescription  = Self(rawValue: "orbit.checkbox.description")
+}
+
 // MARK: - Previews
 struct CheckboxPreviews: PreviewProvider {
 
