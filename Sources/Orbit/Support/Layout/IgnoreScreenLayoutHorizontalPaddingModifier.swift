@@ -5,15 +5,16 @@ struct IgnoreScreenLayoutHorizontalPaddingModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.screenLayoutPadding) var screenLayoutPadding
 
+    var limitToSizeClass: UserInterfaceSizeClass?
+
     func body(content: Content) -> some View {
         content
             .padding(.horizontal, horizontalPadding)
     }
 
     var horizontalPadding: CGFloat {
-        guard horizontalSizeClass != .regular, let screenLayoutPadding = screenLayoutPadding else {
-            return 0
-        }
+        guard let screenLayoutPadding = screenLayoutPadding else { return 0 }
+        guard limitToSizeClass == nil || limitToSizeClass == horizontalSizeClass else { return 0 }
 
         return -screenLayoutPadding.horizontal(horizontalSizeClass: horizontalSizeClass)
     }
@@ -21,11 +22,11 @@ struct IgnoreScreenLayoutHorizontalPaddingModifier: ViewModifier {
 
 public extension View {
 
-    /// Reverts any horizontal padding provided by `screenLayout` context in a compact width environment.
+    /// Reverts any horizontal padding provided by `screenLayout` context. Can be optionally limited to a specific horizontal size class.
     ///
     /// A typical usage is to mimic the edge-to-edge appearance of the `Card` component.
-    func ignoreScreenLayoutHorizontalPadding() -> some View {
-        modifier(IgnoreScreenLayoutHorizontalPaddingModifier())
+    func ignoreScreenLayoutHorizontalPadding(limitToSizeClass sizeClass: UserInterfaceSizeClass? = nil) -> some View {
+        modifier(IgnoreScreenLayoutHorizontalPaddingModifier(limitToSizeClass: sizeClass))
     }
 }
 
@@ -36,9 +37,11 @@ struct ScreenLayoutHorizontalPaddingModifierPreviews: PreviewProvider {
         PreviewWrapper {
             content(padding: .default)
                 .screenLayout()
+                .previewDisplayName("Default")
 
             content(padding: .compact)
                 .screenLayout(padding: .compact, maxContentWidth: 300)
+                .previewDisplayName("Limited width")
         }
         .previewLayout(.sizeThatFits)
     }
@@ -53,9 +56,25 @@ struct ScreenLayoutHorizontalPaddingModifierPreviews: PreviewProvider {
 
             Color.blueLight
                 .frame(height: 100)
+                .ignoreScreenLayoutHorizontalPadding(limitToSizeClass: .compact)
+                .overlay(
+                    Text("Card-like ignored horizontal padding in compact")
+                        .padding(.medium)
+                )
+
+            Color.greenLight
+                .frame(height: 100)
+                .ignoreScreenLayoutHorizontalPadding(limitToSizeClass: .regular)
+                .overlay(
+                    Text("Card-like ignored horizontal padding in regular")
+                        .padding(.medium)
+                )
+
+            Color.orangeLight
+                .frame(height: 100)
                 .ignoreScreenLayoutHorizontalPadding()
                 .overlay(
-                    Text("Edge-to-edge content with no horizontal padding")
+                    Text("Card-like ignored horizontal padding in regular and compact")
                         .padding(.medium)
                 )
 

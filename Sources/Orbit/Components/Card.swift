@@ -56,7 +56,7 @@ public struct Card<Content: View>: View {
             showBorder ? .iOS : .none,
             status: status
         )
-        .ignoreScreenLayoutHorizontalPadding()
+        .ignoreScreenLayoutHorizontalPadding(limitToSizeClass: .compact)
         .accessibilityElement(children: .contain)
     }
 
