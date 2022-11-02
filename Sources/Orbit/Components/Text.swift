@@ -176,6 +176,56 @@ public extension Text {
         self.kerning = kerning
         self.linkAction = linkAction
     }
+
+    /// Creates Orbit Text component that displays localized content identified by a key.
+    ///
+    /// - Parameters:
+    ///   - key: The key for a string in the table identified by `tableName`. Supports html formatting tags `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
+    ///   - size: Font size.
+    ///   - color: Font color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
+    ///   - weight: Base font weight (overridable by formatting).
+    ///   - lineSpacing: Distance in points between the bottom of one line fragment and the top of the next.
+    ///   - alignment: Horizontal multi-line alignment.
+    ///   - accentColor: Color for `<ref>` formatting tag.
+    ///   - linkColor: Color for `<a href>` and `<applink>` formatting tag.
+    ///   - linkAction: Handler for any detected TextLink tap action.
+    ///   - isSelectable: Determines if text is copyable using long tap gesture.
+    ///   - kerning: Additional spacing between characters.
+    ///   - tableName: The name of the string table to search. If `nil`, use the table in the `Localizable.strings` file.
+    ///   - bundle: The bundle containing the strings file.
+    ///   - strikethrough: Determines if strikethrough should be applied.
+    init(
+        _ key: LocalizedStringKey,
+        size: Size = .normal,
+        color: Color? = .inkDark,
+        weight: Font.Weight = .regular,
+        lineSpacing: CGFloat? = nil,
+        alignment: TextAlignment = .leading,
+        accentColor: UIColor? = nil,
+        linkColor: TextLink.Color = .primary,
+        isSelectable: Bool = false,
+        strikethrough: Bool = false,
+        kerning: CGFloat = 0,
+        tableName: String? = nil,
+        bundle: Bundle,
+        linkAction: @escaping TextLink.Action = { _, _ in }
+    ) {
+        self.init(
+            "",
+//            bundle.localizedString(forKey: key, value: nil, table: tableName),
+            size: size,
+            color: color,
+            weight: weight,
+            lineSpacing: lineSpacing,
+            alignment: alignment,
+            accentColor: accentColor ?? color?.uiValue ?? .inkDark,
+            linkColor: linkColor,
+            isSelectable: isSelectable,
+            strikethrough: strikethrough,
+            kerning: kerning,
+            linkAction: linkAction
+        )
+    }
 }
 
 // MARK: - Types
