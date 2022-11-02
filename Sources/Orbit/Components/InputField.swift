@@ -59,6 +59,8 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
             InputContent(
                 prefix: prefix,
                 suffix: suffix,
+                prefixAccessibilityID: .inputFieldPrefix,
+                suffixAccessibilityID: .inputFieldSuffix,
                 state: state,
                 message: message,
                 isEditing: isEditing,
@@ -77,7 +79,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                         .accentColor(.blueNormal)
                         .background(textFieldPlaceholder, alignment: .leading)
                         .disabled(state == .disabled)
-                        .accessibility(.inputValue)
+                        .accessibility(.inputFieldValue)
                 }
             }
         } footer: {
@@ -377,6 +379,15 @@ public extension InputField {
                 .padding(.vertical, .xSmall)
         }
     }
+}
+
+// MARK: - Identifiers
+public extension AccessibilityID {
+
+    static let inputFieldPrefix             = Self(rawValue: "orbit.inputfield.prefix")
+    static let inputFieldSuffix             = Self(rawValue: "orbit.inputfield.suffix")
+    static let inputFieldValue              = Self(rawValue: "orbit.inputfield.value")
+    static let inputFieldPasswordToggle     = Self(rawValue: "orbit.inputfield.password.toggle")
 }
 
 // MARK: - Previews

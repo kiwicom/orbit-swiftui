@@ -382,6 +382,15 @@ extension ListChoice {
     }
 }
 
+// MARK: - Identifiers
+public extension AccessibilityID {
+
+    static let listChoiceTitle          = Self(rawValue: "orbit.listchoice.title")
+    static let listChoiceIcon           = Self(rawValue: "orbit.listchoice.icon")
+    static let listChoiceDescription    = Self(rawValue: "orbit.listchoice.description")
+    static let listChoiceValue          = Self(rawValue: "orbit.listchoice.value")
+}
+
 // MARK: - Previews
 struct ListChoicePreviews: PreviewProvider {
 

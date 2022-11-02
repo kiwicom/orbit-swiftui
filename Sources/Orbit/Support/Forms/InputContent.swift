@@ -7,6 +7,8 @@ struct InputContent<Content: View>: View {
 
     var prefix: Icon.Content = .none
     var suffix: Icon.Content = .none
+    var prefixAccessibilityID: AccessibilityID = .selectPrefix
+    var suffixAccessibilityID: AccessibilityID = .selectSuffix
     var state: InputState = .default
     var message: Message? = nil
     var isPressed: Bool = false
@@ -51,7 +53,7 @@ struct InputContent<Content: View>: View {
         Icon(content: prefix, size: .large)
             .foregroundColor(prefixColor)
             .padding(.horizontal, .xSmall)
-            .accessibility(.inputPrefix)
+            .accessibility(prefixAccessibilityID)
     }
 
     @ViewBuilder var suffixIcon: some View {
@@ -59,7 +61,7 @@ struct InputContent<Content: View>: View {
             .foregroundColor(suffixColor)
             .padding(.horizontal, .xSmall)
             .contentShape(Rectangle())
-            .accessibility(.inputSuffix)
+            .accessibility(suffixAccessibilityID)
     }
     
     private func backgroundColor(isPressed: Bool) -> Color {

@@ -124,6 +124,16 @@ extension Dialog {
     }
 }
 
+// MARK: - Identifiers
+public extension AccessibilityID {
+
+    static let dialogTitle              = Self(rawValue: "orbit.dialog.title")
+    static let dialogDescription        = Self(rawValue: "orbit.dialog.description")
+    static let dialogButtonPrimary      = Self(rawValue: "orbit.dialog.button.primary")
+    static let dialogButtonSecondary    = Self(rawValue: "orbit.dialog.button.secondary")
+    static let dialogButtonTertiary     = Self(rawValue: "orbit.dialog.button.tertiary")
+}
+
 // MARK: - Previews
 struct DialogPreviews: PreviewProvider {
 

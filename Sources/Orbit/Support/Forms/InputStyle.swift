@@ -6,6 +6,8 @@ struct InputStyle: ButtonStyle {
 
     var prefix: Icon.Content = .none
     var suffix: Icon.Content = .none
+    let prefixAccessibilityID: AccessibilityID
+    let suffixAccessibilityID: AccessibilityID
     var state: InputState = .default
     var message: Message? = nil
     var isEditing = false
@@ -14,6 +16,8 @@ struct InputStyle: ButtonStyle {
         InputContent(
             prefix: prefix,
             suffix: suffix,
+            prefixAccessibilityID: prefixAccessibilityID,
+            suffixAccessibilityID: suffixAccessibilityID,
             state: state,
             message: message,
             isPressed: configuration.isPressed,

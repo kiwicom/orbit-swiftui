@@ -28,6 +28,12 @@ public struct FieldLabel: View {
     }
 }
 
+// MARK: - Identifiers
+public extension AccessibilityID {
+
+    static let fieldLabel = Self(rawValue: "orbit.field.label")
+}
+
 // MARK: - Previews
 struct FieldLabelPreviews: PreviewProvider {
 
