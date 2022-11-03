@@ -21,18 +21,27 @@ public extension VerticalAlignment {
 ///   - ``Timeline``
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/timeline/)
-public struct TimelineStep<Header: View, Content: View, Footer: View>: View {
+public struct TimelineStep<Footer: View>: View {
 
     @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.horizontalSizeClass) var horisontalSizeClass
     @Environment(\.accessibilityReduceMotion) var reduceMotion
 
     let animationSpeed: CGFloat = 0.25
 
+    let label: String
+    let sublabel: String
+    let description: String
     let style: TimelineStepStyle
-    let isIconFirstTextLineCentered: Bool
-    @ViewBuilder let header: Header
-    @ViewBuilder let content: Content
     @ViewBuilder let footer: Footer
+
+    var hasHeaderContent: Bool {
+        label.isEmpty == false || sublabel.isEmpty == false
+    }
+
+    var hasDescription: Bool {
+        description.isEmpty == false
+    }
 
     @State var animationLoopTrigger = false
 
@@ -45,14 +54,32 @@ public struct TimelineStep<Header: View, Content: View, Footer: View>: View {
                 )
                 .overlay(indicator)
                 .alignmentGuide(.timelineStepAlignment) {
-                    isIconFirstTextLineCentered
-                        ? $0.height / 2.0
-                        : VerticalAlignment.TimelineStepAlignment.defaultValue(in: $0)
+                    if label.isEmpty == false || sublabel.isEmpty == false || description.isEmpty == false {
+                        return $0.height / 2.0
+                    } else {
+                        return 0
+                    }
                 }
             
             VStack(alignment: .leading, spacing: .xSmall) {
-                header
-                content
+                if hasHeaderContent {
+                    headerWithAccessibilitySizeSupport
+                        .alignmentGuide(
+                            .timelineStepAlignment,
+                            computeValue: VerticalAlignment.TimelineStepAlignment.computeFirstLineCenter(in:)
+                        )
+                }
+
+                if hasDescription, !hasHeaderContent {
+                    descriptionText
+                        .alignmentGuide(
+                            .timelineStepAlignment,
+                            computeValue: VerticalAlignment.TimelineStepAlignment.computeFirstLineCenter(in:)
+                        )
+                } else {
+                    descriptionText
+                }
+
                 footer
             }
         }
@@ -60,6 +87,29 @@ public struct TimelineStep<Header: View, Content: View, Footer: View>: View {
             [TimelineStepPreference(bounds: $0, style: style)]
         }
         .onAppear { animationLoopTrigger = !reduceMotion }
+    }
+
+    @ViewBuilder var headerWithAccessibilitySizeSupport: some View {
+        if horisontalSizeClass == .compact && sizeCategory.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: .xSmall) {
+                header
+            }
+        } else {
+            HStack(spacing: .xSmall) {
+                header
+            }
+        }
+    }
+
+    @ViewBuilder var header: some View {
+        Heading(label, style: .title5, color: .custom(Color(style.textColor)))
+
+        Text(sublabel, size: .small, color: .custom(style.textColor))
+            .padding(.leading, sizeCategory.isAccessibilitySize ? .xSmall : 0)
+    }
+
+    @ViewBuilder var descriptionText: some View {
+        Text(description, size: .normal, color: .custom(style.textColor))
     }
 
     @ViewBuilder var indicator: some View {
@@ -121,98 +171,40 @@ public struct TimelineStep<Header: View, Content: View, Footer: View>: View {
 
 // MARK: - Inits
 
-public extension TimelineStep where Header == TimelineStepHeadingText {
+public extension TimelineStep {
 
-    /// Creates Orbit TimelineStep component with custom details.
+    /// Creates Orbit TimelineStep component with text details.
     init(
-        _ label: String,
+        _ label: String = "",
         sublabel: String = "",
         style: TimelineStepStyle = .inactive,
-        @ViewBuilder content: () -> Content,
-        @ViewBuilder footer: () -> Footer = { EmptyView() }
+        description: String = "",
+        @ViewBuilder footer: () -> Footer
     ) {
-        self.init(
-            style: style,
-            isIconFirstTextLineCentered: true,
-            header: {
-                TimelineStepHeadingText(
-                    label: label,
-                    sublabel: sublabel,
-                    style: style,
-                    alignmentComputation: VerticalAlignment.TimelineStepAlignment.computeFirstLineCenter(in:)
-                )
-            },
-            content: content,
-            footer: footer
-        )
+
+        self.label = label
+        self.sublabel = sublabel
+        self.style = style
+        self.description = description
+        self.footer = footer()
     }
 }
 
-public extension TimelineStep where Content == TimelineStepBottomText {
-
-    /// Creates Orbit TimelineStep component with custom header and text details.
-    /// - Parameters:
-    ///   - isIconFirstTextLineCentered: center icon and first text line or align with the top
-    init(
-        style: TimelineStepStyle = .inactive,
-        isIconFirstTextLineCentered: Bool,
-        description: String,
-        @ViewBuilder header: () -> Header,
-        @ViewBuilder footer: () -> Footer = { EmptyView() }
-    ) {
-        self.init(style: style, isIconFirstTextLineCentered: isIconFirstTextLineCentered, header: header) {
-            TimelineStepBottomText(text: description, style: style)
-        } footer: {
-            footer()
-        }
-    }
-}
-
-public extension TimelineStep where Header == TimelineStepHeadingText, Content == TimelineStepBottomText {
+public extension TimelineStep where Footer == EmptyView {
 
     /// Creates Orbit TimelineStep component with text details.
     init(
         _ label: String,
         sublabel: String = "",
         style: TimelineStepStyle = .inactive,
-        description: String,
-        @ViewBuilder footer: () -> Footer = { EmptyView() }
+        description: String = ""
     ) {
 
-        self.init(
-            style: style,
-            isIconFirstTextLineCentered: true,
-            header: {
-                TimelineStepHeadingText(
-                    label: label,
-                    sublabel: sublabel,
-                    style: style,
-                    alignmentComputation: VerticalAlignment.TimelineStepAlignment.computeFirstLineCenter(in:)
-                )
-            },
-            content: { TimelineStepBottomText(text: description, style: style) },
-            footer: { footer() }
-        )
-    }
-}
-
-
-public extension TimelineStep {
-    /// Creates Orbit TimelineStep component with custom a header content and footer.
-    /// - Parameters:
-    ///   - isIconFirstTextLineCentered: center icon and first text line or align with the top
-    init(
-        style: TimelineStepStyle = .inactive,
-        isIconFirstTextLineCentered: Bool,
-        @ViewBuilder header: () -> Header,
-        @ViewBuilder content: () -> Content,
-        @ViewBuilder footer: () -> Footer = { EmptyView() }
-    ) {
+        self.label = label
+        self.sublabel = sublabel
         self.style = style
-        self.isIconFirstTextLineCentered = isIconFirstTextLineCentered
-        self.header = header()
-        self.content = content()
-        self.footer = footer()
+        self.description = description
+        self.footer = EmptyView()
     }
 }
 
@@ -352,34 +344,30 @@ struct TimelineStepPreviews: PreviewProvider {
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineStep(
-                style: .currentWarning,
-                isIconFirstTextLineCentered: true,
-                header: {
-                    VStack {
-                        Text(
-                            "1 Passenger must check in with the airline for a possible fee",
-                            size: .xLarge,
-                            color: .custom(TimelineStepStyle.pastWarning.textColor),
-                            weight: .bold
-                        )
-                        .padding(.leading, .xSmall)
-                        .alignmentGuide(
-                            .timelineStepAlignment,
-                            computeValue: VerticalAlignment.TimelineStepAlignment.computeFirstLineCenter(in:)
-                        )
-                    }
-                },
-                content: {
-                    VStack(alignment: .leading) {
-                        TimelineStepBottomText(
-                            text: "We’ve assigned your request to one of our agents.",
-                            style: .inactive
-                        )
-                        Button("Check in")
-                            .padding(.leading, .xSmall)
-                    }
+                "",
+                style: .currentWarning
+            ) {
+                VStack {
+                    Text(
+                        "1 Passenger must check in with the airline for a possible fee",
+                        size: .xLarge,
+                        color: .custom(TimelineStepStyle.pastWarning.textColor),
+                        weight: .bold
+                    )
+                    .alignmentGuide(
+                        .timelineStepAlignment,
+                        computeValue: VerticalAlignment.TimelineStepAlignment.computeFirstLineCenter(in:)
+                    )
                 }
-            )
+
+                TimelineStepBottomText(
+                    text: "We’ve assigned your request to one of our agents.",
+                    style: .inactive
+                )
+
+                Button("Check in")
+                    .padding(.leading, .xSmall)
+            }
         }
         .padding()
         .previewDisplayName("Snapshots")
@@ -424,21 +412,14 @@ struct TimelineStepCustomContentPreviews: PreviewProvider {
             TimelineStep(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .inactive
+                style: .inactive,
+                description: "We’ve assigned your request to one of our agents."
             ) {
-                VStack(alignment: .leading) {
-                    TimelineStepBottomText(
-                        text: "We’ve assigned your request to one of our agents.",
-                        style: .inactive
-                    )
-
-                    Button("Add info")
-                        .padding(.leading, .xSmall)
-                }
+                Button("Add info")
             }
+
             TimelineStep(
                 style: .currentWarning,
-                isIconFirstTextLineCentered: true,
                 description: "We’ve assigned your request to one of our agents."
             ) {
 
@@ -450,24 +431,23 @@ struct TimelineStepCustomContentPreviews: PreviewProvider {
                         weight: .bold
                     )
                     .padding(.leading, .xSmall)
-                    .alignmentGuide(
-                        .timelineStepAlignment,
-                        computeValue: VerticalAlignment.TimelineStepAlignment.computeFirstLineCenter(in:)
-                    )
                 }
             }
             TimelineStep(
                 style: .currentWarning,
-                isIconFirstTextLineCentered: true,
                 description: "We’ve assigned your request to one of our agents."
             ) {
                 Circle()
                     .fill(.red)
                     .frame(width: 50, height: 50)
-                    .alignmentGuide(
-                        .timelineStepAlignment,
-                        computeValue: VerticalAlignment.TimelineStepAlignment.computeFirstLineCenter(in:)
-                    )
+            }
+
+            TimelineStep(
+                style: .currentWarning
+            ) {
+                Circle()
+                    .fill(.red)
+                    .frame(width: 50, height: 50)
             }
         }
         .padding()
