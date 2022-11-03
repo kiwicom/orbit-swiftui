@@ -102,7 +102,7 @@ public struct TimelineItem<Footer: View>: View {
     }
 
     @ViewBuilder var header: some View {
-        Heading(label, style: .title5, color: .custom(Color(style.textColor)))
+        Heading(label, style: .title5, color: .custom(style.textColor))
 
         Text(sublabel, size: .small, color: .custom(style.textColor))
             .padding(.leading, sizeCategory.isAccessibilitySize ? .xSmall : 0)
@@ -276,9 +276,9 @@ public struct TimelineItemPreferenceKey: SwiftUI.PreferenceKey {
 public struct TimelineItemPreference {
 
     let bounds: Anchor<CGRect>
-    let style: TimelineStepStyle
+    let style: TimelineItemStyle
 
-    public init(bounds: Anchor<CGRect>, style: TimelineStepStyle) {
+    public init(bounds: Anchor<CGRect>, style: TimelineItemStyle) {
         self.bounds = bounds
         self.style = style
     }
