@@ -1,14 +1,13 @@
 import SwiftUI
 
-struct TimelineSegmentLine: View {
+struct TimelineLine: View {
     var height: CGFloat
     var startPointStyle: TimelineItemStyle
     var endPointStyle: TimelineItemStyle
 
     var body: some View {
         coloredLine
-            .frame(width: 2)
-            .offset(x: 1)
+            .frame(width: 2, height: height)
     }
 
     @ViewBuilder var coloredLine: some View {

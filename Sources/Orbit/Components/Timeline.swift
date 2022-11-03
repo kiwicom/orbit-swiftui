@@ -20,15 +20,12 @@ public struct Timeline<Content: View>: View {
                 GeometryReader { geometry in
                     VStack(spacing: 0) {
                         ForEach(preferences.indices.dropFirst(), id: \.self) { index in
-                            TimelineSegmentLine(
+                            TimelineLine(
                                 height: progressLineHeight(for: index - 1, in: preferences, geometry: geometry),
                                 startPointStyle: preferences[index - 1].style,
                                 endPointStyle: preferences[index].style
                             )
-                            .frame(
-                                width: TimelineItemStyle.indicatorDiameter * sizeCategory.ratio,
-                                height: progressLineHeight(for: index - 1, in: preferences, geometry: geometry)
-                            )
+                            .offset(x: TimelineItemStyle.indicatorDiameter * sizeCategory.ratio / 2)
                         }
                     }
                     .padding(.top, TimelineItemStyle.indicatorDiameter * sizeCategory.ratio / 2)
