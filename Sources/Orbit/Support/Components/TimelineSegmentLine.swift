@@ -2,8 +2,8 @@ import SwiftUI
 
 struct TimelineSegmentLine: View {
     var height: CGFloat
-    var startPointStyle: TimelineStepStyle
-    var endPointStyle: TimelineStepStyle
+    var startPointStyle: TimelineItemStyle
+    var endPointStyle: TimelineItemStyle
 
     var body: some View {
         coloredLine

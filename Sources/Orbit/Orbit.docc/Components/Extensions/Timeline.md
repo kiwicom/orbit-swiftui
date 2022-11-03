@@ -8,15 +8,13 @@
 
 ### Adding Content
 
-- ``TimelineStep``
-- ``TimelineStepHeadingText``
-- ``TimelineStepBottomText``
+- ``TimelineItem``
 
 ### Style 
 
-- ``TimelineStepStyle``
+- ``TimelineItemStyle``
 
 ### Alignment
 
-- ``TimelineStepPreference``
-- ``TimelineStepPreferenceKey``
+- ``TimelineItemPreference``
+- ``TimelineItemPreferenceKey``

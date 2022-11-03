@@ -3,7 +3,7 @@ import SwiftUI
 /// Shows progress on a process over time.
 ///
 /// - Related components
-///   - ``TimelineStep``
+///   - ``TimelineItem``
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/timeline/)
 public struct Timeline<Content: View>: View {
@@ -16,7 +16,7 @@ public struct Timeline<Content: View>: View {
             VStack(alignment: .leading, spacing: Self.spacing) {
                 content
             }
-            .backgroundPreferenceValue(TimelineStepPreferenceKey.self) { preferences in
+            .backgroundPreferenceValue(TimelineItemPreferenceKey.self) { preferences in
                 GeometryReader { geometry in
                     VStack(spacing: 0) {
                         ForEach(preferences.indices.dropFirst(), id: \.self) { index in
@@ -26,12 +26,12 @@ public struct Timeline<Content: View>: View {
                                 endPointStyle: preferences[index].style
                             )
                             .frame(
-                                width: TimelineStepStyle.indicatorDiameter * sizeCategory.ratio,
+                                width: TimelineItemStyle.indicatorDiameter * sizeCategory.ratio,
                                 height: progressLineHeight(for: index - 1, in: preferences, geometry: geometry)
                             )
                         }
                     }
-                    .padding(.top, TimelineStepStyle.indicatorDiameter * sizeCategory.ratio / 2)
+                    .padding(.top, TimelineItemStyle.indicatorDiameter * sizeCategory.ratio / 2)
                 }
             }
         }
@@ -43,7 +43,7 @@ public struct Timeline<Content: View>: View {
 
     func progressLineHeight(
         for index: Int,
-        in preferences: TimelineStepPreferenceKey.Value,
+        in preferences: TimelineItemPreferenceKey.Value,
         geometry: GeometryProxy
     ) -> CGFloat {
         guard preferences.indices.contains(index) else { return 0 }
@@ -51,7 +51,7 @@ public struct Timeline<Content: View>: View {
         return geometry[preferences[index].bounds].height + Self.spacing
     }
 
-    /// Creates Orbit TimelineStep component.
+    /// Creates Orbit TimelineItem component.
     public init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
@@ -77,40 +77,40 @@ struct TimelinePreviews: PreviewProvider {
 
     static var standalone: some View {
         Timeline {
-            TimelineStep(
+            TimelineItem(
                 "Booked",
                 sublabel: "January 3, 10:43",
-                style: .pastSuccess,
+                style: .past,
                 description: "You booked the trip and received e-tickets."
             )
-            TimelineStep(
+            TimelineItem(
                 "Checked in",
                 sublabel: "May 3, 8:45",
-                style: .pastSuccess,
+                style: .past,
                 description: "You checked in for the trip and received boarding passes"
             )
-            TimelineStep(
+            TimelineItem(
                 "Board",
                 sublabel: "May 4, 8:15",
-                style: .pastWarning,
+                style: .past,
                 description: "Be at your departure gate at least 30 minutes before boarding."
             )
-            TimelineStep(
+            TimelineItem(
                 "Board",
                 sublabel: "May 4, 8:15",
-                style: .pastCritical,
+                style: .past,
                 description: "Be at your departure gate at least 30 minutes before boarding."
             )
-            TimelineStep(
+            TimelineItem(
                 "Board",
                 sublabel: "May 4, 8:15",
-                style: .currentNormal,
+                style: .current(.info),
                 description: "Be at your departure gate at least 30 minutes before boarding."
             ) {
                 contentPlaceholder
             }
 
-            TimelineStep(
+            TimelineItem(
                 "Arrive",
                 sublabel: "May 4, 11:49",
                 description: "Arrive at your destination"
@@ -126,31 +126,31 @@ struct TimelinePreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .xxLarge) {
             Timeline {
                 ForEach(steps) { step in
-                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
                 }
             }
 
             Timeline {
                 ForEach(steps1) { step in
-                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
                 }
             }
 
             Timeline {
                 ForEach(steps2) { step in
-                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
                 }
             }
 
             Timeline {
                 ForEach(steps3) { step in
-                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
                 }
             }
 
             Timeline {
                 ForEach(steps4) { step in
-                    TimelineStep(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, style: step.style, description: step.content)
                 }
             }
         }
@@ -161,63 +161,63 @@ struct TimelinePreviews: PreviewProvider {
             .padding(.medium)
     }
 
-    static let steps: [TimelineStepModel] = [
-        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .currentNormal, content: texts[0].content),
+    static let steps: [TimelineItemModel] = [
+        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .current(.info), content: texts[0].content),
         .init(1, texts[1].label, sublabel: texts[1].sublabel, content: texts[1].content),
         .init(2, texts[2].label, sublabel: texts[2].sublabel, content: texts[2].content),
         .init(3, texts[3].label, sublabel: texts[3].sublabel, content: texts[3].content),
         .init(4, texts[4].label, sublabel: texts[4].sublabel, content: texts[4].content),
     ]
 
-    static let steps1: [TimelineStepModel] = [
-        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .pastSuccess, content: texts[0].content),
-        .init(1, texts[1].label, sublabel: texts[1].sublabel, style: .pastSuccess, content: texts[1].content),
-        .init(2, texts[2].label, sublabel: texts[2].sublabel, style: .pastSuccess, content: texts[2].content),
-        .init(3, texts[3].label, sublabel: texts[3].sublabel, style: .currentNormal, content: texts[3].content),
+    static let steps1: [TimelineItemModel] = [
+        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .past, content: texts[0].content),
+        .init(1, texts[1].label, sublabel: texts[1].sublabel, style: .past, content: texts[1].content),
+        .init(2, texts[2].label, sublabel: texts[2].sublabel, style: .past, content: texts[2].content),
+        .init(3, texts[3].label, sublabel: texts[3].sublabel, style: .current(.info), content: texts[3].content),
         .init(4, texts[4].label, sublabel: texts[4].sublabel, content: texts[4].content),
     ]
 
-    static let steps2: [TimelineStepModel] = [
-        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .pastSuccess, content: texts[0].content),
-        .init(1, texts[1].label, sublabel: texts[1].sublabel, style: .pastSuccess, content: texts[1].content),
-        .init(2, texts[2].label, sublabel: texts[2].sublabel, style: .pastSuccess, content: texts[2].content),
+    static let steps2: [TimelineItemModel] = [
+        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .past, content: texts[0].content),
+        .init(1, texts[1].label, sublabel: texts[1].sublabel, style: .past, content: texts[1].content),
+        .init(2, texts[2].label, sublabel: texts[2].sublabel, style: .past, content: texts[2].content),
         .init(
             3,
             "Action required",
             sublabel: texts[3].sublabel,
-            style: .currentWarning,
+            style: .current(.warning),
             content: "The carrier has sent us a refund. There might be more depending on their policy."
         ),
         .init(4, texts[4].label, sublabel: texts[4].sublabel, content: texts[4].content),
     ]
 
-    static let steps3: [TimelineStepModel] = [
-        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .pastSuccess, content: texts[0].content),
-        .init(1, texts[1].label, sublabel: texts[1].sublabel, style: .pastSuccess, content: texts[1].content),
-        .init(2, texts[2].label, sublabel: texts[2].sublabel, style: .pastSuccess, content: texts[2].content),
-        .init(3, texts[3].label, sublabel: texts[3].sublabel, style: .pastSuccess, content: texts[3].content),
-        .init(4, "Non refundable", sublabel: "25th Jun 10:48", style: .currentCritical, content: texts[4].content),
+    static let steps3: [TimelineItemModel] = [
+        .init(0, texts[0].label, sublabel: texts[0].sublabel, style: .past, content: texts[0].content),
+        .init(1, texts[1].label, sublabel: texts[1].sublabel, style: .past, content: texts[1].content),
+        .init(2, texts[2].label, sublabel: texts[2].sublabel, style: .past, content: texts[2].content),
+        .init(3, texts[3].label, sublabel: texts[3].sublabel, style: .past, content: texts[3].content),
+        .init(4, "Non refundable", sublabel: "25th Jun 10:48", style: .current(.critical), content: texts[4].content),
     ]
 
-    static let steps4: [TimelineStepModel] = [
-        .init(1, texts[0].label, sublabel: texts[0].sublabel, style: .pastSuccess, content: texts[0].content),
-        .init(2, texts[1].label, sublabel: texts[1].sublabel, style: .pastSuccess, content: texts[1].content),
-        .init(3, texts[2].label, sublabel: texts[2].sublabel, style: .pastSuccess, content: texts[2].content),
-        .init(4, texts[3].label, sublabel: texts[3].sublabel, style: .pastSuccess, content: texts[3].content),
-        .init(5, texts[4].label, sublabel: "25th Jun 10:48", style: .pastSuccess, content: ""),
+    static let steps4: [TimelineItemModel] = [
+        .init(1, texts[0].label, sublabel: texts[0].sublabel, style: .past, content: texts[0].content),
+        .init(2, texts[1].label, sublabel: texts[1].sublabel, style: .past, content: texts[1].content),
+        .init(3, texts[2].label, sublabel: texts[2].sublabel, style: .past, content: texts[2].content),
+        .init(4, texts[3].label, sublabel: texts[3].sublabel, style: .past, content: texts[3].content),
+        .init(5, texts[4].label, sublabel: "25th Jun 10:48", style: .current(.success), content: ""),
     ]
 }
 
 extension TimelinePreviews {
 
-    struct TimelineStepModel: Identifiable {
+    struct TimelineItemModel: Identifiable {
         let id: Int
         let label: String
         var sublabel = ""
-        var style: TimelineStepStyle = .inactive
+        var style: TimelineItemStyle = .future
         let content: String
 
-        init(_ id: Int, _ label: String, sublabel: String = "", style: TimelineStepStyle = .inactive, content: String) {
+        init(_ id: Int, _ label: String, sublabel: String = "", style: TimelineItemStyle = .future, content: String) {
             self.id = id
             self.label = label
             self.sublabel = sublabel
@@ -226,13 +226,13 @@ extension TimelinePreviews {
         }
     }
 
-    struct TimelineStepTextModel {
+    struct TimelineItemTextModel {
         let label: String
         var sublabel = ""
         let content: String
     }
 
-    static let texts: [TimelineStepTextModel] = [
+    static let texts: [TimelineItemTextModel] = [
         .init(
             label: "Requested",
             sublabel: "3rd May 14:04",

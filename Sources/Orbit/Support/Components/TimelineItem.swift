@@ -2,7 +2,7 @@ import SwiftUI
 
 public extension VerticalAlignment {
 
-    enum TimelineStepAlignment : AlignmentID {
+    enum TimelineItemAlignment : AlignmentID {
         public static func defaultValue(in dimensions: ViewDimensions) -> CGFloat {
             return dimensions[VerticalAlignment.top]
         }
@@ -12,7 +12,7 @@ public extension VerticalAlignment {
         }
     }
 
-    static let timelineStepAlignment = VerticalAlignment(TimelineStepAlignment.self)
+    static let timelineItemAlignment = VerticalAlignment(TimelineItemAlignment.self)
 }
 
 /// One item of a Timeline.
@@ -21,7 +21,7 @@ public extension VerticalAlignment {
 ///   - ``Timeline``
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/timeline/)
-public struct TimelineStep<Footer: View>: View {
+public struct TimelineItem<Footer: View>: View {
 
     @Environment(\.sizeCategory) var sizeCategory
     @Environment(\.horizontalSizeClass) var horisontalSizeClass
@@ -32,7 +32,7 @@ public struct TimelineStep<Footer: View>: View {
     let label: String
     let sublabel: String
     let description: String
-    let style: TimelineStepStyle
+    let style: TimelineItemStyle
     @ViewBuilder let footer: Footer
 
     var hasHeaderContent: Bool {
@@ -46,14 +46,14 @@ public struct TimelineStep<Footer: View>: View {
     @State var animationLoopTrigger = false
 
     public var body: some View {
-        HStack(alignment: .timelineStepAlignment, spacing: .small) {
+        HStack(alignment: .timelineItemAlignment, spacing: .small) {
             Color.clear
                 .frame(
-                    width: TimelineStepStyle.indicatorDiameter * sizeCategory.ratio,
-                    height: TimelineStepStyle.indicatorDiameter * sizeCategory.ratio
+                    width: TimelineItemStyle.indicatorDiameter * sizeCategory.ratio,
+                    height: TimelineItemStyle.indicatorDiameter * sizeCategory.ratio
                 )
                 .overlay(indicator)
-                .alignmentGuide(.timelineStepAlignment) {
+                .alignmentGuide(.timelineItemAlignment) {
                     if label.isEmpty == false || sublabel.isEmpty == false || description.isEmpty == false {
                         return $0.height / 2.0
                     } else {
@@ -65,16 +65,16 @@ public struct TimelineStep<Footer: View>: View {
                 if hasHeaderContent {
                     headerWithAccessibilitySizeSupport
                         .alignmentGuide(
-                            .timelineStepAlignment,
-                            computeValue: VerticalAlignment.TimelineStepAlignment.computeFirstLineCenter(in:)
+                            .timelineItemAlignment,
+                            computeValue: VerticalAlignment.TimelineItemAlignment.computeFirstLineCenter(in:)
                         )
                 }
 
                 if hasDescription, !hasHeaderContent {
                     descriptionText
                         .alignmentGuide(
-                            .timelineStepAlignment,
-                            computeValue: VerticalAlignment.TimelineStepAlignment.computeFirstLineCenter(in:)
+                            .timelineItemAlignment,
+                            computeValue: VerticalAlignment.TimelineItemAlignment.computeFirstLineCenter(in:)
                         )
                 } else {
                     descriptionText
@@ -83,8 +83,8 @@ public struct TimelineStep<Footer: View>: View {
                 footer
             }
         }
-        .anchorPreference(key: TimelineStepPreferenceKey.self, value: .bounds) {
-            [TimelineStepPreference(bounds: $0, style: style)]
+        .anchorPreference(key: TimelineItemPreferenceKey.self, value: .bounds) {
+            [TimelineItemPreference(bounds: $0, style: style)]
         }
         .onAppear { animationLoopTrigger = !reduceMotion }
     }
@@ -114,9 +114,9 @@ public struct TimelineStep<Footer: View>: View {
 
     @ViewBuilder var indicator: some View {
         switch style {
-            case .inactive, .currentNormal:
+            case .future, .current(.info):
                 icon
-            case .currentWarning, .currentCritical:
+        case .current(.warning), .current(.critical), .current(.success):
                 Circle()
                     .frame(
                         width: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio,
@@ -125,7 +125,7 @@ public struct TimelineStep<Footer: View>: View {
                     .foregroundColor(animationLoopTrigger ? Color.clear : style.color.opacity(0.1))
                     .animation(Animation.easeInOut.repeatForever().speed(animationSpeed))
                     .overlay(icon)
-            case .pastSuccess, .pastWarning, .pastCritical:
+            case .past:
                 Circle()
                     .foregroundColor(style.color.opacity(0.1))
                     .frame(width: .xMedium * sizeCategory.ratio, height: .xMedium * sizeCategory.ratio)
@@ -135,12 +135,12 @@ public struct TimelineStep<Footer: View>: View {
 
     @ViewBuilder var icon: some View {
         switch style {
-            case .inactive:
+            case .future:
                 Circle()
                     .strokeBorder(style.color, lineWidth: 2)
                     .background(Circle().fill(Color.whiteNormal))
                     .frame(width: .small * sizeCategory.ratio, height: .small * sizeCategory.ratio)
-            case .currentNormal:
+            case .current(.info):
                 ZStack {
                     Circle()
                         .frame(
@@ -162,7 +162,7 @@ public struct TimelineStep<Footer: View>: View {
                         .animation(Animation.easeInOut.repeatForever().speed(animationSpeed))
 
                 }
-            case .currentWarning, .currentCritical, .pastSuccess, .pastWarning, .pastCritical:
+        case .current(.warning), .current(.critical), .current(.success), .past:
                 Icon(style.iconSymbol, size: .small, color: style.color)
                     .background(Circle().fill(Color.whiteNormal).padding(2))
         }
@@ -171,13 +171,13 @@ public struct TimelineStep<Footer: View>: View {
 
 // MARK: - Inits
 
-public extension TimelineStep {
+public extension TimelineItem {
 
-    /// Creates Orbit TimelineStep component with text details.
+    /// Creates Orbit TimelineItem component with text details.
     init(
         _ label: String = "",
         sublabel: String = "",
-        style: TimelineStepStyle = .inactive,
+        style: TimelineItemStyle = .future,
         description: String = "",
         @ViewBuilder footer: () -> Footer
     ) {
@@ -190,13 +190,13 @@ public extension TimelineStep {
     }
 }
 
-public extension TimelineStep where Footer == EmptyView {
+public extension TimelineItem where Footer == EmptyView {
 
-    /// Creates Orbit TimelineStep component with text details.
+    /// Creates Orbit TimelineItem component with text details.
     init(
         _ label: String,
         sublabel: String = "",
-        style: TimelineStepStyle = .inactive,
+        style: TimelineItemStyle = .future,
         description: String = ""
     ) {
 
@@ -210,46 +210,40 @@ public extension TimelineStep where Footer == EmptyView {
 
 // MARK: - Types
 
-public enum TimelineStepStyle: Equatable {
-    case inactive
-    case currentNormal
-    case currentWarning
-    case currentCritical
-    case pastSuccess
-    case pastWarning
-    case pastCritical
+public enum TimelineItemStyle: Equatable {
+    case past
+    case current(Status)
+    case future
 
     public static let indicatorDiameter: CGFloat = Icon.Size.large.value
 
     public var iconSymbol: Icon.Symbol {
         switch self {
-            case .inactive:           return .none
-            case .currentNormal:      return .none
-            case .currentWarning:     return .alertCircle
-            case .currentCritical:    return .closeCircle
-            case .pastSuccess:        return .checkCircle
-            case .pastWarning:        return .alertCircle
-            case .pastCritical:       return .closeCircle
+            case .past:                  return .checkCircle
+            case .current(.critical):    return .closeCircle
+            case .current(.warning):     return .alertCircle
+            case .current(.success):     return .checkCircle
+            case .current(.info):        return .none
+            case .future:                return .none
         }
     }
 
     public var color: Color {
         switch self {
-            case .inactive:           return .cloudNormalHover
-            case .currentNormal:      return Status.success.color
-            case .currentWarning:     return Status.warning.color
-            case .currentCritical:    return Status.critical.color
-            case .pastSuccess:        return Status.success.color
-            case .pastWarning:        return Status.warning.color
-            case .pastCritical:       return Status.critical.color
+            case .past:                  return Status.success.color
+            case .current(.critical):    return Status.critical.color
+            case .current(.warning):     return Status.warning.color
+            case .current(.success):     return Status.success.color
+            case .current(.info):        return Status.success.color
+            case .future:                return .cloudNormalHover
         }
     }
 
     public var isCurrentStep: Bool {
         switch self {
-            case .currentNormal, .currentWarning, .currentCritical:
+            case .current:
                 return true
-            case .inactive, .pastSuccess, .pastWarning, .pastCritical:
+            case .past, .future:
                 return false
         }
     }
@@ -260,17 +254,17 @@ public enum TimelineStepStyle: Equatable {
 
     public var isLineDashed: Bool {
         switch self {
-            case .inactive:
+            case .future:
                 return true
-            case .currentNormal, .currentWarning, .currentCritical, .pastSuccess, .pastWarning, .pastCritical:
+            case .past, .current:
                 return false
         }
     }
 }
 
-public struct TimelineStepPreferenceKey: SwiftUI.PreferenceKey {
+public struct TimelineItemPreferenceKey: SwiftUI.PreferenceKey {
 
-    public typealias Value = [TimelineStepPreference]
+    public typealias Value = [TimelineItemPreference]
 
     public static var defaultValue: Value = []
 
@@ -279,7 +273,7 @@ public struct TimelineStepPreferenceKey: SwiftUI.PreferenceKey {
     }
 }
 
-public struct TimelineStepPreference {
+public struct TimelineItemPreference {
 
     let bounds: Anchor<CGRect>
     let style: TimelineStepStyle
@@ -291,7 +285,7 @@ public struct TimelineStepPreference {
 }
 
 // MARK: - Previews
-struct TimelineStepPreviews: PreviewProvider {
+struct TimelineItemPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
@@ -302,10 +296,10 @@ struct TimelineStepPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        TimelineStep(
+        TimelineItem(
             "Requested",
             sublabel: "3rd May 14:04",
-            style: .pastSuccess,
+            style: .past,
             description: "We’ve assigned your request to one of our agents."
         )
         .padding()
@@ -313,60 +307,50 @@ struct TimelineStepPreviews: PreviewProvider {
 
     static var snapshots: some View {
         VStack(alignment: .leading) {
-            TimelineStep(
+            TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .inactive,
+                style: .future,
                 description: "We’ve assigned your request to one of our agents."
             )
-            TimelineStep(
+            TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .currentNormal,
+                style: .current(.info),
                 description: "We’ve assigned your request to one of our agents."
             )
-            TimelineStep(
+            TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .currentWarning,
+                style: .current(.warning),
                 description: "We’ve assigned your request to one of our agents."
             )
-            TimelineStep(
+            TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .currentCritical,
+                style: .current(.critical),
                 description: "We’ve assigned your request to one of our agents."
             )
-            TimelineStep(
+            TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .pastCritical,
+                style: .past,
                 description: "We’ve assigned your request to one of our agents."
             )
-            TimelineStep(
+            TimelineItem(
                 "",
-                style: .currentWarning
+                style: .current(.warning)
             ) {
                 VStack {
                     Text(
                         "1 Passenger must check in with the airline for a possible fee",
                         size: .xLarge,
-                        color: .custom(TimelineStepStyle.pastWarning.textColor),
+                        color: .custom(TimelineItemStyle.past.textColor),
                         weight: .bold
-                    )
-                    .alignmentGuide(
-                        .timelineStepAlignment,
-                        computeValue: VerticalAlignment.TimelineStepAlignment.computeFirstLineCenter(in:)
                     )
                 }
 
-                TimelineStepBottomText(
-                    text: "We’ve assigned your request to one of our agents.",
-                    style: .inactive
-                )
-
                 Button("Check in")
-                    .padding(.leading, .xSmall)
             }
         }
         .padding()
@@ -374,7 +358,7 @@ struct TimelineStepPreviews: PreviewProvider {
     }
 }
 
-struct TimelineStepDynamicTypePreviews: PreviewProvider {
+struct TimelineItemDynamicTypePreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
@@ -385,20 +369,20 @@ struct TimelineStepDynamicTypePreviews: PreviewProvider {
     }
 
     @ViewBuilder static var standaloneSmall: some View {
-        TimelineStepPreviews.standalone
+        TimelineItemPreviews.standalone
             .environment(\.sizeCategory, .extraSmall)
             .previewDisplayName("Dynamic type — extraSmall")
     }
 
     @ViewBuilder static var standaloneLarge: some View {
-        TimelineStepPreviews.standalone
+        TimelineItemPreviews.standalone
             .environment(\.sizeCategory, .accessibilityExtraLarge)
             .previewDisplayName("Dynamic type — extra large")
             .previewLayout(.sizeThatFits)
     }
 }
 
-struct TimelineStepCustomContentPreviews: PreviewProvider {
+struct TimelineItemCustomContentPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
@@ -409,17 +393,17 @@ struct TimelineStepCustomContentPreviews: PreviewProvider {
 
     @ViewBuilder static var customContent: some View {
         VStack(alignment: .leading) {
-            TimelineStep(
+            TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .inactive,
+                style: .future,
                 description: "We’ve assigned your request to one of our agents."
             ) {
                 Button("Add info")
             }
 
-            TimelineStep(
-                style: .currentWarning,
+            TimelineItem(
+                style: .current(.warning),
                 description: "We’ve assigned your request to one of our agents."
             ) {
 
@@ -427,14 +411,14 @@ struct TimelineStepCustomContentPreviews: PreviewProvider {
                     Text(
                         "1 Passenger must check in with the airline for a possible fee",
                         size: .custom(50),
-                        color: .custom(TimelineStepStyle.currentWarning.textColor),
+                        color: .custom(TimelineItemStyle.current(.warning).textColor),
                         weight: .bold
                     )
                     .padding(.leading, .xSmall)
                 }
             }
-            TimelineStep(
-                style: .currentWarning,
+            TimelineItem(
+                style: .current(.warning),
                 description: "We’ve assigned your request to one of our agents."
             ) {
                 Circle()
@@ -442,8 +426,8 @@ struct TimelineStepCustomContentPreviews: PreviewProvider {
                     .frame(width: 50, height: 50)
             }
 
-            TimelineStep(
-                style: .currentWarning
+            TimelineItem(
+                style: .current(.warning)
             ) {
                 Circle()
                     .fill(.red)
