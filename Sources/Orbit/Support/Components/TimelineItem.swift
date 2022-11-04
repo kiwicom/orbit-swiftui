@@ -18,18 +18,6 @@ public struct TimelineItem<Footer: View>: View {
     let type: TimelineItemType
     @ViewBuilder let footer: Footer
 
-    var hasHeaderContent: Bool {
-        label.isEmpty == false || sublabel.isEmpty == false
-    }
-
-    var hasDescription: Bool {
-        description.isEmpty == false
-    }
-
-    var animation: Animation {
-        Animation.easeInOut.repeatForever().speed(0.25)
-    }
-
     @State var animationLoopTrigger = false
 
     public var body: some View {
@@ -141,6 +129,18 @@ public struct TimelineItem<Footer: View>: View {
                 Icon(type.iconSymbol, size: .small, color: type.color)
                     .background(Circle().fill(Color.whiteNormal).padding(2))
         }
+    }
+
+    var hasHeaderContent: Bool {
+        label.isEmpty == false || sublabel.isEmpty == false
+    }
+
+    var hasDescription: Bool {
+        description.isEmpty == false
+    }
+
+    var animation: Animation {
+        Animation.easeInOut.repeatForever().speed(0.25)
     }
 
     func iconContentBaselineOffset(height: CGFloat) -> CGFloat {
