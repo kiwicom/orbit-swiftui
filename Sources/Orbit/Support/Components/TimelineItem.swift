@@ -27,8 +27,6 @@ public struct TimelineItem<Footer: View>: View {
     @Environment(\.horizontalSizeClass) var horisontalSizeClass
     @Environment(\.accessibilityReduceMotion) var reduceMotion
 
-    let animationSpeed: CGFloat = 0.25
-
     let label: String
     let sublabel: String
     let description: String
@@ -41,6 +39,10 @@ public struct TimelineItem<Footer: View>: View {
 
     var hasDescription: Bool {
         description.isEmpty == false
+    }
+
+    var animation: Animation {
+        Animation.easeInOut.repeatForever().speed(0.25)
     }
 
     @State var animationLoopTrigger = false
@@ -116,14 +118,14 @@ public struct TimelineItem<Footer: View>: View {
         switch style {
             case .future, .current(.info):
                 icon
-        case .current(.warning), .current(.critical), .current(.success):
+            case .current(.warning), .current(.critical), .current(.success):
                 Circle()
                     .frame(
-                        width: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio,
-                        height: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio
+                        width: (.xMedium) * sizeCategory.ratio,
+                        height: (.xMedium) * sizeCategory.ratio
                     )
                     .foregroundColor(animationLoopTrigger ? Color.clear : style.color.opacity(0.1))
-                    .animation(Animation.easeInOut.repeatForever().speed(animationSpeed))
+                    .animation(animation, value: animationLoopTrigger)
                     .overlay(icon)
             case .past:
                 Circle()
@@ -141,13 +143,13 @@ public struct TimelineItem<Footer: View>: View {
                     .background(Circle().fill(Color.whiteNormal))
                     .frame(width: .small * sizeCategory.ratio, height: .small * sizeCategory.ratio)
             case .current(.info):
-                ZStack {
+                ZStack(alignment: .center) {
                     Circle()
                         .frame(
                             width: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio,
                             height: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio
                         )
-                        .animation(Animation.easeInOut.repeatForever().speed(animationSpeed))
+                        .animation(animation, value: animationLoopTrigger)
                         .foregroundColor(style.color.opacity(0.1))
 
                     Circle()
@@ -159,7 +161,7 @@ public struct TimelineItem<Footer: View>: View {
                         .frame(width: .xxSmall * sizeCategory.ratio, height: .xxSmall * sizeCategory.ratio)
                         .scaleEffect(animationLoopTrigger ? .init(width: 0.5, height: 0.5) : .init(width: 1, height: 1))
                         .foregroundColor(animationLoopTrigger ? Color.clear : style.color)
-                        .animation(Animation.easeInOut.repeatForever().speed(animationSpeed))
+                        .animation(animation, value: animationLoopTrigger)
 
                 }
         case .current(.warning), .current(.critical), .current(.success), .past:
@@ -199,12 +201,7 @@ public extension TimelineItem where Footer == EmptyView {
         style: TimelineItemStyle = .future,
         description: String = ""
     ) {
-
-        self.label = label
-        self.sublabel = sublabel
-        self.style = style
-        self.description = description
-        self.footer = EmptyView()
+        self.init(label, sublabel: sublabel, style: style, description: description, footer: { EmptyView() })
     }
 }
 
@@ -355,30 +352,6 @@ struct TimelineItemPreviews: PreviewProvider {
         }
         .padding()
         .previewDisplayName("Snapshots")
-    }
-}
-
-struct TimelineItemDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            standaloneSmall
-            standaloneLarge
-        }
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var standaloneSmall: some View {
-        TimelineItemPreviews.standalone
-            .environment(\.sizeCategory, .extraSmall)
-            .previewDisplayName("Dynamic type — extraSmall")
-    }
-
-    @ViewBuilder static var standaloneLarge: some View {
-        TimelineItemPreviews.standalone
-            .environment(\.sizeCategory, .accessibilityExtraLarge)
-            .previewDisplayName("Dynamic type — extra large")
-            .previewLayout(.sizeThatFits)
     }
 }
 
