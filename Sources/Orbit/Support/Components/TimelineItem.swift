@@ -1,20 +1,5 @@
 import SwiftUI
 
-public extension VerticalAlignment {
-
-    enum TimelineItemAlignment : AlignmentID {
-        public static func defaultValue(in dimensions: ViewDimensions) -> CGFloat {
-            return dimensions[VerticalAlignment.top]
-        }
-
-        public static func computeFirstLineCenter(in dimensions: ViewDimensions) -> CGFloat {
-            (dimensions.height - (dimensions[.lastTextBaseline] - dimensions[.firstTextBaseline])) / 2
-        }
-    }
-
-    static let timelineItemAlignment = VerticalAlignment(TimelineItemAlignment.self)
-}
-
 /// One item of a Timeline.
 ///
 /// - Related components
@@ -30,7 +15,7 @@ public struct TimelineItem<Footer: View>: View {
     let label: String
     let sublabel: String
     let description: String
-    let style: TimelineItemStyle
+    let type: TimelineItemType
     @ViewBuilder let footer: Footer
 
     var hasHeaderContent: Bool {
@@ -48,36 +33,24 @@ public struct TimelineItem<Footer: View>: View {
     @State var animationLoopTrigger = false
 
     public var body: some View {
-        HStack(alignment: .timelineItemAlignment, spacing: .small) {
-            Color.clear
+        HStack(alignment: .firstTextBaseline, spacing: .small) {
+
+            indicator
                 .frame(
-                    width: TimelineItemStyle.indicatorDiameter * sizeCategory.ratio,
-                    height: TimelineItemStyle.indicatorDiameter * sizeCategory.ratio
+                    width: TimelineItemType.indicatorDiameter * sizeCategory.ratio,
+                    height: TimelineItemType.indicatorDiameter * sizeCategory.ratio
                 )
-                .overlay(indicator)
-                .alignmentGuide(.timelineItemAlignment) {
-                    if label.isEmpty == false || sublabel.isEmpty == false || description.isEmpty == false {
-                        return $0.height / 2.0
-                    } else {
-                        return 0
-                    }
+                .alignmentGuide(.firstTextBaseline){ dimensions in
+                    iconContentBaselineOffset(height: dimensions.height)
                 }
             
             VStack(alignment: .leading, spacing: .xSmall) {
                 if hasHeaderContent {
                     headerWithAccessibilitySizeSupport
-                        .alignmentGuide(
-                            .timelineItemAlignment,
-                            computeValue: VerticalAlignment.TimelineItemAlignment.computeFirstLineCenter(in:)
-                        )
                 }
 
                 if hasDescription, !hasHeaderContent {
                     descriptionText
-                        .alignmentGuide(
-                            .timelineItemAlignment,
-                            computeValue: VerticalAlignment.TimelineItemAlignment.computeFirstLineCenter(in:)
-                        )
                 } else {
                     descriptionText
                 }
@@ -86,7 +59,7 @@ public struct TimelineItem<Footer: View>: View {
             }
         }
         .anchorPreference(key: TimelineItemPreferenceKey.self, value: .bounds) {
-            [TimelineItemPreference(bounds: $0, style: style)]
+            [TimelineItemPreference(bounds: $0, type: type)]
         }
         .onAppear { animationLoopTrigger = !reduceMotion }
     }
@@ -104,18 +77,18 @@ public struct TimelineItem<Footer: View>: View {
     }
 
     @ViewBuilder var header: some View {
-        Heading(label, style: .title5, color: .custom(style.textColor))
+        Heading(label, style: .title5, color: .custom(type.textColor))
 
-        Text(sublabel, size: .small, color: .custom(style.textColor))
+        Text(sublabel, size: .small, color: .custom(type.textColor))
             .padding(.leading, sizeCategory.isAccessibilitySize ? .xSmall : 0)
     }
 
     @ViewBuilder var descriptionText: some View {
-        Text(description, size: .normal, color: .custom(style.textColor))
+        Text(description, size: .normal, color: .custom(type.textColor))
     }
 
     @ViewBuilder var indicator: some View {
-        switch style {
+        switch type {
             case .future, .current(.info):
                 icon
             case .current(.warning), .current(.critical), .current(.success):
@@ -124,22 +97,22 @@ public struct TimelineItem<Footer: View>: View {
                         width: (.xMedium) * sizeCategory.ratio,
                         height: (.xMedium) * sizeCategory.ratio
                     )
-                    .foregroundColor(animationLoopTrigger ? Color.clear : style.color.opacity(0.1))
+                    .foregroundColor(animationLoopTrigger ? Color.clear : type.color.opacity(0.1))
                     .animation(animation, value: animationLoopTrigger)
                     .overlay(icon)
             case .past:
                 Circle()
-                    .foregroundColor(style.color.opacity(0.1))
+                    .foregroundColor(type.color.opacity(0.1))
                     .frame(width: .xMedium * sizeCategory.ratio, height: .xMedium * sizeCategory.ratio)
                     .overlay(icon)
             }
     }
 
     @ViewBuilder var icon: some View {
-        switch style {
+        switch type {
             case .future:
                 Circle()
-                    .strokeBorder(style.color, lineWidth: 2)
+                    .strokeBorder(type.color, lineWidth: 2)
                     .background(Circle().fill(Color.whiteNormal))
                     .frame(width: .small * sizeCategory.ratio, height: .small * sizeCategory.ratio)
             case .current(.info):
@@ -150,24 +123,28 @@ public struct TimelineItem<Footer: View>: View {
                             height: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio
                         )
                         .animation(animation, value: animationLoopTrigger)
-                        .foregroundColor(style.color.opacity(0.1))
+                        .foregroundColor(type.color.opacity(0.1))
 
                     Circle()
-                        .strokeBorder(style.color, lineWidth: 2)
+                        .strokeBorder(type.color, lineWidth: 2)
                         .background(Circle().fill(Color.whiteNormal))
                         .frame(width: .small * sizeCategory.ratio, height: .small * sizeCategory.ratio)
 
                     Circle()
                         .frame(width: .xxSmall * sizeCategory.ratio, height: .xxSmall * sizeCategory.ratio)
                         .scaleEffect(animationLoopTrigger ? .init(width: 0.5, height: 0.5) : .init(width: 1, height: 1))
-                        .foregroundColor(animationLoopTrigger ? Color.clear : style.color)
+                        .foregroundColor(animationLoopTrigger ? Color.clear : type.color)
                         .animation(animation, value: animationLoopTrigger)
 
                 }
         case .current(.warning), .current(.critical), .current(.success), .past:
-                Icon(style.iconSymbol, size: .small, color: style.color)
+                Icon(type.iconSymbol, size: .small, color: type.color)
                     .background(Circle().fill(Color.whiteNormal).padding(2))
         }
+    }
+
+    func iconContentBaselineOffset(height: CGFloat) -> CGFloat {
+        Icon.Size.small.textBaselineAlignmentGuide(sizeCategory: sizeCategory, height: height)
     }
 }
 
@@ -179,14 +156,14 @@ public extension TimelineItem {
     init(
         _ label: String = "",
         sublabel: String = "",
-        style: TimelineItemStyle = .future,
+        type: TimelineItemType = .future,
         description: String = "",
         @ViewBuilder footer: () -> Footer
     ) {
 
         self.label = label
         self.sublabel = sublabel
-        self.style = style
+        self.type = type
         self.description = description
         self.footer = footer()
     }
@@ -198,16 +175,16 @@ public extension TimelineItem where Footer == EmptyView {
     init(
         _ label: String,
         sublabel: String = "",
-        style: TimelineItemStyle = .future,
+        type: TimelineItemType = .future,
         description: String = ""
     ) {
-        self.init(label, sublabel: sublabel, style: style, description: description, footer: { EmptyView() })
+        self.init(label, sublabel: sublabel, type: type, description: description, footer: { EmptyView() })
     }
 }
 
 // MARK: - Types
 
-public enum TimelineItemStyle: Equatable {
+public enum TimelineItemType: Equatable {
     case past
     case current(Status)
     case future
@@ -259,26 +236,21 @@ public enum TimelineItemStyle: Equatable {
     }
 }
 
-public struct TimelineItemPreferenceKey: SwiftUI.PreferenceKey {
+struct TimelineItemPreferenceKey: SwiftUI.PreferenceKey {
 
-    public typealias Value = [TimelineItemPreference]
+    typealias Value = [TimelineItemPreference]
 
-    public static var defaultValue: Value = []
+    static var defaultValue: Value = []
 
-    public static func reduce(value: inout Value, nextValue: () -> Value) {
+    static func reduce(value: inout Value, nextValue: () -> Value) {
         value.append(contentsOf: nextValue())
     }
 }
 
-public struct TimelineItemPreference {
+struct TimelineItemPreference {
 
     let bounds: Anchor<CGRect>
-    let style: TimelineItemStyle
-
-    public init(bounds: Anchor<CGRect>, style: TimelineItemStyle) {
-        self.bounds = bounds
-        self.style = style
-    }
+    let type: TimelineItemType
 }
 
 // MARK: - Previews
@@ -296,7 +268,7 @@ struct TimelineItemPreviews: PreviewProvider {
         TimelineItem(
             "Requested",
             sublabel: "3rd May 14:04",
-            style: .past,
+            type: .past,
             description: "We’ve assigned your request to one of our agents."
         )
         .padding()
@@ -307,42 +279,42 @@ struct TimelineItemPreviews: PreviewProvider {
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .future,
+                type: .future,
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .current(.info),
+                type: .current(.info),
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .current(.warning),
+                type: .current(.warning),
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .current(.critical),
+                type: .current(.critical),
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .past,
+                type: .past,
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineItem(
                 "",
-                style: .current(.warning)
+                type: .current(.warning)
             ) {
                 VStack {
                     Text(
                         "1 Passenger must check in with the airline for a possible fee",
                         size: .xLarge,
-                        color: .custom(TimelineItemStyle.past.textColor),
+                        color: .custom(TimelineItemType.past.textColor),
                         weight: .bold
                     )
                 }
@@ -369,14 +341,14 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                style: .future,
+                type: .future,
                 description: "We’ve assigned your request to one of our agents."
             ) {
                 Button("Add info")
             }
 
             TimelineItem(
-                style: .current(.warning),
+                type: .current(.warning),
                 description: "We’ve assigned your request to one of our agents."
             ) {
 
@@ -384,14 +356,14 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
                     Text(
                         "1 Passenger must check in with the airline for a possible fee",
                         size: .custom(50),
-                        color: .custom(TimelineItemStyle.current(.warning).textColor),
+                        color: .custom(TimelineItemType.current(.warning).textColor),
                         weight: .bold
                     )
                     .padding(.leading, .xSmall)
                 }
             }
             TimelineItem(
-                style: .current(.warning),
+                type: .current(.warning),
                 description: "We’ve assigned your request to one of our agents."
             ) {
                 Circle()
@@ -400,7 +372,7 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
             }
 
             TimelineItem(
-                style: .current(.warning)
+                type: .current(.warning)
             ) {
                 Circle()
                     .fill(.red)

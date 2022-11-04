@@ -2,8 +2,8 @@ import SwiftUI
 
 struct TimelineLine: View {
     var height: CGFloat
-    var startPointStyle: TimelineItemStyle
-    var endPointStyle: TimelineItemStyle
+    var startPointType: TimelineItemType
+    var endPointType: TimelineItemType
 
     var body: some View {
         coloredLine
@@ -11,13 +11,13 @@ struct TimelineLine: View {
     }
 
     @ViewBuilder var coloredLine: some View {
-        if endPointStyle.isLineDashed {
+        if endPointType.isLineDashed {
             linePath
-                .fill(endPointStyle.color)
+                .fill(endPointType.color)
         } else {
             linePath
                 .fill(LinearGradient(
-                    colors: [startPointStyle.color, endPointStyle.color],
+                    colors: [startPointType.color, endPointType.color],
                     startPoint: .top,
                     endPoint: .bottom
                 ))
@@ -29,6 +29,6 @@ struct TimelineLine: View {
             path.move(to: CGPoint(x: 0, y: 0))
             path.addLine(to: CGPoint(x: 0, y: height))
         }
-        .stroke(style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: endPointStyle.isLineDashed ? [3, 5] : []))
+        .stroke(style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: endPointType.isLineDashed ? [3, 5] : []))
     }
 }

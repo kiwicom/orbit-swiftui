@@ -12,9 +12,4 @@
 
 ### Style 
 
-- ``TimelineItemStyle``
-
-### Alignment
-
-- ``TimelineItemPreference``
-- ``TimelineItemPreferenceKey``
+- ``TimelineItemType``
