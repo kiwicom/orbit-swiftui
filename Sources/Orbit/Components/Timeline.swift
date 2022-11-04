@@ -25,10 +25,10 @@ public struct Timeline<Content: View>: View {
                                 startPointType: preferences[index - 1].type,
                                 endPointType: preferences[index].type
                             )
-                            .offset(x: TimelineItemType.indicatorDiameter * sizeCategory.ratio / 2)
+                            .offset(x: TimelineIndicator.indicatorDiameter * sizeCategory.ratio / 2)
                         }
                     }
-                    .padding(.top, TimelineItemType.indicatorDiameter * sizeCategory.ratio / 2)
+                    .padding(.top, TimelineIndicator.indicatorDiameter * sizeCategory.ratio / 2)
                 }
             }
         }
