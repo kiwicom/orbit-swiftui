@@ -103,35 +103,42 @@ public extension TimelineItem where Footer == EmptyView {
 // MARK: - Types
 
 public enum TimelineItemType: Equatable {
+
+    public enum Status {
+        case success
+        case warning
+        case critical
+    }
+
     case past
-    case current(Status)
+    case present(Status? = nil)
     case future
 
     public var iconSymbol: Icon.Symbol {
         switch self {
             case .past:                  return .checkCircle
-            case .current(.critical):    return .closeCircle
-            case .current(.warning):     return .alertCircle
-            case .current(.success):     return .checkCircle
-            case .current(.info):        return .none
+            case .present(.critical):    return .closeCircle
+            case .present(.warning):     return .alertCircle
+            case .present(.success):     return .checkCircle
+            case .present:               return .none
             case .future:                return .none
         }
     }
 
     public var color: Color {
         switch self {
-            case .past:                  return Status.success.color
-            case .current(.critical):    return Status.critical.color
-            case .current(.warning):     return Status.warning.color
-            case .current(.success):     return Status.success.color
-            case .current(.info):        return Status.success.color
+            case .past:                  return Orbit.Status.success.color
+            case .present(.critical):    return Orbit.Status.critical.color
+            case .present(.warning):     return Orbit.Status.warning.color
+            case .present(.success):     return Orbit.Status.success.color
+            case .present:               return Orbit.Status.success.color
             case .future:                return .cloudNormalHover
         }
     }
 
     public var isCurrentStep: Bool {
         switch self {
-            case .current:
+            case .present:
                 return true
             case .past, .future:
                 return false
@@ -146,7 +153,7 @@ public enum TimelineItemType: Equatable {
         switch self {
             case .future:
                 return true
-            case .past, .current:
+            case .past, .present:
                 return false
         }
     }
@@ -201,19 +208,19 @@ struct TimelineItemPreviews: PreviewProvider {
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                type: .current(.info),
+                type: .present(),
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                type: .current(.warning),
+                type: .present(.warning),
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                type: .current(.critical),
+                type: .present(.critical),
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineItem(
@@ -223,7 +230,7 @@ struct TimelineItemPreviews: PreviewProvider {
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineItem(
-                type: .current(.warning)
+                type: .present(.warning)
             ) {
                 contentPlaceholder
             }
@@ -254,7 +261,7 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
             }
 
             TimelineItem(
-                type: .current(.warning),
+                type: .present(.warning),
                 description: "We’ve assigned your request to one of our agents."
             ) {
 
@@ -262,14 +269,14 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
                     Text(
                         "1 Passenger must check in with the airline for a possible fee",
                         size: .custom(50),
-                        color: .custom(TimelineItemType.current(.warning).textColor),
+                        color: .custom(TimelineItemType.present(.warning).textColor),
                         weight: .bold
                     )
                     .padding(.leading, .xSmall)
                 }
             }
             TimelineItem(
-                type: .current(.warning),
+                type: .present(.warning),
                 description: "We’ve assigned your request to one of our agents."
             ) {
                 Circle()
@@ -278,7 +285,7 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
             }
 
             TimelineItem(
-                type: .current(.warning)
+                type: .present(.warning)
             ) {
                 Circle()
                     .fill(.red)

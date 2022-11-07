@@ -101,7 +101,7 @@ struct TimelinePreviews: PreviewProvider {
             TimelineItem(
                 "Board",
                 sublabel: "May 4, 8:15",
-                type: .current(.info),
+                type: .present(),
                 description: "Be at your departure gate at least 30 minutes before boarding."
             ) {
                 contentPlaceholder
@@ -159,7 +159,7 @@ struct TimelinePreviews: PreviewProvider {
     }
 
     static let steps: [TimelineItemModel] = [
-        .init(0, texts[0].label, sublabel: texts[0].sublabel, type: .current(.info), content: texts[0].content),
+        .init(0, texts[0].label, sublabel: texts[0].sublabel, type: .present(), content: texts[0].content),
         .init(1, texts[1].label, sublabel: texts[1].sublabel, content: texts[1].content),
         .init(2, texts[2].label, sublabel: texts[2].sublabel, content: texts[2].content),
         .init(3, texts[3].label, sublabel: texts[3].sublabel, content: texts[3].content),
@@ -170,7 +170,7 @@ struct TimelinePreviews: PreviewProvider {
         .init(0, texts[0].label, sublabel: texts[0].sublabel, type: .past, content: texts[0].content),
         .init(1, texts[1].label, sublabel: texts[1].sublabel, type: .past, content: texts[1].content),
         .init(2, texts[2].label, sublabel: texts[2].sublabel, type: .past, content: texts[2].content),
-        .init(3, texts[3].label, sublabel: texts[3].sublabel, type: .current(.info), content: texts[3].content),
+        .init(3, texts[3].label, sublabel: texts[3].sublabel, type: .present(), content: texts[3].content),
         .init(4, texts[4].label, sublabel: texts[4].sublabel, content: texts[4].content),
     ]
 
@@ -182,7 +182,7 @@ struct TimelinePreviews: PreviewProvider {
             3,
             "Action required",
             sublabel: texts[3].sublabel,
-            type: .current(.warning),
+            type: .present(.warning),
             content: "The carrier has sent us a refund. There might be more depending on their policy."
         ),
         .init(4, texts[4].label, sublabel: texts[4].sublabel, content: texts[4].content),
@@ -193,7 +193,7 @@ struct TimelinePreviews: PreviewProvider {
         .init(1, texts[1].label, sublabel: texts[1].sublabel, type: .past, content: texts[1].content),
         .init(2, texts[2].label, sublabel: texts[2].sublabel, type: .past, content: texts[2].content),
         .init(3, texts[3].label, sublabel: texts[3].sublabel, type: .past, content: texts[3].content),
-        .init(4, "Non refundable", sublabel: "25th Jun 10:48", type: .current(.critical), content: texts[4].content),
+        .init(4, "Non refundable", sublabel: "25th Jun 10:48", type: .present(.critical), content: texts[4].content),
     ]
 
     static let steps4: [TimelineItemModel] = [
@@ -201,7 +201,7 @@ struct TimelinePreviews: PreviewProvider {
         .init(2, texts[1].label, sublabel: texts[1].sublabel, type: .past, content: texts[1].content),
         .init(3, texts[2].label, sublabel: texts[2].sublabel, type: .past, content: texts[2].content),
         .init(4, texts[3].label, sublabel: texts[3].sublabel, type: .past, content: texts[3].content),
-        .init(5, texts[4].label, sublabel: "25th Jun 10:48", type: .current(.success), content: ""),
+        .init(5, texts[4].label, sublabel: "25th Jun 10:48", type: .present(.success), content: ""),
     ]
 }
 

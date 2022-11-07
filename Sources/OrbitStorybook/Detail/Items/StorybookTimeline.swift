@@ -8,25 +8,25 @@ struct StorybookTimeline {
             TimelineItem(
                 "Booked",
                 sublabel: "January 3, 10:43",
-                type: .current(.success),
+                type: .present(.success),
                 description: "You booked the trip and received e-tickets."
             )
             TimelineItem(
                 "Checked in",
                 sublabel: "May 3, 8:45",
-                type: .current(.success),
+                type: .present(.success),
                 description: "You checked in for the trip and received boarding passes"
             )
             TimelineItem(
                 "Board",
                 sublabel: "May 4, 8:15",
-                type: .current(.warning),
+                type: .present(.warning),
                 description: "Be at your departure gate at least 30 minutes before boarding."
             )
             TimelineItem(
                 "Board",
                 sublabel: "May 4, 8:15",
-                type: .current(.critical),
+                type: .present(.critical),
                 description: "Be at your departure gate at least 30 minutes before boarding."
             ) {
                 contentPlaceholder
@@ -75,7 +75,7 @@ struct StorybookTimeline {
     }
 
     static let steps: [TimelineItemModel] = [
-        .init(0, texts[0].label, sublabel: texts[0].sublabel, type: .current(.success), content: texts[0].content),
+        .init(0, texts[0].label, sublabel: texts[0].sublabel, type: .present(.success), content: texts[0].content),
         .init(1, texts[1].label, sublabel: texts[1].sublabel, content: texts[1].content),
         .init(2, texts[2].label, sublabel: texts[2].sublabel, content: texts[2].content),
         .init(3, texts[3].label, sublabel: texts[3].sublabel, content: texts[3].content),
@@ -83,41 +83,41 @@ struct StorybookTimeline {
     ]
 
     static let steps1: [TimelineItemModel] = [
-        .init(0, texts[0].label, sublabel: texts[0].sublabel, type: .current(.success), content: texts[0].content),
-        .init(1, texts[1].label, sublabel: texts[1].sublabel, type: .current(.success), content: texts[1].content),
-        .init(2, texts[2].label, sublabel: texts[2].sublabel, type: .current(.success), content: texts[2].content),
-        .init(3, texts[3].label, sublabel: texts[3].sublabel, type: .current(.success), content: texts[3].content),
+        .init(0, texts[0].label, sublabel: texts[0].sublabel, type: .present(.success), content: texts[0].content),
+        .init(1, texts[1].label, sublabel: texts[1].sublabel, type: .present(.success), content: texts[1].content),
+        .init(2, texts[2].label, sublabel: texts[2].sublabel, type: .present(.success), content: texts[2].content),
+        .init(3, texts[3].label, sublabel: texts[3].sublabel, type: .present(.success), content: texts[3].content),
         .init(4, texts[4].label, sublabel: texts[4].sublabel, content: texts[4].content),
     ]
 
     static let steps2: [TimelineItemModel] = [
-        .init(0, texts[0].label, sublabel: texts[0].sublabel, type: .current(.success), content: texts[0].content),
-        .init(1, texts[1].label, sublabel: texts[1].sublabel, type: .current(.success), content: texts[1].content),
-        .init(2, texts[2].label, sublabel: texts[2].sublabel, type: .current(.success), content: texts[2].content),
+        .init(0, texts[0].label, sublabel: texts[0].sublabel, type: .present(.success), content: texts[0].content),
+        .init(1, texts[1].label, sublabel: texts[1].sublabel, type: .present(.success), content: texts[1].content),
+        .init(2, texts[2].label, sublabel: texts[2].sublabel, type: .present(.success), content: texts[2].content),
         .init(
             3,
             "Action required",
             sublabel: texts[3].sublabel,
-            type: .current(.warning),
+            type: .present(.warning),
             content: "The carrier has sent us a refund. There might be more depending on their policy."
         ),
         .init(4, texts[4].label, sublabel: texts[4].sublabel, content: texts[4].content),
     ]
 
     static let steps3: [TimelineItemModel] = [
-        .init(0, texts[0].label, sublabel: texts[0].sublabel, type: .current(.success), content: texts[0].content),
-        .init(1, texts[1].label, sublabel: texts[1].sublabel, type: .current(.success), content: texts[1].content),
-        .init(2, texts[2].label, sublabel: texts[2].sublabel, type: .current(.success), content: texts[2].content),
-        .init(3, texts[3].label, sublabel: texts[3].sublabel, type: .current(.success), content: texts[3].content),
-        .init(4, "Non refundable", sublabel: "25th Jun 10:48", type: .current(.critical), content: texts[4].content),
+        .init(0, texts[0].label, sublabel: texts[0].sublabel, type: .present(.success), content: texts[0].content),
+        .init(1, texts[1].label, sublabel: texts[1].sublabel, type: .present(.success), content: texts[1].content),
+        .init(2, texts[2].label, sublabel: texts[2].sublabel, type: .present(.success), content: texts[2].content),
+        .init(3, texts[3].label, sublabel: texts[3].sublabel, type: .present(.success), content: texts[3].content),
+        .init(4, "Non refundable", sublabel: "25th Jun 10:48", type: .present(.critical), content: texts[4].content),
     ]
 
     static let steps4: [TimelineItemModel] = [
-        .init(1, texts[0].label, sublabel: texts[0].sublabel, type: .current(.success), content: texts[0].content),
-        .init(2, texts[1].label, sublabel: texts[1].sublabel, type: .current(.success), content: texts[1].content),
-        .init(3, texts[2].label, sublabel: texts[2].sublabel, type: .current(.success), content: texts[2].content),
-        .init(4, texts[3].label, sublabel: texts[3].sublabel, type: .current(.success), content: texts[3].content),
-        .init(5, texts[4].label, sublabel: "25th Jun 10:48", type: .current(.success), content: ""),
+        .init(1, texts[0].label, sublabel: texts[0].sublabel, type: .present(.success), content: texts[0].content),
+        .init(2, texts[1].label, sublabel: texts[1].sublabel, type: .present(.success), content: texts[1].content),
+        .init(3, texts[2].label, sublabel: texts[2].sublabel, type: .present(.success), content: texts[2].content),
+        .init(4, texts[3].label, sublabel: texts[3].sublabel, type: .present(.success), content: texts[3].content),
+        .init(5, texts[4].label, sublabel: "25th Jun 10:48", type: .present(.success), content: ""),
     ]
 }
 

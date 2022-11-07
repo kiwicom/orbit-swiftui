@@ -25,9 +25,9 @@ struct TimelineIndicator: View {
 
     @ViewBuilder var indicator: some View {
         switch type {
-            case .future, .current(.info):
+            case .future, .present(nil):
                 icon
-            case .current(.warning), .current(.critical), .current(.success):
+            case .present(.warning), .present(.critical), .present(.success):
                 Circle()
                     .frame(
                         width: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio,
@@ -51,7 +51,7 @@ struct TimelineIndicator: View {
                     .strokeBorder(type.color, lineWidth: 2)
                     .background(Circle().fill(Color.whiteNormal))
                     .frame(width: .small * sizeCategory.ratio, height: .small * sizeCategory.ratio)
-            case .current(.info):
+            case .present(nil):
                 ZStack(alignment: .center) {
                     Circle()
                         .frame(
@@ -73,9 +73,9 @@ struct TimelineIndicator: View {
                         .animation(animation, value: animationLoopTrigger)
 
                 }
-        case .current(.warning), .current(.critical), .current(.success), .past:
-                Icon(type.iconSymbol, size: .small, color: type.color)
-                    .background(Circle().fill(Color.whiteNormal).padding(2))
+            case .present(.warning), .present(.critical), .present(.success), .past:
+                    Icon(type.iconSymbol, size: .small, color: type.color)
+                        .background(Circle().fill(Color.whiteNormal).padding(2))
         }
     }
 
