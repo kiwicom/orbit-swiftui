@@ -8,15 +8,8 @@
 
 ### Adding Content
 
-- ``TimelineStep``
-- ``TimelineStepBadgeText``
-- ``TimelineStepBottomText``
+- ``TimelineItem``
 
 ### Style 
 
-- ``TimelineStepStyle``
-
-### Alignment
-
-- ``TimelineStepPreference``
-- ``TimelineStepPreferenceKey``
+- ``TimelineItemType``
