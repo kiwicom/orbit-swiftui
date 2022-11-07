@@ -30,8 +30,8 @@ struct TimelineIndicator: View {
             case .current(.warning), .current(.critical), .current(.success):
                 Circle()
                     .frame(
-                        width: (.xMedium) * sizeCategory.ratio,
-                        height: (.xMedium) * sizeCategory.ratio
+                        width: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio,
+                        height: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio
                     )
                     .foregroundColor(animationLoopTrigger ? Color.clear : type.color.opacity(0.1))
                     .animation(animation, value: animationLoopTrigger)
