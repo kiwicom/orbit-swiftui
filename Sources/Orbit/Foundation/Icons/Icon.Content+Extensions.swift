@@ -180,6 +180,8 @@ public extension Icon.Content {
     static let compass: Self = .symbol(.compass)
     /// Orbit `contactEmail` icon symbol with unspecified color.
     static let contactEmail: Self = .symbol(.contactEmail)
+    /// Orbit `copy` icon symbol with unspecified color.
+    static let copy: Self = .symbol(.copy)
     /// Orbit `creditCard` icon symbol with unspecified color.
     static let creditCard: Self = .symbol(.creditCard)
     /// Orbit `customerSupport` icon symbol with unspecified color.
