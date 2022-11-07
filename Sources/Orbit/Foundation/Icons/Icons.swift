@@ -181,6 +181,8 @@ public extension Icon {
         case compass
         /// Orbit `contactEmail` icon symbol.
         case contactEmail
+        /// Orbit `copy` icon symbol.
+        case copy
         /// Orbit `creditCard` icon symbol.
         case creditCard
         /// Orbit `customerSupport` icon symbol.
@@ -667,6 +669,7 @@ public extension Icon {
                 case .compare: return "\u{7994}"
                 case .compass: return "\u{3496}"
                 case .contactEmail: return "\u{3270}"
+                case .copy: return "\u{6653}"
                 case .creditCard: return "\u{2078}"
                 case .customerSupport: return "\u{2517}"
                 case .dashboard: return "\u{6778}"
