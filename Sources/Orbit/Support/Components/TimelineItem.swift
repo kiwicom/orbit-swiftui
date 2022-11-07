@@ -21,13 +21,6 @@ public struct TimelineItem<Footer: View>: View {
         HStack(alignment: (hasHeaderContent || hasDescription) ? .firstTextBaseline : .top, spacing: .small) {
 
             TimelineIndicator(type: type)
-                .frame(
-                    width: TimelineIndicator.indicatorDiameter * sizeCategory.ratio,
-                    height: TimelineIndicator.indicatorDiameter * sizeCategory.ratio
-                )
-                .alignmentGuide(.firstTextBaseline){ dimensions in
-                    iconContentBaselineOffset(height: dimensions.height)
-                }
             
             VStack(alignment: .leading, spacing: .xSmall) {
 
@@ -71,17 +64,13 @@ public struct TimelineItem<Footer: View>: View {
     var hasDescription: Bool {
         description.isEmpty == false
     }
-
-    func iconContentBaselineOffset(height: CGFloat) -> CGFloat {
-        Icon.Size.small.textBaselineAlignmentGuide(sizeCategory: sizeCategory, height: height)
-    }
 }
 
 // MARK: - Inits
 
 public extension TimelineItem {
 
-    /// Creates Orbit TimelineItem component with text details.
+    /// Creates Orbit TimelineItem component with text details and custom content at the bottom.
     init(
         _ label: String = "",
         sublabel: String = "",

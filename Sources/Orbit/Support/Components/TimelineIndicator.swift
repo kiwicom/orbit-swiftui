@@ -13,6 +13,13 @@ struct TimelineIndicator: View {
 
     var body: some View {
         indicator
+            .frame(
+                width: TimelineIndicator.indicatorDiameter * sizeCategory.ratio,
+                height: TimelineIndicator.indicatorDiameter * sizeCategory.ratio
+            )
+            .alignmentGuide(.firstTextBaseline){ dimensions in
+                iconContentBaselineOffset(height: dimensions.height)
+            }
             .onAppear { animationLoopTrigger = !isReduceMotionEnabled }
     }
 
@@ -74,5 +81,9 @@ struct TimelineIndicator: View {
 
     var animation: Animation {
         Animation.easeInOut.repeatForever().speed(0.25)
+    }
+
+    func iconContentBaselineOffset(height: CGFloat) -> CGFloat {
+        Icon.Size.small.textBaselineAlignmentGuide(sizeCategory: sizeCategory, height: height)
     }
 }
