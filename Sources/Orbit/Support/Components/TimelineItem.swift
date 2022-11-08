@@ -10,11 +10,11 @@ public struct TimelineItem<Footer: View>: View {
 
     @Environment(\.sizeCategory) var sizeCategory
     @Environment(\.horizontalSizeClass) var horisontalSizeClass
+    @Environment(\.timelineConfiguration) var timelineConfiguration
 
     let label: String
     let sublabel: String
     let description: String
-    let type: TimelineItemType
     @ViewBuilder let footer: Footer
 
     public var body: some View {
@@ -30,7 +30,7 @@ public struct TimelineItem<Footer: View>: View {
             }
         }
         .anchorPreference(key: TimelineItemPreferenceKey.self, value: .bounds) {
-            [TimelineItemPreference(bounds: $0, type: type)]
+            [TimelineItemPreference(hashValue: hashValue, bounds: $0)]
         }
     }
 
@@ -64,6 +64,14 @@ public struct TimelineItem<Footer: View>: View {
     var hasDescription: Bool {
         description.isEmpty == false
     }
+
+    var hashValue: Int {
+        (label + sublabel + description).hashValue
+    }
+
+    var type: TimelineItemType {
+        timelineConfiguration[hashValue] ?? .future
+    }
 }
 
 // MARK: - Inits
@@ -74,14 +82,12 @@ public extension TimelineItem {
     init(
         _ label: String = "",
         sublabel: String = "",
-        type: TimelineItemType = .future,
         description: String = "",
         @ViewBuilder footer: () -> Footer
     ) {
 
         self.label = label
         self.sublabel = sublabel
-        self.type = type
         self.description = description
         self.footer = footer()
     }
@@ -91,12 +97,11 @@ public extension TimelineItem where Footer == EmptyView {
 
     /// Creates Orbit TimelineItem component with text details.
     init(
-        _ label: String,
+        _ label: String = "",
         sublabel: String = "",
-        type: TimelineItemType = .future,
         description: String = ""
     ) {
-        self.init(label, sublabel: sublabel, type: type, description: description, footer: { EmptyView() })
+        self.init(label, sublabel: sublabel, description: description, footer: { EmptyView() })
     }
 }
 
@@ -170,10 +175,21 @@ struct TimelineItemPreferenceKey: SwiftUI.PreferenceKey {
     }
 }
 
-struct TimelineItemPreference {
-
+struct TimelineItemPreference: Equatable {
+    let hashValue: Int
     let bounds: Anchor<CGRect>
-    let type: TimelineItemType
+}
+
+struct TimelineConfigurationKey: EnvironmentKey {
+    static var defaultValue: [Int: TimelineItemType] = [:]
+}
+
+extension EnvironmentValues {
+
+    var timelineConfiguration: [Int: TimelineItemType]  {
+        get { self[TimelineConfigurationKey.self] }
+        set { self[TimelineConfigurationKey.self] = newValue }
+    }
 }
 
 // MARK: - Previews
@@ -182,61 +198,87 @@ struct TimelineItemPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+                .environment(\.timelineConfiguration, [standalone.hashValue: .present()])
             snapshots
         }
         .previewLayout(.sizeThatFits)
     }
 
-    static var standalone: some View {
+    static var standalone: TimelineItem<EmptyView> {
         TimelineItem(
             "Requested",
             sublabel: "3rd May 14:04",
-            type: .past,
             description: "We’ve assigned your request to one of our agents."
         )
-        .padding()
     }
 
     static var snapshots: some View {
-        VStack(alignment: .leading, spacing: .xLarge) {
+        VStack(alignment: .leading) {
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                type: .future,
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                type: .present(),
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                type: .present(.warning),
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                type: .present(.critical),
                 description: "We’ve assigned your request to one of our agents."
             )
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                type: .past,
                 description: "We’ve assigned your request to one of our agents."
             )
-            TimelineItem(
-                type: .present(.warning)
-            ) {
-                contentPlaceholder
+            TimelineItem {
+                VStack {
+                    Text(
+                        "1 Passenger must check in with the airline for a possible fee",
+                        size: .xLarge,
+                        color: .custom(TimelineItemType.past.textColor),
+                        weight: .bold
+                    )
+                }
+
+                Button("Check in")
+                    .padding(.leading, .xSmall)
             }
         }
         .padding()
         .previewDisplayName("Snapshots")
+    }
+}
+
+struct TimelineItemDynamicTypePreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            standaloneSmall
+            standaloneLarge
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    @ViewBuilder static var standaloneSmall: some View {
+        TimelineItemPreviews.standalone
+            .environment(\.sizeCategory, .extraSmall)
+            .previewDisplayName("Dynamic type — extraSmall")
+    }
+
+    @ViewBuilder static var standaloneLarge: some View {
+        TimelineItemPreviews.standalone
+            .environment(\.sizeCategory, .accessibilityExtraLarge)
+            .previewDisplayName("Dynamic type — extra large")
+            .previewLayout(.sizeThatFits)
     }
 }
 
@@ -254,14 +296,12 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                type: .future,
                 description: "We’ve assigned your request to one of our agents."
             ) {
                 Button("Add info")
             }
 
             TimelineItem(
-                type: .present(.warning),
                 description: "We’ve assigned your request to one of our agents."
             ) {
 
@@ -276,7 +316,6 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
                 }
             }
             TimelineItem(
-                type: .present(.warning),
                 description: "We’ve assigned your request to one of our agents."
             ) {
                 Circle()
@@ -284,9 +323,7 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
                     .frame(width: 50, height: 50)
             }
 
-            TimelineItem(
-                type: .present(.warning)
-            ) {
+            TimelineItem {
                 Circle()
                     .fill(.red)
                     .frame(width: 50, height: 50)

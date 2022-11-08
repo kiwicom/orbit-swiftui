@@ -4,29 +4,25 @@ import Orbit
 struct StorybookTimeline {
 
     static var basic: some View {
-        Timeline {
+        Timeline(selectedIndex: 3) {
             TimelineItem(
                 "Booked",
                 sublabel: "January 3, 10:43",
-                type: .present(.success),
                 description: "You booked the trip and received e-tickets."
             )
             TimelineItem(
                 "Checked in",
                 sublabel: "May 3, 8:45",
-                type: .present(.success),
                 description: "You checked in for the trip and received boarding passes"
             )
             TimelineItem(
                 "Board",
                 sublabel: "May 4, 8:15",
-                type: .present(.warning),
                 description: "Be at your departure gate at least 30 minutes before boarding."
             )
             TimelineItem(
                 "Board",
-                sublabel: "May 4, 8:15",
-                type: .present(.critical),
+                sublabel: "May 4, 8:35",
                 description: "Be at your departure gate at least 30 minutes before boarding."
             ) {
                 contentPlaceholder
@@ -42,33 +38,33 @@ struct StorybookTimeline {
 
     static var mix: some View {
         VStack(alignment: .leading, spacing: .xxLarge) {
-            Timeline {
+            Timeline(selectedIndex: 1) {
                 ForEach(steps) { step in
-                    TimelineItem(step.label, sublabel: step.sublabel, type: step.type, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, description: step.content)
                 }
             }
 
-            Timeline {
+            Timeline(selectedIndex: 4) {
                 ForEach(steps1) { step in
-                    TimelineItem(step.label, sublabel: step.sublabel, type: step.type, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, description: step.content)
                 }
             }
 
-            Timeline {
+            Timeline(selectedIndex: 3, currentStatus: .warning) {
                 ForEach(steps2) { step in
-                    TimelineItem(step.label, sublabel: step.sublabel, type: step.type, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, description: step.content)
                 }
             }
 
-            Timeline {
+            Timeline(selectedIndex: 4, currentStatus: .critical) {
                 ForEach(steps3) { step in
-                    TimelineItem(step.label, sublabel: step.sublabel, type: step.type, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, description: step.content)
                 }
             }
 
-            Timeline {
+            Timeline(selectedIndex: 4, currentStatus: .success) {
                 ForEach(steps4) { step in
-                    TimelineItem(step.label, sublabel: step.sublabel, type: step.type, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, description: step.content)
                 }
             }
         }
