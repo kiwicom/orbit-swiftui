@@ -39,7 +39,7 @@
 - component: Itinerary
   ios: Planned
 - component: KeyValue
-  ios: Planned
+  ios: Released
 - component: List
   ios: Released
 - component: ListChoice
@@ -75,4 +75,6 @@
 - component: TileGroup
   ios: Released
 - component: Timeline
+  ios: Released
+- component: Toast
   ios: Released
