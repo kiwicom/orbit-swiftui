@@ -245,12 +245,12 @@ extension Icon: TextRepresentable {
         switch content {
             case .symbol(let symbol, let color?):
                 return SwiftUI.Text(verbatim: symbol.value)
-                    .baselineOffset(textBaselineOffset)
+                    .baselineOffset(textBaselineOffset(sizeCategory: sizeCategory))
                     .foregroundColor(color)
                     .font(.orbitIcon(size: size.value, style: size.textStyle))
             case .symbol(let symbol, nil):
                 return SwiftUI.Text(verbatim: symbol.value)
-                    .baselineOffset(textBaselineOffset)
+                    .baselineOffset(textBaselineOffset(sizeCategory: sizeCategory))
                     // foregroundColor(nil) prevents further overrides
                     .font(.orbitIcon(size: size.value, style: size.textStyle))
             case .image(let image, _):
@@ -274,12 +274,12 @@ extension Icon: TextRepresentable {
         switch content {
             case .symbol(let symbol, let color?):
                 return SwiftUI.Text(verbatim: symbol.value)
-                    .baselineOffset(textBaselineOffset)
+                    .baselineOffset(textBaselineOffset(sizeCategory: sizeCategory))
                     .foregroundColor(color)
                     .font(.orbitIcon(size: size.value, style: size.textStyle))
             case .symbol(let symbol, nil):
                 return SwiftUI.Text(verbatim: symbol.value)
-                    .baselineOffset(textBaselineOffset)
+                    .baselineOffset(textBaselineOffset(sizeCategory: sizeCategory))
                     // foregroundColor(nil) prevents further overrides
                     .font(.orbitIcon(size: size.value, style: size.textStyle))
             case .image, .countryFlag, .sfSymbol:
@@ -288,7 +288,7 @@ extension Icon: TextRepresentable {
         }
     }
 
-    var textBaselineOffset: CGFloat {
+    func textBaselineOffset(sizeCategory: ContentSizeCategory) -> CGFloat {
         baselineOffset - size.baselineOffset(sizeCategory: sizeCategory)
     }
 }
