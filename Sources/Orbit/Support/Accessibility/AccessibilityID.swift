@@ -3,7 +3,7 @@ import SwiftUI
 /// Orbit accessibility identifier for use in wrapper components.
 ///
 /// Can be extended to provide custom accessibility identifiers.
-public struct AccessibilityID: RawRepresentable {
+public struct AccessibilityID: RawRepresentable, Equatable, Hashable {
 
     public let rawValue: String
 
