@@ -24,6 +24,7 @@ public extension Illustration {
         case error404
         case eVisa
         case fareLock
+        case fareLockSuccess
         case fastTrack
         case fastTrackMan
         case feedback
@@ -38,6 +39,7 @@ public extension Illustration {
         case meal
         case mobileApp
         case money
+        case musicalInstruments
         case netVerify
         case noBookings
         case noFavoriteFlights
@@ -49,6 +51,7 @@ public extension Illustration {
         case onlineCheckIn
         case openSearch
         case parking
+        case pets
         case placeholderAirport
         case placeholderDestination
         case placeholderHotel
@@ -61,6 +64,7 @@ public extension Illustration {
         case rentalCar
         case seating
         case specialAssistance
+        case sportsEquipment
         case success
         case ticketFlexi
         case time
