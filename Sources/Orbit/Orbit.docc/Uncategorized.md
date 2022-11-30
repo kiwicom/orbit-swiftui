@@ -28,7 +28,7 @@ Supporting types and components under development.
 
 - ``IsElevationEnabledKey``
 - ``IsExpandedKey``
-- ``IsFadeInKey``
+- ``IsFadeInEnabledKey``
 - ``IsTileSeparatorVisibleKey``
 - ``ScreenLayoutPaddingKey``
 
