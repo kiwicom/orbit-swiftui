@@ -8,6 +8,7 @@ struct StorybookSeparator {
             Separator()
             Separator("Separator with label")
         }
+        .previewDisplayName()
     }
 
     static var mix: some View {
@@ -17,6 +18,7 @@ struct StorybookSeparator {
             Separator("Hairline thickness", thickness: .hairline)
             Separator("Custom thickness", thickness: .custom(.xSmall))
         }
+        .previewDisplayName()
     }
 }
 

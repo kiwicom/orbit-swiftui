@@ -9,6 +9,7 @@ struct StorybookCard {
             standalone
             content
         }
+        .previewDisplayName()
     }
 
     static var standalone: some View {

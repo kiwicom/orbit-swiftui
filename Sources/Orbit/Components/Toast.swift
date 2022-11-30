@@ -214,35 +214,28 @@ struct ToastPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             standaloneWrapper
-            storybook
+            progress
         }
         .padding(.xLarge)
         .previewLayout(.sizeThatFits)
 
         PreviewWrapper {
-            storybook
-                .padding(.xLarge)
-                .background(Color.screen)
-                .environment(\.colorScheme, .dark)
-        }
-        .previewLayout(.sizeThatFits)
-
-        PreviewWrapper {
-            storybookLive
+            interactive
         }
     }
 
     static var standalone: some View {
         ToastContent(description, icon: .grid)
+            .previewDisplayName()
 
     }
 
     static var standaloneWrapper: some View {
         ToastWrapper(description, icon: .checkCircle, progress: 0.6)
-            .previewDisplayName("ToastWrapper")
+            .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var progress: some View {
         VStack(alignment: .leading, spacing: .xxxLarge) {
             ToastContent(description, progress: 0.01)
             ToastContent(description, progress: 0.2)
@@ -252,19 +245,22 @@ struct ToastPreviews: PreviewProvider {
         }
         .padding(.top, .large)
         .padding(.bottom, .xxxLarge)
+        .previewDisplayName()
     }
 
-    static var storybookLive: some View {
-        VStack(alignment: .leading, spacing: .medium) {
-            Heading("Toast enabled screen", style: .title2)
+    static var interactive: some View {
+        NavigationView {
+            VStack(alignment: .leading, spacing: .medium) {
+                Spacer()
 
-            Spacer()
-
-            Button("Add toast 1") { toastLiveQueue.add(description) }
-            Button("Add toast 2") { toastLiveQueue.add("Another toast message.") }
+                Button("Add toast 1") { toastLiveQueue.add(description) }
+                Button("Add toast 2") { toastLiveQueue.add("Another toast message.") }
+            }
+            .padding(.medium)
+            .navigationBarTitle("Toast screen")
+            .overlay(toast, alignment: .top)
         }
-        .padding(.medium)
-        .previewDisplayName("Live Preview")
+        .previewDisplayName()
     }
 
     static var toast: some View {
@@ -272,27 +268,7 @@ struct ToastPreviews: PreviewProvider {
     }
 
     static var snapshot: some View {
-        storybook
+        progress
             .padding(.medium)
-    }
-}
-
-struct ToastDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.xLarge)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        ToastPreviews.standaloneWrapper
     }
 }

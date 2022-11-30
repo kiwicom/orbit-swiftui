@@ -22,6 +22,7 @@ struct StorybookBadge {
                 Badge("Very very very very very long badge")
             }
         }
+        .previewDisplayName()
     }
 
     static var gradient: some View {
@@ -30,6 +31,7 @@ struct StorybookBadge {
             gradientBadge(.bundleMedium)
             gradientBadge(.bundleTop)
         }
+        .previewDisplayName()
     }
 
     static var mix: some View {
@@ -59,6 +61,7 @@ struct StorybookBadge {
                 Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
             }
         }
+        .previewDisplayName()
     }
 
     static func badges(_ style: Badge.Style) -> some View {

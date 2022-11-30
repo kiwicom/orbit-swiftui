@@ -19,6 +19,7 @@ struct StorybookDialog {
             titleOnly
             descriptionOnly
         }
+        .previewDisplayName()
     }
 
     static var normal: some View {

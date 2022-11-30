@@ -38,6 +38,7 @@ struct StorybookInputField {
                 inputField(value: value, message: .error(errorMessage), style: .compact)
             }
         }
+        .previewDisplayName()
     }
 
     static var password: some View {
@@ -48,6 +49,7 @@ struct StorybookInputField {
             inputField(passwordLabel, value: passwordValue, prefix: .none, suffix: .none, isSecure: true, passwordStrength: .medium(title: "Medium"), message: .help("Help message"))
             inputField(passwordLabel, value: passwordValue, isSecure: true, passwordStrength: .strong(title: "Strong"))
         }
+        .previewDisplayName()
     }
 
     static var mix: some View {
@@ -71,6 +73,7 @@ struct StorybookInputField {
                 inputField(value: "Flag prefix", prefix: .countryFlag("us"))
             }
         }
+        .previewDisplayName()
     }
 
     static func inputField(

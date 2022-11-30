@@ -29,6 +29,7 @@ struct StorybookListChoice {
                 badge
             })
         }
+        .previewDisplayName()
     }
 
     static var button: some View {
@@ -48,7 +49,7 @@ struct StorybookListChoice {
                 headerContent
             }
         }
-        .previewDisplayName("Button")
+        .previewDisplayName()
     }
 
     static var checkbox: some View {
@@ -68,7 +69,7 @@ struct StorybookListChoice {
                 headerContent
             }
         }
-        .previewDisplayName("Checkbox")
+        .previewDisplayName()
     }
 
     static var mix: some View {

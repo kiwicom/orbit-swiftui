@@ -26,6 +26,7 @@ struct StorybookKeyValue {
                 KeyValue("Leading very long key", value: longValue, alignment: .leading)
             }
         }
+        .previewDisplayName()
     }
 }
 

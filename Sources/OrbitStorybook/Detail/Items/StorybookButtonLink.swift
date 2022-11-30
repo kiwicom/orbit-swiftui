@@ -16,6 +16,7 @@ struct StorybookButtonLink {
                 ButtonLink("ButtonLink Critical", style: .critical, icon: .alertCircle)
             }
         }
+        .previewDisplayName()
     }
 
     static var status: some View {
@@ -25,6 +26,7 @@ struct StorybookButtonLink {
             ButtonLink("ButtonLink Warning", style: .status(.warning), icon: .alert)
             ButtonLink("ButtonLink Critical", style: .status(.critical), icon: .alertCircle)
         }
+        .previewDisplayName()
     }
 
     static var sizes: some View {
@@ -36,6 +38,7 @@ struct StorybookButtonLink {
             ButtonLink("ButtonLink button size", icon: .baggageSet, size: .button)
                 .border(Color.cloudNormal)
         }
+        .previewDisplayName()
     }
 }
 

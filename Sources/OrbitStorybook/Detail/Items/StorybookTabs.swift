@@ -12,6 +12,7 @@ struct StorybookTabs {
             equalMultiline
             equalSingleline
         }
+        .previewDisplayName()
     }
 
     static var live: some View {
@@ -29,7 +30,7 @@ struct StorybookTabs {
                 }
             }
         }
-        .previewDisplayName("Live Preview")
+        .previewDisplayName()
     }
 
     static var standaloneIntrinsic: some View {

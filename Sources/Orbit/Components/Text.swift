@@ -294,12 +294,12 @@ struct TextPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            storybook
+            formatting
             sizes
             multiline
             custom
-            attributedTextSnapshots
-            attributedTextInteractive
+            attributedText
+            interactive
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -307,10 +307,10 @@ struct TextPreviews: PreviewProvider {
 
     static var standalone: some View {
         Text("Plain text with no formatting")
-            .previewDisplayName("Standalone")
+            .previewDisplayName()
     }
 
-    @ViewBuilder static var storybook: some View {
+    @ViewBuilder static var formatting: some View {
         VStack(alignment: .leading, spacing: .medium) {
             Group {
                 Text("Plain text with no formatting")
@@ -331,7 +331,7 @@ struct TextPreviews: PreviewProvider {
                 .foregroundColor(.blueDark)
                 .background(Color.blueLight)
         }
-        .previewDisplayName("Colors")
+        .previewDisplayName()
     }
 
     @ViewBuilder static var sizes: some View {
@@ -361,7 +361,7 @@ struct TextPreviews: PreviewProvider {
                 text("Text Bold Extra Large", size: .xLarge, weight: .bold)
             }
         }
-        .previewDisplayName("Sizes")
+        .previewDisplayName()
     }
 
     @ViewBuilder static var multiline: some View {
@@ -391,7 +391,7 @@ struct TextPreviews: PreviewProvider {
                 text("Text Bold Extra Large with a very very very very large and multine content", size: .xLarge, weight: .bold)
             }
         }
-        .previewDisplayName("Multiline")
+        .previewDisplayName()
     }
 
     static var custom: some View {
@@ -431,19 +431,18 @@ struct TextPreviews: PreviewProvider {
                     .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
             }
         }
-        .previewLayout(.sizeThatFits)
-        .previewDisplayName("Custom")
+        .previewDisplayName()
     }
 
     static var snapshotsSizing: some View {
         VStack(spacing: .medium) {
             standalone
                 .border(Color.cloudDark, width: .hairline)
-            storybook
+            formatting
         }
     }
 
-    static var attributedTextInteractive: some View {
+    static var interactive: some View {
         StateWrapper(initialState: (0.7, 0.7, 0.7)) { state in
             ScrollView {
                 VStack(alignment: .leading, spacing: .medium) {
@@ -510,12 +509,11 @@ struct TextPreviews: PreviewProvider {
                     .border(Color.cloudNormal)
                 }
             }
-            .previewDisplayName("Live Preview")
-            .previewLayout(.sizeThatFits)
+            .previewDisplayName()
         }
     }
 
-    static var attributedTextSnapshots: some View {
+    static var attributedText: some View {
         VStack(alignment: .leading, spacing: .medium) {
             Text("An <ref>attributed</ref> text <a href=\"..\">link</a>", accentColor: .orangeNormal)
                 .border(Color.cloudDark)
@@ -538,12 +536,11 @@ struct TextPreviews: PreviewProvider {
                 lineSpacing: .small
             )
         }
-        .previewDisplayName("Attributed Text")
-        .previewLayout(.sizeThatFits)
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        formatting
             .padding(.medium)
     }
 
@@ -553,34 +550,5 @@ struct TextPreviews: PreviewProvider {
             Spacer()
             Text("\(Int(size.value))/\(Int(size.lineHeight))", color: .inkNormal, weight: .medium)
         }
-    }
-}
-
-struct TextDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        HStack(alignment: .top, spacing: 0) {
-            Group {
-                Text("M")
-                Text("<strong>M</strong>")
-                Text("<a href=\"..\">M</a>")
-            }
-            .border(Color.cloudDark, width: .hairline)
-        }
-
-        TextPreviews.storybook
     }
 }

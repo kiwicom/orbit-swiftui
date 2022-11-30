@@ -91,9 +91,9 @@ struct NotificationBadgePreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             sizing
-            storybook
-            storybookGradient
-            storybookMix
+            statuses
+            gradients
+            mix
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -104,6 +104,7 @@ struct NotificationBadgePreviews: PreviewProvider {
             NotificationBadge("9")
             NotificationBadge("")  // EmptyView
         }
+        .previewDisplayName()
     }
 
     static var sizing: some View {
@@ -112,10 +113,10 @@ struct NotificationBadgePreviews: PreviewProvider {
                 NotificationBadge("\(Int(state.wrappedValue))")
             }
         }
-        .previewDisplayName("Bage displays height")
+        .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var statuses: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
             VStack(alignment: .leading, spacing: .medium) {
                 badges(.light)
@@ -129,18 +130,19 @@ struct NotificationBadgePreviews: PreviewProvider {
             statusBadges(.warning)
             statusBadges(.critical)
         }
+        .previewDisplayName()
     }
 
-    static var storybookGradient: some View {
+    static var gradients: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
             gradientBadge(.bundleBasic)
             gradientBadge(.bundleMedium)
             gradientBadge(.bundleTop)
         }
-        .previewDisplayName("Gradient")
+        .previewDisplayName()
     }
 
-    static var storybookMix: some View {
+    static var mix: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
             HStack(spacing: .small) {
                 NotificationBadge(
@@ -160,11 +162,11 @@ struct NotificationBadgePreviews: PreviewProvider {
                 NotificationBadge(.sfSymbol("ant.fill"))
             }
         }
-        .previewDisplayName("Mix")
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        statuses
             .padding(.medium)
     }
 
@@ -186,27 +188,5 @@ struct NotificationBadgePreviews: PreviewProvider {
     static func gradientBadge(_ gradient: Gradient) -> some View {
         badges(.gradient(gradient))
             .previewDisplayName("\(String(describing: gradient).titleCased)")
-    }
-}
-
-struct NotificationBadgeDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        NotificationBadgePreviews.standalone
-        NotificationBadge("1")
     }
 }

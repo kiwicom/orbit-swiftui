@@ -40,6 +40,7 @@ struct StorybookCountryFlag {
                 CountryFlag("us", size: .custom(60))
             }
         }
+        .previewDisplayName()
     }
 }
 

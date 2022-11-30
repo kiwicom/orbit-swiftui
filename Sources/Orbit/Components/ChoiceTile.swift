@@ -296,9 +296,9 @@ struct ChoiceTilePreviews: PreviewProvider {
             sizing
             intrinsic
 
-            storybook
-            storybookCentered
-            storybookMix
+            styles
+            stylesCentered
+            mix
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -314,6 +314,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         ) {
             contentPlaceholder
         }
+        .previewDisplayName()
     }
 
     static var sizing: some View {
@@ -341,7 +342,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         }
         .fixedSize(horizontal: false, vertical: true)
         .background(Color.whiteNormal)
-        .previewDisplayName("Sizing")
+        .previewDisplayName()
     }
 
     static var standaloneCentered: some View {
@@ -356,7 +357,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         ) {
             contentPlaceholder
         }
-        .previewDisplayName("Centered")
+        .previewDisplayName()
     }
 
     static var intrinsic: some View {
@@ -364,21 +365,24 @@ struct ChoiceTilePreviews: PreviewProvider {
             intrinsicContentPlaceholder
         }
         .idealSize()
+        .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var styles: some View {
         VStack(spacing: .medium) {
             content
         }
+        .previewDisplayName()
     }
 
-    static var storybookCentered: some View {
+    static var stylesCentered: some View {
         VStack(spacing: .medium) {
             contentCentered
         }
+        .previewDisplayName()
     }
 
-    static var storybookMix: some View {
+    static var mix: some View {
         VStack(spacing: .medium) {
             StateWrapper(initialState: false) { isSelected in
                 ChoiceTile(
@@ -416,6 +420,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                 }
             }
         }
+        .previewDisplayName()
     }
 
     @ViewBuilder static var content: some View {
@@ -484,26 +489,5 @@ struct ChoiceTilePreviews: PreviewProvider {
                 contentPlaceholder
             }
         }
-    }
-}
-
-struct ChoiceTileDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        ChoiceTilePreviews.standalone
     }
 }

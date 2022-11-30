@@ -11,6 +11,7 @@ struct StorybookButton {
             buttons(.critical)
             buttons(.criticalSubtle)
         }
+        .previewDisplayName()
     }
 
     @ViewBuilder static var status: some View {
@@ -20,6 +21,7 @@ struct StorybookButton {
             statusButtonStack(.warning)
             statusButtonStack(.critical)
         }
+        .previewDisplayName()
     }
 
     @ViewBuilder static var gradient: some View {
@@ -28,6 +30,7 @@ struct StorybookButton {
             buttons(.gradient(.bundleMedium))
             buttons(.gradient(.bundleTop))
         }
+        .previewDisplayName()
     }
 
     @ViewBuilder static var mix: some View {
@@ -36,6 +39,7 @@ struct StorybookButton {
             Button("Button with Flag", icon: .countryFlag("cz"))
             Button("Button with Image", icon: .image(.orbit(.facebook)))
         }
+        .previewDisplayName()
     }
 
     @ViewBuilder static func buttons(_ style: Orbit.Button.Style) -> some View {

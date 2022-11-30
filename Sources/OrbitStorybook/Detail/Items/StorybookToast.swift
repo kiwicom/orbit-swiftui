@@ -17,6 +17,7 @@ struct StorybookToast {
         }
         .padding(.top, .large)
         .padding(.bottom, .xxxLarge)
+        .previewDisplayName()
     }
 
     static var live: some View {
@@ -29,7 +30,7 @@ struct StorybookToast {
             Button("Add toast 2") { toastLiveQueue.add("Another toast message.") }
         }
         .padding(.medium)
-        .previewDisplayName("Live Preview")
+        .previewDisplayName()
     }
 
     static var toast: some View {

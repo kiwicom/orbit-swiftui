@@ -24,6 +24,7 @@ struct StorybookTag {
                 }
             }
         }
+        .previewDisplayName()
     }
 
     @ViewBuilder static func stack(style: Tag.Style, isFocused: Bool, idealWidth: Bool? = nil) -> some View {

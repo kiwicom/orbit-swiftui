@@ -10,6 +10,7 @@ struct StorybookSocialButton {
             SocialButton("Sign in with Google", service: .google)
             SocialButton("Sign in with Apple", service: .apple)
         }
+        .previewDisplayName()
     }
 }
 

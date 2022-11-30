@@ -309,7 +309,7 @@ struct IconPreviews: PreviewProvider {
             snapshotSizesLabelHeading
             alignments
             baseline
-            storybookMix
+            mix
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -317,15 +317,7 @@ struct IconPreviews: PreviewProvider {
 
     static var standalone: some View {
         Icon(.informationCircle)
-    }
-    
-    static var storybook: some View {
-        VStack(alignment: .leading, spacing: .medium) {
-            snapshotSizes
-            snapshotSizesText
-            snapshotSizesHeading
-            alignments
-        }
+            .previewDisplayName()
     }
     
     static var snapshotSizes: some View {
@@ -361,6 +353,7 @@ struct IconPreviews: PreviewProvider {
                 .overlay(Separator(thickness: .hairline), alignment: .bottom)
             }
         }
+        .previewDisplayName()
     }
     
     static func headingStack(_ style: Heading.Style) -> some View {
@@ -372,6 +365,7 @@ struct IconPreviews: PreviewProvider {
             .overlay(Separator(thickness: .hairline), alignment: .top)
             .overlay(Separator(thickness: .hairline), alignment: .bottom)
         }
+        .previewDisplayName()
     }
     
     static func labelHeadingStack(_ style: Heading.Style) -> some View {
@@ -380,6 +374,7 @@ struct IconPreviews: PreviewProvider {
                 .overlay(Separator(thickness: .hairline), alignment: .top)
                 .overlay(Separator(thickness: .hairline), alignment: .bottom)
         }
+        .previewDisplayName()
     }
     
     static func labelTextStack(_ size: Text.Size) -> some View {
@@ -388,6 +383,7 @@ struct IconPreviews: PreviewProvider {
                 .overlay(Separator(), alignment: .top)
                 .overlay(Separator(), alignment: .bottom)
         }
+        .previewDisplayName()
     }
     
     static func textStack(_ size: Text.Size) -> some View {
@@ -399,6 +395,7 @@ struct IconPreviews: PreviewProvider {
             .overlay(Separator(), alignment: .top)
             .overlay(Separator(), alignment: .bottom)
         }
+        .previewDisplayName()
     }
     
     static var snapshotSizesText: some View {
@@ -409,7 +406,7 @@ struct IconPreviews: PreviewProvider {
             textStack(.xLarge)
             textStack(.custom(50))
         }
-        .previewDisplayName("Calculated sizes for Text")
+        .previewDisplayName()
     }
     
     static var snapshotSizesLabelText: some View {
@@ -420,7 +417,7 @@ struct IconPreviews: PreviewProvider {
             labelTextStack(.xLarge)
             labelTextStack(.custom(50))
         }
-        .previewDisplayName("Calculated sizes for Text in Label")
+        .previewDisplayName()
     }
     
     static var snapshotSizesHeading: some View {
@@ -434,7 +431,7 @@ struct IconPreviews: PreviewProvider {
             headingStack(.displaySubtitle)
             headingStack(.display)
         }
-        .previewDisplayName("Calculated sizes for Heading")
+        .previewDisplayName()
     }
     
     static var snapshotSizesLabelHeading: some View {
@@ -448,10 +445,10 @@ struct IconPreviews: PreviewProvider {
             labelHeadingStack(.displaySubtitle)
             labelHeadingStack(.display)
         }
-        .previewDisplayName("Calculated sizes for Heading in Label")
+        .previewDisplayName()
     }
 
-    static var storybookMix: some View {
+    static var mix: some View {
         VStack(alignment: .leading, spacing: .small) {
             Text("SF Symbol vs Orbit sizes (custom-font-label)", size: .small)
             HStack(alignment: .firstTextBaseline, spacing: 0) {
@@ -536,6 +533,7 @@ struct IconPreviews: PreviewProvider {
             .foregroundColor(.blueDark)
             .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
         }
+        .previewDisplayName()
     }
 
     static var alignments: some View {
@@ -552,6 +550,7 @@ struct IconPreviews: PreviewProvider {
             }
             Label("Multiline\nlong\nLabel", icon: .grid, style: .text())
         }
+        .previewDisplayName()
     }
 
     static var baseline: some View {
@@ -583,35 +582,15 @@ struct IconPreviews: PreviewProvider {
                 + Icon(.flightReturn, size: .small, baselineOffset: .xxxSmall)
                 + Icon(.flightReturn, size: .small, baselineOffset: -.xxxSmall)
         }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
         VStack(spacing: .medium) {
             IconPreviews.snapshotSizes
             Separator()
-            IconPreviews.storybookMix
+            IconPreviews.mix
         }
         .padding(.medium)
-    }
-}
-
-struct IconDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        IconPreviews.snapshotSizes
-        IconPreviews.storybookMix
     }
 }

@@ -6,6 +6,7 @@ struct StorybookHorizontalScroll {
     static var basic: some View {
         content
             .background(Color.whiteDarker)
+            .previewDisplayName()
     }
 
     @ViewBuilder static var content: some View {

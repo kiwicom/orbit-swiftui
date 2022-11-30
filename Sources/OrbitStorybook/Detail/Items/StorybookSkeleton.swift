@@ -5,10 +5,12 @@ struct StorybookSkeleton {
 
     static var basic: some View {
         content()
+            .previewDisplayName()
     }
 
     static var atomic: some View {
         contentAtomic()
+            .previewDisplayName()
     }
 
     static func content(animation: Skeleton.Animation = .default) -> some View {

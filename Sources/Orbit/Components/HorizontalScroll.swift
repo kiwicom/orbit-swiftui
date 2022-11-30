@@ -120,13 +120,6 @@ struct HorizontalScrollPreviews: PreviewProvider {
             .previewDisplayName("Live Preview - Pagination")
     }
 
-    static var storybook: some View {
-        VStack(spacing: .large) {
-            content
-                .background(Color.whiteDarker)
-        }
-    }
-
     static var simpleSmallRatio: some View {
         VStack(spacing: .large) {
             HorizontalScroll(spacing: .large, itemWidth: .ratio(1.01)) {

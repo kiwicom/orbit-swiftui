@@ -7,6 +7,7 @@ struct StorybookTileGroup {
         TileGroup {
             tiles(intrinsic: false)
         }
+        .previewDisplayName()
     }
 
     @ViewBuilder static func tiles(intrinsic: Bool) -> some View {

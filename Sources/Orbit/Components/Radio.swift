@@ -181,8 +181,8 @@ struct RadioPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            content(standalone: false)
-            content(standalone: true)
+            states
+            indicatorStates
         }
         .padding(.medium)
         .previewLayout(PreviewLayout.sizeThatFits)
@@ -190,13 +190,17 @@ struct RadioPreviews: PreviewProvider {
 
     static var standalone: some View {
         radio(standalone: false, state: .normal, checked: true)
+            .previewDisplayName()
     }
 
-    static var storybook: some View {
-        VStack(alignment: .leading, spacing: .large) {
-            content(standalone: false)
-            content(standalone: true)
-        }
+    static var states: some View {
+        content(standalone: false)
+            .previewDisplayName()
+    }
+
+    static var indicatorStates: some View {
+        content(standalone: false)
+            .previewDisplayName()
     }
 
     static var snapshot: some View {
@@ -226,25 +230,5 @@ struct RadioPreviews: PreviewProvider {
                 isSelected.wrappedValue.toggle()
             }
         }
-    }
-}
-
-struct RadioDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        RadioPreviews.standalone
     }
 }

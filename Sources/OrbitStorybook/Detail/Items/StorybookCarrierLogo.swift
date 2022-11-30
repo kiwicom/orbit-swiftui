@@ -10,6 +10,7 @@ struct StorybookCarrierLogo {
         VStack(alignment: .leading, spacing: .xxLarge) {
             carrierLogoContent
         }
+        .previewDisplayName()
     }
 
     @ViewBuilder static var carrierLogoContent: some View {

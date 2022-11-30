@@ -234,6 +234,7 @@ struct LabelPreviews: PreviewProvider {
             }
         }
         .padding()
+        .previewDisplayName()
     }
     
     @ViewBuilder static var snapshotLabelLayout: some View {
@@ -248,6 +249,7 @@ struct LabelPreviews: PreviewProvider {
         }
         .frame(width: 200, alignment: .leading)
         .padding()
+        .previewDisplayName()
     }
     
     @ViewBuilder static var snapshotStackLayout: some View {
@@ -265,6 +267,7 @@ struct LabelPreviews: PreviewProvider {
         }
         .frame(width: 200, alignment: .leading)
         .padding()
+        .previewDisplayName()
     }
     
     static var snapshotColorOverride: some View {
@@ -282,5 +285,6 @@ struct LabelPreviews: PreviewProvider {
                 .border(Color.cloudLight)
         }
         .padding()
+        .previewDisplayName()
     }
 }

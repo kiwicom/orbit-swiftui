@@ -160,12 +160,6 @@ struct DialogPreviews: PreviewProvider {
         descriptionOnly
     }
 
-    static var storybook: some View {
-        VStack(spacing: 0) {
-            content
-        }
-    }
-
     static var normal: some View {
         Dialog(
             illustration: .noNotification,
@@ -173,6 +167,7 @@ struct DialogPreviews: PreviewProvider {
             description: description1,
             buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
         )
+        .previewDisplayName()
     }
 
     static var centered: some View {
@@ -184,6 +179,7 @@ struct DialogPreviews: PreviewProvider {
             buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
         )
         .background(Color.whiteNormal)
+        .previewDisplayName()
     }
 
     static var critical: some View {
@@ -194,6 +190,7 @@ struct DialogPreviews: PreviewProvider {
             style: .critical,
             buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
         )
+        .previewDisplayName()
     }
 
     static var titleOnly: some View {
@@ -201,6 +198,7 @@ struct DialogPreviews: PreviewProvider {
             title: title1,
             buttons: .primaryAndSecondary("Main CTA", "Secondary")
         )
+        .previewDisplayName()
     }
 
     static var descriptionOnly: some View {
@@ -208,30 +206,11 @@ struct DialogPreviews: PreviewProvider {
             description: description1,
             buttons: .primary("Main CTA")
         )
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
         normal
             .background(Color.whiteNormal)
-    }
-}
-
-struct DialogDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        DialogPreviews.normal
     }
 }

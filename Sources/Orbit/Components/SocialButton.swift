@@ -143,9 +143,7 @@ struct SocialButtonPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             intrinsic
-            storybook
-            storybook
-                .preferredColorScheme(.dark)
+            all
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -153,15 +151,21 @@ struct SocialButtonPreviews: PreviewProvider {
 
     static var standalone: some View {
         SocialButton("Sign in with Facebook", service: .facebook)
+            .previewDisplayName()
     }
 
     static var intrinsic: some View {
-        storybook
+        content
             .idealSize()
-            .previewDisplayName("Intrinsic")
+            .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var all: some View {
+        content
+            .previewDisplayName()
+    }
+
+    static var content: some View {
         VStack(spacing: .medium) {
             SocialButton("Sign in with E-mail", service: .email)
             SocialButton("Sign in with Facebook", service: .facebook)
@@ -171,27 +175,7 @@ struct SocialButtonPreviews: PreviewProvider {
     }
 
     static var snapshot: some View {
-        storybook
+        all
             .padding(.medium)
-    }
-}
-
-struct SocialButtonDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        SocialButtonPreviews.storybook
     }
 }

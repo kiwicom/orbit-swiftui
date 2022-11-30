@@ -133,7 +133,7 @@ struct TagGroupPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             snapshots
-            live
+            interactive
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -163,7 +163,7 @@ struct TagGroupPreviews: PreviewProvider {
         }
     }
 
-    static var live: some View {
+    static var interactive: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: .xxSmall) {
                 StateWrapper(
@@ -236,6 +236,6 @@ struct TagGroupPreviews: PreviewProvider {
                 }
             }
         }
-        .previewDisplayName("Live Preview")
+        .previewDisplayName()
     }
 }

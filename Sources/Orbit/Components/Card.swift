@@ -219,19 +219,12 @@ struct CardPreviews: PreviewProvider {
         clear
     }
 
-    static var storybook: some View {
-        LazyVStack(spacing: .large) {
-            standalone
-            content
-        }
-    }
-
     static var standalone: some View {
         Card("Card title", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink")) {
             contentPlaceholder
             contentPlaceholder
         }
-        .previewDisplayName("Standalone")
+        .previewDisplayName()
     }
     
     static var standaloneIntrinsic: some View {
@@ -248,11 +241,12 @@ struct CardPreviews: PreviewProvider {
 
             Spacer()
         }
-        .previewDisplayName("Standalone Intrinsic width")
+        .previewDisplayName()
     }
 
     static var cardWithoutContent: some View {
         Card("Card with no content", action: .buttonLink("Edit"))
+            .previewDisplayName()
     }
 
     static var cardWithFillLayoutContent: some View {
@@ -261,6 +255,7 @@ struct CardPreviews: PreviewProvider {
             Separator()
             contentPlaceholder
         }
+        .previewDisplayName()
     }
 
     static var cardWithFillLayoutContentNoHeader: some View {
@@ -269,6 +264,7 @@ struct CardPreviews: PreviewProvider {
             Separator()
             contentPlaceholder
         }
+        .previewDisplayName()
     }
 
     static var cardWithOnlyCustomContent: some View {
@@ -276,6 +272,7 @@ struct CardPreviews: PreviewProvider {
             contentPlaceholder
             contentPlaceholder
         }
+        .previewDisplayName()
     }
 
     static var cardWithTiles: some View {
@@ -302,6 +299,7 @@ struct CardPreviews: PreviewProvider {
             contentPlaceholder
                 .frame(height: 30).clipped()
         }
+        .previewDisplayName()
     }
 
     static var cardMultilineCritical: some View {
@@ -313,6 +311,7 @@ struct CardPreviews: PreviewProvider {
         ) {
             contentPlaceholder
         }
+        .previewDisplayName()
     }
     
     static var clear: some View {
@@ -330,31 +329,12 @@ struct CardPreviews: PreviewProvider {
             }
             .padding(.top, .xSmall)
         }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
         standalone
             .screenLayout()
             .background(Color.screen)
-    }
-}
-
-struct CardDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        CardPreviews.snapshot
     }
 }

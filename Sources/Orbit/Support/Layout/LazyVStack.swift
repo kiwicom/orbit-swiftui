@@ -35,5 +35,6 @@ struct LazyVStackIfAvailablePreviews: PreviewProvider {
             Text("Text 1")
             Text("Text 2")
         }
+        .previewDisplayName()
     }
 }

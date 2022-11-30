@@ -38,6 +38,7 @@ struct StorybookTimeline {
                 description: "Arrive at your destination"
             )
         }
+        .previewDisplayName()
     }
 
     static var mix: some View {
@@ -72,6 +73,7 @@ struct StorybookTimeline {
                 }
             }
         }
+        .previewDisplayName()
     }
 
     static let steps: [TimelineItemModel] = [

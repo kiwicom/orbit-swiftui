@@ -142,9 +142,10 @@ struct BadgePreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             sizing
-            storybook
-            storybookGradient
-            storybookMix
+            
+            statuses
+            gradients
+            mix
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -156,6 +157,7 @@ struct BadgePreviews: PreviewProvider {
             Badge()    // EmptyView
             Badge("")  // EmptyView
         }
+        .previewDisplayName()
     }
 
     static var sizing: some View {
@@ -176,9 +178,10 @@ struct BadgePreviews: PreviewProvider {
                 }
             }
         }
+        .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var statuses: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
             VStack(alignment: .leading, spacing: .medium) {
                 badges(.light)
@@ -197,18 +200,19 @@ struct BadgePreviews: PreviewProvider {
                 Badge("Very very very very very long badge")
             }
         }
+        .previewDisplayName()
     }
 
-    static var storybookGradient: some View {
+    static var gradients: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
             gradientBadge(.bundleBasic)
             gradientBadge(.bundleMedium)
             gradientBadge(.bundleTop)
         }
-        .previewDisplayName("Gradient")
+        .previewDisplayName()
     }
 
-    static var storybookMix: some View {
+    static var mix: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
             HStack(spacing: .small) {
                 Badge(
@@ -235,11 +239,11 @@ struct BadgePreviews: PreviewProvider {
                 Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
             }
         }
-        .previewDisplayName("Mix")
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        statuses
             .padding(.medium)
     }
 
@@ -263,28 +267,5 @@ struct BadgePreviews: PreviewProvider {
     static func gradientBadge(_ gradient: Gradient) -> some View {
         badges(.gradient(gradient))
             .previewDisplayName("\(String(describing: gradient).titleCased)")
-    }
-}
-
-struct BadgeDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        BadgePreviews.standalone
-        BadgePreviews.sizing
-        Badge("1")
     }
 }

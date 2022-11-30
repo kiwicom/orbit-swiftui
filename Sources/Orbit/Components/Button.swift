@@ -297,10 +297,10 @@ struct ButtonPreviews: PreviewProvider {
             standaloneCombinations
             sizing
 
-            storybook
-            storybookStatus
-            storybookGradient
-            storybookMix
+            styles
+            statuses
+            gradients
+            mix
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -308,6 +308,7 @@ struct ButtonPreviews: PreviewProvider {
 
     static var standalone: some View {
         Button("Button", icon: .grid)
+            .previewDisplayName()
     }
 
     static var standaloneCombinations: some View {
@@ -321,6 +322,7 @@ struct ButtonPreviews: PreviewProvider {
             Button(.arrowUp)
                 .idealSize()
         }
+        .previewDisplayName()
     }
 
     static var sizing: some View {
@@ -347,10 +349,10 @@ struct ButtonPreviews: PreviewProvider {
                 }
             }
         }
-        .previewDisplayName("Sizing")
+        .previewDisplayName()
     }
 
-    @ViewBuilder static var storybook: some View {
+    @ViewBuilder static var styles: some View {
         LazyVStack(alignment: .leading, spacing: .xLarge) {
             buttons(.primary)
             buttons(.primarySubtle)
@@ -358,31 +360,35 @@ struct ButtonPreviews: PreviewProvider {
             buttons(.critical)
             buttons(.criticalSubtle)
         }
+        .previewDisplayName()
     }
 
-    @ViewBuilder static var storybookStatus: some View {
+    @ViewBuilder static var statuses: some View {
         LazyVStack(alignment: .leading, spacing: .xLarge) {
             statusButtonStack(.info)
             statusButtonStack(.success)
             statusButtonStack(.warning)
             statusButtonStack(.critical)
         }
+        .previewDisplayName()
     }
 
-    @ViewBuilder static var storybookGradient: some View {
+    @ViewBuilder static var gradients: some View {
         LazyVStack(alignment: .leading, spacing: .xLarge) {
             buttons(.gradient(.bundleBasic)).previewDisplayName("Bundle Basic")
             buttons(.gradient(.bundleMedium)).previewDisplayName("Bundle Medium")
             buttons(.gradient(.bundleTop)).previewDisplayName("Bundle Top")
         }
+        .previewDisplayName()
     }
 
-    @ViewBuilder static var storybookMix: some View {
+    @ViewBuilder static var mix: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
             Button("Button with SF Symbol", icon: .sfSymbol("info.circle.fill"))
             Button("Button with Flag", icon: .countryFlag("cz"))
             Button("Button with Image", icon: .image(.orbit(.facebook)))
         }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
@@ -440,28 +446,5 @@ struct ButtonPreviews: PreviewProvider {
 
             Spacer(minLength: 0)
         }
-    }
-}
-
-struct ButtonDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        ButtonPreviews.standaloneCombinations
-        ButtonPreviews.sizing
-        ButtonPreviews.buttons(.primary)
     }
 }

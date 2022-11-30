@@ -29,6 +29,7 @@ struct StorybookList {
                 ListItem(listItemText, size: .large, style: .secondary)
             }
         }
+        .previewDisplayName()
     }
 
     static var mix: some View {
@@ -60,6 +61,7 @@ struct StorybookList {
                 ListItem(listItemText, spacing: .small)
             }
         }
+        .previewDisplayName()
     }
 }
 

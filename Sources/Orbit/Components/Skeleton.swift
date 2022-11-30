@@ -142,14 +142,6 @@ struct SkeletonPreviews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 
-    static var storybook: some View {
-        content()
-    }
-
-    static var storybookAtomic: some View {
-        contentAtomic()
-    }
-
     static var snapshot: some View {
         content(animation: .none)
             .padding(.medium)
@@ -182,5 +174,6 @@ struct SkeletonPreviews: PreviewProvider {
             Heading("Loading...", style: .title3)
             content()
         }
+        .previewDisplayName()
     }
 }

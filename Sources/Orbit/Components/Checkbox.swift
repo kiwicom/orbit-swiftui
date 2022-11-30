@@ -192,8 +192,8 @@ struct CheckboxPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            content(standalone: false)
-            content(standalone: true)
+            states
+            indicatorStates
         }
         .padding(.medium)
         .previewLayout(PreviewLayout.sizeThatFits)
@@ -203,18 +203,22 @@ struct CheckboxPreviews: PreviewProvider {
         StateWrapper(initialState: true) { isSelected in
             checkbox(standalone: false, state: .normal, checked: isSelected.wrappedValue)
         }
-    }
-
-    static var storybook: some View {
-        VStack(alignment: .leading, spacing: .large) {
-            content(standalone: false)
-            content(standalone: true)
-        }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
         content(standalone: false)
             .padding(.medium)
+    }
+
+    static var states: some View {
+        content(standalone: false)
+            .previewDisplayName()
+    }
+
+    static var indicatorStates: some View {
+        content(standalone: true)
+            .previewDisplayName()
     }
 
     static func content(standalone: Bool) -> some View {
@@ -239,25 +243,5 @@ struct CheckboxPreviews: PreviewProvider {
                 isSelected.wrappedValue.toggle()
             }
         }
-    }
-}
-
-struct CheckboxDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        CheckboxPreviews.standalone
     }
 }

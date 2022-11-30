@@ -407,9 +407,9 @@ struct InputFieldPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            storybook
-            storybookPassword
-            storybookMix
+            styles
+            password
+            mix
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -419,9 +419,10 @@ struct InputFieldPreviews: PreviewProvider {
         StateWrapper(initialState: value) { state in
             InputField(label, value: state, prefix: .grid, suffix: .grid, placeholder: placeholder, state: .default)
         }
+        .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var styles: some View {
         VStack(spacing: .medium) {
             Group {
                 inputField(value: "", message: .none)
@@ -441,9 +442,10 @@ struct InputFieldPreviews: PreviewProvider {
                 inputField(value: value, message: .error(errorMessage), style: .compact)
             }
         }
+        .previewDisplayName()
     }
 
-    static var storybookPassword: some View {
+    static var password: some View {
         VStack(spacing: .medium) {
             inputField(passwordLabel, value: passwordValue, isSecure: true)
             inputField(passwordLabel, value: "", prefix: .none, placeholder: "Input password", isSecure: true)
@@ -451,9 +453,10 @@ struct InputFieldPreviews: PreviewProvider {
             inputField(passwordLabel, value: passwordValue, prefix: .none, suffix: .none, isSecure: true, passwordStrength: .medium(title: "Medium"), message: .help("Help message"))
             inputField(passwordLabel, value: passwordValue, isSecure: true, passwordStrength: .strong(title: "Strong"))
         }
+        .previewDisplayName()
     }
 
-    static var storybookMix: some View {
+    static var mix: some View {
         VStack(spacing: .medium) {
             inputField("Empty", value: "", prefix: .symbol(.grid, color: .blueDark), suffix: .symbol(.grid, color: .blueDark))
             inputField("Disabled, Empty", value: "", prefix: .countryFlag("cz"), suffix: .countryFlag("us"), state: .disabled)
@@ -474,6 +477,7 @@ struct InputFieldPreviews: PreviewProvider {
                 inputField(value: "Flag prefix", prefix: .countryFlag("us"))
             }
         }
+        .previewDisplayName()
     }
 
     static func inputField(
@@ -511,12 +515,12 @@ struct InputFieldPreviews: PreviewProvider {
     }
     
     static var snapshot: some View {
-        storybook
+        styles
             .padding(.medium)
     }
 
     static var snapshotPassword: some View {
-        storybookPassword
+        password
             .padding(.medium)
     }
 }
@@ -643,7 +647,7 @@ struct InputFieldLivePreviews: PreviewProvider {
                 )
             }
             .padding()
-            .previewDisplayName("Run Live Preview with Secured Input Field")
+            .previewDisplayName()
 
         }
     }
@@ -655,28 +659,5 @@ struct InputFieldLivePreviews: PreviewProvider {
             case 4...6:     return .medium(title: "Medium")
             default:        return .strong(title: "Strong")
         }
-    }
-}
-
-struct InputFieldDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        StateWrapper(initialState: InputFieldPreviews.value) { state in
-            InputField(InputFieldPreviews.label, value: state, prefix: .grid, suffix: .grid, placeholder: InputFieldPreviews.placeholder, state: .default)
-        }
-        InputField("Secured", value: .constant(""), placeholder: "Input password", isSecure: true)
     }
 }

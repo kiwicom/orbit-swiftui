@@ -91,7 +91,7 @@ struct StorybookIllustration {
                 }
             }
         }
-        .previewDisplayName("Mixed sizes")
+        .previewDisplayName()
     }
 }
 

@@ -152,13 +152,13 @@ struct ButtonLinkPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             sizing
-            storybook
-            storybookStatus
-                .previewDisplayName("Status")
-            storybookSizes
-                .previewDisplayName("Sizes")
+            custom
+            iconOnly
+            countryFlag
 
-            snapshotsCustom
+            styles
+            statuses
+            sizes
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -170,6 +170,7 @@ struct ButtonLinkPreviews: PreviewProvider {
             ButtonLink("") // EmptyView
             ButtonLink()   // EmptyView
         }
+        .previewDisplayName()
     }
 
     static var sizing: some View {
@@ -208,9 +209,10 @@ struct ButtonLinkPreviews: PreviewProvider {
             }
             .border(Color.cloudNormal)
         }
+        .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var styles: some View {
         HStack(spacing: .xxLarge) {
             VStack(alignment: .leading, spacing: .large) {
                 ButtonLink("ButtonLink Primary", style: .primary)
@@ -223,18 +225,20 @@ struct ButtonLinkPreviews: PreviewProvider {
                 ButtonLink("ButtonLink Critical", style: .critical, icon: .alertCircle)
             }
         }
+        .previewDisplayName()
     }
     
-    static var storybookStatus: some View {
+    static var statuses: some View {
         VStack(alignment: .leading, spacing: .large) {
             ButtonLink("ButtonLink Info", style: .status(.info), icon: .informationCircle)
             ButtonLink("ButtonLink Success", style: .status(.success), icon: .checkCircle)
             ButtonLink("ButtonLink Warning", style: .status(.warning), icon: .alert)
             ButtonLink("ButtonLink Critical", style: .status(.critical), icon: .alertCircle)
         }
+        .previewDisplayName()
     }
     
-    static var storybookSizes: some View {
+    static var sizes: some View {
         VStack(alignment: .leading, spacing: .small) {
             ButtonLink("ButtonLink intrinsic size", icon: .baggageSet)
                 .border(Color.cloudNormal)
@@ -243,50 +247,33 @@ struct ButtonLinkPreviews: PreviewProvider {
             ButtonLink("ButtonLink button size", icon: .baggageSet, size: .button)
                 .border(Color.cloudNormal)
         }
+        .previewDisplayName()
     }
 
-    @ViewBuilder static var snapshotsCustom: some View {
+    @ViewBuilder static var custom: some View {
         ButtonLink(
             "Custom <u>formatted</u> <ref>ref</ref> <applink1>https://localhost</applink1>",
             style: .custom(colors: (normal: .blueDark, active: .blueNormal)),
             icon: .kiwicom
         )
-        .previewDisplayName("Custom")
+        .previewDisplayName()
+    }
 
+    @ViewBuilder static var iconOnly: some View {
         ButtonLink(icon: .kiwicom)
             .background(Color.blueLight)
             .padding(.vertical)
-            .previewDisplayName("Icon only")
+            .previewDisplayName()
+    }
 
+    @ViewBuilder static var countryFlag: some View {
         ButtonLink("Flag", icon: .countryFlag("us"))
             .padding(.vertical)
-            .previewDisplayName("Country flag")
+            .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        styles
             .padding(.medium)
-    }
-}
-
-struct ButtonLinkDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        ButtonLinkPreviews.standalone
-        ButtonLinkPreviews.storybookSizes
     }
 }

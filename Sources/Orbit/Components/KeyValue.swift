@@ -78,7 +78,7 @@ struct KeyValuePreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            storybook
+            mix
         }
         .padding(.medium)
         .previewLayout(PreviewLayout.sizeThatFits)
@@ -91,9 +91,10 @@ struct KeyValuePreviews: PreviewProvider {
             KeyValue("")        // EmptyView
             KeyValue(value: "") // EmptyView
         }
+        .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var mix: some View {
         VStack(alignment: .leading, spacing: .large) {
             KeyValue("Key", value: value)
             KeyValue("Key", value: value, size: .large)
@@ -112,29 +113,11 @@ struct KeyValuePreviews: PreviewProvider {
                 KeyValue("Leading very long key", value: longValue, alignment: .leading)
             }
         }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        mix
             .padding(.medium)
-    }
-}
-
-struct KeyValueDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        KeyValuePreviews.storybook
     }
 }
