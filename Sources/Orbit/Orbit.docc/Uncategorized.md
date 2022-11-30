@@ -23,6 +23,7 @@ Supporting types and components under development.
 
 - ``OrbitPreviewWrapper``
 - ``StateWrapper``
+- ``StateObjectWrapper``
 
 ### SwiftUI environment
 
