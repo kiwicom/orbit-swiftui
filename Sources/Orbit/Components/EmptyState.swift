@@ -96,26 +96,19 @@ struct EmptyStatePreviews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 
-    static var storybook: some View {
-        VStack(spacing: .xxLarge) {
-            standalone
-            Separator()
-            subtle
-            Separator()
-            noAction
-        }
-    }
-
     static var standalone: some View {
         EmptyState(title, description: description, illustration: .noResults, action: .button(button))
+            .previewDisplayName()
     }
     
     static var subtle: some View {
         EmptyState(title, description: description, illustration: .error404, action: .button(button, style: .primarySubtle))
+            .previewDisplayName()
     }
     
     static var noAction: some View {
         EmptyState(title, description: description, illustration: .offline)
+            .previewDisplayName()
     }
 
     static var snapshot: some View {

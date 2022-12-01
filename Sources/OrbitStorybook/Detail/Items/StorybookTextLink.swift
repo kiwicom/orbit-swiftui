@@ -12,6 +12,7 @@ struct StorybookTextLink {
             Text(link("Warning link"), linkColor: .status(.warning))
             Text(link("Critical link"), linkColor: .status(.critical))
         }
+        .previewDisplayName()
     }
 
     static func link(_ content: String) -> String {
@@ -40,6 +41,7 @@ struct StorybookTextLink {
                 Text("Tapped \(state.wrappedValue.1)", color: .inkNormal)
             }
         }
+        .previewDisplayName()
     }
 }
 

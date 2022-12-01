@@ -90,8 +90,8 @@ struct SeparatorPreviews: PreviewProvider {
     public static var previews: some View {
         PreviewWrapper {
             standalone
-            storybook
-            storybookMix
+            labels
+            mix
         }
         .padding(.vertical, .medium)
         .previewLayout(.sizeThatFits)
@@ -99,46 +99,29 @@ struct SeparatorPreviews: PreviewProvider {
 
     static var standalone: some View {
         Separator()
+            .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var labels: some View {
         VStack(spacing: .xLarge) {
             Separator()
             Separator("Separator with label")
         }
+        .previewDisplayName()
     }
 
-    static var storybookMix: some View {
+    static var mix: some View {
         VStack(spacing: .xLarge) {
             Separator("Custom colors", labelColor: .custom(.productDark), color: .blueNormal)
             Separator("Separator with very very very very very long and multiline label")
             Separator("Hairline thickness", thickness: .hairline)
             Separator("Custom thickness", thickness: .custom(.xSmall))
         }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        labels
             .padding(.vertical, .medium)
-    }
-}
-
-struct SeparatorDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.vertical, .medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        SeparatorPreviews.storybook
     }
 }

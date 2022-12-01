@@ -20,6 +20,7 @@ struct StorybookTile {
                 contentPlaceholder
             }
         }
+        .previewDisplayName()
     }
 
     @ViewBuilder static var mix: some View {
@@ -45,6 +46,7 @@ struct StorybookTile {
                 showBorder: false
             )
         }
+        .previewDisplayName()
     }
 }
 

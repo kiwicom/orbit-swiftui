@@ -153,8 +153,8 @@ struct BadgeListPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             standaloneSmallSecondary
-            storybook
-            storybookMix
+            statuses
+            mix
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -166,13 +166,15 @@ struct BadgeListPreviews: PreviewProvider {
             BadgeList()   // EmptyView
             BadgeList("") // EmptyView
         }
+        .previewDisplayName()
     }
 
     static var standaloneSmallSecondary: some View {
         BadgeList("Neutral BadgeList", icon: .grid, labelColor: .secondary, size: .small)
+            .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var statuses: some View {
         VStack(alignment: .leading, spacing: .xxLarge) {
             VStack(alignment: .leading, spacing: .medium) {
                 BadgeList(longLabel, icon: .grid)
@@ -189,40 +191,21 @@ struct BadgeListPreviews: PreviewProvider {
                 BadgeList(label, icon: .alertCircle, style: .status(.critical), labelColor: .secondary, size: .small)
             }
         }
+        .previewDisplayName()
     }
 
-    static var storybookMix: some View {
+    static var mix: some View {
         VStack(alignment: .leading, spacing: .medium) {
             BadgeList("This is simple <ref>BadgeList</ref> item with <strong>SF Symbol</strong>", icon: .sfSymbol("info.circle.fill"), style: .status(.info))
             BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", icon: .countryFlag("cz"), style: .status(.critical))
             BadgeList("This is simple <ref>BadgeList</ref> item with custom image", icon: .image(.orbit(.facebook)), style: .status(.success))
             BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color", labelColor: .custom(.blueDark))
         }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        statuses
             .padding(.medium)
-    }
-}
-
-struct BadgeListDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        BadgeListPreviews.standalone
     }
 }

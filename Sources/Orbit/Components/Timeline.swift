@@ -66,7 +66,7 @@ struct TimelinePreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            storybookMix
+            mix
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -113,13 +113,10 @@ struct TimelinePreviews: PreviewProvider {
                 description: "Arrive at your destination"
             )
         }
+        .previewDisplayName()
     }
 
-    static var storybook: some View {
-        standalone
-    }
-
-    static var storybookMix: some View {
+    static var mix: some View {
         VStack(alignment: .leading, spacing: .xxLarge) {
             Timeline {
                 ForEach(steps) { step in
@@ -151,10 +148,11 @@ struct TimelinePreviews: PreviewProvider {
                 }
             }
         }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        standalone
             .padding(.medium)
     }
 

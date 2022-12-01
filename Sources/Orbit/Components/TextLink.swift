@@ -116,8 +116,8 @@ struct TextLinkPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            storybook
-            storybookLive
+            colors
+            interactive
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -135,9 +135,10 @@ struct TextLinkPreviews: PreviewProvider {
             bounds: .zero
         )
         .frame(width: 100, height: 60)
+        .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var colors: some View {
         VStack(alignment: .leading, spacing: .large) {
             Text(link("Primary link"), linkColor: .primary)
             Text(link("Secondary link"), linkColor: .secondary)
@@ -146,13 +147,14 @@ struct TextLinkPreviews: PreviewProvider {
             Text(link("Warning link"), linkColor: .status(.warning))
             Text(link("Critical link"), linkColor: .status(.critical))
         }
+        .previewDisplayName()
     }
 
     static func link(_ content: String) -> String {
         "<a href=\"...\">\(content)</a>"
     }
 
-    static var storybookLive: some View {
+    static var interactive: some View {
         StateWrapper(initialState: (0, "")) { state in
             VStack(spacing: .xLarge) {
                 Text("Text containing <a href=\"...\">Some TextLink</a> and <a href=\"...\">Another TextLink</a>") { link, text in
@@ -174,29 +176,11 @@ struct TextLinkPreviews: PreviewProvider {
                 Text("Tapped \(state.wrappedValue.1)", color: .inkNormal)
             }
         }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        colors
             .padding(.medium)
-    }
-}
-
-struct TextLinkDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        TextLinkPreviews.storybook
     }
 }

@@ -115,16 +115,17 @@ struct IllustrationPreviews: PreviewProvider {
             Illustration(.womanWithPhone)
             Illustration(.none) // EmptyView
         }
+        .previewDisplayName()
     }
     
     static var intrinsic: some View {
         Illustration(.womanWithPhone, layout: .intrinsic)
-            .previewDisplayName("Intrinsic size")
+            .previewDisplayName()
     }
 
     static var customResource: some View {
         Illustration("WomanWithPhone", bundle: .current, layout: .intrinsic)
-            .previewDisplayName("Custom image resource")
+            .previewDisplayName()
     }
     
     static var stackSmallerWidth: some View {
@@ -136,7 +137,7 @@ struct IllustrationPreviews: PreviewProvider {
                 .border(Color.cloudNormal)
         }
         .frame(width: 150)
-        .previewDisplayName("Smaller width")
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
@@ -227,10 +228,6 @@ struct IllustrationPreviews: PreviewProvider {
                 }
             }
         }
-        .previewDisplayName("Mixed sizes")
-    }
-
-    static var storybook: some View {
-        snapshot
+        .previewDisplayName()
     }
 }

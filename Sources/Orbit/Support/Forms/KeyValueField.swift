@@ -70,5 +70,6 @@ struct KeyValueFieldPreviews: PreviewProvider {
         KeyValueField("Key") {
             Text("Value")
         }
+        .previewDisplayName()
     }
 }

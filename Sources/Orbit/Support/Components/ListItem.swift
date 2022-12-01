@@ -140,6 +140,7 @@ struct ListItemPreviews: PreviewProvider {
 
     static var standalone: some View {
         ListItem("ListItem")
+            .previewDisplayName()
     }
 
     static var snapshots: some View {
@@ -152,7 +153,7 @@ struct ListItemPreviews: PreviewProvider {
             ListItem("ListItem - small, secondary", size: .small, style: .secondary)
         }
         .padding()
-        .previewDisplayName("Snapshots")
+        .previewDisplayName()
     }
     
     static var snapshotsLinks: some View {
@@ -163,7 +164,7 @@ struct ListItemPreviews: PreviewProvider {
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, icon: .symbol(.circleSmall, color: .blueNormal), style: .custom(color: .greenNormal))
         }
         .padding()
-        .previewDisplayName("Snapshots - Links")
+        .previewDisplayName()
     }
     
     static var snapshotsCustom: some View {
@@ -178,7 +179,7 @@ struct ListItemPreviews: PreviewProvider {
             ListItem("ListItem with no icon", icon: .none)
         }
         .padding()
-        .previewDisplayName("Snapshots - Custom")
+        .previewDisplayName()
     }
 
     static var orbit: some View {
@@ -194,6 +195,6 @@ struct ListItemPreviews: PreviewProvider {
             }
         }
         .padding()
-        .previewDisplayName("Orbit")
+        .previewDisplayName()
     }
 }

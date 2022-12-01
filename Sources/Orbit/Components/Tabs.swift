@@ -173,7 +173,7 @@ struct TabsPreviews: PreviewProvider {
             intrinsicSingleline
             equalMultiline
             equalSingleline
-            storybookLive
+            interactive
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -188,6 +188,7 @@ struct TabsPreviews: PreviewProvider {
                 Tab("Four")
             }
         }
+        .previewDisplayName()
     }
 
     static var standaloneIntrinsic: some View {
@@ -197,9 +198,10 @@ struct TabsPreviews: PreviewProvider {
                 Tab("Two", style: .default)
             }
         }
+        .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var sizing: some View {
         VStack(spacing: .xLarge) {
             standaloneIntrinsic
             standalone
@@ -208,6 +210,7 @@ struct TabsPreviews: PreviewProvider {
             equalMultiline
             equalSingleline
         }
+        .previewDisplayName()
     }
 
     @ViewBuilder static var intrinsicMultiline: some View {
@@ -218,7 +221,7 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
         }
-        .previewDisplayName("Intrinsic distribution, multiline")
+        .previewDisplayName()
     }
 
     @ViewBuilder static var intrinsicSingleline: some View {
@@ -229,7 +232,7 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All")
             }
         }
-        .previewDisplayName("Intrinsic distribution, no multiline")
+        .previewDisplayName()
     }
 
     @ViewBuilder static var equalMultiline: some View {
@@ -240,7 +243,7 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
         }
-        .previewDisplayName("Equal distribution, multiline")
+        .previewDisplayName()
     }
 
     @ViewBuilder static var equalSingleline: some View {
@@ -251,10 +254,10 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
         }
-        .previewDisplayName("Equal distribution, no multiline")
+        .previewDisplayName()
     }
 
-    static var storybookLive: some View {
+    static var interactive: some View {
         StateWrapper(initialState: 1) { index in
             VStack(spacing: .large) {
                 Tabs(selectedIndex: index) {
@@ -273,28 +276,7 @@ struct TabsPreviews: PreviewProvider {
     }
 
     static var snapshot: some View {
-        storybook
+        sizing
             .padding(.medium)
-    }
-}
-
-struct TabsDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        TabsPreviews.storybook
-        TabsPreviews.equalMultiline
     }
 }

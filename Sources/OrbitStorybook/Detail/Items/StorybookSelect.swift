@@ -24,6 +24,7 @@ struct StorybookSelect {
             select(value: value, message: .help(helpMessage))
             select(value: value, message: .error(errorMessage))
         }
+        .previewDisplayName()
     }
 
     @ViewBuilder static var mix: some View {
@@ -72,6 +73,7 @@ struct StorybookSelect {
                 )
             }
         }
+        .previewDisplayName()
     }
 
     static func select(value: String, message: Message? = nil) -> some View {

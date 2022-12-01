@@ -18,6 +18,7 @@ struct StorybookSwitch {
                 switchView(isOn: false, hasIcon: true, isEnabled: false)
             }
         }
+        .previewDisplayName()
     }
 
     static func switchView(isOn: Bool, hasIcon: Bool = false, isEnabled: Bool = true) -> some View {

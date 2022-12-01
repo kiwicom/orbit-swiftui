@@ -195,6 +195,7 @@ struct TimelineItemPreviews: PreviewProvider {
             description: "We’ve assigned your request to one of our agents."
         )
         .padding()
+        .previewDisplayName()
     }
 
     static var snapshots: some View {
@@ -236,7 +237,7 @@ struct TimelineItemPreviews: PreviewProvider {
             }
         }
         .padding()
-        .previewDisplayName("Snapshots")
+        .previewDisplayName()
     }
 }
 
@@ -293,6 +294,6 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
             }
         }
         .padding()
-        .previewDisplayName("Custom Header and Content")
+        .previewDisplayName()
     }
 }

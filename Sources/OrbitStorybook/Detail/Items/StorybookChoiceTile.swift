@@ -10,12 +10,14 @@ struct StorybookChoiceTile {
         VStack(spacing: .medium) {
             choiceTileContent
         }
+        .previewDisplayName()
     }
 
     static var centered: some View {
         VStack(spacing: .medium) {
             choiceTileContentCentered
         }
+        .previewDisplayName()
     }
 
     static var mix: some View {
@@ -56,6 +58,7 @@ struct StorybookChoiceTile {
                 }
             }
         }
+        .previewDisplayName()
     }
 
     @ViewBuilder static var choiceTileContent: some View {

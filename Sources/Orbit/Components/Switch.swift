@@ -117,9 +117,7 @@ struct SwitchPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            storybook
-            storybook
-                .preferredColorScheme(.dark)
+            states
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -129,9 +127,10 @@ struct SwitchPreviews: PreviewProvider {
         StateWrapper(initialState: true) { state in
             Switch(isOn: state)
         }
+        .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var states: some View {
         VStack(spacing: .large) {
             HStack(spacing: .large) {
                 switchView(isOn: true)
@@ -146,10 +145,11 @@ struct SwitchPreviews: PreviewProvider {
                 switchView(isOn: false, hasIcon: true, isEnabled: false)
             }
         }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        states
             .padding(.medium)
     }
 
@@ -157,25 +157,5 @@ struct SwitchPreviews: PreviewProvider {
         StateWrapper(initialState: isOn) { isOnState in
             Switch(isOn: isOnState, hasIcon: hasIcon, isEnabled: isEnabled)
         }
-    }
-}
-
-struct SwitchDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        SwitchPreviews.storybook
     }
 }

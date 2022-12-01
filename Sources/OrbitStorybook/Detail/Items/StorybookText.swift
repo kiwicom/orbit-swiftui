@@ -27,6 +27,7 @@ struct StorybookText {
                 .foregroundColor(.blueDark)
                 .background(Color.blueLight)
         }
+        .previewDisplayName()
     }
 }
 

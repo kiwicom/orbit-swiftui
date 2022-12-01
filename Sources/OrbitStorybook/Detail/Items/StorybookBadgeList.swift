@@ -23,6 +23,7 @@ struct StorybookBadgeList {
                 BadgeList(label, icon: .alertCircle, style: .status(.critical), labelColor: .secondary, size: .small)
             }
         }
+        .previewDisplayName()
     }
 
     static var mix: some View {
@@ -32,6 +33,7 @@ struct StorybookBadgeList {
             BadgeList("This is simple <ref>BadgeList</ref> item with custom image", icon: .image(.orbit(.facebook)), style: .status(.success))
             BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color", labelColor: .custom(.blueDark))
         }
+        .previewDisplayName()
     }
 }
 

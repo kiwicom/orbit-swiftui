@@ -82,7 +82,7 @@ struct CountryFlagPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             unknown
-            storybook
+            mix
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -90,6 +90,7 @@ struct CountryFlagPreviews: PreviewProvider {
 
     static var standalone: some View {
         CountryFlag("cz")
+            .previewDisplayName()
     }
 
     static var unknown: some View {
@@ -97,10 +98,10 @@ struct CountryFlagPreviews: PreviewProvider {
             CountryFlag("")
             CountryFlag("some invalid identifier")
         }
-        .previewDisplayName("Unknown")
+        .previewDisplayName()
     }
     
-    static var storybook: some View {
+    static var mix: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
             HStack(spacing: .small) {
                 Text("Small")
@@ -137,30 +138,11 @@ struct CountryFlagPreviews: PreviewProvider {
                 CountryFlag("us", size: .custom(60))
             }
         }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        mix
             .padding(.medium)
-    }
-}
-
-struct CountryFlagDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        CountryFlagPreviews.storybook
     }
 }

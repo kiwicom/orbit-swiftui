@@ -288,11 +288,22 @@ struct TilePreviews: PreviewProvider {
             standalone
             intrinsic
             sizing
-            storybook
-            storybookMix
+            tiles
+            mix
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
+    }
+
+    static var standalone: some View {
+        Tile(title, description: description, icon: .grid)
+            .previewDisplayName()
+    }
+
+    static var intrinsic: some View {
+        Tile(title, description: description, icon: .grid)
+            .idealSize()
+            .previewDisplayName()
     }
 
     static var sizing: some View {
@@ -319,21 +330,10 @@ struct TilePreviews: PreviewProvider {
             }
         }
         .fixedSize(horizontal: false, vertical: true)
-        .previewDisplayName("Sizing")
+        .previewDisplayName()
     }
 
-    static var standalone: some View {
-        Tile(title, description: description, icon: .grid)
-            .previewDisplayName("Standalone")
-    }
-
-    static var intrinsic: some View {
-        Tile(title, description: description, icon: .grid)
-            .idealSize()
-            .previewDisplayName("Intrinsic")
-    }
-
-    static var storybook: some View {
+    static var tiles: some View {
         VStack(spacing: .large) {
             Tile(title)
             Tile(title, icon: .airplane)
@@ -343,9 +343,10 @@ struct TilePreviews: PreviewProvider {
                 contentPlaceholder
             }
         }
+        .previewDisplayName()
     }
 
-    @ViewBuilder static var storybookMix: some View {
+    @ViewBuilder static var mix: some View {
         VStack(spacing: .large) {
             Tile("Title with very very very very very long multiline text", description: descriptionMultiline, icon: .airplane) {
                 contentPlaceholder
@@ -368,30 +369,11 @@ struct TilePreviews: PreviewProvider {
                 showBorder: false
             )
         }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        tiles
             .padding(.medium)
-    }
-}
-
-struct TileDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        TilePreviews.storybook
     }
 }

@@ -115,42 +115,42 @@ struct ScreenLayoutModifierPreviews: PreviewProvider {
         Color.white
             .screenLayout()
             .background(Color.greenLight)
-            .previewDisplayName("Full Default")
+            .previewDisplayName()
     }
 
     static var fullCompact: some View {
         Color.white
             .screenLayout(padding: .compact)
             .background(Color.greenLight)
-            .previewDisplayName("Full Compact")
+            .previewDisplayName()
     }
 
     static var fullCustom: some View {
         Color.white
             .screenLayout(padding: .custom(horizontal: .xxSmall, top: .xxxLarge, bottom: .medium))
             .background(Color.greenLight)
-            .previewDisplayName("Full Custom")
+            .previewDisplayName()
     }
 
     static var horizontal: some View {
         Color.white
             .screenLayout(.horizontal)
             .background(Color.greenLight)
-            .previewDisplayName("Horizontal")
+            .previewDisplayName()
     }
 
     static var horizontalAndBottom: some View {
         Color.white
             .screenLayout([.horizontal, .bottom])
             .background(Color.greenLight)
-            .previewDisplayName("Horizontal and Bottom")
+            .previewDisplayName()
     }
 
     static var noPaddingCustomWidth: some View {
         Color.white
             .screenLayout([], maxContentWidth: 200)
             .background(Color.greenLight)
-            .previewDisplayName("No padding")
+            .previewDisplayName()
     }
 
     static var snapshot: some View {
@@ -190,5 +190,6 @@ struct ScreenLayoutModifierPreviews: PreviewProvider {
         }
         .screenLayout()
         .background(Color.screen)
+        .previewDisplayName()
     }
 }

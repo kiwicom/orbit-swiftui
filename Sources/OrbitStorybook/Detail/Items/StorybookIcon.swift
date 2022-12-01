@@ -13,6 +13,7 @@ struct StorybookIcon {
             snapshotSizesHeading
             alignments
         }
+        .previewDisplayName()
     }
 
     static var snapshotSizes: some View {
@@ -223,6 +224,7 @@ struct StorybookIcon {
             .foregroundColor(.blueDark)
             .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
         }
+        .previewDisplayName()
     }
 
     static var alignments: some View {

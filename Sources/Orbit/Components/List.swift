@@ -35,8 +35,8 @@ struct ListPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            storybook
-            storybookMix
+            sizes
+            mix
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -49,9 +49,10 @@ struct ListPreviews: PreviewProvider {
             ListItem(listItemText, icon: .symbol(.check, color: .greenNormal))
             ListItem(listItemText, icon: .none)
         }
+        .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var sizes: some View {
         VStack(alignment: .leading, spacing: .medium) {
             List {
                 ListItem(listItemText)
@@ -75,9 +76,10 @@ struct ListPreviews: PreviewProvider {
                 ListItem(listItemText, size: .large, style: .secondary)
             }
         }
+        .previewDisplayName()
     }
 
-    static var storybookMix: some View {
+    static var mix: some View {
         VStack(alignment: .leading, spacing: .medium) {
             List {
                 ListItem(listItemText)
@@ -106,29 +108,11 @@ struct ListPreviews: PreviewProvider {
                 ListItem(listItemText, spacing: .small)
             }
         }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        sizes
             .padding(.medium)
-    }
-}
-
-struct ListDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        ListPreviews.standalone
     }
 }

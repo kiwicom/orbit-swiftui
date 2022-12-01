@@ -181,7 +181,7 @@ struct TagPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             standaloneExpanding
-            storybook
+            styles
             sizing
         }
         .padding(.medium)
@@ -193,6 +193,7 @@ struct TagPreviews: PreviewProvider {
             Tag(label, icon: .grid, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
             Tag("") // EmptyView
         }
+        .previewDisplayName()
     }
 
     static var standaloneExpanding: some View {
@@ -200,9 +201,10 @@ struct TagPreviews: PreviewProvider {
             Tag(label, icon: .grid, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
                 .idealSize(horizontal: false)
         }
+        .previewDisplayName()
     }
 
-    @ViewBuilder static var storybook: some View {
+    @ViewBuilder static var styles: some View {
         VStack(alignment: .leading, spacing: .large) {
             stack(style: .default, isFocused: true)
             stack(style: .default, isFocused: false)
@@ -221,6 +223,7 @@ struct TagPreviews: PreviewProvider {
                 }
             }
         }
+        .previewDisplayName()
     }
 
     static var sizing: some View {
@@ -236,10 +239,11 @@ struct TagPreviews: PreviewProvider {
                 }
             }
         }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        styles
             .padding(.medium)
     }
 
@@ -272,26 +276,5 @@ struct TagPreviews: PreviewProvider {
             .disabled(isActive)
             .opacity(state.wrappedValue.2 ? 1 : 0)
         }
-    }
-}
-
-struct TagDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        TagPreviews.storybook
-        TagPreviews.sizing
     }
 }

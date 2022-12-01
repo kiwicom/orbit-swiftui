@@ -250,22 +250,27 @@ struct AlertPreviews: PreviewProvider {
         ) {
             contentPlaceholder
         }
+        .previewDisplayName()
     }
 
     static var basic: some View {
         alerts(showIcons: true, isSuppressed: false)
+            .previewDisplayName()
     }
 
     static var basicNoIcon: some View {
         alerts(showIcons: false, isSuppressed: false)
+            .previewDisplayName()
     }
 
     static var suppressed: some View {
         alerts(showIcons: true, isSuppressed: true)
+            .previewDisplayName()
     }
 
     static var suppressedNoIcon: some View {
         alerts(showIcons: false, isSuppressed: true)
+            .previewDisplayName()
     }
 
     static func alert(_ title: String, status: Status, icon: Icon.Symbol, isSuppressed: Bool) -> some View {
@@ -301,7 +306,7 @@ struct AlertPreviews: PreviewProvider {
             Alert("Intrinsic width", buttons: Self.primaryConfiguration)
                 .idealSize(horizontal: true, vertical: false)
         }
-        .previewDisplayName("Primary buttons")
+        .previewDisplayName()
     }
     
     static var noButtons: some View {
@@ -321,73 +326,11 @@ struct AlertPreviews: PreviewProvider {
             Alert("Intrinsic width")
                 .idealSize(horizontal: true, vertical: false)
         }
-        .previewDisplayName("No buttons")
-    }
-
-    static var storybook: some View {
-        LazyVStack(alignment: .leading, spacing: .large) {
-            basic
-            basicNoIcon
-            suppressed
-            suppressedNoIcon
-        }
-    }
-
-    static var storybookMix: some View {
-        LazyVStack(alignment: .leading, spacing: .large) {
-            primaryButtonOnly
-            noButtons
-        }
-    }
-
-    static var storybookLive: some View {
-        StateWrapper(initialState: primaryAndSecondaryConfiguration) { buttons in
-            VStack(spacing: .large) {
-                Alert(
-                    title,
-                    description: description,
-                    icon: .informationCircle,
-                    buttons: buttons.wrappedValue
-                )
-
-                Button("Toggle buttons") {
-                    withAnimation(.spring()) {
-                        switch buttons.wrappedValue {
-                            case .none:                     buttons.wrappedValue = primaryConfiguration
-                            case .primary:                  buttons.wrappedValue = secondaryConfiguration
-                            case .secondary:                buttons.wrappedValue = primaryAndSecondaryConfiguration
-                            case .primaryAndSecondary:      buttons.wrappedValue = .none
-                        }
-                    }
-                }
-            }
-            .animation(.default, value: buttons.wrappedValue.isVisible)
-        }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
         standalone
             .padding(.medium)
-    }
-}
-
-struct AlertDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        AlertPreviews.standalone
     }
 }

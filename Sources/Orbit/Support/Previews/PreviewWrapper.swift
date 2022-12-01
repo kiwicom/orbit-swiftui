@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Registers Orbit fonts for preview content.
 public struct OrbitPreviewWrapper<Content: View>: View {
 
     @ViewBuilder let content: Content

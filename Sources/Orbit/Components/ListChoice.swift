@@ -410,9 +410,9 @@ struct ListChoicePreviews: PreviewProvider {
             sizing
             plain
             radio
-            storybook
-            storybookButton
-            storybookCheckbox
+            mix
+            buttons
+            checkbox
         }
         .previewLayout(.sizeThatFits)
     }
@@ -428,6 +428,7 @@ struct ListChoicePreviews: PreviewProvider {
             // Empty
             ListChoice(disclosure: .none)
         }
+        .previewDisplayName()
     }
 
     static var intrinsic: some View {
@@ -437,6 +438,7 @@ struct ListChoicePreviews: PreviewProvider {
             intrinsicContentPlaceholder
         }
         .idealSize()
+        .previewDisplayName()
     }
 
     static var sizing: some View {
@@ -467,10 +469,10 @@ struct ListChoicePreviews: PreviewProvider {
         }
         .fixedSize(horizontal: false, vertical: true)
         .background(Color.whiteNormal)
-        .previewDisplayName("Sizing")
+        .previewDisplayName()
     }
     
-    static var storybook: some View {
+    static var mix: some View {
         Card(contentLayout: .fill) {
             ListChoice(title)
             ListChoice(title, value: "10")
@@ -487,9 +489,10 @@ struct ListChoicePreviews: PreviewProvider {
                 badge
             })
         }
+        .previewDisplayName()
     }
     
-    static var storybookButton: some View {
+    static var buttons: some View {
         Card(contentLayout: .fill) {
             ListChoice(title, disclosure: addButton)
             ListChoice(title, disclosure: removeButton)
@@ -506,10 +509,10 @@ struct ListChoicePreviews: PreviewProvider {
                 headerContent
             }
         }
-        .previewDisplayName("Button")
+        .previewDisplayName()
     }
 
-    static var storybookCheckbox: some View {
+    static var checkbox: some View {
         Card(contentLayout: .fill) {
             ListChoice(title, disclosure: uncheckedCheckbox)
             ListChoice(title, disclosure: checkedCheckbox)
@@ -526,7 +529,7 @@ struct ListChoicePreviews: PreviewProvider {
                 headerContent
             }
         }
-        .previewDisplayName("Checkbox")
+        .previewDisplayName()
     }
 
     static var radio: some View {
@@ -549,7 +552,7 @@ struct ListChoicePreviews: PreviewProvider {
                 headerContent
             }
         }
-        .previewDisplayName("Radio")
+        .previewDisplayName()
     }
 
     static var plain: some View {
@@ -570,13 +573,7 @@ struct ListChoicePreviews: PreviewProvider {
                 headerContent
             }
         }
-    }
-
-    static var storybookMix: some View {
-        VStack(alignment: .leading, spacing: .large) {
-            plain
-            radio
-        }
+        .previewDisplayName()
     }
 
     static var headerContent: some View {
@@ -588,26 +585,5 @@ struct ListChoicePreviews: PreviewProvider {
 
     static var snapshot: some View {
         standalone
-    }
-}
-
-struct ListChoiceDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        ListChoicePreviews.standalone
-        ListChoice(ListChoicePreviews.title, disclosure: ListChoicePreviews.addButton)
-        ListChoice(ListChoicePreviews.title, disclosure: ListChoicePreviews.uncheckedCheckbox)
     }
 }

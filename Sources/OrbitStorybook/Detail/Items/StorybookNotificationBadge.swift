@@ -17,6 +17,7 @@ struct StorybookNotificationBadge {
             statusBadges(.warning)
             statusBadges(.critical)
         }
+        .previewDisplayName()
     }
 
     static var gradient: some View {
@@ -25,6 +26,7 @@ struct StorybookNotificationBadge {
             gradientBadge(.bundleMedium)
             gradientBadge(.bundleTop)
         }
+        .previewDisplayName()
     }
 
     static var mix: some View {
@@ -47,6 +49,7 @@ struct StorybookNotificationBadge {
                 NotificationBadge(.sfSymbol("ant.fill"))
             }
         }
+        .previewDisplayName()
     }
 
     static func badges(_ style: Badge.Style) -> some View {

@@ -27,6 +27,7 @@ struct TextConcatenationPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
+        (
         Heading("Hanoi ", style: .title1)
             + Icon(.flightReturn, size: .xLarge)
             + Heading(" San Pedro de Alcantara", style: .title1)
@@ -34,6 +35,8 @@ struct TextConcatenationPreviews: PreviewProvider {
             + Icon(sfSymbol: "info.circle", size: .large)
             + Icon(image: .orbit(.navigateClose), baselineOffset: -1)
             + Text(" (Delayed)", size: .xLarge, color: .inkNormal)
+        )
+        .previewDisplayName()
     }
 
     static var formatting: some View {
@@ -51,6 +54,7 @@ struct TextConcatenationPreviews: PreviewProvider {
             + Icon(.check, size: .small, color: .greenDark)
         )
         .foregroundColor(.blueDark)
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
@@ -66,6 +70,7 @@ struct TextConcatenationPreviews: PreviewProvider {
             concatenatedText("Title 5", style: .title5)
             concatenatedText("Title 6", style: .title6)
         }
+        .previewDisplayName()
     }
 
     static func concatenatedText(_ label: String, style: Heading.Style) -> some View {
@@ -76,22 +81,6 @@ struct TextConcatenationPreviews: PreviewProvider {
                 + Text(" and Text", color: nil)
         }
         .foregroundColor(.blueDark)
-    }
-}
-
-struct TextConcatenationPreviewsDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            standaloneLarge
-        }
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var standaloneLarge: some View {
-        TextConcatenationPreviews.standalone
-            .environment(\.sizeCategory, .accessibilityExtraLarge)
-            .previewDisplayName("Dynamic type — extra large")
-            .previewLayout(.sizeThatFits)
+        .previewDisplayName()
     }
 }

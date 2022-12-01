@@ -118,8 +118,8 @@ struct SelectPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             intrinsic
-            storybook
-            storybookMix
+            styles
+            mix
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -127,14 +127,16 @@ struct SelectPreviews: PreviewProvider {
 
     static var standalone: some View {
         Select(InputFieldPreviews.label, prefix: .grid, value: InputFieldPreviews.value)
+            .previewDisplayName()
     }
 
     static var intrinsic: some View {
         Select("Intrinsic", prefix: .grid, value: InputFieldPreviews.value)
             .idealSize()
+            .previewDisplayName()
     }
 
-    static var storybook: some View {
+    static var styles: some View {
         VStack(spacing: .medium) {
             select(value: "")
             select(value: "", message: .help(InputFieldPreviews.helpMessage))
@@ -144,13 +146,14 @@ struct SelectPreviews: PreviewProvider {
             select(value: InputFieldPreviews.value, message: .help(InputFieldPreviews.helpMessage))
             select(value: InputFieldPreviews.value, message: .error(InputFieldPreviews.errorMessage))
         }
+        .previewDisplayName()
     }
 
     static func select(value: String, message: Message? = nil) -> some View {
         Select(InputFieldPreviews.label, prefix: .grid, value: value, placeholder: InputFieldPreviews.placeholder, message: message)
     }
 
-    @ViewBuilder static var storybookMix: some View {
+    @ViewBuilder static var mix: some View {
         VStack(spacing: .medium) {
             Group {
                 Select("Label", value: "Value")
@@ -196,10 +199,11 @@ struct SelectPreviews: PreviewProvider {
                 )
             }
         }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        storybook
+        styles
             .padding(.medium)
     }
 }
@@ -247,27 +251,8 @@ struct SelectLivePreviews: PreviewProvider {
                 .padding()
                 .navigationBarTitle("Live Preview")
             }
+            .navigationViewStyle(.stack)
             .previewDisplayName("Live Preview")
         }
-    }
-}
-
-struct SelectDynamicTypePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            content
-                .environment(\.sizeCategory, .extraSmall)
-                .previewDisplayName("Dynamic Type - XS")
-            content
-                .environment(\.sizeCategory, .accessibilityExtraLarge)
-                .previewDisplayName("Dynamic Type - XL")
-        }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
-    }
-
-    @ViewBuilder static var content: some View {
-        SelectPreviews.standalone
     }
 }

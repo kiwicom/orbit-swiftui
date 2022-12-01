@@ -99,6 +99,7 @@ struct TabPreviews: PreviewProvider {
     static var standalone: some View {
         Tab("Light", icon: .grid, style: .underlinedGradient(.bundleBasic))
             .padding(.medium)
+            .previewDisplayName()
     }
 
     static var styles: some View {
@@ -110,7 +111,7 @@ struct TabPreviews: PreviewProvider {
             .border(Color.cloudNormal)
         }
         .padding(.medium)
-        .previewDisplayName("TabStyle")
+        .previewDisplayName()
     }
 
     static var gradients: some View {
@@ -125,6 +126,6 @@ struct TabPreviews: PreviewProvider {
             .border(Color.cloudNormal)
         }
         .padding(.medium)
-        .previewDisplayName("TabStyle - Gradients")
+        .previewDisplayName()
     }
 }

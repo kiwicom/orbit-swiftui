@@ -22,6 +22,7 @@ struct StorybookAlert {
             alerts(showIcons: true, isSuppressed: true)
             alerts(showIcons: false, isSuppressed: true)
         }
+        .previewDisplayName()
     }
 
     static var mix: some View {
@@ -29,6 +30,7 @@ struct StorybookAlert {
             alertPrimaryButtonOnly
             alertNoButtons
         }
+        .previewDisplayName()
     }
 
     static var live: some View {
@@ -54,6 +56,7 @@ struct StorybookAlert {
             }
             .animation(.default, value: buttons.wrappedValue.isVisible)
         }
+        .previewDisplayName()
     }
 
     static var alertPrimaryButtonOnly: some View {

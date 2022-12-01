@@ -22,7 +22,7 @@ public extension TagModel {
 public struct TagGroup<TM: TagModel>: View {
 
     @Environment(\.accessibilityReduceMotion) private var isReduceMotionEnabled
-    @Environment(\.isFadeIn) private var isFadeIn
+    @Environment(\.isFadeInEnabled) private var isFadeInEnabled
     @State private var tagsFadeIn: [Bool] = []
     @Binding private var tags: [TM]
 
@@ -53,7 +53,7 @@ public struct TagGroup<TM: TagModel>: View {
             }
         }
         .onAppear {
-            if isFadeIn, isReduceMotionEnabled == false {
+            if isFadeInEnabled, isReduceMotionEnabled == false {
                 tagsFadeIn = tags.map { _ in false }
                 let delays = tags.enumerated().map { Double($0.offset) * 0.15 }.shuffled()
 
@@ -133,7 +133,7 @@ struct TagGroupPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             snapshots
-            live
+            interactive
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -163,7 +163,7 @@ struct TagGroupPreviews: PreviewProvider {
         }
     }
 
-    static var live: some View {
+    static var interactive: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: .xxSmall) {
                 StateWrapper(
@@ -173,7 +173,7 @@ struct TagGroupPreviews: PreviewProvider {
                     ]
                 ) { tags in
                     TagGroup(tags: tags, layout: .singleLineScrollable)
-                        .environment(\.isFadeIn, true)
+                        .environment(\.isFadeInEnabled, true)
                 }
 
                 Separator()
@@ -189,7 +189,7 @@ struct TagGroupPreviews: PreviewProvider {
                 ) { tags in
                     VStack(alignment: .leading) {
                         TagGroup(label: "Filters", tags: tags, showRemovedTags: true, layout: .singleLineScrollable)
-                            .environment(\.isFadeIn, true)
+                            .environment(\.isFadeInEnabled, true)
 
                         ForEach(tags.wrappedValue) { tag in
                             HStack {
@@ -232,10 +232,10 @@ struct TagGroupPreviews: PreviewProvider {
                     ]
                 ) { tags in
                     TagGroup(label: "Removable tags", tags: tags, layout: .multiLine)
-                        .environment(\.isFadeIn, true)
+                        .environment(\.isFadeInEnabled, true)
                 }
             }
         }
-        .previewDisplayName("Live Preview")
+        .previewDisplayName()
     }
 }

@@ -58,16 +58,10 @@ public extension NavigateButton {
 struct NavigateBackButtonPreviews: PreviewProvider {
 
     public static var previews: some View {
-        NavigateButton(state: .back)
-            .previewLayout(.sizeThatFits)
-    }
-}
-
-// MARK: - Previews
-struct NavigateCloseButtonPreviews: PreviewProvider {
-
-    public static var previews: some View {
-        NavigateButton(state: .close)
-            .previewLayout(.sizeThatFits)
+        PreviewWrapper {
+            NavigateButton(state: .back)
+            NavigateButton(state: .close)
+        }
+        .previewLayout(.sizeThatFits)
     }
 }

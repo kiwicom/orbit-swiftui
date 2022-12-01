@@ -11,6 +11,7 @@ struct StorybookCheckbox {
             content(standalone: false)
             content(standalone: true)
         }
+        .previewDisplayName()
     }
 
     static func content(standalone: Bool) -> some View {

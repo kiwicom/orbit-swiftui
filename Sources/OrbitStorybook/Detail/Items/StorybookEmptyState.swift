@@ -15,6 +15,7 @@ struct StorybookEmptyState {
             Separator()
             noAction
         }
+        .previewDisplayName()
     }
 
     static var standalone: some View {

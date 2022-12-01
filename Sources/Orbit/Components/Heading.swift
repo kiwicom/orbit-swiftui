@@ -226,7 +226,7 @@ struct HeadingPreviews: PreviewProvider {
             Heading("Heading", style: .title1)
             Heading("", style: .title1) // EmptyView
         }
-        .previewDisplayName("Heading")
+        .previewDisplayName()
     }
 
     static var sizes: some View {
@@ -242,7 +242,7 @@ struct HeadingPreviews: PreviewProvider {
             heading("Title 5", style: .title5)
             heading("TITLE 6", style: .title6)
         }
-        .previewDisplayName("Styles")
+        .previewDisplayName()
     }
     
     static var multiline: some View {
@@ -259,7 +259,7 @@ struct HeadingPreviews: PreviewProvider {
             heading("<ref><u>TITLE 6</u></ref> WITH A VERY VERY VERY VERY VERY LARGE AND <strong>MULTILINE</strong> CONTENT", style: .title6, color: nil)
         }
         .foregroundColor(.inkNormal)
-        .previewDisplayName("Multiline")
+        .previewDisplayName()
     }
 
     static var concatenated: some View {
@@ -271,7 +271,7 @@ struct HeadingPreviews: PreviewProvider {
             Heading(" <ref><u>TITLE 6</u></ref> WITH <strong>MULTILINE</strong> CONTENT", style: .title6, color: nil)
         }
         .foregroundColor(.inkNormal)
-        .previewDisplayName("Concatenated")
+        .previewDisplayName()
     }
 
     static var snapshot: some View {

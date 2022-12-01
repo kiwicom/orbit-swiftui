@@ -23,12 +23,13 @@ Supporting types and components under development.
 
 - ``OrbitPreviewWrapper``
 - ``StateWrapper``
+- ``StateObjectWrapper``
 
 ### SwiftUI environment
 
 - ``IsElevationEnabledKey``
 - ``IsExpandedKey``
-- ``IsFadeInKey``
+- ``IsFadeInEnabledKey``
 - ``IsTileSeparatorVisibleKey``
 - ``ScreenLayoutPaddingKey``
 
