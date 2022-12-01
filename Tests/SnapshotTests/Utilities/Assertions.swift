@@ -48,6 +48,7 @@ func assert<V: View>(
                 horizontal: false,
                 vertical: fixedVerticalSize
             )
+            .environment(\.isFadeInEnabled, false)
     )
 
     switch size {
