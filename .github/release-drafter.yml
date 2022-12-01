@@ -16,20 +16,3 @@ exclude-labels:
 template: |
   Changes in this release:
   $CHANGES
-autolabeler:
-  - label: 'maintenance'
-    files:
-      - '*.md'
-  - label: 'bug'
-    branch:
-      - '/fix\/.+/'
-    title:
-      - '/fix/i'
-  - label: 'feature'
-    files: 'Sources/Orbit/Components/**/*'
-  - label: 'automation'
-    files:
-      - 'Automation/**/*'
-      - '.github/**/*'
-  - label: 'documentation'
-    files: 'Sources/Orbit/Orbit.docc/**/*'
