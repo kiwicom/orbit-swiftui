@@ -251,6 +251,7 @@ struct SelectLivePreviews: PreviewProvider {
                 .padding()
                 .navigationBarTitle("Live Preview")
             }
+            .navigationViewStyle(.stack)
             .previewDisplayName("Live Preview")
         }
     }

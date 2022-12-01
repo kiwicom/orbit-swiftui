@@ -260,6 +260,7 @@ struct ToastPreviews: PreviewProvider {
             .navigationBarTitle("Toast screen")
             .overlay(toast, alignment: .top)
         }
+        .navigationViewStyle(.stack)
         .previewDisplayName()
     }
 

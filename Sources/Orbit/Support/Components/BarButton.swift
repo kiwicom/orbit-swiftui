@@ -94,6 +94,7 @@ struct BarButtonPreviews: PreviewProvider {
                         }
                     )
             }
+            .navigationViewStyle(.stack)
         }
         .previewLayout(.sizeThatFits)
     }
