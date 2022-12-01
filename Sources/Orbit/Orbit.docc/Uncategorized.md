@@ -50,6 +50,7 @@ Supporting types and components under development.
 - ``PasswordStrengthIndicator``
 - ``Progress``
 - ``Status``
+- ``StepperButton``
 
 ### Deprecated
 
