@@ -46,14 +46,14 @@ public struct Icon: View {
                     .accessibility(hidden: true)
             case .countryFlag(let countryCode):
                 CountryFlag(countryCode, size: size)
-            case .sfSymbol(let systemName, let color?):
+            case .sfSymbol(let systemName, let color?, let weight):
                 Image(systemName: systemName)
                     .foregroundColor(color)
-                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
-            case .sfSymbol(let systemName, nil):
+                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio, weight: weight))
+            case .sfSymbol(let systemName, nil, let weight):
                 Image(systemName: systemName)
                     // foregroundColor(nil) prevents further overrides
-                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
+                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio, weight: weight))
         }
     }
 
@@ -132,15 +132,15 @@ public extension Icon {
         case image(Image, mode: ContentMode = .fit)
         /// Orbit CountryFlag.
         case countryFlag(String)
-        /// SwiftUI SF Symbol with optional overridable color.
-        case sfSymbol(String, color: Color? = nil)
+        /// SwiftUI SF Symbol with optional overridable color and weight.
+        case sfSymbol(String, color: Color? = nil, weight: Font.Weight = .regular)
 
         public var isEmpty: Bool {
             switch self {
                 case .symbol(let symbol, _):            return symbol == .none
                 case .image:                            return false
                 case .countryFlag(let countryCode):     return countryCode.isEmpty
-                case .sfSymbol(let sfSymbol, _):        return sfSymbol.isEmpty
+                case .sfSymbol(let sfSymbol, _, _):     return sfSymbol.isEmpty
             }
         }
     }
@@ -259,14 +259,14 @@ extension Icon: TextRepresentable {
             case .countryFlag(let countryCode):
                 return SwiftUI.Text(SwiftUI.Image(countryCode, bundle: .current).resizable())
                     .baselineOffset(baselineOffset)
-            case .sfSymbol(let systemName, let color?):
+            case .sfSymbol(let systemName, let color?, let weight):
                 return SwiftUI.Text(Image(systemName: systemName)).foregroundColor(color)
                     .baselineOffset(baselineOffset)
-                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
-            case .sfSymbol(let systemName, nil):
+                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio, weight: weight))
+            case .sfSymbol(let systemName, nil, let weight):
                 return SwiftUI.Text(Image(systemName: systemName))
                     .baselineOffset(baselineOffset)
-                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio))
+                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio, weight: weight))
         }
     }
 

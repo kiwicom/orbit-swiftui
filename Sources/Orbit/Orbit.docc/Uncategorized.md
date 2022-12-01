@@ -48,7 +48,7 @@ Supporting types and components under development.
 - ``Label``
 - ``LazyVStack``
 - ``Message``
-- ``NavigateButton``
+- ``NavigationButton``
 - ``PasswordStrengthIndicator``
 - ``Progress``
 - ``Status``
