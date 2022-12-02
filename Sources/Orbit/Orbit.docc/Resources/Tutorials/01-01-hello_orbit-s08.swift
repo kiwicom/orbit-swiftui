@@ -9,9 +9,10 @@ struct ContentView: View {
 
     init() {
         Font.orbitFonts = [
-            .regular: Bundle.main.url(forResource: "CircularPro-Book.otf", withExtension: nil),
-            .medium: Bundle.main.url(forResource: "CircularPro-Medium.otf", withExtension: nil),
-            .bold: Bundle.main.url(forResource: "CircularPro-Bold.otf", withExtension: nil)
+            .regular: Bundle.main.url(forResource: "Circular20-Book.otf", withExtension: nil),
+            .medium: Bundle.main.url(forResource: "Circular20-Medium.otf", withExtension: nil),
+            .bold: Bundle.main.url(forResource: "Circular20-Bold.otf", withExtension: nil),
+            .black: Bundle.main.url(forResource: "Circular20-Black.otf", withExtension: nil),
         ]
         Font.registerOrbitFonts()
     }

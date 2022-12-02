@@ -25,9 +25,10 @@ let package = Package(
                 useBundledFonts
                     ? [
                         .copy("Foundation/Icons/Icons.ttf"),
-                        .copy("Foundation/Typography/CircularPro-Bold.otf"),
-                        .copy("Foundation/Typography/CircularPro-Medium.otf"),
-                        .copy("Foundation/Typography/CircularPro-Book.otf"),
+                        .copy("Foundation/Typography/Circular20-Black.otf"),
+                        .copy("Foundation/Typography/Circular20-Bold.otf"),
+                        .copy("Foundation/Typography/Circular20-Book.otf"),
+                        .copy("Foundation/Typography/Circular20-Medium.otf"),
                       ]
                     : [.copy("Foundation/Icons/Icons.ttf")]
         ),

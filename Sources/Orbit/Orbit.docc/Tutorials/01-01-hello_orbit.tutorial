@@ -59,7 +59,7 @@
         @ContentAndMedia {
             Orbit uses a set of fonts for all its components.
             
-            If you own a licence for Orbit's default CircularPro font family, you can set it up. Or you can use any custom fonts for each font weight.
+            If you own a licence for Orbit's default Circular20 font family, you can set it up. Or you can use any custom fonts for each font weight.
         }
         
         @Steps {
