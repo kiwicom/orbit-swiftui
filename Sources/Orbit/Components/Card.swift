@@ -2,7 +2,7 @@ import SwiftUI
 
 public enum CardAction {
     case none
-    case buttonLink(_ label: String, action: () -> Void = {})
+    case buttonLink(_ label: String, style: ButtonLink.Style = .primary, action: () -> Void = {})
 }
 
 /// Specifies the padding and spacing behavior of Card content.
@@ -79,9 +79,9 @@ public struct Card<Content: View>: View {
                 }
 
                 switch action {
-                    case .buttonLink(let label, let action):
+                    case .buttonLink(let label, let style, let action):
                         if label.isEmpty == false {
-                            ButtonLink(label, action: action)
+                            ButtonLink(label, style: style, action: action)
                                 .padding(.leading, .xxxSmall)
                                 .accessibility(.cardActionButtonLink)
                         }
@@ -245,12 +245,12 @@ struct CardPreviews: PreviewProvider {
     }
 
     static var cardWithoutContent: some View {
-        Card("Card with no content", action: .buttonLink("Edit"))
+        Card("Card with no content", action: .buttonLink("Edit", style: .critical))
             .previewDisplayName()
     }
 
     static var cardWithFillLayoutContent: some View {
-        Card("Card with fill layout content", action: .buttonLink("Edit"), contentLayout: .fill) {
+        Card("Card with fill layout content", action: .buttonLink("Edit", style: .status(.info)), contentLayout: .fill) {
             contentPlaceholder
             Separator()
             contentPlaceholder
