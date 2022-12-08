@@ -37,7 +37,7 @@ public struct TileButtonStyle: SwiftUI.ButtonStyle {
     }
 }
 
-public enum TileDisclosure {
+public enum TileDisclosure: Equatable {
     case none
     /// Icon with optional color override.
     case icon(Icon.Content, alignment: VerticalAlignment = .center)
@@ -102,6 +102,7 @@ public struct Tile<Content: View>: View {
             disclosureIcon
                 .padding(.trailing, .medium)
         }
+        .overlay(customContentButtonLinkOverlay, alignment: .topTrailing)
         .overlay(separator, alignment: .bottom)
     }
     
@@ -131,6 +132,13 @@ public struct Tile<Content: View>: View {
                 inactiveButtonLink
             }
             .padding(.horizontal, .medium)
+        }
+    }
+
+    @ViewBuilder var customContentButtonLinkOverlay: some View {
+        if isHeaderEmpty {
+            inactiveButtonLink
+                .padding(.medium)
         }
     }
 
@@ -290,6 +298,7 @@ struct TilePreviews: PreviewProvider {
             sizing
             tiles
             mix
+            customContentMix
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -356,10 +365,22 @@ struct TilePreviews: PreviewProvider {
             Tile("Country Flag", description: description, icon: .countryFlag("cz"), disclosure: .buttonLink("Action", style: .primary))
             Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .critical))
             Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid))
+        }
+        .previewDisplayName()
+    }
+
+    @ViewBuilder static var customContentMix: some View {
+        VStack(spacing: .large) {
             Tile(disclosure: .none) {
                 contentPlaceholder
             }
-            Tile("Tile with custom content", disclosure: .none) {
+            Tile(disclosure: .buttonLink("Action", style: .critical)) {
+                contentPlaceholder
+            }
+            Tile {
+                contentPlaceholder
+            }
+            Tile("Tile with custom content", disclosure: .buttonLink("Action", style: .critical)) {
                 contentPlaceholder
             }
             Tile(
