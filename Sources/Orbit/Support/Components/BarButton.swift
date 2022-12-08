@@ -4,6 +4,7 @@ import SwiftUI
 public struct BarButton: View {
 
     private let content: Icon.Content
+    private let size: Icon.Size
     private let alignment: TextAlignment
     private let action: () -> Void
 
@@ -12,7 +13,7 @@ public struct BarButton: View {
             HapticsProvider.sendHapticFeedback(.light(0.5))
             action()
         } label: {
-            Icon(content: content)
+            Icon(content: content, size: size)
                 .padding(edges, .xSmall)
                 .contentShape(Rectangle())
         }
@@ -27,8 +28,9 @@ public struct BarButton: View {
         }
     }
 
-    public init(_ content: Icon.Content, alignment: TextAlignment = .center, action: @escaping () -> Void = {}) {
+    public init(_ content: Icon.Content, size: Icon.Size = .large, alignment: TextAlignment = .center, action: @escaping () -> Void = {}) {
         self.content = content
+        self.size = size
         self.alignment = alignment
         self.action = action
     }
@@ -103,8 +105,8 @@ struct BarButtonPreviews: PreviewProvider {
                     leading: HStack(spacing: 0) {
                         Group {
                             BarButton(.grid, alignment: .leading)
-                            BarButton(.sfSymbol("questionmark.circle.fill"))
                             BarButton(.questionCircle)
+                            BarButton(.sfSymbol("questionmark.circle.fill"), size: .normal)
                             BarButton(.countryFlag("cz"))
                         }
                         .border(Color.cloudNormal.opacity(0.4))
@@ -113,8 +115,8 @@ struct BarButtonPreviews: PreviewProvider {
                 .navigationBarItems(
                     trailing: HStack(spacing: 0) {
                         Group {
+                            BarButton(.sfSymbol("square.and.arrow.up", weight: .medium), size: .normal)
                             BarButton(.shareIos)
-                            BarButton(.sfSymbol("square.and.arrow.up", weight: .medium))
                             BarButton(.grid, alignment: .trailing)
                         }
                         .border(Color.cloudNormal.opacity(0.4))
