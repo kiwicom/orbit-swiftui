@@ -2,6 +2,10 @@ name: Regenerate Snapshots
 
 on:
   workflow_dispatch:
+  workflow_call:
+    secrets:
+      SNAPSHOT_PUSH_TOKEN:
+        required: true
 
 jobs:
   generate_snapshots:
