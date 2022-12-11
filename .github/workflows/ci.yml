@@ -38,3 +38,9 @@ jobs:
       run: |
         id=$(Automation/get_simulator.py "${{ matrix.device }}" "${{ matrix.os_version }}")
         set -o pipefail && xcodebuild test -scheme Orbit-Package -destination "platform=iOS Simulator,id=$id,OS=${{ matrix.os_version }}" | xcpretty
+  regenerate_snapshots:
+    if: ${{ failure() }}
+    needs: test
+    uses: ./.github/workflows/regenerate_snapshots.yml
+    secrets:
+      SNAPSHOT_PUSH_TOKEN: ${{ secrets.SNAPSHOT_PUSH_TOKEN }}
