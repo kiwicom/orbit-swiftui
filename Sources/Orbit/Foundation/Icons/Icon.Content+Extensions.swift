@@ -114,12 +114,20 @@ public extension Icon.Content {
     static let check: Self = .symbol(.check)
     /// Orbit `checkCircle` icon symbol with unspecified color.
     static let checkCircle: Self = .symbol(.checkCircle)
+    /// Orbit `chevronBackward` icon symbol with unspecified color.
+    static let chevronBackward: Self = .symbol(.chevronBackward)
+    /// Orbit `chevronDoubleBackward` icon symbol with unspecified color.
+    static let chevronDoubleBackward: Self = .symbol(.chevronDoubleBackward)
+    /// Orbit `chevronDoubleForward` icon symbol with unspecified color.
+    static let chevronDoubleForward: Self = .symbol(.chevronDoubleForward)
     /// Orbit `chevronDoubleLeft` icon symbol with unspecified color.
     static let chevronDoubleLeft: Self = .symbol(.chevronDoubleLeft)
     /// Orbit `chevronDoubleRight` icon symbol with unspecified color.
     static let chevronDoubleRight: Self = .symbol(.chevronDoubleRight)
     /// Orbit `chevronDown` icon symbol with unspecified color.
     static let chevronDown: Self = .symbol(.chevronDown)
+    /// Orbit `chevronForward` icon symbol with unspecified color.
+    static let chevronForward: Self = .symbol(.chevronForward)
     /// Orbit `chevronLeft` icon symbol with unspecified color.
     static let chevronLeft: Self = .symbol(.chevronLeft)
     /// Orbit `chevronRight` icon symbol with unspecified color.
