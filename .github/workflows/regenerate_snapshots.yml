@@ -6,6 +6,8 @@ on:
     secrets:
       SNAPSHOT_PUSH_TOKEN:
         required: true
+      REF:
+        required: true
 
 jobs:
   generate_snapshots:
@@ -14,6 +16,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           token: ${{ secrets.SNAPSHOT_PUSH_TOKEN }}
+          fetch-depth: 0
+          ref: ${{ secrets.REF }}
       - name: generate
         run: |
           Automation/regenerate_snapshots.sh

@@ -44,3 +44,4 @@ jobs:
     uses: ./.github/workflows/regenerate_snapshots.yml
     secrets:
       SNAPSHOT_PUSH_TOKEN: ${{ secrets.SNAPSHOT_PUSH_TOKEN }}
+      REF: ${{ github.event.pull_request.head.ref }}
