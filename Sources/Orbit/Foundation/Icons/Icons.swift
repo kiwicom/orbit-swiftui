@@ -115,12 +115,20 @@ public extension Icon {
         case check
         /// Orbit `checkCircle` icon symbol.
         case checkCircle
+        /// Orbit `chevronBackward` icon symbol.
+        case chevronBackward
+        /// Orbit `chevronDoubleBackward` icon symbol.
+        case chevronDoubleBackward
+        /// Orbit `chevronDoubleForward` icon symbol.
+        case chevronDoubleForward
         /// Orbit `chevronDoubleLeft` icon symbol.
         case chevronDoubleLeft
         /// Orbit `chevronDoubleRight` icon symbol.
         case chevronDoubleRight
         /// Orbit `chevronDown` icon symbol.
         case chevronDown
+        /// Orbit `chevronForward` icon symbol.
+        case chevronForward
         /// Orbit `chevronLeft` icon symbol.
         case chevronLeft
         /// Orbit `chevronRight` icon symbol.
@@ -636,9 +644,13 @@ public extension Icon {
                 case .chat: return "\u{5538}"
                 case .check: return "\u{7679}"
                 case .checkCircle: return "\u{3088}"
+                case .chevronBackward: return "\u{5623}"
+                case .chevronDoubleBackward: return "\u{3446}"
+                case .chevronDoubleForward: return "\u{2985}"
                 case .chevronDoubleLeft: return "\u{3849}"
                 case .chevronDoubleRight: return "\u{6819}"
                 case .chevronDown: return "\u{2454}"
+                case .chevronForward: return "\u{7600}"
                 case .chevronLeft: return "\u{7467}"
                 case .chevronRight: return "\u{2505}"
                 case .chevronUp: return "\u{7267}"
