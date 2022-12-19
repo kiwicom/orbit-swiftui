@@ -107,6 +107,7 @@ struct StorybookDetail: View {
             case (.choiceTile, 0):          StorybookChoiceTile.basic
             case (.choiceTile, 1):          StorybookChoiceTile.centered
             case (.choiceTile, 2):          StorybookChoiceTile.mix
+            case (.collapse, _):            StorybookCollapse.basic
             case (.countryFlag, _):         StorybookCountryFlag.basic
             case (.dialog, _):              StorybookDialog.basic
             case (.emptyState, _):          StorybookEmptyState.basic

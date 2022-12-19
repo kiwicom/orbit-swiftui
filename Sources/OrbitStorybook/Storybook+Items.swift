@@ -86,6 +86,7 @@ extension Storybook {
                 case .carrierLogo:          return ["Basic"]
                 case .checkbox:             return ["Basic"]
                 case .choiceTile:           return ["Basic", "Centered", "Mix"]
+                case .collapse:             return ["Basic"]
                 case .countryFlag:          return ["Basic"]
                 case .dialog:               return ["Basic"]
                 case .emptyState:           return ["Basic"]
@@ -132,6 +133,7 @@ extension Storybook {
                 case .carrierLogo:          return "airplane.circle.fill"
                 case .checkbox:             return "checkmark.square"
                 case .choiceTile:           return "rectangle.badge.checkmark"
+                case .collapse:             return "chevron.down"
                 case .countryFlag:          return "flag.fill"
                 case .dialog:               return "text.bubble.fill"
                 case .emptyState:           return "icloud.slash"
