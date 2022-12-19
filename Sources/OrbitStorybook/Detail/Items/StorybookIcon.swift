@@ -144,11 +144,11 @@ struct StorybookIcon {
             Text("SF Symbol vs Orbit sizes (custom-font-label)", size: .small)
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
-                    Icon(sfSymbol: sfSymbol, size: .custom(Text.Size.xLarge.iconSize), color: nil)
+                    Icon(sfSymbol: sfSymbol, size: .custom(Text.Size.xLarge.height), color: nil)
                     Icon(sfSymbol: sfSymbol, size: .fontSize(Text.Size.xLarge.value), color: nil)
                     Icon(sfSymbol: sfSymbol, size: .label(.text(.xLarge)), color: nil)
                     Color.clear.frame(width: .xSmall, height: 1)
-                    Icon(.informationCircle, size: .custom(Text.Size.xLarge.iconSize), color: nil)
+                    Icon(.informationCircle, size: .custom(Text.Size.xLarge.height), color: nil)
                     Icon(.informationCircle, size: .fontSize(Text.Size.xLarge.value), color: nil)
                     Icon(.informationCircle, size: .label(.text(.xLarge)), color: nil)
                     Color.clear.frame(width: .xSmall, height: 1)
@@ -161,11 +161,11 @@ struct StorybookIcon {
 
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
-                    Icon(sfSymbol: sfSymbol, size: .custom(Text.Size.small.iconSize), color: nil)
+                    Icon(sfSymbol: sfSymbol, size: .custom(Text.Size.small.height), color: nil)
                     Icon(sfSymbol: sfSymbol, size: .fontSize(Text.Size.small.value), color: nil)
                     Icon(sfSymbol: sfSymbol, size: .label(.text(.small)), color: nil)
                     Color.clear.frame(width: .xSmall, height: 1)
-                    Icon(.informationCircle, size: .custom(Text.Size.small.iconSize), color: nil)
+                    Icon(.informationCircle, size: .custom(Text.Size.small.height), color: nil)
                     Icon(.informationCircle, size: .fontSize(Text.Size.small.value), color: nil)
                     Icon(.informationCircle, size: .label(.text(.small)), color: nil)
                     Color.clear.frame(width: .xSmall, height: 1)

@@ -132,7 +132,7 @@ public extension Label {
         var iconSize: CGFloat {
             switch self {
                 case .heading(let style, _):            return style.iconSize
-                case .text(let size, _, _, _, _, _):    return size.iconSize
+                case .text(let size, _, _, _, _, _):    return size.height
             }
         }
         

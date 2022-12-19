@@ -172,7 +172,7 @@ public extension Icon {
                 case .large:                            return 24
                 case .xLarge:                           return 28
                 case .fontSize(let size):               return round(size * 1.31)
-                case .text(let size):                   return size.iconSize
+                case .text(let size):                   return size.height
                 case .heading(let style):               return style.iconSize
                 case .label(let style):                 return style.iconSize
                 case .custom(let size):                 return size
@@ -200,12 +200,12 @@ public extension Icon {
         /// Default text line height for icon size.
         public var textLineHeight: CGFloat {
             switch self {
-                case .small:                            return Text.Size.small.iconSize
-                case .normal:                           return Text.Size.normal.iconSize
-                case .large:                            return Text.Size.large.iconSize
-                case .xLarge:                           return Text.Size.xLarge.iconSize
+                case .small:                            return Text.Size.small.height
+                case .normal:                           return Text.Size.normal.height
+                case .large:                            return Text.Size.large.height
+                case .xLarge:                           return Text.Size.xLarge.height
                 case .fontSize(let size):               return round(size * 1.31)
-                case .text(let size):                   return size.iconSize
+                case .text(let size):                   return size.height
                 case .heading(let style):               return style.iconSize
                 case .label(let style):                 return style.iconSize
                 case .custom(let size):                 return size
@@ -453,11 +453,11 @@ struct IconPreviews: PreviewProvider {
             Text("SF Symbol vs Orbit sizes (custom-font-label)", size: .small)
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
-                    Icon(sfSymbol: sfSymbol, size: .custom(Text.Size.xLarge.iconSize), color: nil)
+                    Icon(sfSymbol: sfSymbol, size: .custom(Text.Size.xLarge.height), color: nil)
                     Icon(sfSymbol: sfSymbol, size: .fontSize(Text.Size.xLarge.value), color: nil)
                     Icon(sfSymbol: sfSymbol, size: .label(.text(.xLarge)), color: nil)
                     Color.clear.frame(width: .xSmall, height: 1)
-                    Icon(.informationCircle, size: .custom(Text.Size.xLarge.iconSize), color: nil)
+                    Icon(.informationCircle, size: .custom(Text.Size.xLarge.height), color: nil)
                     Icon(.informationCircle, size: .fontSize(Text.Size.xLarge.value), color: nil)
                     Icon(.informationCircle, size: .label(.text(.xLarge)), color: nil)
                     Color.clear.frame(width: .xSmall, height: 1)
@@ -470,11 +470,11 @@ struct IconPreviews: PreviewProvider {
             
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
-                    Icon(sfSymbol: sfSymbol, size: .custom(Text.Size.small.iconSize), color: nil)
+                    Icon(sfSymbol: sfSymbol, size: .custom(Text.Size.small.height), color: nil)
                     Icon(sfSymbol: sfSymbol, size: .fontSize(Text.Size.small.value), color: nil)
                     Icon(sfSymbol: sfSymbol, size: .label(.text(.small)), color: nil)
                     Color.clear.frame(width: .xSmall, height: 1)
-                    Icon(.informationCircle, size: .custom(Text.Size.small.iconSize), color: nil)
+                    Icon(.informationCircle, size: .custom(Text.Size.small.height), color: nil)
                     Icon(.informationCircle, size: .fontSize(Text.Size.small.value), color: nil)
                     Icon(.informationCircle, size: .label(.text(.small)), color: nil)
                     Color.clear.frame(width: .xSmall, height: 1)

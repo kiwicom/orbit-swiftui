@@ -227,7 +227,7 @@ public extension Text {
             }
         }
         
-        public var iconSize: CGFloat {
+        public var height: CGFloat {
             switch self {
                 case .large:                return 22
                 default:                    return lineHeight
