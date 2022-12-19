@@ -11,6 +11,12 @@ public struct TextStrut: View {
 
     public var body: some View {
         Strut(height)
+            .alignmentGuide(.firstTextBaseline) { dimensions in
+                textSize.baseline(sizeCategory: sizeCategory, height: dimensions.height)
+            }
+            .alignmentGuide(.lastTextBaseline) { dimensions in
+                textSize.baseline(sizeCategory: sizeCategory, height: dimensions.height)
+            }
     }
 
     var height: CGFloat {

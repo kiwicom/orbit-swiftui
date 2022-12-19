@@ -233,6 +233,15 @@ public extension Text {
                 default:                    return lineHeight
             }
         }
+
+        /// Line height for for specified size category.
+        public func dynamicTextLineHeight(sizeCategory: ContentSizeCategory) -> CGFloat {
+            round(lineHeight * sizeCategory.ratio)
+        }
+
+        public func baseline(sizeCategory: ContentSizeCategory, height: CGFloat) -> CGFloat {
+            round(dynamicTextLineHeight(sizeCategory: sizeCategory) * Text.firstBaselineRatio + height / 2)
+        }
     }
 
     enum Color: Equatable {
