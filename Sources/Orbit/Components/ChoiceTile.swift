@@ -26,7 +26,7 @@ public struct ChoiceTile<Content: View>: View {
     @Environment(\.idealSize) var idealSize
 
     public let padding: CGFloat = .small
-    public let verticalTextPadding: CGFloat = .xxSmall - 1/6    // Results in ±52 height at normal text size
+    public let verticalTextPadding: CGFloat = .xxSmall - 1      // Results in ±52 height at normal text size
 
     let title: String
     let description: String

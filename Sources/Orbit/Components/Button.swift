@@ -246,8 +246,8 @@ extension Button {
 
         public var verticalPadding: CGFloat {
             switch self {
-                case .default:      return .small + 1          // Results in ±44 height at normal text size
-                case .small:        return .xSmall + 1/3       // Results in ±32 height at normal text size
+                case .default:      return .small       // Results in ±44 height at normal text size
+                case .small:        return .xSmall      // Results in ±32 height at normal text size
             }
         }
     }

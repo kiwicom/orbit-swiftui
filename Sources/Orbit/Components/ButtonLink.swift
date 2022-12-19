@@ -55,7 +55,7 @@ public struct ButtonLink: View {
         switch size {
             case .default:              return 0
             case .button:               return Button.Size.default.verticalPadding
-            case .buttonSmall:          return .xSmall - 1
+            case .buttonSmall:          return .xSmall - 2
         }
     }
 }

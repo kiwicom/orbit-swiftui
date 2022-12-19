@@ -6,7 +6,7 @@ import SwiftUI
 public struct Tag: View {
 
     public static let horizontalPadding: CGFloat = .xSmall
-    public static let verticalPadding: CGFloat = 7
+    public static let verticalPadding: CGFloat = 6  // Results in ±32 height at normal text size
 
     @Environment(\.idealSize) var idealSize
 

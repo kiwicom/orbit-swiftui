@@ -5,7 +5,7 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/notificationbadge/)
 public struct NotificationBadge: View {
 
-    public static let verticalPadding: CGFloat = 5
+    public static let verticalPadding: CGFloat = .xxSmall   // Results in ±24 height at normal text size
     public static let textSize: Text.Size = .small
 
     let content: Content
