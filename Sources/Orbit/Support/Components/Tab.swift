@@ -19,7 +19,7 @@ public struct Tab: View {
         .padding(.horizontal, .small)
         .contentShape(Rectangle())
         .anchorPreference(key: PreferenceKey.self, value: .bounds) {
-            [TabPreference(label: label, style: style, bounds: $0)]
+            [.init(label: label, style: style, bounds: $0)]
         }
     }
 

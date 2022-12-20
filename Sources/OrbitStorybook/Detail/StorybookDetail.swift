@@ -113,7 +113,7 @@ struct StorybookDetail: View {
             case (.dialog, _):              StorybookDialog.basic
             case (.emptyState, _):          StorybookEmptyState.basic
             case (.heading, _):             StorybookTypography.storybookHeading
-            case (.horizontalScroll, _):    StorybookHorizontalScroll.basic
+            case (.horizontalScroll, _):    StorybookHorizontalScroll()
             case (.icon, 0):                StorybookIcon.basic
             case (.icon, 1):                StorybookIcon.mix
             case (.illustration, _):        StorybookIllustration.basic

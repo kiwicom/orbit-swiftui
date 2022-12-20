@@ -51,6 +51,9 @@ Supporting types and components under development.
 - ``Progress``
 - ``Status``
 - ``StepperButton``
+- ``IDPreferenceKey``
+- ``IDPreference``
+- ``HorizontalScrollViewProxy``
 
 ### Deprecated
 
