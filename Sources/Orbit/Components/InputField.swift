@@ -23,10 +23,12 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
         case formatter(formatter: Formatter)
     }
 
-    @Binding private var value: Value
-    @Binding private var messageHeight: CGFloat
-    @State private var isEditing: Bool = false
-    @State private var isSecureTextRedacted: Bool = true
+    @Environment(\.isEnabled) var isEnabled: Bool
+
+    @Binding var value: Value
+    @Binding var messageHeight: CGFloat
+    @State var isEditing: Bool = false
+    @State var isSecureTextRedacted: Bool = true
 
     let label: String
     let labelAccentColor: UIColor?
@@ -78,7 +80,6 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                         .orbitFont(size: Text.Size.normal.value, style: .body)
                         .accentColor(.blueNormal)
                         .background(textFieldPlaceholder, alignment: .leading)
-                        .disabled(state == .disabled)
                         .accessibility(.inputFieldValue)
                 }
             }
@@ -112,7 +113,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     @ViewBuilder var textFieldPlaceholder: some View {
         if showPlaceholder {
             Text(placeholder, color: .none)
-                .foregroundColor(state.placeholderColor)
+                .foregroundColor(isEnabled ? state.placeholderColor : .cloudDarkActive)
         }
     }
 
@@ -123,7 +124,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     }
 
     @ViewBuilder var secureTextRedactedToggle: some View {
-        if value.description.isEmpty == false, state != .disabled {
+        if value.description.isEmpty == false, isEnabled {
             Icon(isSecureTextRedacted ? .visibility : .visibilityOff, color: .inkNormal)
                 .padding(.vertical, .xSmall)
                 .padding(.horizontal, .small)
@@ -133,7 +134,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                 }
                 .accessibility(addTraits: .isButton)
                 .accessibility(.inputFieldPasswordToggle)
-                .opacity(state == .disabled ? 0 : 1)
+                .opacity(isEnabled ? 1 : 0)
         }
     }
 
@@ -447,6 +448,8 @@ struct InputFieldPreviews: PreviewProvider {
 
     static var password: some View {
         VStack(spacing: .medium) {
+            inputField("Disabled", value: passwordValue, isSecure: true)
+                .disabled(true)
             inputField(passwordLabel, value: passwordValue, isSecure: true)
             inputField(passwordLabel, value: "", prefix: .none, placeholder: "Input password", isSecure: true)
             inputField(passwordLabel, value: passwordValue, suffix: .none, isSecure: true, passwordStrength: .weak(title: "Weak"), message: .error("Error message"))
@@ -459,8 +462,10 @@ struct InputFieldPreviews: PreviewProvider {
     static var mix: some View {
         VStack(spacing: .medium) {
             inputField("Empty", value: "", prefix: .symbol(.grid, color: .blueDark), suffix: .symbol(.grid, color: .blueDark))
-            inputField("Disabled, Empty", value: "", prefix: .countryFlag("cz"), suffix: .countryFlag("us"), state: .disabled)
-            inputField("Disabled", value: "Disabled Value", prefix: .sfSymbol("info.circle.fill"), suffix: .sfSymbol("info.circle.fill"), state: .disabled)
+            inputField("Disabled, Empty", value: "", prefix: .countryFlag("cz"), suffix: .countryFlag("us"))
+                .disabled(true)
+            inputField("Disabled", value: "Disabled Value", prefix: .sfSymbol("info.circle.fill"), suffix: .sfSymbol("info.circle.fill"))
+                .disabled(true)
             inputField("Modified from previous state", value: "Modified value", state: .modified)
             inputField("Focused", value: "Focused / Help", message: .help("Help message"))
             inputField(
@@ -572,12 +577,12 @@ struct InputFieldLivePreviews: PreviewProvider {
                         value: $textValue,
                         suffix: .email,
                         placeholder: "Placeholder",
-                        state: .disabled,
                         message: message,
                         suffixAction: {
                             intValue = 1
                         }
                     )
+                    .disabled(true)
 
                     Text("Some text, but also very long and multi-line to test that it works.")
 

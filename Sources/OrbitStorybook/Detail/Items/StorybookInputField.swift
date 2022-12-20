@@ -55,8 +55,10 @@ struct StorybookInputField {
     static var mix: some View {
         VStack(spacing: .medium) {
             inputField("Empty", value: "", prefix: .symbol(.grid, color: .blueDark), suffix: .symbol(.grid, color: .blueDark))
-            inputField("Disabled, Empty", value: "", prefix: .countryFlag("cz"), suffix: .countryFlag("us"), state: .disabled)
-            inputField("Disabled", value: "Disabled Value", prefix: .sfSymbol("info.circle.fill"), suffix: .sfSymbol("info.circle.fill"), state: .disabled)
+            inputField("Disabled, Empty", value: "", prefix: .countryFlag("cz"), suffix: .countryFlag("us"))
+                .disabled(true)
+            inputField("Disabled", value: "Disabled Value", prefix: .sfSymbol("info.circle.fill"), suffix: .sfSymbol("info.circle.fill"))
+                .disabled(true)
             inputField("Modified from previous state", value: "Modified value", state: .modified)
             inputField("Focused", value: "Focused / Help", message: .help("Help message"))
             inputField(

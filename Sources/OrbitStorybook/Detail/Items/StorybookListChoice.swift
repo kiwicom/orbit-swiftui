@@ -57,9 +57,11 @@ struct StorybookListChoice {
             ListChoice(title, disclosure: uncheckedCheckbox)
             ListChoice(title, disclosure: checkedCheckbox)
             ListChoice(title, description: description, disclosure: .checkbox(state: .error))
-            ListChoice(title, description: description, disclosure: .checkbox(state: .disabled))
+            ListChoice(title, description: description, disclosure: .checkbox())
+                .disabled(true)
             ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false, state: .error))
-            ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false, state: .disabled))
+            ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false))
+                .disabled(true)
             ListChoice(title, description: description, icon: .airplane, disclosure: uncheckedCheckbox)
             ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox)
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: uncheckedCheckbox)
@@ -104,9 +106,11 @@ struct StorybookListChoice {
             ListChoice(title, description: description, disclosure: .radio(isChecked: false))
             ListChoice(title, description: description, disclosure: .radio(isChecked: true))
             ListChoice(title, description: description, disclosure: .radio(state: .error))
-            ListChoice(title, description: description, disclosure: .radio(state: .disabled))
+            ListChoice(title, description: description, disclosure: .radio())
+                .disabled(true)
             ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false, state: .error))
-            ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false, state: .disabled))
+            ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false))
+                .disabled(true)
             ListChoice(
                 title,
                 description: description,

@@ -6,7 +6,9 @@ import SwiftUI
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Select: View {
 
-    @Binding private var messageHeight: CGFloat
+    @Environment(\.isEnabled) var isEnabled: Bool
+
+    @Binding var messageHeight: CGFloat
     
     let label: String
     let labelAccentColor: UIColor?
@@ -56,13 +58,16 @@ public struct Select: View {
         .accessibility(value: .init(value ?? ""))
         .accessibility(hint: .init(messageDescription.isEmpty ? placeholder : messageDescription))
         .accessibility(addTraits: .isButton)
-        .disabled(state == .disabled)
     }
 
     var textColor: Color {
-        value == nil
-            ? state.placeholderColor
-            : state.textColor
+        if isEnabled {
+            return value == nil
+                ? state.placeholderColor
+                : state.textColor
+        } else {
+            return .cloudDarkActive
+        }
     }
 
     var messageDescription: String {
@@ -166,14 +171,17 @@ struct SelectPreviews: PreviewProvider {
             }
 
             Group {
-                Select("Label (Disabled)", prefix: .airplane, value: "Value", state: .disabled)
+                Select("Label (Disabled)", prefix: .airplane, value: "Value")
+                    .disabled(true)
+
                 Select(
                     "Label (Disabled)",
                     prefix: .airplane,
                     value: nil,
-                    placeholder: "Please select",
-                    state: .disabled
+                    placeholder: "Please select"
                 )
+                .disabled(true)
+
                 Select("Label (Modified)", prefix: .airplane, value: "Modified Value", state: .modified)
                 Select(
                     "Label (Modified)",

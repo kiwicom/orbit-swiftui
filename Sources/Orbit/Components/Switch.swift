@@ -14,10 +14,10 @@ public struct Switch: View {
 
     @Environment(\.sizeCategory) var sizeCategory
     @Environment(\.colorScheme) var colorScheme
-    @Binding private var isOn: Bool
+    @Environment(\.isEnabled) var isEnabled
+    @Binding var isOn: Bool
 
     let hasIcon: Bool
-    let isEnabled: Bool
 
     public var body: some View {
         capsule
@@ -104,10 +104,9 @@ public struct Switch: View {
     }
 
     /// Creates Orbit Switch component.
-    public init(isOn: Binding<Bool>, hasIcon: Bool = false, isEnabled: Bool = true) {
+    public init(isOn: Binding<Bool>, hasIcon: Bool = false) {
         self._isOn = isOn
         self.hasIcon = hasIcon
-        self.isEnabled = isEnabled
     }
 }
 
@@ -135,14 +134,18 @@ struct SwitchPreviews: PreviewProvider {
             HStack(spacing: .large) {
                 switchView(isOn: true)
                 switchView(isOn: true, hasIcon: true)
-                switchView(isOn: true, isEnabled: false)
-                switchView(isOn: true, hasIcon: true, isEnabled: false)
+                switchView(isOn: true)
+                    .disabled(true)
+                switchView(isOn: true, hasIcon: true)
+                    .disabled(true)
             }
             HStack(spacing: .large) {
                 switchView(isOn: false)
                 switchView(isOn: false, hasIcon: true)
-                switchView(isOn: false, isEnabled: false)
-                switchView(isOn: false, hasIcon: true, isEnabled: false)
+                switchView(isOn: false)
+                    .disabled(true)
+                switchView(isOn: false, hasIcon: true)
+                    .disabled(true)
             }
         }
         .previewDisplayName()
@@ -153,9 +156,9 @@ struct SwitchPreviews: PreviewProvider {
             .padding(.medium)
     }
 
-    static func switchView(isOn: Bool, hasIcon: Bool = false, isEnabled: Bool = true) -> some View {
+    static func switchView(isOn: Bool, hasIcon: Bool = false) -> some View {
         StateWrapper(initialState: isOn) { isOnState in
-            Switch(isOn: isOnState, hasIcon: hasIcon, isEnabled: isEnabled)
+            Switch(isOn: isOnState, hasIcon: hasIcon)
         }
     }
 }

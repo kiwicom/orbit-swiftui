@@ -149,7 +149,7 @@ public struct ChoiceTile<Content: View>: View {
 
     @ViewBuilder var indicatorOverlay: some View {
         indicatorElement
-            .disabled(true)
+            .allowsHitTesting(false)
             .padding(.xxxSmall)
     }
 
