@@ -422,7 +422,7 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, icon: .grid) {
                 contentPlaceholder
             } headerContent: {
-                headerContent
+                headerPlaceholder
             }
 
             // Empty
@@ -506,7 +506,7 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, icon: .airplane, disclosure: removeButton) {
                 contentPlaceholder
             } headerContent: {
-                headerContent
+                headerPlaceholder
             }
         }
         .previewDisplayName()
@@ -526,7 +526,7 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox) {
                 contentPlaceholder
             } headerContent: {
-                headerContent
+                headerPlaceholder
             }
         }
         .previewDisplayName()
@@ -544,12 +544,11 @@ struct ListChoicePreviews: PreviewProvider {
                 title,
                 description: description,
                 icon: .airplane,
-                disclosure: .radio(isChecked: false),
-                action: {}
+                disclosure: .radio(isChecked: false)
             ) {
                 contentPlaceholder
             } headerContent: {
-                headerContent
+                headerPlaceholder
             }
         }
         .previewDisplayName()
@@ -570,17 +569,10 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(disclosure: .none) {
                 contentPlaceholder
             } headerContent: {
-                headerContent
+                headerPlaceholder
             }
         }
         .previewDisplayName()
-    }
-
-    static var headerContent: some View {
-        Text("Custom\nheader content")
-            .padding(.vertical, .medium)
-            .frame(maxWidth: .infinity)
-            .background(Color.blueLightActive)
     }
 
     static var snapshot: some View {
