@@ -17,19 +17,10 @@ public struct ListItem: View {
     let linkAction: TextLink.Action
 
     public var body: some View {
-        Label(
-            text,
-            icon: iconContent,
-            iconSize: iconSize,
-            style: .text(
-                size,
-                weight: style.weight,
-                color: nil,
-                linkColor: style.linkColor,
-                linkAction: linkAction
-            ),
-            spacing: spacing
-        )
+        HStack(alignment: .firstTextBaseline, spacing: spacing) {
+            Icon(content: iconContent)
+            Text(text, size: size, color: nil, weight: style.weight, linkColor: style.linkColor, linkAction: linkAction)
+        }
         .foregroundColor(style.textColor.value)
     }
 }

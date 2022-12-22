@@ -61,18 +61,13 @@ public struct ToastContent: View {
     let progress: CGFloat
     
     public var body: some View {
-        HStack {
-            Label(
-                description,
-                icon: iconContent,
-                style: .text(weight: .regular, color: .none),
-                spacing: .xSmall
-            )
-            .foregroundColor(foregroundColor)
-            .padding(.small)
-            
-            Spacer()
+        HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+            Icon(content: iconContent)
+            Text(description, color: nil)
+            Spacer(minLength: 0)
         }
+        .foregroundColor(foregroundColor)
+        .padding(.small)
         .contentShape(Rectangle())
         .background(background)
     }

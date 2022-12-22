@@ -44,7 +44,6 @@ Supporting types and components under development.
 - ``FieldWrapper``
 - ``InputState``
 - ``KeyValueField``
-- ``Label``
 - ``LazyVStack``
 - ``Message``
 - ``NavigationButton``
