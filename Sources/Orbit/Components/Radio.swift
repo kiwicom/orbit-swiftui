@@ -7,6 +7,8 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/radio/)
 public struct Radio: View {
 
+    @Environment(\.isEnabled) var isEnabled
+
     let title: String
     let description: String
     let state: State
@@ -33,15 +35,14 @@ public struct Radio: View {
         .buttonStyle(
             ButtonStyle(state: state, isChecked: isChecked)
         )
-        .disabled(state == .disabled)
     }
 
     var labelColor: Text.Color {
-        state == .disabled ? .custom(.cloudDarkHover) : .inkDark
+        isEnabled ? .inkDark : .custom(.cloudDarkHover)
     }
 
     var descriptionColor: Text.Color {
-        state == .disabled ? .custom(.cloudDarkHover) : .inkNormal
+        isEnabled ? .inkNormal : .custom(.cloudDarkHover)
     }
 }
 
@@ -70,7 +71,6 @@ public extension Radio {
     enum State {
         case normal
         case error
-        case disabled
     }
 }
 
@@ -84,6 +84,7 @@ extension Radio {
         public static let size: CGFloat = 20
 
         @Environment(\.sizeCategory) var sizeCategory
+        @Environment(\.isEnabled) var isEnabled
 
         let state: Radio.State
         let isChecked: Bool
@@ -124,26 +125,26 @@ extension Radio {
         }
 
         func indicatorStrokeColor(isPressed: Bool) -> some ShapeStyle {
-            switch (state, isChecked, isPressed) {
-                case (.normal, true, false), (.error, true, false):     return Color.blueNormal
-                case (.normal, true, true), (.error, true, true):       return Color.blueLightActive
-                case (_, _, _):                                         return Color.cloudDark
+            switch (isEnabled, isChecked, isPressed) {
+                case (true, true, false):       return Color.blueNormal
+                case (true, true, true):        return Color.blueLightActive
+                case (_, _, _):                 return Color.cloudDark
             }
         }
 
         var indicatorBackgroundColor: some ShapeStyle {
-            switch (state, isChecked) {
-                case (.disabled, false):                    return Color.cloudNormal
-                case (_, _):                                return Color.clear
+            switch (isEnabled, isChecked) {
+                case (false, false):            return Color.cloudNormal
+                case (_, _):                    return Color.clear
             }
         }
 
         func indicatorOverlayStrokeColor(isPressed: Bool) -> some ShapeStyle {
             switch (state, isPressed) {
-                case (.normal, true):                       return Color.blueNormal
-                case (.error, true):                        return Color.redLightActive
-                case (.error, false):                       return Color.redNormal
-                case (_, _):                                return Color.clear
+                case (.normal, true):           return Color.blueNormal
+                case (.error, true):            return Color.redLightActive
+                case (.error, false):           return Color.redNormal
+                case (_, _):                    return Color.clear
             }
         }
 
@@ -211,20 +212,22 @@ struct RadioPreviews: PreviewProvider {
     static func content(standalone: Bool) -> some View {
         HStack(alignment: .top, spacing: .xLarge) {
             VStack(alignment: .leading, spacing: .xLarge) {
-                radio(standalone: standalone, state: .normal, checked: false)
+                radio(standalone: standalone, checked: false)
                 radio(standalone: standalone, state: .error, checked: false)
-                radio(standalone: standalone, state: .disabled, checked: false)
+                radio(standalone: standalone, checked: false)
+                    .disabled(true)
             }
 
             VStack(alignment: .leading, spacing: .xLarge) {
-                radio(standalone: standalone, state: .normal, checked: true)
+                radio(standalone: standalone, checked: true)
                 radio(standalone: standalone, state: .error, checked: true)
-                radio(standalone: standalone, state: .disabled, checked: true)
+                radio(standalone: standalone, checked: true)
+                    .disabled(true)
             }
         }
     }
 
-    static func radio(standalone: Bool, state: Radio.State, checked: Bool) -> some View {
+    static func radio(standalone: Bool, state: Radio.State = .normal, checked: Bool) -> some View {
         StateWrapper(initialState: checked) { isSelected in
             Radio(standalone ? "" : label, description: standalone ? "" : description, state: state, isChecked: isSelected.wrappedValue) {
                 isSelected.wrappedValue.toggle()

@@ -8,22 +8,26 @@ struct StorybookSwitch {
             HStack(spacing: .large) {
                 switchView(isOn: true)
                 switchView(isOn: true, hasIcon: true)
-                switchView(isOn: true, isEnabled: false)
-                switchView(isOn: true, hasIcon: true, isEnabled: false)
+                switchView(isOn: true)
+                    .disabled(true)
+                switchView(isOn: true, hasIcon: true)
+                    .disabled(true)
             }
             HStack(spacing: .large) {
                 switchView(isOn: false)
                 switchView(isOn: false, hasIcon: true)
-                switchView(isOn: false, isEnabled: false)
-                switchView(isOn: false, hasIcon: true, isEnabled: false)
+                switchView(isOn: false)
+                    .disabled(true)
+                switchView(isOn: false, hasIcon: true)
+                    .disabled(true)
             }
         }
         .previewDisplayName()
     }
 
-    static func switchView(isOn: Bool, hasIcon: Bool = false, isEnabled: Bool = true) -> some View {
+    static func switchView(isOn: Bool, hasIcon: Bool = false) -> some View {
         StateWrapper(initialState: isOn) { isOnState in
-            Switch(isOn: isOnState, hasIcon: hasIcon, isEnabled: isEnabled)
+            Switch(isOn: isOnState, hasIcon: hasIcon)
         }
     }
 }

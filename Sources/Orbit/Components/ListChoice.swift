@@ -73,7 +73,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
             disclosureView
                 .padding(.horizontal, .medium)
                 .padding(.vertical, .small)
-                .disabled(true)
+                .allowsHitTesting(false)
         }
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
         .overlay(separator, alignment: .bottom)
@@ -409,10 +409,10 @@ struct ListChoicePreviews: PreviewProvider {
             intrinsic
             sizing
             plain
+            checkbox
             radio
             mix
             buttons
-            checkbox
         }
         .previewLayout(.sizeThatFits)
     }
@@ -517,9 +517,11 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, disclosure: uncheckedCheckbox)
             ListChoice(title, disclosure: checkedCheckbox)
             ListChoice(title, description: description, disclosure: .checkbox(state: .error))
-            ListChoice(title, description: description, disclosure: .checkbox(state: .disabled))
+            ListChoice(title, description: description, disclosure: .checkbox())
+                .disabled(true)
             ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false, state: .error))
-            ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false, state: .disabled))
+            ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false))
+                .disabled(true)
             ListChoice(title, description: description, icon: .airplane, disclosure: uncheckedCheckbox)
             ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox)
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: uncheckedCheckbox)
@@ -537,9 +539,11 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, disclosure: .radio(isChecked: false))
             ListChoice(title, description: description, disclosure: .radio(isChecked: true))
             ListChoice(title, description: description, disclosure: .radio(state: .error))
-            ListChoice(title, description: description, disclosure: .radio(state: .disabled))
+            ListChoice(title, description: description, disclosure: .radio())
+                .disabled(true)
             ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false, state: .error))
-            ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false, state: .disabled))
+            ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false))
+                .disabled(true)
             ListChoice(
                 title,
                 description: description,

@@ -12,6 +12,8 @@ struct SecureTextFieldStyle {
 struct SecureTextField: UIViewRepresentable {
     typealias UIViewType = UITextField
 
+    @Environment(\.isEnabled) var isEnabled: Bool
+
     @Binding var text: String
     @Binding var isSecured: Bool
     @Binding var isEditing: Bool
@@ -30,9 +32,9 @@ struct SecureTextField: UIViewRepresentable {
         textField.textContentType = style.textContentType
         textField.keyboardType = style.keyboardType
         textField.font = style.font
-        textField.textColor = style.state.textUIColor
+        textField.textColor = isEnabled ? style.state.textUIColor : .cloudDarkActive
         textField.clearsOnBeginEditing = false
-        textField.isEnabled = style.state != .disabled
+        textField.isEnabled = isEnabled
         textField.setContentHuggingPriority(.defaultHigh, for: .vertical)
         textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 

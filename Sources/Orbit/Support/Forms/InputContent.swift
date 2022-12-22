@@ -4,6 +4,7 @@ import SwiftUI
 struct InputContent<Content: View>: View {
 
     @Environment(\.idealSize) var idealSize
+    @Environment(\.isEnabled) var isEnabled
 
     var prefix: Icon.Content = .none
     var suffix: Icon.Content = .none
@@ -39,14 +40,13 @@ struct InputContent<Content: View>: View {
                 suffixIcon
             }
         }
-        .foregroundColor(state.textColor)
+        .foregroundColor(isEnabled ? state.textColor : .cloudDarkActive)
         .background(backgroundColor(isPressed: isPressed).animation(.default, value: message))
         .cornerRadius(BorderRadius.default)
         .overlay(
             RoundedRectangle(cornerRadius: BorderRadius.default)
                 .strokeBorder(outlineColor(isPressed: isPressed), lineWidth: BorderWidth.emphasis)
         )
-        .disabled(state == .disabled)
     }
 
     @ViewBuilder var prefixIcon: some View {
@@ -65,8 +65,11 @@ struct InputContent<Content: View>: View {
     }
     
     private func backgroundColor(isPressed: Bool) -> Color {
+        if isEnabled == false {
+            return .cloudLight
+        }
+
         switch (state, isPressed) {
-            case (.disabled, _):        return .cloudLight
             case (.default, true):      return .cloudNormalHover
             case (.default, false):     return .cloudNormal
             case (.modified, true):     return .blueLight
@@ -75,16 +78,22 @@ struct InputContent<Content: View>: View {
     }
 
     private var prefixColor: Color {
+        if isEnabled == false {
+            return .cloudDarkActive
+        }
+
         switch state {
-            case .disabled:             return .cloudDarkActive
             case .modified:             return .blueDark
             case .default:              return .inkDark
         }
     }
 
     private var suffixColor: Color {
+        if isEnabled == false {
+            return .cloudDarkActive
+        }
+
         switch state {
-            case .disabled:             return .cloudDarkActive
             case .modified:             return .blueDark
             case .default:              return .inkNormal
         }

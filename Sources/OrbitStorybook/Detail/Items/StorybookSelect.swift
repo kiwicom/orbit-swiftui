@@ -40,14 +40,17 @@ struct StorybookSelect {
             }
 
             Group {
-                Select("Label (Disabled)", prefix: .airplane, value: "Value", state: .disabled)
+                Select("Label (Disabled)", prefix: .airplane, value: "Value")
+                    .disabled(true)
+
                 Select(
                     "Label (Disabled)",
                     prefix: .airplane,
                     value: nil,
-                    placeholder: "Please select",
-                    state: .disabled
+                    placeholder: "Please select"
                 )
+                .disabled(true)
+
                 Select("Label (Modified)", prefix: .airplane, value: "Modified Value", state: .modified)
                 Select(
                     "Label (Modified)",

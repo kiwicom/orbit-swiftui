@@ -17,20 +17,22 @@ struct StorybookRadio {
     static func content(standalone: Bool) -> some View {
         HStack(alignment: .top, spacing: .xLarge) {
             VStack(alignment: .leading, spacing: .xLarge) {
-                radio(standalone: standalone, state: .normal, checked: false)
+                radio(standalone: standalone, checked: false)
                 radio(standalone: standalone, state: .error, checked: false)
-                radio(standalone: standalone, state: .disabled, checked: false)
+                radio(standalone: standalone, checked: false)
+                    .disabled(true)
             }
 
             VStack(alignment: .leading, spacing: .xLarge) {
-                radio(standalone: standalone, state: .normal, checked: true)
+                radio(standalone: standalone, checked: true)
                 radio(standalone: standalone, state: .error, checked: true)
-                radio(standalone: standalone, state: .disabled, checked: true)
+                radio(standalone: standalone, checked: true)
+                    .disabled(true)
             }
         }
     }
 
-    static func radio(standalone: Bool, state: Radio.State, checked: Bool) -> some View {
+    static func radio(standalone: Bool, state: Radio.State = .normal, checked: Bool) -> some View {
         StateWrapper(initialState: checked) { isSelected in
             Radio(standalone ? "" : label, description: standalone ? "" : description, state: state, isChecked: isSelected.wrappedValue) {
                 isSelected.wrappedValue.toggle()

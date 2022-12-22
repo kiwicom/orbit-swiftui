@@ -17,20 +17,22 @@ struct StorybookCheckbox {
     static func content(standalone: Bool) -> some View {
         HStack(alignment: .top, spacing: .xLarge) {
             VStack(alignment: .leading, spacing: .xLarge) {
-                checkbox(standalone: standalone, state: .normal, checked: false)
+                checkbox(standalone: standalone, checked: false)
                 checkbox(standalone: standalone, state: .error, checked: false)
-                checkbox(standalone: standalone, state: .disabled, checked: false)
+                checkbox(standalone: standalone, checked: false)
+                    .disabled(true)
             }
 
             VStack(alignment: .leading, spacing: .xLarge) {
-                checkbox(standalone: standalone, state: .normal, checked: true)
+                checkbox(standalone: standalone, checked: true)
                 checkbox(standalone: standalone, state: .error, checked: true)
-                checkbox(standalone: standalone, state: .disabled, checked: true)
+                checkbox(standalone: standalone, checked: true)
+                    .disabled(true)
             }
         }
     }
 
-    static func checkbox(standalone: Bool, state: Checkbox.State, checked: Bool) -> some View {
+    static func checkbox(standalone: Bool, state: Checkbox.State = .normal, checked: Bool) -> some View {
         StateWrapper(initialState: checked) { isSelected in
             Checkbox(
                 standalone ? "" : label,

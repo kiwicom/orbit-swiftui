@@ -7,6 +7,8 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/checkbox/)
 public struct Checkbox: View {
 
+    @Environment(\.isEnabled) var isEnabled
+
     let title: String
     let description: String
     let state: State
@@ -33,15 +35,14 @@ public struct Checkbox: View {
         .buttonStyle(
             ButtonStyle(state: state, isChecked: isChecked)
         )
-        .disabled(state == .disabled)
     }
 
     var labelColor: Text.Color {
-        state == .disabled ? .custom(.cloudDarkHover) : .inkDark
+        isEnabled ? .inkDark : .custom(.cloudDarkHover)
     }
 
     var descriptionColor: Text.Color {
-        state == .disabled ? .custom(.cloudDarkHover) : .inkNormal
+        isEnabled ? .inkNormal : .custom(.cloudDarkHover)
     }
 }
 
@@ -70,7 +71,6 @@ public extension Checkbox {
     enum State {
         case normal
         case error
-        case disabled
     }
 }
 
@@ -84,6 +84,7 @@ public extension Checkbox {
         public static let size: CGFloat = 20
 
         @Environment(\.sizeCategory) var sizeCategory
+        @Environment(\.isEnabled) var isEnabled
 
         let state: Checkbox.State
         let isChecked: Bool
@@ -107,7 +108,7 @@ public extension Checkbox {
                 )
                 .overlay(
                     Icon(.check, size: .small, color: .whiteNormal)
-                        .foregroundColor(state == .disabled ? .cloudNormal : .whiteNormal)
+                        .foregroundColor(isEnabled ? .whiteNormal : .cloudNormal)
                         .opacity(isChecked ? 1 : 0)
                 )
                 .overlay(
@@ -132,29 +133,29 @@ public extension Checkbox {
         }
 
         func indicatorStrokeColor(isPressed: Bool) -> some ShapeStyle {
-            switch (state, isChecked, isPressed) {
-                case (.normal, true, false), (.error, true, false):     return Color.blueNormal
-                case (.normal, true, true), (.error, true, true):       return Color.blueLightActive
-                case (_, _, _):                                         return Color.cloudDark
+            switch (isEnabled, isChecked, isPressed) {
+                case (true, true, false):       return Color.blueNormal
+                case (true, true, true):        return Color.blueLightActive
+                case (_, _, _):                 return Color.cloudDark
             }
         }
 
         func indicatorBackgroundColor(isPressed: Bool) -> some ShapeStyle {
-            switch (state, isChecked, isPressed) {
-                case (.normal, true, false), (.error, true, false):     return Color.blueNormal
-                case (.normal, true, true), (.error, true, true):       return Color.blueLightActive
-                case (.disabled, false, _):                             return Color.cloudNormal
-                case (.disabled, true, _):                              return Color.cloudDark
-                case (_, _, _):                                         return Color.clear
+            switch (isEnabled, isChecked, isPressed) {
+                case (true, true, false):       return Color.blueNormal
+                case (true, true, true):        return Color.blueLightActive
+                case (false, false, _):         return Color.cloudNormal
+                case (false, true, _):          return Color.cloudDark
+                case (_, _, _):                 return Color.clear
             }
         }
 
         func indicatorOverlayStrokeColor(isPressed: Bool) -> some ShapeStyle {
             switch (state, isPressed) {
-                case (.normal, true):                       return Color.blueNormal
-                case (.error, true):                        return Color.redLightActive
-                case (.error, false):                       return Color.redNormal
-                case (_, _):                                return Color.clear
+                case (.normal, true):           return Color.blueNormal
+                case (.error, true):            return Color.redLightActive
+                case (.error, false):           return Color.redNormal
+                case (_, _):                    return Color.clear
             }
         }
 
@@ -224,20 +225,22 @@ struct CheckboxPreviews: PreviewProvider {
     static func content(standalone: Bool) -> some View {
         HStack(alignment: .top, spacing: .xLarge) {
             VStack(alignment: .leading, spacing: .xLarge) {
-                checkbox(standalone: standalone, state: .normal, checked: false)
+                checkbox(standalone: standalone, checked: false)
                 checkbox(standalone: standalone, state: .error, checked: false)
-                checkbox(standalone: standalone, state: .disabled, checked: false)
+                checkbox(standalone: standalone, checked: false)
+                    .disabled(true)
             }
 
             VStack(alignment: .leading, spacing: .xLarge) {
-                checkbox(standalone: standalone, state: .normal, checked: true)
+                checkbox(standalone: standalone, checked: true)
                 checkbox(standalone: standalone, state: .error, checked: true)
-                checkbox(standalone: standalone, state: .disabled, checked: true)
+                checkbox(standalone: standalone, checked: true)
+                    .disabled(true)
             }
         }
     }
 
-    static func checkbox(standalone: Bool, state: Checkbox.State, checked: Bool) -> some View {
+    static func checkbox(standalone: Bool, state: Checkbox.State = .normal, checked: Bool) -> some View {
         StateWrapper(initialState: checked) { isSelected in
             Checkbox(standalone ? "" : label, description: standalone ? "" : description, state: state, isChecked: isSelected.wrappedValue) {
                 isSelected.wrappedValue.toggle()

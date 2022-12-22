@@ -23,8 +23,8 @@ public struct TagGroup<TM: TagModel>: View {
 
     @Environment(\.accessibilityReduceMotion) private var isReduceMotionEnabled
     @Environment(\.isFadeInEnabled) private var isFadeInEnabled
-    @State private var tagsFadeIn: [Bool] = []
-    @Binding private var tags: [TM]
+    @Binding var tags: [TM]
+    @State var tagsFadeIn: [Bool] = []
 
     private let spacing: UIOffset
     private let label: String
