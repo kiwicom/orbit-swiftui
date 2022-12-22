@@ -16,7 +16,6 @@ Supporting types and components under development.
 
 - ``ContentHeightReader``
 - ``SingleAxisGeometryReader``
-- ``Strut``
 - ``TextStrut``
 
 ### Xcode previews support
