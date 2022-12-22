@@ -5,31 +5,25 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/notificationbadge/)
 public struct NotificationBadge: View {
 
-    public static let verticalPadding: CGFloat = 4 + 1/3
-    public static let textSize: Text.Size = .small
+    @Environment(\.sizeCategory) var sizeCategory
 
     let content: Content
     let style: Badge.Style
 
     public var body: some View {
         if isEmpty == false {
-            HStack(spacing: 0) {
-                contentView
-                    .foregroundColor(Color(style.labelColor))
-
-                TextStrut(Self.textSize)
-                    .padding(.vertical, Self.verticalPadding)
-            }
-            .frameWidthAtLeastHeight()
-            .background(
-                style.background
-                    .clipShape(shape)
-            )
-            .overlay(
-                shape
-                    .strokeBorder(style.outlineColor, lineWidth: BorderWidth.thin)
-            )
-            .fixedSize()
+            contentView
+                .padding(.xxSmall) // = 24 height @ normal size
+                .foregroundColor(Color(style.labelColor))
+                .background(
+                    style.background
+                        .clipShape(shape)
+                )
+                .overlay(
+                    shape
+                        .strokeBorder(style.outlineColor, lineWidth: BorderWidth.thin)
+                )
+                .fixedSize()
         }
     }
 
@@ -38,15 +32,19 @@ public struct NotificationBadge: View {
             case .text(let text):
                 Text(
                     text,
-                    size: Self.textSize,
+                    size: .small,
                     color: .none,
                     weight: .medium,
                     linkColor: .custom(style.labelColor)
                 )
-                .padding(.vertical, Self.verticalPadding)
+                .frame(minWidth: minTextWidth)
             case .icon(let icon):
-                Icon(content: icon, size: .text(Self.textSize))
+                Icon(content: icon, size: .small)
         }
+    }
+
+    var minTextWidth: CGFloat {
+        Text.Size.small.lineHeight * sizeCategory.ratio
     }
 
     var shape: some InsettableShape {
@@ -127,6 +125,7 @@ struct NotificationBadgePreviews: PreviewProvider {
             statusBadges(.warning)
             statusBadges(.critical)
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
