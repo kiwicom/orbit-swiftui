@@ -136,6 +136,7 @@ struct StorybookDetail: View {
             case (.notificationBadge, 1):   StorybookNotificationBadge.gradient
             case (.notificationBadge, 2):   StorybookNotificationBadge.mix
             case (.radio, _):               StorybookRadio.basic
+            case (.segmentedSwitch, _):     StorybookSegmentedSwitch.basic
             case (.select, 0):              StorybookSelect.basic
             case (.select, 1):              StorybookSelect.mix
             case (.separator, 0):           StorybookSeparator.basic

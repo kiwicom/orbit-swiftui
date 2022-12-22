@@ -50,6 +50,7 @@ extension Storybook {
         case pictureCard
         case radio
         case ratingStars
+        case segmentedSwitch
         case seat
         case select
         case separator
@@ -76,7 +77,6 @@ extension Storybook {
                 case .icons:                return ["Basic"]
                 case .illustrations:        return ["Basic"]
                 case .typography:           return ["Text", "Heading"]
-
                 case .alert:                return ["Basic", "Inline", "Mix", "Live"]
                 case .badge:                return ["Basic", "Gradient", "Mix"]
                 case .badgeList:            return ["Basic", "Mix"]
@@ -100,6 +100,7 @@ extension Storybook {
                 case .listChoice:           return ["Basic", "Button", "Checkbox", "Mix"]
                 case .notificationBadge:    return ["Basic", "Gradient", "Mix"]
                 case .radio:                return ["Basic"]
+                case .segmentedSwitch:      return ["Basic"]
                 case .select:               return ["Basic", "Mix"]
                 case .separator:            return ["Basic", "Mix"]
                 case .skeleton:             return ["Basic", "Atomic"]
@@ -123,7 +124,6 @@ extension Storybook {
                 case .icons:                return "info.circle.fill"
                 case .illustrations:        return "photo.on.rectangle.angled"
                 case .typography:           return "textformat.size"
-
                 case .alert:                return "exclamationmark.triangle.fill"
                 case .badge:                return "capsule.inset.filled"
                 case .badgeList:            return "checklist"
@@ -147,6 +147,7 @@ extension Storybook {
                 case .listChoice:           return "rectangle.grid.1x2"
                 case .notificationBadge:    return "3.circle.fill"
                 case .radio:                return "smallcircle.filled.circle.fill"
+                case .segmentedSwitch:      return "square.split.2x1.fill"
                 case .select:               return "rectangle.arrowtriangle.2.outward"
                 case .separator:            return "directcurrent"
                 case .skeleton:             return "rectangle.dashed"
