@@ -38,6 +38,7 @@ Our components are a collection of interface elements that can be reused across 
 - ``InputGroup``
 - ``ListChoice``
 - ``Radio``
+- ``SegmentedSwitch``
 - ``Select``
 - ``Textarea``
 
