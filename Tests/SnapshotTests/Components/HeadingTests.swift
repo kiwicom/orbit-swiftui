@@ -4,6 +4,6 @@ import XCTest
 class HeadingTests: SnapshotTestCase {
 
     func testHeadings() {
-        assert(HeadingPreviews.snapshot)
+        assert(HeadingPreviews.formatted)
     }
 }

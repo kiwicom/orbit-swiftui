@@ -7,6 +7,15 @@ public extension Font {
 
     static let orbitIconFontName = "orbit-icons"
 
+    /// Default ratio between font size and desired line height, used for calculating custom text sizes.
+    static var fontSizeToLineHeightRatio: CGFloat = 1.3333
+
+    /// Ratio between font size and real single line text height.
+    ///
+    /// Example:
+    /// - Orbit Circular20 font 16pt size results in 20.33 pt text height.
+    static var fontSizeToHeightRatio: CGFloat = 1.28
+    
     /// Fonts used for rendering text in Orbit.
     static var orbitFonts: [Font.Weight: URL?] = [
         .regular: Bundle.current.url(forResource: "Circular20-Book.otf", withExtension: nil),
@@ -16,7 +25,7 @@ public extension Font {
     ]
 
     /// Creates Orbit font.
-    static func orbit(size: CGFloat, scaledSize: CGFloat, weight: Weight = .regular, style: Font.TextStyle = .body) -> Font {
+    static func orbit(size: CGFloat, scaledSize: CGFloat, weight: Weight = .regular) -> Font {
 
         if orbitFontNames.isEmpty {
             return nonScalingSystemFont(size: scaledSize, weight: weight)
@@ -27,15 +36,18 @@ public extension Font {
             return nonScalingSystemFont(size: scaledSize, weight: weight)
         }
 
-        return customFont(fontName, size: size, style: style)
+        return customFont(fontName, size: size)
     }
 
     /// Creates Orbit icon font.
-    static func orbitIcon(size: CGFloat, style: Font.TextStyle = .body) -> Font {
-        customFont(orbitIconFontName, size: size, style: style)
+    static func orbitIcon(size: CGFloat) -> Font {
+        customFont(orbitIconFontName, size: size)
     }
 
-    /// Registers Orbit fonts set in the `orbitTextFonts` property
+    /// Registers Orbit fonts set in the `orbitTextFonts` property.
+    ///
+    /// For more precise control over text line height and sizing,
+    /// override `fontSizeToLineHeightRatio` and `fontSizeToHeightRatio` Font properties with custom values matching the font properties.
     static func registerOrbitFonts() {
 
         if let iconsFontURL = Bundle.current.url(forResource: "Icons.ttf", withExtension: nil) {
@@ -70,12 +82,8 @@ public extension Font {
         .system(size: size, weight: weight)
     }
 
-    private static func customFont(_ name: String, size: CGFloat, style: Font.TextStyle = .body) -> Font {
-        if #available(iOS 14.0, *) {
-            return .custom(name, size: size, relativeTo: style)
-        } else {
-            return .custom(name, size: size)
-        }
+    private static func customFont(_ name: String, size: CGFloat) -> Font {
+        .custom(name, size: size)
     }
 }
 

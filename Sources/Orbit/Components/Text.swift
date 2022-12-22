@@ -28,11 +28,13 @@ public struct Text: View {
             text(sizeCategory: sizeCategory)
                 .lineSpacing(lineSpacing ?? 0)
                 .multilineTextAlignment(alignment)
-                .fixedSize(horizontal: false, vertical: true)
                 .overlay(selectableText)
+                .overlay(textLinks)
+                .padding(.vertical, size.linePadding * sizeCategory.ratio)
+                .frame(minHeight: size.lineHeight * sizeCategory.ratio)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibility(removeTraits: showTextLinks ? .isStaticText : [])
                 .accessibility(hidden: showTextLinks)
-                .overlay(textLinks)
         }
     }
 
@@ -75,7 +77,6 @@ public struct Text: View {
             .orbitFont(
                 size: size.value,
                 weight: weight,
-                style: size.textStyle,
                 sizeCategory: sizeCategory
             )
         }
@@ -181,7 +182,7 @@ public extension Text {
 // MARK: - Types
 public extension Text {
 
-    enum Size {
+    enum Size: Equatable {
         /// 12 pts.
         case small
         /// 14 pts.
@@ -190,8 +191,10 @@ public extension Text {
         case large
         /// 18 pts.
         case xLarge
+        /// Custom text size.
         case custom(CGFloat)
 
+        /// Font size.
         public var value: CGFloat {
             switch self {
                 case .small:                return 12
@@ -201,21 +204,6 @@ public extension Text {
                 case .custom(let size):     return size
             }
         }
-
-        public var textStyle: Font.TextStyle {
-            switch self {
-                case .small:                return .footnote
-                case .normal:               return .body
-                case .large:                return .callout
-                case .xLarge:
-                    if #available(iOS 14.0, *) {
-                        return .title3
-                    } else {
-                        return .callout
-                    }
-                case .custom:               return .body
-            }
-        }
         
         public var lineHeight: CGFloat {
             switch self {
@@ -223,15 +211,23 @@ public extension Text {
                 case .normal:               return 20
                 case .large:                return 24
                 case .xLarge:               return 24
-                case .custom(let size):     return size * 1.31
+                case .custom(let size):     return size * Font.fontSizeToLineHeightRatio
             }
         }
-        
-        public var iconSize: CGFloat {
-            switch self {
-                case .large:                return 22
-                default:                    return lineHeight
-            }
+
+        /// Text height rounded to pixels.
+        public var height: CGFloat {
+            round(value * Font.fontSizeToHeightRatio * 3) / 3
+        }
+
+        /// Vertical padding needed to match line height.
+        public var linePadding: CGFloat {
+            (lineHeight - height) / 2
+        }
+
+        /// Icon size matching text line height.
+        public var iconSize: Icon.Size {
+            .custom(lineHeight)
         }
     }
 
@@ -254,13 +250,6 @@ public extension Text {
             }
         }
     }
-}
-
-// MARK: - Constants
-extension Text {
-    
-    // Alignment ratio for text size.
-    public static var firstBaselineRatio: CGFloat { 0.26 }
 }
 
 extension TextAlignment {
@@ -294,47 +283,25 @@ struct TextPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            formatting
             sizes
-            multiline
-            custom
-            attributedText
+            formatting
+            lineHeight
+            lineSpacing
             interactive
         }
-        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
-        Text("Plain text with no formatting")
-            .previewDisplayName()
-    }
-
-    @ViewBuilder static var formatting: some View {
-        VStack(alignment: .leading, spacing: .medium) {
-            Group {
-                Text("Plain text with no formatting")
-                Text("Selectable text (on long tap)", isSelectable: true)
-                Text("Text <u>formatted</u> <strong>and</strong> <ref>accented</ref>", accentColor: .orangeNormal)
-                Text("Text with strikethrough and kerning", strikethrough: true, kerning: 6)
-            }
-            .border(Color.cloudDark, width: .hairline)
-
-            Text(multilineText, color: .custom(.greenDark), alignment: .trailing)
-                .background(Color.greenLight)
-            Text(multilineText, color: nil, alignment: .trailing)
-                .foregroundColor(.blueDark)
-                .background(Color.blueLight)
-            Text(multilineFormattedText, color: .custom(.greenDark), alignment: .trailing, accentColor: .orangeDark)
-                .background(Color.greenLight)
-            Text(multilineFormattedText, color: nil, alignment: .trailing, accentColor: .orangeDark)
-                .foregroundColor(.blueDark)
-                .background(Color.blueLight)
+        VStack {
+            Text("Plain text with no formatting")
+            Text("") // Results in EmptyView
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    @ViewBuilder static var sizes: some View {
+    static var sizes: some View {
         VStack(alignment: .leading, spacing: .medium) {
             Group {
                 text("Text Small", size: .small, weight: .regular)
@@ -361,85 +328,97 @@ struct TextPreviews: PreviewProvider {
                 text("Text Bold Extra Large", size: .xLarge, weight: .bold)
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    @ViewBuilder static var multiline: some View {
+    static var formatting: some View {
         VStack(alignment: .leading, spacing: .medium) {
             Group {
-                text("Text Small with a very very very very large and multine content", size: .small, weight: .regular)
-                text("Text Normal with a very very very very large and multine content", size: .normal, weight: .regular)
-                text("Text Large with a very very very very large and multine content", size: .large, weight: .regular)
-                text("Text Extra Large with a very very very very large and multine content", size: .xLarge, weight: .regular)
+                Text("Selectable text (on long tap)", isSelectable: true)
+                Text("Text with no formatting")
+                Text("Text <u>formatted</u> <strong>and</strong> <ref>accented</ref>", accentColor: .orangeNormal)
+                Text("<applink1>Text</applink1> <u>formatted</u> <strong>and</strong> <ref>accented</ref>", accentColor: .orangeNormal)
+                Text("Text with kerning and strikethrough", strikethrough: true, kerning: 6)
+                Text("Text <u>with kerning</u> <strong>and</strong> <ref>strikethrough</ref>", strikethrough: true, kerning: 6)
+                Text("<applink1>Text</applink1> <u>with kerning</u> <strong>and</strong> <ref>strikethrough</ref>", strikethrough: true, kerning: 6)
             }
+            .border(Color.cloudDark, width: .hairline)
 
-            Separator()
-
-            Group {
-                text("Text Medium Small with a very very very very large and multine content", size: .small, weight: .medium)
-                text("Text Medium Normal with a very very very very large and multine content", size: .normal, weight: .medium)
-                text("Text Medium Large with a very very very very large and multine content", size: .large, weight: .medium)
-                text("Text Medium Extra Large with a very very very very large and multine content", size: .xLarge, weight: .medium)
-            }
-
-            Separator()
-
-            Group {
-                text("Text Bold Small with a very very very very large and multine content", size: .small, weight: .bold)
-                text("Text Bold Normal with a very very very very large and multine content", size: .normal, weight: .bold)
-                text("Text Bold Large with a very very very very large and multine content", size: .large, weight: .bold)
-                text("Text Bold Extra Large with a very very very very large and multine content", size: .xLarge, weight: .bold)
-            }
+            Text(multilineText, color: .custom(.greenDark), alignment: .trailing)
+                .background(Color.greenLight)
+            Text(multilineText, color: nil, alignment: .trailing)
+                .foregroundColor(.blueDark)
+                .background(Color.blueLight)
+            Text(multilineFormattedText, color: .custom(.greenDark), alignment: .trailing, accentColor: .orangeDark)
+                .background(Color.greenLight)
+            Text(multilineFormattedText, color: nil, alignment: .trailing, accentColor: .orangeDark)
+                .foregroundColor(.blueDark)
+                .background(Color.blueLight)
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    static var custom: some View {
+    static var lineHeight: some View {
+        VStack(alignment: .trailing, spacing: .medium) {
+            VStack(alignment: .trailing, spacing: .xxxSmall) {
+                textLineHeight(size: .custom(8), formatted: false)
+                textLineHeight(size: .small, formatted: false)
+                textLineHeight(size: .normal, formatted: false)
+                textLineHeight(size: .large, formatted: false)
+                textLineHeight(size: .xLarge, formatted: false)
+            }
+
+            VStack(alignment: .trailing, spacing: .xxxSmall) {
+                textLineHeight(size: .custom(8), formatted: true)
+                textLineHeight(size: .small, formatted: true)
+                textLineHeight(size: .normal, formatted: true)
+                textLineHeight(size: .large, formatted: true)
+                textLineHeight(size: .xLarge, formatted: true)
+            }
+
+            HStack(alignment: .top) {
+                Group {
+                    Text("Text", size: .large)
+                    Text("Text\n multiline", size: .large)
+                }
+                .background(Color.redLightHover)
+                .overlay(
+                    Separator(color: .greenNormal, thickness: .hairline).offset(y: 6),
+                    alignment: .top
+                )
+                .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerFirstTextBaseline)
+            }
+        }
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
+    static var lineSpacing: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            Group {
-                Text("Text custom size", size: .custom(5))
-                Text("Text custom size", size: .custom(21))
-                
-                Text("Text <strong>formatted</strong> custom size", size: .custom(5))
-                Text("Text <strong>formatted</strong> custom size", size: .custom(21))
-                
-                Text("Text <applink1>TextLink</applink1> custom size", size: .custom(5))
-                Text("Text <applink1>TextLink</applink1> custom size", size: .custom(21))
-                Separator()
-            }
-            
-            Group {
-                Text("Text Normal - Undefined color, modified to Blue", size: .normal, color: nil)
-                    .foregroundColor(.blueNormal)
-                    .foregroundColor(.redNormal)
-                Text("Text Normal - InkNormal color", size: .normal, color: .inkNormal)
-                    .foregroundColor(.blueNormal)
-                    .foregroundColor(.redNormal)
-                Text("Text Normal - Custom color", size: .normal, color: .custom(.productDark))
-                    .foregroundColor(.blueNormal)
-                    .foregroundColor(.redNormal)
-                
-                Separator()
-            }
+            HStack(alignment: .top, spacing: .large) {
+                Text(
+                    """
+                    Custom line spacing
+                    Custom line spacing
+                    Custom line spacing
+                    """,
+                    lineSpacing: .large
+                )
 
-            Group {
-                Text("Text Normal, M")
-                    .environment(\.sizeCategory, .medium)
-                Text("Text Normal, XS")
-                    .environment(\.sizeCategory, .extraSmall)
-                Text("Text Normal, XXXL")
-                    .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+                Text(
+                    """
+                    <b>Custom </b> line <applink1>spacing</applink1>
+                    <b>Custom </b> line <applink1>spacing</applink1>
+                    <b>Custom </b> line <applink1>spacing</applink1>
+                    """,
+                    lineSpacing: .large
+                )
             }
         }
+        .padding(.medium)
         .previewDisplayName()
-    }
-
-    static var snapshotsSizing: some View {
-        VStack(spacing: .medium) {
-            standalone
-                .border(Color.cloudDark, width: .hairline)
-            formatting
-        }
     }
 
     static var interactive: some View {
@@ -509,42 +488,32 @@ struct TextPreviews: PreviewProvider {
                     .border(Color.cloudNormal)
                 }
             }
-            .previewDisplayName()
         }
-    }
-
-    static var attributedText: some View {
-        VStack(alignment: .leading, spacing: .medium) {
-            Text("An <ref>attributed</ref> text <a href=\"..\">link</a>", accentColor: .orangeNormal)
-                .border(Color.cloudDark)
-
-            Text(
-                """
-                Custom line height set to 12pt.
-                Custom line height set to 12pt.
-                Custom line height set to 12pt.
-                """,
-                lineSpacing: .small
-            )
-
-            Text(
-                """
-                <b>Custom line height</b> set to 12pt.
-                <b>Custom line height</b> set to 12pt.
-                <b>Custom line height</b> set to 12pt.
-                """,
-                lineSpacing: .small
-            )
-        }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    static var snapshot: some View {
-        formatting
-            .padding(.medium)
+    static func textLineHeight(size: Text.Size, formatted: Bool) -> some View {
+        HStack(spacing: .xxSmall) {
+            Text(
+                "Size \(formatted ? "<applink1>" : "")\(size)\(formatted ? "</applink1>" : "") \(size.value.formatted) / \(size.lineHeight.formatted)",
+                size: size
+            )
+            .background(Color.redLightHover.frame(height: size.height))
+            .background(Color.redLightActive)
+            .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerLastTextBaseline)
+
+            Text(
+                "(\(size.height.formatted) + 2 x \(size.linePadding.formatted))",
+                size: .custom(8),
+                color: .custom(.redNormal)
+            )
+            .environment(\.sizeCategory, .large)
+        }
+        .measured()
     }
 
-    @ViewBuilder static func text(_ content: String, size: Text.Size, weight: Font.Weight) -> some View {
+    static func text(_ content: String, size: Text.Size, weight: Font.Weight) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
             Text(content, size: size, weight: weight)
             Spacer()

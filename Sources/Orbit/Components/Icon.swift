@@ -178,20 +178,6 @@ public extension Icon {
                 case .custom(let size):                 return size
             }
         }
-
-        public var textStyle: Font.TextStyle {
-            switch self {
-                case .small:                            return Text.Size.small.textStyle
-                case .normal:                           return Text.Size.normal.textStyle
-                case .large:                            return Text.Size.large.textStyle
-                case .xLarge:                           return Text.Size.xLarge.textStyle
-                case .fontSize:                         return .body
-                case .text(let size):                   return size.textStyle
-                case .heading(let style):               return style.textStyle
-                case .label(let style):                 return style.textStyle
-                case .custom:                           return .body
-            }
-        }
         
         public static func == (lhs: Icon.Size, rhs: Icon.Size) -> Bool {
             lhs.value == rhs.value
@@ -247,12 +233,12 @@ extension Icon: TextRepresentable {
                 return SwiftUI.Text(verbatim: symbol.value)
                     .baselineOffset(textBaselineOffset(sizeCategory: sizeCategory))
                     .foregroundColor(color)
-                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+                    .font(.orbitIcon(size: size.value))
             case .symbol(let symbol, nil):
                 return SwiftUI.Text(verbatim: symbol.value)
                     .baselineOffset(textBaselineOffset(sizeCategory: sizeCategory))
                     // foregroundColor(nil) prevents further overrides
-                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+                    .font(.orbitIcon(size: size.value))
             case .image(let image, _):
                 return SwiftUI.Text(image.resizable())
                     .baselineOffset(baselineOffset)
@@ -276,12 +262,12 @@ extension Icon: TextRepresentable {
                 return SwiftUI.Text(verbatim: symbol.value)
                     .baselineOffset(textBaselineOffset(sizeCategory: sizeCategory))
                     .foregroundColor(color)
-                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+                    .font(.orbitIcon(size: size.value))
             case .symbol(let symbol, nil):
                 return SwiftUI.Text(verbatim: symbol.value)
                     .baselineOffset(textBaselineOffset(sizeCategory: sizeCategory))
                     // foregroundColor(nil) prevents further overrides
-                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+                    .font(.orbitIcon(size: size.value))
             case .image, .countryFlag, .sfSymbol:
                 assertionFailure(".image, .countryFlag, .sfSymbol as Text are only available in iOS 14.0 or newer")
                 return nil

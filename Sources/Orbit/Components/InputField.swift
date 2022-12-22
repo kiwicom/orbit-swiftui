@@ -76,7 +76,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                         .disableAutocorrection(isAutocompleteEnabled == false)
                         .textContentType(textContent)
                         .keyboardType(keyboard)
-                        .orbitFont(size: Text.Size.normal.value, style: .body)
+                        .orbitFont(size: Text.Size.normal.value)
                         .accentColor(.blueNormal)
                         .background(textFieldPlaceholder, alignment: .leading)
                         .accessibility(.inputFieldValue)
