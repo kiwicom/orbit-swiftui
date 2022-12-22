@@ -24,13 +24,21 @@ public struct SegmentedSwitch<Value>: View where Value: LosslessStringConvertibl
         ) {
             HStack(spacing: 0) {
                 segment(title: firstOption)
+                    .accessibility(.segmentedSwitchFirstOption)
                 separator
                 segment(title: secondOption)
+                    .accessibility(.segmentedSwitchSecondOption)
             }
             .background(selectionBackground)
             .background(roundedBackground)
             .fixedSize(horizontal: false, vertical: true)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibility(label: .init(label))
+        .accessibility(value: .init(selection?.description ?? ""))
+        .accessibility(hint: .init(accessibilityHint))
+        .accessibility(addTraits: .isButton)
+        .accessibility(addTraits: selection != nil ? .isSelected : [])
     }
 
     @ViewBuilder func segment(title: Value) -> some View {
@@ -98,6 +106,10 @@ public struct SegmentedSwitch<Value>: View where Value: LosslessStringConvertibl
         }
     }
 
+    private var accessibilityHint: String {
+        "\(message?.description.appending(":") ?? "") \(firstOption)\\\(secondOption)"
+    }
+    
     public init(
         label: String,
         firstOption: Value,
@@ -111,6 +123,11 @@ public struct SegmentedSwitch<Value>: View where Value: LosslessStringConvertibl
         self._selection = selection
         self._message = message
     }
+}
+
+public extension AccessibilityID {
+    static let segmentedSwitchFirstOption = Self(rawValue: "orbit.segmentedswitch.first")
+    static let segmentedSwitchSecondOption = Self(rawValue: "orbit.segmentedswitch.second")
 }
 
 // MARK: - Previews
