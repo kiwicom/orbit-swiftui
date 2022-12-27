@@ -54,7 +54,7 @@ public struct Text: View {
     @ViewBuilder var selectableText: some View {
         if isSelectable {
             GeometryReader { geometry in
-                SelectableLabelWrapper(text: attributedText.string)
+                SelectableLabelWrapper(text: attributedTextWithoutTextLinks.string)
                     .frame(
                         width: geometry.size.width,
                         height: geometry.size.height
@@ -66,7 +66,7 @@ public struct Text: View {
     func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
         if content.containsHtmlFormatting {
             return textContent {
-                SwiftUI.Text(attributedText)
+                SwiftUI.Text(attributedTextWithoutTextLinks)
             }
         } else {
             return textContent {
@@ -107,6 +107,7 @@ public struct Text: View {
             fontSize: attributedTextScaledSize,
             fontWeight: weight,
             lineSpacing: lineSpacing,
+            kerning: kerning,
             alignment: alignment
         )
     }
@@ -115,12 +116,13 @@ public struct Text: View {
         color?.uiValue
     }
 
-    var attributedText: NSAttributedString {
+    var attributedTextWithoutTextLinks: NSAttributedString {
         TagAttributedStringBuilder.all.attributedString(
             content,
             fontSize: attributedTextScaledSize,
             fontWeight: weight,
             lineSpacing: lineSpacing,
+            kerning: kerning,
             color: foregroundColor,
             linkColor: .clear,
             accentColor: accentColor
@@ -339,9 +341,22 @@ struct TextPreviews: PreviewProvider {
                 Text("Text with no formatting")
                 Text("Text <u>formatted</u> <strong>and</strong> <ref>accented</ref>", accentColor: .orangeNormal)
                 Text("<applink1>Text</applink1> <u>formatted</u> <strong>and</strong> <ref>accented</ref>", accentColor: .orangeNormal)
-                Text("Text with kerning and strikethrough", strikethrough: true, kerning: 6)
-                Text("Text <u>with kerning</u> <strong>and</strong> <ref>strikethrough</ref>", strikethrough: true, kerning: 6)
-                Text("<applink1>Text</applink1> <u>with kerning</u> <strong>and</strong> <ref>strikethrough</ref>", strikethrough: true, kerning: 6)
+
+                Text("Text with kerning and strikethrough", lineSpacing: 10, alignment: .trailing, strikethrough: true, kerning: 6)
+                Text(
+                    "Text <u>with kerning</u> <strong>and</strong> <ref>strikethrough</ref>",
+                    lineSpacing: 10,
+                    alignment: .trailing,
+                    strikethrough: true,
+                    kerning: 6
+                )
+                Text(
+                    "<applink1>Text</applink1> <u>with kerning</u> <strong>and</strong> <applink2>strikethrough</applink2>",
+                    lineSpacing: 10,
+                    alignment: .trailing,
+                    strikethrough: true,
+                    kerning: 6
+                )
             }
             .border(Color.cloudDark, width: .hairline)
 
