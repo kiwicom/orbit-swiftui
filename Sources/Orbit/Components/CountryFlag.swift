@@ -20,7 +20,6 @@ public struct CountryFlag: View {
                 clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
                     .blendMode(.darken)
             )
-            .padding(Icon.averageIconContentPadding / 2)
             .frame(width: size.value * sizeCategory.ratio)
             .fixedSize()
             .accessibility(label: SwiftUI.Text(countryCode.rawValue))
