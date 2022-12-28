@@ -18,36 +18,35 @@ public enum InputFieldStyle {
 /// - Important: Component expands horizontally unless prevented by `fixedSize` modifier.
 public struct InputField<Value>: View where Value: LosslessStringConvertible {
 
-    private enum Mode {
+    enum Mode {
         case actionsHandler(onEditingChanged: (Bool) -> Void, onCommit: () -> Void, isSecure: Bool)
         case formatter(formatter: Formatter)
     }
 
-    @Environment(\.isEnabled) var isEnabled: Bool
+    @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.isEnabled) private var isEnabled
+    @State private var isEditing: Bool = false
+    @State private var isSecureTextRedacted: Bool = true
 
+    var label: String = ""
+    var labelAccentColor: UIColor? = nil
+    var labelLinkColor: TextLink.Color = .primary
+    var labelLinkAction: TextLink.Action = { _, _ in }
     @Binding var value: Value
+    var prefix: Icon.Content = .none
+    var suffix: Icon.Content = .none
+    var placeholder: String = ""
+    var state: InputState = .default
+    var textContent: UITextContentType? = nil
+    var keyboard: UIKeyboardType = .default
+    var autocapitalization: UITextAutocapitalizationType = .none
+    var isAutocompleteEnabled: Bool = false
+    var passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty
+    var message: Message? = nil
     @Binding var messageHeight: CGFloat
-    @State var isEditing: Bool = false
-    @State var isSecureTextRedacted: Bool = true
-
-    let label: String
-    let labelAccentColor: UIColor?
-    let labelLinkColor: TextLink.Color
-    let labelLinkAction: TextLink.Action
-    let placeholder: String
-    let prefix: Icon.Content
-    let suffix: Icon.Content
-    let state: InputState
-    let textContent: UITextContentType?
-    let keyboard: UIKeyboardType
-    let autocapitalization: UITextAutocapitalizationType
-    let isAutocompleteEnabled: Bool
-    let passwordStrength: PasswordStrengthIndicator.PasswordStrength
-    let message: Message?
-    let style: InputFieldStyle
-    let suffixAction: (() -> Void)?
-
-    private let mode: Mode
+    var style: InputFieldStyle = .default
+    let mode: Mode
+    var suffixAction: (() -> Void)? = nil
 
     public var body: some View {
         FieldWrapper(
@@ -134,7 +133,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                 }
                 .accessibility(addTraits: .isButton)
                 .accessibility(.inputFieldPasswordToggle)
-                .opacity(isEnabled ? 1 : 0)
+                .padding(.vertical, 3) // = 44 height @ normal size
         }
     }
 
@@ -152,7 +151,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
             style: .init(
                 textContentType: textContent,
                 keyboardType: keyboard,
-                font: .orbit(size: Text.Size.normal.value, weight: .regular),
+                font: .orbit(size: Text.Size.normal.value * sizeCategory.ratio, weight: .regular),
                 state: state
             ),
             onEditingChanged: onEditingChanged,
@@ -241,7 +240,7 @@ public extension InputField {
         suffixAction: (() -> Void)? = nil
     ) where Value == String {
         self.init(
-            label,
+            label: label,
             labelAccentColor: labelAccentColor,
             labelLinkColor: labelLinkColor,
             labelLinkAction: labelLinkAction,
@@ -295,7 +294,7 @@ public extension InputField {
         suffixAction: (() -> Void)? = nil
     ) {
         self.init(
-            label,
+            label: label,
             labelAccentColor: labelAccentColor,
             labelLinkColor: labelLinkColor,
             labelLinkAction: labelLinkAction,
@@ -318,51 +317,6 @@ public extension InputField {
     }
 }
 
-extension InputField {
-
-    private init(
-        _ label: String = "",
-        labelAccentColor: UIColor? = nil,
-        labelLinkColor: TextLink.Color = .primary,
-        labelLinkAction: @escaping TextLink.Action = { _, _ in },
-        value: Binding<Value>,
-        prefix: Icon.Content = .none,
-        suffix: Icon.Content = .none,
-        placeholder: String = "",
-        state: InputState = .default,
-        textContent: UITextContentType? = nil,
-        keyboard: UIKeyboardType = .default,
-        autocapitalization: UITextAutocapitalizationType = .none,
-        isAutocompleteEnabled: Bool = false,
-        passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
-        message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
-        style: InputFieldStyle = .default,
-        mode: Mode,
-        suffixAction: (() -> Void)? = nil
-    ) {
-        self.label = label
-        self.labelAccentColor = labelAccentColor
-        self.labelLinkColor = labelLinkColor
-        self.labelLinkAction = labelLinkAction
-        self._value = value
-        self.prefix = prefix
-        self.suffix = suffix
-        self.placeholder = placeholder
-        self.state = state
-        self.message = message
-        self._messageHeight = messageHeight
-        self.textContent = textContent
-        self.keyboard = keyboard
-        self.autocapitalization = autocapitalization
-        self.isAutocompleteEnabled = isAutocompleteEnabled
-        self.passwordStrength = passwordStrength
-        self.style = style
-        self.mode = mode
-        self.suffixAction = suffixAction
-    }
-}
-
 // MARK: - Types
 public extension InputField {
     
@@ -377,7 +331,7 @@ public extension InputField {
         public func _body(configuration: TextField<Self._Label>) -> some View {
             configuration
                 .padding(.leading, leadingPadding)
-                .padding(.vertical, .xSmall)
+                .padding(.vertical, .small)
         }
     }
 }
@@ -540,16 +494,6 @@ struct InputFieldPreviews: PreviewProvider {
                 style: style
             )
         }
-    }
-    
-    static var snapshot: some View {
-        styles
-            .padding(.medium)
-    }
-
-    static var snapshotPassword: some View {
-        password
-            .padding(.medium)
     }
 }
 

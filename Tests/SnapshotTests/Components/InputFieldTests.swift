@@ -4,10 +4,11 @@ import XCTest
 class InputFieldTests: SnapshotTestCase {
 
     func testInputFields() {
-        assert(InputFieldPreviews.snapshot)
+        assert(InputFieldPreviews.styles)
+        assert(InputFieldPreviews.sizing)
     }
 
     func testInputFieldsPassword() {
-        assert(InputFieldPreviews.snapshotPassword)
+        assert(InputFieldPreviews.password)
     }
 }
