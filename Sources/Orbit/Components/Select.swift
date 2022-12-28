@@ -123,6 +123,7 @@ struct SelectPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             intrinsic
+            sizing
             styles
             mix
         }
@@ -141,6 +142,20 @@ struct SelectPreviews: PreviewProvider {
             .previewDisplayName()
     }
 
+    static var sizing: some View {
+        VStack(alignment: .leading, spacing: .small) {
+            Group {
+                select("", value: "")
+                select("", value: "Value", prefix: .none, suffix: .none)
+                select("", value: nil, prefix: .none, suffix: .none)
+                select("", value: nil, placeholder: "", prefix: .none, suffix: .none)
+            }
+            .frame(width: 200)
+            .measured()
+        }
+        .previewDisplayName()
+    }
+
     static var styles: some View {
         VStack(spacing: .medium) {
             select(value: "")
@@ -154,8 +169,8 @@ struct SelectPreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static func select(value: String, message: Message? = nil) -> some View {
-        Select(InputFieldPreviews.label, prefix: .grid, value: value, placeholder: InputFieldPreviews.placeholder, message: message)
+    static func select(_ label: String = InputFieldPreviews.label, value: String?, placeholder: String = InputFieldPreviews.placeholder, prefix: Icon.Content = .grid, suffix: Icon.Content = .chevronDown, message: Message? = nil) -> some View {
+        Select(label, prefix: prefix, value: value, placeholder: placeholder, suffix: suffix, message: message)
     }
 
     @ViewBuilder static var mix: some View {

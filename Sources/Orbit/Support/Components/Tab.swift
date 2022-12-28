@@ -15,9 +15,8 @@ public struct Tab: View {
             Icon(content: iconContent)
                 .padding(.trailing, .xSmall)
             Text(label, color: nil, weight: .medium, alignment: .center)
-                .padding(.vertical, .xSmall)
             TextStrut(.normal)
-                .padding(.vertical, .xSmall)
+                .padding(.vertical, 7)
         }
         .padding(.horizontal, .small)
         .contentShape(Rectangle())

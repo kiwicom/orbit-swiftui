@@ -409,10 +409,10 @@ struct InputFieldPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             styles
+            sizing
             password
             mix
         }
-        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -420,6 +420,7 @@ struct InputFieldPreviews: PreviewProvider {
         StateWrapper(initialState: value) { state in
             InputField(label, value: state, prefix: .grid, suffix: .grid, placeholder: placeholder, state: .default)
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -443,6 +444,26 @@ struct InputFieldPreviews: PreviewProvider {
                 inputField(value: value, message: .error(errorMessage), style: .compact)
             }
         }
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
+    static var sizing: some View {
+        VStack(alignment: .leading, spacing: .small) {
+            Group {
+                inputField("", value: "", message: .none)
+                inputField("", value: "", prefix: .none, suffix: .none)
+                inputField("", value: "Value", prefix: .none, suffix: .none)
+                inputField("", value: "", prefix: .grid, suffix: .none, placeholder: "")
+                inputField("", value: "", prefix: .none, suffix: .none, placeholder: "")
+                inputField("", value: "Password", prefix: .none, suffix: .none, isSecure: true)
+                inputField("", value: "Password", prefix: .none, suffix: .none, isSecure: true)
+                    .disabled(true)
+            }
+            .frame(width: 200)
+            .measured()
+        }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -456,6 +477,7 @@ struct InputFieldPreviews: PreviewProvider {
             inputField(passwordLabel, value: passwordValue, prefix: .none, suffix: .none, isSecure: true, passwordStrength: .medium(title: "Medium"), message: .help("Help message"))
             inputField(passwordLabel, value: passwordValue, isSecure: true, passwordStrength: .strong(title: "Strong"))
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -482,6 +504,7 @@ struct InputFieldPreviews: PreviewProvider {
                 inputField(value: "Flag prefix", prefix: .countryFlag("us"))
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 

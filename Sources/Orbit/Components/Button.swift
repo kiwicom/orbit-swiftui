@@ -327,27 +327,13 @@ struct ButtonPreviews: PreviewProvider {
 
     static var sizing: some View {
         VStack(spacing: .medium) {
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Button("Button height \(state.wrappedValue.formatted)")
-                }
+            Group {
+                Button("Button")
+                Button("Button", icon: .grid)
+                Button("Button small", size: .small)
+                Button("Button small", icon: .grid, size: .small)
             }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Button("Button height \(state.wrappedValue.formatted)", icon: .grid)
-                }
-            }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Button("Button small height \(state.wrappedValue.formatted)", size: .small)
-                }
-            }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Button("Button small height \(state.wrappedValue.formatted)", icon: .grid, size: .small)
-                        .idealSize()
-                }
-            }
+            .measured()
         }
         .previewDisplayName()
     }

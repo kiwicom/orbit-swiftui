@@ -161,22 +161,14 @@ struct BadgePreviews: PreviewProvider {
     }
 
     static var sizing: some View {
-        VStack(spacing: .xSmall) {
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Badge("Height \(state.wrappedValue.formatted)")
-                }
+        VStack(alignment: .trailing, spacing: .xSmall) {
+            Group {
+                Badge("Badge")
+                Badge("Badge", icon: .grid)
+                Badge(icon: .grid)
+                Badge("Multiline\nBadge", icon: .grid)
             }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Badge("Height \(state.wrappedValue.formatted)", icon: .grid)
-                }
-            }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Badge("Multiline text\nheight \(state.wrappedValue.formatted)", icon: .grid)
-                }
-            }
+            .measured()
         }
         .previewDisplayName()
     }

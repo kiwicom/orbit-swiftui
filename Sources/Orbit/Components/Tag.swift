@@ -227,22 +227,13 @@ struct TagPreviews: PreviewProvider {
     }
 
     static var sizing: some View {
-        VStack(alignment: .leading, spacing: .large) {
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Button("Button small height \(state.wrappedValue.formatted)", size: .small)
-                }
+        VStack(alignment: .trailing, spacing: .large) {
+            Group {
+                Tag("Tag", isFocused: false)
+                Tag("Tag", icon: .grid, isFocused: false)
+                Tag(icon: .grid, isFocused: false)
             }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Tag("Tag height \(state.wrappedValue.formatted)", isFocused: false)
-                }
-            }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Tag("Tag height \(state.wrappedValue.formatted)", icon: .grid, isFocused: false)
-                }
-            }
+            .measured()
         }
         .previewDisplayName()
     }

@@ -5,7 +5,7 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/notificationbadge/)
 public struct NotificationBadge: View {
 
-    public static let verticalPadding: CGFloat = 5
+    public static let verticalPadding: CGFloat = 4 + 1/3
     public static let textSize: Text.Size = .small
 
     let content: Content
@@ -108,11 +108,8 @@ struct NotificationBadgePreviews: PreviewProvider {
     }
 
     static var sizing: some View {
-        StateWrapper(initialState: CGFloat(0)) { state in
-            ContentHeightReader(height: state) {
-                NotificationBadge("\(state.wrappedValue.formatted)")
-            }
-        }
+        NotificationBadge("88")
+            .measured()
         .previewDisplayName()
     }
 
