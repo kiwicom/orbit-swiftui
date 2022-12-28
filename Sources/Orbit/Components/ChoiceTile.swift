@@ -321,22 +321,22 @@ struct ChoiceTilePreviews: PreviewProvider {
         VStack(spacing: .medium) {
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    ChoiceTile("Height \(state.wrappedValue)", description: description, icon: .grid)
+                    ChoiceTile("Height \(state.wrappedValue.formatted)", description: description, icon: .grid)
                 }
             }
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    ChoiceTile("Height \(state.wrappedValue)", icon: .grid)
+                    ChoiceTile("Height \(state.wrappedValue.formatted)", icon: .grid)
                 }
             }
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    ChoiceTile(description: "Height \(state.wrappedValue)", icon: .grid)
+                    ChoiceTile(description: "Height \(state.wrappedValue.formatted)", icon: .grid)
                 }
             }
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    ChoiceTile("Height \(state.wrappedValue)")
+                    ChoiceTile("Height \(state.wrappedValue.formatted)")
                 }
             }
         }

@@ -164,17 +164,17 @@ struct BadgePreviews: PreviewProvider {
         VStack(spacing: .xSmall) {
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    Badge("Height \(state.wrappedValue.rounded())")
+                    Badge("Height \(state.wrappedValue.formatted)")
                 }
             }
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    Badge("Height \(state.wrappedValue.rounded())", icon: .grid)
+                    Badge("Height \(state.wrappedValue.formatted)", icon: .grid)
                 }
             }
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    Badge("Multiline text\nheight \(state.wrappedValue.rounded())", icon: .grid)
+                    Badge("Multiline text\nheight \(state.wrappedValue.formatted)", icon: .grid)
                 }
             }
         }

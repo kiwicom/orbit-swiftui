@@ -446,22 +446,22 @@ struct ListChoicePreviews: PreviewProvider {
             Group {
                 StateWrapper(initialState: CGFloat(0)) { state in
                     ContentHeightReader(height: state) {
-                        ListChoice("Height \(state.wrappedValue)", description: description, icon: .grid, value: value)
+                        ListChoice("Height \(state.wrappedValue.formatted)", description: description, icon: .grid, value: value)
                     }
                 }
                 StateWrapper(initialState: CGFloat(0)) { state in
                     ContentHeightReader(height: state) {
-                        ListChoice("Height \(state.wrappedValue)", icon: .grid, value: value)
+                        ListChoice("Height \(state.wrappedValue.formatted)", icon: .grid, value: value)
                     }
                 }
                 StateWrapper(initialState: CGFloat(0)) { state in
                     ContentHeightReader(height: state) {
-                        ListChoice(description: "Height \(state.wrappedValue)", icon: .grid)
+                        ListChoice(description: "Height \(state.wrappedValue.formatted)", icon: .grid)
                     }
                 }
                 StateWrapper(initialState: CGFloat(0)) { state in
                     ContentHeightReader(height: state) {
-                        ListChoice("Height \(state.wrappedValue)")
+                        ListChoice("Height \(state.wrappedValue.formatted)")
                     }
                 }
             }

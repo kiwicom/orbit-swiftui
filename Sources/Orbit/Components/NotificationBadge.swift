@@ -110,7 +110,7 @@ struct NotificationBadgePreviews: PreviewProvider {
     static var sizing: some View {
         StateWrapper(initialState: CGFloat(0)) { state in
             ContentHeightReader(height: state) {
-                NotificationBadge("\(Int(state.wrappedValue))")
+                NotificationBadge("\(state.wrappedValue.formatted)")
             }
         }
         .previewDisplayName()

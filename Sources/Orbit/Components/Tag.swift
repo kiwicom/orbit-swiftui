@@ -230,12 +230,17 @@ struct TagPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .large) {
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    Button("Button small height \(state.wrappedValue)", size: .small)
+                    Button("Button small height \(state.wrappedValue.formatted)", size: .small)
                 }
             }
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    Tag("Tag height \(state.wrappedValue)")
+                    Tag("Tag height \(state.wrappedValue.formatted)", isFocused: false)
+                }
+            }
+            StateWrapper(initialState: CGFloat(0)) { state in
+                ContentHeightReader(height: state) {
+                    Tag("Tag height \(state.wrappedValue.formatted)", icon: .grid, isFocused: false)
                 }
             }
         }

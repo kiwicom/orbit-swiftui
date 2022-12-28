@@ -178,32 +178,32 @@ struct ButtonLinkPreviews: PreviewProvider {
             Group {
                 StateWrapper(initialState: CGFloat(0)) { state in
                     ContentHeightReader(height: state) {
-                        ButtonLink("ButtonLink height \(state.wrappedValue)")
+                        ButtonLink("ButtonLink intrinsic height \(state.wrappedValue.formatted)")
                     }
                 }
                 StateWrapper(initialState: CGFloat(0)) { state in
                     ContentHeightReader(height: state) {
-                        ButtonLink("ButtonLink height \(state.wrappedValue)", icon: .grid)
+                        ButtonLink("ButtonLink intrinsic height \(state.wrappedValue.formatted)", icon: .grid)
                     }
                 }
                 StateWrapper(initialState: CGFloat(0)) { state in
                     ContentHeightReader(height: state) {
-                        ButtonLink("ButtonLink button height \(state.wrappedValue)", size: .button)
+                        ButtonLink("ButtonLink button height \(state.wrappedValue.formatted)", size: .button)
                     }
                 }
                 StateWrapper(initialState: CGFloat(0)) { state in
                     ContentHeightReader(height: state) {
-                        ButtonLink("ButtonLink button height \(state.wrappedValue)", icon: .grid, size: .button)
+                        ButtonLink("ButtonLink button height \(state.wrappedValue.formatted)", icon: .grid, size: .button)
                     }
                 }
                 StateWrapper(initialState: CGFloat(0)) { state in
                     ContentHeightReader(height: state) {
-                        ButtonLink("ButtonLink small height \(state.wrappedValue)", size: .buttonSmall)
+                        ButtonLink("ButtonLink small button height \(state.wrappedValue.formatted)", size: .buttonSmall)
                     }
                 }
                 StateWrapper(initialState: CGFloat(0)) { state in
                     ContentHeightReader(height: state) {
-                        ButtonLink("ButtonLink small height \(state.wrappedValue)", icon: .grid, size: .buttonSmall)
+                        ButtonLink("ButtonLink small button height \(state.wrappedValue.formatted)", icon: .grid, size: .buttonSmall)
                     }
                 }
             }

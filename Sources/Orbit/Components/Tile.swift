@@ -319,22 +319,22 @@ struct TilePreviews: PreviewProvider {
         VStack(spacing: .medium) {
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    Tile("Height \(state.wrappedValue)", description: description, icon: .grid)
+                    Tile("Height \(state.wrappedValue.formatted)", description: description, icon: .grid)
                 }
             }
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    Tile("Height \(state.wrappedValue)", icon: .grid)
+                    Tile("Height \(state.wrappedValue.formatted)", icon: .grid)
                 }
             }
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    Tile(description: "Height \(state.wrappedValue)", icon: .grid)
+                    Tile(description: "Height \(state.wrappedValue.formatted)", icon: .grid)
                 }
             }
             StateWrapper(initialState: CGFloat(0)) { state in
                 ContentHeightReader(height: state) {
-                    Tile("Height \(state.wrappedValue)")
+                    Tile("Height \(state.wrappedValue.formatted)")
                 }
             }
         }
