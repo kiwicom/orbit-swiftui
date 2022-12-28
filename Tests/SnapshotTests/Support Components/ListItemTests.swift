@@ -4,6 +4,6 @@ import XCTest
 class ListItemTests: SnapshotTestCase {
 
     func testListItems() {
-        assert(ListItemPreviews.snapshots)
+        assert(ListItemPreviews.sizes)
     }
 }

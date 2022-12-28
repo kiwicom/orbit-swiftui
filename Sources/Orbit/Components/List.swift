@@ -9,7 +9,7 @@ public struct List<Content: View>: View {
     @ViewBuilder let content: Content
 
     public var body: some View {
-        VStack(alignment: .listTextLeading, spacing: spacing) {
+        VStack(alignment: .leading, spacing: spacing) {
             content
         }
     }
@@ -19,12 +19,6 @@ public struct List<Content: View>: View {
         self.spacing = spacing
         self.content = content()
     }
-}
-
-// MARK: - Alignment
-public extension HorizontalAlignment {
-    
-    static let listTextLeading = Self.labelTextLeading
 }
 
 // MARK: - Previews
@@ -45,7 +39,12 @@ struct ListPreviews: PreviewProvider {
     static var standalone: some View {
         List {
             ListItem(listItemText)
-            ListItem(listItemText, icon: .grid)
+            ListItem(listItemText, style: .secondary)
+            ListItem(listItemText, spacing: 0, style: .secondary)
+            ListItem(listItemText, icon: .circleSmall)
+            ListItem(listItemText, icon: .circleSmall, style: .secondary)
+            ListItem(listItemText, icon: .grid, iconSize: .small)
+            ListItem(listItemText, icon: .grid, iconSize: .normal, spacing: 0)
             ListItem(listItemText, icon: .symbol(.check, color: .greenNormal))
             ListItem(listItemText, icon: .none)
         }
@@ -83,6 +82,7 @@ struct ListPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .medium) {
             List {
                 ListItem(listItemText)
+                ListItem(listItemText, icon: .circleSmall)
                 ListItem(listItemText, icon: .grid)
                 ListItem(listItemText, icon: .symbol(.check, color: .greenNormal))
                 ListItem(listItemText, icon: .none)
@@ -101,11 +101,11 @@ struct ListPreviews: PreviewProvider {
 
             Separator()
 
-            List(spacing: .large) {
+            List(spacing: .small) {
+                ListItem(listItemText)
+                ListItem(listItemText, style: .secondary)
                 ListItem(listItemText, spacing: 0)
-                ListItem(listItemText, spacing: 0)
-                ListItem(listItemText, spacing: .small)
-                ListItem(listItemText, spacing: .small)
+                ListItem(listItemText, spacing: 12)
             }
         }
         .previewDisplayName()
