@@ -93,7 +93,6 @@ struct NotificationBadgePreviews: PreviewProvider {
             gradients
             mix
         }
-        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -102,13 +101,15 @@ struct NotificationBadgePreviews: PreviewProvider {
             NotificationBadge("9")
             NotificationBadge("")  // EmptyView
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
     static var sizing: some View {
         NotificationBadge("88")
             .measured()
-        .previewDisplayName()
+            .padding(.medium)
+            .previewDisplayName()
     }
 
     static var statuses: some View {
@@ -135,6 +136,7 @@ struct NotificationBadgePreviews: PreviewProvider {
             gradientBadge(.bundleMedium)
             gradientBadge(.bundleTop)
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -158,12 +160,8 @@ struct NotificationBadgePreviews: PreviewProvider {
                 NotificationBadge(.sfSymbol("ant.fill"))
             }
         }
+        .padding(.medium)
         .previewDisplayName()
-    }
-
-    static var snapshot: some View {
-        statuses
-            .padding(.medium)
     }
 
     static func badges(_ style: Badge.Style) -> some View {

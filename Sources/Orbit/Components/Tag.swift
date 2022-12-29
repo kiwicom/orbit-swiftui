@@ -3,10 +3,11 @@ import SwiftUI
 /// Offers a label that can optionally be selected and unselected or removed.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tag/)
+/// - Important: Component can expand horizontally by using `idealSize` modifier.
 public struct Tag: View {
 
     public static let horizontalPadding: CGFloat = .xSmall
-    public static let verticalPadding: CGFloat = 7
+    public static let verticalPadding: CGFloat = 6 // = 32 height @ normal size text size
 
     @Environment(\.idealSize) var idealSize
 
@@ -31,20 +32,17 @@ public struct Tag: View {
                             Spacer(minLength: 0)
                         }
 
-                        HStack(alignment: .firstTextBaseline, spacing: 6) {
-                            Icon(content: iconContent)
+                        HStack(spacing: 6) {
+                            Icon(content: iconContent, size: Text.Size.normal.iconSize)
                             Text(label, color: nil, weight: .medium)
-                                .padding(.vertical, Self.verticalPadding)
                         }
                         .fixedSize(horizontal: true, vertical: false)
-
-                        TextStrut(.normal)
-                            .padding(.vertical, Self.verticalPadding)
 
                         if idealSize.horizontal == false {
                             Spacer(minLength: 0)
                         }
                     }
+                    .padding(.vertical, Self.verticalPadding)
                 }
             )
             .buttonStyle(
@@ -184,7 +182,6 @@ struct TagPreviews: PreviewProvider {
             styles
             sizing
         }
-        .padding(.medium)
         .previewLayout(PreviewLayout.sizeThatFits)
     }
 
@@ -193,6 +190,7 @@ struct TagPreviews: PreviewProvider {
             Tag(label, icon: .grid, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
             Tag("") // EmptyView
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -201,10 +199,11 @@ struct TagPreviews: PreviewProvider {
             Tag(label, icon: .grid, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
                 .idealSize(horizontal: false)
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    @ViewBuilder static var styles: some View {
+    static var styles: some View {
         VStack(alignment: .leading, spacing: .large) {
             stack(style: .default, isFocused: true)
             stack(style: .default, isFocused: false)
@@ -223,6 +222,7 @@ struct TagPreviews: PreviewProvider {
                 }
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -235,15 +235,11 @@ struct TagPreviews: PreviewProvider {
             }
             .measured()
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    static var snapshot: some View {
-        styles
-            .padding(.medium)
-    }
-
-    @ViewBuilder static func stack(style: Tag.Style, isFocused: Bool, idealWidth: Bool? = nil) -> some View {
+    static func stack(style: Tag.Style, isFocused: Bool, idealWidth: Bool? = nil) -> some View {
         HStack(spacing: .medium) {
             VStack(spacing: .small) {
                 tag(style: style, isFocused: isFocused, isSelected: false, isActive: false)
@@ -258,7 +254,7 @@ struct TagPreviews: PreviewProvider {
         .idealSize(horizontal: idealWidth)
     }
 
-    @ViewBuilder static func tag(style: Tag.Style, isFocused: Bool, isSelected: Bool, isActive: Bool) -> some View {
+    static func tag(style: Tag.Style, isFocused: Bool, isSelected: Bool, isActive: Bool) -> some View {
         StateWrapper(initialState: (style, isSelected, true)) { state in
             Tag(
                 label,

@@ -7,8 +7,6 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/badgelist/)
 public struct BadgeList: View {
 
-    public static let spacing: CGFloat = .xSmall
-
     let label: String
     let iconContent: Icon.Content
     let style: Style
@@ -18,7 +16,7 @@ public struct BadgeList: View {
 
     public var body: some View {
         if isEmpty == false {
-            HStack(alignment: .firstTextBaseline, spacing: Self.spacing) {
+            HStack(alignment: alignment, spacing: .xSmall) {
                 badgeOrEmptySpace
                     .foregroundColor(.init(style.iconColor))
                     .padding(.xxSmall)
@@ -38,8 +36,8 @@ public struct BadgeList: View {
 
     @ViewBuilder var badgeOrEmptySpace: some View {
         if iconContent.isEmpty {
-            Icon(content: .grid, size: .small)
-                .opacity(0)
+            Color.clear
+                .frame(width: .medium, height: .medium)
         } else {
             Icon(content: iconContent, size: .small)
         }
@@ -52,12 +50,12 @@ public struct BadgeList: View {
         }
     }
 
-    var isEmpty: Bool {
-        label.isEmpty && iconContent.isEmpty
+    var alignment: VerticalAlignment {
+        iconContent.isEmpty ? .top : .firstTextBaseline
     }
 
-    var textLeadingPadding: CGFloat {
-        iconContent.isEmpty ? (Icon.Size.small.value + Self.spacing) : 0
+    var isEmpty: Bool {
+        label.isEmpty && iconContent.isEmpty
     }
 }
 
@@ -128,7 +126,7 @@ public extension BadgeList {
         }
     }
 
-    enum Size {
+    enum Size: Equatable {
         case small
         case normal
         case custom(_ size: Text.Size)
@@ -152,11 +150,10 @@ struct BadgeListPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            standaloneSmallSecondary
+            smallSecondary
             statuses
             mix
         }
-        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -166,11 +163,13 @@ struct BadgeListPreviews: PreviewProvider {
             BadgeList()   // EmptyView
             BadgeList("") // EmptyView
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    static var standaloneSmallSecondary: some View {
+    static var smallSecondary: some View {
         BadgeList("Neutral BadgeList", icon: .grid, labelColor: .secondary, size: .small)
+            .padding(.medium)
             .previewDisplayName()
     }
 
@@ -191,6 +190,7 @@ struct BadgeListPreviews: PreviewProvider {
                 BadgeList(label, icon: .alertCircle, style: .status(.critical), labelColor: .secondary, size: .small)
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -201,11 +201,7 @@ struct BadgeListPreviews: PreviewProvider {
             BadgeList("This is simple <ref>BadgeList</ref> item with custom image", icon: .image(.orbit(.facebook)), style: .status(.success))
             BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color", labelColor: .custom(.blueDark))
         }
+        .padding(.medium)
         .previewDisplayName()
-    }
-
-    static var snapshot: some View {
-        statuses
-            .padding(.medium)
     }
 }

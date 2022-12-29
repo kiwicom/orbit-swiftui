@@ -175,8 +175,8 @@ struct TabsPreviews: PreviewProvider {
             equalMultiline
             equalSingleline
             interactive
+            snapshot
         }
-        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -189,6 +189,7 @@ struct TabsPreviews: PreviewProvider {
                 Tab("Four")
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -199,6 +200,7 @@ struct TabsPreviews: PreviewProvider {
                 Tab("Two", style: .default)
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -210,10 +212,11 @@ struct TabsPreviews: PreviewProvider {
             }
         }
         .measured()
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    @ViewBuilder static var intrinsicMultiline: some View {
+    static var intrinsicMultiline: some View {
         StateWrapper(initialState: 1) { index in
             Tabs(selectedIndex: index, distribution: .intrinsic) {
                 Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
@@ -221,10 +224,11 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    @ViewBuilder static var intrinsicSingleline: some View {
+    static var intrinsicSingleline: some View {
         StateWrapper(initialState: 1) { index in
             Tabs(selectedIndex: index, distribution: .intrinsic, lineLimit: 1) {
                 Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
@@ -232,10 +236,11 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All")
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    @ViewBuilder static var equalMultiline: some View {
+    static var equalMultiline: some View {
         StateWrapper(initialState: 1) { index in
             Tabs(selectedIndex: index) {
                 Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
@@ -243,10 +248,11 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    @ViewBuilder static var equalSingleline: some View {
+    static var equalSingleline: some View {
         StateWrapper(initialState: 2) { index in
             Tabs(selectedIndex: index, lineLimit: 1) {
                 Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
@@ -254,6 +260,7 @@ struct TabsPreviews: PreviewProvider {
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -272,11 +279,12 @@ struct TabsPreviews: PreviewProvider {
                 }
             }
         }
-        .previewDisplayName("Live Preview")
+        .padding(.medium)
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
-        VStack(spacing: .xLarge) {
+        VStack(spacing: -.medium) {
             standaloneIntrinsic
             standalone
             intrinsicMultiline
@@ -284,6 +292,6 @@ struct TabsPreviews: PreviewProvider {
             equalMultiline
             equalSingleline
         }
-        .padding(.medium)
+        .previewDisplayName()
     }
 }

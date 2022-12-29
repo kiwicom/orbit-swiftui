@@ -61,7 +61,7 @@ public struct ToastContent: View {
     let progress: CGFloat
     
     public var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+        HStack(alignment: .top, spacing: .xSmall) {
             Icon(content: iconContent)
             Text(description, color: nil)
             Spacer(minLength: 0)

@@ -28,7 +28,7 @@ public enum ListChoiceDisclosure: Equatable {
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct ListChoice<HeaderContent: View, Content: View>: View {
 
-    public let verticalPadding: CGFloat = .small + 1/3   // Results in ±45 height at normal text size
+    public let verticalPadding: CGFloat = .small + 0.5 // = 45 height @ normal size
 
     @Environment(\.idealSize) var idealSize
 
@@ -70,6 +70,9 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 content
             }
 
+            TextStrut(.normal)
+                .padding(.vertical, verticalPadding)
+
             disclosureView
                 .padding(.horizontal, .medium)
                 .padding(.vertical, .small)
@@ -89,9 +92,6 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                     Spacer(minLength: 0)
                 }
 
-                TextStrut(.large)
-                    .padding(.vertical, verticalPadding)
-
                 headerContent
                     .padding(.leading, isHeaderEmpty ? .medium : 0)
                     .padding(.trailing, disclosure == .none ? .medium : 0)
@@ -102,13 +102,13 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     
     @ViewBuilder var headerTexts: some View {
         if isHeaderEmpty == false {
-            HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+            HStack(alignment: .top, spacing: .xSmall) {
                 Icon(content: iconContent)
                     .foregroundColor(.inkDark)
                     .accessibility(.listChoiceIcon)
                 
                 if isHeaderTextEmpty == false {
-                    VStack(alignment: .labelTextLeading, spacing: .xxxSmall) {
+                    VStack(alignment: .leading, spacing: .xxxSmall) {
                         Text(title, weight: .medium)
                             .accessibility(.listChoiceTitle)
                         Text(description, size: .small, color: .inkNormal)

@@ -4,6 +4,7 @@ import XCTest
 class TileTests: SnapshotTestCase {
 
     func testTiles() {
-        assert(TilePreviews.snapshot)
+        assert(TilePreviews.tiles)
+        assert(TilePreviews.sizing)
     }
 }

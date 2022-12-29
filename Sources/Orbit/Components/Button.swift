@@ -27,23 +27,20 @@ public struct Button: View {
                         Spacer(minLength: 0)
                     }
 
-                    HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-                        Icon(content: iconContent, size: iconSize)
+                    HStack(spacing: .xSmall) {
+                        Icon(content: iconContent, size: size.textSize.iconSize)
                             .foregroundColor(style.foregroundColor)
-                        text
-                            .padding(.vertical, size.verticalPadding)
+                        textWrapper
                     }
 
                     if idealSize.horizontal == nil {
                         Spacer(minLength: 0)
                     }
 
-                    TextStrut(size.textSize)
-                        .padding(.vertical, size.verticalPadding)
-
-                    Icon(content: disclosureIconContent, size: iconSize)
+                    Icon(content: disclosureIconContent, size: size.textSize.iconSize)
                         .foregroundColor(style.foregroundColor)
                 }
+                .padding(.vertical, size.verticalPadding)
                 .padding(.leading, leadingPadding)
                 .padding(.trailing, trailingPadding)
             }
@@ -52,34 +49,28 @@ public struct Button: View {
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
     }
 
-    @ViewBuilder var text: some View {
+    @ViewBuilder var textWrapper: some View {
         if #available(iOS 14.0, *) {
-            Text(
-                label,
-                size: size.textSize,
-                color: .custom(style.foregroundUIColor),
-                weight: .medium,
-                linkColor: .custom(style.foregroundUIColor)
-            )
+            text
         } else {
-            Text(
-                label,
-                size: size.textSize,
-                color: .custom(style.foregroundUIColor),
-                weight: .medium,
-                linkColor: .custom(style.foregroundUIColor)
-            )
-            // Prevents text value animation issue due to different iOS13 behavior
-            .animation(nil)
+            text
+                // Prevents text value animation issue due to different iOS13 behavior
+                .animation(nil)
         }
+    }
+
+    @ViewBuilder var text: some View {
+        Text(
+            label,
+            size: size.textSize,
+            color: .custom(style.foregroundUIColor),
+            weight: .medium,
+            linkColor: .custom(style.foregroundUIColor)
+        )
     }
 
     var isIconOnly: Bool {
         iconContent.isEmpty == false && label.isEmpty
-    }
-    
-    var iconSize: Icon.Size {
-        size == .small ? .small : .normal
     }
 
     var leadingPadding: CGFloat {
@@ -246,8 +237,8 @@ extension Button {
 
         public var verticalPadding: CGFloat {
             switch self {
-                case .default:      return .small + 1          // Results in ±44 height at normal text size
-                case .small:        return .xSmall + 1/3       // Results in ±32 height at normal text size
+                case .default:      return .small   // = 44 height @ normal size
+                case .small:        return .xSmall  // = 32 height @ normal size
             }
         }
     }
@@ -330,8 +321,10 @@ struct ButtonPreviews: PreviewProvider {
             Group {
                 Button("Button")
                 Button("Button", icon: .grid)
+                Button(.grid)
                 Button("Button small", size: .small)
                 Button("Button small", icon: .grid, size: .small)
+                Button(.grid, size: .small)
             }
             .measured()
         }

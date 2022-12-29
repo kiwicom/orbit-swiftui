@@ -5,5 +5,6 @@ class ButtonTests: SnapshotTestCase {
 
     func testButtons() {
         assert(ButtonPreviews.snapshot)
+        assert(ButtonPreviews.sizing)
     }
 }

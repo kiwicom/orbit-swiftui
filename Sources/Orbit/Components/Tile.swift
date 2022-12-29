@@ -57,7 +57,7 @@ public struct Tile<Content: View>: View {
     @Environment(\.isTileSeparatorVisible) var isTileSeparatorVisible
     @Environment(\.idealSize) var idealSize
 
-    public let verticalTextPadding: CGFloat = .medium - 1/6    // Results in ±52 height at normal text size
+    public let verticalTextPadding: CGFloat = 14 // = 52 height @ normal size
 
     let title: String
     let description: String
@@ -99,6 +99,9 @@ public struct Tile<Content: View>: View {
                 Spacer(minLength: 0)
             }
 
+            TextStrut(.large)
+                .padding(.vertical, verticalTextPadding)
+
             disclosureIcon
                 .padding(.trailing, .medium)
         }
@@ -108,22 +111,18 @@ public struct Tile<Content: View>: View {
     
     @ViewBuilder var header: some View {
         if isHeaderEmpty == false {
-            HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Icon(content: iconContent, size: .heading(titleStyle))
+            HStack(alignment: .top, spacing: 0) {
+                Icon(content: iconContent, size: titleStyle.iconSize)
                     .foregroundColor(.inkDark)
                     .padding(.trailing, .xSmall)
                     .accessibility(.tileIcon)
 
-                VStack(alignment: .labelTextLeading, spacing: .xxSmall) {
+                VStack(alignment: .leading, spacing: .xxSmall) {
                     Heading(title, style: titleStyle)
                         .accessibility(.tileTitle)
                     Text(description, color: .inkNormal)
                         .accessibility(.tileDescription)
                 }
-                .padding(.vertical, verticalTextPadding)
-
-                TextStrut(.large)
-                    .padding(.vertical, verticalTextPadding)
 
                 if idealSize.horizontal == nil {
                     Spacer(minLength: 0)
@@ -131,6 +130,7 @@ public struct Tile<Content: View>: View {
 
                 inactiveButtonLink
             }
+            .padding(.vertical, verticalTextPadding)
             .padding(.horizontal, .medium)
         }
     }
@@ -300,18 +300,19 @@ struct TilePreviews: PreviewProvider {
             mix
             customContentMix
         }
-        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         Tile(title, description: description, icon: .grid)
+            .padding(.medium)
             .previewDisplayName()
     }
 
     static var intrinsic: some View {
         Tile(title, description: description, icon: .grid)
             .idealSize()
+            .padding(.medium)
             .previewDisplayName()
     }
 
@@ -327,6 +328,7 @@ struct TilePreviews: PreviewProvider {
             }
             .measured()
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -340,6 +342,7 @@ struct TilePreviews: PreviewProvider {
                 contentPlaceholder
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -354,6 +357,7 @@ struct TilePreviews: PreviewProvider {
             Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .critical))
             Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid))
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -378,11 +382,7 @@ struct TilePreviews: PreviewProvider {
                 showBorder: false
             )
         }
+        .padding(.medium)
         .previewDisplayName()
-    }
-
-    static var snapshot: some View {
-        tiles
-            .padding(.medium)
     }
 }

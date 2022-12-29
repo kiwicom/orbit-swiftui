@@ -37,9 +37,7 @@ public struct Select: View {
                     action()
                 },
                 label: {
-                    Text(value ?? placeholder, color: .none)
-                        .foregroundColor(textColor)
-                        .accessibility(.selectValue)
+                    buttonLabel
                 }
             )
             .buttonStyle(
@@ -58,6 +56,21 @@ public struct Select: View {
         .accessibility(value: .init(value ?? ""))
         .accessibility(hint: .init(messageDescription.isEmpty ? placeholder : messageDescription))
         .accessibility(addTraits: .isButton)
+    }
+
+    @ViewBuilder var buttonLabel: some View {
+        if inputLabel.isEmpty {
+            Color.clear
+                .frame(height: Text.Size.normal.lineHeight)
+        } else {
+            Text(inputLabel, color: .none)
+                .foregroundColor(textColor)
+                .accessibility(.selectValue)
+        }
+    }
+
+    var inputLabel: String {
+        value ?? placeholder
     }
 
     var textColor: Color {
@@ -127,18 +140,19 @@ struct SelectPreviews: PreviewProvider {
             styles
             mix
         }
-        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         Select(InputFieldPreviews.label, prefix: .grid, value: InputFieldPreviews.value)
+            .padding(.medium)
             .previewDisplayName()
     }
 
     static var intrinsic: some View {
         Select("Intrinsic", prefix: .grid, value: InputFieldPreviews.value)
             .idealSize()
+            .padding(.medium)
             .previewDisplayName()
     }
 
@@ -166,6 +180,7 @@ struct SelectPreviews: PreviewProvider {
             select(value: InputFieldPreviews.value, message: .help(InputFieldPreviews.helpMessage))
             select(value: InputFieldPreviews.value, message: .error(InputFieldPreviews.errorMessage))
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -176,6 +191,8 @@ struct SelectPreviews: PreviewProvider {
     @ViewBuilder static var mix: some View {
         VStack(spacing: .medium) {
             Group {
+                Select("No Value", value: "", suffix: .none)
+                Select("No Suffix", value: "Value", suffix: .none)
                 Select("Label", value: "Value")
                 Select("", prefix: .grid, value: "Value")
                 Select("", prefix: .airplane, value: nil, placeholder: "Please select")
@@ -222,21 +239,8 @@ struct SelectPreviews: PreviewProvider {
                 )
             }
         }
+        .padding(.medium)
         .previewDisplayName()
-    }
-
-    static var snapshot: some View {
-        styles
-            .padding(.medium)
-    }
-}
-
-struct SelectLivePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            live
-        }
     }
 
     static var live: some View {
@@ -275,7 +279,7 @@ struct SelectLivePreviews: PreviewProvider {
                 .navigationBarTitle("Live Preview")
             }
             .navigationViewStyle(.stack)
-            .previewDisplayName("Live Preview")
         }
+        .previewDisplayName()
     }
 }

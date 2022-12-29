@@ -19,43 +19,29 @@ public struct ButtonLink: View {
                     action()
                 },
                 label: {
-                    HStack(spacing: 0) {
-                        HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-                            Icon(content: iconContent, size: iconSize)
+                    HStack(spacing: .xSmall) {
+                        Icon(content: iconContent)
 
-                            Text(
-                                label,
-                                size: .normal,
-                                color: nil,
-                                weight: .medium,
-                                accentColor: style.color.normal,
-                                linkColor: .custom(style.color.normal)
-                            )
-                            .padding(.vertical, verticalPadding)
-                        }
-
-                        TextStrut(.normal)
-                            .padding(.vertical, verticalPadding)
+                        Text(
+                            label,
+                            color: nil,
+                            weight: .medium,
+                            accentColor: style.color.normal,
+                            linkColor: .custom(style.color.normal)
+                        )
                     }
+                    .padding(.vertical, verticalPadding)
                 }
             )
             .buttonStyle(OrbitStyle(style: style, size: size))
-        }
-    }
-    
-    var iconSize: Icon.Size {
-        switch size {
-            case .default:          return .normal
-            case .button:           return .large
-            case .buttonSmall:      return .small
         }
     }
 
     var verticalPadding: CGFloat {
         switch size {
             case .default:              return 0
-            case .button:               return Button.Size.default.verticalPadding
-            case .buttonSmall:          return .xSmall - 1
+            case .button:               return .small   // = 44 height @ normal size
+            case .buttonSmall:          return 6        // = 32 height @ normal size
         }
     }
 }
@@ -152,15 +138,12 @@ struct ButtonLinkPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             sizing
-            custom
+            formatted
             iconOnly
             countryFlag
-
             styles
             statuses
-            sizes
         }
-        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -170,6 +153,7 @@ struct ButtonLinkPreviews: PreviewProvider {
             ButtonLink("") // EmptyView
             ButtonLink()   // EmptyView
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -186,6 +170,7 @@ struct ButtonLinkPreviews: PreviewProvider {
             .border(Color.cloudNormal)
             .measured()
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -202,6 +187,7 @@ struct ButtonLinkPreviews: PreviewProvider {
                 ButtonLink("ButtonLink Critical", style: .critical, icon: .alertCircle)
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
     
@@ -212,45 +198,30 @@ struct ButtonLinkPreviews: PreviewProvider {
             ButtonLink("ButtonLink Warning", style: .status(.warning), icon: .alert)
             ButtonLink("ButtonLink Critical", style: .status(.critical), icon: .alertCircle)
         }
-        .previewDisplayName()
-    }
-    
-    static var sizes: some View {
-        VStack(alignment: .leading, spacing: .small) {
-            ButtonLink("ButtonLink intrinsic size", icon: .baggageSet)
-                .border(Color.cloudNormal)
-            ButtonLink("ButtonLink small button size", icon: .baggageSet, size: .buttonSmall)
-                .border(Color.cloudNormal)
-            ButtonLink("ButtonLink button size", icon: .baggageSet, size: .button)
-                .border(Color.cloudNormal)
-        }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    @ViewBuilder static var custom: some View {
+    static var formatted: some View {
         ButtonLink(
             "Custom <u>formatted</u> <ref>ref</ref> <applink1>https://localhost</applink1>",
             style: .custom(colors: (normal: .blueDark, active: .blueNormal)),
             icon: .kiwicom
         )
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    @ViewBuilder static var iconOnly: some View {
+    static var iconOnly: some View {
         ButtonLink(icon: .kiwicom)
             .background(Color.blueLight)
-            .padding(.vertical)
-            .previewDisplayName()
-    }
-
-    @ViewBuilder static var countryFlag: some View {
-        ButtonLink("Flag", icon: .countryFlag("us"))
-            .padding(.vertical)
-            .previewDisplayName()
-    }
-
-    static var snapshot: some View {
-        styles
             .padding(.medium)
+            .previewDisplayName()
+    }
+
+    static var countryFlag: some View {
+        ButtonLink("Flag", icon: .countryFlag("us"))
+            .padding(.medium)
+            .previewDisplayName()
     }
 }

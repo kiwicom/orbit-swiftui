@@ -8,8 +8,7 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/badge/)
 public struct Badge: View {
 
-    public static let verticalPadding: CGFloat = 4 + 1/3 // Results in ±24 height at normal text size
-    public static let textSize: Text.Size = .small
+    @Environment(\.sizeCategory) var sizeCategory
 
     let label: String
     let iconContent: Icon.Content
@@ -17,24 +16,20 @@ public struct Badge: View {
 
     public var body: some View {
         if isEmpty == false {
-            HStack(spacing: 0) {
-                HStack(spacing: .xxSmall) {
-                    Icon(content: iconContent, size: .small)
+            HStack(spacing: .xxSmall) {
+                Icon(content: iconContent, size: .small)
 
-                    Text(
-                        label,
-                        size: Self.textSize,
-                        color: .none,
-                        weight: .medium,
-                        linkColor: .custom(style.labelColor)
-                    )
-                    .padding(.vertical, Self.verticalPadding)
-                }
-                .foregroundColor(Color(style.labelColor))
-
-                TextStrut(Self.textSize)
-                    .padding(.vertical, Self.verticalPadding)
+                Text(
+                    label,
+                    size: .small,
+                    color: nil,
+                    weight: .medium,
+                    linkColor: .custom(style.labelColor)
+                )
+                .frame(minWidth: minTextWidth)
             }
+            .foregroundColor(Color(style.labelColor))
+            .padding(.vertical, .xxSmall) // = 24 height @ normal size
             .padding(.horizontal, .xSmall)
             .background(
                 style.background
@@ -45,6 +40,10 @@ public struct Badge: View {
                     .strokeBorder(style.outlineColor, lineWidth: BorderWidth.thin)
             )
         }
+    }
+
+    var minTextWidth: CGFloat {
+        Text.Size.small.lineHeight * sizeCategory.ratio - .xSmall
     }
 
     var shape: some InsettableShape {
@@ -142,12 +141,10 @@ struct BadgePreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             sizing
-            
             statuses
             gradients
             mix
         }
-        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -157,6 +154,7 @@ struct BadgePreviews: PreviewProvider {
             Badge()    // EmptyView
             Badge("")  // EmptyView
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -170,6 +168,7 @@ struct BadgePreviews: PreviewProvider {
             }
             .measured()
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -192,6 +191,7 @@ struct BadgePreviews: PreviewProvider {
                 Badge("Very very very very very long badge")
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -201,6 +201,7 @@ struct BadgePreviews: PreviewProvider {
             gradientBadge(.bundleMedium)
             gradientBadge(.bundleTop)
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -231,12 +232,8 @@ struct BadgePreviews: PreviewProvider {
                 Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
             }
         }
+        .padding(.medium)
         .previewDisplayName()
-    }
-
-    static var snapshot: some View {
-        statuses
-            .padding(.medium)
     }
 
     static func badges(_ style: Badge.Style) -> some View {

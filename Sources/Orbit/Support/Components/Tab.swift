@@ -11,13 +11,11 @@ public struct Tab: View {
 
     public var body: some View {
         // FIXME: Convert to Button with .title4 style for a background touch feedback
-        HStack(spacing: 0) {
+        HStack(spacing: .xSmall) {
             Icon(content: iconContent)
-                .padding(.trailing, .xSmall)
             Text(label, color: nil, weight: .medium, alignment: .center)
-            TextStrut(.normal)
-                .padding(.vertical, 7)
         }
+        .padding(.vertical, 6) // = 32 height @ normal size
         .padding(.horizontal, .small)
         .contentShape(Rectangle())
         .anchorPreference(key: PreferenceKey.self, value: .bounds) {
@@ -90,13 +88,14 @@ struct TabPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             styles
+            sizing
             gradients
         }
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
-        Tab("Light", icon: .grid, style: .underlinedGradient(.bundleBasic))
+        Tab("Light", icon: .grid)
             .padding(.medium)
             .previewDisplayName()
     }
@@ -111,6 +110,14 @@ struct TabPreviews: PreviewProvider {
         }
         .padding(.medium)
         .previewDisplayName()
+    }
+
+    static var sizing: some View {
+        Tab("Tab")
+            .border(Color.cloudNormal)
+            .measured()
+            .padding(.medium)
+            .previewDisplayName()
     }
 
     static var gradients: some View {
