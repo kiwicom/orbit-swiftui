@@ -4,6 +4,7 @@ import XCTest
 class IconTests: SnapshotTestCase {
 
     func testIcons() {
-        assert(IconPreviews.snapshot)
+        assert(IconPreviews.sizes)
+        assert(IconPreviews.text)
     }
 }
