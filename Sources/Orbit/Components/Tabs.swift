@@ -169,6 +169,7 @@ struct TabsPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             standaloneIntrinsic
+            sizing
             intrinsicMultiline
             intrinsicSingleline
             equalMultiline
@@ -202,14 +203,13 @@ struct TabsPreviews: PreviewProvider {
     }
 
     static var sizing: some View {
-        VStack(spacing: .xLarge) {
-            standaloneIntrinsic
-            standalone
-            intrinsicMultiline
-            intrinsicSingleline
-            equalMultiline
-            equalSingleline
+        StateWrapper(initialState: 1) { index in
+            Tabs(selectedIndex: index, distribution: .intrinsic) {
+                Tab("One", style: .default)
+                Tab("Two", style: .default)
+            }
         }
+        .measured()
         .previewDisplayName()
     }
 
@@ -276,7 +276,14 @@ struct TabsPreviews: PreviewProvider {
     }
 
     static var snapshot: some View {
-        sizing
-            .padding(.medium)
+        VStack(spacing: .xLarge) {
+            standaloneIntrinsic
+            standalone
+            intrinsicMultiline
+            intrinsicSingleline
+            equalMultiline
+            equalSingleline
+        }
+        .padding(.medium)
     }
 }

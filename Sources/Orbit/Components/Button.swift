@@ -294,7 +294,7 @@ struct ButtonPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            standaloneCombinations
+            combinations
             sizing
 
             styles
@@ -311,7 +311,7 @@ struct ButtonPreviews: PreviewProvider {
             .previewDisplayName()
     }
 
-    static var standaloneCombinations: some View {
+    static var combinations: some View {
         VStack(spacing: .medium) {
             Button("Button", icon: .grid)
             Button("Button", icon: .grid, disclosureIcon: .grid)
@@ -327,27 +327,13 @@ struct ButtonPreviews: PreviewProvider {
 
     static var sizing: some View {
         VStack(spacing: .medium) {
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Button("Button height \(state.wrappedValue)")
-                }
+            Group {
+                Button("Button")
+                Button("Button", icon: .grid)
+                Button("Button small", size: .small)
+                Button("Button small", icon: .grid, size: .small)
             }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Button("Button height \(state.wrappedValue)", icon: .grid)
-                }
-            }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Button("Button small height \(state.wrappedValue)", size: .small)
-                }
-            }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Button("Button small height \(state.wrappedValue)", icon: .grid, size: .small)
-                        .idealSize()
-                }
-            }
+            .measured()
         }
         .previewDisplayName()
     }

@@ -319,29 +319,15 @@ struct ChoiceTilePreviews: PreviewProvider {
 
     static var sizing: some View {
         VStack(spacing: .medium) {
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    ChoiceTile("Height \(state.wrappedValue)", description: description, icon: .grid)
-                }
+            Group {
+                ChoiceTile("ChoiceTile", description: description, icon: .grid)
+                ChoiceTile("ChoiceTile", icon: .grid)
+                ChoiceTile("ChoiceTile")
+                ChoiceTile(icon: .grid)
+                ChoiceTile(description: "ChoiceTile", icon: .grid)
             }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    ChoiceTile("Height \(state.wrappedValue)", icon: .grid)
-                }
-            }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    ChoiceTile(description: "Height \(state.wrappedValue)", icon: .grid)
-                }
-            }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    ChoiceTile("Height \(state.wrappedValue)")
-                }
-            }
+            .measured()
         }
-        .fixedSize(horizontal: false, vertical: true)
-        .background(Color.whiteNormal)
         .previewDisplayName()
     }
 

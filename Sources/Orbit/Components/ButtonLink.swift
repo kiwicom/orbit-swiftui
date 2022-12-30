@@ -176,38 +176,15 @@ struct ButtonLinkPreviews: PreviewProvider {
     static var sizing: some View {
         VStack(alignment: .leading, spacing: .xSmall) {
             Group {
-                StateWrapper(initialState: CGFloat(0)) { state in
-                    ContentHeightReader(height: state) {
-                        ButtonLink("ButtonLink height \(state.wrappedValue)")
-                    }
-                }
-                StateWrapper(initialState: CGFloat(0)) { state in
-                    ContentHeightReader(height: state) {
-                        ButtonLink("ButtonLink height \(state.wrappedValue)", icon: .grid)
-                    }
-                }
-                StateWrapper(initialState: CGFloat(0)) { state in
-                    ContentHeightReader(height: state) {
-                        ButtonLink("ButtonLink button height \(state.wrappedValue)", size: .button)
-                    }
-                }
-                StateWrapper(initialState: CGFloat(0)) { state in
-                    ContentHeightReader(height: state) {
-                        ButtonLink("ButtonLink button height \(state.wrappedValue)", icon: .grid, size: .button)
-                    }
-                }
-                StateWrapper(initialState: CGFloat(0)) { state in
-                    ContentHeightReader(height: state) {
-                        ButtonLink("ButtonLink small height \(state.wrappedValue)", size: .buttonSmall)
-                    }
-                }
-                StateWrapper(initialState: CGFloat(0)) { state in
-                    ContentHeightReader(height: state) {
-                        ButtonLink("ButtonLink small height \(state.wrappedValue)", icon: .grid, size: .buttonSmall)
-                    }
-                }
+                ButtonLink("ButtonLink intrinsic")
+                ButtonLink("ButtonLink intrinsic", icon: .grid)
+                ButtonLink("ButtonLink button", size: .button)
+                ButtonLink("ButtonLink button", icon: .grid, size: .button)
+                ButtonLink("ButtonLink small button", size: .buttonSmall)
+                ButtonLink("ButtonLink small button", icon: .grid, size: .buttonSmall)
             }
             .border(Color.cloudNormal)
+            .measured()
         }
         .previewDisplayName()
     }

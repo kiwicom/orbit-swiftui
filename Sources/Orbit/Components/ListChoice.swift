@@ -444,31 +444,18 @@ struct ListChoicePreviews: PreviewProvider {
     static var sizing: some View {
         VStack(spacing: .medium) {
             Group {
-                StateWrapper(initialState: CGFloat(0)) { state in
-                    ContentHeightReader(height: state) {
-                        ListChoice("Height \(state.wrappedValue)", description: description, icon: .grid, value: value)
-                    }
-                }
-                StateWrapper(initialState: CGFloat(0)) { state in
-                    ContentHeightReader(height: state) {
-                        ListChoice("Height \(state.wrappedValue)", icon: .grid, value: value)
-                    }
-                }
-                StateWrapper(initialState: CGFloat(0)) { state in
-                    ContentHeightReader(height: state) {
-                        ListChoice(description: "Height \(state.wrappedValue)", icon: .grid)
-                    }
-                }
-                StateWrapper(initialState: CGFloat(0)) { state in
-                    ContentHeightReader(height: state) {
-                        ListChoice("Height \(state.wrappedValue)")
-                    }
-                }
+                ListChoice("ListChoice", description: description, icon: .grid, value: value)
+                ListChoice("ListChoice", icon: .grid, value: value)
+                ListChoice(icon: .grid)
+                ListChoice("ListChoice", disclosure: .none)
+                ListChoice(description: "ListChoice", disclosure: .none)
+                ListChoice("ListChoice")
             }
             .border(Color.cloudLight)
+            .measured()
         }
         .fixedSize(horizontal: false, vertical: true)
-        .background(Color.whiteNormal)
+        .padding(.medium)
         .previewDisplayName()
     }
     

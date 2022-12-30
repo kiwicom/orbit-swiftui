@@ -9,6 +9,23 @@ struct SecureTextFieldStyle {
     let state: InputState
 }
 
+private class InsetTextField: UITextField {
+
+    let insets = UIEdgeInsets(top: .small, left: 0, bottom: .small, right: 0)
+
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
+        bounds.inset(by: insets)
+    }
+
+    override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
+        bounds.inset(by: insets)
+    }
+
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        bounds.inset(by: insets)
+    }
+}
+
 struct SecureTextField: UIViewRepresentable {
     typealias UIViewType = UITextField
 
@@ -23,7 +40,7 @@ struct SecureTextField: UIViewRepresentable {
     var onCommit = {}
 
     func makeUIView(context: Context) -> UITextField {
-        let textField = UITextField()
+        let textField = InsetTextField()
         textField.autocorrectionType = .no
         textField.delegate = context.coordinator
 
@@ -35,6 +52,7 @@ struct SecureTextField: UIViewRepresentable {
         textField.textColor = isEnabled ? style.state.textUIColor : .cloudDarkActive
         textField.clearsOnBeginEditing = false
         textField.isEnabled = isEnabled
+        textField.adjustsFontForContentSizeCategory = true
         textField.setContentHuggingPriority(.defaultHigh, for: .vertical)
         textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 

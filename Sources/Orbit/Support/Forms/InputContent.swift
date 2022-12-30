@@ -116,16 +116,47 @@ struct InputContentPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            InputContent(prefix: .visa, suffix: .checkCircle, state: .default) {
-                contentPlaceholder
-            }
-            .padding(.medium)
-
-            InputContent(prefix: .visa, suffix: .checkCircle, state: .default, message: .error("", icon: .alertCircle)) {
-                contentPlaceholder
-            }
-            .padding(.medium)
+            standalone
+            sizing
+            custom
         }
         .previewLayout(.sizeThatFits)
+    }
+
+    static var standalone: some View {
+        InputContent(prefix: .visa, suffix: .checkCircle, state: .default) {
+            EmptyView()
+        }
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
+    static var sizing: some View {
+        VStack {
+            Group {
+                InputContent(prefix: .visa, suffix: .checkCircle, state: .default) {
+                    Text("Height")
+                }
+
+                InputContent(state: .default) {
+                    Text("Height")
+                }
+
+                InputContent(state: .default) {
+                    EmptyView()
+                }
+            }
+            .measured()
+        }
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
+    static var custom: some View {
+        InputContent(prefix: .visa, suffix: .checkCircle, state: .default, message: .error("", icon: .alertCircle)) {
+            contentPlaceholder
+        }
+        .padding(.medium)
+        .previewDisplayName()
     }
 }

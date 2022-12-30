@@ -317,28 +317,16 @@ struct TilePreviews: PreviewProvider {
 
     static var sizing: some View {
         VStack(spacing: .medium) {
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Tile("Height \(state.wrappedValue)", description: description, icon: .grid)
-                }
+            Group {
+                Tile("Tile", description: description, icon: .grid)
+                Tile("Tile", icon: .grid)
+                Tile(icon: .grid)
+                Tile(description: "Tile", icon: .grid)
+                Tile(description: "Tile", disclosure: .none)
+                Tile("Tile")
             }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Tile("Height \(state.wrappedValue)", icon: .grid)
-                }
-            }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Tile(description: "Height \(state.wrappedValue)", icon: .grid)
-                }
-            }
-            StateWrapper(initialState: CGFloat(0)) { state in
-                ContentHeightReader(height: state) {
-                    Tile("Height \(state.wrappedValue)")
-                }
-            }
+            .measured()
         }
-        .fixedSize(horizontal: false, vertical: true)
         .previewDisplayName()
     }
 
