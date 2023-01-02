@@ -61,10 +61,6 @@ struct TextConcatenationPreviews: PreviewProvider {
 
     static var snapshot: some View {
         VStack(alignment: .leading, spacing: .xSmall) {
-            concatenatedText("Display Title", style: .display)
-            concatenatedText("Display Subtitle", style: .displaySubtitle)
-            Separator()
-                .padding(.vertical, .small)
             concatenatedText("Title 1", style: .title1)
             concatenatedText("Title 2", style: .title2)
             concatenatedText("Title 3", style: .title3)

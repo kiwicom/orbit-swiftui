@@ -102,10 +102,6 @@ public extension Heading {
     }
 
     enum Style {
-        /// 40 pts.
-        case display
-        /// 22 pts.
-        case displaySubtitle
         /// 28 pts.
         case title1
         /// 22 pts.
@@ -122,8 +118,6 @@ public extension Heading {
         /// Font size.
         public var size: CGFloat {
             switch self {
-                case .display:          return 40
-                case .displaySubtitle:  return 22
                 case .title1:           return 28
                 case .title2:           return 22
                 case .title3:           return 18
@@ -135,8 +129,6 @@ public extension Heading {
 
         public var lineHeight: CGFloat {
             switch self {
-                case .display:          return 50
-                case .displaySubtitle:  return 28
                 case .title1:           return 32
                 case .title2:           return 28
                 case .title3:           return 24
@@ -163,8 +155,8 @@ public extension Heading {
 
         public var weight: Font.Weight {
             switch self {
-                case .display, .title1, .title4, .title5, .title6:      return .bold
-                case .displaySubtitle, .title2, .title3:                return .medium
+                case .title1, .title4, .title5, .title6:    return .bold
+                case .title2, .title3:                      return .medium
             }
         }
     }
@@ -213,10 +205,6 @@ struct HeadingPreviews: PreviewProvider {
     
     static var formatted: some View {
         VStack(alignment: .leading, spacing: .xSmall) {
-            formattedHeading("<ref><u>Display title</u></ref> with a very large and <strong>multiline</strong> content", style: .display)
-            formattedHeading("<ref><u>Display subtitle</u></ref> with a very large and <strong>multiline</strong> content", style: .displaySubtitle)
-            Separator()
-                .padding(.vertical, .small)
             formattedHeading("<ref><u>Title 1</u></ref> with a very large and <strong>multiline</strong> content", style: .title1)
             formattedHeading("<ref><u>Title 2</u></ref> with a very very large and <strong>multiline</strong> content", style: .title2)
             formattedHeading("<ref><u>Title 3</u></ref> with a very very very very large and <strong>multiline</strong> content", style: .title3)

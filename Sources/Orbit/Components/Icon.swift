@@ -382,8 +382,6 @@ struct IconPreviews: PreviewProvider {
             headingStack(.title3, alignment: .firstTextBaseline)
             headingStack(.title2, alignment: .firstTextBaseline)
             headingStack(.title1, alignment: .firstTextBaseline)
-            headingStack(.displaySubtitle, alignment: .firstTextBaseline)
-            headingStack(.display, alignment: .firstTextBaseline)
 
             Group {
                 headingStack(.title6, alignment: .top)
@@ -392,8 +390,6 @@ struct IconPreviews: PreviewProvider {
                 headingStack(.title3, alignment: .top)
                 headingStack(.title2, alignment: .top)
                 headingStack(.title1, alignment: .top)
-                headingStack(.displaySubtitle, alignment: .top)
-                headingStack(.display, alignment: .top)
             }
         }
         .padding(.medium)
