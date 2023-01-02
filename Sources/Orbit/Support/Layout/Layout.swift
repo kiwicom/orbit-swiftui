@@ -1,8 +1,9 @@
 import SwiftUI
 
 public enum Layout {
-    /// Default maximum readable width used for layout in regular width environment.
-    public static let readableMaxWidth: CGFloat = 672
+
+    /// Maximum readable width used for layout in regular width environment.
+    public static var readableMaxWidth: CGFloat = 672
 }
 
 public extension Alignment {
