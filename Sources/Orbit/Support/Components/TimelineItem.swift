@@ -9,7 +9,7 @@ import SwiftUI
 public struct TimelineItem<Footer: View>: View {
 
     @Environment(\.sizeCategory) var sizeCategory
-    @Environment(\.horizontalSizeClass) var horisontalSizeClass
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     let label: String
     let sublabel: String
@@ -18,14 +18,12 @@ public struct TimelineItem<Footer: View>: View {
     @ViewBuilder let footer: Footer
 
     public var body: some View {
-        HStack(alignment: (hasHeaderContent || hasDescription) ? .firstTextBaseline : .top, spacing: .small) {
-
+        HStack(alignment: alignment, spacing: .small) {
             TimelineIndicator(type: type)
             
-            VStack(alignment: .leading, spacing: .xSmall) {
-
-                headerWithAccessibilitySizeSupport
-                descriptionText
+            VStack(alignment: .leading, spacing: .xxSmall) {
+                header
+                Text(description, size: .normal, color: .custom(type.textColor))
                 footer
             }
         }
@@ -34,27 +32,25 @@ public struct TimelineItem<Footer: View>: View {
         }
     }
 
-    @ViewBuilder var headerWithAccessibilitySizeSupport: some View {
-        if horisontalSizeClass == .compact && sizeCategory.isAccessibilitySize {
+    @ViewBuilder var header: some View {
+        if horizontalSizeClass == .compact && sizeCategory.isAccessibilitySize {
             VStack(alignment: .leading, spacing: .xSmall) {
-                header
+                headerContent
             }
         } else {
-            HStack(spacing: .xSmall) {
-                header
+            HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+                headerContent
             }
         }
     }
 
-    @ViewBuilder var header: some View {
+    @ViewBuilder var headerContent: some View {
         Heading(label, style: .title5, color: .custom(type.textColor))
-
         Text(sublabel, size: .small, color: .custom(type.textColor))
-            .padding(.leading, sizeCategory.isAccessibilitySize ? .xSmall : 0)
     }
 
-    @ViewBuilder var descriptionText: some View {
-        Text(description, size: .normal, color: .custom(type.textColor))
+    var alignment: VerticalAlignment {
+        hasHeaderContent || hasDescription ? .firstTextBaseline : .top
     }
 
     var hasHeaderContent: Bool {

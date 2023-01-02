@@ -16,7 +16,6 @@ Supporting types and components under development.
 
 - ``ContentHeightReader``
 - ``SingleAxisGeometryReader``
-- ``Strut``
 - ``TextStrut``
 
 ### Xcode previews support
@@ -45,7 +44,6 @@ Supporting types and components under development.
 - ``FieldWrapper``
 - ``InputState``
 - ``KeyValueField``
-- ``Label``
 - ``LazyVStack``
 - ``Message``
 - ``NavigationButton``

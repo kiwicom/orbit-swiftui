@@ -26,7 +26,6 @@ public struct ChoiceTile<Content: View>: View {
     @Environment(\.idealSize) var idealSize
 
     public let padding: CGFloat = .small
-    public let verticalTextPadding: CGFloat = .xxSmall - 1/6    // Results in ±52 height at normal text size
 
     let title: String
     let description: String
@@ -50,15 +49,10 @@ public struct ChoiceTile<Content: View>: View {
                 action()
             },
             label: {
-                HStack(spacing: 0) {
-                    TextStrut(.large)
-                        .padding(.vertical, verticalTextPadding)
-
-                    VStack(alignment: .leading, spacing: padding) {
-                        header
-                        content
-                        messageView
-                    }
+                VStack(alignment: .leading, spacing: padding) {
+                    header
+                    content
+                    messageView
                 }
                 .padding(.top, badgeOverlay.isEmpty ? 0 : .small)
                 .overlay(indicatorOverlay, alignment: indicatorAlignment)
@@ -80,9 +74,8 @@ public struct ChoiceTile<Content: View>: View {
         if isHeaderContentEmpty == false {
             switch alignment {
                 case .default:
-                    HStack(alignment: .firstTextBaseline, spacing: 0) {
-                        
-                        Icon(content: iconContent, size: .heading(titleStyle))
+                    HStack(alignment: .top, spacing: 0) {
+                        Icon(content: iconContent, size: titleStyle.iconSize)
                             .foregroundColor(.inkDark)
                             .padding(.trailing, .xSmall)
                             .accessibility(.choiceTileIcon)
@@ -103,10 +96,11 @@ public struct ChoiceTile<Content: View>: View {
                             .padding(.leading, .xSmall)
                             .accessibility(.choiceTileBadge)
                     }
+                    .padding(.vertical, .xxxSmall) // = 52 height @ normal size
                 case .center:
                     VStack(spacing: .xxSmall) {
                         if illustration == .none {
-                            Icon(content: iconContent, size: .heading(titleStyle))
+                            Icon(content: iconContent, size: titleStyle.iconSize)
                                 .padding(.bottom, .xxSmall)
                         } else {
                             Illustration(illustration, layout: .resizeable)
@@ -295,12 +289,10 @@ struct ChoiceTilePreviews: PreviewProvider {
             standaloneCentered
             sizing
             intrinsic
-
             styles
             stylesCentered
             mix
         }
-        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -314,6 +306,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         ) {
             contentPlaceholder
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -328,6 +321,7 @@ struct ChoiceTilePreviews: PreviewProvider {
             }
             .measured()
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -343,6 +337,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         ) {
             contentPlaceholder
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -351,6 +346,7 @@ struct ChoiceTilePreviews: PreviewProvider {
             intrinsicContentPlaceholder
         }
         .idealSize()
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -358,6 +354,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         VStack(spacing: .medium) {
             content
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -365,6 +362,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         VStack(spacing: .medium) {
             contentCentered
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -406,6 +404,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                 }
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -429,15 +428,6 @@ struct ChoiceTilePreviews: PreviewProvider {
         choiceTileCentered(titleStyle: .title3, showIllustration: false, isError: false, isSelected: true)
         choiceTileCentered(titleStyle: .title4, showIllustration: true, isError: true, isSelected: false)
         choiceTileCentered(titleStyle: .title4, showIllustration: true, isError: true, isSelected: true)
-    }
-
-    static var snapshot: some View {
-        VStack(spacing: .medium) {
-            standalone
-            Separator()
-            standaloneCentered
-        }
-        .padding(.medium)
     }
 
     static func choiceTile(titleStyle: Heading.Style, showHeader: Bool, isError: Bool, isSelected: Bool) -> some View {

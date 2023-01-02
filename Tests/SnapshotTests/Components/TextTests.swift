@@ -4,6 +4,7 @@ import XCTest
 class TextTests: SnapshotTestCase {
 
     func testTexts() {
-        assert(TextPreviews.snapshot)
+        assert(TextPreviews.formatting)
+        assert(TextPreviews.lineHeight)
     }
 }

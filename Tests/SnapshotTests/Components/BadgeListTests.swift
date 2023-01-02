@@ -4,6 +4,6 @@ import XCTest
 class BadgeListTests: SnapshotTestCase {
 
     func testBadgeLists() {
-        assert(BadgeListPreviews.snapshot)
+        assert(BadgeListPreviews.statuses)
     }
 }

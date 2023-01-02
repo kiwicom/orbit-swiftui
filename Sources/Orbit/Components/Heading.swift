@@ -18,7 +18,10 @@ public struct Heading: View {
     public var body: some View {
         if content.isEmpty == false {
             text(sizeCategory: sizeCategory)
+                .lineSpacing(lineSpacing ?? 0)
                 .multilineTextAlignment(alignment)
+                .padding(.vertical, style.linePadding * sizeCategory.ratio)
+                .frame(minHeight: style.lineHeight * sizeCategory.ratio)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibility(addTraits: .isHeader)
         }
@@ -116,76 +119,46 @@ public extension Heading {
         /// 12 pts.
         case title6
 
+        /// Font size.
         public var size: CGFloat {
             switch self {
                 case .display:          return 40
                 case .displaySubtitle:  return 22
                 case .title1:           return 28
                 case .title2:           return 22
-                case .title3:           return Text.Size.xLarge.value
-                case .title4:           return Text.Size.large.value
-                case .title5:           return Text.Size.normal.value
-                case .title6:           return Text.Size.small.value
-            }
-        }
-
-        public var textStyle: Font.TextStyle {
-            switch self {
-                case .display:
-                    return .largeTitle
-                case .displaySubtitle:
-                    if #available(iOS 14.0, *) {
-                        return .title2
-                    } else {
-                        return .headline
-                    }
-                case .title1:
-                    return .title
-                case .title2:
-                    if #available(iOS 14.0, *) {
-                        return .title2
-                    } else {
-                        return .headline
-                    }
-                case .title3:
-                    if #available(iOS 14.0, *) {
-                        return .title3
-                    } else {
-                        return .callout
-                    }
-                case .title4:
-                    return .callout
-                case .title5:
-                    return .headline
-                case .title6:
-                    return .headline
+                case .title3:           return 18
+                case .title4:           return 16
+                case .title5:           return 14
+                case .title6:           return 12
             }
         }
 
         public var lineHeight: CGFloat {
             switch self {
-                case .display:          return 48
+                case .display:          return 50
                 case .displaySubtitle:  return 28
                 case .title1:           return 32
                 case .title2:           return 28
-                case .title3:           return Text.Size.large.lineHeight
-                case .title4:           return Text.Size.normal.lineHeight
-                case .title5:           return Text.Size.normal.lineHeight
-                case .title6:           return Text.Size.small.lineHeight
+                case .title3:           return 24
+                case .title4:           return 20
+                case .title5:           return 20
+                case .title6:           return 16
             }
         }
 
-        public var iconSize: CGFloat {
-            switch self {
-                case .display:          return 52
-                case .displaySubtitle:  return 30
-                case .title1:           return 38
-                case .title2:           return 30
-                case .title3:           return 26
-                case .title4:           return 22
-                case .title5:           return 20
-                case .title6:           return 18
-            }
+        /// Text height rounded to pixels.
+        public var height: CGFloat {
+            round(size * Font.fontSizeToHeightRatio * 3) / 3
+        }
+
+        /// Vertical padding needed to match line height.
+        public var linePadding: CGFloat {
+            (lineHeight - height) / 2
+        }
+
+        /// Icon size matching heading line height.
+        public var iconSize: Icon.Size {
+            .custom(lineHeight)
         }
 
         public var weight: Font.Weight {
@@ -213,11 +186,10 @@ struct HeadingPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            sizes
-            multiline
+            custom
+            formatted
             concatenated
         }
-        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
@@ -226,60 +198,55 @@ struct HeadingPreviews: PreviewProvider {
             Heading("Heading", style: .title1)
             Heading("", style: .title1) // EmptyView
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    static var sizes: some View {
-        VStack(alignment: .leading, spacing: .xSmall) {
-            heading("Display Title", style: .display)
-            heading("Display Subtitle", style: .displaySubtitle)
-            Separator()
-                .padding(.vertical, .small)
-            heading("Title 1", style: .title1)
-            heading("Title 2", style: .title2)
-            heading("Title 3", style: .title3)
-            heading("Title 4", style: .title4)
-            heading("Title 5", style: .title5)
-            heading("TITLE 6", style: .title6)
+    static var custom: some View {
+        VStack(alignment: .trailing, spacing: .xxLarge) {
+            Heading("Multiline\nlong heading", style: .title2, color: .custom(.blueDarkActive), lineSpacing: 20, alignment: .trailing, accentColor: .greenDark)
+            Heading("Multiline\n<ref>long</ref> heading", style: .title2, color: .custom(.blueDarkActive), lineSpacing: 20, alignment: .trailing, accentColor: .greenDark)
         }
+        .padding(.medium)
         .previewDisplayName()
     }
     
-    static var multiline: some View {
+    static var formatted: some View {
         VStack(alignment: .leading, spacing: .xSmall) {
-            heading("<ref><u>Display title</u></ref> with a very large and <strong>multiline</strong> content", style: .display)
-            heading("<ref><u>Display subtitle</u></ref> with a very large and <strong>multiline</strong> content", style: .displaySubtitle)
+            formattedHeading("<ref><u>Display title</u></ref> with a very large and <strong>multiline</strong> content", style: .display)
+            formattedHeading("<ref><u>Display subtitle</u></ref> with a very large and <strong>multiline</strong> content", style: .displaySubtitle)
             Separator()
                 .padding(.vertical, .small)
-            heading("<ref><u>Title 1</u></ref> with a very large and <strong>multiline</strong> content", style: .title1)
-            heading("<ref><u>Title 2</u></ref> with a very very large and <strong>multiline</strong> content", style: .title2)
-            heading("<ref><u>Title 3</u></ref> with a very very very very large and <strong>multiline</strong> content", style: .title3)
-            heading("<ref><u>Title 4</u></ref> with a very very very very large and <strong>multiline</strong> content", style: .title4)
-            heading("<ref><u>Title 5</u></ref> with a very very very very very large and <strong>multiline</strong> content", style: .title5, color: .custom(.blueDarker))
-            heading("<ref><u>TITLE 6</u></ref> WITH A VERY VERY VERY VERY VERY LARGE AND <strong>MULTILINE</strong> CONTENT", style: .title6, color: nil)
+            formattedHeading("<ref><u>Title 1</u></ref> with a very large and <strong>multiline</strong> content", style: .title1)
+            formattedHeading("<ref><u>Title 2</u></ref> with a very very large and <strong>multiline</strong> content", style: .title2)
+            formattedHeading("<ref><u>Title 3</u></ref> with a very very very very large and <strong>multiline</strong> content", style: .title3)
+            formattedHeading("<ref><u>Title 4</u></ref> with a very very very very large and <strong>multiline</strong> content", style: .title4)
+            formattedHeading("<ref><u>Title 5</u></ref> with a very very very very very large and <strong>multiline</strong> content", style: .title5, color: .custom(.blueDarker))
+            formattedHeading("<ref><u>TITLE 6</u></ref> WITH A VERY VERY VERY VERY VERY LARGE AND <strong>MULTILINE</strong> CONTENT", style: .title6, color: nil)
         }
         .foregroundColor(.inkNormal)
+        .padding(.medium)
         .previewDisplayName()
     }
 
     static var concatenated: some View {
         Group {
-            Heading("<ref><u>Title 4</u></ref> with <strong>multiline</strong>", style: .title4)
+            Icon(.grid)
+            +
+            Heading(" <ref><u>Title 4</u></ref> with <strong>multiline</strong>", style: .title4)
             +
             Heading(" <ref><u>Title 5</u></ref> with <strong>multiline</strong>", style: .title5, color: .custom(.greenDark), accentColor: .blueDarker)
             +
             Heading(" <ref><u>TITLE 6</u></ref> WITH <strong>MULTILINE</strong> CONTENT", style: .title6, color: nil)
+            +
+            Text(" and Text", color: nil)
         }
-        .foregroundColor(.inkNormal)
+        .foregroundColor(.inkDark)
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    static var snapshot: some View {
-        sizes
-            .padding(.medium)
-    }
-
-    @ViewBuilder static func heading(_ content: String, style: Heading.Style, color: Heading.Color? = .inkDark) -> some View {
+    static func formattedHeading(_ content: String, style: Heading.Style, color: Heading.Color? = .inkDark) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
             Heading(content, style: style, color: color, accentColor: .blueNormal)
             Spacer()

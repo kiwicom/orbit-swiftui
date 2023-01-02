@@ -8,6 +8,10 @@ import SwiftUI
 /// - [Orbit](https://orbit.kiwi/components/structure/list/)
 public struct ListItem: View {
 
+    public static let defaultSpacing: CGFloat = .xSmall
+
+    @Environment(\.sizeCategory) var sizeCategory
+
     let text: String
     let iconContent: Icon.Content
     let iconSize: Icon.Size?
@@ -17,20 +21,30 @@ public struct ListItem: View {
     let linkAction: TextLink.Action
 
     public var body: some View {
-        Label(
-            text,
-            icon: iconContent,
-            iconSize: iconSize,
-            style: .text(
-                size,
-                weight: style.weight,
-                color: nil,
-                linkColor: style.linkColor,
-                linkAction: linkAction
-            ),
-            spacing: spacing
-        )
+        HStack(alignment: alignment, spacing: spacing) {
+            icon
+                .frame(width: dynamicIconSize, height: dynamicIconSize)
+
+            Text(text, size: size, color: nil, weight: style.weight, linkColor: style.linkColor, linkAction: linkAction)
+        }
+        .padding(.leading, Self.defaultSpacing - spacing)
         .foregroundColor(style.textColor.value)
+    }
+
+    @ViewBuilder var icon: some View {
+        if iconContent.isEmpty {
+            Color.clear
+        } else {
+            Icon(content: iconContent, size: iconSize ?? size.iconSize)
+        }
+    }
+
+    var dynamicIconSize: CGFloat {
+        size.iconSize.value * sizeCategory.ratio
+    }
+
+    var alignment: VerticalAlignment {
+        iconContent.isEmpty ? .top : .firstTextBaseline
     }
 }
 
@@ -43,7 +57,7 @@ public extension ListItem {
         icon: Icon.Content,
         size: Text.Size = .normal,
         iconSize: Icon.Size? = nil,
-        spacing: CGFloat = .xxSmall,
+        spacing: CGFloat = .xSmall,
         style: ListItem.Style = .primary,
         linkAction: @escaping TextLink.Action = { _, _ in }
     ) {
@@ -60,7 +74,7 @@ public extension ListItem {
     init(
         _ text: String = "",
         size: Text.Size = .normal,
-        spacing: CGFloat = .xSmall,
+        spacing: CGFloat = .xxxSmall,
         style: ListItem.Style = .primary,
         linkAction: @escaping TextLink.Action = { _, _ in }
     ) {
@@ -68,7 +82,7 @@ public extension ListItem {
             text,
             icon: .circleSmall,
             size: size,
-            iconSize: .small,
+            iconSize: .custom(size.value),
             spacing: spacing,
             style: style,
             linkAction: linkAction
@@ -116,24 +130,9 @@ struct ListItemPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            snapshots
-            snapshotsLinks
-            snapshotsCustom
-            orbit
-
-            List {
-                ListItem(
-                    "ListItem",
-                    icon: .airplane,
-                    size: .small,
-                    style: .secondary
-                )
-                Text("Aligned multiline content")
-                Text("Aligned multiline content", size: .large)
-            }
-            .frame(width: 130)
-            .padding()
-            .previewDisplayName("Text Baseline alignment")
+            sizes
+            links
+            mix
         }
         .previewLayout(.sizeThatFits)
     }
@@ -143,58 +142,41 @@ struct ListItemPreviews: PreviewProvider {
             .previewDisplayName()
     }
 
-    static var snapshots: some View {
+    static var sizes: some View {
         List(spacing: .medium) {
+            ListItem("ListItem - small", size: .small, style: .primary)
+            ListItem("ListItem - small, secondary", size: .small, style: .secondary)
             ListItem("ListItem - normal")
             ListItem("ListItem - normal, secondary", size: .normal, style: .secondary)
             ListItem("ListItem - large", size: .large, style: .primary)
             ListItem("ListItem - large, secondary", size: .large, style: .secondary)
-            ListItem("ListItem - small", size: .small, style: .primary)
-            ListItem("ListItem - small, secondary", size: .small, style: .secondary)
         }
-        .padding()
+        .padding(.medium)
         .previewDisplayName()
     }
     
-    static var snapshotsLinks: some View {
+    static var links: some View {
         List {
-            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#)
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, size: .small, style: .secondary)
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#)
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, style: .custom(color: .greenNormal, linkColor: .custom(.orangeDark)))
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, icon: .symbol(.circleSmall, color: .blueNormal), style: .custom(color: .greenNormal))
         }
-        .padding()
+        .padding(.medium)
         .previewDisplayName()
     }
     
-    static var snapshotsCustom: some View {
+    static var mix: some View {
         List {
             ListItem("ListItem with custom icon", icon: .symbol(.check, color: .greenNormal))
-            ListItem("ListItem with custom icon", icon: .check)
-            ListItem("ListItem with custom icon", icon: .check)
+            ListItem("ListItem with custom icon", icon: .check, spacing: .xxxSmall)
             ListItem("ListItem with SF Symbol", icon: .sfSymbol("info.circle.fill"))
             ListItem("ListItem with SF Symbol", icon: .sfSymbol("info.circle.fill", color: .blueDark))
             ListItem("ListItem with flag", icon: .countryFlag("cz"))
             ListItem("ListItem with custom icon", icon: .check, style: .custom(color: .blueDark))
             ListItem("ListItem with no icon", icon: .none)
         }
-        .padding()
-        .previewDisplayName()
-    }
-
-    static var orbit: some View {
-        HStack(alignment: .top, spacing: .medium) {
-            List(spacing: .medium) {
-                ListItem("ListItem - normal", size: .normal, style: .primary)
-                ListItem("ListItem - large", size: .large, style: .primary)
-            }
-
-            List(spacing: .medium) {
-                ListItem("ListItem - normal, secondary", size: .normal, style: .secondary)
-                ListItem("ListItem - large, secondary", size: .large, style: .secondary)
-            }
-        }
-        .padding()
+        .padding(.medium)
         .previewDisplayName()
     }
 }

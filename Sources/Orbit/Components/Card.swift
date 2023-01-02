@@ -62,8 +62,8 @@ public struct Card<Content: View>: View {
 
     @ViewBuilder var header: some View {
         if isHeaderEmpty == false {
-            HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Icon(content: iconContent, size: .heading(titleStyle))
+            HStack(alignment: .top, spacing: 0) {
+                Icon(content: iconContent, size: titleStyle.iconSize)
                     .padding(.trailing, .xSmall)
                     .accessibility(.cardIcon)
                 

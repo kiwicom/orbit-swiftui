@@ -72,6 +72,7 @@ final class TagAttributedStringBuilder {
         fontSize: CGFloat,
         fontWeight: Font.Weight = .regular,
         lineSpacing: CGFloat?,
+        kerning: CGFloat = 0,
         color: UIColor? = nil,
         linkColor: UIColor? = nil,
         accentColor: UIColor? = nil
@@ -85,14 +86,17 @@ final class TagAttributedStringBuilder {
         }
 
         textAttributes[.font] = UIFont.orbit(size: fontSize, weight: fontWeight.uiKit)
+        textAttributes[.kern] = kerning
         textAttributes[.foregroundColor] = color
 
         var linksAttributes: [NSAttributedString.Key: Any] = [:]
         linksAttributes[.underlineStyle] = NSUnderlineStyle.single.rawValue
+        linksAttributes[.kern] = kerning
         linksAttributes[.foregroundColor] = linkColor
 
         var refAttributes: [NSAttributedString.Key: Any] = [:]
         refAttributes[.foregroundColor] = accentColor
+        refAttributes[.kern] = kerning
 
         return attributedString(
             string,
@@ -106,6 +110,7 @@ final class TagAttributedStringBuilder {
         fontSize: CGFloat? = nil,
         fontWeight: Font.Weight = .regular,
         lineSpacing: CGFloat?,
+        kerning: CGFloat = 0,
         linkColor: UIColor? = .productDark,
         alignment: TextAlignment
     ) -> NSAttributedString {
@@ -119,14 +124,17 @@ final class TagAttributedStringBuilder {
         var textAttributes: [NSAttributedString.Key: Any] = [:]
         textAttributes[.font] = fontSize.map { UIFont.orbit(size: $0, weight: fontWeight.uiKit) }
         textAttributes[.foregroundColor] = UIColor.clear
+        textAttributes[.kern] = kerning
         textAttributes[.paragraphStyle] = titleParagraphStyle
 
         var linksAttributes: [NSAttributedString.Key: Any] = [:]
         linksAttributes[.underlineStyle] = NSUnderlineStyle.single.rawValue
+        linksAttributes[.kern] = kerning
         linksAttributes[.foregroundColor] = linkColor
 
         var refAttributes: [NSAttributedString.Key: Any] = [:]
         refAttributes[.foregroundColor] = UIColor.clear
+        refAttributes[.kern] = kerning
 
         return attributedString(
             string,

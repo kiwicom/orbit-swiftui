@@ -104,11 +104,10 @@ public struct Storybook: View {
         Tile(disclosure: .none, showBorder: item.tabs.isEmpty == false) {
             selectedItem = item
         } content: {
-            Label(
-                String(describing: item).titleCased,
-                icon: item.tabs.isEmpty ? .timelapse : .sfSymbol(item.sfSymbol),
-                style: .title5
-            )
+            HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+                Icon(content: item.tabs.isEmpty ? .timelapse : .sfSymbol(item.sfSymbol))
+                Heading(String(describing: item).titleCased, style: .title5)
+            }
             .padding(.small)
         }
         .environment(\.isElevationEnabled, item.tabs.isEmpty == false)

@@ -38,10 +38,8 @@ public struct HorizontalScroll<Content: View>: View {
                 HStack(alignment: .top, spacing: spacing) {
                     content
                         .frame(width: itemWidth(forContentWidth: width), alignment: .leading)
-                        .frame(maxWidth: maxItemWidth, alignment: .leading)
+                        .frame(maxWidth: maxItemWidth, minHeight: minHeight, alignment: .leading)
                         .frame(height: resolvedItemHeight, alignment: .top)
-
-                    Strut(minHeight)
                 }
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, horizontalPadding)

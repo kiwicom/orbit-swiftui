@@ -4,6 +4,7 @@ import XCTest
 class ButtonLinkTests: SnapshotTestCase {
 
     func testButtonLinks() {
-        assert(ButtonLinkPreviews.snapshot)
+        assert(ButtonLinkPreviews.styles)
+        assert(ButtonLinkPreviews.sizing)
     }
 }

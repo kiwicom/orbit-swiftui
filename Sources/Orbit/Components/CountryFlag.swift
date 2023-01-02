@@ -20,7 +20,6 @@ public struct CountryFlag: View {
                 clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
                     .blendMode(.darken)
             )
-            .padding(Icon.averageIconContentPadding / 2)
             .frame(width: size.value * sizeCategory.ratio)
             .fixedSize()
             .accessibility(label: SwiftUI.Text(countryCode.rawValue))
@@ -103,42 +102,31 @@ struct CountryFlagPreviews: PreviewProvider {
     
     static var mix: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
-            HStack(spacing: .small) {
-                Text("Small")
-                CountryFlag("cz", size: .small)
-                CountryFlag("sg", size: .small)
-                CountryFlag("jp", size: .small)
-                CountryFlag("de", size: .small)
-                CountryFlag("unknown", size: .small)
-            }
-            HStack(spacing: .small) {
-                Text("Normal")
-                CountryFlag("cz")
-                CountryFlag("sg")
-                CountryFlag("jp")
-                CountryFlag("de")
-                CountryFlag("unknown")
-            }
-            HStack(spacing: .small) {
-                Text("Large")
-                CountryFlag("cz", size: .large)
-                CountryFlag("sg", size: .large)
-                CountryFlag("jp", size: .large)
-                CountryFlag("de", size: .large)
-                CountryFlag("unknown", size: .large)
-            }
-            HStack(spacing: .small) {
+            flags(size: .small)
+            flags(size: .normal)
+            flags(size: .large)
+            flags(size: .custom(40))
+
+            HStack(alignment: .firstTextBaseline, spacing: .small) {
                 Text("Borders")
                 CountryFlag("CZ", size: .xLarge, border: .default(cornerRadius: 8))
                 CountryFlag("cZ", size: .xLarge, border: .default(cornerRadius: 0))
                 CountryFlag("Cz", size: .xLarge, border: .none)
             }
-            HStack(spacing: .small) {
-                Text("Custom size")
-                CountryFlag("us", size: .custom(60))
-            }
         }
         .previewDisplayName()
+    }
+
+    static func flags(size: Icon.Size) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: .small) {
+            Text("\(size)".capitalized)
+            CountryFlag("cz", size: size)
+            CountryFlag("sg", size: size)
+            CountryFlag("jp", size: size)
+            CountryFlag("de", size: size)
+            CountryFlag("unknown", size: size)
+        }
+        .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerFirstTextBaseline)
     }
 
     static var snapshot: some View {

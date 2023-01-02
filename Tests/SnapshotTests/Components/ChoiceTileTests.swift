@@ -4,6 +4,8 @@ import XCTest
 class ChoiceTileTests: SnapshotTestCase {
 
     func testChoiceTiles() {
-        assert(ChoiceTilePreviews.snapshot)
+        assert(ChoiceTilePreviews.standalone)
+        assert(ChoiceTilePreviews.standaloneCentered)
+        assert(ChoiceTilePreviews.sizing)
     }
 }

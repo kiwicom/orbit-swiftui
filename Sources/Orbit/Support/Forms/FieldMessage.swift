@@ -10,13 +10,11 @@ public struct FieldMessage: View {
 
     public var body: some View {
         if let message = message, message.isEmpty == false {
-            // A Label should be used instead when Orbit fixes the non-matching icon to label sizing
             HStack(alignment: .firstTextBaseline, spacing: spacing) {
                 Icon(message.icon, size: .small, color: message.color)
                     .accessibility(.fieldMessageIcon)
-                    .alignmentGuide(.firstTextBaseline) { _ in
-                        Icon.Size.small.value * sizeCategory.ratio * 0.82 - 2 * (sizeCategory.ratio - 1)
-                    }
+                    // A workaround for current Orbit non-matching icon size
+                    .alignmentGuide(.firstTextBaseline) { $0.height * 0.82 }
                 Text(message.description, color: .custom(message.uiColor))
                     .accessibility(.fieldMessage)
             }

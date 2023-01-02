@@ -10,7 +10,6 @@ public struct FieldLabel: View {
 
     public var body: some View {
         Text(label, size: .normal, weight: .medium, accentColor: accentColor, linkColor: linkColor, linkAction: linkAction)
-            .padding(.bottom, 1)
             .accessibility(.fieldLabel)
     }
 

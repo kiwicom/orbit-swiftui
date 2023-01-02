@@ -6,6 +6,8 @@ struct InputContent<Content: View>: View {
     @Environment(\.idealSize) var idealSize
     @Environment(\.isEnabled) var isEnabled
 
+    public let verticalPadding: CGFloat = .small // = 44 @ normal text size
+
     var prefix: Icon.Content = .none
     var suffix: Icon.Content = .none
     var prefixAccessibilityID: AccessibilityID = .selectPrefix
@@ -29,9 +31,6 @@ struct InputContent<Content: View>: View {
                 Spacer(minLength: 0)
             }
 
-            TextStrut(.normal)
-                .padding(.vertical, Button.Size.default.verticalPadding)
-
             if let suffixAction = suffixAction {
                 suffixIcon
                     .onTapGesture(perform: suffixAction)
@@ -39,6 +38,9 @@ struct InputContent<Content: View>: View {
             } else {
                 suffixIcon
             }
+
+            TextStrut()
+                .padding(.vertical, verticalPadding)
         }
         .foregroundColor(isEnabled ? state.textColor : .cloudDarkActive)
         .background(backgroundColor(isPressed: isPressed).animation(.default, value: message))
@@ -50,16 +52,18 @@ struct InputContent<Content: View>: View {
     }
 
     @ViewBuilder var prefixIcon: some View {
-        Icon(content: prefix, size: .large)
+        Icon(content: prefix)
             .foregroundColor(prefixColor)
             .padding(.horizontal, .xSmall)
+            .padding(.vertical, verticalPadding)
             .accessibility(prefixAccessibilityID)
     }
 
     @ViewBuilder var suffixIcon: some View {
-        Icon(content: suffix, size: .large)
+        Icon(content: suffix)
             .foregroundColor(suffixColor)
             .padding(.horizontal, .xSmall)
+            .padding(.vertical, verticalPadding)
             .contentShape(Rectangle())
             .accessibility(suffixAccessibilityID)
     }
@@ -134,15 +138,19 @@ struct InputContentPreviews: PreviewProvider {
     static var sizing: some View {
         VStack {
             Group {
-                InputContent(prefix: .visa, suffix: .checkCircle, state: .default) {
-                    Text("Height")
+                InputContent(prefix: .visa, suffix: .checkCircle) {
+                    Text("InputContent")
                 }
 
-                InputContent(state: .default) {
-                    Text("Height")
+                InputContent {
+                    Text("InputContent")
                 }
 
-                InputContent(state: .default) {
+                InputContent(prefix: .grid) {
+                    EmptyView()
+                }
+
+                InputContent {
                     EmptyView()
                 }
             }

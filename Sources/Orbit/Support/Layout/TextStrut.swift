@@ -1,21 +1,21 @@
 import SwiftUI
 
-/// Invisible vertical line of fixed height based on text size.
+/// Invisible vertical line of fixed height based on text line height.
 ///
-/// Can be used to unify the height of elements that contain variable combination of icons and texts.
+/// Can be used to force minimal height of elements that contain variable combination of icons and texts.
 public struct TextStrut: View {
-    
+
+    @Environment(\.sizeCategory) var sizeCategory
+
     let textSize: Text.Size
     
     public var body: some View {
-        Text("I", size: textSize, color: .custom(.clear))
-            .accessibility(hidden: true)
-            .accessibility(removeTraits: .isStaticText)
-            .frame(width: 0)
+        Color.clear
+            .frame(width: 0, height: textSize.lineHeight * sizeCategory.ratio)
     }
 
-    /// Creates invisible strut of height of text based on provided text size.
-    public init(_ textSize: Text.Size) {
+    /// Creates invisible strut with height based on provided text size.
+    public init(_ textSize: Text.Size = .normal) {
         self.textSize = textSize
     }
 }
@@ -25,37 +25,37 @@ struct TextStrutPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            HStack(spacing: .xxxSmall) {
-                TextStrut(.large)
-                    .padding(.horizontal, 1)
-                    .overlay(Color.redNormal)
-                    .padding(.vertical, .xSmall)
-                    .background(Color.redLight)
-                Text("Text", size: .large)
-            }
-            .padding(.xxSmall)
-
-            HStack(spacing: .xxxSmall) {
-                TextStrut(.large)
-                    .padding(.horizontal, 1)
-                    .overlay(Color.redNormal)
-                    .padding(.vertical, .xSmall)
-                    .background(Color.redLight)
-                Icon(.grid, size: .text(.large))
-            }
-            .padding(.xxSmall)
-
-            HStack(spacing: .xxxSmall) {
-                Icon(.grid, size: .text(.large))
-                TextStrut(.large)
-                    .padding(.horizontal, 1)
-                    .overlay(Color.redNormal)
-                    .padding(.vertical, .xSmall)
-                    .background(Color.redLight)
-                Text("Text", size: .large)
-            }
-            .padding(.xxSmall)
+            select
+            tile
         }
         .previewLayout(.sizeThatFits)
+    }
+
+    static var select: some View {
+        Select("", value: "Select")
+            .overlay(
+                strut(padding: .small)
+            )
+            .measured()
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
+    static var tile: some View {
+        Tile()
+            .overlay(
+                strut(.large, padding: 14)
+            )
+            .measured()
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
+    static func strut(_ size: Text.Size = .normal, padding: CGFloat) -> some View {
+        TextStrut(size)
+            .frame(width: .xxxSmall)
+            .overlay(Color.greenNormal)
+            .padding(.vertical, padding)
+            .background(Color.redNormal)
     }
 }

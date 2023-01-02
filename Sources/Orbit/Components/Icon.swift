@@ -5,8 +5,10 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/icon/)
 public struct Icon: View {
 
-    public static let sfSymbolToOrbitSizeRatio: CGFloat = 0.75
-    public static let averageIconContentPadding: CGFloat = .xxxSmall
+    /// Approximate size ratio between SF Symbol and Orbit icon symbol.
+    public static let sfSymbolToOrbitSymbolSizeRatio: CGFloat = 0.75
+    /// Approximate Orbit icon symbol baseline.
+    public static let symbolBaseline: CGFloat = 0.77
 
     @Environment(\.sizeCategory) var sizeCategory
 
@@ -17,48 +19,98 @@ public struct Icon: View {
     public var body: some View {
         if content.isEmpty == false {
             iconContent
-                .alignmentGuide(.firstTextBaseline) { dimensions in
-                    iconContentBaselineOffset(height: dimensions.height)
-                }
-                .alignmentGuide(.lastTextBaseline) { dimensions in
-                    iconContentBaselineOffset(height: dimensions.height)
-                }
         }
     }
 
     @ViewBuilder var iconContent: some View {
         switch content {
             case .symbol(let symbol, let color?):
-                SwiftUI.Text(verbatim: symbol.value)
-                    .foregroundColor(color)
-                    .font(.orbitIcon(size: size.value, style: size.textStyle))
-                    .accessibility(label: SwiftUI.Text(String(describing: symbol)))
+                alignmentWrapper {
+                    symbolWrapper(symbol: symbol) {
+                        SwiftUI.Text(verbatim: symbol.value)
+                            .foregroundColor(color)
+                    }
+                }
             case .symbol(let symbol, nil):
-                SwiftUI.Text(verbatim: symbol.value)
-                    // foregroundColor(nil) prevents further overrides
-                    .font(.orbitIcon(size: size.value, style: size.textStyle))
-                    .accessibility(label: SwiftUI.Text(String(describing: symbol)))
-            case .image(let image, let mode):
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: mode)
-                    .frame(width: size.value, height: size.value * sizeCategory.ratio)
-                    .accessibility(hidden: true)
+                alignmentWrapper {
+                    symbolWrapper(symbol: symbol) {
+                        SwiftUI.Text(verbatim: symbol.value)
+                    }
+                }
+            case .image(let image, let tint?, let mode):
+                alignmentWrapper {
+                    imageWrapper(mode: mode) {
+                        image
+                            .resizable()
+                            .foregroundColor(tint)
+                    }
+                }
+            case .image(let image, nil, let mode):
+                alignmentWrapper {
+                    imageWrapper(mode: mode) {
+                        image
+                            .resizable()
+                    }
+                }
             case .countryFlag(let countryCode):
-                CountryFlag(countryCode, size: size)
+                alignmentWrapper {
+                    CountryFlag(countryCode, size: size)
+                        .frame(height: dynamicSize)
+                }
             case .sfSymbol(let systemName, let color?, let weight):
-                Image(systemName: systemName)
-                    .foregroundColor(color)
-                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio, weight: weight))
+                sfSymbolWrapper(weight: weight) {
+                    Image(systemName: systemName)
+                        .foregroundColor(color)
+                }
             case .sfSymbol(let systemName, nil, let weight):
-                Image(systemName: systemName)
-                    // foregroundColor(nil) prevents further overrides
-                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio, weight: weight))
+                sfSymbolWrapper(weight: weight) {
+                    Image(systemName: systemName)
+                }
         }
     }
 
-    func iconContentBaselineOffset(height: CGFloat) -> CGFloat {
-        baselineOffset + size.textBaselineAlignmentGuide(sizeCategory: sizeCategory, height: height)
+    @ViewBuilder func alignmentWrapper(@ViewBuilder content: () -> some View) -> some View {
+        content()
+            .alignmentGuide(.firstTextBaseline, computeValue: baseline)
+            .alignmentGuide(.lastTextBaseline, computeValue: baseline)
+    }
+
+    @ViewBuilder func symbolWrapper(symbol: Icon.Symbol, @ViewBuilder content: () -> some View) -> some View {
+        content()
+            .font(.orbitIcon(size: size.value))
+            .frame(height: dynamicSize)
+            .accessibility(label: SwiftUI.Text(String(describing: symbol)))
+    }
+
+    @ViewBuilder func imageWrapper(mode: ContentMode, @ViewBuilder content: () -> some View) -> some View {
+        content()
+            .aspectRatio(contentMode: mode)
+            .frame(width: dynamicSize, height: dynamicSize)
+            .accessibility(hidden: true)
+    }
+
+    @ViewBuilder func sfSymbolWrapper(weight: Font.Weight, @ViewBuilder content: () -> some View) -> some View {
+        content()
+            .font(.system(size: sfSymbolDynamicSize, weight: weight))
+            .alignmentGuide(.firstTextBaseline) { $0[.firstTextBaseline] - baselineOffset }
+            .alignmentGuide(.lastTextBaseline) { $0[.lastTextBaseline] - baselineOffset }
+            .frame(minHeight: dynamicSize)
+    }
+
+    var dynamicSize: CGFloat {
+        round(size.value * sizeCategory.ratio)
+    }
+
+    var sfSymbolSize: CGFloat {
+        round(size.value * Self.sfSymbolToOrbitSymbolSizeRatio)
+    }
+
+    var sfSymbolDynamicSize: CGFloat {
+        round(sfSymbolSize * sizeCategory.ratio)
+    }
+
+    func baseline(_ dimensions: ViewDimensions) -> CGFloat {
+        dimensions.height * Self.symbolBaseline - baselineOffset
     }
 }
 
@@ -88,9 +140,12 @@ public extension Icon {
     }
     
     /// Creates Orbit Icon component for provided Image.
-    init(image: Image, size: Size = .normal, baselineOffset: CGFloat = 0) {
+    ///
+    /// - Parameters:
+    ///     - tint: Image tint. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
+    init(image: Image, size: Size = .normal, tint: Color? = .inkDark, baselineOffset: CGFloat = 0) {
         self.init(
-            content: .image(image),
+            content: .image(image, tint: tint),
             size: size,
             baselineOffset: baselineOffset
         )
@@ -121,18 +176,15 @@ public extension Icon {
 // MARK: - Types
 public extension Icon {
 
-    /// Defines content of an Icon for use in other components.
-    /// An optional color can be provided. If not provided, color can be specified later, using `.foregroundColor()` modifier.
-    ///
-    /// Icon size in Orbit components is determined by enclosing component.
+    /// Defines icon content for use in other components.
     enum Content: Equatable {
-        /// Orbit icon symbol with optional overridable color.
+        /// Orbit icon symbol with optional color specified. If not specified, it can be overridden using `.foregroundColor()` modifier.
         case symbol(Symbol, color: Color? = nil)
-        /// Icon using custom Image with overridable size.
-        case image(Image, mode: ContentMode = .fit)
-        /// Orbit CountryFlag.
+        /// Custom Image, suitable for use as icon with optional tint color specified. If not specified, it can be overridden using `.foregroundColor()` modifier.
+        case image(Image, tint: Color? = nil, mode: ContentMode = .fit)
+        /// Orbit CountryFlag content, suitable for use as icon.
         case countryFlag(String)
-        /// SwiftUI SF Symbol with optional overridable color and weight.
+        /// SF Symbol with overridable weight and optional color specified. If not specified, it can be overridden using `.foregroundColor()` modifier.
         case sfSymbol(String, color: Color? = nil, weight: Font.Weight = .regular)
 
         public var isEmpty: Bool {
@@ -145,6 +197,7 @@ public extension Icon {
         }
     }
 
+    /// Preferred icon size in both dimensions. Actual size may differ based on icon content.
     enum Size: Equatable {
         /// Size 16.
         case small
@@ -154,75 +207,31 @@ public extension Icon {
         case large
         /// Size 28.
         case xLarge
-        /// Size based on Font size.
-        case fontSize(CGFloat)
-        /// Size based on `Text` size.
-        case text(Text.Size)
-        /// Size based on `Heading` style.
-        case heading(Heading.Style)
-        /// Size based on `Label` title style.
-        case label(Label.Style)
-        /// Custom size
+        /// Custom size.
         case custom(CGFloat)
-        
+
+        /// Icon size matching `Text` size.
+        public static func text(_ size: Text.Size) -> Self {
+            size.iconSize
+        }
+
+        /// Icon size matching `Heading` style.
+        public static func heading(_ style: Heading.Style) -> Self {
+            style.iconSize
+        }
+
         public var value: CGFloat {
             switch self {
                 case .small:                            return 16
                 case .normal:                           return 20
                 case .large:                            return 24
                 case .xLarge:                           return 28
-                case .fontSize(let size):               return round(size * 1.31)
-                case .text(let size):                   return size.iconSize
-                case .heading(let style):               return style.iconSize
-                case .label(let style):                 return style.iconSize
                 case .custom(let size):                 return size
-            }
-        }
-
-        public var textStyle: Font.TextStyle {
-            switch self {
-                case .small:                            return Text.Size.small.textStyle
-                case .normal:                           return Text.Size.normal.textStyle
-                case .large:                            return Text.Size.large.textStyle
-                case .xLarge:                           return Text.Size.xLarge.textStyle
-                case .fontSize:                         return .body
-                case .text(let size):                   return size.textStyle
-                case .heading(let style):               return style.textStyle
-                case .label(let style):                 return style.textStyle
-                case .custom:                           return .body
             }
         }
         
         public static func == (lhs: Icon.Size, rhs: Icon.Size) -> Bool {
             lhs.value == rhs.value
-        }
-
-        /// Default text line height for icon size.
-        public var textLineHeight: CGFloat {
-            switch self {
-                case .small:                            return Text.Size.small.iconSize
-                case .normal:                           return Text.Size.normal.iconSize
-                case .large:                            return Text.Size.large.iconSize
-                case .xLarge:                           return Text.Size.xLarge.iconSize
-                case .fontSize(let size):               return round(size * 1.31)
-                case .text(let size):                   return size.iconSize
-                case .heading(let style):               return style.iconSize
-                case .label(let style):                 return style.iconSize
-                case .custom(let size):                 return size
-            }
-        }
-
-        /// Text line height for icon size for specified ContentSizeCategory.
-        public func dynamicTextLineHeight(sizeCategory: ContentSizeCategory) -> CGFloat {
-            round(textLineHeight * sizeCategory.ratio)
-        }
-
-        public func textBaselineAlignmentGuide(sizeCategory: ContentSizeCategory, height: CGFloat) -> CGFloat {
-            round(dynamicTextLineHeight(sizeCategory: sizeCategory) * Text.firstBaselineRatio + height / 2)
-        }
-
-        public func baselineOffset(sizeCategory: ContentSizeCategory) -> CGFloat {
-            round(dynamicTextLineHeight(sizeCategory: sizeCategory) * 0.2)
         }
     }
 }
@@ -231,7 +240,9 @@ public extension Icon {
 extension Icon: TextRepresentable {
 
     public func swiftUIText(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
-        if content.isEmpty { return nil }
+        if content.isEmpty {
+            return nil
+        }
 
         if #available(iOS 14.0, *) {
             return text(sizeCategory: sizeCategory)
@@ -241,356 +252,291 @@ extension Icon: TextRepresentable {
     }
 
     @available(iOS 14.0, *)
-    func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
+    func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
         switch content {
             case .symbol(let symbol, let color?):
-                return SwiftUI.Text(verbatim: symbol.value)
-                    .baselineOffset(textBaselineOffset(sizeCategory: sizeCategory))
-                    .foregroundColor(color)
-                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+                return symbolWrapper(sizeCategory: sizeCategory) {
+                    SwiftUI.Text(verbatim: symbol.value)
+                        .foregroundColor(color)
+                }
             case .symbol(let symbol, nil):
-                return SwiftUI.Text(verbatim: symbol.value)
-                    .baselineOffset(textBaselineOffset(sizeCategory: sizeCategory))
-                    // foregroundColor(nil) prevents further overrides
-                    .font(.orbitIcon(size: size.value, style: size.textStyle))
-            case .image(let image, _):
-                return SwiftUI.Text(image.resizable())
-                    .baselineOffset(baselineOffset)
-            case .countryFlag(let countryCode):
-                return SwiftUI.Text(SwiftUI.Image(countryCode, bundle: .current).resizable())
-                    .baselineOffset(baselineOffset)
+                return symbolWrapper(sizeCategory: sizeCategory) {
+                    SwiftUI.Text(verbatim: symbol.value)
+                }
+            case .image(let image, let tint?, _):
+                return SwiftUI.Text(image)
+                    .baselineOffset(-baselineOffset)
+                    .foregroundColor(tint)
+            case .image(let image, _, _):
+                return SwiftUI.Text(image)
+                    .baselineOffset(-baselineOffset)
+            case .countryFlag:
+                assertionFailure("text representation of countryFlag icon is not supported")
+                return nil
             case .sfSymbol(let systemName, let color?, let weight):
-                return SwiftUI.Text(Image(systemName: systemName)).foregroundColor(color)
-                    .baselineOffset(baselineOffset)
-                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio, weight: weight))
+                return sfSymbolWrapper(sizeCategory: sizeCategory, weight: weight) {
+                    SwiftUI.Text(Image(systemName: systemName))
+                        .foregroundColor(color)
+                }
             case .sfSymbol(let systemName, nil, let weight):
-                return SwiftUI.Text(Image(systemName: systemName))
-                    .baselineOffset(baselineOffset)
-                    .font(.system(size: size.value * Self.sfSymbolToOrbitSizeRatio * sizeCategory.ratio, weight: weight))
+                return sfSymbolWrapper(sizeCategory: sizeCategory, weight: weight) {
+                    SwiftUI.Text(Image(systemName: systemName))
+                }
         }
     }
 
     func textFallback(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
         switch content {
             case .symbol(let symbol, let color?):
-                return SwiftUI.Text(verbatim: symbol.value)
-                    .baselineOffset(textBaselineOffset(sizeCategory: sizeCategory))
-                    .foregroundColor(color)
-                    .font(.orbitIcon(size: size.value, style: size.textStyle))
+                return symbolWrapper(sizeCategory: sizeCategory) {
+                    SwiftUI.Text(verbatim: symbol.value)
+                        .foregroundColor(color)
+                }
             case .symbol(let symbol, nil):
-                return SwiftUI.Text(verbatim: symbol.value)
-                    .baselineOffset(textBaselineOffset(sizeCategory: sizeCategory))
-                    // foregroundColor(nil) prevents further overrides
-                    .font(.orbitIcon(size: size.value, style: size.textStyle))
-            case .image, .countryFlag, .sfSymbol:
-                assertionFailure(".image, .countryFlag, .sfSymbol as Text are only available in iOS 14.0 or newer")
+                return symbolWrapper(sizeCategory: sizeCategory) {
+                    SwiftUI.Text(verbatim: symbol.value)
+                }
+            case .countryFlag:
+                assertionFailure("text representation of countryFlag icon is not supported")
+                return nil
+            case .image, .sfSymbol:
+                assertionFailure("image and sfSymbol text representation is available in iOS 14.0 or newer")
                 return nil
         }
     }
 
+    func symbolWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+        text()
+            .font(.orbitIcon(size: size.value))
+            .baselineOffset(textBaselineOffset(sizeCategory: sizeCategory))
+    }
+
+    func sfSymbolWrapper(sizeCategory: ContentSizeCategory, weight: Font.Weight, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+        text()
+            .font(.system(size: sfSymbolSize * sizeCategory.ratio, weight: weight))
+            .baselineOffset(-baselineOffset)
+    }
+
     func textBaselineOffset(sizeCategory: ContentSizeCategory) -> CGFloat {
-        baselineOffset - size.baselineOffset(sizeCategory: sizeCategory)
+        (-size.value * sizeCategory.ratio) * (1 - Self.symbolBaseline) - baselineOffset
     }
 }
 
 // MARK: - Previews
 struct IconPreviews: PreviewProvider {
 
-    static let multilineText = "Multiline\nlong\ntext"
     static let sfSymbol = "info.circle.fill"
-    
+
     static var previews: some View {
         PreviewWrapper {
             standalone
-            snapshotSizes
-            snapshotSizesText
-            snapshotSizesLabelText
-            snapshotSizesHeading
-            snapshotSizesLabelHeading
-            alignments
+            sizes
+            text
+            heading
             baseline
-            mix
+            colors
         }
-        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         Icon(.informationCircle)
+            .padding(.medium)
             .previewDisplayName()
     }
     
-    static var snapshotSizes: some View {
+    static var sizes: some View {
         VStack(alignment: .leading, spacing: .small) {
-            HStack(spacing: .xSmall) {
-                Text("16", color: .custom(.redNormal))
-            
-                HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
-                    Icon(.passengers, size: .small)
-                    Text("Small text and icon size", size: .small)
-                }
-                .overlay(Separator(thickness: .hairline), alignment: .top)
-                .overlay(Separator(thickness: .hairline), alignment: .bottom)
-            }
-            HStack(spacing: .xSmall) {
-                Text("20", color: .custom(.orangeNormal))
-            
-                HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
-                    Icon(.passengers, size: .normal)
-                    Text("Normal text and icon size", size: .normal)
-                }
-                .overlay(Separator(thickness: .hairline), alignment: .top)
-                .overlay(Separator(thickness: .hairline), alignment: .bottom)
-            }
-            HStack(spacing: .xSmall) {
-                Text("24", color: .custom(.greenNormal))
-            
-                HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
-                    Icon(.passengers, size: .large)
-                    Text("Large text and icon size", size: .large)
-                }
-                .overlay(Separator(thickness: .hairline), alignment: .top)
-                .overlay(Separator(thickness: .hairline), alignment: .bottom)
-            }
+            size(iconSize: .small, textSize: .small, color: .redNormal)
+            size(iconSize: .normal, textSize: .normal, color: .orangeNormal)
+            size(iconSize: .large, textSize: .large, color: .greenNormal)
+            size(iconSize: .xLarge, textSize: .xLarge, color: .blueNormal)
         }
-        .previewDisplayName()
-    }
-    
-    static func headingStack(_ style: Heading.Style) -> some View {
-        HStack(spacing: .xSmall) {
-            HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
-                Icon(.passengers, size: .heading(style))
-                Heading("Heading", style: style)
-            }
-            .overlay(Separator(thickness: .hairline), alignment: .top)
-            .overlay(Separator(thickness: .hairline), alignment: .bottom)
-        }
-        .previewDisplayName()
-    }
-    
-    static func labelHeadingStack(_ style: Heading.Style) -> some View {
-        HStack(spacing: .xSmall) {
-            Label("Label Heading", icon: .passengers, style: .heading(style))
-                .overlay(Separator(thickness: .hairline), alignment: .top)
-                .overlay(Separator(thickness: .hairline), alignment: .bottom)
-        }
-        .previewDisplayName()
-    }
-    
-    static func labelTextStack(_ size: Text.Size) -> some View {
-        HStack(spacing: .xSmall) {
-            Label("Label Text", icon: .passengers, style: .text(size))
-                .overlay(Separator(), alignment: .top)
-                .overlay(Separator(), alignment: .bottom)
-        }
-        .previewDisplayName()
-    }
-    
-    static func textStack(_ size: Text.Size) -> some View {
-        HStack(spacing: .xSmall) {
-            HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
-                Icon(.passengers, size: .text(size))
-                Text("Text", size: size)
-            }
-            .overlay(Separator(), alignment: .top)
-            .overlay(Separator(), alignment: .bottom)
-        }
-        .previewDisplayName()
-    }
-    
-    static var snapshotSizesText: some View {
-        VStack(alignment: .leading, spacing: .small) {
-            textStack(.small)
-            textStack(.normal)
-            textStack(.large)
-            textStack(.xLarge)
-            textStack(.custom(50))
-        }
-        .previewDisplayName()
-    }
-    
-    static var snapshotSizesLabelText: some View {
-        VStack(alignment: .leading, spacing: .small) {
-            labelTextStack(.small)
-            labelTextStack(.normal)
-            labelTextStack(.large)
-            labelTextStack(.xLarge)
-            labelTextStack(.custom(50))
-        }
-        .previewDisplayName()
-    }
-    
-    static var snapshotSizesHeading: some View {
-        VStack(alignment: .leading, spacing: .small) {
-            headingStack(.title6)
-            headingStack(.title5)
-            headingStack(.title4)
-            headingStack(.title3)
-            headingStack(.title2)
-            headingStack(.title1)
-            headingStack(.displaySubtitle)
-            headingStack(.display)
-        }
-        .previewDisplayName()
-    }
-    
-    static var snapshotSizesLabelHeading: some View {
-        VStack(alignment: .leading, spacing: .small) {
-            labelHeadingStack(.title6)
-            labelHeadingStack(.title5)
-            labelHeadingStack(.title4)
-            labelHeadingStack(.title3)
-            labelHeadingStack(.title2)
-            labelHeadingStack(.title1)
-            labelHeadingStack(.displaySubtitle)
-            labelHeadingStack(.display)
-        }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    static var mix: some View {
+    static var text: some View {
         VStack(alignment: .leading, spacing: .small) {
-            Text("SF Symbol vs Orbit sizes (custom-font-label)", size: .small)
-            HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Group {
-                    Icon(sfSymbol: sfSymbol, size: .custom(Text.Size.xLarge.iconSize), color: nil)
-                    Icon(sfSymbol: sfSymbol, size: .fontSize(Text.Size.xLarge.value), color: nil)
-                    Icon(sfSymbol: sfSymbol, size: .label(.text(.xLarge)), color: nil)
-                    Color.clear.frame(width: .xSmall, height: 1)
-                    Icon(.informationCircle, size: .custom(Text.Size.xLarge.iconSize), color: nil)
-                    Icon(.informationCircle, size: .fontSize(Text.Size.xLarge.value), color: nil)
-                    Icon(.informationCircle, size: .label(.text(.xLarge)), color: nil)
-                    Color.clear.frame(width: .xSmall, height: 1)
-                    Text("XLarge", size: .xLarge, color: nil)
-                }
-                .foregroundColor(.blueNormal)
-                .border(Color.cloudLightActive, width: .hairline)
-            }
-            .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
-            
-            HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Group {
-                    Icon(sfSymbol: sfSymbol, size: .custom(Text.Size.small.iconSize), color: nil)
-                    Icon(sfSymbol: sfSymbol, size: .fontSize(Text.Size.small.value), color: nil)
-                    Icon(sfSymbol: sfSymbol, size: .label(.text(.small)), color: nil)
-                    Color.clear.frame(width: .xSmall, height: 1)
-                    Icon(.informationCircle, size: .custom(Text.Size.small.iconSize), color: nil)
-                    Icon(.informationCircle, size: .fontSize(Text.Size.small.value), color: nil)
-                    Icon(.informationCircle, size: .label(.text(.small)), color: nil)
-                    Color.clear.frame(width: .xSmall, height: 1)
-                    Text("Small", size: .small, color: nil)
-                }
-                .foregroundColor(.blueNormal)
-                .border(Color.cloudLightActive, width: .hairline)
-            }
-            .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
+            textStack(.small, alignment: .firstTextBaseline)
+            textStack(.normal, alignment: .firstTextBaseline)
+            textStack(.large, alignment: .firstTextBaseline)
+            textStack(.xLarge, alignment: .firstTextBaseline)
+            textStack(.custom(30), alignment: .firstTextBaseline)
 
-            Text("Flag - Image - SF Symbol sizes", size: .small)
-            HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Group {
-                    Icon(countryCode: "cz", size: .xLarge)
-                    Icon(image: .orbit(.facebook), size: .xLarge)
-                    Icon(sfSymbol: sfSymbol, size: .xLarge, color: nil)
-                    Text("Text", size: .custom(20), color: nil)
-                }
-                .foregroundColor(.blueNormal)
-                .border(Color.cloudLightActive, width: .hairline)
-            }
-            .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
-
-            HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Group {
-                    Icon(countryCode: "cz", size: .small)
-                    Icon(image: .orbit(.facebook), size: .small)
-                    Icon(sfSymbol: sfSymbol, size: .small, color: nil)
-                    Text("Text", size: .small, color: nil)
-                }
-                .foregroundColor(.blueNormal)
-                .border(Color.cloudLightActive, width: .hairline)
-            }
-            .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
-
-            Text("Baseline alignment", size: .small)
-            HStack(alignment: .firstTextBaseline) {
-                Group {
-                    Text("O", size: .custom(30))
-                    Icon(.informationCircle, size: .fontSize(30))
-                    Icon(.informationCircle, size: .fontSize(8))
-                    Text("O", size: .custom(8))
-                    Text("Text", size: .normal)
-                }
-                .border(Color.cloudLightActive, width: .hairline)
-            }
-            .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
-
-            Text("Icon color override", size: .small)
-            HStack(alignment: .firstTextBaseline) {
-                Icon(content: .grid, size: .xLarge)
-                Icon(content: .symbol(.grid, color: nil))
-                Icon(content: .symbol(.grid, color: .redNormal), size: .text(.small))
-                Text("Text", size: .small, color: nil)
-            }
-            .foregroundColor(.blueDark)
-            .background(Separator(thickness: .hairline), alignment: .init(horizontal: .center, vertical: .firstTextBaseline))
+            textStack(.small, alignment: .top)
+            textStack(.normal, alignment: .top)
+            textStack(.large, alignment: .top)
+            textStack(.xLarge, alignment: .top)
+            textStack(.custom(30), alignment: .top)
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    static var alignments: some View {
-        VStack(spacing: .medium) {
-            HStack(spacing: .medium) {
-                HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-                    Icon(.grid)
-                    Text(multilineText)
-                }
-                HStack(alignment: .lastTextBaseline, spacing: .xSmall) {
-                    Icon(.grid)
-                    Text(multilineText)
-                }
+    static var heading: some View {
+        VStack(alignment: .leading, spacing: .small) {
+            headingStack(.title6, alignment: .firstTextBaseline)
+            headingStack(.title5, alignment: .firstTextBaseline)
+            headingStack(.title4, alignment: .firstTextBaseline)
+            headingStack(.title3, alignment: .firstTextBaseline)
+            headingStack(.title2, alignment: .firstTextBaseline)
+            headingStack(.title1, alignment: .firstTextBaseline)
+            headingStack(.displaySubtitle, alignment: .firstTextBaseline)
+            headingStack(.display, alignment: .firstTextBaseline)
+
+            Group {
+                headingStack(.title6, alignment: .top)
+                headingStack(.title5, alignment: .top)
+                headingStack(.title4, alignment: .top)
+                headingStack(.title3, alignment: .top)
+                headingStack(.title2, alignment: .top)
+                headingStack(.title1, alignment: .top)
+                headingStack(.displaySubtitle, alignment: .top)
+                headingStack(.display, alignment: .top)
             }
-            Label("Multiline\nlong\nLabel", icon: .grid, style: .text())
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
     static var baseline: some View {
-        VStack(alignment: .leading, spacing: .large) {
+        VStack(alignment: .leading, spacing: 0) {
+            Heading("Standalone", style: .title6)
+
             HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Text("Standalone")
-
                 Group {
-                    Icon(sfSymbol: sfSymbol, size: .small, baselineOffset: 0)
-                    Icon(sfSymbol: sfSymbol, size: .small, baselineOffset: .xxxSmall)
-                    Icon(sfSymbol: sfSymbol, size: .small, baselineOffset: -.xxxSmall)
+                    Text("Text", size: .small)
+                    Icon(sfSymbol: sfSymbol, size: .small, color: nil)
+                    Icon(sfSymbol: sfSymbol, size: .small, color: nil, baselineOffset: .xxxSmall)
 
-                    Icon(.flightReturn, size: .small, baselineOffset: 0)
-                    Icon(.flightReturn, size: .small, baselineOffset: .xxxSmall)
-                    Icon(.flightReturn, size: .small, baselineOffset: -.xxxSmall)
+                    Icon(.informationCircle, size: .small, color: nil)
+                    Icon(.informationCircle, size: .small, color: nil, baselineOffset: .xxxSmall)
 
-                    Icon(countryCode: "us", size: .small, baselineOffset: 0)
+                    Group {
+                        Icon(image: .orbit(.navigateClose), size: .small, tint: nil)
+                        Icon(image: .orbit(.navigateClose), size: .small, tint: nil, baselineOffset: .xxxSmall)
+                        Icon(image: .orbit(.facebook), size: .small)
+                        Icon(image: .orbit(.facebook), size: .small, baselineOffset: .xxxSmall)
+                    }
+
+                    Icon(countryCode: "us", size: .small)
                     Icon(countryCode: "us", size: .small, baselineOffset: .xxxSmall)
-                    Icon(countryCode: "us", size: .small, baselineOffset: -.xxxSmall)
                 }
                 .border(Color.cloudLightActive, width: .hairline)
             }
+            .foregroundColor(Color.greenDark)
+            .overlay(
+                Separator(color: .redNormal, thickness: .hairline),
+                alignment: .centerFirstTextBaseline
+            )
 
-            Text("Concatenated")
-                + Icon(sfSymbol: sfSymbol, size: .small, baselineOffset: 0)
-                + Icon(sfSymbol: sfSymbol, size: .small, baselineOffset: .xxxSmall)
-                + Icon(sfSymbol: sfSymbol, size: .small, baselineOffset: -.xxxSmall)
-                + Icon(.flightReturn, size: .small, baselineOffset: 0)
-                + Icon(.flightReturn, size: .small, baselineOffset: .xxxSmall)
-                + Icon(.flightReturn, size: .small, baselineOffset: -.xxxSmall)
+            Heading("Concatenated", style: .title6)
+                .padding(.top, .xLarge)
+
+            (
+                Text("Text", size: .small)
+                + Icon(sfSymbol: sfSymbol, size: .small, color: nil)
+                + Icon(sfSymbol: sfSymbol, size: .small, color: nil, baselineOffset: .xxxSmall)
+
+                + Icon(.informationCircle, size: .small, color: nil)
+                + Icon(.informationCircle, size: .small, color: nil, baselineOffset: .xxxSmall)
+
+                + Icon(image: .orbit(.navigateClose), tint: nil)
+                + Icon(image: .orbit(.navigateClose), tint: nil, baselineOffset: .xxxSmall)
+                + Icon(image: .orbit(.facebook))
+                + Icon(image: .orbit(.facebook), baselineOffset: .xxxSmall)
+            )
+            .foregroundColor(Color.greenDark)
+            .overlay(
+                Separator(color: .redNormal, thickness: .hairline),
+                alignment: .centerFirstTextBaseline
+            )
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
-    static var snapshot: some View {
-        VStack(spacing: .medium) {
-            IconPreviews.snapshotSizes
-            Separator()
-            IconPreviews.mix
+    static var colors: some View {
+        VStack(alignment: .leading, spacing: .small) {
+            HStack(alignment: .firstTextBaseline) {
+                Icon(.grid)
+                Icon(.grid, color: .blueNormal)
+                Icon(.grid, color: nil)
+                Icon(content: .grid)
+                Icon(content: .symbol(.grid, color: nil))
+            }
+
+            HStack(alignment: .firstTextBaseline) {
+                Icon(sfSymbol: sfSymbol)
+                Icon(sfSymbol: sfSymbol, color: .blueNormal)
+                Icon(sfSymbol: sfSymbol, color: nil)
+                Icon(content: .sfSymbol(sfSymbol))
+                Icon(content: .sfSymbol(sfSymbol, color: nil))
+            }
+
+            HStack(alignment: .firstTextBaseline) {
+                Icon(image: .orbit(.navigateClose))
+                Icon(image: .orbit(.navigateClose), tint: .blueNormal)
+                Icon(image: .orbit(.navigateClose), tint: nil)
+                Icon(content: .image(.orbit(.navigateClose)))
+                Icon(content: .image(.orbit(.navigateClose), tint: nil))
+            }
         }
+        .foregroundColor(.greenNormalHover)
         .padding(.medium)
+        .previewDisplayName()
+    }
+
+    static func size(iconSize: Icon.Size, textSize: Text.Size, color: UIColor) -> some View {
+        HStack(spacing: .xSmall) {
+            Text("\(Int(iconSize.value))", color: .custom(color), weight: .bold)
+
+            HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
+                Icon(.passengers, size: iconSize)
+                Text("XLarge text and icon size", size: textSize)
+            }
+            .overlay(Separator(thickness: .hairline), alignment: .top)
+            .overlay(Separator(thickness: .hairline), alignment: .bottom)
+        }
+    }
+
+    static func headingStack(_ style: Heading.Style, alignment: VerticalAlignment) -> some View {
+        alignmentStack(style.iconSize, alignment: alignment) {
+            Heading("\(style)".capitalized, style: style)
+        }
+    }
+
+    static func textStack(_ size: Text.Size, alignment: VerticalAlignment) -> some View {
+        alignmentStack(size.iconSize, alignment: alignment) {
+            Text("Text \(Int(size.value))", size: size)
+        }
+    }
+
+    static func alignmentStack<V: View>(_ size: Icon.Size, alignment: VerticalAlignment, @ViewBuilder content: () -> V) -> some View {
+        HStack(spacing: .xSmall) {
+            HStack(alignment: alignment, spacing: .xxSmall) {
+                Group {
+                    Icon(countryCode: "us", size: size)
+                    Icon(image: .orbit(.facebook), size: size)
+                    Icon(sfSymbol: sfSymbol, size: size)
+                    Icon(.informationCircle, size: size)
+                    content()
+                }
+                .background(Color.redLightHover)
+            }
+            .overlay(
+                Separator(color: .redNormal, thickness: .hairline),
+                alignment: .init(horizontal: .center, vertical: alignment)
+            )
+            .background(
+                Separator(color: .greenNormal, thickness: .hairline),
+                alignment: .init(horizontal: .center, vertical: .top)
+            )
+            .background(
+                Separator(color: .greenNormal, thickness: .hairline),
+                alignment: .init(horizontal: .center, vertical: .bottom)
+            )
+        }
     }
 }

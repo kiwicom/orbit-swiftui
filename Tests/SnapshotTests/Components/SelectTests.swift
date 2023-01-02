@@ -4,6 +4,7 @@ import XCTest
 class SelectTests: SnapshotTestCase {
 
     func testSelects() {
-        assert(SelectPreviews.snapshot)
+        assert(SelectPreviews.styles)
+        assert(SelectPreviews.sizing)
     }
 }

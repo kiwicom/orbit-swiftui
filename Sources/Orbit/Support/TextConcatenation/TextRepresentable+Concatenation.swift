@@ -1,12 +1,11 @@
 import SwiftUI
 
-/// Conctatenates two terms that can be represented as `SwiftUI.Text`
+/// Concatenates two terms that can be represented as `SwiftUI.Text`.
 ///
 /// - Parameters:
-///   - left: A content representable as `SwiftUI.Text`
-///   - right: A content representable as `SwiftUI.Text`
-/// - Returns: A view that is the result of concatenation of text representation of the parameters.
-///   if both paramters do not have a text representation, the returning view will produce `EmptyView`, preserving the standard Orbit behavior
+///   - left: A content representable as `SwiftUI.Text`.
+///   - right: A content representable as `SwiftUI.Text`.
+/// - Returns: A view that is the result of concatenation of text representation of the parameters. If neither parameter has a text representation, EmptyView will be returned.
 @ViewBuilder public func +(
     left: TextRepresentable,
     right: TextRepresentable
@@ -29,9 +28,12 @@ struct TextConcatenationPreviews: PreviewProvider {
     static var standalone: some View {
         (
         Heading("Hanoi ", style: .title1)
-            + Icon(.flightReturn, size: .xLarge)
+            + Icon(.grid, size: .xLarge)
+            + Icon(.grid, size: .small)
             + Heading(" San Pedro de Alcantara", style: .title1)
             + Icon(countryCode: "us")
+            + Text(" ")
+            + Icon(countryCode: "us", size: .small)
             + Icon(sfSymbol: "info.circle", size: .large)
             + Icon(image: .orbit(.navigateClose), baselineOffset: -1)
             + Text(" (Delayed)", size: .xLarge, color: .inkNormal)
@@ -41,7 +43,7 @@ struct TextConcatenationPreviews: PreviewProvider {
 
     static var formatting: some View {
         (
-            Icon(.grid, size: .text(.xLarge), color: nil)
+            Icon(.grid, size: .xLarge, color: nil)
             + Text(" Text", size: .xLarge, color: nil)
             + Icon(.informationCircle, size: .large, color: nil, baselineOffset: -1)
             + Icon(sfSymbol: "info.circle.fill", size: .large, color: nil)

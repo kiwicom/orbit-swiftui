@@ -40,8 +40,8 @@ public struct Alert<Content: View>: View {
     @ViewBuilder let content: Content
 
     public var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-            Icon(content: iconContent, size: .normal)
+        HStack(alignment: .top, spacing: .xSmall) {
+            Icon(content: iconContent)
                 .foregroundColor(status.color)
                 .accessibility(.alertIcon)
             

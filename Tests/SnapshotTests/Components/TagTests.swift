@@ -4,6 +4,7 @@ import XCTest
 class TagTests: SnapshotTestCase {
 
     func testTags() {
-        assert(TagPreviews.snapshot)
+        assert(TagPreviews.styles)
+        assert(TagPreviews.sizing)
     }
 }
