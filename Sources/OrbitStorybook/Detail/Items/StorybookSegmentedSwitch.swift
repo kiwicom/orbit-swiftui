@@ -6,7 +6,7 @@ struct StorybookSegmentedSwitch {
     static var basic: some View {
         VStack(spacing: .large) {
             segmentedSwitch()
-            segmentedSwitch(selection: "Male")
+            segmentedSwitch(selectedIndex: 0)
             segmentedSwitch(message: .help("Help message"))
             segmentedSwitch(message: .error("Error message"))
         }
@@ -14,18 +14,18 @@ struct StorybookSegmentedSwitch {
     }
 
     static func segmentedSwitch(
-        selection: String? = nil,
+        selectedIndex: Int? = nil,
         firstOption: String = "Male",
         secondOption: String = "Female",
         label: String = "Gender",
         message: Message? = nil
     ) -> some View {
-        StateWrapper(initialState: selection) { value in
+        StateWrapper(initialState: selectedIndex) { value in
             SegmentedSwitch(
                 label: label,
                 firstOption: firstOption,
                 secondOption: secondOption,
-                selection: value,
+                selectedIndex: value,
                 message: message
             )
         }

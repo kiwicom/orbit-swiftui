@@ -6,13 +6,13 @@ import SwiftUI
 /// SegmentedSwitch can be in error state only in unselected state.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/interaction/segmentedswitch/)
-public struct SegmentedSwitch<Value>: View where Value: LosslessStringConvertible & Equatable {
+public struct SegmentedSwitch: View {
 
-    @Binding private var selection: Value?
+    @Binding private var selectedIndex: Int?
     let label: String
     let _message: Message?
-    let firstOption: Value
-    let secondOption: Value
+    let firstOption: String
+    let secondOption: String
 
     let separatorWidth: CGFloat = BorderWidth.emphasis
     let borderWidth: CGFloat = BorderWidth.emphasis
@@ -41,13 +41,13 @@ public struct SegmentedSwitch<Value>: View where Value: LosslessStringConvertibl
         .accessibility(addTraits: selection != nil ? .isSelected : [])
     }
 
-    @ViewBuilder func segment(title: Value) -> some View {
-        Text(title.description)
+    @ViewBuilder func segment(title: String) -> some View {
+        Text(title)
             .padding( .xSmall)
             .frame(maxWidth: .infinity)
             .contentShape(Rectangle())
             .onTapGesture {
-                selection = title
+                selectedIndex = title == firstOption ? 0 : 1
             }
     }
 
@@ -74,7 +74,7 @@ public struct SegmentedSwitch<Value>: View where Value: LosslessStringConvertibl
                     .layoutPriority(1)
             }
         }
-        .animation(.easeOut(duration: 0.2), value: selection)
+        .animation(.easeOut(duration: 0.2), value: selectedIndex)
     }
 
     @ViewBuilder var roundedBackground: some View {
@@ -84,6 +84,16 @@ public struct SegmentedSwitch<Value>: View where Value: LosslessStringConvertibl
                 RoundedRectangle(cornerRadius: BorderRadius.default)
                     .stroke(borderColor, lineWidth: borderWidth)
             )
+    }
+
+    private var selection: String? {
+        if selectedIndex == 0 {
+            return firstOption
+        } else if selectedIndex == 1 {
+            return secondOption
+        } else {
+            return nil
+        }
     }
 
     private var message: Message? {
@@ -112,15 +122,15 @@ public struct SegmentedSwitch<Value>: View where Value: LosslessStringConvertibl
     
     public init(
         label: String,
-        firstOption: Value,
-        secondOption: Value,
-        selection: Binding<Value?>,
+        firstOption: String,
+        secondOption: String,
+        selectedIndex: Binding<Int?>,
         message: Message? = nil
     ) {
         self.label = label
         self.firstOption = firstOption
         self.secondOption = secondOption
-        self._selection = selection
+        self._selectedIndex = selectedIndex
         self._message = message
     }
 }
@@ -150,7 +160,7 @@ struct SegmentedSwitchPreviews: PreviewProvider {
     }
 
     static var selected: some View {
-        segmentedSwitch(selection: "Male")
+        segmentedSwitch(selectedIndex: 0)
             .previewDisplayName()
     }
 
@@ -165,15 +175,15 @@ struct SegmentedSwitchPreviews: PreviewProvider {
     }
 
     static var interactive: some View {
-        StateWrapper<String?, _>(initialState: nil) { value in
+        StateWrapper<Int?, _>(initialState: 2) { value in
             VStack(spacing: .large) {
                 SegmentedSwitch(
                     label: "Gender\nmultiline",
                     firstOption: "Male with long name",
                     secondOption: "Female with much longer name",
-                    selection: value
+                    selectedIndex: value
                 )
-                Text(value.wrappedValue ?? "")
+                Text(value.wrappedValue?.description ?? "")
             }
         }
         .previewDisplayName("Live Preview")
@@ -190,18 +200,18 @@ struct SegmentedSwitchPreviews: PreviewProvider {
     }
 
     static func segmentedSwitch(
-        selection: String? = nil,
+        selectedIndex: Int? = nil,
         firstOption: String = "Male",
         secondOption: String = "Female",
         label: String = "Gender",
         message: Message? = nil
     ) -> some View {
-        StateWrapper(initialState: selection) { value in
+        StateWrapper(initialState: selectedIndex) { value in
             SegmentedSwitch(
                 label: label,
                 firstOption: firstOption,
                 secondOption: secondOption,
-                selection: value,
+                selectedIndex: value,
                 message: message
             )
         }
