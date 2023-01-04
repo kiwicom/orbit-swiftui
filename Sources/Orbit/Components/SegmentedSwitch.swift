@@ -10,7 +10,7 @@ public struct SegmentedSwitch: View {
 
     @Binding private var selectedIndex: Int?
     let label: String
-    let _message: Message?
+    let message: Message?
     let firstOption: String
     let secondOption: String
 
@@ -52,7 +52,7 @@ public struct SegmentedSwitch: View {
     }
 
     @ViewBuilder var separator: some View {
-        borderColor
+        separatorColor
           .frame(width: separatorWidth)
     }
 
@@ -96,20 +96,15 @@ public struct SegmentedSwitch: View {
         }
     }
 
-    private var message: Message? {
-        switch (_message, selection) {
-            case (.error, .some):   return nil
-            default:                return _message
-        }
-    }
-
     private var backgroundColor: Color {
         selection != nil ? .cloudNormal : .whiteDarker
     }
 
-    private var borderColor: Color {
-        guard selection == nil else { return .clear }
+    private var separatorColor: Color {
+        selection == nil ? borderColor : .clear
+    }
 
+    private var borderColor: Color {
         switch message {
             case .error:    return .redNormal
             default:        return .cloudNormal
@@ -131,7 +126,7 @@ public struct SegmentedSwitch: View {
         self.firstOption = firstOption
         self.secondOption = secondOption
         self._selectedIndex = selectedIndex
-        self._message = message
+        self.message = message
     }
 }
 
