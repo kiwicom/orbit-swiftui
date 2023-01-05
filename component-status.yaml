@@ -15,7 +15,7 @@
 - component: Checkbox
   ios: Released
 - component: Collapse
-  ios: Planned
+  ios: Released
 - component: CountryFlag
   ios: Released
 - component: Dialog
