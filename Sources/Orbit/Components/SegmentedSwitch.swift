@@ -8,14 +8,15 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/interaction/segmentedswitch/)
 public struct SegmentedSwitch: View {
 
+    @Environment(\.colorScheme) var colorScheme
+
     @Binding private var selectedIndex: Int?
     let label: String
     let message: Message?
     let firstOption: String
     let secondOption: String
 
-    let separatorWidth: CGFloat = BorderWidth.emphasis
-    let borderWidth: CGFloat = BorderWidth.emphasis
+    let borderWidth: CGFloat = BorderWidth.selection
 
     public var body: some View {
         FieldWrapper(
@@ -31,6 +32,7 @@ public struct SegmentedSwitch: View {
             }
             .background(selectionBackground)
             .background(roundedBackground)
+            .overlay(borderOverlay)
             .fixedSize(horizontal: false, vertical: true)
         }
         .accessibilityElement(children: .ignore)
@@ -42,7 +44,7 @@ public struct SegmentedSwitch: View {
     }
 
     @ViewBuilder func segment(title: String) -> some View {
-        Text(title)
+        Text(title, alignment: .center)
             .padding( .xSmall)
             .frame(maxWidth: .infinity)
             .contentShape(Rectangle())
@@ -53,7 +55,7 @@ public struct SegmentedSwitch: View {
 
     @ViewBuilder var separator: some View {
         separatorColor
-          .frame(width: separatorWidth)
+          .frame(width: borderWidth)
     }
 
     @ViewBuilder var selectionBackground: some View {
@@ -63,8 +65,8 @@ public struct SegmentedSwitch: View {
                     .layoutPriority(1)
             }
 
-            Color.whiteDarker
-                .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1))
+            (colorScheme == .light ? Color.whiteDarker : Color.cloudDarkActive)
+                .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1.5))
                 .padding(borderWidth)
                 .elevation(selection != nil ? .level1 : nil)
                 .layoutPriority(1)
@@ -79,11 +81,14 @@ public struct SegmentedSwitch: View {
 
     @ViewBuilder var roundedBackground: some View {
         RoundedRectangle(cornerRadius: BorderRadius.default)
-            .fill(backgroundColor)
-            .overlay(
-                RoundedRectangle(cornerRadius: BorderRadius.default)
-                    .stroke(borderColor, lineWidth: borderWidth)
-            )
+            .fill(Color.cloudNormal)
+    }
+
+    @ViewBuilder var borderOverlay: some View {
+        if case .error = message {
+            RoundedRectangle(cornerRadius: BorderRadius.default)
+                .strokeBorder(borderColor, lineWidth: borderWidth)
+        }
     }
 
     private var selection: String? {
@@ -94,10 +99,6 @@ public struct SegmentedSwitch: View {
         } else {
             return nil
         }
-    }
-
-    private var backgroundColor: Color {
-        selection != nil ? .cloudNormal : .whiteDarker
     }
 
     private var separatorColor: Color {
@@ -116,7 +117,7 @@ public struct SegmentedSwitch: View {
     }
     
     public init(
-        label: String,
+        _ label: String,
         firstOption: String,
         secondOption: String,
         selectedIndex: Binding<Int?>,
@@ -170,10 +171,10 @@ struct SegmentedSwitchPreviews: PreviewProvider {
     }
 
     static var interactive: some View {
-        StateWrapper<Int?, _>(initialState: 2) { value in
+        StateWrapper(initialState: Int?(2)) { value in
             VStack(spacing: .large) {
                 SegmentedSwitch(
-                    label: "Gender\nmultiline",
+                    "Gender\nmultiline",
                     firstOption: "Male with long name",
                     secondOption: "Female with much longer name",
                     selectedIndex: value
@@ -181,7 +182,7 @@ struct SegmentedSwitchPreviews: PreviewProvider {
                 Text(value.wrappedValue?.description ?? "")
             }
         }
-        .previewDisplayName("Live Preview")
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
@@ -203,7 +204,7 @@ struct SegmentedSwitchPreviews: PreviewProvider {
     ) -> some View {
         StateWrapper(initialState: selectedIndex) { value in
             SegmentedSwitch(
-                label: label,
+                label,
                 firstOption: firstOption,
                 secondOption: secondOption,
                 selectedIndex: value,

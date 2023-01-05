@@ -22,7 +22,7 @@ struct StorybookSegmentedSwitch {
     ) -> some View {
         StateWrapper(initialState: selectedIndex) { value in
             SegmentedSwitch(
-                label: label,
+                label,
                 firstOption: firstOption,
                 secondOption: secondOption,
                 selectedIndex: value,
