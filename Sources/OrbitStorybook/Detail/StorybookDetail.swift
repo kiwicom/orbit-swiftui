@@ -87,6 +87,7 @@ struct StorybookDetail: View {
     @ViewBuilder var detailFirstHalfContent: some View {
         switch(menuItem, selectedTab) {
             case (.alert, 0):               StorybookAlert.basic
+            case (.alert, 1):               StorybookAlert.inline
             case (.alert, 2):               StorybookAlert.mix
             case (.alert, 3):               StorybookAlert.live
             case (.badge, 0):               StorybookBadge.basic
