@@ -48,6 +48,8 @@
   ios: Released
 - component: Radio
   ios: Released
+- component: SegmentedSwitch
+  ios: Released
 - component: Select
   ios: Released
 - component: Separator
