@@ -185,9 +185,9 @@ public extension Text {
 public extension Text {
 
     enum Size: Equatable {
-        /// 12 pts.
+        /// 13 pts.
         case small
-        /// 14 pts.
+        /// 15 pts.
         case normal
         /// 16 pts.
         case large
@@ -199,8 +199,8 @@ public extension Text {
         /// Font size.
         public var value: CGFloat {
             switch self {
-                case .small:                return 12
-                case .normal:               return 14
+                case .small:                return 13
+                case .normal:               return 15
                 case .large:                return 16
                 case .xLarge:               return 18
                 case .custom(let size):     return size
