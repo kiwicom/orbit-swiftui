@@ -110,9 +110,9 @@ public extension Heading {
         case title3
         /// 16 pts.
         case title4
-        /// 14 pts.
+        /// 15 pts.
         case title5
-        /// 12 pts.
+        /// 13 pts.
         case title6
 
         /// Font size.
@@ -122,8 +122,8 @@ public extension Heading {
                 case .title2:           return 22
                 case .title3:           return 18
                 case .title4:           return 16
-                case .title5:           return 14
-                case .title6:           return 12
+                case .title5:           return 15
+                case .title6:           return 13
             }
         }
 

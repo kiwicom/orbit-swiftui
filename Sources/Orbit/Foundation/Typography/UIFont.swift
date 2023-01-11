@@ -5,29 +5,18 @@ public extension UIFont {
 
     enum Size: Int, Comparable {
 
-        // MARK: Text
-
-        /// Size 10.
-        case smaller = 10
-        /// Size 12. Equals to `Title 5`.
-        case small = 12
-        /// Size 14. Equals to `Title 4`.
-        case normal = 14
+        /// Size 13. Equals to `Title 5`.
+        case small = 13
+        /// Size 15. Equals to `Title 4`.
+        case normal = 15
         /// Size 16. Equals to `Title 3`.
         case large = 16
-
-        // MARK: Headings
-
-        /// Size 18. Non-Orbit. Will be removed.
+        /// Size 18.
         case xLarge = 18
-
-        /// Size 22. Equals to `Display Subtitle`.
+        /// Size 22. Equals to `Title 2`.
         case title2 = 22
-        /// Size 28.
+        /// Size 28. Equals to `Title 1`.
         case title1 = 28
-
-        /// Size 40.
-        case displayTitle = 40
 
         // MARK: iOS Specific
         /// Size 11.
