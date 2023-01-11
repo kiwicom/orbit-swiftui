@@ -30,6 +30,7 @@ public struct Alert<Content: View>: View {
 
     @Environment(\.idealSize) var idealSize
 
+    let style: AlertStyle
     let title: String
     let description: String
     let iconContent: Icon.Content
@@ -37,26 +38,36 @@ public struct Alert<Content: View>: View {
     let status: Status
     let isSuppressed: Bool
     let descriptionLinkAction: TextLink.Action
-    @ViewBuilder let content: Content
+    @ViewBuilder let customContent: Content
 
     public var body: some View {
+        content
+            .padding(.leading, iconContent.isEmpty ? .medium : .small)
+            .background(background)
+            .cornerRadius(BorderRadius.default)
+            .accessibilityElement(children: .contain)
+    }
+
+    @ViewBuilder var content: some View {
+        switch style {
+            case .default:  defaultContent
+            case .inline:   inlineContent
+        }
+    }
+
+    @ViewBuilder var defaultContent: some View {
         HStack(alignment: .top, spacing: .xSmall) {
-            Icon(content: iconContent)
-                .foregroundColor(status.color)
-                .accessibility(.alertIcon)
-            
+            icon
+
             VStack(alignment: .leading, spacing: .medium) {
-                if isHeaderEmpty == false {
-                    VStack(alignment: .leading, spacing: .xxSmall) {
-                        Text(title, weight: .bold)
-                            .accessibility(.alertTitle)
-                        Text(description, linkColor: .secondary, linkAction: descriptionLinkAction)
-                            .accessibility(.alertDescription)
-                    }
+                VStack(alignment: .leading, spacing: .xxSmall) {
+                    titleView
+                    Text(description, linkColor: .secondary, linkAction: descriptionLinkAction)
+                        .accessibility(.alertDescription)
                 }
-                
-                content
-                
+
+                customContent
+
                 switch buttons {
                     case .primary, .secondary, .primaryAndSecondary:
                         // Keeping the identity of buttons for correct animations
@@ -68,10 +79,43 @@ public struct Alert<Content: View>: View {
         }
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
         .padding([.vertical, .trailing], .medium)
-        .padding(.leading, iconContent.isEmpty ? .medium : .small)
-        .background(background)
-        .cornerRadius(BorderRadius.default)
-        .accessibilityElement(children: .contain)
+    }
+
+    @ViewBuilder var inlineContent: some View {
+        HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+            HStack(alignment: .top) {
+                icon
+
+                HStack(spacing: 0) {
+                    titleView
+                    Spacer()
+                }
+            }
+
+            switch buttons {
+                case .primary(let button),
+                     .primaryAndSecondary(let button, _):
+                    Button(button.label, style: primaryButtonStyle, size: .small, action: button.action)
+                        .fixedSize()
+                        .accessibility(.alertButtonPrimary)
+                case .none, .secondary:
+                    EmptyView()
+            }
+        }
+        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
+        .padding(.top, .xSmall + 3)
+        .padding([.bottom, .trailing], .xSmall)
+    }
+
+    @ViewBuilder var icon: some View {
+        Icon(content: iconContent)
+            .foregroundColor(status.color)
+            .accessibility(.alertIcon)
+    }
+
+    @ViewBuilder var titleView: some View {
+        Text(title, weight: .bold)
+            .accessibility(.alertTitle)
     }
 
     @ViewBuilder var buttonsView: some View {
@@ -147,10 +191,6 @@ public struct Alert<Content: View>: View {
             ? .secondary
             : .status(status, subtle: true)
     }
-
-    var isHeaderEmpty: Bool {
-        title.isEmpty && description.isEmpty
-    }
 }
 
 // MARK: - Inits
@@ -173,8 +213,9 @@ public extension Alert {
         self.buttons = buttons
         self.status = status
         self.isSuppressed = isSuppressed
+        self.style = .default
         self.descriptionLinkAction = descriptionLinkAction
-        self.content = content()
+        self.customContent = content()
     }
     
     /// Creates Orbit Alert component.
@@ -198,6 +239,25 @@ public extension Alert {
             content: { EmptyView() }
         )
     }
+
+    /// Creates Orbit Alert (inline) component.
+    init(
+        _ title: String = "",
+        icon: Icon.Content = .none,
+        button: Button.Content? = nil,
+        status: Status = .info,
+        isSuppressed: Bool = false
+    ) where Content == EmptyView {
+        self.title = title
+        self.description = ""
+        self.iconContent = icon
+        self.buttons = button.map { .primary($0) } ?? .none
+        self.status = status
+        self.isSuppressed = isSuppressed
+        self.style = .inline
+        self.descriptionLinkAction = { _, _ in }
+        self.customContent = EmptyView()
+    }
 }
 
 // MARK: - Identifiers
@@ -208,6 +268,12 @@ public extension AccessibilityID {
     static let alertTitle               = Self(rawValue: "orbit.alert.title")
     static let alertIcon                = Self(rawValue: "orbit.alert.icon")
     static let alertDescription         = Self(rawValue: "orbit.alert.description")
+}
+
+// MARK: - Styles
+enum AlertStyle {
+    case `default`
+    case inline
 }
 
 // MARK: - Previews
@@ -229,10 +295,19 @@ struct AlertPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
 
-            basic
-            basicNoIcon
-            suppressed
-            suppressedNoIcon
+            Group {
+                basic
+                basicNoIcon
+                suppressed
+                suppressedNoIcon
+            }
+
+            Group {
+                inlineBasic
+                inlineNoIcon
+                inlineSuppressed
+                inlineSuppressedNoIcon
+            }
 
             primaryButtonOnly
             noButtons
@@ -242,13 +317,19 @@ struct AlertPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Alert(
-            "Alert with very very very very very very very very very very very long and <u>multiline</u> title",
-            description: description,
-            icon: .grid,
-            buttons: primaryAndSecondaryConfiguration
-        ) {
-            contentPlaceholder
+        VStack(spacing: .large) {
+            Alert(
+                "Alert with very very very very very very very very very very very long and <u>multiline</u> title",
+                description: description,
+                icon: .grid,
+                buttons: primaryAndSecondaryConfiguration
+            ) {
+                contentPlaceholder
+            }
+
+            Alert("Inline alert", icon: .grid, button: "Primary", status: .warning, isSuppressed: false)
+
+            Alert("Inline alert with very very very very very very very very very very very long and <u>multiline</u> title", icon: .grid, button: "Primary", status: .warning, isSuppressed: false)
         }
         .previewDisplayName()
     }
@@ -273,6 +354,26 @@ struct AlertPreviews: PreviewProvider {
             .previewDisplayName()
     }
 
+    static var inlineBasic: some View {
+        inlineAlerts(showIcon: true, isSuppressed: false)
+            .previewDisplayName()
+    }
+
+    static var inlineNoIcon: some View {
+        inlineAlerts(showIcon: false, isSuppressed: false)
+            .previewDisplayName()
+    }
+
+    static var inlineSuppressed: some View {
+        inlineAlerts(showIcon: true, isSuppressed: true)
+            .previewDisplayName()
+    }
+
+    static var inlineSuppressedNoIcon: some View {
+        inlineAlerts(showIcon: false, isSuppressed: true)
+            .previewDisplayName()
+    }
+
     static func alert(_ title: String, status: Status, icon: Icon.Symbol, isSuppressed: Bool) -> some View {
         Alert(
             title,
@@ -290,6 +391,15 @@ struct AlertPreviews: PreviewProvider {
             alert("Success message", status: .success, icon: showIcons ? .checkCircle : .none, isSuppressed: isSuppressed)
             alert("Warning message", status: .warning, icon: showIcons ? .alertCircle : .none, isSuppressed: isSuppressed)
             alert("Critical message", status: .critical, icon: showIcons ? .alertCircle : .none, isSuppressed: isSuppressed)
+        }
+    }
+
+    static func inlineAlerts(showIcon: Bool, isSuppressed: Bool) -> some View {
+        VStack(spacing: .medium) {
+            Alert("Informational message", icon: showIcon ? .informationCircle : .none, button: "Primary", status: .info, isSuppressed: isSuppressed)
+            Alert("Success message", icon: showIcon ? .checkCircle : .none, button: "Primary", status: .success, isSuppressed: isSuppressed)
+            Alert("Warning message", icon: showIcon ? .alertCircle : .none, button: "Primary", status: .warning, isSuppressed: isSuppressed)
+            Alert("Critical message", icon: showIcon ? .alertCircle : .none, button: "Primary", status: .critical, isSuppressed: isSuppressed)
         }
     }
 

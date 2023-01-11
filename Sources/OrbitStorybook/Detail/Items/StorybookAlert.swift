@@ -25,6 +25,16 @@ struct StorybookAlert {
         .previewDisplayName()
     }
 
+    static var inline: some View {
+        LazyVStack(alignment: .leading, spacing: .large) {
+            inlineAlerts(showIcon: true, isSuppressed: false)
+            inlineAlerts(showIcon: false, isSuppressed: false)
+            inlineAlerts(showIcon: true, isSuppressed: true)
+            inlineAlerts(showIcon: false, isSuppressed: true)
+        }
+        .previewDisplayName()
+    }
+
     static var mix: some View {
         LazyVStack(alignment: .leading, spacing: .large) {
             alertPrimaryButtonOnly
@@ -112,6 +122,15 @@ struct StorybookAlert {
             isSuppressed: isSuppressed
         )
     }
+
+    static func inlineAlerts(showIcon: Bool, isSuppressed: Bool) -> some View {
+        VStack(spacing: .medium) {
+            Alert("Informational message", icon: showIcon ? .informationCircle : .none, button: "Primary", status: .info, isSuppressed: isSuppressed)
+            Alert("Success message", icon: showIcon ? .checkCircle : .none, button: "Primary", status: .success, isSuppressed: isSuppressed)
+            Alert("Warning message", icon: showIcon ? .alertCircle : .none, button: "Primary", status: .warning, isSuppressed: isSuppressed)
+            Alert("Critical message", icon: showIcon ? .alertCircle : .none, button: "Primary", status: .critical, isSuppressed: isSuppressed)
+        }
+    }
 }
 
 struct StorybookAlertPreviews: PreviewProvider {
@@ -119,6 +138,7 @@ struct StorybookAlertPreviews: PreviewProvider {
     static var previews: some View {
         OrbitPreviewWrapper {
             StorybookAlert.basic
+            StorybookAlert.inline
             StorybookAlert.mix
             StorybookAlert.live
         }
