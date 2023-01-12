@@ -10,11 +10,13 @@ public extension Font {
     /// Default ratio between font size and desired line height, used for calculating custom text sizes.
     static var fontSizeToLineHeightRatio: CGFloat = 1.3333
 
-    /// Ratio between font size and real single line text height.
+    /// Ratio between font size and rendered single line text height.
+    ///
+    /// A custom font might need to provide a different value.
     ///
     /// Example:
-    /// - Orbit Circular20 font 16pt size results in 20.33 pt text height.
-    static var fontSizeToHeightRatio: CGFloat = 1.28
+    /// - Orbit Circular20 font 16pt size results in 19.33pt rendered height.
+    static var fontSizeToHeightRatio: CGFloat = 1.208
     
     /// Fonts used for rendering text in Orbit.
     static var orbitFonts: [Font.Weight: URL?] = [

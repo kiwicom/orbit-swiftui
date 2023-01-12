@@ -5,5 +5,6 @@ class HeadingTests: SnapshotTestCase {
 
     func testHeadings() {
         assert(HeadingPreviews.formatted)
+        assert(HeadingPreviews.lineHeight)
     }
 }

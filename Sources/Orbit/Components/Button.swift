@@ -293,12 +293,12 @@ struct ButtonPreviews: PreviewProvider {
             gradients
             mix
         }
-        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
     static var standalone: some View {
         Button("Button", icon: .grid)
+            .padding(.medium)
             .previewDisplayName()
     }
 
@@ -313,6 +313,7 @@ struct ButtonPreviews: PreviewProvider {
             Button(.arrowUp)
                 .idealSize()
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -328,6 +329,7 @@ struct ButtonPreviews: PreviewProvider {
             }
             .measured()
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -339,6 +341,7 @@ struct ButtonPreviews: PreviewProvider {
             buttons(.critical)
             buttons(.criticalSubtle)
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -349,6 +352,7 @@ struct ButtonPreviews: PreviewProvider {
             statusButtonStack(.warning)
             statusButtonStack(.critical)
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -358,6 +362,7 @@ struct ButtonPreviews: PreviewProvider {
             buttons(.gradient(.bundleMedium)).previewDisplayName("Bundle Medium")
             buttons(.gradient(.bundleTop)).previewDisplayName("Bundle Top")
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
@@ -367,6 +372,7 @@ struct ButtonPreviews: PreviewProvider {
             Button("Button with Flag", icon: .countryFlag("cz"))
             Button("Button with Image", icon: .image(.orbit(.facebook)))
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
