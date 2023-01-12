@@ -14,20 +14,18 @@ public struct Heading: View {
     let lineSpacing: CGFloat?
     let alignment: TextAlignment
     let accentColor: UIColor
+    let linkColor: TextLink.Color
+    let isSelectable: Bool
+    let strikethrough: Bool
+    let kerning: CGFloat
+    let linkAction: TextLink.Action
 
     public var body: some View {
-        if content.isEmpty == false {
-            text(sizeCategory: sizeCategory)
-                .lineSpacing(lineSpacing ?? 0)
-                .multilineTextAlignment(alignment)
-                .padding(.vertical, style.linePadding * sizeCategory.ratio)
-                .frame(minHeight: style.lineHeight * sizeCategory.ratio)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibility(addTraits: .isHeader)
-        }
+        textContent
+            .accessibility(addTraits: .isHeader)
     }
 
-    func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
+    @ViewBuilder var textContent: Text {
         Text(
             content,
             size: .custom(style.size),
@@ -36,9 +34,17 @@ public struct Heading: View {
             lineSpacing: lineSpacing,
             alignment: alignment,
             accentColor: accentColor,
-            isSelectable: false
+            linkColor: linkColor,
+            isSelectable: isSelectable,
+            strikethrough: strikethrough,
+            kerning: kerning,
+            linkAction: linkAction
         )
-        .text(sizeCategory: sizeCategory)
+    }
+
+    func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
+        textContent
+            .text(sizeCategory: sizeCategory)
     }
 }
 
@@ -48,20 +54,29 @@ public extension Heading {
     /// Creates Orbit Heading component.
     ///
     /// - Parameters:
-    ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`.
+    ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
     ///   - style: Heading style.
     ///   - color: Font color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
     ///   - lineSpacing: Distance in points between the bottom of one line fragment and the top of the next.
     ///   - alignment: Horizontal multi-line alignment.
     ///   - accentColor: Color for `<ref>` formatting tag.
     ///   - linkColor: Color for `<a href>` and `<applink>` formatting tag.
+    ///   - linkAction: Handler for any detected TextLink tap action.
+    ///   - isSelectable: Determines if text is copyable using long tap gesture.
+    ///   - kerning: Additional spacing between characters.
+    ///   - strikethrough: Determines if strikethrough should be applied.
     init(
         _ content: String,
         style: Style,
         color: Color? = .inkDark,
         lineSpacing: CGFloat? = nil,
         alignment: TextAlignment = .leading,
-        accentColor: UIColor? = nil
+        accentColor: UIColor? = nil,
+        linkColor: TextLink.Color = .primary,
+        isSelectable: Bool = false,
+        strikethrough: Bool = false,
+        kerning: CGFloat = 0,
+        linkAction: @escaping TextLink.Action = { _, _ in }
     ) {
         self.content = content
         self.style = style
@@ -69,6 +84,11 @@ public extension Heading {
         self.lineSpacing = lineSpacing
         self.alignment = alignment
         self.accentColor = accentColor ?? color?.uiValue ?? .inkDark
+        self.linkColor = linkColor
+        self.isSelectable = isSelectable
+        self.strikethrough = strikethrough
+        self.kerning = kerning
+        self.linkAction = linkAction
     }
 }
 
@@ -178,8 +198,8 @@ struct HeadingPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            custom
             formatted
+            sizes
             concatenated
         }
         .previewLayout(.sizeThatFits)
@@ -194,16 +214,21 @@ struct HeadingPreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static var custom: some View {
-        VStack(alignment: .trailing, spacing: .xxLarge) {
-            Heading("Multiline\nlong heading", style: .title2, color: .custom(.blueDarkActive), lineSpacing: 20, alignment: .trailing, accentColor: .greenDark)
-            Heading("Multiline\n<ref>long</ref> heading", style: .title2, color: .custom(.blueDarkActive), lineSpacing: 20, alignment: .trailing, accentColor: .greenDark)
+    static var formatted: some View {
+        VStack(alignment: .trailing, spacing: .medium) {
+            Group {
+                Heading("Multiline\nlong heading", style: .title2, color: .custom(.inkNormal), lineSpacing: 10, alignment: .trailing, accentColor: .greenDark, strikethrough: true, kerning: 5)
+                Heading("Multiline\n<ref>long</ref> heading", style: .title2, color: nil, lineSpacing: 10, alignment: .trailing, accentColor: .redNormal, strikethrough: true, kerning: 5)
+                Heading("Multiline\n<applink1>long</applink1> heading", style: .title2, color: .custom(.orangeNormal), lineSpacing: 10, alignment: .trailing, accentColor: .greenDark, strikethrough: true, kerning: 5)
+            }
+            .border(Color.cloudNormal)
         }
+        .foregroundColor(Color.blueNormal)
         .padding(.medium)
         .previewDisplayName()
     }
     
-    static var formatted: some View {
+    static var sizes: some View {
         VStack(alignment: .leading, spacing: .xSmall) {
             formattedHeading("<ref><u>Title 1</u></ref> with a very large and <strong>multiline</strong> content", style: .title1)
             formattedHeading("<ref><u>Title 2</u></ref> with a very very large and <strong>multiline</strong> content", style: .title2)

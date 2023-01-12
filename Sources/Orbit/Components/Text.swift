@@ -18,10 +18,10 @@ public struct Text: View {
     let alignment: TextAlignment
     let accentColor: UIColor
     let linkColor: TextLink.Color
-    let linkAction: TextLink.Action
     let isSelectable: Bool
-    let kerning: CGFloat
     let strikethrough: Bool
+    let kerning: CGFloat
+    let linkAction: TextLink.Action
 
     public var body: some View {
         if content.isEmpty == false {
