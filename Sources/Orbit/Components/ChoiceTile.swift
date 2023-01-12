@@ -21,7 +21,7 @@ public enum ChoiceTileAlignment {
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/choice-tile/)
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
-public struct ChoiceTile<Content: View>: View {
+public struct ChoiceTile<HeaderContent: View, Content: View>: View {
 
     @Environment(\.idealSize) var idealSize
 
@@ -29,7 +29,6 @@ public struct ChoiceTile<Content: View>: View {
 
     let title: String
     let description: String
-    let badge: String
     let badgeOverlay: String
     let iconContent: Icon.Content
     let illustration: Illustration.Image
@@ -41,6 +40,7 @@ public struct ChoiceTile<Content: View>: View {
     let alignment: ChoiceTileAlignment
     let action: () -> Void
     @ViewBuilder let content: Content
+    @ViewBuilder let headerContent: HeaderContent
 
     public var body: some View {
         SwiftUI.Button(
@@ -49,10 +49,11 @@ public struct ChoiceTile<Content: View>: View {
                 action()
             },
             label: {
-                VStack(alignment: .leading, spacing: padding) {
+                VStack(alignment: contentAlignment, spacing: padding) {
                     header
                     content
                     messageView
+                    centerIndicator
                 }
                 .padding(.top, badgeOverlay.isEmpty ? 0 : .small)
                 .overlay(indicatorOverlay, alignment: indicatorAlignment)
@@ -64,7 +65,7 @@ public struct ChoiceTile<Content: View>: View {
         .overlay(badgeOverlayView, alignment: .top)
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(title))
-        .accessibility(value: .init(badgeOverlay.isEmpty ?  badge : badgeOverlay))
+        .accessibility(value: .init(badgeOverlay))
         .accessibility(hint: .init(messageDescription.isEmpty ? description : messageDescription))
         .accessibility(addTraits: .isButton)
         .accessibility(addTraits: isSelected ? .isSelected : [])
@@ -79,7 +80,7 @@ public struct ChoiceTile<Content: View>: View {
                             .foregroundColor(.inkDark)
                             .padding(.trailing, .xSmall)
                             .accessibility(.choiceTileIcon)
-                        
+
                         VStack(alignment: .leading, spacing: .xxSmall) {
                             Heading(title, style: titleStyle)
                                 .accessibility(.choiceTileTitle)
@@ -91,12 +92,12 @@ public struct ChoiceTile<Content: View>: View {
                         if idealSize.horizontal == nil {
                             Spacer(minLength: 0)
                         }
-                        
-                        Badge(badge, style: .status(.info))
-                            .padding(.leading, .xSmall)
-                            .accessibility(.choiceTileBadge)
+
+                        headerContent
+                            .padding(.leading, .small)
                     }
                     .padding(.vertical, .xxxSmall) // = 52 height @ normal size
+                    .padding(.trailing, indicatorTrailingPadding)
                 case .center:
                     VStack(spacing: .xxSmall) {
                         if illustration == .none {
@@ -114,8 +115,7 @@ public struct ChoiceTile<Content: View>: View {
                         Text(description, color: .inkNormal, alignment: .center)
                             .accessibility(.choiceTileDescription)
 
-                        Badge(badge, style: .neutral)
-                            .accessibility(.choiceTileBadge)
+                        headerContent
                     }
                     .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
             }
@@ -123,14 +123,19 @@ public struct ChoiceTile<Content: View>: View {
     }
     
     @ViewBuilder var messageView: some View {
-        switch alignment {
-            case .default:
-                FieldMessage(message, spacing: .xSmall)
-                    .padding(.trailing, messagePadding)
-            case .center:
-                FieldMessage(message, spacing: .xSmall)
-                    .frame(maxWidth: .infinity)
-                    .padding(.bottom, messagePadding)
+        FieldMessage(message, spacing: .xSmall)
+            .padding(.trailing, indicatorTrailingPadding)
+    }
+
+    @ViewBuilder var centerIndicator: some View {
+        if alignment == .center {
+            indicatorContent
+        }
+    }
+
+    @ViewBuilder var indicatorOverlay: some View {
+        if alignment == .default {
+            indicatorContent
         }
     }
 
@@ -141,10 +146,11 @@ public struct ChoiceTile<Content: View>: View {
             }
     }
 
-    @ViewBuilder var indicatorOverlay: some View {
+    @ViewBuilder var indicatorContent: some View {
         indicatorElement
             .allowsHitTesting(false)
             .padding(.xxxSmall)
+            .padding(.bottom, indicatorContentBottomPadding)
     }
 
     @ViewBuilder var indicatorElement: some View {
@@ -156,7 +162,7 @@ public struct ChoiceTile<Content: View>: View {
     }
 
     var isHeaderContentEmpty: Bool {
-        title.isEmpty && description.isEmpty && iconContent.isEmpty && badge.isEmpty
+        title.isEmpty && description.isEmpty && iconContent.isEmpty && headerContent is EmptyView
     }
 
     var shouldSelectIndicator: Bool {
@@ -169,6 +175,13 @@ public struct ChoiceTile<Content: View>: View {
 
     var errorShouldHighlightBorder: Bool {
         isError && isSelected
+    }
+
+    var contentAlignment: HorizontalAlignment {
+        switch alignment {
+            case .default:      return .leading
+            case .center:       return .center
+        }
     }
 
     var indicatorAlignment: Alignment {
@@ -186,10 +199,20 @@ public struct ChoiceTile<Content: View>: View {
         }
     }
     
-    var messagePadding: CGFloat {
-        indicatorSize > 0
-            ? (indicatorSize + padding + .xSmall)
+    var indicatorTrailingPadding: CGFloat {
+        isHeaderOnlyContent
+            ? (indicatorSize + padding + .xxSmall)
             : 0
+    }
+
+    var indicatorContentBottomPadding: CGFloat {
+        isHeaderOnlyContent
+            ? .xxxSmall
+            : 0
+    }
+
+    var isHeaderOnlyContent: Bool {
+        alignment == .default && content is EmptyView && message == nil
     }
 
     var messageDescription: String {
@@ -200,13 +223,12 @@ public struct ChoiceTile<Content: View>: View {
 // MARK: - Inits
 public extension ChoiceTile {
 
-    /// Creates Orbit ChoiceTile component over custom content.
+    /// Creates Orbit ChoiceTile component with custom header and footer content.
     init(
         _ title: String = "",
         description: String = "",
         icon: Icon.Content = .none,
         illustration: Illustration.Image = .none,
-        badge: String = "",
         badgeOverlay: String = "",
         indicator: ChoiceTileIndicator = .radio,
         titleStyle: Heading.Style = .title3,
@@ -215,13 +237,13 @@ public extension ChoiceTile {
         message: Message? = nil,
         alignment: ChoiceTileAlignment = .default,
         action: @escaping () -> Void = {},
-        @ViewBuilder content: () -> Content
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder headerContent: () -> HeaderContent
     ) {
         self.title = title
         self.description = description
         self.iconContent = icon
         self.illustration = illustration
-        self.badge = badge
         self.badgeOverlay = badgeOverlay
         self.indicator = indicator
         self.titleStyle = titleStyle
@@ -231,15 +253,15 @@ public extension ChoiceTile {
         self.alignment = alignment
         self.action = action
         self.content = content()
+        self.headerContent = headerContent()
     }
 
-    /// Creates Orbit ChoiceTile component.
+    /// Creates Orbit ChoiceTile component with custom header content.
     init(
         _ title: String = "",
         description: String = "",
         icon: Icon.Content = .none,
         illustration: Illustration.Image = .none,
-        badge: String = "",
         badgeOverlay: String = "",
         indicator: ChoiceTileIndicator = .radio,
         titleStyle: Heading.Style = .title3,
@@ -247,14 +269,14 @@ public extension ChoiceTile {
         isError: Bool = false,
         message: Message? = nil,
         alignment: ChoiceTileAlignment = .default,
-        action: @escaping () -> Void = {}
+        action: @escaping () -> Void = {},
+        @ViewBuilder headerContent: () -> HeaderContent
     ) where Content == EmptyView {
         self.init(
             title,
             description: description,
             icon: icon,
             illustration: illustration,
-            badge: badge,
             badgeOverlay: badgeOverlay,
             indicator: indicator,
             titleStyle: titleStyle,
@@ -263,7 +285,75 @@ public extension ChoiceTile {
             message: message,
             alignment: alignment,
             action: action,
-            content: { EmptyView() }
+            content: { EmptyView() },
+            headerContent: headerContent
+        )
+    }
+
+    /// Creates Orbit ChoiceTile component with custom footer content.
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Content = .none,
+        illustration: Illustration.Image = .none,
+        badgeOverlay: String = "",
+        indicator: ChoiceTileIndicator = .radio,
+        titleStyle: Heading.Style = .title3,
+        isSelected: Bool = false,
+        isError: Bool = false,
+        message: Message? = nil,
+        alignment: ChoiceTileAlignment = .default,
+        action: @escaping () -> Void = {},
+        @ViewBuilder content: () -> Content
+    ) where HeaderContent == EmptyView {
+        self.init(
+            title,
+            description: description,
+            icon: icon,
+            illustration: illustration,
+            badgeOverlay: badgeOverlay,
+            indicator: indicator,
+            titleStyle: titleStyle,
+            isSelected: isSelected,
+            isError: isError,
+            message: message,
+            alignment: alignment,
+            action: action,
+            content: content,
+            headerContent: { EmptyView() }
+        )
+    }
+
+    /// Creates Orbit ChoiceTile component.
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Content = .none,
+        illustration: Illustration.Image = .none,
+        badgeOverlay: String = "",
+        indicator: ChoiceTileIndicator = .radio,
+        titleStyle: Heading.Style = .title3,
+        isSelected: Bool = false,
+        isError: Bool = false,
+        message: Message? = nil,
+        alignment: ChoiceTileAlignment = .default,
+        action: @escaping () -> Void = {}
+    ) where Content == EmptyView, HeaderContent == EmptyView {
+        self.init(
+            title,
+            description: description,
+            icon: icon,
+            illustration: illustration,
+            badgeOverlay: badgeOverlay,
+            indicator: indicator,
+            titleStyle: titleStyle,
+            isSelected: isSelected,
+            isError: isError,
+            message: message,
+            alignment: alignment,
+            action: action,
+            content: { EmptyView() },
+            headerContent: { EmptyView() }
         )
     }
 }
@@ -301,10 +391,11 @@ struct ChoiceTilePreviews: PreviewProvider {
             title,
             description: description,
             icon: .grid,
-            badge: "Popular",
             message: .help("Message")
         ) {
             contentPlaceholder
+        } headerContent: {
+            headerPlaceholder
         }
         .padding(.medium)
         .previewDisplayName()
@@ -330,20 +421,33 @@ struct ChoiceTilePreviews: PreviewProvider {
             title,
             description: description,
             illustration: .priorityBoarding,
-            badge: "Included",
             badgeOverlay: "Recommended",
             message: .help("Message"),
             alignment: .center
         ) {
             contentPlaceholder
+        } headerContent: {
+            headerPlaceholder
         }
         .padding(.medium)
         .previewDisplayName()
     }
 
     static var intrinsic: some View {
-        ChoiceTile("Intrinsic", icon: .grid) {
-            intrinsicContentPlaceholder
+        VStack(alignment: .leading, spacing: .medium) {
+            ChoiceTile("Intrinsic", icon: .grid)
+            ChoiceTile("Intrinsic", icon: .grid, headerContent: { Badge("Badge") })
+            ChoiceTile("Intrinsic", icon: .grid, message: .error("Error"))
+            ChoiceTile("Intrinsic", icon: .grid, alignment: .center)
+            ChoiceTile("Intrinsic", icon: .grid, message: .error("Error"), alignment: .center)
+            ChoiceTile("Intrinsic longer", icon: .grid) {
+                intrinsicContentPlaceholder
+            } headerContent: {
+                Badge("Badge")
+            }
+            ChoiceTile("Intrinsic", icon: .grid, message: .error("Error"), action: {}, content: {
+                intrinsicContentPlaceholder
+            })
         }
         .idealSize()
         .padding(.medium)

@@ -38,8 +38,8 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     let value: String
     let disclosure: ListChoiceDisclosure
     let showSeparator: Bool
-    let content: Content
     let action: () -> Void
+    @ViewBuilder let content: Content
     @ViewBuilder let headerContent: HeaderContent
 
     public var body: some View {
@@ -86,13 +86,13 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
         if isHeaderEmpty == false || isCustomHeaderEmpty == false {
             HStack(spacing: 0) {
                 headerTexts
-                    .padding(.trailing, .xSmall)
 
                 if isHeaderEmpty == false, idealSize.horizontal == nil {
                     Spacer(minLength: 0)
                 }
 
                 headerContent
+                    .padding(.leading, .xSmall)
                     .padding(.leading, isHeaderEmpty ? .medium : 0)
                     .padding(.trailing, disclosure == .none ? .medium : 0)
                     .accessibility(.listChoiceValue)
