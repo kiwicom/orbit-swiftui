@@ -8,3 +8,9 @@ extension CGFloat {
             : .init(format: "%.2f", self)
     }
 }
+
+extension Double {
+    var formatted: String {
+        CGFloat(self).formatted
+    }
+}

@@ -596,7 +596,7 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                     .border(.cloudDark, width: .hairline)
                     .padding(.trailing, 200 * (1 - state.wrappedValue.0))
 
-                    Slider(
+                    SwiftUI.Slider(
                         value: Binding<Double>(get: { state.wrappedValue.0 }, set: { state.wrappedValue.0 = $0 }),
                         in: 0...1
                     )
@@ -615,7 +615,7 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                     .border(.cloudNormal)
                     .padding(.leading, 200 * (1 - state.wrappedValue.1))
 
-                    Slider(
+                    SwiftUI.Slider(
                         value: Binding<Double>(get: { state.wrappedValue.1 }, set: { state.wrappedValue.1 = $0 }),
                         in: 0...1
                     )
@@ -628,7 +628,7 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                     .border(.cloudNormal)
                     .padding(.trailing, 200 * (1 - state.wrappedValue.2))
 
-                    Slider(
+                    SwiftUI.Slider(
                         value: Binding<Double>(get: { state.wrappedValue.2 }, set: { state.wrappedValue.2 = $0 }),
                         in: 0...1
                     )
