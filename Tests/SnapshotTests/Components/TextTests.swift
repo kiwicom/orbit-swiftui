@@ -6,5 +6,6 @@ class TextTests: SnapshotTestCase {
     func testTexts() {
         assert(TextPreviews.formatting)
         assert(TextPreviews.lineHeight)
+        assert(TextPreviews.lineSpacing)
     }
 }

@@ -18,7 +18,9 @@ struct Measurements: View {
             Color.redNormal
                 .frame(width: 1)
 
-            Text("\(size.formatted)", size: .custom(6), color: .custom(.redNormal))
+            SwiftUI.Text("\(size.formatted)")
+                .foregroundColor(.redNormal)
+                .orbitFont(size: 6, sizeCategory: .large)
                 .lineLimit(1)
                 .environment(\.sizeCategory, .large)
 

@@ -9,12 +9,6 @@ public extension Font {
 
     /// Default ratio between font size and desired line height, used for calculating custom text sizes.
     static var fontSizeToLineHeightRatio: CGFloat = 1.3333
-
-    /// Ratio between font size and real single line text height.
-    ///
-    /// Example:
-    /// - Orbit Circular20 font 16pt size results in 20.33 pt text height.
-    static var fontSizeToHeightRatio: CGFloat = 1.28
     
     /// Fonts used for rendering text in Orbit.
     static var orbitFonts: [Font.Weight: URL?] = [
@@ -25,18 +19,8 @@ public extension Font {
     ]
 
     /// Creates Orbit font.
-    static func orbit(size: CGFloat, scaledSize: CGFloat, weight: Weight = .regular) -> Font {
-
-        if orbitFontNames.isEmpty {
-            return nonScalingSystemFont(size: scaledSize, weight: weight)
-        }
-
-        guard let fontName = orbitFontNames[weight] else {
-            assertionFailure("Unsupported font weight")
-            return nonScalingSystemFont(size: scaledSize, weight: weight)
-        }
-
-        return customFont(fontName, size: size)
+    static func orbit(size: CGFloat, weight: Weight = .regular) -> Font {
+        Font(UIFont.orbit(size: size, weight: weight.uiKit))
     }
 
     /// Creates Orbit icon font.
@@ -45,9 +29,6 @@ public extension Font {
     }
 
     /// Registers Orbit fonts set in the `orbitTextFonts` property.
-    ///
-    /// For more precise control over text line height and sizing,
-    /// override `fontSizeToLineHeightRatio` and `fontSizeToHeightRatio` Font properties with custom values matching the font properties.
     static func registerOrbitFonts() {
 
         if let iconsFontURL = Bundle.current.url(forResource: "Icons.ttf", withExtension: nil) {
