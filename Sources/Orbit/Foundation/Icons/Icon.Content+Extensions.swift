@@ -94,6 +94,8 @@ public extension Icon.Content {
     static let calendar: Self = .symbol(.calendar)
     /// Orbit `calendarAnytime` icon symbol with unspecified color.
     static let calendarAnytime: Self = .symbol(.calendarAnytime)
+    /// Orbit `calendarDuration` icon symbol with unspecified color.
+    static let calendarDuration: Self = .symbol(.calendarDuration)
     /// Orbit `calendarRange` icon symbol with unspecified color.
     static let calendarRange: Self = .symbol(.calendarRange)
     /// Orbit `calendarTripLength` icon symbol with unspecified color.
