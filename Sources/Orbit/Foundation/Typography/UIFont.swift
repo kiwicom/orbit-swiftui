@@ -3,50 +3,9 @@ import SwiftUI
 
 public extension UIFont {
 
-    enum Size: Int, Comparable {
-
-        /// Size 13. Equals to `Title 5`.
-        case small = 13
-        /// Size 15. Equals to `Title 4`.
-        case normal = 15
-        /// Size 16. Equals to `Title 3`.
-        case large = 16
-        /// Size 18.
-        case xLarge = 18
-        /// Size 22. Equals to `Title 2`.
-        case title2 = 22
-        /// Size 28. Equals to `Title 1`.
-        case title1 = 28
-
-        // MARK: iOS Specific
-        /// Size 11.
-        case tabBar = 11
-        /// Size 17.
-        case navigationBar = 17
-
-        public static func < (lhs: Size, rhs: Size) -> Bool {
-            lhs.rawValue < rhs.rawValue
-        }
-
-        public var value: CGFloat {
-            CGFloat(self.rawValue)
-        }
-    }
-
-    /// Creates Orbit font.
-    static func orbit(size: Size = .normal, weight: Weight = .regular) -> UIFont {
-        orbit(size: size.value, weight: weight)
-    }
-
     static var orbit: UIFont {
-        orbit()
+        orbit(size: Text.Size.normal.value)
     }
-}
-
-extension UIFont {
-
-    private static let fractionPaddingFix: CGFloat = UIScreen.main.scale == 2 ? 0.24 : 0.16
-    private static var lineHeights = [CGFloat: CGFloat]()
 
     static func orbit(size: CGFloat, weight: Weight = .regular) -> UIFont {
         let font: UIFont
@@ -63,6 +22,12 @@ extension UIFont {
 
         return font
     }
+}
+
+extension UIFont {
+
+    private static let fractionPaddingFix: CGFloat = UIScreen.main.scale == 2 ? 0.24 : 0.16
+    private static var lineHeights = [CGFloat: CGFloat]()
 
     static func lineHeight(size: CGFloat) -> CGFloat {
         lineHeights[size] ?? 0

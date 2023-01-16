@@ -254,7 +254,7 @@ private extension TagAttributedStringBuilder.Tag {
                 } else if let font = textAttributes[.font] as? UIFont {
                     boldFont = .orbit(size: font.pointSize, weight: .bold)
                 } else {
-                    boldFont = .orbit(size: .normal, weight: .bold)
+                    boldFont = .orbit(size: Text.Size.normal.value, weight: .bold)
                 }
 
                 return stringByAddingAttributes([.font: boldFont], to: currentAttributedString, at: result.ranges[1])
