@@ -256,40 +256,6 @@ public extension ChoiceTile {
         self.headerContent = headerContent()
     }
 
-    /// Creates Orbit ChoiceTile component with custom header content.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Content = .none,
-        illustration: Illustration.Image = .none,
-        badgeOverlay: String = "",
-        indicator: ChoiceTileIndicator = .radio,
-        titleStyle: Heading.Style = .title3,
-        isSelected: Bool = false,
-        isError: Bool = false,
-        message: Message? = nil,
-        alignment: ChoiceTileAlignment = .default,
-        action: @escaping () -> Void = {},
-        @ViewBuilder headerContent: () -> HeaderContent
-    ) where Content == EmptyView {
-        self.init(
-            title,
-            description: description,
-            icon: icon,
-            illustration: illustration,
-            badgeOverlay: badgeOverlay,
-            indicator: indicator,
-            titleStyle: titleStyle,
-            isSelected: isSelected,
-            isError: isError,
-            message: message,
-            alignment: alignment,
-            action: action,
-            content: { EmptyView() },
-            headerContent: headerContent
-        )
-    }
-
     /// Creates Orbit ChoiceTile component with custom footer content.
     init(
         _ title: String = "",
@@ -436,7 +402,7 @@ struct ChoiceTilePreviews: PreviewProvider {
     static var intrinsic: some View {
         VStack(alignment: .leading, spacing: .medium) {
             ChoiceTile("Intrinsic", icon: .grid)
-            ChoiceTile("Intrinsic", icon: .grid, headerContent: { Badge("Badge") })
+            ChoiceTile("Intrinsic", icon: .grid, content: { EmptyView() }, headerContent: { Badge("Badge") })
             ChoiceTile("Intrinsic", icon: .grid, message: .error("Error"))
             ChoiceTile("Intrinsic", icon: .grid, alignment: .center)
             ChoiceTile("Intrinsic", icon: .grid, message: .error("Error"), alignment: .center)
