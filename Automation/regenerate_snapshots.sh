@@ -33,4 +33,6 @@ for (( i=0; i<${#CONFIGURATIONS[@]}; i+=2 )); do
     xcodebuild test -quiet -scheme $SCHEME -destination "platform=iOS Simulator,id=$SIMULATOR_ID,OS=$IOS_VERSION" OTHER_SWIFT_FLAGS="-D XCODE_IS_SNAPSHOTS_RECORDING" | grep -vE 'sec,|started|Test session results|.xcresult'
     
     git -C $SNAPSHOTS_DIR/ add .
+    git commit -m "Snapshots - $SIMULATOR_NAME" -q || true
+    git push
 done

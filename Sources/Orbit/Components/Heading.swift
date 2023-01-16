@@ -14,31 +14,37 @@ public struct Heading: View {
     let lineSpacing: CGFloat?
     let alignment: TextAlignment
     let accentColor: UIColor
+    let linkColor: TextLink.Color
+    let isSelectable: Bool
+    let strikethrough: Bool
+    let kerning: CGFloat
+    let linkAction: TextLink.Action
 
     public var body: some View {
-        if content.isEmpty == false {
-            text(sizeCategory: sizeCategory)
-                .lineSpacing(lineSpacing ?? 0)
-                .multilineTextAlignment(alignment)
-                .padding(.vertical, style.linePadding * sizeCategory.ratio)
-                .frame(minHeight: style.lineHeight * sizeCategory.ratio)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibility(addTraits: .isHeader)
-        }
+        textContent
+            .accessibility(addTraits: .isHeader)
     }
 
-    func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
+    @ViewBuilder var textContent: Text {
         Text(
             content,
-            size: .custom(style.size),
+            size: .custom(style.size, lineHeight: style.lineHeight),
             color: color?.textColor,
             weight: style.weight,
             lineSpacing: lineSpacing,
             alignment: alignment,
             accentColor: accentColor,
-            isSelectable: false
+            linkColor: linkColor,
+            isSelectable: isSelectable,
+            strikethrough: strikethrough,
+            kerning: kerning,
+            linkAction: linkAction
         )
-        .text(sizeCategory: sizeCategory)
+    }
+
+    func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
+        textContent
+            .text(sizeCategory: sizeCategory)
     }
 }
 
@@ -48,20 +54,29 @@ public extension Heading {
     /// Creates Orbit Heading component.
     ///
     /// - Parameters:
-    ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`.
+    ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
     ///   - style: Heading style.
     ///   - color: Font color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
     ///   - lineSpacing: Distance in points between the bottom of one line fragment and the top of the next.
     ///   - alignment: Horizontal multi-line alignment.
     ///   - accentColor: Color for `<ref>` formatting tag.
     ///   - linkColor: Color for `<a href>` and `<applink>` formatting tag.
+    ///   - linkAction: Handler for any detected TextLink tap action.
+    ///   - isSelectable: Determines if text is copyable using long tap gesture.
+    ///   - kerning: Additional spacing between characters.
+    ///   - strikethrough: Determines if strikethrough should be applied.
     init(
         _ content: String,
         style: Style,
         color: Color? = .inkDark,
         lineSpacing: CGFloat? = nil,
         alignment: TextAlignment = .leading,
-        accentColor: UIColor? = nil
+        accentColor: UIColor? = nil,
+        linkColor: TextLink.Color = .primary,
+        isSelectable: Bool = false,
+        strikethrough: Bool = false,
+        kerning: CGFloat = 0,
+        linkAction: @escaping TextLink.Action = { _, _ in }
     ) {
         self.content = content
         self.style = style
@@ -69,6 +84,11 @@ public extension Heading {
         self.lineSpacing = lineSpacing
         self.alignment = alignment
         self.accentColor = accentColor ?? color?.uiValue ?? .inkDark
+        self.linkColor = linkColor
+        self.isSelectable = isSelectable
+        self.strikethrough = strikethrough
+        self.kerning = kerning
+        self.linkAction = linkAction
     }
 }
 
@@ -138,16 +158,6 @@ public extension Heading {
             }
         }
 
-        /// Text height rounded to pixels.
-        public var height: CGFloat {
-            round(size * Font.fontSizeToHeightRatio * 3) / 3
-        }
-
-        /// Vertical padding needed to match line height.
-        public var linePadding: CGFloat {
-            (lineHeight - height) / 2
-        }
-
         /// Icon size matching heading line height.
         public var iconSize: Icon.Size {
             .custom(lineHeight)
@@ -158,6 +168,10 @@ public extension Heading {
                 case .title1, .title4, .title5, .title6:    return .bold
                 case .title2, .title3:                      return .medium
             }
+        }
+
+        public var textSize: Text.Size {
+            .custom(size, lineHeight: lineHeight)
         }
     }
 }
@@ -178,8 +192,10 @@ struct HeadingPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            custom
             formatted
+            sizes
+            lineHeight
+            lineSpacing
             concatenated
         }
         .previewLayout(.sizeThatFits)
@@ -194,16 +210,21 @@ struct HeadingPreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static var custom: some View {
-        VStack(alignment: .trailing, spacing: .xxLarge) {
-            Heading("Multiline\nlong heading", style: .title2, color: .custom(.blueDarkActive), lineSpacing: 20, alignment: .trailing, accentColor: .greenDark)
-            Heading("Multiline\n<ref>long</ref> heading", style: .title2, color: .custom(.blueDarkActive), lineSpacing: 20, alignment: .trailing, accentColor: .greenDark)
+    static var formatted: some View {
+        VStack(alignment: .trailing, spacing: .medium) {
+            Group {
+                Heading("Multiline\nlong heading", style: .title2, color: .custom(.inkNormal), lineSpacing: 10, alignment: .trailing, accentColor: .greenDark, strikethrough: true, kerning: 5)
+                Heading("Multiline\n<ref>long</ref> heading", style: .title2, color: nil, lineSpacing: 10, alignment: .trailing, accentColor: .redNormal, strikethrough: true, kerning: 5)
+                Heading("Multiline\n<applink1>long</applink1> heading", style: .title2, color: .custom(.orangeNormal), lineSpacing: 10, alignment: .trailing, accentColor: .greenDark, strikethrough: true, kerning: 5)
+            }
+            .border(Color.cloudNormal)
         }
+        .foregroundColor(Color.blueNormal)
         .padding(.medium)
         .previewDisplayName()
     }
     
-    static var formatted: some View {
+    static var sizes: some View {
         VStack(alignment: .leading, spacing: .xSmall) {
             formattedHeading("<ref><u>Title 1</u></ref> with a very large and <strong>multiline</strong> content", style: .title1)
             formattedHeading("<ref><u>Title 2</u></ref> with a very very large and <strong>multiline</strong> content", style: .title2)
@@ -213,6 +234,56 @@ struct HeadingPreviews: PreviewProvider {
             formattedHeading("<ref><u>TITLE 6</u></ref> WITH A VERY VERY VERY VERY VERY LARGE AND <strong>MULTILINE</strong> CONTENT", style: .title6, color: nil)
         }
         .foregroundColor(.inkNormal)
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
+    static var lineHeight: some View {
+        VStack(alignment: .trailing, spacing: .medium) {
+            VStack(alignment: .trailing, spacing: .xxxSmall) {
+                LineHeight(style: .title1, formatted: false)
+                LineHeight(style: .title2, formatted: false)
+                LineHeight(style: .title3, formatted: false)
+                LineHeight(style: .title4, formatted: false)
+                LineHeight(style: .title5, formatted: false)
+                LineHeight(style: .title6, formatted: false)
+            }
+
+            VStack(alignment: .trailing, spacing: .xxxSmall) {
+                LineHeight(style: .title1, formatted: true)
+                LineHeight(style: .title2, formatted: true)
+                LineHeight(style: .title3, formatted: true)
+                LineHeight(style: .title4, formatted: true)
+                LineHeight(style: .title5, formatted: true)
+                LineHeight(style: .title6, formatted: true)
+            }
+        }
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
+    static var lineSpacing: some View {
+        HStack(alignment: .top, spacing: .xxxSmall) {
+            VStack(alignment: .trailing, spacing: .xxxSmall) {
+                Group {
+                    Heading("Single line", style: .title2, lineSpacing: .xxxSmall)
+                        .background(Color.redLightHover)
+                    Heading("<applink1>Single</applink1> line", style: .title2, lineSpacing: .xxxSmall)
+                        .background(Color.redLightHover.opacity(0.7))
+                    Heading("<strong>Single</strong> line", style: .title2, lineSpacing: .xxxSmall)
+                        .background(Color.redLightHover.opacity(0.4))
+                }
+                .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerFirstTextBaseline)
+            }
+
+            Group {
+                Heading("Multiline\nwith\n<strong>formatting</strong>", style: .title2, lineSpacing: .xxxSmall)
+                Heading("Multiline\nwith\n<applink1>links</applink1>", style: .title2, lineSpacing: .xxxSmall)
+            }
+            .background(Color.redLightHover.opacity(0.7))
+            .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerFirstTextBaseline)
+            .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerLastTextBaseline)
+        }
         .padding(.medium)
         .previewDisplayName()
     }
@@ -239,6 +310,40 @@ struct HeadingPreviews: PreviewProvider {
             Heading(content, style: style, color: color, accentColor: .blueNormal)
             Spacer()
             Text("\(Int(style.size))/\(Int(style.lineHeight))", color: .inkNormal, weight: .medium)
+        }
+    }
+
+    struct LineHeight: View {
+
+        @Environment(\.sizeCategory) var sizeCategory
+        let style: Heading.Style
+        let formatted: Bool
+
+        var body: some View {
+            HStack(spacing: .xxSmall) {
+                Heading(
+                    "\(formatted ? "<ref>" : "")\(String(describing:style).capitalized)\(formatted ? "</ref>" : "")",
+                    style: style,
+                    accentColor: .blueDark
+                )
+                .fixedSize()
+                .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerLastTextBaseline)
+
+                Text("\(style.size.formatted) / \(style.lineHeight.formatted)", size: .custom(6))
+                    .environment(\.sizeCategory, .large)
+            }
+            .padding(.trailing, .xxSmall)
+            .border(Color.redNormal, width: .hairline)
+            .measured()
+            .padding(.trailing, 40 * sizeCategory.controlRatio)
+            .overlay(
+                SwiftUI.Text("T")
+                    .orbitFont(size: style.size, sizeCategory: sizeCategory)
+                    .border(Color.redNormal, width: .hairline)
+                    .measured()
+                ,
+                alignment: .trailing
+            )
         }
     }
 }

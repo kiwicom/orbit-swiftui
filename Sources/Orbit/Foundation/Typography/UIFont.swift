@@ -28,14 +28,14 @@ public extension UIFont {
             lhs.rawValue < rhs.rawValue
         }
 
-        public var cgFloat: CGFloat {
+        public var value: CGFloat {
             CGFloat(self.rawValue)
         }
     }
 
     /// Creates Orbit font.
     static func orbit(size: Size = .normal, weight: Weight = .regular) -> UIFont {
-        orbit(size: size.cgFloat, weight: weight)
+        orbit(size: size.value, weight: weight)
     }
 
     static var orbit: UIFont {
@@ -45,18 +45,27 @@ public extension UIFont {
 
 extension UIFont {
 
-    static func orbit(size: CGFloat, weight: Weight = .regular) -> UIFont {
+    private static let fractionPaddingFix: CGFloat = UIScreen.main.scale == 2 ? 0.24 : 0.16
+    private static var lineHeights = [CGFloat: CGFloat]()
 
-        if orbitFontNames.isEmpty {
-            return .systemFont(ofSize: size, weight: weight)
+    static func orbit(size: CGFloat, weight: Weight = .regular) -> UIFont {
+        let font: UIFont
+
+        if let fontName = orbitFontNames[weight.swiftUI], let orbitFont = UIFont(name: fontName, size: size) {
+            font = orbitFont
+        } else {
+            font = .systemFont(ofSize: size, weight: weight)
         }
 
-        guard let fontName = orbitFontNames[weight.swiftUI], let font = UIFont(name: fontName, size: size) else {
-            assertionFailure("Unsupported font weight")
-            return .systemFont(ofSize: size, weight: weight)
+        if lineHeights.keys.contains(size) == false {
+            lineHeights[size] = round((font.lineHeight + fractionPaddingFix) * UIScreen.main.scale) / UIScreen.main.scale
         }
 
         return font
+    }
+
+    static func lineHeight(size: CGFloat) -> CGFloat {
+        lineHeights[size] ?? 0
     }
 }
 
