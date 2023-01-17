@@ -429,7 +429,7 @@ struct TextPreviews: PreviewProvider {
     }
 
     static var interactive: some View {
-        StateWrapper(initialState: (0.7, 0.7, 0.7)) { state in
+        StateWrapper((0.7, 0.7, 0.7)) { state in
             ScrollView {
                 VStack(alignment: .leading, spacing: .medium) {
                     Text(

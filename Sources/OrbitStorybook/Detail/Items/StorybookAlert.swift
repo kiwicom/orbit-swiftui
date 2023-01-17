@@ -44,7 +44,7 @@ struct StorybookAlert {
     }
 
     static var live: some View {
-        StateWrapper(initialState: primaryAndSecondaryConfiguration) { buttons in
+        StateWrapper(primaryAndSecondaryConfiguration) { buttons in
             VStack(spacing: .large) {
                 Alert(
                     title,

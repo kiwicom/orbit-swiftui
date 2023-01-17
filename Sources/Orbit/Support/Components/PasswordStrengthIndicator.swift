@@ -102,21 +102,19 @@ struct PasswordStrengthIndicatorPreviews: PreviewProvider {
         .previewLayout(.sizeThatFits)
         .padding()
 
-        StateWrapper(
-            initialState: PasswordStrengthIndicator.PasswordStrength.weak(title: "weak")
-        ) { binding in
+        StateWrapper(PasswordStrengthIndicator.PasswordStrength.weak(title: "weak")) { strength in
             VStack {
-                PasswordStrengthIndicator(passwordStrength: binding.wrappedValue)
+                PasswordStrengthIndicator(passwordStrength: strength.wrappedValue)
 
                 HStack {
                     Button("weak", style: .critical) {
-                        binding.wrappedValue = .weak(title: "Weak")
+                        strength.wrappedValue = .weak(title: "Weak")
                     }
                     Button("medium", style: .status(.warning, subtle: false)) {
-                        binding.wrappedValue = .medium(title: "Medium")
+                        strength.wrappedValue = .medium(title: "Medium")
                     }
                     Button("strong", style: .status(.success, subtle: false)) {
-                        binding.wrappedValue = .strong(title: "Strong")
+                        strength.wrappedValue = .strong(title: "Strong")
                     }
                 }
             }

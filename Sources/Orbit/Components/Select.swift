@@ -244,7 +244,7 @@ struct SelectPreviews: PreviewProvider {
     }
 
     static var live: some View {
-        StateWrapper(initialState: false) { state in
+        StateWrapper(false) { state in
             NavigationView {
                 ScrollView {
                     VStack(alignment: .leading, spacing: .xxSmall) {

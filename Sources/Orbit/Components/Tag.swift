@@ -186,7 +186,7 @@ struct TagPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        StateWrapper(initialState: true) { state in
+        StateWrapper(true) { state in
             Tag(label, icon: .grid, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
             Tag("") // EmptyView
         }
@@ -195,7 +195,7 @@ struct TagPreviews: PreviewProvider {
     }
 
     static var standaloneExpanding: some View {
-        StateWrapper(initialState: true) { state in
+        StateWrapper(true) { state in
             Tag(label, icon: .grid, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
                 .idealSize(horizontal: false)
         }
@@ -214,10 +214,10 @@ struct TagPreviews: PreviewProvider {
             stack(style: .removable(), isFocused: true, idealWidth: false)
             Separator()
             HStack(spacing: .medium) {
-                StateWrapper(initialState: true) { state in
+                StateWrapper(true) { state in
                     Tag(label, icon: .sort, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
                 }
-                StateWrapper(initialState: false) { state in
+                StateWrapper(false) { state in
                     Tag(icon: .notificationAdd, isFocused: false, isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
                 }
             }
@@ -255,7 +255,7 @@ struct TagPreviews: PreviewProvider {
     }
 
     static func tag(style: Tag.Style, isFocused: Bool, isSelected: Bool, isActive: Bool) -> some View {
-        StateWrapper(initialState: (style, isSelected, true)) { state in
+        StateWrapper((style, isSelected, true)) { state in
             Tag(
                 label,
                 style: style == .default ? .default : .removable(action: { state.wrappedValue.2 = false }),

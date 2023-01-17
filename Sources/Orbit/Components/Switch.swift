@@ -123,7 +123,7 @@ struct SwitchPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        StateWrapper(initialState: true) { state in
+        StateWrapper(true) { state in
             Switch(isOn: state)
         }
         .previewDisplayName()
@@ -157,7 +157,7 @@ struct SwitchPreviews: PreviewProvider {
     }
 
     static func switchView(isOn: Bool, hasIcon: Bool = false) -> some View {
-        StateWrapper(initialState: isOn) { isOnState in
+        StateWrapper(isOn) { isOnState in
             Switch(isOn: isOnState, hasIcon: hasIcon)
         }
     }

@@ -181,7 +181,7 @@ struct TabsPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        StateWrapper(initialState: 1) { index in
+        StateWrapper(1) { index in
             Tabs(selectedIndex: index) {
                 Tab("One")
                 Tab("Two")
@@ -194,7 +194,7 @@ struct TabsPreviews: PreviewProvider {
     }
 
     static var standaloneIntrinsic: some View {
-        StateWrapper(initialState: 1) { index in
+        StateWrapper(1) { index in
             Tabs(selectedIndex: index, distribution: .intrinsic) {
                 Tab("One", style: .default)
                 Tab("Two", style: .default)
@@ -205,7 +205,7 @@ struct TabsPreviews: PreviewProvider {
     }
 
     static var sizing: some View {
-        StateWrapper(initialState: 1) { index in
+        StateWrapper(1) { index in
             Tabs(selectedIndex: index, distribution: .intrinsic) {
                 Tab("One", style: .default)
                 Tab("Two", style: .default)
@@ -217,7 +217,7 @@ struct TabsPreviews: PreviewProvider {
     }
 
     static var intrinsicMultiline: some View {
-        StateWrapper(initialState: 1) { index in
+        StateWrapper(1) { index in
             Tabs(selectedIndex: index, distribution: .intrinsic) {
                 Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
                 Tab("Comfort", style: .underlinedGradient(.bundleMedium))
@@ -229,7 +229,7 @@ struct TabsPreviews: PreviewProvider {
     }
 
     static var intrinsicSingleline: some View {
-        StateWrapper(initialState: 1) { index in
+        StateWrapper(1) { index in
             Tabs(selectedIndex: index, distribution: .intrinsic, lineLimit: 1) {
                 Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
                 Tab("Comfort", style: .underlined(.blueDark))
@@ -241,7 +241,7 @@ struct TabsPreviews: PreviewProvider {
     }
 
     static var equalMultiline: some View {
-        StateWrapper(initialState: 1) { index in
+        StateWrapper(1) { index in
             Tabs(selectedIndex: index) {
                 Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
                 Tab("Comfort", style: .underlinedGradient(.bundleMedium))
@@ -253,7 +253,7 @@ struct TabsPreviews: PreviewProvider {
     }
 
     static var equalSingleline: some View {
-        StateWrapper(initialState: 2) { index in
+        StateWrapper(2) { index in
             Tabs(selectedIndex: index, lineLimit: 1) {
                 Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
                 Tab("Comfort", style: .underlinedGradient(.bundleMedium))
@@ -265,7 +265,7 @@ struct TabsPreviews: PreviewProvider {
     }
 
     static var interactive: some View {
-        StateWrapper(initialState: 1) { index in
+        StateWrapper(1) { index in
             VStack(spacing: .large) {
                 Tabs(selectedIndex: index) {
                     Tab("One", style: .default)

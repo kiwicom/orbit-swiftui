@@ -201,7 +201,7 @@ struct CheckboxPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        StateWrapper(initialState: true) { isSelected in
+        StateWrapper(true) { isSelected in
             checkbox(standalone: false, state: .normal, checked: isSelected.wrappedValue)
         }
         .previewDisplayName()
@@ -241,7 +241,7 @@ struct CheckboxPreviews: PreviewProvider {
     }
 
     static func checkbox(standalone: Bool, state: Checkbox.State = .normal, checked: Bool) -> some View {
-        StateWrapper(initialState: checked) { isSelected in
+        StateWrapper(checked) { isSelected in
             Checkbox(standalone ? "" : label, description: standalone ? "" : description, state: state, isChecked: isSelected.wrappedValue) {
                 isSelected.wrappedValue.toggle()
             }

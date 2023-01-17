@@ -93,7 +93,7 @@ struct StorybookInputField {
         message: Message? = nil,
         style: InputFieldStyle = .default
     ) -> some View {
-        StateWrapper(initialState: value) { value in
+        StateWrapper(value) { value in
             InputField(
                 label,
                 labelAccentColor: labelAccentColor,

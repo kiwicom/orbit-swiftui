@@ -371,7 +371,7 @@ struct InputFieldPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        StateWrapper(initialState: value) { state in
+        StateWrapper(value) { state in
             InputField(label, value: state, prefix: .grid, suffix: .grid, placeholder: placeholder, state: .default)
         }
         .padding(.medium)
@@ -477,7 +477,7 @@ struct InputFieldPreviews: PreviewProvider {
         message: Message? = nil,
         style: InputFieldStyle = .default
     ) -> some View {
-        StateWrapper(initialState: value) { value in
+        StateWrapper(value) { value in
             InputField(
                 label,
                 labelAccentColor: labelAccentColor,
@@ -606,7 +606,7 @@ struct InputFieldLivePreviews: PreviewProvider {
     }
 
     static var securedWrapper: some View {
-        StateWrapper(initialState: "textfield-should-respect-long-password-and-screen-bounds-1234567890") { state in
+        StateWrapper("textfield-should-respect-long-password-and-screen-bounds-1234567890") { state in
             VStack(alignment: .leading, spacing: .medium) {
                 Heading("Secured TextField with long init value", style: .title2)
 

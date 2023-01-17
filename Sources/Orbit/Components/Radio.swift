@@ -228,7 +228,7 @@ struct RadioPreviews: PreviewProvider {
     }
 
     static func radio(standalone: Bool, state: Radio.State = .normal, checked: Bool) -> some View {
-        StateWrapper(initialState: checked) { isSelected in
+        StateWrapper(checked) { isSelected in
             Radio(standalone ? "" : label, description: standalone ? "" : description, state: state, isChecked: isSelected.wrappedValue) {
                 isSelected.wrappedValue.toggle()
             }

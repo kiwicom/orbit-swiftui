@@ -32,7 +32,7 @@ struct ContentHeightReaderPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            StateWrapper(initialState: (CGFloat(0), Self.message)) { state in
+            StateWrapper((CGFloat(0), Self.message)) { state in
                 VStack {
                     Text("Height: \(state.0.wrappedValue)")
 

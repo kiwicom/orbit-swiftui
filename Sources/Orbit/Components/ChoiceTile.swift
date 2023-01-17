@@ -472,7 +472,7 @@ struct ChoiceTilePreviews: PreviewProvider {
 
     static var mix: some View {
         VStack(spacing: .medium) {
-            StateWrapper(initialState: false) { isSelected in
+            StateWrapper(false) { isSelected in
                 ChoiceTile(
                     "Checkbox indictor with long and multiline title",
                     icon: .symbol(.grid, color: .greenNormal),
@@ -485,7 +485,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                     contentPlaceholder
                 }
             }
-            StateWrapper(initialState: false) { isSelected in
+            StateWrapper(false) { isSelected in
                 ChoiceTile(
                     description: "Long and multiline description with no title",
                     icon: .countryFlag("cz"),
@@ -497,7 +497,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                     contentPlaceholder
                 }
             }
-            StateWrapper(initialState: false) { isSelected in
+            StateWrapper(false) { isSelected in
                 ChoiceTile(
                     isSelected: isSelected.wrappedValue
                 ) {
@@ -535,7 +535,7 @@ struct ChoiceTilePreviews: PreviewProvider {
     }
 
     static func choiceTile(titleStyle: Heading.Style, showHeader: Bool, isError: Bool, isSelected: Bool) -> some View {
-        StateWrapper(initialState: isSelected) { state in
+        StateWrapper(isSelected) { state in
             ChoiceTile(
                 showHeader ? title : "",
                 description: showHeader ? description : "",
@@ -552,7 +552,7 @@ struct ChoiceTilePreviews: PreviewProvider {
     }
 
     static func choiceTileCentered(titleStyle: Heading.Style, showIllustration: Bool, isError: Bool, isSelected: Bool) -> some View {
-        StateWrapper(initialState: isSelected) { state in
+        StateWrapper(isSelected) { state in
             ChoiceTile(
                 title,
                 description: description,
