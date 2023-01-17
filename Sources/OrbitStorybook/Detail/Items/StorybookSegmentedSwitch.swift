@@ -20,7 +20,7 @@ struct StorybookSegmentedSwitch {
         label: String = "Gender",
         message: Message? = nil
     ) -> some View {
-        StateWrapper(initialState: selectedIndex) { value in
+        StateWrapper(selectedIndex) { value in
             SegmentedSwitch(
                 label,
                 firstOption: firstOption,

@@ -40,7 +40,7 @@ struct ProgressPreviews: PreviewProvider {
             }
             .previewDisplayName("Progress")
 
-            StateWrapper(initialState: CGFloat(0)) { progress in
+            StateWrapper(CGFloat(0)) { progress in
                 VStack(spacing: .large) {
                     Progress(progress.wrappedValue)
                     Button("Change") {

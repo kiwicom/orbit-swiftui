@@ -26,7 +26,7 @@ struct StorybookSwitch {
     }
 
     static func switchView(isOn: Bool, hasIcon: Bool = false) -> some View {
-        StateWrapper(initialState: isOn) { isOnState in
+        StateWrapper(isOn) { isOnState in
             Switch(isOn: isOnState, hasIcon: hasIcon)
         }
     }

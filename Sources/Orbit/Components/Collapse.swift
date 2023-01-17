@@ -129,12 +129,12 @@ struct CollapsePreviews: PreviewProvider {
 
     static func previewContent(isExpanded: Bool) -> some View {
         VStack(spacing: 0) {
-            StateWrapper(initialState: isExpanded) { isExpanded in
+            StateWrapper(isExpanded) { isExpanded in
                 Collapse("Toggle custom content", isExpanded: isExpanded) {
                     contentPlaceholder
                 }
             }
-            StateWrapper(initialState: isExpanded) { isExpanded in
+            StateWrapper(isExpanded) { isExpanded in
                 Collapse(
                     "Toggle text content with absurdly long description that wraps to another line",
                     isExpanded: isExpanded
@@ -142,7 +142,7 @@ struct CollapsePreviews: PreviewProvider {
                     contentPlaceholder
                 }
             }
-            StateWrapper(initialState: isExpanded) { isExpanded in
+            StateWrapper(isExpanded) { isExpanded in
                 Collapse(isExpanded: isExpanded) {
                     contentPlaceholder
                 } headerContent: {

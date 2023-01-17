@@ -149,7 +149,7 @@ struct FieldWrapperPreviews: PreviewProvider {
                 contentPlaceholder
             }
 
-            StateWrapper(initialState: (true, true, CGFloat(0), false)) { state in
+            StateWrapper((true, true, CGFloat(0), false)) { state in
                 VStack(alignment: .leading, spacing: .large) {
                     FieldWrapper(
                         state.0.wrappedValue ? "Form Field Label" : "",

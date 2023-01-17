@@ -171,7 +171,7 @@ struct SegmentedSwitchPreviews: PreviewProvider {
     }
 
     static var interactive: some View {
-        StateWrapper(initialState: Int?(2)) { value in
+        StateWrapper(Int?(2)) { value in
             VStack(spacing: .large) {
                 SegmentedSwitch(
                     "Gender\nmultiline",
@@ -202,7 +202,7 @@ struct SegmentedSwitchPreviews: PreviewProvider {
         label: String = "Gender",
         message: Message? = nil
     ) -> some View {
-        StateWrapper(initialState: selectedIndex) { value in
+        StateWrapper(selectedIndex) { value in
             SegmentedSwitch(
                 label,
                 firstOption: firstOption,
