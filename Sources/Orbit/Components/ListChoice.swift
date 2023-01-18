@@ -222,7 +222,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
 // MARK: - Inits
 public extension ListChoice {
     
-    /// Creates Orbit ListChoice component with optional content and vertically centered header content.
+    /// Creates Orbit ListChoice component with custom content and vertically centered header content.
     init(
         _ title: String = "",
         description: String = "",
@@ -285,9 +285,10 @@ public extension ListChoice {
             disclosure: disclosure,
             showSeparator: showSeparator,
             action: action,
-            content: content,
-            headerContent: { EmptyView() }
-        )
+            content: content
+        ) {
+            EmptyView()
+        }
     }
 
     /// Creates Orbit ListChoice component.
@@ -305,10 +306,12 @@ public extension ListChoice {
             icon: icon,
             disclosure: disclosure,
             showSeparator: showSeparator,
-            action: action,
-            content: { EmptyView() },
-            headerContent: { EmptyView() }
-        )
+            action: action
+        ) {
+            EmptyView()
+        } headerContent: {
+            EmptyView()
+        }
     }
 }
 
