@@ -23,6 +23,8 @@ public struct Button: View {
             },
             label: {
                 HStack(spacing: 0) {
+                    TextStrut(size.textSize)
+
                     if disclosureIconContent.isEmpty, idealSize.horizontal == nil {
                         Spacer(minLength: 0)
                     }
@@ -119,7 +121,7 @@ public extension Button {
 
     /// Creates Orbit Button component with icon only.
     init(
-        _ icon: Icon.Content = .none,
+        _ icon: Icon.Content,
         style: Style = .primary,
         size: Size = .default,
         action: @escaping () -> Void = {}
@@ -320,12 +322,15 @@ struct ButtonPreviews: PreviewProvider {
     static var sizing: some View {
         VStack(spacing: .medium) {
             Group {
+                Button("")
                 Button("Button")
                 Button("Button", icon: .grid)
+                Button("Button\nmultiline", icon: .grid)
                 Button(.grid)
                 Button("Button small", size: .small)
                 Button("Button small", icon: .grid, size: .small)
                 Button(.grid, size: .small)
+                Button("Button\nmultiline", size: .small)
             }
             .measured()
         }
