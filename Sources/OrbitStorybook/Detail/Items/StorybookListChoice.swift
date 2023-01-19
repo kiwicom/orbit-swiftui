@@ -22,12 +22,12 @@ struct StorybookListChoice {
             ListChoice(title, icon: .airplane, value: value)
             ListChoice(title, description: description, icon: .airplane)
             ListChoice(title, description: description, icon: .airplane, value: value)
-            ListChoice(title, description: description, headerContent: {
+            ListChoice(title, description: description, content: { EmptyView() }) {
                 badge
-            })
-            ListChoice(title, description: description, icon: .grid, headerContent: {
+            }
+            ListChoice(title, description: description, icon: .grid, content: { EmptyView() }) {
                 badge
-            })
+            }
         }
         .previewDisplayName()
     }
@@ -90,9 +90,9 @@ struct StorybookListChoice {
             ListChoice(title, icon: .symbol(.airplane, color: .blueNormal), disclosure: .none)
             ListChoice(title, description: description, icon: .countryFlag("cs"), disclosure: .none)
             ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none)
-            ListChoice(title, description: description, disclosure: .none, headerContent: {
+            ListChoice(title, description: description, disclosure: .none, content: { EmptyView() }) {
                 badge
-            })
+            }
             ListChoice(disclosure: .none) {
                 contentPlaceholder
             } headerContent: {
