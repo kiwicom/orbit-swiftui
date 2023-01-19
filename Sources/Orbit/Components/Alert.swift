@@ -42,7 +42,6 @@ public struct Alert<Content: View>: View {
 
     public var body: some View {
         content
-            .padding(.leading, iconContent.isEmpty ? .medium : .small)
             .background(background)
             .cornerRadius(BorderRadius.default)
             .accessibilityElement(children: .contain)
@@ -79,32 +78,37 @@ public struct Alert<Content: View>: View {
         }
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
         .padding([.vertical, .trailing], .medium)
+        .padding(.leading, iconContent.isEmpty ? .medium : .small)
     }
 
     @ViewBuilder var inlineContent: some View {
         HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-            HStack(alignment: .top) {
-                icon
-
-                HStack(spacing: 0) {
+            if isHeaderEmpty == false {
+                HStack(alignment: .top, spacing: .xSmall) {
+                    icon
                     titleView
-                    Spacer()
                 }
+                .padding(.vertical, 14)
+                .padding(.horizontal, .small)
+                .padding(.top, 3)
+            }
+
+            if idealSize.horizontal != true {
+                Spacer(minLength: 0)
             }
 
             switch buttons {
                 case .primary(let button),
-                     .primaryAndSecondary(let button, _):
+                        .primaryAndSecondary(let button, _):
                     Button(button.label, style: primaryButtonStyle, size: .small, action: button.action)
-                        .fixedSize()
+                        .fixedSize(horizontal: true, vertical: false)
+                        .padding(.xSmall)
+                        .padding(.top, 3)
                         .accessibility(.alertButtonPrimary)
                 case .none, .secondary:
                     EmptyView()
             }
         }
-        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
-        .padding(.top, .xSmall + 3)
-        .padding([.bottom, .trailing], .xSmall)
     }
 
     @ViewBuilder var icon: some View {
@@ -190,6 +194,10 @@ public struct Alert<Content: View>: View {
         isSuppressed
             ? .secondary
             : .status(status, subtle: true)
+    }
+
+    var isHeaderEmpty: Bool {
+        iconContent.isEmpty && title.isEmpty && description.isEmpty
     }
 }
 
@@ -317,7 +325,7 @@ struct AlertPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        VStack(spacing: .large) {
+        VStack(alignment: .leading, spacing: .large) {
             Alert(
                 "Alert with very very very very very very very very very very very long and <u>multiline</u> title",
                 description: description,
@@ -328,6 +336,12 @@ struct AlertPreviews: PreviewProvider {
             }
 
             Alert("Inline alert", icon: .grid, button: "Primary", status: .warning, isSuppressed: false)
+
+            Alert("Inline alert with no button", icon: .informationCircle, status: .success)
+            Alert("Inline alert with no button", status: .success)
+                .idealSize()
+            Alert(button: .init(stringLiteral: "Primary"))
+                .idealSize()
 
             Alert("Inline alert with very very very very very very very very very very very long and <u>multiline</u> title", icon: .grid, button: "Primary", status: .warning, isSuppressed: false)
         }
