@@ -86,13 +86,13 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
         if isHeaderEmpty == false || isCustomHeaderEmpty == false {
             HStack(spacing: 0) {
                 headerTexts
+                    .padding(.trailing, .xSmall)
 
                 if isHeaderEmpty == false, idealSize.horizontal == nil {
                     Spacer(minLength: 0)
                 }
 
                 headerContent
-                    .padding(.leading, .xSmall)
                     .padding(.leading, isHeaderEmpty ? .medium : 0)
                     .padding(.trailing, disclosure == .none ? .medium : 0)
                     .accessibility(.listChoiceValue)
@@ -246,29 +246,7 @@ public extension ListChoice {
         )
     }
 
-    /// Creates Orbit ListChoice component with optional vertically centered header content.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Content = .none,
-        disclosure: ListChoiceDisclosure = .disclosure(),
-        showSeparator: Bool = true,
-        action: @escaping () -> Void = {},
-        @ViewBuilder headerContent: () -> HeaderContent
-    ) where Content == EmptyView {
-        self.init(
-            title,
-            description: description,
-            icon: icon,
-            disclosure: disclosure,
-            showSeparator: showSeparator,
-            action: action,
-            content: { EmptyView() },
-            headerContent: headerContent
-        )
-    }
-
-    /// Creates Orbit ListChoice component with optional content.
+    /// Creates Orbit ListChoice component with custom content.
     init(
         _ title: String = "",
         description: String = "",
@@ -464,20 +442,37 @@ struct ListChoicePreviews: PreviewProvider {
     
     static var mix: some View {
         Card(contentLayout: .fill) {
-            ListChoice(title)
-            ListChoice(title, value: "10")
-            ListChoice(title, description: description)
             ListChoice(title, description: "Multiline\ndescription", value: "USD")
-            ListChoice(title, icon: .airplane)
-            ListChoice(title, icon: .airplane, value: value)
-            ListChoice(title, description: description, icon: .airplane)
             ListChoice(title, description: description, icon: .airplane, value: value)
-            ListChoice(title, description: description, headerContent: {
+            ListChoice(title, description: description, content: { EmptyView() }) {
                 badge
-            })
-            ListChoice(title, description: description, icon: .grid, headerContent: {
+            }
+            ListChoice(title, description: description, icon: .grid, content: { EmptyView() }) {
                 badge
-            })
+            }
+            ListChoice(title, description: description, icon: .grid) {
+                intrinsicContentPlaceholder
+            } headerContent: {
+                intrinsicContentPlaceholder
+            }
+            ListChoice(disclosure: .none) {
+                contentPlaceholder
+            }
+            ListChoice(title, description: description, icon: .grid) {
+                contentPlaceholder
+            } headerContent: {
+                headerPlaceholder
+            }
+            ListChoice {
+                contentPlaceholder
+            } headerContent: {
+                headerPlaceholder
+            }
+            ListChoice(disclosure: .none) {
+                contentPlaceholder
+            } headerContent: {
+                headerPlaceholder
+            }
         }
         .previewDisplayName()
     }
@@ -557,9 +552,9 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, icon: .symbol(.airplane, color: .blueNormal), disclosure: .none)
             ListChoice(title, description: description, icon: .countryFlag("cs"), disclosure: .none)
             ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none)
-            ListChoice(title, description: description, disclosure: .none, headerContent: {
+            ListChoice(title, description: description, disclosure: .none, content: { EmptyView() }) {
                 badge
-            })
+            }
             ListChoice(disclosure: .none) {
                 contentPlaceholder
             } headerContent: {
