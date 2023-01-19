@@ -117,7 +117,7 @@ public struct SegmentedSwitch: View {
     }
     
     public init(
-        _ label: String,
+        _ label: String = "",
         firstOption: String,
         secondOption: String,
         selectedIndex: Binding<Int?>,
