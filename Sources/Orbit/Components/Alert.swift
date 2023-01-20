@@ -42,7 +42,6 @@ public struct Alert<Content: View>: View {
 
     public var body: some View {
         content
-            .padding(.leading, iconContent.isEmpty ? .medium : .small)
             .background(background)
             .cornerRadius(BorderRadius.default)
             .accessibilityElement(children: .contain)
@@ -58,53 +57,50 @@ public struct Alert<Content: View>: View {
     @ViewBuilder var defaultContent: some View {
         HStack(alignment: .top, spacing: .xSmall) {
             icon
+                .padding(.leading, -.xxSmall)
 
             VStack(alignment: .leading, spacing: .medium) {
-                VStack(alignment: .leading, spacing: .xxSmall) {
-                    titleView
-                    Text(description, linkColor: .secondary, linkAction: descriptionLinkAction)
-                        .accessibility(.alertDescription)
-                }
-
+                defaultHeader
                 customContent
-
-                switch buttons {
-                    case .primary, .secondary, .primaryAndSecondary:
-                        // Keeping the identity of buttons for correct animations
-                        buttonsView
-                    case .none:
-                        EmptyView()
-                }
+                defaultButtons
             }
         }
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
-        .padding([.vertical, .trailing], .medium)
+        .padding(.medium)
     }
 
     @ViewBuilder var inlineContent: some View {
         HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-            HStack(alignment: .top) {
-                icon
+            inlineHeader
 
-                HStack(spacing: 0) {
-                    titleView
-                    Spacer()
-                }
+            if idealSize.horizontal != true {
+                Spacer(minLength: 0)
             }
 
-            switch buttons {
-                case .primary(let button),
-                     .primaryAndSecondary(let button, _):
-                    Button(button.label, style: primaryButtonStyle, size: .small, action: button.action)
-                        .fixedSize()
-                        .accessibility(.alertButtonPrimary)
-                case .none, .secondary:
-                    EmptyView()
+            inlineButton
+        }
+    }
+
+    @ViewBuilder var defaultHeader: some View {
+        if title.isEmpty == false || description.isEmpty == false {
+            VStack(alignment: .leading, spacing: .xxSmall) {
+                titleView
+                Text(description, linkColor: .secondary, linkAction: descriptionLinkAction)
+                    .accessibility(.alertDescription)
             }
         }
-        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
-        .padding(.top, .xSmall + 3)
-        .padding([.bottom, .trailing], .xSmall)
+    }
+
+    @ViewBuilder var inlineHeader: some View {
+        if isInlineHeaderEmpty == false {
+            HStack(alignment: .top, spacing: .xSmall) {
+                icon
+                titleView
+            }
+            .padding(.vertical, 14)
+            .padding(.horizontal, .small)
+            .padding(.top, 3)
+        }
     }
 
     @ViewBuilder var icon: some View {
@@ -118,25 +114,45 @@ public struct Alert<Content: View>: View {
             .accessibility(.alertTitle)
     }
 
-    @ViewBuilder var buttonsView: some View {
-        HStack(alignment: .top, spacing: .small) {
-            switch buttons {
-                case .primary(let primaryButton),
-                     .primaryAndSecondary(let primaryButton, _):
-                    Button(primaryButton.label, style: primaryButtonStyle, size: .small, action: primaryButton.action)
-                        .accessibility(.alertButtonPrimary)
-                case .none, .secondary:
-                    EmptyView()
-            }
+    @ViewBuilder var defaultButtons: some View {
+        switch buttons {
+            case .primary, .secondary, .primaryAndSecondary:
+                // Keeping the identity of buttons for correct animations
+                HStack(alignment: .top, spacing: .small) {
+                    switch buttons {
+                        case .primary(let primaryButton),
+                             .primaryAndSecondary(let primaryButton, _):
+                            Button(primaryButton.label, style: primaryButtonStyle, size: .small, action: primaryButton.action)
+                                .accessibility(.alertButtonPrimary)
+                        case .none, .secondary:
+                            EmptyView()
+                    }
 
-            switch buttons {
-                case .secondary(let secondaryButton),
-                     .primaryAndSecondary(_, let secondaryButton):
-                    Button(secondaryButton.label, style: secondaryButtonStyle, size: .small, action: secondaryButton.action)
-                        .accessibility(.alertButtonSecondary)
-                case .none, .primary:
-                    EmptyView()
-            }
+                    switch buttons {
+                        case .secondary(let secondaryButton),
+                             .primaryAndSecondary(_, let secondaryButton):
+                            Button(secondaryButton.label, style: secondaryButtonStyle, size: .small, action: secondaryButton.action)
+                                .accessibility(.alertButtonSecondary)
+                        case .none, .primary:
+                            EmptyView()
+                    }
+                }
+            case .none:
+                EmptyView()
+        }
+    }
+
+    @ViewBuilder var inlineButton: some View {
+        switch buttons {
+            case .primary(let button),
+                 .primaryAndSecondary(let button, _):
+                Button(button.label, style: primaryButtonStyle, size: .small, action: button.action)
+                    .fixedSize(horizontal: true, vertical: false)
+                    .padding(.xSmall)
+                    .padding(.top, 3)
+                    .accessibility(.alertButtonPrimary)
+            case .none, .secondary:
+                EmptyView()
         }
     }
 
@@ -190,6 +206,10 @@ public struct Alert<Content: View>: View {
         isSuppressed
             ? .secondary
             : .status(status, subtle: true)
+    }
+
+    var isInlineHeaderEmpty: Bool {
+        iconContent.isEmpty && title.isEmpty
     }
 }
 
@@ -317,17 +337,33 @@ struct AlertPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        VStack(spacing: .large) {
+        VStack(alignment: .leading, spacing: .large) {
             Alert(
-                "Alert with very very very very very very very very very very very long and <u>multiline</u> title",
-                description: description,
+                "Alert with\n<u>multiline</u> title",
+                description: "Alert <strong>multiline</strong> description\nwith <applink1>link</applink1>",
                 icon: .grid,
                 buttons: primaryAndSecondaryConfiguration
             ) {
                 contentPlaceholder
+                    .frame(height: 30)
+                    .clipped()
+            }
+
+            Group {
+                Alert("Alert title", buttons: .primary("Primary"), status: .info)
+                Alert(description: "Alert description", buttons: .primary("Primary"), status: .info)
+                Alert("Alert title", status: .info)
+                Alert(description: "Alert description", status: .info)
             }
 
             Alert("Inline alert", icon: .grid, button: "Primary", status: .warning, isSuppressed: false)
+            Alert("Inline alert", button: "Primary", status: .warning, isSuppressed: false)
+
+            Alert("Inline alert with no button", icon: .informationCircle, status: .success)
+            Alert("Inline alert with no button", status: .success)
+                .idealSize()
+            Alert(button: .init(stringLiteral: "Primary"), status: .critical)
+                .idealSize()
 
             Alert("Inline alert with very very very very very very very very very very very long and <u>multiline</u> title", icon: .grid, button: "Primary", status: .warning, isSuppressed: false)
         }
