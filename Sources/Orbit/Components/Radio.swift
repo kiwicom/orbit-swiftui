@@ -55,7 +55,7 @@ public extension Radio {
         description: String = "",
         state: State = .normal,
         isChecked: Bool = false,
-        action: @escaping () -> Void = {}
+        action: @escaping () -> Void
     ) {
         self.title = title
         self.description = description

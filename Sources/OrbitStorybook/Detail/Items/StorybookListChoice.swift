@@ -14,18 +14,22 @@ struct StorybookListChoice {
 
     static var basic: some View {
         Card(contentLayout: .fill) {
-            ListChoice(title)
-            ListChoice(title, value: "10")
-            ListChoice(title, description: description)
-            ListChoice(title, description: "Multiline\ndescription", value: "USD")
-            ListChoice(title, icon: .airplane)
-            ListChoice(title, icon: .airplane, value: value)
-            ListChoice(title, description: description, icon: .airplane)
-            ListChoice(title, description: description, icon: .airplane, value: value)
-            ListChoice(title, description: description, content: { EmptyView() }) {
+            ListChoice(title, action: {})
+            ListChoice(title, value: "10", action: {})
+            ListChoice(title, description: description, action: {})
+            ListChoice(title, description: "Multiline\ndescription", value: "USD", action: {})
+            ListChoice(title, icon: .airplane, action: {})
+            ListChoice(title, icon: .airplane, value: value, action: {})
+            ListChoice(title, description: description, icon: .airplane, action: {})
+            ListChoice(title, description: description, icon: .airplane, value: value, action: {})
+            ListChoice(title, description: description, action: {}) {
+                EmptyView()
+            } headerContent: {
                 badge
             }
-            ListChoice(title, description: description, icon: .grid, content: { EmptyView() }) {
+            ListChoice(title, description: description, icon: .grid, action: {}) {
+                EmptyView()
+            } headerContent: {
                 badge
             }
         }
@@ -34,16 +38,16 @@ struct StorybookListChoice {
 
     static var button: some View {
         Card(contentLayout: .fill) {
-            ListChoice(title, disclosure: addButton)
-            ListChoice(title, disclosure: removeButton)
-            ListChoice(title, description: description, disclosure: addButton)
-            ListChoice(title, description: description, disclosure: removeButton)
-            ListChoice(title, icon: .airplane, disclosure: addButton)
-            ListChoice(title, icon: .airplane, disclosure: removeButton)
-            ListChoice(title, description: description, icon: .airplane, disclosure: addButton)
-            ListChoice(title, description: description, icon: .airplane, disclosure: removeButton)
-            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: addButton)
-            ListChoice(title, description: description, icon: .airplane, disclosure: removeButton) {
+            ListChoice(title, disclosure: addButton, action: {})
+            ListChoice(title, disclosure: removeButton, action: {})
+            ListChoice(title, description: description, disclosure: addButton, action: {})
+            ListChoice(title, description: description, disclosure: removeButton, action: {})
+            ListChoice(title, icon: .airplane, disclosure: addButton, action: {})
+            ListChoice(title, icon: .airplane, disclosure: removeButton, action: {})
+            ListChoice(title, description: description, icon: .airplane, disclosure: addButton, action: {})
+            ListChoice(title, description: description, icon: .airplane, disclosure: removeButton, action: {})
+            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: addButton, action: {})
+            ListChoice(title, description: description, icon: .airplane, disclosure: removeButton, action: {}) {
                 contentPlaceholder
             } headerContent: {
                 headerContent
@@ -54,18 +58,18 @@ struct StorybookListChoice {
 
     static var checkbox: some View {
         Card(contentLayout: .fill) {
-            ListChoice(title, disclosure: uncheckedCheckbox)
-            ListChoice(title, disclosure: checkedCheckbox)
-            ListChoice(title, description: description, disclosure: .checkbox(state: .error))
-            ListChoice(title, description: description, disclosure: .checkbox())
+            ListChoice(title, disclosure: uncheckedCheckbox, action: {})
+            ListChoice(title, disclosure: checkedCheckbox, action: {})
+            ListChoice(title, description: description, disclosure: .checkbox(state: .error), action: {})
+            ListChoice(title, description: description, disclosure: .checkbox(), action: {})
                 .disabled(true)
-            ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false, state: .error))
-            ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false))
+            ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false, state: .error), action: {})
+            ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false), action: {})
                 .disabled(true)
-            ListChoice(title, description: description, icon: .airplane, disclosure: uncheckedCheckbox)
-            ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox)
-            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: uncheckedCheckbox)
-            ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox) {
+            ListChoice(title, description: description, icon: .airplane, disclosure: uncheckedCheckbox, action: {})
+            ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox, action: {})
+            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: uncheckedCheckbox, action: {})
+            ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox, action: {}) {
                 contentPlaceholder
             } headerContent: {
                 headerContent
@@ -83,17 +87,19 @@ struct StorybookListChoice {
 
     static var plain: some View {
         Card(contentLayout: .fill) {
-            ListChoice(title, disclosure: .none)
-            ListChoice(title, description: description, disclosure: .none)
-            ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
-            ListChoice(title, icon: .airplane, disclosure: .none)
-            ListChoice(title, icon: .symbol(.airplane, color: .blueNormal), disclosure: .none)
-            ListChoice(title, description: description, icon: .countryFlag("cs"), disclosure: .none)
-            ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none)
-            ListChoice(title, description: description, disclosure: .none, content: { EmptyView() }) {
+            ListChoice(title, disclosure: .none, action: {})
+            ListChoice(title, description: description, disclosure: .none, action: {})
+            ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false, action: {})
+            ListChoice(title, icon: .airplane, disclosure: .none, action: {})
+            ListChoice(title, icon: .symbol(.airplane, color: .blueNormal), disclosure: .none, action: {})
+            ListChoice(title, description: description, icon: .countryFlag("cs"), disclosure: .none, action: {})
+            ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none, action: {})
+            ListChoice(title, description: description, disclosure: .none, action: {}) {
+                EmptyView()
+            } headerContent: {
                 badge
             }
-            ListChoice(disclosure: .none) {
+            ListChoice(disclosure: .none, action: {}) {
                 contentPlaceholder
             } headerContent: {
                 headerContent
@@ -103,13 +109,13 @@ struct StorybookListChoice {
 
     static var radio: some View {
         Card(contentLayout: .fill) {
-            ListChoice(title, description: description, disclosure: .radio(isChecked: false))
-            ListChoice(title, description: description, disclosure: .radio(isChecked: true))
-            ListChoice(title, description: description, disclosure: .radio(state: .error))
-            ListChoice(title, description: description, disclosure: .radio())
+            ListChoice(title, description: description, disclosure: .radio(isChecked: false), action: {})
+            ListChoice(title, description: description, disclosure: .radio(isChecked: true), action: {})
+            ListChoice(title, description: description, disclosure: .radio(state: .error), action: {})
+            ListChoice(title, description: description, disclosure: .radio(), action: {})
                 .disabled(true)
-            ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false, state: .error))
-            ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false))
+            ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false, state: .error), action: {})
+            ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false), action: {})
                 .disabled(true)
             ListChoice(
                 title,

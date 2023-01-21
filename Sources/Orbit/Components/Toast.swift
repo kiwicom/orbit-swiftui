@@ -174,9 +174,9 @@ public struct ToastWrapper: View {
         _ description: String,
         icon: Icon.Content = .none,
         progress: CGFloat = 0,
-        pauseAction: @escaping () -> Void = {},
-        resumeAction: @escaping() -> Void = {},
-        dismissAction: @escaping () -> Void = {}
+        pauseAction: @escaping () -> Void,
+        resumeAction: @escaping() -> Void,
+        dismissAction: @escaping () -> Void
     ) {
         self.description = description
         self.iconContent = icon
@@ -226,7 +226,7 @@ struct ToastPreviews: PreviewProvider {
     }
 
     static var standaloneWrapper: some View {
-        ToastWrapper(description, icon: .checkCircle, progress: 0.6)
+        ToastWrapper(description, icon: .checkCircle, progress: 0.6, pauseAction: {}, resumeAction: {}, dismissAction: {})
             .previewDisplayName()
     }
 

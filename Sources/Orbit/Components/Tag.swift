@@ -67,7 +67,7 @@ public extension Tag {
         isFocused: Bool = true,
         isSelected: Bool = false,
         isActive: Bool = false,
-        action: @escaping () -> Void = {}
+        action: @escaping () -> Void
     ) {
         self.label = label
         self.iconContent = icon
@@ -84,7 +84,7 @@ extension Tag {
 
     public enum Style: Equatable {
         case `default`
-        case removable(action: () -> Void = {})
+        case removable(action: () -> Void)
 
         public static func == (lhs: Tag.Style, rhs: Tag.Style) -> Bool {
             switch (lhs, rhs) {
@@ -187,8 +187,10 @@ struct TagPreviews: PreviewProvider {
 
     static var standalone: some View {
         StateWrapper(true) { state in
-            Tag(label, icon: .grid, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
-            Tag("") // EmptyView
+            Tag(label, icon: .grid, style: .removable(action: {}), isSelected: state.wrappedValue) {
+                state.wrappedValue.toggle()
+            }
+            Tag("", action: {}) // EmptyView
         }
         .padding(.medium)
         .previewDisplayName()
@@ -196,8 +198,10 @@ struct TagPreviews: PreviewProvider {
 
     static var standaloneExpanding: some View {
         StateWrapper(true) { state in
-            Tag(label, icon: .grid, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
-                .idealSize(horizontal: false)
+            Tag(label, icon: .grid, style: .removable(action: {}), isSelected: state.wrappedValue) {
+                state.wrappedValue.toggle()
+            }
+            .idealSize(horizontal: false)
         }
         .padding(.medium)
         .previewDisplayName()
@@ -207,18 +211,22 @@ struct TagPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .large) {
             stack(style: .default, isFocused: true)
             stack(style: .default, isFocused: false)
-            stack(style: .removable(), isFocused: true)
-            stack(style: .removable(), isFocused: false)
+            stack(style: .removable(action: {}), isFocused: true)
+            stack(style: .removable(action: {}), isFocused: false)
             Separator()
             stack(style: .default, isFocused: false, idealWidth: false)
-            stack(style: .removable(), isFocused: true, idealWidth: false)
+            stack(style: .removable(action: {}), isFocused: true, idealWidth: false)
             Separator()
             HStack(spacing: .medium) {
                 StateWrapper(true) { state in
-                    Tag(label, icon: .sort, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
+                    Tag(label, icon: .sort, style: .removable(action: {}), isSelected: state.wrappedValue) {
+                        state.wrappedValue.toggle()
+                    }
                 }
                 StateWrapper(false) { state in
-                    Tag(icon: .notificationAdd, isFocused: false, isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
+                    Tag(icon: .notificationAdd, isFocused: false, isSelected: state.wrappedValue) {
+                        state.wrappedValue.toggle()
+                    }
                 }
             }
         }
@@ -229,9 +237,9 @@ struct TagPreviews: PreviewProvider {
     static var sizing: some View {
         VStack(alignment: .trailing, spacing: .large) {
             Group {
-                Tag("Tag", isFocused: false)
-                Tag("Tag", icon: .grid, isFocused: false)
-                Tag(icon: .grid, isFocused: false)
+                Tag("Tag", isFocused: false, action: {})
+                Tag("Tag", icon: .grid, isFocused: false, action: {})
+                Tag(icon: .grid, isFocused: false, action: {})
             }
             .measured()
         }

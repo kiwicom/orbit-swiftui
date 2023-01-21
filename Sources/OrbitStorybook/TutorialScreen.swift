@@ -9,7 +9,7 @@ struct TutorialScreen: View {
     
     var body: some View {
         VStack(spacing: .large) {
-            Card("Card Title", action: .buttonLink("Edit")) {
+            Card("Card Title", action: .buttonLink("Edit", action: {})) {
                 List {
                     ListItem("List Item 1", icon: .check, style: .custom(color: .greenNormal))
                     ListItem("List Item 2 with a <a href=\"...\">TextLink</a>", icon: .check)
@@ -24,7 +24,7 @@ struct TutorialScreen: View {
                 
                 HStack(spacing: .medium) {
                     Button("Secondary Button", style: .secondary, action: secondaryAction)
-                    Button(.creditCard, style: .status(.warning))
+                    Button(.creditCard, style: .status(.warning), action: {})
                 }
             }
             

@@ -32,7 +32,7 @@ struct TextStrutPreviews: PreviewProvider {
     }
 
     static var select: some View {
-        Select("", value: "Select")
+        Select("", value: "Select", action: {})
             .overlay(
                 strut(padding: .small)
             )
@@ -42,7 +42,7 @@ struct TextStrutPreviews: PreviewProvider {
     }
 
     static var tile: some View {
-        Tile()
+        Tile(action: {})
             .overlay(
                 strut(.large, padding: 14)
             )

@@ -70,7 +70,7 @@ public struct SocialButton: View {
 public extension SocialButton {
     
     /// Creates Orbit SocialButton component.
-    init(_ label: String, service: Service, action: @escaping () -> Void = {}) {
+    init(_ label: String, service: Service, action: @escaping () -> Void) {
         self.label = label
         self.service = service
         self.action = action
@@ -150,7 +150,7 @@ struct SocialButtonPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        SocialButton("Sign in with Facebook", service: .facebook)
+        SocialButton("Sign in with Facebook", service: .facebook, action: {})
             .previewDisplayName()
     }
 
@@ -167,10 +167,10 @@ struct SocialButtonPreviews: PreviewProvider {
 
     static var content: some View {
         VStack(spacing: .medium) {
-            SocialButton("Sign in with E-mail", service: .email)
-            SocialButton("Sign in with Facebook", service: .facebook)
-            SocialButton("Sign in with Google", service: .google)
-            SocialButton("Sign in with Apple", service: .apple)
+            SocialButton("Sign in with E-mail", service: .email, action: {})
+            SocialButton("Sign in with Facebook", service: .facebook, action: {})
+            SocialButton("Sign in with Google", service: .google, action: {})
+            SocialButton("Sign in with Apple", service: .apple, action: {})
         }
     }
 

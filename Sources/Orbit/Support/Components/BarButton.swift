@@ -28,7 +28,7 @@ public struct BarButton: View {
         }
     }
 
-    public init(_ content: Icon.Content, size: Icon.Size = .large, alignment: TextAlignment = .center, action: @escaping () -> Void = {}) {
+    public init(_ content: Icon.Content, size: Icon.Size = .large, alignment: TextAlignment = .center, action: @escaping () -> Void) {
         self.content = content
         self.size = size
         self.alignment = alignment
@@ -93,7 +93,7 @@ struct BarButtonPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        BarButton(.grid)
+        BarButton(.grid, action: {})
             .previewDisplayName()
     }
 
@@ -104,10 +104,10 @@ struct BarButtonPreviews: PreviewProvider {
                 .navigationBarItems(
                     leading: HStack(spacing: 0) {
                         Group {
-                            BarButton(.grid, alignment: .leading)
-                            BarButton(.questionCircle)
-                            BarButton(.sfSymbol("questionmark.circle.fill"), size: .normal)
-                            BarButton(.countryFlag("cz"))
+                            BarButton(.grid, alignment: .leading, action: {})
+                            BarButton(.questionCircle, action: {})
+                            BarButton(.sfSymbol("questionmark.circle.fill"), size: .normal, action: {})
+                            BarButton(.countryFlag("cz"), action: {})
                         }
                         .border(Color.cloudNormal.opacity(0.4))
                     }
@@ -115,9 +115,9 @@ struct BarButtonPreviews: PreviewProvider {
                 .navigationBarItems(
                     trailing: HStack(spacing: 0) {
                         Group {
-                            BarButton(.sfSymbol("square.and.arrow.up", weight: .medium), size: .normal)
-                            BarButton(.shareIos)
-                            BarButton(.grid, alignment: .trailing)
+                            BarButton(.sfSymbol("square.and.arrow.up", weight: .medium), size: .normal, action: {})
+                            BarButton(.shareIos, action: {})
+                            BarButton(.grid, alignment: .trailing, action: {})
                         }
                         .border(Color.cloudNormal.opacity(0.4))
                     }

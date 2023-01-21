@@ -109,7 +109,7 @@ public extension Button {
         disclosureIcon: Icon.Content = .none,
         style: Style = .primary,
         size: Size = .default,
-        action: @escaping () -> Void = {}
+        action: @escaping () -> Void
     ) {
         self.label = label
         self.iconContent = icon
@@ -124,7 +124,7 @@ public extension Button {
         _ icon: Icon.Content,
         style: Style = .primary,
         size: Size = .default,
-        action: @escaping () -> Void = {}
+        action: @escaping () -> Void
     ) {
         self.init(
             "",
@@ -270,13 +270,13 @@ extension Button {
         public let label: String
         public let action: () -> Void
 
-        public init(_ label: String, action: @escaping () -> Void = {}) {
+        public init(_ label: String, action: @escaping () -> Void) {
             self.label = label
             self.action = action
         }
 
         public init(stringLiteral value: String) {
-            self.init(value)
+            self.init(value, action: {})
         }
     }
 }
@@ -299,20 +299,20 @@ struct ButtonPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Button("Button", icon: .grid)
+        Button("Button", icon: .grid, action: {})
             .padding(.medium)
             .previewDisplayName()
     }
 
     static var combinations: some View {
         VStack(spacing: .medium) {
-            Button("Button", icon: .grid)
-            Button("Button", icon: .grid, disclosureIcon: .grid)
-            Button("Button")
-            Button(.grid)
-            Button(.grid)
+            Button("Button", icon: .grid, action: {})
+            Button("Button", icon: .grid, disclosureIcon: .grid, action: {})
+            Button("Button", action: {})
+            Button(.grid, action: {})
+            Button(.grid, action: {})
                 .idealSize()
-            Button(.arrowUp)
+            Button(.arrowUp, action: {})
                 .idealSize()
         }
         .padding(.medium)
@@ -322,15 +322,15 @@ struct ButtonPreviews: PreviewProvider {
     static var sizing: some View {
         VStack(spacing: .medium) {
             Group {
-                Button("")
-                Button("Button")
-                Button("Button", icon: .grid)
-                Button("Button\nmultiline", icon: .grid)
-                Button(.grid)
-                Button("Button small", size: .small)
-                Button("Button small", icon: .grid, size: .small)
-                Button(.grid, size: .small)
-                Button("Button\nmultiline", size: .small)
+                Button("", action: {})
+                Button("Button", action: {})
+                Button("Button", icon: .grid, action: {})
+                Button("Button\nmultiline", icon: .grid, action: {})
+                Button(.grid, action: {})
+                Button("Button small", size: .small, action: {})
+                Button("Button small", icon: .grid, size: .small, action: {})
+                Button(.grid, size: .small, action: {})
+                Button("Button\nmultiline", size: .small, action: {})
             }
             .measured()
         }
@@ -373,9 +373,9 @@ struct ButtonPreviews: PreviewProvider {
 
     @ViewBuilder static var mix: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
-            Button("Button with SF Symbol", icon: .sfSymbol("info.circle.fill"))
-            Button("Button with Flag", icon: .countryFlag("cz"))
-            Button("Button with Image", icon: .image(.orbit(.facebook)))
+            Button("Button with SF Symbol", icon: .sfSymbol("info.circle.fill"), action: {})
+            Button("Button with Flag", icon: .countryFlag("cz"), action: {})
+            Button("Button with Image", icon: .image(.orbit(.facebook)), action: {})
         }
         .padding(.medium)
         .previewDisplayName()
@@ -395,23 +395,23 @@ struct ButtonPreviews: PreviewProvider {
     @ViewBuilder static func buttons(_ style: Button.Style) -> some View {
         VStack(spacing: .small) {
             HStack(spacing: .small) {
-                Button("Label", style: style)
-                Button("Label", icon: .grid, style: style)
+                Button("Label", style: style, action: {})
+                Button("Label", icon: .grid, style: style, action: {})
             }
             HStack(spacing: .small) {
-                Button("Label", disclosureIcon: .chevronRight, style: style)
-                Button("Label", icon: .grid, disclosureIcon: .chevronRight, style: style)
+                Button("Label", disclosureIcon: .chevronRight, style: style, action: {})
+                Button("Label", icon: .grid, disclosureIcon: .chevronRight, style: style, action: {})
             }
             HStack(spacing: .small) {
-                Button("Label", style: style)
+                Button("Label", style: style, action: {})
                     .idealSize()
-                Button(.grid, style: style)
+                Button(.grid, style: style, action: {})
                 Spacer()
             }
             HStack(spacing: .small) {
-                Button("Label", style: style, size: .small)
+                Button("Label", style: style, size: .small, action: {})
                     .idealSize()
-                Button(.grid, style: style, size: .small)
+                Button(.grid, style: style, size: .small, action: {})
                 Spacer()
             }
         }
@@ -427,10 +427,10 @@ struct ButtonPreviews: PreviewProvider {
     @ViewBuilder static func statusButtons(_ style: Button.Style) -> some View {
         HStack(spacing: .xSmall) {
             Group {
-                Button("Label", style: style, size: .small)
-                Button("Label", icon: .grid, disclosureIcon: .chevronRight, style: style, size: .small)
-                Button("Label", disclosureIcon: .chevronRight, style: style, size: .small)
-                Button(.grid, style: style, size: .small)
+                Button("Label", style: style, size: .small, action: {})
+                Button("Label", icon: .grid, disclosureIcon: .chevronRight, style: style, size: .small, action: {})
+                Button("Label", disclosureIcon: .chevronRight, style: style, size: .small, action: {})
+                Button(.grid, style: style, size: .small, action: {})
             }
             .idealSize()
 

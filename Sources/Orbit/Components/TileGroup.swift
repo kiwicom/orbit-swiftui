@@ -75,7 +75,7 @@ struct TileGroupPreviews: PreviewProvider {
     }
 
     @ViewBuilder static func tiles(intrinsic: Bool) -> some View {
-        Tile("Title")
+        Tile("Title", action: {})
         Tile("Custom content", icon: .grid, action: {}) {
             if intrinsic {
                 intrinsicContentPlaceholder
@@ -83,10 +83,10 @@ struct TileGroupPreviews: PreviewProvider {
                 contentPlaceholder
             }
         }
-        Tile("Title", description: "No disclosure", icon: .notification, disclosure: .none)
-        Tile("No Separator", icon: .notification)
+        Tile("Title", description: "No disclosure", icon: .notification, disclosure: .none, action: {})
+        Tile("No Separator", icon: .notification, action: {})
             .tileSeparator(false)
-        Tile("Title", description: TilePreviews.description, icon: .airplane)
+        Tile("Title", description: TilePreviews.description, icon: .airplane, action: {})
     }
 
     static var snapshot: some View {

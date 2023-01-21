@@ -59,7 +59,7 @@ struct MeasurementsPreviews: PreviewProvider {
                 .frame(height: 31.54321)
                 .measured()
 
-            Select("", value: nil)
+            Select("", value: nil, action: {})
                 .measured()
         }
         .previewDisplayName()

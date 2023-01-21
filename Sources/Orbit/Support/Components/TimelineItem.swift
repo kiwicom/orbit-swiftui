@@ -254,7 +254,7 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
                 type: .future,
                 description: "We’ve assigned your request to one of our agents."
             ) {
-                Button("Add info")
+                Button("Add info", action: {})
             }
 
             TimelineItem(

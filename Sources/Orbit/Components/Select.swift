@@ -104,7 +104,7 @@ public extension Select {
         state: InputState = .default,
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
-        action: @escaping () -> Void = {}
+        action: @escaping () -> Void
     ) {
         self.label = label
         self.labelAccentColor = labelAccentColor
@@ -144,13 +144,13 @@ struct SelectPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Select(InputFieldPreviews.label, prefix: .grid, value: InputFieldPreviews.value)
+        Select(InputFieldPreviews.label, prefix: .grid, value: InputFieldPreviews.value, action: {})
             .padding(.medium)
             .previewDisplayName()
     }
 
     static var intrinsic: some View {
-        Select("Intrinsic", prefix: .grid, value: InputFieldPreviews.value)
+        Select("Intrinsic", prefix: .grid, value: InputFieldPreviews.value, action: {})
             .idealSize()
             .padding(.medium)
             .previewDisplayName()
@@ -184,49 +184,59 @@ struct SelectPreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static func select(_ label: String = InputFieldPreviews.label, value: String?, placeholder: String = InputFieldPreviews.placeholder, prefix: Icon.Content = .grid, suffix: Icon.Content = .chevronDown, message: Message? = nil) -> some View {
-        Select(label, prefix: prefix, value: value, placeholder: placeholder, suffix: suffix, message: message)
+    static func select(
+        _ label: String = InputFieldPreviews.label,
+        value: String?,
+        placeholder: String = InputFieldPreviews.placeholder,
+        prefix: Icon.Content = .grid,
+        suffix: Icon.Content = .chevronDown,
+        message: Message? = nil
+    ) -> some View {
+        Select(label, prefix: prefix, value: value, placeholder: placeholder, suffix: suffix, message: message, action: {})
     }
 
     @ViewBuilder static var mix: some View {
         VStack(spacing: .medium) {
             Group {
-                Select("No Value", value: "", suffix: .none)
-                Select("No Suffix", value: "Value", suffix: .none)
-                Select("Label", value: "Value")
-                Select("", prefix: .grid, value: "Value")
-                Select("", prefix: .airplane, value: nil, placeholder: "Please select")
-                Select("Label (Empty Value)", prefix: .airplane, value: "")
-                Select("Label (No Value)", prefix: .airplane, value: nil, placeholder: "Please select")
-                Select("Label", prefix: .phone, value: "Value")
-                Select("Label", prefix: .countryFlag("us"), value: "Value")
+                Select("No Value", value: "", suffix: .none, action: {})
+                Select("No Suffix", value: "Value", suffix: .none, action: {})
+                Select("Label", value: "Value", action: {})
+                Select("", prefix: .grid, value: "Value", action: {})
+                Select("", prefix: .airplane, value: nil, placeholder: "Please select", action: {})
+                Select("Label (Empty Value)", prefix: .airplane, value: "", action: {})
+                Select("Label (No Value)", prefix: .airplane, value: nil, placeholder: "Please select", action: {})
+                Select("Label", prefix: .phone, value: "Value", action: {})
+                Select("Label", prefix: .countryFlag("us"), value: "Value", action: {})
             }
 
             Group {
-                Select("Label (Disabled)", prefix: .airplane, value: "Value")
+                Select("Label (Disabled)", prefix: .airplane, value: "Value", action: {})
                     .disabled(true)
 
                 Select(
                     "Label (Disabled)",
                     prefix: .airplane,
                     value: nil,
-                    placeholder: "Please select"
+                    placeholder: "Please select",
+                    action: {}
                 )
                 .disabled(true)
 
-                Select("Label (Modified)", prefix: .airplane, value: "Modified Value", state: .modified)
+                Select("Label (Modified)", prefix: .airplane, value: "Modified Value", state: .modified, action: {})
                 Select(
                     "Label (Modified)",
                     prefix: .airplane,
                     value: nil,
                     placeholder: "Please select",
-                    state: .modified
+                    state: .modified,
+                    action: {}
                 )
                 Select(
                     "Label (Info)",
                     prefix: .informationCircle,
                     value: "Value",
-                    message: .help("Help message, also very long and multi-line to test that it works.")
+                    message: .help("Help message, also very long and multi-line to test that it works."),
+                    action: {}
                 )
 
                 Select(
@@ -235,7 +245,8 @@ struct SelectPreviews: PreviewProvider {
                     labelLinkColor: .status(.critical),
                     prefix: .image(.orbit(.google)),
                     value: "Bad Value with a very long text that should overflow",
-                    message: .error("Error message, but also very long and multi-line to test that it works.")
+                    message: .error("Error message, but also very long and multi-line to test that it works."),
+                    action: {}
                 )
             }
         }

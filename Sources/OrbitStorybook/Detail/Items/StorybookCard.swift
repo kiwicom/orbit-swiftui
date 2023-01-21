@@ -13,7 +13,7 @@ struct StorybookCard {
     }
 
     static var standalone: some View {
-        Card("Card title", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink")) {
+        Card("Card title", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink", action: {})) {
             contentPlaceholder
             contentPlaceholder
         }
@@ -30,11 +30,11 @@ struct StorybookCard {
     }
 
     static var cardWithoutContent: some View {
-        Card("Card with no content", action: .buttonLink("Edit"))
+        Card("Card with no content", action: .buttonLink("Edit", action: {}))
     }
 
     static var cardWithFillLayoutContent: some View {
-        Card("Card with fill layout content", action: .buttonLink("Edit"), contentLayout: .fill) {
+        Card("Card with fill layout content", action: .buttonLink("Edit", action: {}), contentLayout: .fill) {
             contentPlaceholder
             Separator()
             contentPlaceholder
@@ -57,25 +57,25 @@ struct StorybookCard {
     }
 
     static var cardWithTiles: some View {
-        Card("Card with mixed content", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink")) {
+        Card("Card with mixed content", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink", action: {})) {
             contentPlaceholder
                 .frame(height: 30).clipped()
-            Tile("Tile")
+            Tile("Tile", action: {})
 
             TileGroup {
-                Tile("Tile in TileGroup 1")
-                Tile("Tile in TileGroup 2")
+                Tile("Tile in TileGroup 1", action: {})
+                Tile("Tile in TileGroup 2", action: {})
             }
 
             TileGroup {
-                Tile("Tile in TileGroup 1 (fixed)")
-                Tile("Tile in TileGroup 2 (fixed)")
+                Tile("Tile in TileGroup 1 (fixed)", action: {})
+                Tile("Tile in TileGroup 2 (fixed)", action: {})
             }
             .fixedSize(horizontal: true, vertical: false)
 
-            ListChoice("ListChoice 1")
+            ListChoice("ListChoice 1", action: {})
                 .padding(.trailing, -.medium)
-            ListChoice("ListChoice 2")
+            ListChoice("ListChoice 2", action: {})
                 .padding(.trailing, -.medium)
             contentPlaceholder
                 .frame(height: 30).clipped()
@@ -86,7 +86,7 @@ struct StorybookCard {
         Card(
             "Card with very very very very very very long and multi-line title",
             description: "Very very very very very long and multi-line description",
-            action: .buttonLink("ButtonLink with a long description"),
+            action: .buttonLink("ButtonLink with a long description", action: {}),
             status: .critical
         ) {
             contentPlaceholder
@@ -102,9 +102,9 @@ struct StorybookCard {
             contentLayout: .fill
         ) {
             VStack(spacing: 0) {
-                ListChoice("ListChoice")
-                ListChoice("ListChoice", icon: .countryFlag("us"))
-                ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false)
+                ListChoice("ListChoice", action: {})
+                ListChoice("ListChoice", icon: .countryFlag("us"), action: {})
+                ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false, action: {})
             }
             .padding(.top, .xSmall)
         }

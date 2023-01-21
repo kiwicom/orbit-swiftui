@@ -5,10 +5,10 @@ struct StorybookSocialButton {
 
     static var basic: some View {
         VStack(spacing: .medium) {
-            SocialButton("Sign in with E-mail", service: .email)
-            SocialButton("Sign in with Facebook", service: .facebook)
-            SocialButton("Sign in with Google", service: .google)
-            SocialButton("Sign in with Apple", service: .apple)
+            SocialButton("Sign in with E-mail", service: .email, action: {})
+            SocialButton("Sign in with Facebook", service: .facebook, action: {})
+            SocialButton("Sign in with Google", service: .google, action: {})
+            SocialButton("Sign in with Apple", service: .apple, action: {})
         }
         .previewDisplayName()
     }
