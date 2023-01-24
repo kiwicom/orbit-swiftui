@@ -84,19 +84,25 @@ final class TagAttributedStringBuilder {
             titleParagraphStyle.lineSpacing = lineSpacing
             textAttributes[.paragraphStyle] = titleParagraphStyle
         }
+        
+        let adjustedKerning = kerning == 0
+            ? 0.0001
+            : kerning
 
         textAttributes[.font] = UIFont.orbit(size: fontSize, weight: fontWeight.uiKit)
-        textAttributes[.kern] = kerning
+        textAttributes[.kern] = adjustedKerning
         textAttributes[.foregroundColor] = color
 
         var linksAttributes: [NSAttributedString.Key: Any] = [:]
+        linksAttributes[.font] = UIFont.orbit(size: fontSize, weight: Font.Weight.medium.uiKit)
         linksAttributes[.underlineStyle] = NSUnderlineStyle.single.rawValue
-        linksAttributes[.kern] = kerning
+        linksAttributes[.kern] = adjustedKerning
         linksAttributes[.foregroundColor] = linkColor
 
         var refAttributes: [NSAttributedString.Key: Any] = [:]
+        refAttributes[.font] = UIFont.orbit(size: fontSize, weight: Font.Weight.medium.uiKit)
         refAttributes[.foregroundColor] = accentColor
-        refAttributes[.kern] = kerning
+        refAttributes[.kern] = adjustedKerning
 
         return attributedString(
             string,
@@ -121,20 +127,26 @@ final class TagAttributedStringBuilder {
             titleParagraphStyle.lineSpacing = lineSpacing
         }
 
+        let adjustedKerning = kerning == 0
+            ? 0.0001
+            : kerning
+        
         var textAttributes: [NSAttributedString.Key: Any] = [:]
         textAttributes[.font] = fontSize.map { UIFont.orbit(size: $0, weight: fontWeight.uiKit) }
         textAttributes[.foregroundColor] = UIColor.clear
-        textAttributes[.kern] = kerning
+        textAttributes[.kern] = adjustedKerning
         textAttributes[.paragraphStyle] = titleParagraphStyle
 
         var linksAttributes: [NSAttributedString.Key: Any] = [:]
+        linksAttributes[.font] = fontSize.map { UIFont.orbit(size: $0, weight: Font.Weight.medium.uiKit) }
         linksAttributes[.underlineStyle] = NSUnderlineStyle.single.rawValue
-        linksAttributes[.kern] = kerning
+        linksAttributes[.kern] = adjustedKerning
         linksAttributes[.foregroundColor] = linkColor
 
         var refAttributes: [NSAttributedString.Key: Any] = [:]
         refAttributes[.foregroundColor] = UIColor.clear
-        refAttributes[.kern] = kerning
+        refAttributes[.font] = fontSize.map { UIFont.orbit(size: $0, weight: Font.Weight.medium.uiKit) }
+        refAttributes[.kern] = adjustedKerning
 
         return attributedString(
             string,
