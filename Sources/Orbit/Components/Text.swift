@@ -29,23 +29,22 @@ public struct Text: View {
                 .lineSpacing(lineSpacingAdjusted)
                 .multilineTextAlignment(alignment)
                 .overlay(selectableText)
+                // If the text contains links, the TextLink overlay takes accessibility priority
+                .accessibility(hidden: containsTextLinks)
                 .overlay(textLinks)
                 .padding(.vertical, lineHeightPadding)
                 .fixedSize(horizontal: false, vertical: true)
-                .accessibility(removeTraits: showTextLinks ? .isStaticText : [])
-                .accessibility(hidden: showTextLinks)
         }
     }
 
     @ViewBuilder var textLinks: some View {
-        if showTextLinks {
+        if containsTextLinks {
             GeometryReader { geometry in
+                // TextLink has embedded accessibility and exposes full text including separate link elements
                 TextLink(content: textLinkContent, bounds: geometry.size, color: linkColor) { url, text in
                     HapticsProvider.sendHapticFeedback(.light(0.5))
                     linkAction(url, text)
                 }
-                .accessibility(addTraits: .isLink)
-                .accessibility(label: .init(content))
             }
         }
     }
@@ -96,7 +95,7 @@ public struct Text: View {
         }
     }
 
-    var showTextLinks: Bool {
+    var containsTextLinks: Bool {
         content.containsHtmlFormatting && content.containsTextLinks
     }
 
