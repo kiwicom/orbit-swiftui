@@ -208,8 +208,13 @@ private extension TagAttributedStringBuilder.Tag {
                     .font: UIFont.orbit(size: font.pointSize, weight: .medium),
                     .underlineStyle: NSUnderlineStyle.single.rawValue
                 ].merging(tagTextAttributes, uniquingKeysWith: { $1 })
-
-                return stringByAddingAttributes(attributes, to: currentAttributedString, at: result.ranges[2])
+                
+                return stringByAddingAttributes(
+                    attributes,
+                    to: currentAttributedString,
+                    at: result.ranges[2],
+                    isLinkAttribute: true
+                )
             case .bold, .strong:
                 guard result.ranges.count == 2 else { return nil }
 
@@ -255,7 +260,8 @@ private extension TagAttributedStringBuilder.Tag {
     private func stringByAddingAttributes(
         _ attributes: [NSAttributedString.Key: Any],
         to currentAttributedString: NSAttributedString,
-        at valueRange: Range<String.Index>
+        at valueRange: Range<String.Index>,
+        isLinkAttribute: Bool = false
     ) -> NSAttributedString {
 
         let valueNSRange = NSRange(valueRange, in: currentAttributedString.string)
@@ -264,7 +270,14 @@ private extension TagAttributedStringBuilder.Tag {
         )
         let finalStringRange = NSRange(location: 0, length: finalAttributedString.string.utf16.count)
         finalAttributedString.addAttributes(attributes, range: finalStringRange)
-
+        
+        if isLinkAttribute {
+            if #unavailable(iOS 15) {
+                // Simulate the <iOS15 behaviour to sync with word break of native SwiftUI.Text
+                finalAttributedString.replaceFirstOccurence(of: " ", with: "\u{a0}")
+            }
+        }
+        
         return finalAttributedString
     }
 }
@@ -302,6 +315,16 @@ private extension NSTextAlignment {
             case .leading:      self = .left
             case .center:       self = .center
             case .trailing:     self = .right
+        }
+    }
+}
+
+private extension NSMutableAttributedString {
+    
+    func replaceFirstOccurence(of stringToReplace: String, with newStringPart: String) {
+        if mutableString.contains(stringToReplace) {
+            let rangeOfStringToBeReplaced = mutableString.range(of: stringToReplace)
+            replaceCharacters(in: rangeOfStringToBeReplaced, with: newStringPart)
         }
     }
 }

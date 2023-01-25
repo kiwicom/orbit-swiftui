@@ -374,6 +374,14 @@ struct TextPreviews: PreviewProvider {
             Text(multilineFormattedText, color: nil, alignment: .trailing, accentColor: .orangeDark)
                 .foregroundColor(.blueDark)
                 .background(Color.blueLight)
+            
+            // This text may reveal issues between iOS TextLink word wrapping
+            Text(
+                "By continuing, you accept the <applink1>Terms Of Use</applink1> and <applink2>Privacy Policy</applink2>.",
+                size: .small,
+                color: .inkNormal,
+                linkColor: .secondary
+            )
         }
         .padding(.medium)
         .previewDisplayName()
