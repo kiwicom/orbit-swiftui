@@ -30,7 +30,7 @@ public struct Text: View {
                 .multilineTextAlignment(alignment)
                 .overlay(selectableText)
                 // If the text contains links, the TextLink overlay takes accessibility priority
-                .accessibility(hidden: containsTextLinks)
+                .accessibility(hidden: content.containsTextLinks)
                 .overlay(textLinks)
                 .padding(.vertical, lineHeightPadding)
                 .fixedSize(horizontal: false, vertical: true)
@@ -38,10 +38,10 @@ public struct Text: View {
     }
 
     @ViewBuilder var textLinks: some View {
-        if containsTextLinks {
+        if content.containsTextLinks {
             GeometryReader { geometry in
                 // TextLink has embedded accessibility and exposes full text including separate link elements
-                TextLink(content: textLinkContent, bounds: geometry.size, color: linkColor) { url, text in
+                TextLink(content: textWithOnlyTextLinksVisible, bounds: geometry.size, color: linkColor) { url, text in
                     HapticsProvider.sendHapticFeedback(.light(0.5))
                     linkAction(url, text)
                 }
@@ -52,7 +52,7 @@ public struct Text: View {
     @ViewBuilder var selectableText: some View {
         if isSelectable {
             GeometryReader { geometry in
-                SelectableLabelWrapper(text: attributedTextWithoutTextLinks.string)
+                SelectableLabelWrapper(text: textWithTransparentTextLinks.string)
                     .frame(
                         width: geometry.size.width,
                         height: geometry.size.height
@@ -64,7 +64,7 @@ public struct Text: View {
     func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
         if content.containsHtmlFormatting {
             return textContent {
-                SwiftUI.Text(attributedTextWithoutTextLinks)
+                SwiftUI.Text(textWithTransparentTextLinks)
             }
         } else {
             return textContent {
@@ -95,28 +95,23 @@ public struct Text: View {
         }
     }
 
-    var containsTextLinks: Bool {
-        content.containsHtmlFormatting && content.containsTextLinks
-    }
-
-    var textLinkContent: NSAttributedString {
-        TagAttributedStringBuilder.all.attributedStringForLinks(
+    var textWithOnlyTextLinksVisible: NSAttributedString {
+        TagAttributedStringBuilder.all.attributedString(
             content,
+            alignment: alignment,
             fontSize: scaledSize,
             fontWeight: weight,
             lineSpacing: lineSpacingAdjusted,
             kerning: kerning,
-            alignment: alignment
+            color: .clear,
+            accentColor: .clear
         )
     }
 
-    var foregroundColor: UIColor? {
-        color?.uiValue
-    }
-
-    var attributedTextWithoutTextLinks: NSAttributedString {
+    var textWithTransparentTextLinks: NSAttributedString {
         TagAttributedStringBuilder.all.attributedString(
             content,
+            alignment: alignment,
             fontSize: scaledSize,
             fontWeight: weight,
             lineSpacing: lineSpacingAdjusted,
@@ -125,6 +120,10 @@ public struct Text: View {
             linkColor: .clear,
             accentColor: accentColor
         )
+    }
+    
+    var foregroundColor: UIColor? {
+        color?.uiValue
     }
 
     var scaledSize: CGFloat {

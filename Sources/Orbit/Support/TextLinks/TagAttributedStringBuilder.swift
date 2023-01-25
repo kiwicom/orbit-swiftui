@@ -69,6 +69,7 @@ final class TagAttributedStringBuilder {
 
     func attributedString(
         _ string: String,
+        alignment: TextAlignment,
         fontSize: CGFloat,
         fontWeight: Font.Weight = .regular,
         lineSpacing: CGFloat?,
@@ -77,76 +78,28 @@ final class TagAttributedStringBuilder {
         linkColor: UIColor? = nil,
         accentColor: UIColor? = nil
     ) -> NSAttributedString {
-        var textAttributes: [NSAttributedString.Key: Any] = [:]
 
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .init(alignment)
         if let lineSpacing = lineSpacing {
-            let titleParagraphStyle = NSMutableParagraphStyle()
-            titleParagraphStyle.lineSpacing = lineSpacing
-            textAttributes[.paragraphStyle] = titleParagraphStyle
+            paragraphStyle.lineSpacing = lineSpacing
         }
         
         let adjustedKerning = kerning == 0
             ? 0.0001
             : kerning
 
+        var textAttributes: [NSAttributedString.Key: Any] = [:]
         textAttributes[.font] = UIFont.orbit(size: fontSize, weight: fontWeight.uiKit)
         textAttributes[.kern] = adjustedKerning
         textAttributes[.foregroundColor] = color
+        textAttributes[.paragraphStyle] = paragraphStyle
 
         var linksAttributes: [NSAttributedString.Key: Any] = [:]
-        linksAttributes[.font] = UIFont.orbit(size: fontSize, weight: Font.Weight.medium.uiKit)
-        linksAttributes[.underlineStyle] = NSUnderlineStyle.single.rawValue
-        linksAttributes[.kern] = adjustedKerning
         linksAttributes[.foregroundColor] = linkColor
 
         var refAttributes: [NSAttributedString.Key: Any] = [:]
-        refAttributes[.font] = UIFont.orbit(size: fontSize, weight: Font.Weight.medium.uiKit)
         refAttributes[.foregroundColor] = accentColor
-        refAttributes[.kern] = adjustedKerning
-
-        return attributedString(
-            string,
-            textAttributes: textAttributes,
-            tagTextAttributes: [.anchor: linksAttributes, .applink: linksAttributes, .ref: refAttributes]
-        )
-    }
-
-    func attributedStringForLinks(
-        _ string: String,
-        fontSize: CGFloat? = nil,
-        fontWeight: Font.Weight = .regular,
-        lineSpacing: CGFloat?,
-        kerning: CGFloat = 0,
-        linkColor: UIColor? = .productDark,
-        alignment: TextAlignment
-    ) -> NSAttributedString {
-
-        let titleParagraphStyle = NSMutableParagraphStyle()
-        titleParagraphStyle.alignment = .init(alignment)
-        if let lineSpacing = lineSpacing {
-            titleParagraphStyle.lineSpacing = lineSpacing
-        }
-
-        let adjustedKerning = kerning == 0
-            ? 0.0001
-            : kerning
-        
-        var textAttributes: [NSAttributedString.Key: Any] = [:]
-        textAttributes[.font] = fontSize.map { UIFont.orbit(size: $0, weight: fontWeight.uiKit) }
-        textAttributes[.foregroundColor] = UIColor.clear
-        textAttributes[.kern] = adjustedKerning
-        textAttributes[.paragraphStyle] = titleParagraphStyle
-
-        var linksAttributes: [NSAttributedString.Key: Any] = [:]
-        linksAttributes[.font] = fontSize.map { UIFont.orbit(size: $0, weight: Font.Weight.medium.uiKit) }
-        linksAttributes[.underlineStyle] = NSUnderlineStyle.single.rawValue
-        linksAttributes[.kern] = adjustedKerning
-        linksAttributes[.foregroundColor] = linkColor
-
-        var refAttributes: [NSAttributedString.Key: Any] = [:]
-        refAttributes[.foregroundColor] = UIColor.clear
-        refAttributes[.font] = fontSize.map { UIFont.orbit(size: $0, weight: Font.Weight.medium.uiKit) }
-        refAttributes[.kern] = adjustedKerning
 
         return attributedString(
             string,
@@ -253,6 +206,7 @@ private extension TagAttributedStringBuilder.Tag {
                 let attributes = [
                     .link: url,
                     .font: UIFont.orbit(size: font.pointSize, weight: .medium),
+                    .underlineStyle: NSUnderlineStyle.single.rawValue
                 ].merging(tagTextAttributes, uniquingKeysWith: { $1 })
 
                 return stringByAddingAttributes(attributes, to: currentAttributedString, at: result.ranges[2])

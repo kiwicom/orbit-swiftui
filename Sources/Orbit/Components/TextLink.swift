@@ -125,12 +125,12 @@ struct TextLinkPreviews: PreviewProvider {
 
     static var standalone: some View {
         TextLink(
-            TagAttributedStringBuilder.all.attributedStringForLinks(
+            TagAttributedStringBuilder.all.attributedString(
                 link("Text link"),
+                alignment: .leading,
                 fontSize: Text.Size.normal.value,
                 fontWeight: .regular,
-                lineSpacing: nil,
-                alignment: .leading
+                lineSpacing: nil
             ),
             bounds: .zero
         )
