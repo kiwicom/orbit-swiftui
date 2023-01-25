@@ -2,6 +2,14 @@ import SwiftUI
 
 public extension SwiftUI.Text {
 
+    static var kerningMultiplier: CGFloat {
+        if #available(iOS 16.0, *) {
+            return 1.0
+        } else {
+            return 0.001
+        }
+    }
+    
     /// Creates a native SwiftUI Text from attributed string.
     @available(iOS, deprecated: 15.0, message: "Will be replaced with a native init")
     init(_ string: NSAttributedString) {
@@ -22,7 +30,7 @@ public extension SwiftUI.Text {
             }
 
             if let kern = attributes[.kern] as? CGFloat {
-                text = text.kerning(kern)
+                text = text.kerning(kern * Self.kerningMultiplier)
             }
 
             if let strikethrough = attributes[.strikethroughStyle] as? NSNumber, strikethrough != 0 {
