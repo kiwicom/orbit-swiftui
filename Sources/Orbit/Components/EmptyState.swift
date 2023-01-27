@@ -50,7 +50,7 @@ public extension EmptyState {
     
     enum Action {
         case none
-        case button(_ label: String, style: Button.Style = .primary, action: () -> Void = {})
+        case button(_ label: String, style: Button.Style = .primary, action: () -> Void)
     }
 }
 
@@ -97,12 +97,12 @@ struct EmptyStatePreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        EmptyState(title, description: description, illustration: .noResults, action: .button(button))
+        EmptyState(title, description: description, illustration: .noResults, action: .button(button, action: {}))
             .previewDisplayName()
     }
     
     static var subtle: some View {
-        EmptyState(title, description: description, illustration: .error404, action: .button(button, style: .primarySubtle))
+        EmptyState(title, description: description, illustration: .error404, action: .button(button, style: .primarySubtle, action: {}))
             .previewDisplayName()
     }
     

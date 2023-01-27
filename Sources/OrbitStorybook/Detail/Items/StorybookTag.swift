@@ -9,18 +9,22 @@ struct StorybookTag {
         VStack(alignment: .leading, spacing: .large) {
             stack(style: .default, isFocused: true)
             stack(style: .default, isFocused: false)
-            stack(style: .removable(), isFocused: true)
-            stack(style: .removable(), isFocused: false)
+            stack(style: .removable(action: {}), isFocused: true)
+            stack(style: .removable(action: {}), isFocused: false)
             Separator()
             stack(style: .default, isFocused: false, idealWidth: false)
-            stack(style: .removable(), isFocused: true, idealWidth: false)
+            stack(style: .removable(action: {}), isFocused: true, idealWidth: false)
             Separator()
             HStack(spacing: .medium) {
                 StateWrapper(true) { state in
-                    Tag(label, icon: .sort, style: .removable(), isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
+                    Tag(label, icon: .sort, style: .removable(action: {}), isSelected: state.wrappedValue) {
+                        state.wrappedValue.toggle()
+                    }
                 }
                 StateWrapper(false) { state in
-                    Tag(icon: .notificationAdd, isFocused: false, isSelected: state.wrappedValue) { state.wrappedValue.toggle() }
+                    Tag(icon: .notificationAdd, isFocused: false, isSelected: state.wrappedValue) {
+                        state.wrappedValue.toggle()                        
+                    }
                 }
             }
         }

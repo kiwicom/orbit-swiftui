@@ -21,7 +21,7 @@ public struct NavigationButton: View {
         .buttonStyle(.navigationButton)
     }
 
-    public init(_ state: State, action: @escaping () -> Void = {}) {
+    public init(_ state: State, action: @escaping () -> Void) {
         self.state = state
         self.action = action
     }
@@ -72,13 +72,13 @@ struct NavigationButtonPreviews: PreviewProvider {
     }
 
     static var close: some View {
-        NavigationButton(.close)
+        NavigationButton(.close, action: {})
             .previewLayout(.sizeThatFits)
             .previewDisplayName()
     }
 
     static var back: some View {
-        NavigationButton(.back)
+        NavigationButton(.back, action: {})
             .previewLayout(.sizeThatFits)
             .previewDisplayName()
     }
@@ -90,9 +90,9 @@ struct NavigationButtonPreviews: PreviewProvider {
                 .navigationBarItems(
                     leading: HStack(spacing: 0) {
                         Group {
-                            NavigationButton(.close)
-                            BarButton(.sfSymbol("xmark", weight: .bold))
-                            BarButton(.close)
+                            NavigationButton(.close, action: {})
+                            BarButton(.sfSymbol("xmark", weight: .bold), action: {})
+                            BarButton(.close, action: {})
                         }
                         .border(Color.cloudNormal.opacity(0.3))
                     }
@@ -109,16 +109,16 @@ struct NavigationButtonPreviews: PreviewProvider {
                 .navigationBarItems(
                     leading: HStack(spacing: 0) {
                         Group {
-                            NavigationButton(.back)
-                            BarButton(.sfSymbol("arrow.backward", weight: .bold))
-                            BarButton(.chevronLeft)
+                            NavigationButton(.back, action: {})
+                            BarButton(.sfSymbol("arrow.backward", weight: .bold), action: {})
+                            BarButton(.chevronLeft, action: {})
                         }
                         .border(Color.cloudNormal.opacity(0.3))
                     },
                     trailing: HStack(spacing: 0) {
                         Group {
-                            BarButton(.shareIos)
-                            BarButton(.grid, alignment: .trailing)
+                            BarButton(.shareIos, action: {})
+                            BarButton(.grid, alignment: .trailing, action: {})
                         }
                         .border(Color.cloudNormal.opacity(0.3))
                     }

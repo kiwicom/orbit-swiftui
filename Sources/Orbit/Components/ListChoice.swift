@@ -131,11 +131,11 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
             case .button(let type):
                 disclosureButton(type: type)
             case .buttonLink(let label, let style):
-                ButtonLink(label, style: style)
+                ButtonLink(label, style: style, action: {})
             case .checkbox(let isChecked, let state):
-                Checkbox(state: state, isChecked: isChecked)
+                Checkbox(state: state, isChecked: isChecked, action: {})
             case .radio(let isChecked, let state):
-                Radio(state: state, isChecked: isChecked)
+                Radio(state: state, isChecked: isChecked, action: {})
             case .icon(let content):
                 Icon(content: content)
         }
@@ -143,8 +143,8 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     
     @ViewBuilder func disclosureButton(type: ListChoiceDisclosure.ButtonType) -> some View {
         switch type {
-            case .add:      Button(.plus, style: .primarySubtle, size: .small).fixedSize()
-            case .remove:   Button(.close, style: .criticalSubtle, size: .small).fixedSize()
+            case .add:      Button(.plus, style: .primarySubtle, size: .small, action: {}).fixedSize()
+            case .remove:   Button(.close, style: .criticalSubtle, size: .small, action: {}).fixedSize()
         }
     }
 
@@ -203,7 +203,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
         value: String = "",
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
-        action: @escaping () -> Void = {},
+        action: @escaping () -> Void,
         @ViewBuilder content: () -> Content,
         @ViewBuilder headerContent: () -> HeaderContent
     ) {
@@ -229,7 +229,7 @@ public extension ListChoice {
         icon: Icon.Content = .none,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
-        action: @escaping () -> Void = {},
+        action: @escaping () -> Void,
         @ViewBuilder content: () -> Content,
         @ViewBuilder headerContent: () -> HeaderContent
     ) {
@@ -253,7 +253,7 @@ public extension ListChoice {
         icon: Icon.Content = .none,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
-        action: @escaping () -> Void = {},
+        action: @escaping () -> Void,
         @ViewBuilder content: () -> Content
     ) where HeaderContent == EmptyView {
         self.init(
@@ -276,7 +276,7 @@ public extension ListChoice {
         icon: Icon.Content = .none,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
-        action: @escaping () -> Void = {}
+        action: @escaping () -> Void
     ) where HeaderContent == EmptyView, Content == EmptyView {
         self.init(
             title,
@@ -303,7 +303,7 @@ public extension ListChoice where HeaderContent == Text {
         value: String,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
-        action: @escaping () -> Void = {},
+        action: @escaping () -> Void,
         @ViewBuilder content: () -> Content
     ) {
         self.init(
@@ -328,7 +328,7 @@ public extension ListChoice where HeaderContent == Text {
         value: String,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
-        action: @escaping () -> Void = {}
+        action: @escaping () -> Void
     ) where Content == EmptyView {
         self.init(
             title,
@@ -400,20 +400,20 @@ struct ListChoicePreviews: PreviewProvider {
 
     static var standalone: some View {
         VStack(spacing: 0) {
-            ListChoice(title, description: description, icon: .grid) {
+            ListChoice(title, description: description, icon: .grid, action: {}) {
                 contentPlaceholder
             } headerContent: {
                 headerPlaceholder
             }
 
             // Empty
-            ListChoice(disclosure: .none)
+            ListChoice(disclosure: .none, action: {})
         }
         .previewDisplayName()
     }
 
     static var intrinsic: some View {
-        ListChoice(title, description: description, icon: .grid) {
+        ListChoice(title, description: description, icon: .grid, action: {}) {
             intrinsicContentPlaceholder
         } headerContent: {
             intrinsicContentPlaceholder
@@ -425,12 +425,12 @@ struct ListChoicePreviews: PreviewProvider {
     static var sizing: some View {
         VStack(spacing: .medium) {
             Group {
-                ListChoice("ListChoice", description: description, icon: .grid, value: value)
-                ListChoice("ListChoice", icon: .grid, value: value)
-                ListChoice(icon: .grid)
-                ListChoice("ListChoice", disclosure: .none)
-                ListChoice(description: "ListChoice", disclosure: .none)
-                ListChoice("ListChoice")
+                ListChoice("ListChoice", description: description, icon: .grid, value: value, action: {})
+                ListChoice("ListChoice", icon: .grid, value: value, action: {})
+                ListChoice(icon: .grid, action: {})
+                ListChoice("ListChoice", disclosure: .none, action: {})
+                ListChoice(description: "ListChoice", disclosure: .none, action: {})
+                ListChoice("ListChoice", action: {})
             }
             .border(Color.cloudLight)
             .measured()
@@ -442,33 +442,37 @@ struct ListChoicePreviews: PreviewProvider {
     
     static var mix: some View {
         Card(contentLayout: .fill) {
-            ListChoice(title, description: "Multiline\ndescription", value: "USD")
-            ListChoice(title, description: description, icon: .airplane, value: value)
-            ListChoice(title, description: description, content: { EmptyView() }) {
+            ListChoice(title, description: "Multiline\ndescription", value: "USD", action: {})
+            ListChoice(title, description: description, icon: .airplane, value: value, action: {})
+            ListChoice(title, description: description, action: {}) {
+                EmptyView()
+            } headerContent: {
                 badge
             }
-            ListChoice(title, description: description, icon: .grid, content: { EmptyView() }) {
+            ListChoice(title, description: description, icon: .grid, action: {}) {
+                EmptyView()
+            } headerContent: {
                 badge
             }
-            ListChoice(title, description: description, icon: .grid) {
+            ListChoice(title, description: description, icon: .grid, action: {}) {
                 intrinsicContentPlaceholder
             } headerContent: {
                 intrinsicContentPlaceholder
             }
-            ListChoice(disclosure: .none) {
+            ListChoice(disclosure: .none, action: {}) {
                 contentPlaceholder
             }
-            ListChoice(title, description: description, icon: .grid) {
-                contentPlaceholder
-            } headerContent: {
-                headerPlaceholder
-            }
-            ListChoice {
+            ListChoice(title, description: description, icon: .grid, action: {}) {
                 contentPlaceholder
             } headerContent: {
                 headerPlaceholder
             }
-            ListChoice(disclosure: .none) {
+            ListChoice(action: {}) {
+                contentPlaceholder
+            } headerContent: {
+                headerPlaceholder
+            }
+            ListChoice(disclosure: .none, action: {}) {
                 contentPlaceholder
             } headerContent: {
                 headerPlaceholder
@@ -479,16 +483,16 @@ struct ListChoicePreviews: PreviewProvider {
     
     static var buttons: some View {
         Card(contentLayout: .fill) {
-            ListChoice(title, disclosure: addButton)
-            ListChoice(title, disclosure: removeButton)
-            ListChoice(title, description: description, disclosure: addButton)
-            ListChoice(title, description: description, disclosure: removeButton)
-            ListChoice(title, icon: .airplane, disclosure: addButton)
-            ListChoice(title, icon: .airplane, disclosure: removeButton)
-            ListChoice(title, description: description, icon: .airplane, disclosure: addButton)
-            ListChoice(title, description: description, icon: .airplane, disclosure: removeButton)
-            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: addButton)
-            ListChoice(title, description: description, icon: .airplane, disclosure: removeButton) {
+            ListChoice(title, disclosure: addButton, action: {})
+            ListChoice(title, disclosure: removeButton, action: {})
+            ListChoice(title, description: description, disclosure: addButton, action: {})
+            ListChoice(title, description: description, disclosure: removeButton, action: {})
+            ListChoice(title, icon: .airplane, disclosure: addButton, action: {})
+            ListChoice(title, icon: .airplane, disclosure: removeButton, action: {})
+            ListChoice(title, description: description, icon: .airplane, disclosure: addButton, action: {})
+            ListChoice(title, description: description, icon: .airplane, disclosure: removeButton, action: {})
+            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: addButton, action: {})
+            ListChoice(title, description: description, icon: .airplane, disclosure: removeButton, action: {}) {
                 contentPlaceholder
             } headerContent: {
                 headerPlaceholder
@@ -499,18 +503,18 @@ struct ListChoicePreviews: PreviewProvider {
 
     static var checkbox: some View {
         Card(contentLayout: .fill) {
-            ListChoice(title, disclosure: uncheckedCheckbox)
-            ListChoice(title, disclosure: checkedCheckbox)
-            ListChoice(title, description: description, disclosure: .checkbox(state: .error))
-            ListChoice(title, description: description, disclosure: .checkbox())
+            ListChoice(title, disclosure: uncheckedCheckbox, action: {})
+            ListChoice(title, disclosure: checkedCheckbox, action: {})
+            ListChoice(title, description: description, disclosure: .checkbox(state: .error), action: {})
+            ListChoice(title, description: description, disclosure: .checkbox(), action: {})
                 .disabled(true)
-            ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false, state: .error))
-            ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false))
+            ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false, state: .error), action: {})
+            ListChoice(title, icon: .airplane, disclosure: .checkbox(isChecked: false), action: {})
                 .disabled(true)
-            ListChoice(title, description: description, icon: .airplane, disclosure: uncheckedCheckbox)
-            ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox)
-            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: uncheckedCheckbox)
-            ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox) {
+            ListChoice(title, description: description, icon: .airplane, disclosure: uncheckedCheckbox, action: {})
+            ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox, action: {})
+            ListChoice(title, description: description, icon: .airplane, value: value, disclosure: uncheckedCheckbox, action: {})
+            ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox, action: {}) {
                 contentPlaceholder
             } headerContent: {
                 headerPlaceholder
@@ -521,19 +525,20 @@ struct ListChoicePreviews: PreviewProvider {
 
     static var radio: some View {
         Card(contentLayout: .fill) {
-            ListChoice(title, description: description, disclosure: .radio(isChecked: false))
-            ListChoice(title, description: description, disclosure: .radio(isChecked: true))
-            ListChoice(title, description: description, disclosure: .radio(state: .error))
-            ListChoice(title, description: description, disclosure: .radio())
+            ListChoice(title, description: description, disclosure: .radio(isChecked: false), action: {})
+            ListChoice(title, description: description, disclosure: .radio(isChecked: true), action: {})
+            ListChoice(title, description: description, disclosure: .radio(state: .error), action: {})
+            ListChoice(title, description: description, disclosure: .radio(), action: {})
                 .disabled(true)
-            ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false, state: .error))
-            ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false))
+            ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false, state: .error), action: {})
+            ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false), action: {})
                 .disabled(true)
             ListChoice(
                 title,
                 description: description,
                 icon: .airplane,
-                disclosure: .radio(isChecked: false)
+                disclosure: .radio(isChecked: false),
+                action: {}
             ) {
                 contentPlaceholder
             } headerContent: {
@@ -545,17 +550,19 @@ struct ListChoicePreviews: PreviewProvider {
 
     static var plain: some View {
         Card(contentLayout: .fill) {
-            ListChoice(title, disclosure: .none)
-            ListChoice(title, description: description, disclosure: .none)
-            ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false)
-            ListChoice(title, icon: .airplane, disclosure: .none)
-            ListChoice(title, icon: .symbol(.airplane, color: .blueNormal), disclosure: .none)
-            ListChoice(title, description: description, icon: .countryFlag("cs"), disclosure: .none)
-            ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none)
-            ListChoice(title, description: description, disclosure: .none, content: { EmptyView() }) {
+            ListChoice(title, disclosure: .none, action: {})
+            ListChoice(title, description: description, disclosure: .none, action: {})
+            ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false, action: {})
+            ListChoice(title, icon: .airplane, disclosure: .none, action: {})
+            ListChoice(title, icon: .symbol(.airplane, color: .blueNormal), disclosure: .none, action: {})
+            ListChoice(title, description: description, icon: .countryFlag("cs"), disclosure: .none, action: {})
+            ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none, action: {})
+            ListChoice(title, description: description, disclosure: .none, action: {}) {
+                EmptyView()
+            } headerContent: {
                 badge
             }
-            ListChoice(disclosure: .none) {
+            ListChoice(disclosure: .none, action: {}) {
                 contentPlaceholder
             } headerContent: {
                 headerPlaceholder

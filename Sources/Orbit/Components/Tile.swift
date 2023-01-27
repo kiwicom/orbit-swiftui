@@ -147,7 +147,7 @@ public struct Tile<Content: View>: View {
             case .none, .icon:
                 EmptyView()
             case .buttonLink(let label, let style):
-                ButtonLink(label, style: style)
+                ButtonLink(label, style: style, action: {})
                     .disabled(true)
                     .padding(.vertical, -.xxxSmall)
                     .accessibility(.tileDisclosureButtonLink)
@@ -203,7 +203,7 @@ public extension Tile {
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title4,
         descriptionColor: Text.Color = .inkNormal,
-        action: @escaping () -> Void = {},
+        action: @escaping () -> Void,
         @ViewBuilder content: () -> Content
     ) {
         self.title = title
@@ -233,7 +233,7 @@ public extension Tile {
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title4,
         descriptionColor: Text.Color = .inkNormal,
-        action: @escaping () -> Void = {}
+        action: @escaping () -> Void
     ) where Content == EmptyView {
         self.init(
             title,
@@ -304,13 +304,13 @@ struct TilePreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Tile(title, description: description, icon: .grid)
+        Tile(title, description: description, icon: .grid, action: {})
             .padding(.medium)
             .previewDisplayName()
     }
 
     static var intrinsic: some View {
-        Tile(title, description: description, icon: .grid)
+        Tile(title, description: description, icon: .grid, action: {})
             .idealSize()
             .padding(.medium)
             .previewDisplayName()
@@ -319,12 +319,12 @@ struct TilePreviews: PreviewProvider {
     static var sizing: some View {
         VStack(spacing: .medium) {
             Group {
-                Tile("Tile", description: description, icon: .grid)
-                Tile("Tile", icon: .grid)
-                Tile(icon: .grid)
-                Tile(description: "Tile", icon: .grid)
-                Tile(description: "Tile", disclosure: .none)
-                Tile("Tile")
+                Tile("Tile", description: description, icon: .grid, action: {})
+                Tile("Tile", icon: .grid, action: {})
+                Tile(icon: .grid, action: {})
+                Tile(description: "Tile", icon: .grid, action: {})
+                Tile(description: "Tile", disclosure: .none, action: {})
+                Tile("Tile", action: {})
             }
             .measured()
         }
@@ -334,11 +334,11 @@ struct TilePreviews: PreviewProvider {
 
     static var tiles: some View {
         VStack(spacing: .large) {
-            Tile(title)
-            Tile(title, icon: .airplane)
-            Tile(title, description: description)
-            Tile(title, description: description, icon: .airplane)
-            Tile {
+            Tile(title, action: {})
+            Tile(title, icon: .airplane, action: {})
+            Tile(title, description: description, action: {})
+            Tile(title, description: description, icon: .airplane, action: {})
+            Tile(action: {}) {
                 contentPlaceholder
             }
         }
@@ -348,14 +348,14 @@ struct TilePreviews: PreviewProvider {
 
     @ViewBuilder static var mix: some View {
         VStack(spacing: .large) {
-            Tile("Title with very very very very very long multiline text", description: descriptionMultiline, icon: .airplane) {
+            Tile("Title with very very very very very long multiline text", description: descriptionMultiline, icon: .airplane, action: {}) {
                 contentPlaceholder
             }
-            Tile(title, description: description, icon: .symbol(.airplane, color: .blueNormal), status: .info)
-            Tile("SF Symbol", description: description, icon: .sfSymbol("info.circle.fill"), status: .critical)
-            Tile("Country Flag", description: description, icon: .countryFlag("cz"), disclosure: .buttonLink("Action", style: .primary))
-            Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .critical))
-            Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid))
+            Tile(title, description: description, icon: .symbol(.airplane, color: .blueNormal), status: .info, action: {})
+            Tile("SF Symbol", description: description, icon: .sfSymbol("info.circle.fill"), status: .critical, action: {})
+            Tile("Country Flag", description: description, icon: .countryFlag("cz"), disclosure: .buttonLink("Action", style: .primary), action: {})
+            Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .critical), action: {})
+            Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid), action: {})
         }
         .padding(.medium)
         .previewDisplayName()
@@ -363,23 +363,24 @@ struct TilePreviews: PreviewProvider {
 
     @ViewBuilder static var customContentMix: some View {
         VStack(spacing: .large) {
-            Tile(disclosure: .none) {
+            Tile(disclosure: .none, action: {}) {
                 contentPlaceholder
             }
-            Tile(disclosure: .buttonLink("Action", style: .critical)) {
+            Tile(disclosure: .buttonLink("Action", style: .critical), action: {}) {
                 contentPlaceholder
             }
-            Tile {
+            Tile(action: {}) {
                 contentPlaceholder
             }
-            Tile("Tile with custom content", disclosure: .buttonLink("Action", style: .critical)) {
+            Tile("Tile with custom content", disclosure: .buttonLink("Action", style: .critical), action: {}) {
                 contentPlaceholder
             }
             Tile(
                 "Tile with no border",
                 description: descriptionMultiline,
                 icon: .grid,
-                showBorder: false
+                showBorder: false,
+                action: {}
             )
         }
         .padding(.medium)

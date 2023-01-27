@@ -156,8 +156,8 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
     @ViewBuilder var indicatorElement: some View {
         switch indicator {
             case .none:         EmptyView()
-            case .radio:        Radio(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: shouldSelectIndicator)
-            case .checkbox:     Checkbox(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: shouldSelectIndicator)
+            case .radio:        Radio(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: shouldSelectIndicator, action: {})
+            case .checkbox:     Checkbox(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: shouldSelectIndicator, action: {})
         }
     }
 
@@ -236,7 +236,7 @@ public extension ChoiceTile {
         isError: Bool = false,
         message: Message? = nil,
         alignment: ChoiceTileAlignment = .default,
-        action: @escaping () -> Void = {},
+        action: @escaping () -> Void,
         @ViewBuilder content: () -> Content,
         @ViewBuilder headerContent: () -> HeaderContent
     ) {
@@ -269,7 +269,7 @@ public extension ChoiceTile {
         isError: Bool = false,
         message: Message? = nil,
         alignment: ChoiceTileAlignment = .default,
-        action: @escaping () -> Void = {},
+        action: @escaping () -> Void,
         @ViewBuilder content: () -> Content
     ) where HeaderContent == EmptyView {
         self.init(
@@ -303,7 +303,7 @@ public extension ChoiceTile {
         isError: Bool = false,
         message: Message? = nil,
         alignment: ChoiceTileAlignment = .default,
-        action: @escaping () -> Void = {}
+        action: @escaping () -> Void
     ) where Content == EmptyView, HeaderContent == EmptyView {
         self.init(
             title,
@@ -357,7 +357,8 @@ struct ChoiceTilePreviews: PreviewProvider {
             title,
             description: description,
             icon: .grid,
-            message: .help("Message")
+            message: .help("Message"),
+            action: {}
         ) {
             contentPlaceholder
         } headerContent: {
@@ -370,11 +371,11 @@ struct ChoiceTilePreviews: PreviewProvider {
     static var sizing: some View {
         VStack(spacing: .medium) {
             Group {
-                ChoiceTile("ChoiceTile", description: description, icon: .grid)
-                ChoiceTile("ChoiceTile", icon: .grid)
-                ChoiceTile("ChoiceTile")
-                ChoiceTile(icon: .grid)
-                ChoiceTile(description: "ChoiceTile", icon: .grid)
+                ChoiceTile("ChoiceTile", description: description, icon: .grid, action: {})
+                ChoiceTile("ChoiceTile", icon: .grid, action: {})
+                ChoiceTile("ChoiceTile", action: {})
+                ChoiceTile(icon: .grid, action: {})
+                ChoiceTile(description: "ChoiceTile", icon: .grid, action: {})
             }
             .measured()
         }
@@ -389,7 +390,8 @@ struct ChoiceTilePreviews: PreviewProvider {
             illustration: .priorityBoarding,
             badgeOverlay: "Recommended",
             message: .help("Message"),
-            alignment: .center
+            alignment: .center,
+            action: {}
         ) {
             contentPlaceholder
         } headerContent: {
@@ -401,19 +403,23 @@ struct ChoiceTilePreviews: PreviewProvider {
 
     static var intrinsic: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            ChoiceTile("Intrinsic", icon: .grid)
-            ChoiceTile("Intrinsic", icon: .grid, content: { EmptyView() }, headerContent: { Badge("Badge") })
-            ChoiceTile("Intrinsic", icon: .grid, message: .error("Error"))
-            ChoiceTile("Intrinsic", icon: .grid, alignment: .center)
-            ChoiceTile("Intrinsic", icon: .grid, message: .error("Error"), alignment: .center)
-            ChoiceTile("Intrinsic longer", icon: .grid) {
+            ChoiceTile("Intrinsic", icon: .grid, action: {})
+            ChoiceTile("Intrinsic", icon: .grid, action: {}) {
+                EmptyView()
+            } headerContent: {
+                Badge("Badge")
+            }
+            ChoiceTile("Intrinsic", icon: .grid, message: .error("Error"), action: {})
+            ChoiceTile("Intrinsic", icon: .grid, alignment: .center, action: {})
+            ChoiceTile("Intrinsic", icon: .grid, message: .error("Error"), alignment: .center, action: {})
+            ChoiceTile("Intrinsic longer", icon: .grid, action: {}) {
                 intrinsicContentPlaceholder
             } headerContent: {
                 Badge("Badge")
             }
-            ChoiceTile("Intrinsic", icon: .grid, message: .error("Error"), action: {}, content: {
+            ChoiceTile("Intrinsic", icon: .grid, message: .error("Error"), action: {}) {
                 intrinsicContentPlaceholder
-            })
+            }
         }
         .idealSize()
         .padding(.medium)

@@ -55,7 +55,7 @@ public extension ButtonLink {
         style: Style = .primary,
         icon: Icon.Content = .none,
         size: Size = .default,
-        action: @escaping () -> Void = {}
+        action: @escaping () -> Void
     ) {
         self.label = label
         self.style = style
@@ -149,9 +149,9 @@ struct ButtonLinkPreviews: PreviewProvider {
 
     static var standalone: some View {
         VStack(spacing: 0) {
-            ButtonLink("ButtonLink")
-            ButtonLink("") // EmptyView
-            ButtonLink()   // EmptyView
+            ButtonLink("ButtonLink", action: {})
+            ButtonLink("", action: {}) // EmptyView
+            ButtonLink(action: {})   // EmptyView
         }
         .padding(.medium)
         .previewDisplayName()
@@ -160,12 +160,12 @@ struct ButtonLinkPreviews: PreviewProvider {
     static var sizing: some View {
         VStack(alignment: .leading, spacing: .xSmall) {
             Group {
-                ButtonLink("ButtonLink intrinsic")
-                ButtonLink("ButtonLink intrinsic", icon: .grid)
-                ButtonLink("ButtonLink button", size: .button)
-                ButtonLink("ButtonLink button", icon: .grid, size: .button)
-                ButtonLink("ButtonLink small button", size: .buttonSmall)
-                ButtonLink("ButtonLink small button", icon: .grid, size: .buttonSmall)
+                ButtonLink("ButtonLink intrinsic", action: {})
+                ButtonLink("ButtonLink intrinsic", icon: .grid, action: {})
+                ButtonLink("ButtonLink button", size: .button, action: {})
+                ButtonLink("ButtonLink button", icon: .grid, size: .button, action: {})
+                ButtonLink("ButtonLink small button", size: .buttonSmall, action: {})
+                ButtonLink("ButtonLink small button", icon: .grid, size: .buttonSmall, action: {})
             }
             .border(Color.cloudNormal)
             .measured()
@@ -177,14 +177,14 @@ struct ButtonLinkPreviews: PreviewProvider {
     static var styles: some View {
         HStack(spacing: .xxLarge) {
             VStack(alignment: .leading, spacing: .large) {
-                ButtonLink("ButtonLink Primary", style: .primary)
-                ButtonLink("ButtonLink Secondary", style: .secondary)
-                ButtonLink("ButtonLink Critical", style: .critical)
+                ButtonLink("ButtonLink Primary", style: .primary, action: {})
+                ButtonLink("ButtonLink Secondary", style: .secondary, action: {})
+                ButtonLink("ButtonLink Critical", style: .critical, action: {})
             }
             VStack(alignment: .leading, spacing: .large) {
-                ButtonLink("ButtonLink Primary", style: .primary, icon: .accommodation)
-                ButtonLink("ButtonLink Secondary", style: .secondary, icon: .airplaneDown)
-                ButtonLink("ButtonLink Critical", style: .critical, icon: .alertCircle)
+                ButtonLink("ButtonLink Primary", style: .primary, icon: .accommodation, action: {})
+                ButtonLink("ButtonLink Secondary", style: .secondary, icon: .airplaneDown, action: {})
+                ButtonLink("ButtonLink Critical", style: .critical, icon: .alertCircle, action: {})
             }
         }
         .padding(.medium)
@@ -193,10 +193,10 @@ struct ButtonLinkPreviews: PreviewProvider {
     
     static var statuses: some View {
         VStack(alignment: .leading, spacing: .large) {
-            ButtonLink("ButtonLink Info", style: .status(.info), icon: .informationCircle)
-            ButtonLink("ButtonLink Success", style: .status(.success), icon: .checkCircle)
-            ButtonLink("ButtonLink Warning", style: .status(.warning), icon: .alert)
-            ButtonLink("ButtonLink Critical", style: .status(.critical), icon: .alertCircle)
+            ButtonLink("ButtonLink Info", style: .status(.info), icon: .informationCircle, action: {})
+            ButtonLink("ButtonLink Success", style: .status(.success), icon: .checkCircle, action: {})
+            ButtonLink("ButtonLink Warning", style: .status(.warning), icon: .alert, action: {})
+            ButtonLink("ButtonLink Critical", style: .status(.critical), icon: .alertCircle, action: {})
         }
         .padding(.medium)
         .previewDisplayName()
@@ -206,21 +206,22 @@ struct ButtonLinkPreviews: PreviewProvider {
         ButtonLink(
             "Custom <u>formatted</u> <ref>ref</ref> <applink1>https://localhost</applink1>",
             style: .custom(colors: (normal: .blueDark, active: .blueNormal)),
-            icon: .kiwicom
+            icon: .kiwicom,
+            action: {}
         )
         .padding(.medium)
         .previewDisplayName()
     }
 
     static var iconOnly: some View {
-        ButtonLink(icon: .kiwicom)
+        ButtonLink(icon: .kiwicom, action: {})
             .background(Color.blueLight)
             .padding(.medium)
             .previewDisplayName()
     }
 
     static var countryFlag: some View {
-        ButtonLink("Flag", icon: .countryFlag("us"))
+        ButtonLink("Flag", icon: .countryFlag("us"), action: {})
             .padding(.medium)
             .previewDisplayName()
     }

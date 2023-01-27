@@ -51,7 +51,7 @@ struct ScreenLayoutHorizontalPaddingModifierPreviews: PreviewProvider {
             Heading("Heading", style: .title1)
 
             Card("Card", contentLayout: .fill) {
-                ListChoice("ListChoice")
+                ListChoice("ListChoice", action: {})
             }
 
             Color.blueLight
@@ -78,7 +78,7 @@ struct ScreenLayoutHorizontalPaddingModifierPreviews: PreviewProvider {
                         .padding(.medium)
                 )
 
-            Button("Button")
+            Button("Button", action: {})
         }
         .border(Color.cloudLight)
     }

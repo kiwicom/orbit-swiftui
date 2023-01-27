@@ -30,40 +30,43 @@ struct StorybookSelect {
     @ViewBuilder static var mix: some View {
         VStack(spacing: .medium) {
             Group {
-                Select("Label", value: "Value")
-                Select("", prefix: .grid, value: "Value")
-                Select("", prefix: .airplane, value: nil, placeholder: "Please select")
-                Select("Label (Empty Value)", prefix: .airplane, value: "")
-                Select("Label (No Value)", prefix: .airplane, value: nil, placeholder: "Please select")
-                Select("Label", prefix: .phone, value: "Value")
-                Select("Label", prefix: .countryFlag("us"), value: "Value")
+                Select("Label", value: "Value", action: {})
+                Select("", prefix: .grid, value: "Value", action: {})
+                Select("", prefix: .airplane, value: nil, placeholder: "Please select", action: {})
+                Select("Label (Empty Value)", prefix: .airplane, value: "", action: {})
+                Select("Label (No Value)", prefix: .airplane, value: nil, placeholder: "Please select", action: {})
+                Select("Label", prefix: .phone, value: "Value", action: {})
+                Select("Label", prefix: .countryFlag("us"), value: "Value", action: {})
             }
 
             Group {
-                Select("Label (Disabled)", prefix: .airplane, value: "Value")
+                Select("Label (Disabled)", prefix: .airplane, value: "Value", action: {})
                     .disabled(true)
 
                 Select(
                     "Label (Disabled)",
                     prefix: .airplane,
                     value: nil,
-                    placeholder: "Please select"
+                    placeholder: "Please select",
+                    action: {}
                 )
                 .disabled(true)
 
-                Select("Label (Modified)", prefix: .airplane, value: "Modified Value", state: .modified)
+                Select("Label (Modified)", prefix: .airplane, value: "Modified Value", state: .modified, action: {})
                 Select(
                     "Label (Modified)",
                     prefix: .airplane,
                     value: nil,
                     placeholder: "Please select",
-                    state: .modified
+                    state: .modified,
+                    action: {}
                 )
                 Select(
                     "Label (Info)",
                     prefix: .informationCircle,
                     value: "Value",
-                    message: .help("Help message, also very long and multi-line to test that it works.")
+                    message: .help("Help message, also very long and multi-line to test that it works."),
+                    action: {}
                 )
 
                 Select(
@@ -72,7 +75,8 @@ struct StorybookSelect {
                     labelLinkColor: .status(.critical),
                     prefix: .image(.orbit(.google)),
                     value: "Bad Value with a very long text that should overflow",
-                    message: .error("Error message, but also very long and multi-line to test that it works.")
+                    message: .error("Error message, but also very long and multi-line to test that it works."),
+                    action: {}
                 )
             }
         }
@@ -80,7 +84,7 @@ struct StorybookSelect {
     }
 
     static func select(value: String, message: Message? = nil) -> some View {
-        Select(label, prefix: .grid, value: value, placeholder: placeholder, message: message)
+        Select(label, prefix: .grid, value: value, placeholder: placeholder, message: message, action: {})
     }
 }
 

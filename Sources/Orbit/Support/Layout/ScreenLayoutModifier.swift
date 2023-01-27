@@ -165,27 +165,27 @@ struct ScreenLayoutModifierPreviews: PreviewProvider {
             Illustration(.accommodation)
                 .padding(.horizontal, .xxLarge)
 
-            Button("Button", icon: .grid)
+            Button("Button", icon: .grid, action: {})
 
-            Card("Card title", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink")) {
+            Card("Card title", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink", action: {})) {
                 TileGroup {
-                    Tile("Tile 1")
-                    Tile("Tile 2")
+                    Tile("Tile 1", action: {})
+                    Tile("Tile 2", action: {})
                 }
-                Tile("Tile 3")
+                Tile("Tile 3", action: {})
                 contentPlaceholder
             }
 
             TileGroup {
-                Tile(TilePreviews.title, description: TilePreviews.description, icon: .grid)
-                Tile(TilePreviews.title, description: TilePreviews.description, icon: .grid)
+                Tile(TilePreviews.title, description: TilePreviews.description, icon: .grid, action: {})
+                Tile(TilePreviews.title, description: TilePreviews.description, icon: .grid, action: {})
             }
 
-            Tile(TilePreviews.title, description: TilePreviews.description, icon: .grid)
+            Tile(TilePreviews.title, description: TilePreviews.description, icon: .grid, action: {})
 
             Card("Card", contentLayout: .fill) {
-                ListChoice(ListChoicePreviews.title, value: ListChoicePreviews.value)
-                ListChoice(ListChoicePreviews.title, description: ListChoicePreviews.description)
+                ListChoice(ListChoicePreviews.title, value: ListChoicePreviews.value, action: {})
+                ListChoice(ListChoicePreviews.title, description: ListChoicePreviews.description, action: {})
             }
         }
         .screenLayout()

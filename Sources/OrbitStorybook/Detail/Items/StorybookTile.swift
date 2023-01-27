@@ -12,11 +12,11 @@ struct StorybookTile {
 
     static var basic: some View {
         VStack(spacing: .large) {
-            Tile(title)
-            Tile(title, icon: .airplane)
-            Tile(title, description: description)
-            Tile(title, description: description, icon: .airplane)
-            Tile {
+            Tile(title, action: {})
+            Tile(title, icon: .airplane, action: {})
+            Tile(title, description: description, action: {})
+            Tile(title, description: description, icon: .airplane, action: {})
+            Tile(action: {}) {
                 contentPlaceholder
             }
         }
@@ -25,25 +25,26 @@ struct StorybookTile {
 
     @ViewBuilder static var mix: some View {
         VStack(spacing: .large) {
-            Tile("Title with very very very very very long multiline text", description: descriptionMultiline, icon: .airplane) {
+            Tile("Title with very very very very very long multiline text", description: descriptionMultiline, icon: .airplane, action: {}) {
                 contentPlaceholder
             }
-            Tile(title, description: description, icon: .symbol(.airplane, color: .blueNormal), status: .info)
-            Tile("SF Symbol", description: description, icon: .sfSymbol("info.circle.fill"), status: .critical)
-            Tile("Country Flag", description: description, icon: .countryFlag("cz"), disclosure: .buttonLink("Action", style: .primary))
-            Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .critical))
-            Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid))
-            Tile(disclosure: .none) {
+            Tile(title, description: description, icon: .symbol(.airplane, color: .blueNormal), status: .info, action: {})
+            Tile("SF Symbol", description: description, icon: .sfSymbol("info.circle.fill"), status: .critical, action: {})
+            Tile("Country Flag", description: description, icon: .countryFlag("cz"), disclosure: .buttonLink("Action", style: .primary), action: {})
+            Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .critical), action: {})
+            Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid), action: {})
+            Tile(disclosure: .none, action: {}) {
                 contentPlaceholder
             }
-            Tile("Tile with custom content", disclosure: .none) {
+            Tile("Tile with custom content", disclosure: .none, action: {}) {
                 contentPlaceholder
             }
             Tile(
                 "Tile with no border",
                 description: descriptionMultiline,
                 icon: .grid,
-                showBorder: false
+                showBorder: false,
+                action: {}
             )
         }
         .previewDisplayName()
