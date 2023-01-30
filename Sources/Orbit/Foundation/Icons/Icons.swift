@@ -636,7 +636,7 @@ public extension Icon {
                 case .cake: return "\u{1352}"
                 case .calendar: return "\u{3492}"
                 case .calendarAnytime: return "\u{6361}"
-                case .calendarDuration: return "\u{4038}"
+                case .calendarDuration: return "\u{6980}"
                 case .calendarRange: return "\u{2629}"
                 case .calendarTripLength: return "\u{6457}"
                 case .camera: return "\u{6780}"
