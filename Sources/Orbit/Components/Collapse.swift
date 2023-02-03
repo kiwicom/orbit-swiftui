@@ -5,13 +5,13 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/collapse/)
 public struct Collapse<Header: View, Content: View>: View {
 
-    struct _Collapse: View {
-        let header: Header
-        let headerVerticalPadding: CGFloat
-        let content: Content
-        @Binding var isExpanded: Bool
+    let header: Header
+    let headerVerticalPadding: CGFloat
+    let content: Content
+    let isExpanded: Binding<Bool>?
 
-        var body: some View {
+    public var body: some View {
+        BindingSource(isExpanded, fallbackInitialValue: false) { $isExpanded in
             VStack(alignment: .leading, spacing: 0) {
                 SwiftUI.Button {
                     withAnimation(.easeInOut(duration: 0.2)) {
@@ -36,21 +36,6 @@ public struct Collapse<Header: View, Content: View>: View {
             }
             .overlay(Separator(), alignment: .bottom)
         }
-    }
-
-    let header: Header
-    let headerVerticalPadding: CGFloat
-    let content: Content
-    let isExpanded: Binding<Bool>?
-    @State var internalIsExpanded = false
-
-    public var body: some View {
-        _Collapse(
-            header: header,
-            headerVerticalPadding: headerVerticalPadding,
-            content: content,
-            isExpanded: isExpanded ?? $internalIsExpanded
-        )
     }
 }
 
@@ -92,7 +77,7 @@ public extension Collapse where Header == Text {
     }
 }
 
-extension Collapse._Collapse {
+extension Collapse {
 
     struct CollapseButtonStyle: SwiftUI.ButtonStyle {
 
