@@ -5,7 +5,7 @@
 This script:
     1) Reads all country flags from the asset catalog
     2) Downloads country data JSON for country names
-    3) Regenerates a swift file to access the flags through an enum
+    3) Regenerates a swift file to access the flags through an enum.
 """
 
 import sys
