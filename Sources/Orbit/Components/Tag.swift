@@ -15,16 +15,15 @@ public struct Tag: View {
     let iconContent: Icon.Content
     let style: Style
     let isFocused: Bool
-    let isSelected: Bool
     let isActive: Bool
-    let action: () -> Void
+    @Binding var isSelected: Bool
 
     public var body: some View {
         if isEmpty == false {
             SwiftUI.Button(
                 action: {
                     HapticsProvider.sendHapticFeedback(.light(0.5))
-                    action()
+                    isSelected.toggle()
                 },
                 label: {
                     HStack(spacing: 0) {
@@ -65,17 +64,17 @@ public extension Tag {
         icon: Icon.Content = .none,
         style: Style = .default,
         isFocused: Bool = true,
-        isSelected: Bool = false,
         isActive: Bool = false,
-        action: @escaping () -> Void
+        isSelected: Binding<Bool>
     ) {
-        self.label = label
-        self.iconContent = icon
-        self.style = style
-        self.isFocused = isFocused
-        self.isSelected = isSelected
-        self.isActive = isActive
-        self.action = action
+        self.init(
+            label: label,
+            iconContent: icon,
+            style: style,
+            isFocused: isFocused,
+            isActive: isActive,
+            isSelected: isSelected
+        )
     }
 }
 
@@ -186,22 +185,18 @@ struct TagPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        StateWrapper(true) { state in
-            Tag(label, icon: .grid, style: .removable(action: {}), isSelected: state.wrappedValue) {
-                state.wrappedValue.toggle()
-            }
-            Tag("", action: {}) // EmptyView
+        StateWrapper(true) { isSelected in
+            Tag(label, icon: .grid, style: .removable(action: {}), isSelected: isSelected)
+            Tag("", isSelected: .constant(false)) // EmptyView
         }
         .padding(.medium)
         .previewDisplayName()
     }
 
     static var standaloneExpanding: some View {
-        StateWrapper(true) { state in
-            Tag(label, icon: .grid, style: .removable(action: {}), isSelected: state.wrappedValue) {
-                state.wrappedValue.toggle()
-            }
-            .idealSize(horizontal: false)
+        StateWrapper(true) { isSelected in
+            Tag(label, icon: .grid, style: .removable(action: {}), isSelected: isSelected)
+                .idealSize(horizontal: false)
         }
         .padding(.medium)
         .previewDisplayName()
@@ -218,15 +213,11 @@ struct TagPreviews: PreviewProvider {
             stack(style: .removable(action: {}), isFocused: true, idealWidth: false)
             Separator()
             HStack(spacing: .medium) {
-                StateWrapper(true) { state in
-                    Tag(label, icon: .sort, style: .removable(action: {}), isSelected: state.wrappedValue) {
-                        state.wrappedValue.toggle()
-                    }
+                StateWrapper(true) { isSelected in
+                    Tag(label, icon: .sort, style: .removable(action: {}), isSelected: isSelected)
                 }
-                StateWrapper(false) { state in
-                    Tag(icon: .notificationAdd, isFocused: false, isSelected: state.wrappedValue) {
-                        state.wrappedValue.toggle()
-                    }
+                StateWrapper(false) { isSelected in
+                    Tag(icon: .notificationAdd, isFocused: false, isSelected: isSelected)
                 }
             }
         }
@@ -237,9 +228,9 @@ struct TagPreviews: PreviewProvider {
     static var sizing: some View {
         VStack(alignment: .trailing, spacing: .large) {
             Group {
-                Tag("Tag", isFocused: false, action: {})
-                Tag("Tag", icon: .grid, isFocused: false, action: {})
-                Tag(icon: .grid, isFocused: false, action: {})
+                Tag("Tag", isFocused: false, isSelected: .constant(false))
+                Tag("Tag", icon: .grid, isFocused: false, isSelected: .constant(false))
+                Tag(icon: .grid, isFocused: false, isSelected: .constant(false))
             }
             .measured()
         }
@@ -268,11 +259,9 @@ struct TagPreviews: PreviewProvider {
                 label,
                 style: style == .default ? .default : .removable(action: { state.wrappedValue.2 = false }),
                 isFocused: isFocused,
-                isSelected: state.wrappedValue.1,
-                isActive: isActive
-            ) {
-                state.wrappedValue.1.toggle()
-            }
+                isActive: isActive,
+                isSelected: state.1
+            )
             .disabled(isActive)
             .opacity(state.wrappedValue.2 ? 1 : 0)
         }

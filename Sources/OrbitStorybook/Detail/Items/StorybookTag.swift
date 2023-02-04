@@ -16,15 +16,11 @@ struct StorybookTag {
             stack(style: .removable(action: {}), isFocused: true, idealWidth: false)
             Separator()
             HStack(spacing: .medium) {
-                StateWrapper(true) { state in
-                    Tag(label, icon: .sort, style: .removable(action: {}), isSelected: state.wrappedValue) {
-                        state.wrappedValue.toggle()
-                    }
+                StateWrapper(true) { isSelected in
+                    Tag(label, icon: .sort, style: .removable(action: {}), isSelected: isSelected)
                 }
-                StateWrapper(false) { state in
-                    Tag(icon: .notificationAdd, isFocused: false, isSelected: state.wrappedValue) {
-                        state.wrappedValue.toggle()                        
-                    }
+                StateWrapper(false) { isSelected in
+                    Tag(icon: .notificationAdd, isFocused: false, isSelected: isSelected)
                 }
             }
         }
@@ -52,11 +48,9 @@ struct StorybookTag {
                 label,
                 style: style == .default ? .default : .removable(action: { state.wrappedValue.2 = false }),
                 isFocused: isFocused,
-                isSelected: state.wrappedValue.1,
-                isActive: isActive
-            ) {
-                state.wrappedValue.1.toggle()
-            }
+                isActive: isActive,
+                isSelected: state.1
+            )
             .disabled(isActive)
             .opacity(state.wrappedValue.2 ? 1 : 0)
         }
