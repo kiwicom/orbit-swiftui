@@ -135,7 +135,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
             case .checkbox(let isChecked, let state):
                 Checkbox(state: state, isChecked: .constant(isChecked))
             case .radio(let isChecked, let state):
-                Radio(state: state, isChecked: isChecked, action: {})
+                Radio(state: state, isChecked: .constant(isChecked))
             case .icon(let content):
                 Icon(content: content)
         }

@@ -12,14 +12,13 @@ public struct Radio: View {
     let title: String
     let description: String
     let state: State
-    let isChecked: Bool
-    let action: () -> Void
+    @Binding var isChecked: Bool
 
     public var body: some View {
         SwiftUI.Button(
             action: {
                 HapticsProvider.sendHapticFeedback(.light(0.5))
-                action()
+                isChecked.toggle()
             },
             label: {
                 if title.isEmpty == false || description.isEmpty == false {
@@ -54,14 +53,9 @@ public extension Radio {
         _ title: String = "",
         description: String = "",
         state: State = .normal,
-        isChecked: Bool = false,
-        action: @escaping () -> Void
+        isChecked: Binding<Bool>
     ) {
-        self.title = title
-        self.description = description
-        self.state = state
-        self.isChecked = isChecked
-        self.action = action
+        self.init(title: title, description: description, state: state, isChecked: isChecked)
     }
 }
 
@@ -228,10 +222,8 @@ struct RadioPreviews: PreviewProvider {
     }
 
     static func radio(standalone: Bool, state: Radio.State = .normal, checked: Bool) -> some View {
-        StateWrapper(checked) { isSelected in
-            Radio(standalone ? "" : label, description: standalone ? "" : description, state: state, isChecked: isSelected.wrappedValue) {
-                isSelected.wrappedValue.toggle()
-            }
+        StateWrapper(checked) { isChecked in
+            Radio(standalone ? "" : label, description: standalone ? "" : description, state: state, isChecked: isChecked)
         }
     }
 }
