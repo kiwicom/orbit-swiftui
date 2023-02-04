@@ -157,7 +157,7 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
         switch indicator {
             case .none:         EmptyView()
             case .radio:        Radio(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: shouldSelectIndicator, action: {})
-            case .checkbox:     Checkbox(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: shouldSelectIndicator, action: {})
+            case .checkbox:     Checkbox(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: .constant(shouldSelectIndicator))
         }
     }
 

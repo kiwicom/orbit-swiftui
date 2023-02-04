@@ -133,7 +133,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
             case .buttonLink(let label, let style):
                 ButtonLink(label, style: style, action: {})
             case .checkbox(let isChecked, let state):
-                Checkbox(state: state, isChecked: isChecked, action: {})
+                Checkbox(state: state, isChecked: .constant(isChecked))
             case .radio(let isChecked, let state):
                 Radio(state: state, isChecked: isChecked, action: {})
             case .icon(let content):

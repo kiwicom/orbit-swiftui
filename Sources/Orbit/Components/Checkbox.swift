@@ -12,14 +12,13 @@ public struct Checkbox: View {
     let title: String
     let description: String
     let state: State
-    let isChecked: Bool
-    let action: () -> Void
+    @Binding var isChecked: Bool
 
     public var body: some View {
         SwiftUI.Button(
             action: {
                 HapticsProvider.sendHapticFeedback(.light(0.5))
-                action()
+                isChecked.toggle()
             },
             label: {
                 if title.isEmpty == false || description.isEmpty == false {
@@ -48,20 +47,15 @@ public struct Checkbox: View {
 
 // MARK: - Inits
 public extension Checkbox {
-    
+
     /// Creates Orbit Checkbox component.
     init(
         _ title: String = "",
         description: String = "",
         state: State = .normal,
-        isChecked: Bool = false,
-        action: @escaping () -> Void
+        isChecked: Binding<Bool>
     ) {
-        self.title = title
-        self.description = description
-        self.state = state
-        self.isChecked = isChecked
-        self.action = action
+        self.init(title: title, description: description, state: state, isChecked: isChecked)
     }
 }
 
@@ -241,10 +235,8 @@ struct CheckboxPreviews: PreviewProvider {
     }
 
     static func checkbox(standalone: Bool, state: Checkbox.State = .normal, checked: Bool) -> some View {
-        StateWrapper(checked) { isSelected in
-            Checkbox(standalone ? "" : label, description: standalone ? "" : description, state: state, isChecked: isSelected.wrappedValue) {
-                isSelected.wrappedValue.toggle()
-            }
+        StateWrapper(checked) { $isSelected in
+            Checkbox(standalone ? "" : label, description: standalone ? "" : description, state: state, isChecked: $isSelected)
         }
     }
 }
