@@ -12,7 +12,7 @@ public struct CountryFlag: View {
     let border: Border
 
     public var body: some View {
-        SwiftUI.Image(countryCode.rawValue, bundle: .current)
+        SwiftUI.Image(countryCode.rawValue, bundle: .orbit)
             .resizable()
             .scaledToFit()
             .clipShape(clipShape)

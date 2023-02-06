@@ -8,7 +8,7 @@ public extension Bundle {
     /// Normally, `Bundle.module` would be used instead.
     /// Returns the resource bundle associated with the current Swift module.
     /// Xcode bug (rdar://8802612, BUG:FB8893830).
-    static var current: Bundle = {
+    static var orbit: Bundle = {
         let bundleName = "Orbit_Orbit"
 
         let candidates = [
