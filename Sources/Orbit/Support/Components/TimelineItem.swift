@@ -66,13 +66,13 @@ public struct TimelineItem<Footer: View>: View {
 
 public extension TimelineItem {
 
-    /// Creates Orbit TimelineItem component with text details and custom content at the bottom.
+    /// Creates Orbit TimelineItem component with text details and optional custom content at the bottom.
     init(
         _ label: String = "",
         sublabel: String = "",
         type: TimelineItemType = .future,
         description: String = "",
-        @ViewBuilder footer: () -> Footer
+        @ViewBuilder footer: () -> Footer = { EmptyView() }
     ) {
 
         self.label = label
@@ -80,19 +80,6 @@ public extension TimelineItem {
         self.type = type
         self.description = description
         self.footer = footer()
-    }
-}
-
-public extension TimelineItem where Footer == EmptyView {
-
-    /// Creates Orbit TimelineItem component with text details.
-    init(
-        _ label: String,
-        sublabel: String = "",
-        type: TimelineItemType = .future,
-        description: String = ""
-    ) {
-        self.init(label, sublabel: sublabel, type: type, description: description, footer: { EmptyView() })
     }
 }
 

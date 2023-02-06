@@ -230,8 +230,8 @@ public extension ListChoice {
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void,
-        @ViewBuilder content: () -> Content,
-        @ViewBuilder headerContent: () -> HeaderContent
+        @ViewBuilder content: () -> Content = { EmptyView() },
+        @ViewBuilder headerContent: () -> HeaderContent = { EmptyView() }
     ) {
         self.init(
             title,
@@ -268,29 +268,6 @@ public extension ListChoice {
             EmptyView()
         }
     }
-
-    /// Creates Orbit ListChoice component.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Content = .none,
-        disclosure: ListChoiceDisclosure = .disclosure(),
-        showSeparator: Bool = true,
-        action: @escaping () -> Void
-    ) where HeaderContent == EmptyView, Content == EmptyView {
-        self.init(
-            title,
-            description: description,
-            icon: icon,
-            disclosure: disclosure,
-            showSeparator: showSeparator,
-            action: action
-        ) {
-            EmptyView()
-        } headerContent: {
-            EmptyView()
-        }
-    }
 }
 
 public extension ListChoice where HeaderContent == Text {
@@ -304,7 +281,7 @@ public extension ListChoice where HeaderContent == Text {
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void,
-        @ViewBuilder content: () -> Content
+        @ViewBuilder content: () -> Content = { EmptyView() }
     ) {
         self.init(
             title,
@@ -318,28 +295,6 @@ public extension ListChoice where HeaderContent == Text {
         ) {
             Text(value, weight: .medium)
         }
-    }
-
-    /// Creates Orbit ListChoice component with text based header value.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Content = .none,
-        value: String,
-        disclosure: ListChoiceDisclosure = .disclosure(),
-        showSeparator: Bool = true,
-        action: @escaping () -> Void
-    ) where Content == EmptyView {
-        self.init(
-            title,
-            description: description,
-            icon: icon,
-            value: value,
-            disclosure: disclosure,
-            showSeparator: showSeparator,
-            action: action,
-            content: { EmptyView() }
-        )
     }
 }
 

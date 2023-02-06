@@ -126,7 +126,7 @@ public struct Card<Content: View>: View {
 // MARK: - Inits
 public extension Card {
     
-    /// Creates Orbit Card wrapper component over a custom content.
+    /// Creates Orbit Card wrapper component.
     init(
         _ title: String = "",
         description: String = "",
@@ -139,7 +139,7 @@ public extension Card {
         backgroundColor: Color? = .whiteDarker,
         contentLayout: CardContentLayout = .default(),
         contentAlignment: HorizontalAlignment = .leading,
-        @ViewBuilder content: () -> Content
+        @ViewBuilder content: () -> Content = { EmptyView() }
     ) {
         self.title = title
         self.description = description
@@ -153,32 +153,6 @@ public extension Card {
         self.contentLayout = contentLayout
         self.contentAlignment = contentAlignment
         self.content = content()
-    }
-
-    /// Creates Orbit Card wrapper component with empty content.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Content = .none,
-        action: CardAction = .none,
-        headerSpacing: CGFloat = .medium,
-        showBorder: Bool = true,
-        titleStyle: Heading.Style = .title4,
-        status: Status? = nil,
-        backgroundColor: Color? = .whiteDarker
-    ) where Content == EmptyView {
-        self.init(
-            title,
-            description: description,
-            icon: icon,
-            action: action,
-            headerSpacing: headerSpacing,
-            showBorder: showBorder,
-            titleStyle: titleStyle,
-            status: status,
-            backgroundColor: backgroundColor,
-            content: { EmptyView() }
-        )
     }
 }
 
