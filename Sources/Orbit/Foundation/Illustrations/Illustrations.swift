@@ -2,7 +2,7 @@ import Foundation
 
 public extension Illustration {
 
-    enum Image: CaseIterable, AssetNameProviding {
+    enum Image: String, CaseIterable, AssetNameProviding {
         case none
         
         case accommodation
