@@ -4,7 +4,7 @@ import SwiftUI
 public extension Image {
 
     /// All other implicit Orbit related images.
-    enum Symbol: CaseIterable, AssetNameProviding {
+    enum Symbol: String, CaseIterable, AssetNameProviding {
 
         case apple
         case facebook

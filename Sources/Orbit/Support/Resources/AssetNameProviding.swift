@@ -1,5 +1,5 @@
 
-protocol AssetNameProviding {
+protocol AssetNameProviding: RawRepresentable {
 
     var assetName: String { get }
 }
