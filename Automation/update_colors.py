@@ -75,7 +75,7 @@ xcassets_color_template = '''{{
 
 source_filename_plural = f'Colors'
 source_group_template = '\n    // MARK: - {group}'
-source_line_template = '    /// Orbit {description} color.\n    static var {name} = Color("{description}", bundle: .current)'
+source_line_template = '    /// Orbit {description} color.\n    static var {name} = Color("{description}", bundle: .orbit)'
 source_line_template_uicolor = '    /// Orbit {description} color.\n    static var {name} = fromResource(named: "{description}")'
 source_template = '''import SwiftUI
 

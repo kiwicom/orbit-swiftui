@@ -12,10 +12,10 @@ public extension Font {
     
     /// Fonts used for rendering text in Orbit.
     static var orbitFonts: [Font.Weight: URL?] = [
-        .regular: Bundle.current.url(forResource: "Circular20-Book.otf", withExtension: nil),
-        .medium: Bundle.current.url(forResource: "Circular20-Medium.otf", withExtension: nil),
-        .bold: Bundle.current.url(forResource: "Circular20-Bold.otf", withExtension: nil),
-        .black: Bundle.current.url(forResource: "Circular20-Black.otf", withExtension: nil),
+        .regular: Bundle.orbit.url(forResource: "Circular20-Book.otf", withExtension: nil),
+        .medium: Bundle.orbit.url(forResource: "Circular20-Medium.otf", withExtension: nil),
+        .bold: Bundle.orbit.url(forResource: "Circular20-Bold.otf", withExtension: nil),
+        .black: Bundle.orbit.url(forResource: "Circular20-Black.otf", withExtension: nil),
     ]
 
     /// Creates Orbit font.
@@ -31,7 +31,7 @@ public extension Font {
     /// Registers Orbit fonts set in the `orbitTextFonts` property.
     static func registerOrbitFonts() {
 
-        if let iconsFontURL = Bundle.current.url(forResource: "Icons.ttf", withExtension: nil) {
+        if let iconsFontURL = Bundle.orbit.url(forResource: "Icons.ttf", withExtension: nil) {
             _ = registerFont(at: iconsFontURL)
         }
 

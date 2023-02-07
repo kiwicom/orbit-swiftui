@@ -18,7 +18,7 @@ public extension Image {
     }
 
     static func orbit(_ image: Symbol) -> Image {
-        Image(image.assetName, bundle: .current)
+        Image(image.assetName, bundle: .orbit)
     }
 }
 
@@ -27,7 +27,7 @@ public extension UIImage {
     /// Gets UIImage out of image resource.
     static func image(_ resource: String) -> UIImage {
         // swiftlint:disable:next use_orbit_not_image_named
-        guard let uiImage = UIImage(named: resource, in: Bundle.current, compatibleWith: nil) else {
+        guard let uiImage = UIImage(named: resource, in: .orbit, compatibleWith: nil) else {
             assertionFailure("Cannot find image \(resource) in bundle")
             return UIImage()
         }

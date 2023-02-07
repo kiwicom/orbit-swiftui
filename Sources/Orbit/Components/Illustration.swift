@@ -53,7 +53,7 @@ public extension Illustration {
         layout: Layout = .frame()
     ) {
         self.name = image.assetName
-        self.bundle = .current
+        self.bundle = .orbit
         self.layout = layout
     }
     
@@ -124,7 +124,7 @@ struct IllustrationPreviews: PreviewProvider {
     }
 
     static var customResource: some View {
-        Illustration("WomanWithPhone", bundle: .current, layout: .intrinsic)
+        Illustration("WomanWithPhone", bundle: .orbit, layout: .intrinsic)
             .previewDisplayName()
     }
     
