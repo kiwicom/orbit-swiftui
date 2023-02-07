@@ -88,10 +88,8 @@ public struct TagGroup<TM: TagModel>: View {
                 icon: tags[index].icon,
                 style: tag.isRemovable ? .removable(action: { tags[index].isRemoved = true }) : .default,
                 isFocused: tags[index].isFocused,
-                isSelected: $tags[index].isSelected.wrappedValue
-            ) {
-                $tags[index].isSelected.wrappedValue.toggle()
-            }
+                isSelected: $tags[index].isSelected
+            )
             .accessibility(identifier: tag.accessibilityIdentifier)
             .opacity(isFadeIn(forIndex: index) ? 1 : 0)
             .scaleEffect(isFadeIn(forIndex: index) ? 1 : 0.3)
