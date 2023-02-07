@@ -237,8 +237,8 @@ public extension ChoiceTile {
         message: Message? = nil,
         alignment: ChoiceTileAlignment = .default,
         action: @escaping () -> Void,
-        @ViewBuilder content: () -> Content,
-        @ViewBuilder headerContent: () -> HeaderContent
+        @ViewBuilder content: () -> Content = { EmptyView() },
+        @ViewBuilder headerContent: () -> HeaderContent = { EmptyView() }
     ) {
         self.title = title
         self.description = description
@@ -286,39 +286,6 @@ public extension ChoiceTile {
             alignment: alignment,
             action: action,
             content: content,
-            headerContent: { EmptyView() }
-        )
-    }
-
-    /// Creates Orbit ChoiceTile component.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Content = .none,
-        illustration: Illustration.Image = .none,
-        badgeOverlay: String = "",
-        indicator: ChoiceTileIndicator = .radio,
-        titleStyle: Heading.Style = .title3,
-        isSelected: Bool = false,
-        isError: Bool = false,
-        message: Message? = nil,
-        alignment: ChoiceTileAlignment = .default,
-        action: @escaping () -> Void
-    ) where Content == EmptyView, HeaderContent == EmptyView {
-        self.init(
-            title,
-            description: description,
-            icon: icon,
-            illustration: illustration,
-            badgeOverlay: badgeOverlay,
-            indicator: indicator,
-            titleStyle: titleStyle,
-            isSelected: isSelected,
-            isError: isError,
-            message: message,
-            alignment: alignment,
-            action: action,
-            content: { EmptyView() },
             headerContent: { EmptyView() }
         )
     }

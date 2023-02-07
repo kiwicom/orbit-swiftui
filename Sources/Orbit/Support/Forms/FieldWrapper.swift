@@ -41,36 +41,13 @@ public extension FieldWrapper {
         messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content,
         @ViewBuilder label: () -> Label,
-        @ViewBuilder footer: () -> Footer
+        @ViewBuilder footer: () -> Footer = { EmptyView() }
     ) {
         self.message = message
         self._messageHeight = messageHeight
         self.content = content()
         self.label = label()
         self.footer = footer()
-    }
-}
-
-public extension FieldWrapper where Footer == EmptyView {
-
-    /// Creates Orbit wrapper around form field content with a custom label.
-    ///
-    /// `FieldLabel` is a default component for constructing custom label.
-    init(
-        message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
-        @ViewBuilder content: () -> Content,
-        @ViewBuilder label: () -> Label
-    ) {
-        self.init(
-            message: message,
-            messageHeight: messageHeight,
-            content: content,
-            label: label,
-            footer: {
-                EmptyView()
-            }
-        )
     }
 }
 
@@ -85,7 +62,7 @@ public extension FieldWrapper where Label == FieldLabel {
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content,
-        @ViewBuilder footer: () -> Footer
+        @ViewBuilder footer: () -> Footer = { EmptyView() }
     ) {
         self.init(
             message: message,
@@ -95,33 +72,6 @@ public extension FieldWrapper where Label == FieldLabel {
                 FieldLabel(label, accentColor: labelAccentColor, linkColor: labelLinkColor, linkAction: labelLinkAction)
             },
             footer: footer
-        )
-    }
-}
-
-public extension FieldWrapper where Label == FieldLabel, Footer == EmptyView {
-
-    /// Creates Orbit wrapper around form field content.
-    init(
-        _ label: String,
-        labelAccentColor: UIColor? = nil,
-        labelLinkColor: TextLink.Color = .primary,
-        labelLinkAction: @escaping TextLink.Action = { _, _ in },
-        message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
-        @ViewBuilder content: () -> Content
-    ) {
-        self.init(
-            label,
-            labelAccentColor: labelAccentColor,
-            labelLinkColor: labelLinkColor,
-            labelLinkAction: labelLinkAction,
-            message: message,
-            messageHeight: messageHeight,
-            content: content,
-            footer: {
-                EmptyView()
-            }
         )
     }
 }

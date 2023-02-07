@@ -189,36 +189,6 @@ public struct Tile<Content: View>: View {
 // MARK: - Inits
 public extension Tile {
     
-    /// Creates Orbit Tile component with custom content.
-    ///
-    /// - Parameters:
-    ///   - style: Appearance of tile. Can be styled to match iOS default table row.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Content = .none,
-        disclosure: TileDisclosure = .icon(.chevronRight),
-        showBorder: Bool = true,
-        status: Status? = nil,
-        backgroundColor: BackgroundColor? = nil,
-        titleStyle: Heading.Style = .title4,
-        descriptionColor: Text.Color = .inkNormal,
-        action: @escaping () -> Void,
-        @ViewBuilder content: () -> Content
-    ) {
-        self.title = title
-        self.description = description
-        self.iconContent = icon
-        self.disclosure = disclosure
-        self.showBorder = showBorder
-        self.status = status
-        self.backgroundColor = backgroundColor
-        self.titleStyle = titleStyle
-        self.descriptionColor = descriptionColor
-        self.action = action
-        self.content = content()
-    }
-    
     /// Creates Orbit Tile component.
     ///
     /// - Parameters:
@@ -233,21 +203,20 @@ public extension Tile {
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title4,
         descriptionColor: Text.Color = .inkNormal,
-        action: @escaping () -> Void
-    ) where Content == EmptyView {
-        self.init(
-            title,
-            description: description,
-            icon: icon,
-            disclosure: disclosure,
-            showBorder: showBorder,
-            status: status,
-            backgroundColor: backgroundColor,
-            titleStyle: titleStyle,
-            descriptionColor: descriptionColor,
-            action: action,
-            content: { EmptyView() }
-        )
+        action: @escaping () -> Void,
+        @ViewBuilder content: () -> Content = { EmptyView() }
+    ) {
+        self.title = title
+        self.description = description
+        self.iconContent = icon
+        self.disclosure = disclosure
+        self.showBorder = showBorder
+        self.status = status
+        self.backgroundColor = backgroundColor
+        self.titleStyle = titleStyle
+        self.descriptionColor = descriptionColor
+        self.action = action
+        self.content = content()
     }
 }
 
