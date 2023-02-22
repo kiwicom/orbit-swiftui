@@ -61,7 +61,7 @@
 - component: SocialButton
   ios: Released
 - component: Stepper
-  ios: Planned
+  ios: Released
 - component: Switch
   ios: Released
 - component: Tabs

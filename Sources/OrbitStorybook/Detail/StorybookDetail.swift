@@ -145,6 +145,7 @@ struct StorybookDetail: View {
             case (.skeleton, 0):            StorybookSkeleton.basic
             case (.skeleton, 1):            StorybookSkeleton.atomic
             case (.socialButton, _):        StorybookSocialButton.basic
+            case (.stepper, _):             StorybookStepper.basic
             case (.`switch`, _):            StorybookSwitch.basic
             case (.tabs, 0):                StorybookTabs.basic
             case (.tabs, 1):                StorybookTabs.live
