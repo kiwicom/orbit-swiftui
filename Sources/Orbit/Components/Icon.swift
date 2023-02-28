@@ -80,6 +80,7 @@ public struct Icon: View {
             .font(.orbitIcon(size: size.value))
             .frame(height: dynamicSize)
             .accessibility(label: SwiftUI.Text(String(describing: symbol)))
+            .flipsForRightToLeftLayoutDirection(symbol.flipsForRightToLeftLayoutDirection)
     }
 
     @ViewBuilder func imageWrapper(mode: ContentMode, @ViewBuilder content: () -> some View) -> some View {
@@ -322,6 +323,28 @@ extension Icon: TextRepresentable {
     }
 }
 
+extension Icon.Symbol {
+
+    var flipsForRightToLeftLayoutDirection: Bool {
+        switch self {
+            case .chevronForward,
+                 .chevronBackward,
+                 .chevronDoubleForward,
+                 .chevronDoubleBackward,
+                 .flightDirect,
+                 .flightMulticity,
+                 .flightNomad,
+                 .flightReturn,
+                 .routeNoStops,
+                 .routeOneStop,
+                 .routeTwoStops:
+                return true
+            default:
+                return false
+        }
+    }
+}
+
 // MARK: - Previews
 struct IconPreviews: PreviewProvider {
 
@@ -335,6 +358,7 @@ struct IconPreviews: PreviewProvider {
             heading
             baseline
             colors
+            rightToLeft
         }
         .previewLayout(.sizeThatFits)
     }
@@ -484,6 +508,21 @@ struct IconPreviews: PreviewProvider {
         .previewDisplayName()
     }
 
+    static var rightToLeft: some View {
+        VStack(alignment: .trailing) {
+            ForEach(flippableSymbols, id: \.value) { symbol in
+                HStack {
+                    Text(String(describing: symbol), size: .small)
+                    Icon(symbol)
+                    Icon(symbol)
+                        .environment(\.layoutDirection, .rightToLeft)
+                }
+            }
+        }
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
     static func size(iconSize: Icon.Size, textSize: Text.Size, color: UIColor) -> some View {
         HStack(spacing: .xSmall) {
             Text("\(Int(iconSize.value))", color: .custom(color), weight: .bold)
@@ -535,4 +574,6 @@ struct IconPreviews: PreviewProvider {
             )
         }
     }
+
+    static let flippableSymbols = Icon.Symbol.allCases.filter(\.flipsForRightToLeftLayoutDirection)
 }
