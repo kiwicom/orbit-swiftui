@@ -76,6 +76,8 @@ public extension Icon.Content {
     static let baggageSet: Self = .symbol(.baggageSet)
     /// Orbit `baggageStorage` icon symbol with unspecified color.
     static let baggageStorage: Self = .symbol(.baggageStorage)
+    /// Orbit `bank` icon symbol with unspecified color.
+    static let bank: Self = .symbol(.bank)
     /// Orbit `billingDetails` icon symbol with unspecified color.
     static let billingDetails: Self = .symbol(.billingDetails)
     /// Orbit `boardingGate` icon symbol with unspecified color.
@@ -122,18 +124,10 @@ public extension Icon.Content {
     static let chevronDoubleBackward: Self = .symbol(.chevronDoubleBackward)
     /// Orbit `chevronDoubleForward` icon symbol with unspecified color.
     static let chevronDoubleForward: Self = .symbol(.chevronDoubleForward)
-    /// Orbit `chevronDoubleLeft` icon symbol with unspecified color.
-    static let chevronDoubleLeft: Self = .symbol(.chevronDoubleLeft)
-    /// Orbit `chevronDoubleRight` icon symbol with unspecified color.
-    static let chevronDoubleRight: Self = .symbol(.chevronDoubleRight)
     /// Orbit `chevronDown` icon symbol with unspecified color.
     static let chevronDown: Self = .symbol(.chevronDown)
     /// Orbit `chevronForward` icon symbol with unspecified color.
     static let chevronForward: Self = .symbol(.chevronForward)
-    /// Orbit `chevronLeft` icon symbol with unspecified color.
-    static let chevronLeft: Self = .symbol(.chevronLeft)
-    /// Orbit `chevronRight` icon symbol with unspecified color.
-    static let chevronRight: Self = .symbol(.chevronRight)
     /// Orbit `chevronUp` icon symbol with unspecified color.
     static let chevronUp: Self = .symbol(.chevronUp)
     /// Orbit `child` icon symbol with unspecified color.
@@ -422,6 +416,8 @@ public extension Icon.Content {
     static let pharmacy: Self = .symbol(.pharmacy)
     /// Orbit `phone` icon symbol with unspecified color.
     static let phone: Self = .symbol(.phone)
+    /// Orbit `pin` icon symbol with unspecified color.
+    static let pin: Self = .symbol(.pin)
     /// Orbit `placeholder` icon symbol with unspecified color.
     static let placeholder: Self = .symbol(.placeholder)
     /// Orbit `playground` icon symbol with unspecified color.
@@ -546,6 +542,8 @@ public extension Icon.Content {
     static let ticket: Self = .symbol(.ticket)
     /// Orbit `ticketOutline` icon symbol with unspecified color.
     static let ticketOutline: Self = .symbol(.ticketOutline)
+    /// Orbit `tiktok` icon symbol with unspecified color.
+    static let tiktok: Self = .symbol(.tiktok)
     /// Orbit `timelapse` icon symbol with unspecified color.
     static let timelapse: Self = .symbol(.timelapse)
     /// Orbit `timer` icon symbol with unspecified color.

@@ -77,6 +77,8 @@ public extension Icon {
         case baggageSet
         /// Orbit `baggageStorage` icon symbol.
         case baggageStorage
+        /// Orbit `bank` icon symbol.
+        case bank
         /// Orbit `billingDetails` icon symbol.
         case billingDetails
         /// Orbit `boardingGate` icon symbol.
@@ -123,18 +125,10 @@ public extension Icon {
         case chevronDoubleBackward
         /// Orbit `chevronDoubleForward` icon symbol.
         case chevronDoubleForward
-        /// Orbit `chevronDoubleLeft` icon symbol.
-        case chevronDoubleLeft
-        /// Orbit `chevronDoubleRight` icon symbol.
-        case chevronDoubleRight
         /// Orbit `chevronDown` icon symbol.
         case chevronDown
         /// Orbit `chevronForward` icon symbol.
         case chevronForward
-        /// Orbit `chevronLeft` icon symbol.
-        case chevronLeft
-        /// Orbit `chevronRight` icon symbol.
-        case chevronRight
         /// Orbit `chevronUp` icon symbol.
         case chevronUp
         /// Orbit `child` icon symbol.
@@ -423,6 +417,8 @@ public extension Icon {
         case pharmacy
         /// Orbit `phone` icon symbol.
         case phone
+        /// Orbit `pin` icon symbol.
+        case pin
         /// Orbit `placeholder` icon symbol.
         case placeholder
         /// Orbit `playground` icon symbol.
@@ -547,6 +543,8 @@ public extension Icon {
         case ticket
         /// Orbit `ticketOutline` icon symbol.
         case ticketOutline
+        /// Orbit `tiktok` icon symbol.
+        case tiktok
         /// Orbit `timelapse` icon symbol.
         case timelapse
         /// Orbit `timer` icon symbol.
@@ -627,6 +625,7 @@ public extension Icon {
                 case .baggageRecheck: return "\u{6137}"
                 case .baggageSet: return "\u{2615}"
                 case .baggageStorage: return "\u{6846}"
+                case .bank: return "\u{2724}"
                 case .billingDetails: return "\u{7410}"
                 case .boardingGate: return "\u{3753}"
                 case .boat: return "\u{7136}"
@@ -650,12 +649,8 @@ public extension Icon {
                 case .chevronBackward: return "\u{5623}"
                 case .chevronDoubleBackward: return "\u{3446}"
                 case .chevronDoubleForward: return "\u{2985}"
-                case .chevronDoubleLeft: return "\u{3849}"
-                case .chevronDoubleRight: return "\u{6819}"
                 case .chevronDown: return "\u{2454}"
                 case .chevronForward: return "\u{7600}"
-                case .chevronLeft: return "\u{7467}"
-                case .chevronRight: return "\u{2505}"
                 case .chevronUp: return "\u{7267}"
                 case .child: return "\u{4353}"
                 case .childFriendly: return "\u{2054}"
@@ -701,7 +696,7 @@ public extension Icon {
                 case .email: return "\u{2584}"
                 case .entertainment: return "\u{3470}"
                 case .exchange: return "\u{6511}"
-                case .facebook: return "\u{7439}"
+                case .facebook: return "\u{5309}"
                 case .familyAll: return "\u{6827}"
                 case .familyHalf: return "\u{6514}"
                 case .feedback: return "\u{7645}"
@@ -718,7 +713,7 @@ public extension Icon {
                 case .gallery: return "\u{1338}"
                 case .genderMan: return "\u{4414}"
                 case .genderWoman: return "\u{1515}"
-                case .github: return "\u{7470}"
+                case .github: return "\u{6405}"
                 case .google: return "\u{5463}"
                 case .googlePlay: return "\u{1760}"
                 case .gpsFixed: return "\u{4387}"
@@ -731,19 +726,19 @@ public extension Icon {
                 case .inbox: return "\u{1658}"
                 case .infant: return "\u{1284}"
                 case .informationCircle: return "\u{1512}"
-                case .instagram: return "\u{5971}"
+                case .instagram: return "\u{6900}"
                 case .insurance: return "\u{5298}"
                 case .insuranceConfirmed: return "\u{7867}"
                 case .insuranceOff: return "\u{3827}"
                 case .invoice: return "\u{7621}"
                 case .itemCompleted: return "\u{1610}"
                 case .kiwicom: return "\u{1252}"
-                case .kiwicomCare: return "\u{7561}"
+                case .kiwicomCare: return "\u{5241}"
                 case .kiwicomGuarantee: return "\u{2694}"
                 case .kiwicomNoGuarantee: return "\u{7890}"
                 case .leisure: return "\u{5037}"
                 case .link: return "\u{7930}"
-                case .linkedin: return "\u{1944}"
+                case .linkedin: return "\u{4311}"
                 case .list: return "\u{7354}"
                 case .location: return "\u{4090}"
                 case .locationA: return "\u{2761}"
@@ -800,6 +795,7 @@ public extension Icon {
                 case .pet: return "\u{7174}"
                 case .pharmacy: return "\u{2171}"
                 case .phone: return "\u{1321}"
+                case .pin: return "\u{5330}"
                 case .placeholder: return "\u{7587}"
                 case .playground: return "\u{6810}"
                 case .plus: return "\u{2147}"
@@ -862,6 +858,7 @@ public extension Icon {
                 case .thumbUp: return "\u{1006}"
                 case .ticket: return "\u{2699}"
                 case .ticketOutline: return "\u{6106}"
+                case .tiktok: return "\u{6190}"
                 case .timelapse: return "\u{4820}"
                 case .timer: return "\u{6822}"
                 case .tips: return "\u{6768}"
@@ -869,7 +866,7 @@ public extension Icon {
                 case .train: return "\u{6564}"
                 case .transmission: return "\u{5891}"
                 case .trip: return "\u{5730}"
-                case .twitter: return "\u{6524}"
+                case .twitter: return "\u{2937}"
                 case .uber: return "\u{6152}"
                 case .upload: return "\u{6192}"
                 case .userGroup: return "\u{5875}"
@@ -881,7 +878,7 @@ public extension Icon {
                 case .wheelchair: return "\u{6489}"
                 case .wifi: return "\u{5275}"
                 case .wifiOff: return "\u{6837}"
-                case .youtube: return "\u{6665}"
+                case .youtube: return "\u{6223}"
             }
         }
     }
