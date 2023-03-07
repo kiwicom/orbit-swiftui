@@ -39,7 +39,7 @@ public struct EmptyState: View {
                 EmptyView()
             case .button(let label, let style, let action):
                 Button(label, style: style, action: action)
-                    .idealSize()
+                    .fixedSize()
                     .accessibility(.emptyStateButton)
         }
     }

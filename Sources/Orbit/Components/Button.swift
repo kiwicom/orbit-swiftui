@@ -3,10 +3,8 @@ import SwiftUI
 /// Displays a single important action a user can take.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/button/)
-/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
+/// - Important: Component expands horizontally unless prevented by the `fixedSize` modifier.
 public struct Button: View {
-
-    @Environment(\.idealSize) var idealSize
 
     let label: String
     let iconContent: Icon.Content
@@ -25,7 +23,7 @@ public struct Button: View {
                 HStack(spacing: 0) {
                     TextStrut(size.textSize)
 
-                    if disclosureIconContent.isEmpty, idealSize.horizontal == nil {
+                    if disclosureIconContent.isEmpty {
                         Spacer(minLength: 0)
                     }
 
@@ -35,9 +33,7 @@ public struct Button: View {
                         textWrapper
                     }
 
-                    if idealSize.horizontal == nil {
-                        Spacer(minLength: 0)
-                    }
+                    Spacer(minLength: 0)
 
                     Icon(content: disclosureIconContent, size: size.textSize.iconSize)
                         .foregroundColor(style.foregroundColor)
@@ -48,7 +44,7 @@ public struct Button: View {
             }
         )
         .buttonStyle(ButtonStyle(style: style, size: size))
-        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
+        .frame(maxWidth: .infinity)
     }
 
     @ViewBuilder var textWrapper: some View {
@@ -311,9 +307,9 @@ struct ButtonPreviews: PreviewProvider {
             Button("Button", action: {})
             Button(.grid, action: {})
             Button(.grid, action: {})
-                .idealSize()
+                .fixedSize()
             Button(.arrowUp, action: {})
-                .idealSize()
+                .fixedSize()
         }
         .padding(.medium)
         .previewDisplayName()
@@ -404,13 +400,13 @@ struct ButtonPreviews: PreviewProvider {
             }
             HStack(spacing: .small) {
                 Button("Label", style: style, action: {})
-                    .idealSize()
+                    .fixedSize()
                 Button(.grid, style: style, action: {})
                 Spacer()
             }
             HStack(spacing: .small) {
                 Button("Label", style: style, size: .small, action: {})
-                    .idealSize()
+                    .fixedSize()
                 Button(.grid, style: style, size: .small, action: {})
                 Spacer()
             }
@@ -432,7 +428,7 @@ struct ButtonPreviews: PreviewProvider {
                 Button("Label", disclosureIcon: .chevronRight, style: style, size: .small, action: {})
                 Button(.grid, style: style, size: .small, action: {})
             }
-            .idealSize()
+            .fixedSize()
 
             Spacer(minLength: 0)
         }
