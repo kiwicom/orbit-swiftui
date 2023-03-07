@@ -20,8 +20,8 @@ extension EnvironmentValues {
 public extension View {
 
     /// Sets expanding behaviour of view relative to its ideal size in specified direction.
-    /// For specified axis, a value of `true` will prevent view from expending beyond its ideal size,
-    /// while a value of `false` will force view to expand to infinity.
+    /// For specified axis, `true` will prevent view from expanding beyond its ideal size,
+    /// while `false` will force view to expand to infinity.
     ///
     /// To fix the view exactly to the ideal size, use `fixedSize` modifier instead.
     func idealSize(horizontal: Bool? = nil, vertical: Bool? = nil) -> some View {
