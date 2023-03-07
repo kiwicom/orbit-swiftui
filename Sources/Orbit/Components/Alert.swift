@@ -25,10 +25,8 @@ public enum AlertButtons {
 /// Use at most two actions in each Alert: one primary and one subtle.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/alert/)
-/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
+/// - Important: Component expands horizontally unless prevented by the `fixedSize` modifier.
 public struct Alert<Content: View>: View {
-
-    @Environment(\.idealSize) var idealSize
 
     let style: AlertStyle
     let title: String
@@ -65,7 +63,7 @@ public struct Alert<Content: View>: View {
                 defaultButtons
             }
         }
-        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.medium)
     }
 
@@ -73,12 +71,13 @@ public struct Alert<Content: View>: View {
         HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
             inlineHeader
 
-            if idealSize.horizontal != true {
+            if isInlineHeaderEmpty == false, isInlineButtonVisible {
                 Spacer(minLength: 0)
             }
 
             inlineButton
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     @ViewBuilder var defaultHeader: some View {
@@ -210,6 +209,13 @@ public struct Alert<Content: View>: View {
 
     var isInlineHeaderEmpty: Bool {
         iconContent.isEmpty && title.isEmpty
+    }
+
+    var isInlineButtonVisible: Bool {
+        switch buttons {
+            case .primary, .primaryAndSecondary: return true
+            case .secondary, .none:              return false
+        }
     }
 }
 
@@ -361,9 +367,9 @@ struct AlertPreviews: PreviewProvider {
 
             Alert("Inline alert with no button", icon: .informationCircle, status: .success)
             Alert("Inline alert with no button", status: .success)
-                .idealSize()
+                .fixedSize()
             Alert(button: .init(stringLiteral: "Primary"), status: .critical)
-                .idealSize()
+                .fixedSize()
 
             Alert("Inline alert with very very very very very very very very very very very long and <u>multiline</u> title", icon: .grid, button: "Primary", status: .warning, isSuppressed: false)
         }
@@ -450,7 +456,7 @@ struct AlertPreviews: PreviewProvider {
             Alert(icon: .informationCircle, buttons: Self.primaryConfiguration)
             Alert(buttons: Self.primaryConfiguration)
             Alert("Intrinsic width", buttons: Self.primaryConfiguration)
-                .idealSize(horizontal: true, vertical: false)
+                .fixedSize(horizontal: true, vertical: false)
         }
         .previewDisplayName()
     }
@@ -470,7 +476,7 @@ struct AlertPreviews: PreviewProvider {
             Alert(title)
             Alert()
             Alert("Intrinsic width")
-                .idealSize(horizontal: true, vertical: false)
+                .fixedSize(horizontal: true, vertical: false)
         }
         .previewDisplayName()
     }
