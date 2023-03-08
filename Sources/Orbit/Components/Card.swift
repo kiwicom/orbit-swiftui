@@ -306,9 +306,12 @@ struct CardPreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static var snapshot: some View {
-        standalone
-            .screenLayout()
-            .background(Color.screen)
+    @ViewBuilder static var snapshot: some View {
+        VStack(spacing: .medium) {
+            standalone
+            standaloneIntrinsic
+        }
+        .screenLayout()
+        .background(Color.screen)
     }
 }
