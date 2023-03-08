@@ -90,7 +90,10 @@ struct TileGroupPreviews: PreviewProvider {
     }
 
     static var snapshot: some View {
-        standalone
-            .padding(.medium)
+        VStack(spacing: .medium) {
+            standalone
+            intrinsic
+        }
+        .padding(.medium)
     }
 }

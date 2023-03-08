@@ -7,5 +7,6 @@ class ChoiceTileTests: SnapshotTestCase {
         assert(ChoiceTilePreviews.standalone)
         assert(ChoiceTilePreviews.standaloneCentered)
         assert(ChoiceTilePreviews.sizing)
+        assert(ChoiceTilePreviews.intrinsic)
     }
 }

@@ -175,7 +175,10 @@ struct SocialButtonPreviews: PreviewProvider {
     }
 
     static var snapshot: some View {
-        all
-            .padding(.medium)
+        VStack(spacing: .medium) {
+            all
+            intrinsic
+        }
+        .padding(.medium)
     }
 }

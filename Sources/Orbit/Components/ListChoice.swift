@@ -524,6 +524,9 @@ struct ListChoicePreviews: PreviewProvider {
     }
 
     static var snapshot: some View {
-        standalone
+        VStack(spacing: .medium) {
+            standalone
+            intrinsic
+        }
     }
 }
