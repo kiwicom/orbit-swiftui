@@ -25,12 +25,10 @@ public enum ListChoiceDisclosure: Equatable {
 /// Shows one of a selectable list of items with similar structures.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/listchoice/)
-/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
+/// - Important: Component expands horizontally unless prevented by the `fixedSize` modifier.
 public struct ListChoice<HeaderContent: View, Content: View>: View {
 
     public let verticalPadding: CGFloat = .small + 0.5 // = 45 height @ normal size
-
-    @Environment(\.idealSize) var idealSize
 
     let title: String
     let description: String
@@ -78,7 +76,6 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 .padding(.vertical, .small)
                 .allowsHitTesting(false)
         }
-        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
         .overlay(separator, alignment: .bottom)
     }
     
@@ -88,7 +85,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 headerTexts
                     .padding(.trailing, .xSmall)
 
-                if isHeaderEmpty == false, idealSize.horizontal == nil {
+                if isHeaderEmpty == false {
                     Spacer(minLength: 0)
                 }
 
@@ -373,7 +370,7 @@ struct ListChoicePreviews: PreviewProvider {
         } headerContent: {
             intrinsicContentPlaceholder
         }
-        .idealSize()
+        .fixedSize()
         .previewDisplayName()
     }
 
