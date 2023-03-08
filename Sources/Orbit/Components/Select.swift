@@ -3,7 +3,7 @@ import SwiftUI
 /// Also known as dropdown. Offers a simple form control to select from many options.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/select/)
-/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
+/// - Important: Component expands horizontally unless prevented by the `fixedSize` modifier.
 public struct Select: View {
 
     @Environment(\.isEnabled) var isEnabled: Bool
@@ -151,7 +151,7 @@ struct SelectPreviews: PreviewProvider {
 
     static var intrinsic: some View {
         Select("Intrinsic", prefix: .grid, value: InputFieldPreviews.value, action: {})
-            .idealSize()
+            .fixedSize()
             .padding(.medium)
             .previewDisplayName()
     }
