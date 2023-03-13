@@ -53,7 +53,7 @@ struct TileGroupPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            intrinsic
+            idealSize
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -66,7 +66,7 @@ struct TileGroupPreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static var intrinsic: some View {
+    static var idealSize: some View {
         TileGroup {
             tiles(intrinsic: true)
         }
@@ -92,7 +92,7 @@ struct TileGroupPreviews: PreviewProvider {
     static var snapshot: some View {
         VStack(spacing: .medium) {
             standalone
-            intrinsic
+            idealSize
         }
         .padding(.medium)
     }

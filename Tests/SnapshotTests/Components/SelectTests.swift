@@ -6,6 +6,6 @@ class SelectTests: SnapshotTestCase {
     func testSelects() {
         assert(SelectPreviews.styles)
         assert(SelectPreviews.sizing)
-        assert(SelectPreviews.intrinsic)
+        assert(SelectPreviews.idealSize)
     }
 }

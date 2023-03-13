@@ -6,6 +6,6 @@ class TileTests: SnapshotTestCase {
     func testTiles() {
         assert(TilePreviews.tiles)
         assert(TilePreviews.sizing)
-        assert(TilePreviews.intrinsic)
+        assert(TilePreviews.idealSize)
     }
 }

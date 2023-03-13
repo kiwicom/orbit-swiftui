@@ -135,7 +135,7 @@ struct SelectPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            intrinsic
+            idealSize
             sizing
             styles
             mix
@@ -149,8 +149,8 @@ struct SelectPreviews: PreviewProvider {
             .previewDisplayName()
     }
 
-    static var intrinsic: some View {
-        Select("Intrinsic", prefix: .grid, value: InputFieldPreviews.value, action: {})
+    static var idealSize: some View {
+        Select("Ideal size", prefix: .grid, value: InputFieldPreviews.value, action: {})
             .idealSize()
             .padding(.medium)
             .previewDisplayName()
