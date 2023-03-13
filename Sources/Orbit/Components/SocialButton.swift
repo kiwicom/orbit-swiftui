@@ -142,7 +142,7 @@ struct SocialButtonPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            intrinsic
+            idealSize
             all
         }
         .padding(.medium)
@@ -154,7 +154,7 @@ struct SocialButtonPreviews: PreviewProvider {
             .previewDisplayName()
     }
 
-    static var intrinsic: some View {
+    static var idealSize: some View {
         content
             .idealSize()
             .previewDisplayName()
@@ -175,7 +175,10 @@ struct SocialButtonPreviews: PreviewProvider {
     }
 
     static var snapshot: some View {
-        all
-            .padding(.medium)
+        VStack(spacing: .medium) {
+            all
+            idealSize
+        }
+        .padding(.medium)
     }
 }

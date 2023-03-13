@@ -311,7 +311,7 @@ struct ChoiceTilePreviews: PreviewProvider {
             standalone
             standaloneCentered
             sizing
-            intrinsic
+            idealSize
             styles
             stylesCentered
             mix
@@ -368,7 +368,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static var intrinsic: some View {
+    static var idealSize: some View {
         VStack(alignment: .leading, spacing: .medium) {
             ChoiceTile("Intrinsic", icon: .grid, action: {})
             ChoiceTile("Intrinsic", icon: .grid, action: {}) {

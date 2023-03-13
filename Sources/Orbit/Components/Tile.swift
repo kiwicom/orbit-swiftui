@@ -263,7 +263,7 @@ struct TilePreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            intrinsic
+            idealSize
             sizing
             tiles
             mix
@@ -278,7 +278,7 @@ struct TilePreviews: PreviewProvider {
             .previewDisplayName()
     }
 
-    static var intrinsic: some View {
+    static var idealSize: some View {
         Tile(title, description: description, icon: .grid, action: {})
             .idealSize()
             .padding(.medium)

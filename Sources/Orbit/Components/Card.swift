@@ -176,7 +176,7 @@ struct CardPreviews: PreviewProvider {
             content
                 .screenLayout()
 
-            standaloneIntrinsic
+            standaloneIdealSize
                 .padding(.medium)
         }
         .background(Color.screen)
@@ -201,7 +201,7 @@ struct CardPreviews: PreviewProvider {
         .previewDisplayName()
     }
     
-    static var standaloneIntrinsic: some View {
+    static var standaloneIdealSize: some View {
         HStack(spacing: .medium) {
             Card("Card", description: "Intrinsic", icon: .grid) {
                 intrinsicContentPlaceholder
@@ -306,9 +306,12 @@ struct CardPreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static var snapshot: some View {
-        standalone
-            .screenLayout()
-            .background(Color.screen)
+    @ViewBuilder static var snapshot: some View {
+        VStack(spacing: .medium) {
+            standalone
+            standaloneIdealSize
+        }
+        .screenLayout()
+        .background(Color.screen)
     }
 }

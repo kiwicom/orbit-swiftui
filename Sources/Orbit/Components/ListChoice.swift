@@ -342,7 +342,7 @@ struct ListChoicePreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            intrinsic
+            idealSize
             sizing
             plain
             checkbox
@@ -367,7 +367,7 @@ struct ListChoicePreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static var intrinsic: some View {
+    static var idealSize: some View {
         ListChoice(title, description: description, icon: .grid, action: {}) {
             intrinsicContentPlaceholder
         } headerContent: {
@@ -527,6 +527,9 @@ struct ListChoicePreviews: PreviewProvider {
     }
 
     static var snapshot: some View {
-        standalone
+        VStack(spacing: .medium) {
+            standalone
+            idealSize
+        }
     }
 }
