@@ -399,8 +399,8 @@ struct ButtonPreviews: PreviewProvider {
                 Button("Label", icon: .grid, style: style, action: {})
             }
             HStack(spacing: .small) {
-                Button("Label", disclosureIcon: .chevronRight, style: style, action: {})
-                Button("Label", icon: .grid, disclosureIcon: .chevronRight, style: style, action: {})
+                Button("Label", disclosureIcon: .chevronForward, style: style, action: {})
+                Button("Label", icon: .grid, disclosureIcon: .chevronForward, style: style, action: {})
             }
             HStack(spacing: .small) {
                 Button("Label", style: style, action: {})
@@ -428,8 +428,8 @@ struct ButtonPreviews: PreviewProvider {
         HStack(spacing: .xSmall) {
             Group {
                 Button("Label", style: style, size: .small, action: {})
-                Button("Label", icon: .grid, disclosureIcon: .chevronRight, style: style, size: .small, action: {})
-                Button("Label", disclosureIcon: .chevronRight, style: style, size: .small, action: {})
+                Button("Label", icon: .grid, disclosureIcon: .chevronForward, style: style, size: .small, action: {})
+                Button("Label", disclosureIcon: .chevronForward, style: style, size: .small, action: {})
                 Button(.grid, style: style, size: .small, action: {})
             }
             .idealSize()
