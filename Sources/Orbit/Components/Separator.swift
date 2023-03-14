@@ -74,7 +74,7 @@ public extension Separator {
         case hairline
         case custom(CGFloat)
 
-        var value: CGFloat {
+        public var value: CGFloat {
             switch self {
                 case .`default`:            return 1
                 case .hairline:             return .hairline

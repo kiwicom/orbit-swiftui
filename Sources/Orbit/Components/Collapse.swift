@@ -8,6 +8,7 @@ public struct Collapse<Header: View, Content: View>: View {
     let header: Header
     let headerVerticalPadding: CGFloat
     let content: Content
+    let showSeparator: Bool
     let isExpanded: Binding<Bool>?
 
     public var body: some View {
@@ -34,7 +35,13 @@ public struct Collapse<Header: View, Content: View>: View {
                         .padding(.vertical, .small)
                 }
             }
-            .overlay(Separator(), alignment: .bottom)
+            .overlay(separator, alignment: .bottom)
+        }
+    }
+
+    @ViewBuilder var separator: some View {
+        if showSeparator {
+            Separator()
         }
     }
 }
@@ -42,18 +49,25 @@ public struct Collapse<Header: View, Content: View>: View {
 public extension Collapse {
 
     /// Creates Orbit Collapse component with a binding to the expansion state.
-    init(isExpanded: Binding<Bool>, @ViewBuilder content: () -> Content, @ViewBuilder headerContent: () -> Header) {
+    init(
+        isExpanded: Binding<Bool>,
+        showSeparator: Bool = true,
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder headerContent: () -> Header
+    ) {
         self.header = headerContent()
         self.headerVerticalPadding = 0
         self.content = content()
+        self.showSeparator = showSeparator
         self.isExpanded = isExpanded
     }
 
     /// Creates Orbit Collapse component.
-    init(@ViewBuilder content: () -> Content, @ViewBuilder headerContent: () -> Header) {
+    init(@ViewBuilder content: () -> Content, showSeparator: Bool = true, @ViewBuilder headerContent: () -> Header) {
         self.header = headerContent()
         self.headerVerticalPadding = 0
         self.content = content()
+        self.showSeparator = showSeparator
         self.isExpanded = nil
     }
 }
@@ -61,18 +75,20 @@ public extension Collapse {
 public extension Collapse where Header == Text {
 
     /// Creates Orbit Collapse component with a binding to the expansion state.
-    init(_ title: String, isExpanded: Binding<Bool>, @ViewBuilder content: () -> Content) {
+    init(_ title: String, isExpanded: Binding<Bool>, showSeparator: Bool = true,  @ViewBuilder content: () -> Content) {
         self.header = Text(title)
         self.headerVerticalPadding = .small
         self.content = content()
+        self.showSeparator = showSeparator
         self.isExpanded = isExpanded
     }
 
     /// Creates Orbit Collapse component.
-    init(_ title: String, @ViewBuilder content: () -> Content) {
+    init(_ title: String, showSeparator: Bool = true, @ViewBuilder content: () -> Content) {
         self.header = Text(title)
         self.headerVerticalPadding = .small
         self.content = content()
+        self.showSeparator = showSeparator
         self.isExpanded = nil
     }
 }
@@ -160,6 +176,9 @@ struct CollapsePreviews: PreviewProvider {
                 contentPlaceholder
             } headerContent: {
                 headerPlaceholder
+            }
+            Collapse("No separator", showSeparator: false) {
+                contentPlaceholder
             }
         }
         .padding(.medium)
