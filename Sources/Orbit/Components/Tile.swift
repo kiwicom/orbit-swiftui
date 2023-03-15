@@ -197,7 +197,7 @@ public extension Tile {
         _ title: String = "",
         description: String = "",
         icon: Icon.Content = .none,
-        disclosure: TileDisclosure = .icon(.chevronRight),
+        disclosure: TileDisclosure = .icon(.chevronForward),
         showBorder: Bool = true,
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,

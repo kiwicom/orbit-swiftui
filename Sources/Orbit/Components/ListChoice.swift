@@ -126,7 +126,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
             case .none:
                 EmptyView()
             case .disclosure(let color):
-                Icon(.chevronRight, color: color)
+                Icon(.chevronForward, color: color)
                     .padding(.leading, -.xSmall)
             case .button(let type):
                 disclosureButton(type: type)

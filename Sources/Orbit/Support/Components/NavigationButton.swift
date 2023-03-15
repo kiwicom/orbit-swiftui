@@ -111,7 +111,7 @@ struct NavigationButtonPreviews: PreviewProvider {
                         Group {
                             NavigationButton(.back, action: {})
                             BarButton(.sfSymbol("arrow.backward", weight: .bold), action: {})
-                            BarButton(.chevronLeft, action: {})
+                            BarButton(.chevronBackward, action: {})
                         }
                         .border(Color.cloudNormal.opacity(0.3))
                     },
