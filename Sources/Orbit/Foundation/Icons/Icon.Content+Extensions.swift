@@ -420,6 +420,8 @@ public extension Icon.Content {
     static let pin: Self = .symbol(.pin)
     /// Orbit `placeholder` icon symbol with unspecified color.
     static let placeholder: Self = .symbol(.placeholder)
+    /// Orbit `play` icon symbol with unspecified color.
+    static let play: Self = .symbol(.play)
     /// Orbit `playground` icon symbol with unspecified color.
     static let playground: Self = .symbol(.playground)
     /// Orbit `plus` icon symbol with unspecified color.
