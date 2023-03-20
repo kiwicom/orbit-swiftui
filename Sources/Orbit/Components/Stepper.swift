@@ -27,6 +27,7 @@ public struct Stepper: View {
     @ViewBuilder var valueText: some View {
         Text("\(value)")
             .accessibility(.stepperValue)
+            .accessibility(value: .init(value.description))
     }
     
     @ViewBuilder var decrementButton: some View {
