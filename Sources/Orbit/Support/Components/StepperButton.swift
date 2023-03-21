@@ -11,6 +11,7 @@ public struct StepperButton: View {
     public var body: some View {
         SwiftUI.Button(action: action) {
             icon
+                .frame(minWidth: 24, minHeight: 24)
         }
         .buttonStyle(OrbitStyle(isEnabled: isEnabled, style: style))
         .disabled(!isEnabled)
