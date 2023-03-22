@@ -16,16 +16,14 @@ public struct Stepper: View {
     public var body: some View {
         HStack(alignment: .center, spacing: 0) {
             decrementButton
-            
             valueText
-                .frame(minWidth: 40)
-            
             incrementButton
         }
     }
     
     @ViewBuilder var valueText: some View {
         Text("\(value)")
+            .frame(minWidth: .xMedium)
             .accessibility(.stepperValue)
             .accessibility(value: .init(value.description))
     }
