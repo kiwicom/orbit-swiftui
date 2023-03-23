@@ -421,6 +421,8 @@ public extension Icon {
         case pin
         /// Orbit `placeholder` icon symbol.
         case placeholder
+        /// Orbit `play` icon symbol.
+        case play
         /// Orbit `playground` icon symbol.
         case playground
         /// Orbit `plus` icon symbol.
@@ -668,7 +670,7 @@ public extension Icon {
                 case .codeKiwi: return "\u{4288}"
                 case .coffee: return "\u{2012}"
                 case .colorPicker: return "\u{7743}"
-                case .coloredFacebook: return "\u{8217}"
+                case .coloredFacebook: return "\u{8313}"
                 case .coloredImessage: return "\u{5611}"
                 case .coloredMessenger: return "\u{6309}"
                 case .coloredSignal: return "\u{5871}"
@@ -797,6 +799,7 @@ public extension Icon {
                 case .phone: return "\u{1321}"
                 case .pin: return "\u{5330}"
                 case .placeholder: return "\u{7587}"
+                case .play: return "\u{4213}"
                 case .playground: return "\u{6810}"
                 case .plus: return "\u{2147}"
                 case .plusCircle: return "\u{5551}"
