@@ -5,15 +5,15 @@ import UIKit
 public enum BorderWidth {
     /// 1 pixel border width.
     public static let hairline: CGFloat = 1.0 / UIScreen.main.scale
-    /// 2/3 pts border width for default outline.
-    public static let thin: CGFloat = UIScreen.main.scale > 2 ? 0.66 : 1
-    /// 1.5 pts border width used for state emphasis.
-    public static let emphasis: CGFloat = 1.5
-    /// 2 pts border width used for actively selected component.
-    public static let selection: CGFloat = 2.0
+    /// 0.5 pt border width.
+    public static let thin: CGFloat = 0.5
+    /// A default 1 pt border.
+    public static let `default`: CGFloat = 1.0
+    /// 2 pt border width used for actively selected or highlighted components.
+    public static let active: CGFloat = 2.0
 }
 
 public extension CGFloat {
-    /// 1 pixel
-    static let hairline: CGFloat = BorderWidth.hairline
+    /// 1 pixel size.
+    static let hairline: Self = BorderWidth.hairline
 }
