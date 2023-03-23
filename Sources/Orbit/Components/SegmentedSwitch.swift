@@ -8,6 +8,8 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/interaction/segmentedswitch/)
 public struct SegmentedSwitch: View {
 
+    let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
+
     @Environment(\.colorScheme) var colorScheme
 
     @Binding private var selectedIndex: Int?
@@ -16,24 +18,23 @@ public struct SegmentedSwitch: View {
     let firstOption: String
     let secondOption: String
 
-    let borderWidth: CGFloat = BorderWidth.selection
+    let borderWidth: CGFloat = BorderWidth.active
 
     public var body: some View {
-        FieldWrapper(
-            label,
-            message: message
-        ) {
-            HStack(spacing: 0) {
-                segment(title: firstOption)
-                    .accessibility(.segmentedSwitchFirstOption)
-                separator
-                segment(title: secondOption)
-                    .accessibility(.segmentedSwitchSecondOption)
+        FieldWrapper(label, message: message) {
+            InputContent(message: message) {
+                HStack(spacing: 0) {
+                    segment(title: firstOption)
+                        .accessibility(.segmentedSwitchFirstOption)
+
+                    separator
+
+                    segment(title: secondOption)
+                        .accessibility(.segmentedSwitchSecondOption)
+                }
+                .background(selectionBackground)
+                .fixedSize(horizontal: false, vertical: true)
             }
-            .background(selectionBackground)
-            .background(roundedBackground)
-            .overlay(borderOverlay)
-            .fixedSize(horizontal: false, vertical: true)
         }
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(label))
@@ -45,7 +46,8 @@ public struct SegmentedSwitch: View {
 
     @ViewBuilder func segment(title: String) -> some View {
         Text(title, alignment: .center)
-            .padding( .xSmall)
+            .padding(.horizontal, .xSmall)
+            .padding(.vertical, verticalTextPadding)
             .frame(maxWidth: .infinity)
             .contentShape(Rectangle())
             .onTapGesture {
@@ -56,17 +58,19 @@ public struct SegmentedSwitch: View {
     @ViewBuilder var separator: some View {
         separatorColor
           .frame(width: borderWidth)
+          .frame(maxHeight: .infinity)
+          .padding(.vertical, BorderWidth.active)
     }
 
     @ViewBuilder var selectionBackground: some View {
-        HStack {
+        HStack(spacing: 0) {
             if selection == secondOption {
                 Spacer(minLength: 0)
                     .layoutPriority(1)
             }
 
             (colorScheme == .light ? Color.whiteDarker : Color.cloudDarkActive)
-                .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1.5))
+                .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1))
                 .padding(borderWidth)
                 .elevation(selection != nil ? .level1 : nil)
                 .layoutPriority(1)
@@ -77,18 +81,6 @@ public struct SegmentedSwitch: View {
             }
         }
         .animation(.easeOut(duration: 0.2), value: selectedIndex)
-    }
-
-    @ViewBuilder var roundedBackground: some View {
-        RoundedRectangle(cornerRadius: BorderRadius.default)
-            .fill(Color.cloudNormal)
-    }
-
-    @ViewBuilder var borderOverlay: some View {
-        if case .error = message {
-            RoundedRectangle(cornerRadius: BorderRadius.default)
-                .strokeBorder(borderColor, lineWidth: borderWidth)
-        }
     }
 
     private var selection: String? {
@@ -108,6 +100,7 @@ public struct SegmentedSwitch: View {
     private var borderColor: Color {
         switch message {
             case .error:    return .redNormal
+            case .help:     return .blueNormal
             default:        return .cloudNormal
         }
     }
@@ -141,6 +134,7 @@ struct SegmentedSwitchPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             unselected
+            sizing
             selected
             help
             error
@@ -153,6 +147,18 @@ struct SegmentedSwitchPreviews: PreviewProvider {
     static var unselected: some View {
         segmentedSwitch()
             .previewDisplayName()
+    }
+
+    static var sizing: some View {
+        VStack(spacing: .medium) {
+            segmentedSwitch(selectedIndex: nil, label: "")
+                .measured()
+            segmentedSwitch(selectedIndex: 1, label: "")
+                .measured()
+            segmentedSwitch(selectedIndex: 1, secondOption: "Multiline\nOption", label: "")
+                .measured()
+        }
+        .previewDisplayName()
     }
 
     static var selected: some View {

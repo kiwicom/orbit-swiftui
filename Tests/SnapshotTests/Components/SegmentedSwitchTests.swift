@@ -5,5 +5,6 @@ class SegmentedSwitchTests: SnapshotTestCase {
 
     func testSegmentedSwitch() {
         assert(SegmentedSwitchPreviews.snapshot)
+        assert(SegmentedSwitchPreviews.sizing)
     }
 }
