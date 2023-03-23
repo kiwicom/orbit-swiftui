@@ -91,7 +91,7 @@ struct NavigationButtonPreviews: PreviewProvider {
                     leading: HStack(spacing: 0) {
                         Group {
                             NavigationButton(.close, action: {})
-                            BarButton(.sfSymbol("xmark", weight: .bold), action: {})
+                            BarButton(content: .sfSymbol("xmark", color: .inkDark, weight: .bold), action: {})
                             BarButton(.close, action: {})
                         }
                         .border(Color.cloudNormal.opacity(0.3))
@@ -110,7 +110,7 @@ struct NavigationButtonPreviews: PreviewProvider {
                     leading: HStack(spacing: 0) {
                         Group {
                             NavigationButton(.back, action: {})
-                            BarButton(.sfSymbol("arrow.backward", weight: .bold), action: {})
+                            BarButton(content: .sfSymbol("arrow.backward", color: .inkDark, weight: .bold), action: {})
                             BarButton(.chevronBackward, action: {})
                         }
                         .border(Color.cloudNormal.opacity(0.3))
