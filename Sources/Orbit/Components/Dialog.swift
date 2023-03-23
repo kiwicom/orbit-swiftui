@@ -3,27 +3,30 @@ import SwiftUI
 /// Prompts users to take or complete an action.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/overlay/dialog/)
-public struct Dialog: View {
+public struct Dialog<Content: View>: View {
 
     let illustration: Illustration.Image
     let title: String
     let description: String
     let style: Style
-    let alignment: HorizontalAlignment
     let buttonConfiguration: Buttons
+    let descriptionLinkAction: TextLink.Action
+    @ViewBuilder let content: Content
 
     public var body: some View {
-        VStack(alignment: alignment, spacing: .medium) {
+        VStack(alignment: .leading, spacing: .medium) {
             Illustration(illustration, layout: .resizeable)
                 .frame(height: 120)
 
-            VStack(alignment: alignment, spacing: .xSmall) {
-                Heading(title, style: .title3, alignment: .init(alignment))
+            VStack(alignment: .leading, spacing: .xSmall) {
+                Heading(title, style: .title3)
                     .accessibility(.dialogTitle)
 
-                Text(description, color: .inkNormal, alignment: .init(alignment))
+                Text(description, color: .inkNormal, linkAction: descriptionLinkAction)
                     .accessibility(.dialogDescription)
             }
+
+            content
 
             VStack(spacing: .xSmall) {
                 buttons
@@ -36,7 +39,7 @@ public struct Dialog: View {
         .elevation(.level4, shape: .roundedRectangle(borderRadius: .small))
         .padding(.xLarge)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.inkDark.opacity(0.45).edgesIgnoringSafeArea(.all))
+        .background(Color.overlay.edgesIgnoringSafeArea(.all))
         .accessibilityElement(children: .contain)
     }
 
@@ -59,9 +62,7 @@ public struct Dialog: View {
         }
 
         switch buttonConfiguration {
-            case .primary:
-                EmptyView()
-            case .primaryAndSecondary:
+            case .primary, .primaryAndSecondary:
                 EmptyView()
             case .primarySecondaryAndTertiary(_, _, let tertiaryButton):
                 ButtonLink(tertiaryButton.label, style: style.buttonLinkStyle, size: .button, action: tertiaryButton.action)
@@ -83,15 +84,17 @@ extension Dialog {
         title: String = "",
         description: String = "",
         style: Style = .primary,
-        alignment: HorizontalAlignment = .leading,
-        buttons: Buttons
+        buttons: Buttons,
+        descriptionLinkAction: @escaping TextLink.Action = { _, _ in },
+        @ViewBuilder content: () -> Content = { EmptyView() }
     ) {
         self.illustration = illustration
         self.title = title
         self.description = description
         self.style = style
-        self.alignment = alignment
         self.buttonConfiguration = buttons
+        self.descriptionLinkAction = descriptionLinkAction
+        self.content = content()
     }
 }
 
@@ -141,7 +144,7 @@ struct DialogPreviews: PreviewProvider {
     static let title2 = "Do you really want to delete your account?"
 
     static let description1 = "Notifications may include alerts, sounds, and icon badges."
-        + "These can be configured in Settings"
+        + "These can be configured in <applink1>Settings</applink1>"
     static let description2 = "This action is irreversible, once you delete your account, it's gone."
         + " It will not affect any bookings in progress."
     
@@ -153,32 +156,21 @@ struct DialogPreviews: PreviewProvider {
     }
 
     @ViewBuilder static var content: some View {
-        normal
-        centered
+        standalone
         critical
         titleOnly
         descriptionOnly
     }
 
-    static var normal: some View {
+    static var standalone: some View {
         Dialog(
             illustration: .noNotification,
             title: title1,
             description: description1,
             buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
-        )
-        .previewDisplayName()
-    }
-
-    static var centered: some View {
-        Dialog(
-            illustration: .noNotification,
-            title: title1,
-            description: description1,
-            alignment: .center,
-            buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
-        )
-        .background(Color.whiteNormal)
+        ) {
+            contentPlaceholder
+        }
         .previewDisplayName()
     }
 
@@ -210,7 +202,7 @@ struct DialogPreviews: PreviewProvider {
     }
 
     static var snapshot: some View {
-        normal
+        standalone
             .background(Color.whiteNormal)
     }
 }

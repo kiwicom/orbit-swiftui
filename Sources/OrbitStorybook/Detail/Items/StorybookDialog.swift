@@ -7,14 +7,13 @@ struct StorybookDialog {
     static let title2 = "Do you really want to delete your account?"
 
     static let description1 = "Notifications may include alerts, sounds, and icon badges."
-        + "These can be configured in Settings"
+        + "These can be configured in <applink1>Settings</applink1>"
     static let description2 = "This action is irreversible, once you delete your account, it's gone."
         + " It will not affect any bookings in progress."
 
     static var basic: some View {
         VStack(spacing: 0) {
             normal
-            centered
             critical
             titleOnly
             descriptionOnly
@@ -28,18 +27,9 @@ struct StorybookDialog {
             title: title1,
             description: description1,
             buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
-        )
-    }
-
-    static var centered: some View {
-        Dialog(
-            illustration: .noNotification,
-            title: title1,
-            description: description1,
-            alignment: .center,
-            buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
-        )
-        .background(Color.whiteNormal)
+        ) {
+            contentPlaceholder
+        }
     }
 
     static var critical: some View {
@@ -72,6 +62,7 @@ struct StorybookDialogPreviews: PreviewProvider {
     static var previews: some View {
         OrbitPreviewWrapper {
             StorybookDialog.basic
+            StorybookDialog.normal
         }
     }
 }
