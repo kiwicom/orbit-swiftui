@@ -46,7 +46,7 @@ public struct TileBorderModifier: ViewModifier {
 
     @ViewBuilder var compactSeparatorBorder: some View {
         borderColor
-            .frame(height: status == nil ? 1 : BorderWidth.emphasis)
+            .frame(height: status == nil ? 1 : BorderWidth.active)
     }
 
     @ViewBuilder var clipShape: some InsettableShape {
@@ -81,15 +81,9 @@ public struct TileBorderModifier: ViewModifier {
     }
 
     var borderWidth: CGFloat {
-        if isSelected {
-            return BorderWidth.selection
-        }
-
-        if status != nil {
-            return BorderWidth.emphasis
-        }
-        
-        return 1
+        isSelected || status != nil
+            ? BorderWidth.active
+            : 1
     }
 
     var borderColor: Color {

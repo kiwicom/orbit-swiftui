@@ -6,6 +6,8 @@ import SwiftUI
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Select: View {
 
+    let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
+
     @Environment(\.isEnabled) var isEnabled: Bool
 
     @Binding var messageHeight: CGFloat
@@ -37,7 +39,13 @@ public struct Select: View {
                     action()
                 },
                 label: {
-                    buttonLabel
+                    HStack(spacing: 0) {
+                        buttonLabel
+                            .padding(.leading, leadingPadding)
+                            .padding(.vertical, verticalTextPadding)
+
+                        TextStrut()
+                    }
                 }
             )
             .buttonStyle(
@@ -59,14 +67,9 @@ public struct Select: View {
     }
 
     @ViewBuilder var buttonLabel: some View {
-        if inputLabel.isEmpty {
-            Color.clear
-                .frame(height: Text.Size.normal.lineHeight)
-        } else {
-            Text(inputLabel, color: .none)
-                .foregroundColor(textColor)
-                .accessibility(.selectValue)
-        }
+        Text(inputLabel, color: .none)
+            .foregroundColor(textColor)
+            .accessibility(.selectValue)
     }
 
     var inputLabel: String {
@@ -85,6 +88,10 @@ public struct Select: View {
 
     var messageDescription: String {
         message?.description ?? ""
+    }
+
+    var leadingPadding: CGFloat {
+        prefix.isEmpty ? .small : 0
     }
 }
 
@@ -160,6 +167,7 @@ struct SelectPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .small) {
             Group {
                 select("", value: "")
+                select("", value: "Value with a very long value")
                 select("", value: "Value", prefix: .none, suffix: .none)
                 select("", value: nil, prefix: .none, suffix: .none)
                 select("", value: nil, placeholder: "", prefix: .none, suffix: .none)

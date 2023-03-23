@@ -24,8 +24,6 @@ struct InputContent<Content: View>: View {
             prefixIcon
 
             content
-                .lineLimit(1)
-                .padding(.leading, prefix.isEmpty ? .small : 0)
 
             if idealSize.horizontal == nil {
                 Spacer(minLength: 0)
@@ -43,12 +41,11 @@ struct InputContent<Content: View>: View {
                 .padding(.vertical, verticalPadding)
         }
         .foregroundColor(isEnabled ? state.textColor : .cloudDarkActive)
-        .background(backgroundColor(isPressed: isPressed).animation(.default, value: message))
-        .cornerRadius(BorderRadius.default)
-        .overlay(
-            RoundedRectangle(cornerRadius: BorderRadius.default)
-                .strokeBorder(outlineColor(isPressed: isPressed), lineWidth: BorderWidth.emphasis)
+        .background(
+            backgroundColor(isPressed: isPressed).animation(.default, value: message)
         )
+        .cornerRadius(BorderRadius.default)
+        .overlay(border)
     }
 
     @ViewBuilder var prefixIcon: some View {
@@ -67,6 +64,11 @@ struct InputContent<Content: View>: View {
             .contentShape(Rectangle())
             .accessibility(suffixAccessibilityID)
     }
+
+    @ViewBuilder var border: some View {
+        RoundedRectangle(cornerRadius: BorderRadius.default)
+            .strokeBorder(outlineColor(isPressed: isPressed), lineWidth: BorderWidth.active)
+    }
     
     private func backgroundColor(isPressed: Bool) -> Color {
         if isEnabled == false {
@@ -77,7 +79,7 @@ struct InputContent<Content: View>: View {
             case (.default, true):      return .cloudNormalHover
             case (.default, false):     return .cloudNormal
             case (.modified, true):     return .blueLight
-            case (.modified, false):    return .blueLight.opacity(0.7)
+            case (.modified, false):    return .blueLightHover
         }
     }
 
@@ -110,7 +112,7 @@ struct InputContent<Content: View>: View {
             case (.help, _, _):         return .blueNormal
             case (_, .modified, _):     return .blueDark
             case (_, .default, true):   return .blueNormal
-            default:                    return backgroundColor(isPressed: isPressed)
+            default:                    return .clear
         }
     }
 }
@@ -142,12 +144,22 @@ struct InputContentPreviews: PreviewProvider {
                     Text("InputContent")
                 }
 
-                InputContent {
-                    Text("InputContent")
+                InputContent(state: .modified) {
+                    Text("InputContent with a\nvery long value")
+                        .padding(.leading, .small)
+                        .padding(.vertical, .small)
                 }
 
                 InputContent(prefix: .grid) {
                     EmptyView()
+                }
+
+                InputContent {
+                    contentPlaceholder
+                }
+
+                InputContent(message: .error("")) {
+                    contentPlaceholder
                 }
 
                 InputContent {

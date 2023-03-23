@@ -71,6 +71,8 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                     compactLabel
 
                     input
+                        .lineLimit(1)
+                        .padding(.leading, leadingPadding)
                         .textFieldStyle(TextFieldStyle(leadingPadding: 0))
                         .autocapitalization(autocapitalization)
                         .disableAutocorrection(isAutocompleteEnabled == false)
@@ -112,6 +114,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     @ViewBuilder var textFieldPlaceholder: some View {
         if showPlaceholder {
             Text(placeholder, color: .none)
+                .padding(.leading, leadingPadding)
                 .foregroundColor(isEnabled ? state.placeholderColor : .cloudDarkActive)
         }
     }
@@ -119,6 +122,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     @ViewBuilder var compactLabel: some View {
         if style == .compact {
             Text(label, color: .custom(compactLabelColor), weight: .medium)
+                .padding(.leading, prefix.isEmpty ? .small : 0)
         }
     }
 
@@ -157,7 +161,6 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
             onEditingChanged: onEditingChanged,
             onCommit: onCommit
         )
-        .background(textFieldPlaceholder, alignment: .leading)
     }
 
     @ViewBuilder func textField(
@@ -205,6 +208,10 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
 
     var showPlaceholder: Bool {
         value.description.isEmpty
+    }
+
+    var leadingPadding: CGFloat {
+        prefix.isEmpty && style == .default ? .small : 0
     }
 }
 
