@@ -161,7 +161,6 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
             onEditingChanged: onEditingChanged,
             onCommit: onCommit
         )
-        .background(textFieldPlaceholder, alignment: .leading)
     }
 
     @ViewBuilder func textField(
