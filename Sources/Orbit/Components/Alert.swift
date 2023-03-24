@@ -37,7 +37,6 @@ public struct Alert<Content: View>: View {
     let buttons: AlertButtons
     let status: Status
     let isSuppressed: Bool
-    let descriptionLinkAction: TextLink.Action
     @ViewBuilder let customContent: Content
 
     public var body: some View {
@@ -85,7 +84,7 @@ public struct Alert<Content: View>: View {
         if title.isEmpty == false || description.isEmpty == false {
             VStack(alignment: .leading, spacing: .xxSmall) {
                 titleView
-                Text(description, linkColor: .secondary, linkAction: descriptionLinkAction)
+                Text(description, linkColor: .secondary)
                     .accessibility(.alertDescription)
             }
         }
@@ -224,7 +223,6 @@ public extension Alert {
         buttons: AlertButtons = .none,
         status: Status = .info,
         isSuppressed: Bool = false,
-        descriptionLinkAction: @escaping TextLink.Action = { _, _ in },
         @ViewBuilder content: () -> Content
     ) {
         self.title = title
@@ -234,7 +232,6 @@ public extension Alert {
         self.status = status
         self.isSuppressed = isSuppressed
         self.style = .default
-        self.descriptionLinkAction = descriptionLinkAction
         self.customContent = content()
     }
     
@@ -245,8 +242,7 @@ public extension Alert {
         icon: Icon.Content = .none,
         buttons: AlertButtons = .none,
         status: Status = .info,
-        isSuppressed: Bool = false,
-        descriptionLinkAction: @escaping TextLink.Action = { _, _ in }
+        isSuppressed: Bool = false
     ) where Content == EmptyView {
         self.init(
             title,
@@ -255,7 +251,6 @@ public extension Alert {
             buttons: buttons,
             status: status,
             isSuppressed: isSuppressed,
-            descriptionLinkAction: descriptionLinkAction,
             content: { EmptyView() }
         )
     }
@@ -275,7 +270,6 @@ public extension Alert {
         self.status = status
         self.isSuppressed = isSuppressed
         self.style = .inline
-        self.descriptionLinkAction = { _, _ in }
         self.customContent = EmptyView()
     }
 }

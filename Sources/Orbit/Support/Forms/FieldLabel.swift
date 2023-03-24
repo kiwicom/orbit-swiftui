@@ -6,10 +6,9 @@ public struct FieldLabel: View {
     let label: String
     let accentColor: UIColor?
     let linkColor: TextLink.Color
-    let linkAction: TextLink.Action
 
     public var body: some View {
-        Text(label, size: .normal, weight: .medium, accentColor: accentColor, linkColor: linkColor, linkAction: linkAction)
+        Text(label, size: .normal, weight: .medium, accentColor: accentColor, linkColor: linkColor)
             .accessibility(.fieldLabel)
     }
 
@@ -17,13 +16,11 @@ public struct FieldLabel: View {
     public init(
         _ label: String,
         accentColor: UIColor? = nil,
-        linkColor: TextLink.Color = .primary,
-        linkAction: @escaping TextLink.Action = { _, _ in }
+        linkColor: TextLink.Color = .primary
     ) {
         self.label = label
         self.accentColor = accentColor
         self.linkColor = linkColor
-        self.linkAction = linkAction
     }
 }
 

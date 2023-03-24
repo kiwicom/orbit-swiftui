@@ -21,7 +21,6 @@ public struct Text: View {
     let isSelectable: Bool
     let strikethrough: Bool
     let kerning: CGFloat
-    let linkAction: TextLink.Action
 
     public var body: some View {
         if content.isEmpty == false {
@@ -41,10 +40,7 @@ public struct Text: View {
         if content.containsTextLinks {
             GeometryReader { geometry in
                 // TextLink has embedded accessibility and exposes full text including separate link elements
-                TextLink(content: textWithOnlyTextLinksVisible, bounds: geometry.size, color: linkColor) { url, text in
-                    HapticsProvider.sendHapticFeedback(.light(0.5))
-                    linkAction(url, text)
-                }
+                TextLink(content: textWithOnlyTextLinksVisible, bounds: geometry.size, color: linkColor)
             }
         }
     }
@@ -161,10 +157,9 @@ public extension Text {
     ///   - alignment: Horizontal multi-line alignment.
     ///   - accentColor: Color for `<ref>` formatting tag.
     ///   - linkColor: Color for `<a href>` and `<applink>` formatting tag.
-    ///   - linkAction: Handler for any detected TextLink tap action.
     ///   - isSelectable: Determines if text is copyable using long tap gesture.
-    ///   - kerning: Additional spacing between characters.
     ///   - strikethrough: Determines if strikethrough should be applied.
+    ///   - kerning: Additional spacing between characters.
     init(
         _ content: String,
         size: Size = .normal,
@@ -176,8 +171,7 @@ public extension Text {
         linkColor: TextLink.Color = .primary,
         isSelectable: Bool = false,
         strikethrough: Bool = false,
-        kerning: CGFloat = 0,
-        linkAction: @escaping TextLink.Action = { _, _ in }
+        kerning: CGFloat = 0
     ) {
         self.content = content
         self.size = size
@@ -190,7 +184,6 @@ public extension Text {
         self.isSelectable = isSelectable
         self.strikethrough = strikethrough
         self.kerning = kerning
-        self.linkAction = linkAction
     }
 }
 

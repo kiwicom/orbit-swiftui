@@ -58,7 +58,6 @@ public extension FieldWrapper where Label == FieldLabel {
         _ label: String,
         labelAccentColor: UIColor? = nil,
         labelLinkColor: TextLink.Color = .primary,
-        labelLinkAction: @escaping TextLink.Action = { _, _ in },
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content,
@@ -69,7 +68,7 @@ public extension FieldWrapper where Label == FieldLabel {
             messageHeight: messageHeight,
             content: content,
             label: {
-                FieldLabel(label, accentColor: labelAccentColor, linkColor: labelLinkColor, linkAction: labelLinkAction)
+                FieldLabel(label, accentColor: labelAccentColor, linkColor: labelLinkColor)
             },
             footer: footer
         )

@@ -18,14 +18,13 @@ public struct ListItem: View {
     let size: Text.Size
     let spacing: CGFloat
     let style: ListItem.Style
-    let linkAction: TextLink.Action
 
     public var body: some View {
         HStack(alignment: alignment, spacing: spacing) {
             icon
                 .frame(width: dynamicIconSize, height: dynamicIconSize)
 
-            Text(text, size: size, color: nil, weight: style.weight, linkColor: style.linkColor, linkAction: linkAction)
+            Text(text, size: size, color: nil, weight: style.weight, linkColor: style.linkColor)
         }
         .padding(.leading, Self.defaultSpacing - spacing)
         .foregroundColor(style.textColor.value)
@@ -58,8 +57,7 @@ public extension ListItem {
         size: Text.Size = .normal,
         iconSize: Icon.Size? = nil,
         spacing: CGFloat = .xSmall,
-        style: ListItem.Style = .primary,
-        linkAction: @escaping TextLink.Action = { _, _ in }
+        style: ListItem.Style = .primary
     ) {
         self.text = text
         self.iconContent = icon
@@ -67,7 +65,6 @@ public extension ListItem {
         self.iconSize = iconSize
         self.spacing = spacing
         self.style = style
-        self.linkAction = linkAction
     }
 
     /// Creates Orbit ListItem component with default appearance, using the `circleSmall` icon.
@@ -75,8 +72,7 @@ public extension ListItem {
         _ text: String = "",
         size: Text.Size = .normal,
         spacing: CGFloat = .xxxSmall,
-        style: ListItem.Style = .primary,
-        linkAction: @escaping TextLink.Action = { _, _ in }
+        style: ListItem.Style = .primary
     ) {
         self.init(
             text,
@@ -84,8 +80,7 @@ public extension ListItem {
             size: size,
             iconSize: .custom(size.value),
             spacing: spacing,
-            style: style,
-            linkAction: linkAction
+            style: style
         )
     }
 }

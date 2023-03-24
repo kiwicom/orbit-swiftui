@@ -31,7 +31,6 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     var label: String = ""
     var labelAccentColor: UIColor? = nil
     var labelLinkColor: TextLink.Color = .primary
-    var labelLinkAction: TextLink.Action = { _, _ in }
     @Binding var value: Value
     var prefix: Icon.Content = .none
     var suffix: Icon.Content = .none
@@ -53,7 +52,6 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
             fieldLabel,
             labelAccentColor: labelAccentColor,
             labelLinkColor: labelLinkColor,
-            labelLinkAction: labelLinkAction,
             message: message,
             messageHeight: $messageHeight
         ) {
@@ -227,7 +225,6 @@ public extension InputField {
         _ label: String = "",
         labelAccentColor: UIColor? = nil,
         labelLinkColor: TextLink.Color = .primary,
-        labelLinkAction: @escaping TextLink.Action = { _, _ in },
         value: Binding<Value>,
         prefix: Icon.Content = .none,
         suffix: Icon.Content = .none,
@@ -250,7 +247,6 @@ public extension InputField {
             label: label,
             labelAccentColor: labelAccentColor,
             labelLinkColor: labelLinkColor,
-            labelLinkAction: labelLinkAction,
             value: value,
             prefix: prefix,
             suffix: suffix,
@@ -284,7 +280,6 @@ public extension InputField {
         _ label: String = "",
         labelAccentColor: UIColor? = nil,
         labelLinkColor: TextLink.Color = .primary,
-        labelLinkAction: @escaping TextLink.Action = { _, _ in },
         value: Binding<Value>,
         prefix: Icon.Content = .none,
         suffix: Icon.Content = .none,
@@ -304,7 +299,6 @@ public extension InputField {
             label: label,
             labelAccentColor: labelAccentColor,
             labelLinkColor: labelLinkColor,
-            labelLinkAction: labelLinkAction,
             value: value,
             prefix: prefix,
             suffix: suffix,
@@ -473,7 +467,6 @@ struct InputFieldPreviews: PreviewProvider {
         _ label: String = label,
         labelAccentColor: UIColor? = nil,
         labelLinkColor: TextLink.Color = .primary,
-        labelLinkAction: @escaping TextLink.Action = { _, _ in },
         value: String = value,
         prefix: Icon.Content = .grid,
         suffix: Icon.Content = .grid,
@@ -489,7 +482,6 @@ struct InputFieldPreviews: PreviewProvider {
                 label,
                 labelAccentColor: labelAccentColor,
                 labelLinkColor: labelLinkColor,
-                labelLinkAction: labelLinkAction,
                 value: value,
                 prefix: prefix,
                 suffix: suffix,

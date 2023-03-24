@@ -22,10 +22,11 @@ struct StorybookTextLink {
     static var live: some View {
         StateWrapper((0, "")) { state in
             VStack(spacing: .xLarge) {
-                Text("Text containing <a href=\"...\">Some TextLink</a> and <a href=\"...\">Another TextLink</a>") { link, text in
-                    state.wrappedValue.0 += 1
-                    state.wrappedValue.1 = text
-                }
+                Text("Text containing <a href=\"...\">Some TextLink</a> and <a href=\"...\">Another TextLink</a>")
+                    .textLinkAction {
+                        state.wrappedValue.0 += 1
+                        state.wrappedValue.1 = $1
+                    }
 
                 ButtonLink("ButtonLink") {
                     state.wrappedValue.0 += 1
