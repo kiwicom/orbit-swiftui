@@ -148,15 +148,15 @@ struct TextLinkPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .large) {
             Text(link("Primary link"))
             Text(link("Secondary link"))
-                .textLink(color: .secondary)
+                .textLinkColor(.secondary)
             Text(link("Info link"))
-                .textLink(color: .status(.info))
+                .textLinkColor(.status(.info))
             Text(link("Success link"))
-                .textLink(color: .status(.success))
+                .textLinkColor(.status(.success))
             Text(link("Warning link"))
-                .textLink(color: .status(.warning))
+                .textLinkColor(.status(.warning))
             Text(link("Critical link"))
-                .textLink(color: .status(.critical))
+                .textLinkColor(.status(.critical))
         }
         .previewDisplayName()
     }

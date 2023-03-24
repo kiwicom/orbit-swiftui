@@ -30,7 +30,6 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
 
     var label: String = ""
     var labelAccentColor: UIColor? = nil
-    var labelLinkColor: TextLink.Color = .primary
     @Binding var value: Value
     var prefix: Icon.Content = .none
     var suffix: Icon.Content = .none
@@ -51,7 +50,6 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
         FieldWrapper(
             fieldLabel,
             labelAccentColor: labelAccentColor,
-            labelLinkColor: labelLinkColor,
             message: message,
             messageHeight: $messageHeight
         ) {
@@ -224,7 +222,6 @@ public extension InputField {
     init(
         _ label: String = "",
         labelAccentColor: UIColor? = nil,
-        labelLinkColor: TextLink.Color = .primary,
         value: Binding<Value>,
         prefix: Icon.Content = .none,
         suffix: Icon.Content = .none,
@@ -246,7 +243,6 @@ public extension InputField {
         self.init(
             label: label,
             labelAccentColor: labelAccentColor,
-            labelLinkColor: labelLinkColor,
             value: value,
             prefix: prefix,
             suffix: suffix,
@@ -279,7 +275,6 @@ public extension InputField {
     init(
         _ label: String = "",
         labelAccentColor: UIColor? = nil,
-        labelLinkColor: TextLink.Color = .primary,
         value: Binding<Value>,
         prefix: Icon.Content = .none,
         suffix: Icon.Content = .none,
@@ -298,7 +293,6 @@ public extension InputField {
         self.init(
             label: label,
             labelAccentColor: labelAccentColor,
-            labelLinkColor: labelLinkColor,
             value: value,
             prefix: prefix,
             suffix: suffix,
@@ -448,10 +442,11 @@ struct InputFieldPreviews: PreviewProvider {
             inputField(
                 FieldLabelPreviews.longLabel,
                 labelAccentColor: .orangeNormal,
-                labelLinkColor: .status(.critical),
                 value: longValue,
                 message: .error(longErrorMessage)
             )
+            .textLinkColor(.status(.critical))
+            
             inputField("Compact", style: .compact)
 
             HStack(spacing: .medium) {
@@ -466,7 +461,6 @@ struct InputFieldPreviews: PreviewProvider {
     static func inputField(
         _ label: String = label,
         labelAccentColor: UIColor? = nil,
-        labelLinkColor: TextLink.Color = .primary,
         value: String = value,
         prefix: Icon.Content = .grid,
         suffix: Icon.Content = .grid,
@@ -481,7 +475,6 @@ struct InputFieldPreviews: PreviewProvider {
             InputField(
                 label,
                 labelAccentColor: labelAccentColor,
-                labelLinkColor: labelLinkColor,
                 value: value,
                 prefix: prefix,
                 suffix: suffix,

@@ -25,9 +25,9 @@ public struct BadgeList: View {
                     label,
                     size: size.textSize,
                     color: .custom(labelColor.color),
-                    accentColor: style.iconColor,
-                    linkColor: .custom(labelColor.color)
+                    accentColor: style.iconColor
                 )
+                .textLinkColor(.custom(labelColor.color))
             }
         }
     }

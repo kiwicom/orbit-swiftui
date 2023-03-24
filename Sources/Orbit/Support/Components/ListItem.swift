@@ -24,7 +24,7 @@ public struct ListItem: View {
             icon
                 .frame(width: dynamicIconSize, height: dynamicIconSize)
 
-            Text(text, size: size, color: nil, weight: style.weight, linkColor: style.linkColor)
+            Text(text, size: size, color: nil, weight: style.weight)
         }
         .padding(.leading, Self.defaultSpacing - spacing)
         .foregroundColor(style.textColor.value)
@@ -91,29 +91,21 @@ public extension ListItem {
     enum Style {
         case primary
         case secondary
-        case custom(color: UIColor = .inkDark, linkColor: TextLink.Color = .primary, weight: Font.Weight = .regular)
+        case custom(color: UIColor = .inkDark, weight: Font.Weight = .regular)
 
         public var textColor: Text.Color {
             switch self {
-                case .primary:                      return .inkDark
-                case .secondary:                    return .inkNormal
-                case .custom(let color, _, _):      return .custom(color)
-            }
-        }
-        
-        public var linkColor: TextLink.Color {
-            switch self {
-                case .primary:                      return .primary
-                case .secondary:                    return .primary
-                case .custom(_, let linkColor, _):  return linkColor
+                case .primary:                  return .inkDark
+                case .secondary:                return .inkNormal
+                case .custom(let color, _):     return .custom(color)
             }
         }
         
         public var weight: Font.Weight {
             switch self {
-                case .primary:                      return .regular
-                case .secondary:                    return .regular
-                case .custom(_, _, let weight):     return weight
+                case .primary:                  return .regular
+                case .secondary:                return .regular
+                case .custom(_, let weight):    return weight
             }
         }
     }
@@ -154,7 +146,8 @@ struct ListItemPreviews: PreviewProvider {
         List {
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, size: .small, style: .secondary)
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#)
-            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, style: .custom(color: .greenNormal, linkColor: .custom(.orangeDark)))
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, style: .custom(color: .greenNormal))
+                .textLinkColor(.custom(.orangeDark))
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, icon: .symbol(.circleSmall, color: .blueNormal), style: .custom(color: .greenNormal))
         }
         .padding(.medium)

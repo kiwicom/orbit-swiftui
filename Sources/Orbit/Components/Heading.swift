@@ -13,7 +13,6 @@ public struct Heading: View {
     let lineSpacing: CGFloat?
     let alignment: TextAlignment
     let accentColor: UIColor
-    let linkColor: TextLink.Color
     let isSelectable: Bool
     let strikethrough: Bool
     let kerning: CGFloat
@@ -32,7 +31,6 @@ public struct Heading: View {
             lineSpacing: lineSpacing,
             alignment: alignment,
             accentColor: accentColor,
-            linkColor: linkColor,
             isSelectable: isSelectable,
             strikethrough: strikethrough,
             kerning: kerning
@@ -57,7 +55,6 @@ public extension Heading {
     ///   - lineSpacing: Distance in points between the bottom of one line fragment and the top of the next.
     ///   - alignment: Horizontal multi-line alignment.
     ///   - accentColor: Color for `<ref>` formatting tag.
-    ///   - linkColor: Color for `<a href>` and `<applink>` formatting tag.
     ///   - isSelectable: Determines if text is copyable using long tap gesture.
     ///   - strikethrough: Determines if strikethrough should be applied.
     ///   - kerning: Additional spacing between characters.
@@ -68,7 +65,6 @@ public extension Heading {
         lineSpacing: CGFloat? = nil,
         alignment: TextAlignment = .leading,
         accentColor: UIColor? = nil,
-        linkColor: TextLink.Color = .primary,
         isSelectable: Bool = false,
         strikethrough: Bool = false,
         kerning: CGFloat = 0
@@ -79,7 +75,6 @@ public extension Heading {
         self.lineSpacing = lineSpacing
         self.alignment = alignment
         self.accentColor = accentColor ?? color?.uiValue ?? .inkDark
-        self.linkColor = linkColor
         self.isSelectable = isSelectable
         self.strikethrough = strikethrough
         self.kerning = kerning

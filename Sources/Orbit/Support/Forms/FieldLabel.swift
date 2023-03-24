@@ -5,22 +5,19 @@ public struct FieldLabel: View {
 
     let label: String
     let accentColor: UIColor?
-    let linkColor: TextLink.Color
 
     public var body: some View {
-        Text(label, size: .normal, weight: .medium, accentColor: accentColor, linkColor: linkColor)
+        Text(label, size: .normal, weight: .medium, accentColor: accentColor)
             .accessibility(.fieldLabel)
     }
 
     /// Create Orbit form field label.
     public init(
         _ label: String,
-        accentColor: UIColor? = nil,
-        linkColor: TextLink.Color = .primary
+        accentColor: UIColor? = nil
     ) {
         self.label = label
         self.accentColor = accentColor
-        self.linkColor = linkColor
     }
 }
 
@@ -41,7 +38,8 @@ struct FieldLabelPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             FieldLabel("Form Field Label")
-            FieldLabel(longLabel, accentColor: .orangeNormal, linkColor: .status(.critical))
+            FieldLabel(longLabel, accentColor: .orangeNormal)
+                .textLinkColor(.status(.critical))
         }
         .previewLayout(.sizeThatFits)
     }

@@ -5,12 +5,17 @@ struct StorybookTextLink {
 
     static var basic: some View {
         VStack(alignment: .leading, spacing: .large) {
-            Text(link("Primary link"), linkColor: .primary)
-            Text(link("Secondary link"), linkColor: .secondary)
-            Text(link("Info link"), linkColor: .status(.info))
-            Text(link("Success link"), linkColor: .status(.success))
-            Text(link("Warning link"), linkColor: .status(.warning))
-            Text(link("Critical link"), linkColor: .status(.critical))
+            Text(link("Primary link"))
+            Text(link("Secondary link"))
+                .textLinkColor(.secondary)
+            Text(link("Info link"))
+                .textLinkColor(.status(.info))
+            Text(link("Success link"))
+                .textLinkColor(.status(.success))
+            Text(link("Warning link"))
+                .textLinkColor(.status(.warning))
+            Text(link("Critical link"))
+                .textLinkColor(.status(.critical))
         }
         .previewDisplayName()
     }

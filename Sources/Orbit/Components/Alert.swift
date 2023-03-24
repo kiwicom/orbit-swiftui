@@ -84,7 +84,8 @@ public struct Alert<Content: View>: View {
         if title.isEmpty == false || description.isEmpty == false {
             VStack(alignment: .leading, spacing: .xxSmall) {
                 titleView
-                Text(description, linkColor: .secondary)
+                Text(description)
+                    .textLinkColor(.secondary)
                     .accessibility(.alertDescription)
             }
         }

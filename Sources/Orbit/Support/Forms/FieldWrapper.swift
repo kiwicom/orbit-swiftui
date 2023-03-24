@@ -57,7 +57,6 @@ public extension FieldWrapper where Label == FieldLabel {
     init(
         _ label: String,
         labelAccentColor: UIColor? = nil,
-        labelLinkColor: TextLink.Color = .primary,
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content,
@@ -68,7 +67,7 @@ public extension FieldWrapper where Label == FieldLabel {
             messageHeight: messageHeight,
             content: content,
             label: {
-                FieldLabel(label, accentColor: labelAccentColor, linkColor: labelLinkColor)
+                FieldLabel(label, accentColor: labelAccentColor)
             },
             footer: footer
         )
@@ -91,7 +90,8 @@ struct FieldWrapperPreviews: PreviewProvider {
             FieldWrapper {
                 contentPlaceholder
             } label: {
-                FieldLabel("Form Field Label with <ref>accent</ref> and <applink1>TextLink</applink1>", accentColor: .orangeNormal, linkColor: .status(.info))
+                FieldLabel("Form Field Label with <ref>accent</ref> and <applink1>TextLink</applink1>", accentColor: .orangeNormal)
+                    .textLinkColor(.status(.info))
             }
 
             FieldWrapper("", message: .none) {

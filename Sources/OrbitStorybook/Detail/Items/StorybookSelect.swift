@@ -72,12 +72,12 @@ struct StorybookSelect {
                 Select(
                     fieldLongLabel,
                     labelAccentColor: .orangeNormal,
-                    labelLinkColor: .status(.critical),
                     prefix: .image(.orbit(.google)),
                     value: "Bad Value with a very long text that should overflow",
                     message: .error("Error message, but also very long and multi-line to test that it works."),
                     action: {}
                 )
+                .textLinkColor(.status(.critical))
             }
         }
         .previewDisplayName()
