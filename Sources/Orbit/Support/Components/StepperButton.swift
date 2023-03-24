@@ -3,10 +3,10 @@ import SwiftUI
 /// An icon-based stepper button for suitable for actions inside components like `Stepper`.
 public struct StepperButton: View {
 
+    @Environment(\.isEnabled) var isEnabled
     @Environment(\.sizeCategory) var sizeCategory
 
-    let isIncrement: Bool
-    let isEnabled: Bool
+    let icon: Icon.Symbol
     let style: Stepper.Style
     let action: () -> Void
     
@@ -15,12 +15,7 @@ public struct StepperButton: View {
             Icon(icon, color: color)
         }
         .frame(width: size, height: size)
-        .buttonStyle(OrbitStyle(isEnabled: isEnabled, style: style))
-        .disabled(!isEnabled)
-    }
-    
-    var icon: Icon.Symbol {
-        isIncrement ? .plus : .minus
+        .buttonStyle(OrbitStyle(style: style))
     }
 
     var color: Color {
@@ -30,26 +25,29 @@ public struct StepperButton: View {
     var size: CGFloat {
         .xxLarge * sizeCategory.controlRatio
     }
+}
 
+// MARK: - Inits
+extension StepperButton {
+
+    /// Creates Orbit StepperButton component used in a Stepper.
     public init(
-        isIncrement: Bool,
-        isEnabled: Bool = true,
+        _ icon: Icon.Symbol,
         style: Stepper.Style = .primary,
         action: @escaping () -> Void
     ) {
-        self.isIncrement = isIncrement
-        self.isEnabled = isEnabled
+        self.icon = icon
         self.style = style
         self.action = action
     }
 }
 
 // MARK: - Button Style
-
 extension StepperButton {
     
     struct OrbitStyle: ButtonStyle {
-        let isEnabled: Bool
+
+        @Environment(\.isEnabled) var isEnabled
         let style: Stepper.Style
         
         func makeBody(configuration: Configuration) -> some View {
@@ -75,12 +73,34 @@ struct StepperButtonPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            standalone
+            primary
+            primaryDisabled
+            secondary
+            secondaryDisabled
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
-    static var standalone: some View {
-        StepperButton(isIncrement: false) {}
+    static var primary: some View {
+        StepperButton(.plus) {}
+            .previewDisplayName()
+    }
+
+    static var primaryDisabled: some View {
+        StepperButton(.plus) {}
+            .environment(\.isEnabled, false)
+            .previewDisplayName()
+    }
+
+    static var secondary: some View {
+        StepperButton(.plus, style: .secondary) {}
+            .previewDisplayName()
+    }
+
+    static var secondaryDisabled: some View {
+        StepperButton(.plus, style: .secondary) {}
+            .environment(\.isEnabled, false)
+            .previewDisplayName()
     }
 }
