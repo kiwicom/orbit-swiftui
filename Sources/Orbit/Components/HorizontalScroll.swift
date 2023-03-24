@@ -1,19 +1,11 @@
 import SwiftUI
+import Combine
 
 public enum HorizontalScrollItemWidth {
-    /// Each item will use its own intrinsic width.
-    case intrinsic
-    /// Width ratio compared to container width.
-    case ratio(CGFloat = 0.8)
+    /// Width ratio calculated from the available container width.
+    case ratio(CGFloat = 0.48, maxWidth: CGFloat? = Layout.readableMaxWidth - 270)
     /// Custom fixed width.
-    case custom(CGFloat)
-}
-
-public enum HorizontalScrollItemHeight {
-    /// Each item will use its intrinsic height. If the item is expanding vertically, its height will be capped to tallest item.
-    case intrinsic
-    /// Custom fixed height.
-    case custom(CGFloat)
+    case fixed(CGFloat)
 }
 
 /// Groups items onto one accessible row even on small screens.
@@ -23,74 +15,344 @@ public enum HorizontalScrollItemHeight {
 /// - Note: [Orbit definition](https://orbit.kiwi/components/layout/horizontalscroll/)
 public struct HorizontalScroll<Content: View>: View {
 
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.screenLayoutPadding) private var screenLayoutPadding
+    @Environment(\.scrollTarget) private var scrollTarget
+
+    @State private var contentSize: CGSize = .zero
+    @State private var scrollingInProgress = false
+    @State private var idPreferences: [IDPreference] = []
+    @State private var itemCount = 0
+    @State private var scrollViewWidth: CGFloat = 0
+
+    @State private var scrollOffset: CGFloat = 0
+    @State private var lastOffset: CGFloat = 0
+    @State private var lastOffsetDifference: CGFloat?
+    @State private var lastDate: Date?
+    @State private var isAnimating = false
+    @State private var timer = Timer.publish(every: 0.1, on: .current, in: .common)
+
+    // Padding to avoid ScrollView content clipping
+    private let clippingPadding: CGFloat = .medium
+    private let snapAnimationDuration: CGFloat = 0.8
+    private let programaticSnapAnimationDuration: CGFloat = 0.5
+
     let spacing: CGFloat
+    let isSnapping: Bool
     let itemWidth: HorizontalScrollItemWidth
-    let itemHeight: HorizontalScrollItemHeight
-    let maxItemWidth: CGFloat?
-    let minHeight: CGFloat?
-    let horizontalPadding: CGFloat
-    let verticalPadding: CGFloat
     @ViewBuilder let content: Content
 
     public var body: some View {
-        SingleAxisGeometryReader(axis: .horizontal, alignment: .top) { width in
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(alignment: .top, spacing: spacing) {
-                    content
-                        .frame(width: itemWidth(forContentWidth: width), alignment: .leading)
-                        .frame(maxWidth: maxItemWidth, minHeight: minHeight, alignment: .leading)
-                        .frame(height: resolvedItemHeight, alignment: .top)
-                }
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, horizontalPadding)
-                .padding(.vertical, verticalPadding)
+        scrollViewContent
+            .background(availableWidthReader)
+            .frame(height: contentSize.height, alignment: .top)
+            .onPreferenceChange(ScrollViewWidthPreferenceKey.self) {
+                scrollViewWidth = $0
             }
+            .clipped()
+            .padding(-clippingPadding)
+    }
+
+    @ViewBuilder var scrollViewContent: some View {
+        GeometryReader { geometry in
+            HStack(alignment: .top, spacing: spacing) {
+                content
+                    // Adjust item sizes if required
+                    .frame(width: resolvedItemWidth, alignment: .leading)
+            }
+            .onPreferenceChange(ChildCountPreferenceKey.self) {
+                itemCount = $0
+            }
+            .padding(clippingPadding)
+            // Cap height to tallest item and prevent spacing resizing
+            .fixedSize()
+            .disabled(scrollingInProgress || isAnimating)
+            .background(contentHeightReader)
+            .offset(x: scrollOffset)
+            .background(
+                Color.clear
+                    .preference(key: HorizontalScrollOffsetPreferenceKey.self, value: scrollOffset)
+            )
+            .contentShape(Rectangle())
+            .valueChanged(scrollTarget) { scrollTarget in
+                guard let scrollTarget else {
+                    return
+                }
+                scrollTo(id: scrollTarget.id, geometry: geometry, animated: scrollTarget.animated)
+            }
+            .onReceive(timer) { output in
+                guard let lastDate else { return }
+                let animatingTime = output.timeIntervalSince(lastDate)
+                animateOffset(currentTime: animatingTime)
+            }
+            .onPreferenceChange(ContentSizePreferenceKey.self) {
+                contentSize = $0
+            }
+            .onPreferenceChange(IDPreferenceKey.self) {
+                idPreferences = $0
+            }
+            .simultaneousGesture(
+                SimultaneousGesture(scrollingGesture, scrollStoppingGesture)
+            )
         }
     }
 
-    var resolvedItemHeight: CGFloat? {
-        switch itemHeight {
-            case .intrinsic:            return nil
-            case .custom(let height):   return height
+    @ViewBuilder var contentHeightReader: some View {
+        GeometryReader { geometry in
+            Color.clear.preference(
+                key: ContentSizePreferenceKey.self,
+                value: geometry.size
+            )
         }
     }
+
+    @ViewBuilder var availableWidthReader: some View {
+        SingleAxisGeometryReader(axis: .horizontal) { width in
+            Color.clear.preference(key: ScrollViewWidthPreferenceKey.self, value: width)
+        }
+    }
+
+    var screenLayoutHorizontalPadding: CGFloat {
+        guard let screenLayoutPadding = screenLayoutPadding else {
+            return spacing
+        }
+
+        return screenLayoutPadding.horizontal(horizontalSizeClass: horizontalSizeClass)
+    }
+
+    var scrollingGesture: some Gesture {
+        DragGesture(minimumDistance: .xxxSmall)
+            .onChanged { gesture in
+                updateOffset(gesture: gesture)
+            }
+            .onEnded { gesture in
+                gestureEnded(gesture: gesture)
+            }
+    }
+
+    var scrollStoppingGesture: some Gesture {
+        TapGesture()
+            .onEnded {
+                stopSnappingAnimation()
+            }
+    }
+
+    var isContentBiggerThanScrollView: Bool {
+        contentSize.width > scrollViewWidth
+    }
+
+    var maxOffset: CGFloat {
+        -contentSize.width + scrollViewWidth
+    }
+
+    var resolvedItemWidth: CGFloat {
+        switch itemWidth {
+            case .ratio(let ratio, let maxWidth):
+                let ratio = max(0.05, ratio)
+                return min(
+                    max(0, ratio * (scrollViewWidth - (-1 + 1 / ratio) * spacing - screenLayoutHorizontalPadding * 2)),
+                    maxWidth ?? .infinity
+                )
+            case .fixed(let width):
+                return width
+        }
+    }
+
+    private func scrollTo(id: AnyHashable, geometry: GeometryProxy, animated: Bool) {
+        guard let preferenceIndex = idPreferences.firstIndex(where: { $0.id == id }) else {
+            return
+        }
+
+        let itemToScrollTo = idPreferences[preferenceIndex]
+        let minX = geometry[itemToScrollTo.bounds].minX
+        let paddingOffset = preferenceIndex < itemCount - 2 ? screenLayoutHorizontalPadding : 0
+        let offset = offsetInBounds(offset: -minX + scrollOffset) + paddingOffset
+
+        if animated {
+            withAnimation(.easeOut(duration: programaticSnapAnimationDuration)) {
+                scrollOffset = offset
+            }
+        } else {
+            scrollOffset = offset
+        }
+
+        lastOffset = scrollOffset
+    }
+
+    private func animateOffset(currentTime: TimeInterval) {
+        guard let lastOffsetDifference, currentTime < snapAnimationDuration else {
+            return stopSnappingAnimation()
+        }
+
+        let progress = currentTime / snapAnimationDuration
+        let progressWithAnimationCurve = 1 - pow(1 - progress, 3)
+        let translation = lastOffsetDifference * progressWithAnimationCurve
+
+        let currentOffset = translation + lastOffset
+        let maxOffset = -contentSize.width + scrollViewWidth
+        let isContentBiggerThanScrollView = contentSize.width > scrollViewWidth
+
+        guard isContentBiggerThanScrollView else { return }
+
+        if currentOffset > scrollViewWidth / 5 {
+            stopSnappingAnimation()
+        } else if currentOffset < maxOffset - scrollViewWidth / 5 {
+            stopSnappingAnimation()
+        } else {
+            scrollOffset = scrollSnappingOffset(currentOffset: currentOffset)
+        }
+    }
+
+    private func scrollSnappingOffset(currentOffset: CGFloat) -> CGFloat {
+        if currentOffset > 0 {
+            return adjustedSnappingOffsetOverBounds(offsetOverBounds: currentOffset)
+        } else if currentOffset < maxOffset {
+            return maxOffset - adjustedSnappingOffsetOverBounds(offsetOverBounds: abs(currentOffset - maxOffset))
+        } else {
+            return currentOffset
+        }
+    }
+
+    private func stopSnappingAnimation() {
+        withAnimation(.spring()) {
+            scrollOffset = offsetInBounds(offset: scrollOffset)
+        }
+        isAnimating = false
+        timer.connect().cancel()
+        lastOffset = scrollOffset
+    }
+
+    private func updateOffset(gesture: DragGesture.Value) {
+        if scrollingInProgress == false {
+            stopSnappingAnimation()
+        }
+
+        guard isContentBiggerThanScrollView else { return }
+
+        scrollingInProgress = true
+        scrollOffset = scrollSnappingOffset(currentOffset: gesture.translation.width + lastOffset)
+    }
+
+    private func gestureEnded(gesture: DragGesture.Value) {
+        scrollingInProgress = false
+
+        guard isContentBiggerThanScrollView else { return }
+
+        let modifiedOffset = offsetToSnap(gesture: gesture)
+        let offsetDifference = modifiedOffset - gesture.translation.width - lastOffset
+        lastOffsetDifference = offsetDifference
+
+        if let lastDate,
+           Date().timeIntervalSince(lastDate) > snapAnimationDuration,
+           abs(offsetDifference) < resolvedItemWidth {
+            lastOffset = modifiedOffset
+            withAnimation(.spring()) {
+                scrollOffset = offsetInBounds(offset: modifiedOffset)
+            }
+            return
+        }
+
+        lastDate = Date()
+        lastOffset += gesture.translation.width
+        startAnimation()
+    }
+
+    private func offsetToSnap(gesture: DragGesture.Value) -> CGFloat {
+        let expectedOffset = gesture.predictedEndTranslation.width + lastOffset
+        let velocity = gesture.predictedEndLocation.x - gesture.location.x
+
+        let itemWidth = resolvedItemWidth
+        let itemWidthWithSpacing = itemWidth + spacing
+
+        let index = (expectedOffset + itemWidth / 2) / -itemWidthWithSpacing
+        let indexToScrollTo = ceil(index)
+
+        guard isSnapping else {
+            let absVelocity = abs(velocity)
+            let sign: CGFloat = velocity > 0 ? 1 : -1
+            return expectedOffset + sign * max(0, absVelocity - 100) / 2
+        }
+
+        return -(indexToScrollTo * itemWidthWithSpacing)
+    }
+
+    // Reduces the offset acceleration the further the item is from the edge
+    private func adjustedSnappingOffsetOverBounds(offsetOverBounds: CGFloat) -> CGFloat {
+        guard scrollViewWidth != 0 else { return 0 }
+        let normalizedTransition = offsetOverBounds / scrollViewWidth
+        let logValue = log(1 + abs(normalizedTransition))
+        return scrollViewWidth / 2 * logValue
+    }
+
+    private func startAnimation() {
+        timer = Timer.publish(every: 1 / 60, on: .current, in: .common)
+        _ = timer.connect()
+        isAnimating = true
+    }
+
+    private func offsetInBounds(offset: CGFloat) -> CGFloat {
+        min(
+            max(
+                -contentSize.width + scrollViewWidth,
+                offset
+            ),
+            .zero
+        )
+    }
+}
+
+// MARK: - Inits
+public extension HorizontalScroll {
 
     /// Creates Orbit HorizontalScroll component.
+    ///
+    /// Can be scrolled programatically when wrapped inside `HorizontalScrollReader`.
+    ///
     /// - Parameters:
-    ///   - spacing: Spacing between items. Default value is `.small`.
-    ///   - itemWidth: Horizontal sizing style of all items. Default value is `.ratio()`.
-    ///   - itemHeight: Horizontal sizing style of all items. Default value is `.intrinsic`.
-    ///   - maxItemWidth: Maximal item width that caps the result of `itemWidth`.
-    ///                   Default value is derived from ``Layout/readableMaxWidth``.
-    ///   - minHeight: Minimal height of component. Default value is `nil`.
-    ///   - horizontalPadding: Horizontal padding inside the ScrollView. Default value is `.xSmall`.
-    ///   - verticalPadding: Horizontal padding inside the ScrollView. Can be used to fix overlay issues. Default value is `.xSmall`.
+    ///   - isSnapping: Specifies whether the scrolling should snap items to their leading edge.
+    ///   - spacing: Spacing between items.
+    ///   - itemWidth: Horizontal sizing of each item.
     ///   - content: Child items that will be horizontally laid out based on above parameters.
-    public init(
+    init(
+        isSnapping: Bool = true,
         spacing: CGFloat = .small,
         itemWidth: HorizontalScrollItemWidth = .ratio(),
-        itemHeight: HorizontalScrollItemHeight = .intrinsic,
-        maxItemWidth: CGFloat? = Layout.readableMaxWidth - 270,
-        minHeight: CGFloat? = nil,
-        horizontalPadding: CGFloat = .xSmall,
-        verticalPadding: CGFloat = .xSmall,
         @ViewBuilder content: () -> Content
     ) {
+        self.isSnapping = isSnapping
         self.spacing = spacing
         self.itemWidth = itemWidth
-        self.itemHeight = itemHeight
-        self.maxItemWidth = maxItemWidth
-        self.minHeight = minHeight
-        self.horizontalPadding = horizontalPadding
-        self.verticalPadding = verticalPadding
         self.content = content()
     }
+}
 
-    func itemWidth(forContentWidth contentWidth: CGFloat) -> CGFloat? {
-        switch itemWidth {
-            case .ratio(let ratio):     return min(max(0, ratio * contentWidth - 2 * horizontalPadding), maxItemWidth ?? .infinity)
-            case .intrinsic:            return nil
-            case .custom(let width):    return min(width, maxItemWidth ?? .infinity)
+// MARK: - Preference keys
+
+private struct ScrollViewWidthPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = .zero
+    static func reduce(value _: inout CGFloat, nextValue _: () -> CGFloat) { /* Take first value */ }
+}
+
+private struct ContentSizePreferenceKey: PreferenceKey {
+    static var defaultValue: CGSize = .zero
+    static func reduce(value _: inout CGSize, nextValue _: () -> CGSize) { /* Take first value */ }
+}
+
+struct HorizontalScrollOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat?
+
+    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
+        if value != nil {
+            // Allow nested hierarchies by not overwriting the value
+            // in case it is already set
+            return
+        }
+
+        let nextValue = nextValue()
+
+        // Avoid rewriting the value by unrelated component in the hierarchy
+        if nextValue != nil {
+            value = nextValue
         }
     }
 }
@@ -100,224 +362,170 @@ struct HorizontalScrollPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            content
+            ratio
+            fixed
+            fitting
+            insideCards
         }
         .screenLayout()
+        .background(Color.screen)
         .previewLayout(.sizeThatFits)
     }
 
-    @ViewBuilder static var content: some View {
-        simpleSmallRatio
-        simpleCustom
-        ratioWidthIntrinsicHeight
-        smallRatioWidthIntrinsicHeight
-        fullWidthIntrinsicHeight
-        intrinsic
-        custom
-        pagination
-            .previewDisplayName("Live Preview - Pagination")
-    }
+    static var ratio: some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            Heading("Snapping", style: .title4)
 
-    static var simpleSmallRatio: some View {
-        VStack(spacing: .large) {
-            HorizontalScroll(spacing: .large, itemWidth: .ratio(1.01)) {
-                Color.greenLight.frame(height: 10)
-                Color.greenLight.frame(height: 30)
-                Color.greenLight.frame(height: 50)
+            HorizontalScroll {
+                tileVariants
             }
-            .border(Color.cloudDark)
 
-            HorizontalScroll(spacing: .large, itemWidth: .ratio(1)) {
-                Color.greenLight.frame(height: 10)
-                Color.greenLight.frame(height: 30)
-                Color.greenLight.frame(height: 50)
-            }
-            .border(Color.cloudDark)
+            Heading("No snapping", style: .title4)
 
-            HorizontalScroll(spacing: .large, itemWidth: .ratio(0.5)) {
-                Color.greenLight.frame(height: 10)
-                Color.greenLight.frame(height: 30)
-                Color.greenLight.frame(height: 50)
+            HorizontalScroll(isSnapping: false, spacing: .large) {
+                tileVariants
             }
-            .border(Color.cloudDark)
-
-            HorizontalScroll(spacing: .large, itemWidth: .ratio(0.33)) {
-                Color.greenLight.frame(height: 10)
-                Color.greenLight.frame(height: 30)
-                Color.greenLight.frame(height: 50)
-                Color.greenLight.frame(height: 20)
-            }
-            .border(Color.cloudDark)
         }
-        .background(Color.redLight.frame(width: 1).padding(.leading, .xSmall), alignment: .leading)
-        .background(Color.redLight.frame(width: 1).padding(.trailing, .xSmall), alignment: .trailing)
-        .previewDisplayName("W - ratios, H - intrinsic")
+        .previewDisplayName()
     }
 
-    static var simpleCustom: some View {
-        HorizontalScroll(itemWidth: .custom(30), itemHeight: .custom(30)) {
-            Color.greenLight
-            Color.greenLight
-            Color.greenLight
-        }
-        .border(Color.cloudDark)
-        .previewDisplayName("W - custom, H - custom")
-    }
+    static var fixed: some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            Heading("Snapping", style: .title4)
 
-    static var ratioWidthIntrinsicHeight: some View {
-        HorizontalScroll {
-            intrinsicContent
-
-            intrinsicContent {
-                Color.greenLight
-                    .frame(width: 100, height: 150)
+            HorizontalScroll(isSnapping: true, itemWidth: .fixed(180)) {
+                tileVariants
             }
 
-            intrinsicContent
+            Heading("No snapping", style: .title4)
+
+            HorizontalScroll(isSnapping: false, spacing: .medium, itemWidth: .fixed(180)) {
+                tileVariants
+            }
         }
-        .border(Color.cloudDark)
-        .previewDisplayName("W - ratio, H - intrinsic")
+        .previewDisplayName()
     }
 
-    static var smallRatioWidthIntrinsicHeight: some View {
-        HorizontalScroll(itemWidth: .ratio(0.3), itemHeight: .intrinsic) {
-            intrinsicContent {
-                VStack(alignment: .leading) {
-                    Text("Spacer")
-                    Spacer()
-                    contentPlaceholder
+    static var fitting: some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            Heading("Snapping", style: .title4)
+
+            HorizontalScroll(isSnapping: true, itemWidth: .fixed(180)) {
+                tile
+            }
+
+            Heading("No snapping", style: .title4)
+
+            HorizontalScroll(isSnapping: false, spacing: .medium, itemWidth: .fixed(180)) {
+                tile
+            }
+        }
+        .previewDisplayName()
+    }
+
+    static var insideCards: some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            Card("Snapping") {
+                HorizontalScroll(itemWidth: .ratio(0.5)) {
+                    tileVariants
                 }
             }
 
-            intrinsicContent {
-                Color.greenLight
-                    .frame(height: 150)
-            }
-
-            intrinsicContent
-        }
-        .border(Color.cloudDark)
-        .previewDisplayName("W - small ratio, H - intrinsic")
-    }
-
-    static var fullWidthIntrinsicHeight: some View {
-        HorizontalScroll(itemWidth: .ratio(1), itemHeight: .intrinsic) {
-            intrinsicContent
-
-            intrinsicContent {
-                Color.greenLight
-                    .frame(height: 150)
-            }
-
-            intrinsicContent
-        }
-        .border(Color.cloudDark)
-        .previewDisplayName("W - full, H - intrinsic")
-    }
-
-    static var intrinsic: some View {
-        HorizontalScroll(itemWidth: .intrinsic, itemHeight: .intrinsic) {
-            intrinsicContent
-
-            intrinsicContent {
-                Color.greenLight
-                    .frame(width: 100, height: 150)
-            }
-
-            intrinsicContent
-        }
-        .previewDisplayName("W - intrinsic, H - intrinsic")
-    }
-
-    static var custom: some View {
-        HorizontalScroll(itemWidth: .custom(100), itemHeight: .custom(130)) {
-            intrinsicContent {
-                Spacer()
-                Color.greenLight
-            }
-
-            intrinsicContent {
-                Color.greenLight
-                Spacer()
-                Text("Footer")
-            }
-
-            intrinsicContent {
-                Text("No Spacer")
-            }
-        }
-        .border(Color.cloudDark)
-        .previewDisplayName("W - custom, H - custom")
-    }
-
-    static let scrollUnitPoint = UnitPoint(x: 10, y: 0)
-
-    @ViewBuilder static var pagination: some View {
-        if #available(iOS 14, *) {
-            ScrollViewReader { scrollProxy in
-                VStack(spacing: .medium) {
-                    HorizontalScroll {
-                        intrinsicContent {
-                            Spacer()
-                            Color.greenLight
-                        }
-                        .id(1)
-
-                        intrinsicContent {
-                            Color.greenLight
-                            Spacer()
-                            Text("Footer")
-                        }
-                        .id(2)
-
-                        intrinsicContent {
-                            Text("No Spacer")
-                        }
-                        .id(3)
-                    }
-                    .border(Color.cloudDark)
-
-                    HStack {
-                        Button("Scroll to 1", size: .small) {
-                            withAnimation {
-                                scrollProxy.scrollTo(1, anchor: .topLeading)
-                            }
-                        }
-                        Button("Scroll to 2", size: .small) {
-                            withAnimation {
-                                scrollProxy.scrollTo(2, anchor: .topLeading)
-                            }
-                        }
-                        Button("Scroll to 3", size: .small) {
-                            withAnimation {
-                                scrollProxy.scrollTo(3, anchor: .topLeading)
-                            }
-                        }
-                    }
-                    .padding(.medium)
+            Card("No Snapping") {
+                HorizontalScroll(isSnapping: false, spacing: .medium, itemWidth: .ratio(0.5)) {
+                    tileVariants
                 }
             }
+        }
+        .previewDisplayName()
+    }
 
-        } else {
-            Text("Pagination support only for iOS >= 14")
+    @ViewBuilder static var tileVariants: some View {
+        tile
+        largerTile
+        expandingWidthTile
+        expandingTile
+        expandingTileLarger
+    }
+
+    static var tile: some View {
+        Tile("Intrinsic") {
+            // No Action
+        } content: {
+            intrinsicContentPlaceholder
         }
     }
 
-    static var intrinsicContent: some View {
-        intrinsicContent {
-            contentPlaceholder
+    static var largerTile: some View {
+        Tile("Intrinsic Larger") {
+            // No Action
+        } content: {
+            VStack(spacing: .xSmall) {
+                intrinsicContentPlaceholder
+                intrinsicContentPlaceholder
+            }
+            .padding(.xSmall)
+            .background(Color.greenLight)
+        }
+    }
+
+    static var expandingTile: some View {
+        Tile("Expanding All") {
+            // No Action
+        } content: {
+            HStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Top")
+                    Spacer(minLength: .medium)
+                    Text("Bottom")
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.medium)
+            .background(Color.orangeLight)
+        }
+    }
+
+    static var expandingTileLarger: some View {
+        Tile("Expanding All Larger") {
+            // No Action
+        } content: {
+            HStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Top")
+                    Text("Top 2")
+                    Spacer(minLength: .medium)
+                    Text("Bottom")
+                    Text("Bottom 2")
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.medium)
+            .background(Color.orangeLight)
+        }
+    }
+
+    static var expandingWidthTile: some View {
+        Tile("Expanding Width") {
+            // No Action
+        } content: {
+            HStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: .xSmall) {
+                    Text("Top")
+                    Text("Bottom")
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.medium)
+            .background(Color.orangeLight)
         }
     }
 
     static var snapshot: some View {
-        ratioWidthIntrinsicHeight
-    }
-
-    static func intrinsicContent<Content>(@ViewBuilder content: () -> Content) -> some View where Content: View {
-        VStack(alignment: .leading) {
-            Text("Intrinsic")
-            content()
+        VStack(alignment: .leading, spacing: .medium) {
+            ratio
+            fixed
         }
-        .border(Color.cloudNormal)
+        .screenLayout()
     }
 }

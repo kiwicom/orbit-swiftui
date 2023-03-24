@@ -16,7 +16,7 @@ extension PreviewProvider {
     }
 
     @ViewBuilder static var intrinsicContentPlaceholder: some View {
-        Text("Intrinsic content", color: .inkNormal)
+        Text("Content", color: .inkNormal)
             .padding(.medium)
             .background(Color.productLightActive.opacity(0.3))
     }

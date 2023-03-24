@@ -54,6 +54,7 @@ Our components are a collection of interface elements that can be reused across 
 
 - ``Layout``
 - ``HorizontalScroll``
+- ``HorizontalScrollReader``
 
 ### Navigation
 

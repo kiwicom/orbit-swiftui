@@ -1,222 +1,224 @@
 import SwiftUI
 import Orbit
 
-struct StorybookHorizontalScroll {
+struct StorybookHorizontalScroll: View {
 
-    static var basic: some View {
-        content
-            .background(Color.whiteDarker)
-            .previewDisplayName()
-    }
+    @State var animatedScroll = true
 
-    @ViewBuilder static var content: some View {
-        simpleSmallRatio
-        simpleCustom
-        ratioWidthIntrinsicHeight
-        smallRatioWidthIntrinsicHeight
-        fullWidthIntrinsicHeight
-        intrinsic
-        custom
-        pagination
-    }
+    var body: some View {
+        LazyVStack(alignment: .leading, spacing: .medium) {
+            Heading("Item width: Ratio (0.8)", style: .title2)
 
-    static var simpleSmallRatio: some View {
-        VStack(spacing: .large) {
-            HorizontalScroll(spacing: .large, itemWidth: .ratio(1.01)) {
-                Color.greenLight.frame(height: 10)
-                Color.greenLight.frame(height: 30)
-                Color.greenLight.frame(height: 50)
+            ratio
+
+            Heading("Item width: Custom", style: .title2)
+                .padding(.top, .xxxLarge)
+
+            fixed
+
+            Heading("Inside Cards", style: .title2)
+                .padding(.top, .xxxLarge)
+
+            insideCards
+
+            if #available(iOS 14, *) {
+                Heading("Programmatic scrolling", style: .title2)
+                    .padding(.top, .xxxLarge)
+                
+                tapToScroll
             }
-            .border(Color.cloudDark)
-
-            HorizontalScroll(spacing: .large, itemWidth: .ratio(1)) {
-                Color.greenLight.frame(height: 10)
-                Color.greenLight.frame(height: 30)
-                Color.greenLight.frame(height: 50)
-            }
-            .border(Color.cloudDark)
-
-            HorizontalScroll(spacing: .large, itemWidth: .ratio(0.5)) {
-                Color.greenLight.frame(height: 10)
-                Color.greenLight.frame(height: 30)
-                Color.greenLight.frame(height: 50)
-            }
-            .border(Color.cloudDark)
-
-            HorizontalScroll(spacing: .large, itemWidth: .ratio(0.33)) {
-                Color.greenLight.frame(height: 10)
-                Color.greenLight.frame(height: 30)
-                Color.greenLight.frame(height: 50)
-                Color.greenLight.frame(height: 20)
-            }
-            .border(Color.cloudDark)
         }
-        .background(Color.redLight.frame(width: 1).padding(.leading, .xSmall), alignment: .leading)
-        .background(Color.redLight.frame(width: 1).padding(.trailing, .xSmall), alignment: .trailing)
-        .previewDisplayName("W - ratios, H - intrinsic")
     }
 
-    static var simpleCustom: some View {
-        HorizontalScroll(itemWidth: .custom(30), itemHeight: .custom(30)) {
-            Color.greenLight
-            Color.greenLight
-            Color.greenLight
-        }
-        .border(Color.cloudDark)
-        .previewDisplayName("W - custom, H - custom")
-    }
+    var ratio: some View {
+        LazyVStack(alignment: .leading, spacing: .medium) {
+            Heading("Snapping", style: .title4)
 
-    static var ratioWidthIntrinsicHeight: some View {
-        HorizontalScroll {
-            intrinsicContent
-
-            intrinsicContent {
-                Color.greenLight
-                    .frame(width: 100, height: 150)
+            HorizontalScroll {
+                tileVariants
             }
 
-            intrinsicContent
+            Heading("No snapping", style: .title4)
+
+            HorizontalScroll(isSnapping: false, spacing: .large) {
+                tileVariants
+            }
         }
-        .border(Color.cloudDark)
-        .previewDisplayName("W - ratio, H - intrinsic")
+        .previewDisplayName()
     }
 
-    static var smallRatioWidthIntrinsicHeight: some View {
-        HorizontalScroll(itemWidth: .ratio(0.3), itemHeight: .intrinsic) {
-            intrinsicContent {
-                VStack(alignment: .leading) {
-                    Text("Spacer")
-                    Spacer()
-                    contentPlaceholder
+    var fixed: some View {
+        LazyVStack(alignment: .leading, spacing: .medium) {
+            Heading("Snapping", style: .title4)
+
+            HorizontalScroll(isSnapping: true, itemWidth: .fixed(180)) {
+                tileVariants
+            }
+
+            Heading("No snapping", style: .title4)
+
+            HorizontalScroll(isSnapping: false, spacing: .medium, itemWidth: .fixed(180)) {
+                tileVariants
+            }
+        }
+        .previewDisplayName()
+    }
+
+    var fitting: some View {
+        LazyVStack(alignment: .leading, spacing: .medium) {
+            Heading("Snapping", style: .title4)
+
+            HorizontalScroll(isSnapping: true, itemWidth: .fixed(180)) {
+                tile
+            }
+
+            Heading("No snapping", style: .title4)
+
+            HorizontalScroll(isSnapping: false, spacing: .medium, itemWidth: .fixed(180)) {
+                tile
+            }
+        }
+        .previewDisplayName()
+    }
+
+    var insideCards: some View {
+        LazyVStack(alignment: .leading, spacing: .medium) {
+            Card("Snapping") {
+                HorizontalScroll(itemWidth: .ratio(0.5)) {
+                    tileVariants
                 }
             }
 
-            intrinsicContent {
-                Color.greenLight
-                    .frame(height: 150)
-            }
-
-            intrinsicContent
-        }
-        .border(Color.cloudDark)
-        .previewDisplayName("W - small ratio, H - intrinsic")
-    }
-
-    static var fullWidthIntrinsicHeight: some View {
-        HorizontalScroll(itemWidth: .ratio(1), itemHeight: .intrinsic) {
-            intrinsicContent
-
-            intrinsicContent {
-                Color.greenLight
-                    .frame(height: 150)
-            }
-
-            intrinsicContent
-        }
-        .border(Color.cloudDark)
-        .previewDisplayName("W - full, H - intrinsic")
-    }
-
-    static var intrinsic: some View {
-        HorizontalScroll(itemWidth: .intrinsic, itemHeight: .intrinsic) {
-            intrinsicContent
-
-            intrinsicContent {
-                Color.greenLight
-                    .frame(width: 100, height: 150)
-            }
-
-            intrinsicContent
-        }
-        .previewDisplayName("W - intrinsic, H - intrinsic")
-    }
-
-    static var custom: some View {
-        HorizontalScroll(itemWidth: .custom(100), itemHeight: .custom(130)) {
-            intrinsicContent {
-                Spacer()
-                Color.greenLight
-            }
-
-            intrinsicContent {
-                Color.greenLight
-                Spacer()
-                Text("Footer")
-            }
-
-            intrinsicContent {
-                Text("No Spacer")
-            }
-        }
-        .border(Color.cloudDark)
-        .previewDisplayName("W - custom, H - custom")
-    }
-
-    static let scrollUnitPoint = UnitPoint(x: 10, y: 0)
-
-    @ViewBuilder static var pagination: some View {
-        if #available(iOS 14, *) {
-            ScrollViewReader { scrollProxy in
-                VStack(spacing: .medium) {
-                    HorizontalScroll {
-                        intrinsicContent {
-                            Spacer()
-                            Color.greenLight
-                        }
-                        .id(1)
-
-                        intrinsicContent {
-                            Color.greenLight
-                            Spacer()
-                            Text("Footer")
-                        }
-                        .id(2)
-
-                        intrinsicContent {
-                            Text("No Spacer")
-                        }
-                        .id(3)
-                    }
-                    .border(Color.cloudDark)
-
-                    HStack {
-                        Button("Scroll to 1", size: .small) {
-                            withAnimation {
-                                scrollProxy.scrollTo(1, anchor: .topLeading)
-                            }
-                        }
-                        Button("Scroll to 2", size: .small) {
-                            withAnimation {
-                                scrollProxy.scrollTo(2, anchor: .topLeading)
-                            }
-                        }
-                        Button("Scroll to 3", size: .small) {
-                            withAnimation {
-                                scrollProxy.scrollTo(3, anchor: .topLeading)
-                            }
-                        }
-                    }
-                    .padding(.medium)
+            Card("No Snapping") {
+                HorizontalScroll(isSnapping: false, spacing: .medium, itemWidth: .ratio(0.5)) {
+                    tileVariants
                 }
             }
+        }
+        .previewDisplayName()
+    }
 
-        } else {
-            Text("Pagination support only for iOS >= 14")
+    @available(iOS 14, *)
+    @ViewBuilder var tapToScroll: some View {
+        HorizontalScrollReader { scrollProxy in
+            VStack(alignment: .leading, spacing: .medium) {
+                HorizontalScroll {
+                    tile
+                        .identifier(0)
+
+                    ForEach(1..<5) { index in
+                        Tile("Tile \(index)", description: "Tap to scroll to previous") {
+                            scrollProxy.scrollTo(index - 1, animated: animatedScroll)
+                        }
+                        .identifier(index)
+                    }
+
+                    largerTile
+                        .identifier(5)
+
+                    expandingWidthTile
+                        .identifier(6)
+                }
+
+                Checkbox("Animated", isChecked: $animatedScroll)
+                    // FIXME: Binding does not work correctly?
+                    .id(animatedScroll ? 1 : 0)
+
+                Button("Scroll to First", size: .small) {
+                    scrollProxy.scrollTo(0, animated: animatedScroll)
+                }
+
+                Button("Scroll to 2", size: .small) {
+                    scrollProxy.scrollTo(2, animated: animatedScroll)
+                }
+
+                Button("Scroll to Last", size: .small) {
+                    scrollProxy.scrollTo(6, animated: animatedScroll)
+                }
+            }
+        }
+        .previewDisplayName()
+    }
+
+    @ViewBuilder var tileVariants: some View {
+        tile
+        largerTile
+        expandingWidthTile
+        expandingTile
+        expandingTileLarger
+    }
+
+    var tile: some View {
+        Tile("Intrinsic") {
+            // No Action
+        } content: {
+            intrinsicContentPlaceholder
         }
     }
 
-    static var intrinsicContent: some View {
-        intrinsicContent {
-            contentPlaceholder
+    var largerTile: some View {
+        Tile("Intrinsic Larger") {
+            // No Action
+        } content: {
+            VStack(spacing: .xSmall) {
+                intrinsicContentPlaceholder
+                intrinsicContentPlaceholder
+            }
+            .padding(.xSmall)
+            .background(Color.greenLight)
         }
     }
 
-    static func intrinsicContent<Content>(@ViewBuilder content: () -> Content) -> some View where Content: View {
-        VStack(alignment: .leading) {
-            Text("Intrinsic")
-            content()
+    var expandingTile: some View {
+        Tile("Expanding All") {
+            // No Action
+        } content: {
+            HStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Top")
+                    Spacer(minLength: .medium)
+                    Text("Bottom")
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.medium)
+            .background(Color.orangeLight)
         }
-        .border(Color.cloudNormal)
+    }
+
+    var expandingTileLarger: some View {
+        Tile("Expanding All Larger") {
+            // No Action
+        } content: {
+            HStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Top")
+                    Text("Top 2")
+                    Spacer(minLength: .medium)
+                    Text("Bottom")
+                    Text("Bottom 2")
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.medium)
+            .background(Color.orangeLight)
+        }
+    }
+
+    var expandingWidthTile: some View {
+        Tile("Expanding Width") {
+            // No Action
+        } content: {
+            HStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: .xSmall) {
+                    Text("Top")
+                    Text("Bottom")
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.medium)
+            .background(Color.orangeLight)
+        }
     }
 }
 
@@ -224,7 +226,7 @@ struct StorybookHorizontalScrollPreviews: PreviewProvider {
 
     static var previews: some View {
         OrbitPreviewWrapper {
-            StorybookHorizontalScroll.basic
+            StorybookHorizontalScroll()
         }
     }
 }
