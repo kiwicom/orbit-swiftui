@@ -3,14 +3,16 @@ import SwiftUI
 
 /// A  companion component to ``Text`` that only shows TextLinks, detected in html formatted content.
 ///
+/// The component is created automatically for all `<a href>` and `<applink>` tags found in a formatted text.
+///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/textlink/)
 public struct TextLink: UIViewRepresentable {
 
     @Environment(\.textLinkAction) var textLinkAction
+    @Environment(\.textLinkColor) var textLinkColor
 
     let content: NSAttributedString
     let bounds: CGSize
-    let color: Color
     
     public func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -36,7 +38,7 @@ public struct TextLink: UIViewRepresentable {
             content: content,
             size: bounds,
             lineLimit: context.environment.lineLimit ?? 0,
-            color: color.uiValue
+            color: textLinkColor?.uiValue ?? Color.primary.uiValue
         )
     }
     
@@ -76,10 +78,10 @@ extension TextLink {
     /// Creates an Orbit TextLink.
     ///
     /// The component has a size of the original text, but it only display detected links, hiding any non-link content.
-    public init(_ content: NSAttributedString, bounds: CGSize, color: TextLink.Color = .primary) {
+    /// Use `textLink(color:)` to override the TextLink colors.
+    public init(_ content: NSAttributedString, bounds: CGSize) {
         self.content = content
         self.bounds = bounds
-        self.color = color
     }
 }
 
@@ -144,12 +146,17 @@ struct TextLinkPreviews: PreviewProvider {
 
     static var colors: some View {
         VStack(alignment: .leading, spacing: .large) {
-            Text(link("Primary link"), linkColor: .primary)
-            Text(link("Secondary link"), linkColor: .secondary)
-            Text(link("Info link"), linkColor: .status(.info))
-            Text(link("Success link"), linkColor: .status(.success))
-            Text(link("Warning link"), linkColor: .status(.warning))
-            Text(link("Critical link"), linkColor: .status(.critical))
+            Text(link("Primary link"))
+            Text(link("Secondary link"))
+                .textLink(color: .secondary)
+            Text(link("Info link"))
+                .textLink(color: .status(.info))
+            Text(link("Success link"))
+                .textLink(color: .status(.success))
+            Text(link("Warning link"))
+                .textLink(color: .status(.warning))
+            Text(link("Critical link"))
+                .textLink(color: .status(.critical))
         }
         .previewDisplayName()
     }
