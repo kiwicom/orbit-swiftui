@@ -1,23 +1,18 @@
 import SwiftUI
 
-/// Orbit label above form fields.
+/// Orbit label positioned above a form field.
 public struct FieldLabel: View {
 
     let label: String
-    let accentColor: UIColor?
 
     public var body: some View {
-        Text(label, size: .normal, weight: .medium, accentColor: accentColor)
+        Text(label, size: .normal, weight: .medium)
             .accessibility(.fieldLabel)
     }
 
     /// Create Orbit form field label.
-    public init(
-        _ label: String,
-        accentColor: UIColor? = nil
-    ) {
+    public init(_ label: String) {
         self.label = label
-        self.accentColor = accentColor
     }
 }
 
@@ -38,8 +33,9 @@ struct FieldLabelPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             FieldLabel("Form Field Label")
-            FieldLabel(longLabel, accentColor: .orangeNormal)
+            FieldLabel(longLabel)
                 .textLinkColor(.status(.critical))
+                .textAccentColor(.orangeNormal)
         }
         .previewLayout(.sizeThatFits)
     }

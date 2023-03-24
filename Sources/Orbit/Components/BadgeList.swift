@@ -7,6 +7,8 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/badgelist/)
 public struct BadgeList: View {
 
+    @Environment(\.textAccentColor) var textAccentColor
+
     let label: String
     let iconContent: Icon.Content
     let style: Style
@@ -24,9 +26,9 @@ public struct BadgeList: View {
                 Text(
                     label,
                     size: size.textSize,
-                    color: .custom(labelColor.color),
-                    accentColor: style.iconColor
+                    color: .custom(labelColor.color)
                 )
+                .textAccentColor(textAccentColor ?? style.iconColor)
                 .textLinkColor(.custom(labelColor.color))
             }
         }

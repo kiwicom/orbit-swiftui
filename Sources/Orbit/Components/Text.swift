@@ -6,20 +6,23 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/text/)
 /// - Important: Component has fixed vertical size.
-public struct Text: View {
+public struct Text: View, TextBuildable {
 
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.textAccentColor) private var textAccentColor
+    @Environment(\.sizeCategory) private var sizeCategory
 
     let content: String
     let size: Size
     let color: Color?
-    let weight: Font.Weight
-    let lineSpacing: CGFloat?
-    let alignment: TextAlignment
-    let accentColor: UIColor
     let isSelectable: Bool
-    let strikethrough: Bool
-    let kerning: CGFloat
+
+    // Builder properties
+    var weight: Font.Weight
+    var lineSpacing: CGFloat?
+    var alignment: TextAlignment
+    var strikethrough: Bool
+    var kerning: CGFloat
+    var accentColor: UIColor?
 
     public var body: some View {
         if content.isEmpty == false {
@@ -113,8 +116,12 @@ public struct Text: View {
             kerning: kerning,
             color: foregroundColor,
             linkColor: .clear,
-            accentColor: accentColor
+            accentColor: resolvedAccentColor
         )
+    }
+
+    var resolvedAccentColor: UIColor {
+        accentColor ?? textAccentColor ?? Color.inkDark.uiValue
     }
     
     var foregroundColor: UIColor? {
@@ -147,6 +154,9 @@ public extension Text {
     
     /// Creates Orbit Text component that displays a string literal.
     ///
+    /// Can be further modified by following modifiers:
+    /// - `textAccentColor()`
+    ///
     /// - Parameters:
     ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
     ///   - size: Font size.
@@ -154,7 +164,6 @@ public extension Text {
     ///   - weight: Base font weight (overridable by formatting).
     ///   - lineSpacing: Distance in points between the bottom of one line fragment and the top of the next.
     ///   - alignment: Horizontal multi-line alignment.
-    ///   - accentColor: Color for `<ref>` formatting tag.
     ///   - isSelectable: Determines if text is copyable using long tap gesture.
     ///   - strikethrough: Determines if strikethrough should be applied.
     ///   - kerning: Additional spacing between characters.
@@ -165,7 +174,6 @@ public extension Text {
         weight: Font.Weight = .regular,
         lineSpacing: CGFloat? = nil,
         alignment: TextAlignment = .leading,
-        accentColor: UIColor? = nil,
         isSelectable: Bool = false,
         strikethrough: Bool = false,
         kerning: CGFloat = 0
@@ -176,7 +184,6 @@ public extension Text {
         self.weight = weight
         self.lineSpacing = lineSpacing
         self.alignment = alignment
-        self.accentColor = accentColor ?? color?.uiValue ?? .inkDark
         self.isSelectable = isSelectable
         self.strikethrough = strikethrough
         self.kerning = kerning
@@ -186,6 +193,7 @@ public extension Text {
 // MARK: - Types
 public extension Text {
 
+    /// Orbit text size.
     enum Size: Equatable {
         /// 13 pts.
         case small
@@ -226,6 +234,7 @@ public extension Text {
         }
     }
 
+    /// Orbit text color.
     enum Color: Equatable {
         case inkDark
         case inkNormal
@@ -332,8 +341,10 @@ struct TextPreviews: PreviewProvider {
             Group {
                 Text("Selectable text (on long tap)", isSelectable: true)
                 Text("Text with no formatting")
-                Text("Text <u>formatted</u> <strong>and</strong> <ref>accented</ref>", accentColor: .orangeNormal)
-                Text("<applink1>Text</applink1> <u>formatted</u> <strong>and</strong> <ref>accented</ref>", accentColor: .orangeNormal)
+                Text("Text <u>formatted</u> <strong>and</strong> <ref>accented</ref>")
+                    .textAccentColor(.orangeNormal)
+                Text("<applink1>Text</applink1> <u>formatted</u> <strong>and</strong> <ref>accented</ref>")
+                    .textAccentColor(.orangeNormal)
 
                 Text("Text with kerning and strikethrough", lineSpacing: 10, alignment: .trailing, strikethrough: true, kerning: 6)
                 Text(
@@ -358,9 +369,11 @@ struct TextPreviews: PreviewProvider {
             Text(multilineText, color: nil, alignment: .trailing)
                 .foregroundColor(.blueDark)
                 .background(Color.blueLight)
-            Text(multilineFormattedText, color: .custom(.greenDark), alignment: .trailing, accentColor: .orangeDark)
+            Text(multilineFormattedText, color: .custom(.greenDark), alignment: .trailing)
+                .textAccentColor(.orangeDark)
                 .background(Color.greenLight)
-            Text(multilineFormattedText, color: nil, alignment: .trailing, accentColor: .orangeDark)
+            Text(multilineFormattedText, color: nil, alignment: .trailing)
+                .textAccentColor(.orangeDark)
                 .foregroundColor(.blueDark)
                 .background(Color.blueLight)
             
@@ -432,9 +445,9 @@ struct TextPreviews: PreviewProvider {
                         An <ref>attributed text</ref> that can contain <a href="https://kiwi.com">multiple</a> \
                         HTML <a href="https://www.apple.com">links</a> with \
                         <u>underline</u> and <strong>strong</strong> support.
-                        """,
-                        accentColor: .redNormal
+                        """
                     )
+                    .textAccentColor(.redNormal)
                     .border(Color.cloudDark, width: .hairline)
                     .padding(.trailing, 200 * (1 - state.wrappedValue.0))
 
@@ -451,9 +464,9 @@ struct TextPreviews: PreviewProvider {
                         """,
                         size: .custom(12),
                         color: .custom(.blueLightActive),
-                        weight: .bold,
-                        accentColor: .blueNormal
+                        weight: .bold
                     )
+                    .textAccentColor(.blueNormal)
                     .border(Color.cloudNormal)
                     .padding(.leading, 200 * (1 - state.wrappedValue.1))
 
@@ -505,9 +518,9 @@ struct TextPreviews: PreviewProvider {
             HStack(spacing: .xxSmall) {
                 Text(
                     "\(sizeText) \(formatted ? "<applink1>" : "")\(size)\(formatted ? "</applink1>" : "")",
-                    size: size,
-                    accentColor: .blueDark
+                    size: size
                 )
+                .textAccentColor(Status.info.darkUIColor)
                 .fixedSize()
                 .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerLastTextBaseline)
 

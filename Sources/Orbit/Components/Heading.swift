@@ -3,19 +3,21 @@ import SwiftUI
 /// Shows the content hierarchy and improves the reading experience. Also known as Title.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/heading/)
-public struct Heading: View {
+public struct Heading: View, TextBuildable {
 
     @Environment(\.sizeCategory) var sizeCategory
 
     let content: String
     let style: Style
     let color: Color?
-    let lineSpacing: CGFloat?
-    let alignment: TextAlignment
-    let accentColor: UIColor
     let isSelectable: Bool
-    let strikethrough: Bool
-    let kerning: CGFloat
+
+    // Builder properties
+    var lineSpacing: CGFloat?
+    var alignment: TextAlignment
+    var strikethrough: Bool
+    var kerning: CGFloat
+    var accentColor: UIColor?
 
     public var body: some View {
         textContent
@@ -30,11 +32,11 @@ public struct Heading: View {
             weight: style.weight,
             lineSpacing: lineSpacing,
             alignment: alignment,
-            accentColor: accentColor,
             isSelectable: isSelectable,
             strikethrough: strikethrough,
             kerning: kerning
         )
+        .textAccentColor(accentColor)
     }
 
     func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
@@ -48,13 +50,15 @@ public extension Heading {
 
     /// Creates Orbit Heading component.
     ///
+    /// Can be further modified by following modifiers:
+    /// - `textAccentColor()`
+    /// 
     /// - Parameters:
     ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
     ///   - style: Heading style.
     ///   - color: Font color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
     ///   - lineSpacing: Distance in points between the bottom of one line fragment and the top of the next.
     ///   - alignment: Horizontal multi-line alignment.
-    ///   - accentColor: Color for `<ref>` formatting tag.
     ///   - isSelectable: Determines if text is copyable using long tap gesture.
     ///   - strikethrough: Determines if strikethrough should be applied.
     ///   - kerning: Additional spacing between characters.
@@ -64,7 +68,6 @@ public extension Heading {
         color: Color? = .inkDark,
         lineSpacing: CGFloat? = nil,
         alignment: TextAlignment = .leading,
-        accentColor: UIColor? = nil,
         isSelectable: Bool = false,
         strikethrough: Bool = false,
         kerning: CGFloat = 0
@@ -74,7 +77,6 @@ public extension Heading {
         self.color = color
         self.lineSpacing = lineSpacing
         self.alignment = alignment
-        self.accentColor = accentColor ?? color?.uiValue ?? .inkDark
         self.isSelectable = isSelectable
         self.strikethrough = strikethrough
         self.kerning = kerning
@@ -202,9 +204,14 @@ struct HeadingPreviews: PreviewProvider {
     static var formatted: some View {
         VStack(alignment: .trailing, spacing: .medium) {
             Group {
-                Heading("Multiline\nlong heading", style: .title2, color: .custom(.inkNormal), lineSpacing: 10, alignment: .trailing, accentColor: .greenDark, strikethrough: true, kerning: 5)
-                Heading("Multiline\n<ref>long</ref> heading", style: .title2, color: nil, lineSpacing: 10, alignment: .trailing, accentColor: .redNormal, strikethrough: true, kerning: 5)
-                Heading("Multiline\n<applink1>long</applink1> heading", style: .title2, color: .custom(.orangeNormal), lineSpacing: 10, alignment: .trailing, accentColor: .greenDark, strikethrough: true, kerning: 5)
+                Heading("Multiline\nlong heading", style: .title2, color: .custom(.inkNormal), lineSpacing: 10, alignment: .trailing, strikethrough: true, kerning: 5)
+                    .textAccentColor(.greenDark)
+
+                Heading("Multiline\n<ref>long</ref> heading", style: .title2, color: nil, lineSpacing: 10, alignment: .trailing, strikethrough: true, kerning: 5)
+                    .textAccentColor(.redNormal)
+
+                Heading("Multiline\n<applink1>long</applink1> heading", style: .title2, color: .custom(.orangeNormal), lineSpacing: 10, alignment: .trailing, strikethrough: true, kerning: 5)
+                    .textAccentColor(.greenDark)
             }
             .border(Color.cloudNormal)
         }
@@ -283,7 +290,8 @@ struct HeadingPreviews: PreviewProvider {
             +
             Heading(" <ref><u>Title 4</u></ref> with <strong>multiline</strong>", style: .title4)
             +
-            Heading(" <ref><u>Title 5</u></ref> with <strong>multiline</strong>", style: .title5, color: .custom(.greenDark), accentColor: .blueDarker)
+            Heading(" <ref><u>Title 5</u></ref> with <strong>multiline</strong>", style: .title5, color: .custom(.greenDark))
+                .textAccentColor(.blueDarker)
             +
             Heading(" <ref><u>TITLE 6</u></ref> WITH <strong>MULTILINE</strong> CONTENT", style: .title6, color: nil)
             +
@@ -296,7 +304,8 @@ struct HeadingPreviews: PreviewProvider {
 
     static func formattedHeading(_ content: String, style: Heading.Style, color: Heading.Color? = .inkDark) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
-            Heading(content, style: style, color: color, accentColor: .blueNormal)
+            Heading(content, style: style, color: color)
+                .textAccentColor(.blueNormal)
             Spacer()
             Text("\(Int(style.size))/\(Int(style.lineHeight))", color: .inkNormal, weight: .medium)
         }
@@ -312,9 +321,9 @@ struct HeadingPreviews: PreviewProvider {
             HStack(spacing: .xxSmall) {
                 Heading(
                     "\(formatted ? "<ref>" : "")\(String(describing:style).capitalized)\(formatted ? "</ref>" : "")",
-                    style: style,
-                    accentColor: .blueDark
+                    style: style
                 )
+                .textAccentColor(Status.info.darkUIColor)
                 .fixedSize()
                 .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerLastTextBaseline)
 

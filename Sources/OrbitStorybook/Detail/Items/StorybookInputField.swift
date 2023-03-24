@@ -63,11 +63,11 @@ struct StorybookInputField {
             inputField("Focused", value: "Focused / Help", message: .help("Help message"))
             inputField(
                 fieldLongLabel,
-                labelAccentColor: .orangeNormal,
                 value: longValue,
                 message: .error(longErrorMessage)
             )
             .textLinkColor(.status(.critical))
+            .textAccentColor(.orangeNormal)
 
             inputField("Compact", style: .compact)
 
@@ -81,7 +81,6 @@ struct StorybookInputField {
 
     static func inputField(
         _ label: String = label,
-        labelAccentColor: UIColor? = nil,
         value: String = value,
         prefix: Icon.Content = .grid,
         suffix: Icon.Content = .grid,
@@ -95,7 +94,6 @@ struct StorybookInputField {
         StateWrapper(value) { value in
             InputField(
                 label,
-                labelAccentColor: labelAccentColor,
                 value: value,
                 prefix: prefix,
                 suffix: suffix,

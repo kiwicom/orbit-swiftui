@@ -50,9 +50,10 @@ struct TextConcatenationPreviews: PreviewProvider {
             + Text(
                 "<ref>Text</ref> with <strong>formatting</strong>",
                 size: .small,
-                color: nil,
-                accentColor: .orangeNormal
+                color: nil
             )
+            .textAccentColor(.orangeNormal)
+
             + Icon(.check, size: .small, color: .greenDark)
         )
         .foregroundColor(.blueDark)

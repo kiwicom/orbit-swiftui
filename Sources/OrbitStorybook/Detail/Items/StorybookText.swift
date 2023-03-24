@@ -11,7 +11,8 @@ struct StorybookText {
             Group {
                 Text("Plain text with no formatting")
                 Text("Selectable text (on long tap)", isSelectable: true)
-                Text("Text <u>formatted</u> <strong>and</strong> <ref>accented</ref>", accentColor: .orangeNormal)
+                Text("Text <u>formatted</u> <strong>and</strong> <ref>accented</ref>")
+                    .textAccentColor(.orangeNormal)
                 Text("Text with strikethrough and kerning", strikethrough: true, kerning: 6)
             }
             .border(Color.cloudDark, width: .hairline)
@@ -21,9 +22,11 @@ struct StorybookText {
             Text(multilineText, color: nil, alignment: .trailing)
                 .foregroundColor(.blueDark)
                 .background(Color.blueLight)
-            Text(multilineFormattedText, color: .custom(.greenDark), alignment: .trailing, accentColor: .orangeDark)
+            Text(multilineFormattedText, color: .custom(.greenDark), alignment: .trailing)
+                .textAccentColor(.orangeDark)
                 .background(Color.greenLight)
-            Text(multilineFormattedText, color: nil, alignment: .trailing, accentColor: .orangeDark)
+            Text(multilineFormattedText, color: nil, alignment: .trailing)
+                .textAccentColor(.orangeDark)
                 .foregroundColor(.blueDark)
                 .background(Color.blueLight)
         }
