@@ -88,10 +88,7 @@ public extension BadgeList {
         public var backgroundColor: Color {
             switch self {
                 case .neutral:                              return .cloudLight
-                case .status(.info):                        return .blueLight
-                case .status(.success):                     return .greenLight
-                case .status(.warning):                     return .orangeLight
-                case .status(.critical):                    return .redLight
+                case .status(let status):                   return status.lightColor
                 case .custom(_, let backgroundColor):       return backgroundColor
             }
         }
@@ -99,10 +96,7 @@ public extension BadgeList {
         public var iconColor: UIColor {
             switch self {
                 case .neutral:                              return .inkNormal
-                case .status(.info):                        return .blueNormal
-                case .status(.success):                     return .greenNormal
-                case .status(.warning):                     return .orangeNormal
-                case .status(.critical):                    return .redNormal
+                case .status(let status):                   return status.uiColor
                 case .custom(let iconColor, _):             return iconColor
             }
         }

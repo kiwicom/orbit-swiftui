@@ -174,20 +174,17 @@ extension Button {
 
         @ViewBuilder public var background: some View {
             switch self {
-                case .primary:                  Color.productNormal
-                case .primarySubtle:            Color.productLight
-                case .secondary:                Color.cloudNormal
-                case .critical:                 Color.redNormal
-                case .criticalSubtle:           Color.redLight
-                case .status(.critical, false): Color.redNormal
-                case .status(.critical, true):  Color.redLightHover
-                case .status(.info, false):     Color.blueNormal
-                case .status(.info, true):      Color.blueLightHover
-                case .status(.success, false):  Color.greenNormal
-                case .status(.success, true):   Color.greenLightHover
-                case .status(.warning, false):  Color.orangeNormal
-                case .status(.warning, true):   Color.orangeLightHover
-                case .gradient(let gradient):   gradient.background
+                case .primary:                      Color.productNormal
+                case .primarySubtle:                Color.productLight
+                case .secondary:                    Color.cloudNormal
+                case .critical:                     Color.redNormal
+                case .criticalSubtle:               Color.redLight
+                case .status(let status, false):    status.color
+                case .status(.critical, true):      Color.redLightHover
+                case .status(.info, true):          Color.blueLightHover
+                case .status(.success, true):       Color.greenLightHover
+                case .status(.warning, true):       Color.orangeLightHover
+                case .gradient(let gradient):       gradient.background
             }
         }
         

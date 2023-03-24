@@ -98,11 +98,7 @@ public struct SegmentedSwitch: View {
     }
 
     private var borderColor: Color {
-        switch message {
-            case .error:    return .redNormal
-            case .help:     return .blueNormal
-            default:        return .cloudNormal
-        }
+        message?.status?.color ?? .cloudNormal
     }
 
     private var accessibilityHint: String {
