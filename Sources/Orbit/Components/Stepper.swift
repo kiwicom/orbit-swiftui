@@ -29,26 +29,18 @@ public struct Stepper: View {
     }
     
     @ViewBuilder var decrementButton: some View {
-        StepperButton(
-            isIncrement: false,
-            isEnabled: isEnabled ? value > minValue : false,
-            style: style,
-            action: {
-                value -= 1
-            }
-        )
+        StepperButton(.minus, style: style) {
+            value -= 1
+        }
+        .environment(\.isEnabled, isEnabled && value > minValue)
         .accessibility(.stepperDecrement)
     }
     
     @ViewBuilder var incrementButton: some View {
-        StepperButton(
-            isIncrement: true,
-            isEnabled: isEnabled ? value < maxValue : false,
-            style: style,
-            action: {
-                value += 1
-            }
-        )
+        StepperButton(.plus, style: style) {
+            value += 1
+        }
+        .environment(\.isEnabled, isEnabled && value < maxValue)
         .accessibility(.stepperIncrement)
     }
     
@@ -57,7 +49,7 @@ public struct Stepper: View {
         value: Binding<Int>,
         minValue: Int,
         maxValue: Int,
-        style: Style
+        style: Style = .primary
     ) {
         self._value = value
         self.minValue = minValue
@@ -75,36 +67,36 @@ extension Stepper {
         
         public var foregroundColor: Color {
             switch self {
-            case .primary:                  return .white.opacity(0.5)
-            case .secondary:                return .inkDark.opacity(0.5)
+                case .primary:                  return .white.opacity(0.5)
+                case .secondary:                return .inkDark.opacity(0.5)
             }
         }
         
         public var foregroundActiveColor: Color {
             switch self {
-            case .primary:                  return .white
-            case .secondary:                return .inkDark
+                case .primary:                  return .white
+                case .secondary:                return .inkDark
             }
         }
         
         public var backgroundColor: Color {
             switch self {
-            case .primary:                  return .blueNormal.opacity(0.5)
-            case .secondary:                return .cloudNormal.opacity(0.5)
+                case .primary:                  return .blueNormal.opacity(0.5)
+                case .secondary:                return .cloudNormal.opacity(0.5)
             }
         }
         
         public var backgroundActiveColor: Color {
             switch self {
-            case .primary:                  return .blueNormal
-            case .secondary:                return .cloudNormal
+                case .primary:                  return .blueNormal
+                case .secondary:                return .cloudNormal
             }
         }
         
         public var borderSelectedColor: Color {
             switch self {
-            case .primary:                  return .blueLightActive
-            case .secondary:                return .cloudNormalActive
+                case .primary:                  return .blueLightActive
+                case .secondary:                return .cloudNormalActive
             }
         }
     }
@@ -125,21 +117,32 @@ struct StepperPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             states
-            statesLargeFont
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
+
+    static var states: some View {
+        VStack(spacing: .large) {
+            minusFiveToTwenty
+            twoToFifteen
+            disabledZeroToThree
+            secondaryThreeToTen
+            secondaryDisabled
+        }
+        .previewDisplayName()
+    }
     
-    static var zeroToTen: some View {
-        StateWrapper(3) { binding in
+    static var standalone: some View {
+        StateWrapper(10) { binding in
             Stepper(
                 value: binding,
-                minValue: -4,
-                maxValue: 10,
-                style: .primary
+                minValue: -30,
+                maxValue: 30,
+                style: .secondary
             )
         }
+        .previewDisplayName()
     }
     
     static var minusFiveToTwenty: some View {
@@ -158,19 +161,7 @@ struct StepperPreviews: PreviewProvider {
             Stepper(
                 value: binding,
                 minValue: 2,
-                maxValue: 15,
-                style: .primary
-            )
-        }
-    }
-    
-    static var zeroToThree: some View {
-        StateWrapper(2) { binding in
-            Stepper(
-                value: binding,
-                minValue: 0,
-                maxValue: 3,
-                style: .primary
+                maxValue: 15
             )
         }
     }
@@ -180,8 +171,7 @@ struct StepperPreviews: PreviewProvider {
             Stepper(
                 value: binding,
                 minValue: 0,
-                maxValue: 3,
-                style: .primary
+                maxValue: 3
             )
             .disabled(true)
         }
@@ -197,42 +187,21 @@ struct StepperPreviews: PreviewProvider {
             )
         }
     }
-    
-    static var standalone: some View {
-        zeroToTen
-            .previewDisplayName()
-    }
-    
-    static var states: some View {
-        VStack(spacing: .large) {
-            minusFiveToTwenty
-            twoToFifteen
-            zeroToThree
-            disabledZeroToThree
-            secondaryThreeToTen
+
+    static var secondaryDisabled: some View {
+        StateWrapper(5) { binding in
+            Stepper(
+                value: binding,
+                minValue: 3,
+                maxValue: 10,
+                style: .secondary
+            )
+            .environment(\.isEnabled, false)
         }
-        .previewDisplayName()
-    }
-    
-    static var statesLargeFont: some View {
-        VStack(spacing: .large) {
-            minusFiveToTwenty
-                .environment(\.sizeCategory, .extraExtraExtraLarge)
-            disabledZeroToThree
-                .environment(\.sizeCategory, .extraExtraExtraLarge)
-            secondaryThreeToTen
-                .environment(\.sizeCategory, .extraExtraExtraLarge)
-        }
-        .previewDisplayName()
     }
     
     static var snapshot: some View {
         states
-            .padding(.medium)
-    }
-    
-    static var snapshotLargeFont: some View {
-        statesLargeFont
             .padding(.medium)
     }
 }
