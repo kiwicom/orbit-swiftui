@@ -14,8 +14,6 @@ public struct Select: View {
     
     let label: String
     let labelAccentColor: UIColor?
-    let labelLinkColor: TextLink.Color
-    let labelLinkAction: TextLink.Action
     let prefix: Icon.Content
     let value: String?
     let placeholder: String
@@ -28,8 +26,6 @@ public struct Select: View {
         FieldWrapper(
             label,
             labelAccentColor: labelAccentColor,
-            labelLinkColor: labelLinkColor,
-            labelLinkAction: labelLinkAction,
             message: message,
             messageHeight: $messageHeight
         ) {
@@ -102,8 +98,6 @@ public extension Select {
     init(
         _ label: String = "",
         labelAccentColor: UIColor? = nil,
-        labelLinkColor: TextLink.Color = .primary,
-        labelLinkAction: @escaping TextLink.Action = { _, _ in },
         prefix: Icon.Content = .none,
         value: String?,
         placeholder: String = "",
@@ -115,8 +109,6 @@ public extension Select {
     ) {
         self.label = label
         self.labelAccentColor = labelAccentColor
-        self.labelLinkColor = labelLinkColor
-        self.labelLinkAction = labelLinkAction
         self.prefix = prefix
         self.value = value
         self.placeholder = placeholder
@@ -250,12 +242,12 @@ struct SelectPreviews: PreviewProvider {
                 Select(
                     FieldLabelPreviews.longLabel,
                     labelAccentColor: .orangeNormal,
-                    labelLinkColor: .status(.critical),
                     prefix: .image(.orbit(.google)),
                     value: "Bad Value with a very long text that should overflow",
                     message: .error("Error message, but also very long and multi-line to test that it works."),
                     action: {}
                 )
+                .textLinkColor(.status(.critical))
             }
         }
         .padding(.medium)

@@ -3,24 +3,26 @@ import SwiftUI
 
 /// A  companion component to ``Text`` that only shows TextLinks, detected in html formatted content.
 ///
+/// The component is created automatically for all `<a href>` and `<applink>` tags found in a formatted text.
+///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/textlink/)
-@available(iOS, deprecated: 15.0, message: "Will be replaced with a native markdown-enabled Text component")
 public struct TextLink: UIViewRepresentable {
 
-    /// An action handler for a link tapped inside the ``Text`` component.
-    public typealias Action = (URL, String) -> Void
+    @Environment(\.textLinkAction) var textLinkAction
+    @Environment(\.textLinkColor) var textLinkColor
 
     let content: NSAttributedString
     let bounds: CGSize
-    let color: Color
-    let action: Action
     
     public func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
 
     public func makeUIView(context: UIViewRepresentableContext<TextLink>) -> TextLinkView {
-        let textLinkView = TextLinkView(layoutManager: NSLayoutManager(), size: bounds, action: action)
+        let textLinkView = TextLinkView(layoutManager: NSLayoutManager(), size: bounds) {
+            HapticsProvider.sendHapticFeedback(.light(0.5))
+            textLinkAction?($0, $1)
+        }
         
         let tapRecognizer = UITapGestureRecognizer(
             target: context.coordinator,
@@ -36,7 +38,7 @@ public struct TextLink: UIViewRepresentable {
             content: content,
             size: bounds,
             lineLimit: context.environment.lineLimit ?? 0,
-            color: color.uiValue
+            color: textLinkColor?.uiValue ?? Color.primary.uiValue
         )
     }
     
@@ -62,7 +64,7 @@ public struct TextLink: UIViewRepresentable {
             attributedText.enumerateAttributes(in: fullRange, options: []) { attributes, range, _ in
                 if NSLocationInRange(characterIndex, range), let url = attributes[.link] as? URL {
                     let text = attributedText.attributedSubstring(from: range).string
-                    parent.action(url, text)
+                    parent.textLinkAction?(url, text)
                     return
                 }
             }
@@ -73,20 +75,24 @@ public struct TextLink: UIViewRepresentable {
 // MARK: - Inits
 extension TextLink {
 
-    /// Creates an Orbit TextLink layer that only contains links (ignoring any non-link content) inside specified bounds.
-    public init(_ content: NSAttributedString, bounds: CGSize, color: TextLink.Color = .primary, action: @escaping TextLink.Action = {_, _ in }) {
+    /// Creates an Orbit TextLink.
+    ///
+    /// The component has a size of the original text, but it only display detected links, hiding any non-link content.
+    /// Use `textLink(color:)` to override the TextLink colors.
+    public init(_ content: NSAttributedString, bounds: CGSize) {
         self.content = content
         self.bounds = bounds
-        self.color = color
-        self.action = action
     }
 }
 
 // MARK: - Types
-extension TextLink {
+public extension TextLink {
+
+    /// An action handler for a link tapped inside the ``Text`` or ``TextLink`` component.
+    typealias Action = (URL, String) -> Void
 
     /// Orbit TextLink color.
-    public enum Color: Equatable {
+    enum Color: Equatable {
         case primary
         case secondary
         case status(Status)
@@ -140,12 +146,17 @@ struct TextLinkPreviews: PreviewProvider {
 
     static var colors: some View {
         VStack(alignment: .leading, spacing: .large) {
-            Text(link("Primary link"), linkColor: .primary)
-            Text(link("Secondary link"), linkColor: .secondary)
-            Text(link("Info link"), linkColor: .status(.info))
-            Text(link("Success link"), linkColor: .status(.success))
-            Text(link("Warning link"), linkColor: .status(.warning))
-            Text(link("Critical link"), linkColor: .status(.critical))
+            Text(link("Primary link"))
+            Text(link("Secondary link"))
+                .textLinkColor(.secondary)
+            Text(link("Info link"))
+                .textLinkColor(.status(.info))
+            Text(link("Success link"))
+                .textLinkColor(.status(.success))
+            Text(link("Warning link"))
+                .textLinkColor(.status(.warning))
+            Text(link("Critical link"))
+                .textLinkColor(.status(.critical))
         }
         .previewDisplayName()
     }
@@ -157,10 +168,11 @@ struct TextLinkPreviews: PreviewProvider {
     static var interactive: some View {
         StateWrapper((0, "")) { state in
             VStack(spacing: .xLarge) {
-                Text("Text containing <a href=\"...\">Some TextLink</a> and <a href=\"...\">Another TextLink</a>") { link, text in
-                    state.wrappedValue.0 += 1
-                    state.wrappedValue.1 = text
-                }
+                Text("Text containing <a href=\"...\">Some TextLink</a> and <a href=\"...\">Another TextLink</a>")
+                    .textLinkAction {
+                        state.wrappedValue.0 += 1
+                        state.wrappedValue.1 = $1
+                    }
                 
                 ButtonLink("ButtonLink") {
                     state.wrappedValue.0 += 1

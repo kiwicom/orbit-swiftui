@@ -64,10 +64,11 @@ struct StorybookInputField {
             inputField(
                 fieldLongLabel,
                 labelAccentColor: .orangeNormal,
-                labelLinkColor: .status(.critical),
                 value: longValue,
                 message: .error(longErrorMessage)
             )
+            .textLinkColor(.status(.critical))
+
             inputField("Compact", style: .compact)
 
             HStack(spacing: .medium) {
@@ -81,8 +82,6 @@ struct StorybookInputField {
     static func inputField(
         _ label: String = label,
         labelAccentColor: UIColor? = nil,
-        labelLinkColor: TextLink.Color = .primary,
-        labelLinkAction: @escaping TextLink.Action = { _, _ in },
         value: String = value,
         prefix: Icon.Content = .grid,
         suffix: Icon.Content = .grid,
@@ -97,8 +96,6 @@ struct StorybookInputField {
             InputField(
                 label,
                 labelAccentColor: labelAccentColor,
-                labelLinkColor: labelLinkColor,
-                labelLinkAction: labelLinkAction,
                 value: value,
                 prefix: prefix,
                 suffix: suffix,

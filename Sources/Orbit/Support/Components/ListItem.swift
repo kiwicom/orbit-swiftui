@@ -18,14 +18,13 @@ public struct ListItem: View {
     let size: Text.Size
     let spacing: CGFloat
     let style: ListItem.Style
-    let linkAction: TextLink.Action
 
     public var body: some View {
         HStack(alignment: alignment, spacing: spacing) {
             icon
                 .frame(width: dynamicIconSize, height: dynamicIconSize)
 
-            Text(text, size: size, color: nil, weight: style.weight, linkColor: style.linkColor, linkAction: linkAction)
+            Text(text, size: size, color: nil, weight: style.weight)
         }
         .padding(.leading, Self.defaultSpacing - spacing)
         .foregroundColor(style.textColor.value)
@@ -58,8 +57,7 @@ public extension ListItem {
         size: Text.Size = .normal,
         iconSize: Icon.Size? = nil,
         spacing: CGFloat = .xSmall,
-        style: ListItem.Style = .primary,
-        linkAction: @escaping TextLink.Action = { _, _ in }
+        style: ListItem.Style = .primary
     ) {
         self.text = text
         self.iconContent = icon
@@ -67,7 +65,6 @@ public extension ListItem {
         self.iconSize = iconSize
         self.spacing = spacing
         self.style = style
-        self.linkAction = linkAction
     }
 
     /// Creates Orbit ListItem component with default appearance, using the `circleSmall` icon.
@@ -75,8 +72,7 @@ public extension ListItem {
         _ text: String = "",
         size: Text.Size = .normal,
         spacing: CGFloat = .xxxSmall,
-        style: ListItem.Style = .primary,
-        linkAction: @escaping TextLink.Action = { _, _ in }
+        style: ListItem.Style = .primary
     ) {
         self.init(
             text,
@@ -84,8 +80,7 @@ public extension ListItem {
             size: size,
             iconSize: .custom(size.value),
             spacing: spacing,
-            style: style,
-            linkAction: linkAction
+            style: style
         )
     }
 }
@@ -96,29 +91,21 @@ public extension ListItem {
     enum Style {
         case primary
         case secondary
-        case custom(color: UIColor = .inkDark, linkColor: TextLink.Color = .primary, weight: Font.Weight = .regular)
+        case custom(color: UIColor = .inkDark, weight: Font.Weight = .regular)
 
         public var textColor: Text.Color {
             switch self {
-                case .primary:                      return .inkDark
-                case .secondary:                    return .inkNormal
-                case .custom(let color, _, _):      return .custom(color)
-            }
-        }
-        
-        public var linkColor: TextLink.Color {
-            switch self {
-                case .primary:                      return .primary
-                case .secondary:                    return .primary
-                case .custom(_, let linkColor, _):  return linkColor
+                case .primary:                  return .inkDark
+                case .secondary:                return .inkNormal
+                case .custom(let color, _):     return .custom(color)
             }
         }
         
         public var weight: Font.Weight {
             switch self {
-                case .primary:                      return .regular
-                case .secondary:                    return .regular
-                case .custom(_, _, let weight):     return weight
+                case .primary:                  return .regular
+                case .secondary:                return .regular
+                case .custom(_, let weight):    return weight
             }
         }
     }
@@ -159,7 +146,8 @@ struct ListItemPreviews: PreviewProvider {
         List {
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, size: .small, style: .secondary)
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#)
-            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, style: .custom(color: .greenNormal, linkColor: .custom(.orangeDark)))
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, style: .custom(color: .greenNormal))
+                .textLinkColor(.custom(.orangeDark))
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, icon: .symbol(.circleSmall, color: .blueNormal), style: .custom(color: .greenNormal))
         }
         .padding(.medium)

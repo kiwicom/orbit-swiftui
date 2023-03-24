@@ -23,9 +23,9 @@ public struct Badge: View {
                     label,
                     size: .small,
                     color: nil,
-                    weight: .medium,
-                    linkColor: .custom(style.labelColor)
+                    weight: .medium
                 )
+                .textLinkColor(.custom(style.labelColor))
                 .frame(minWidth: minTextWidth)
             }
             .foregroundColor(Color(style.labelColor))

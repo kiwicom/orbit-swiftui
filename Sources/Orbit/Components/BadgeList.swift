@@ -12,7 +12,6 @@ public struct BadgeList: View {
     let style: Style
     let labelColor: LabelColor
     let size: Size
-    let linkAction: TextLink.Action
 
     public var body: some View {
         if isEmpty == false {
@@ -26,10 +25,9 @@ public struct BadgeList: View {
                     label,
                     size: size.textSize,
                     color: .custom(labelColor.color),
-                    accentColor: style.iconColor,
-                    linkColor: .custom(labelColor.color),
-                    linkAction: linkAction
+                    accentColor: style.iconColor
                 )
+                .textLinkColor(.custom(labelColor.color))
             }
         }
     }
@@ -68,15 +66,13 @@ public extension BadgeList {
         icon: Icon.Content = .none,
         style: Style = .neutral,
         labelColor: LabelColor = .primary,
-        size: Size = .normal,
-        linkAction: @escaping TextLink.Action = { _, _ in }
+        size: Size = .normal
     ) {
         self.label = label
         self.iconContent = icon
         self.style = style
         self.labelColor = labelColor
         self.size = size
-        self.linkAction = linkAction
     }
 }
 

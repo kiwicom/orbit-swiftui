@@ -10,7 +10,6 @@ public struct Dialog<Content: View>: View {
     let description: String
     let style: Style
     let buttonConfiguration: Buttons
-    let descriptionLinkAction: TextLink.Action
     @ViewBuilder let content: Content
 
     public var body: some View {
@@ -22,7 +21,7 @@ public struct Dialog<Content: View>: View {
                 Heading(title, style: .title3)
                     .accessibility(.dialogTitle)
 
-                Text(description, color: .inkNormal, linkAction: descriptionLinkAction)
+                Text(description, color: .inkNormal)
                     .accessibility(.dialogDescription)
             }
 
@@ -85,7 +84,6 @@ extension Dialog {
         description: String = "",
         style: Style = .primary,
         buttons: Buttons,
-        descriptionLinkAction: @escaping TextLink.Action = { _, _ in },
         @ViewBuilder content: () -> Content = { EmptyView() }
     ) {
         self.illustration = illustration
@@ -93,7 +91,6 @@ extension Dialog {
         self.description = description
         self.style = style
         self.buttonConfiguration = buttons
-        self.descriptionLinkAction = descriptionLinkAction
         self.content = content()
     }
 }

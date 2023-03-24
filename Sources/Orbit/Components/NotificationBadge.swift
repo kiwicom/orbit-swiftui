@@ -34,9 +34,9 @@ public struct NotificationBadge: View {
                     text,
                     size: .small,
                     color: .none,
-                    weight: .medium,
-                    linkColor: .custom(style.labelColor)
+                    weight: .medium
                 )
+                .textLinkColor(.custom(style.labelColor))
                 .frame(minWidth: minTextWidth)
             case .icon(let icon):
                 Icon(content: icon, size: .small)

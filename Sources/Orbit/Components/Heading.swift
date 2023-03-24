@@ -3,7 +3,6 @@ import SwiftUI
 /// Shows the content hierarchy and improves the reading experience. Also known as Title.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/heading/)
-/// - Important: Component has fixed vertical size.
 public struct Heading: View {
 
     @Environment(\.sizeCategory) var sizeCategory
@@ -14,11 +13,9 @@ public struct Heading: View {
     let lineSpacing: CGFloat?
     let alignment: TextAlignment
     let accentColor: UIColor
-    let linkColor: TextLink.Color
     let isSelectable: Bool
     let strikethrough: Bool
     let kerning: CGFloat
-    let linkAction: TextLink.Action
 
     public var body: some View {
         textContent
@@ -34,11 +31,9 @@ public struct Heading: View {
             lineSpacing: lineSpacing,
             alignment: alignment,
             accentColor: accentColor,
-            linkColor: linkColor,
             isSelectable: isSelectable,
             strikethrough: strikethrough,
-            kerning: kerning,
-            linkAction: linkAction
+            kerning: kerning
         )
     }
 
@@ -60,11 +55,9 @@ public extension Heading {
     ///   - lineSpacing: Distance in points between the bottom of one line fragment and the top of the next.
     ///   - alignment: Horizontal multi-line alignment.
     ///   - accentColor: Color for `<ref>` formatting tag.
-    ///   - linkColor: Color for `<a href>` and `<applink>` formatting tag.
-    ///   - linkAction: Handler for any detected TextLink tap action.
     ///   - isSelectable: Determines if text is copyable using long tap gesture.
-    ///   - kerning: Additional spacing between characters.
     ///   - strikethrough: Determines if strikethrough should be applied.
+    ///   - kerning: Additional spacing between characters.
     init(
         _ content: String,
         style: Style,
@@ -72,11 +65,9 @@ public extension Heading {
         lineSpacing: CGFloat? = nil,
         alignment: TextAlignment = .leading,
         accentColor: UIColor? = nil,
-        linkColor: TextLink.Color = .primary,
         isSelectable: Bool = false,
         strikethrough: Bool = false,
-        kerning: CGFloat = 0,
-        linkAction: @escaping TextLink.Action = { _, _ in }
+        kerning: CGFloat = 0
     ) {
         self.content = content
         self.style = style
@@ -84,11 +75,9 @@ public extension Heading {
         self.lineSpacing = lineSpacing
         self.alignment = alignment
         self.accentColor = accentColor ?? color?.uiValue ?? .inkDark
-        self.linkColor = linkColor
         self.isSelectable = isSelectable
         self.strikethrough = strikethrough
         self.kerning = kerning
-        self.linkAction = linkAction
     }
 }
 

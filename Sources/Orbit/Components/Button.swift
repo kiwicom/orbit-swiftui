@@ -66,9 +66,9 @@ public struct Button: View {
             label,
             size: size.textSize,
             color: .custom(style.foregroundUIColor),
-            weight: .medium,
-            linkColor: .custom(style.foregroundUIColor)
+            weight: .medium
         )
+        .textLinkColor(.custom(style.foregroundUIColor))
     }
 
     var isIconOnly: Bool {
