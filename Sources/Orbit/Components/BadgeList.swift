@@ -7,6 +7,8 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/badgelist/)
 public struct BadgeList: View {
 
+    @Environment(\.textAccentColor) var textAccentColor
+
     let label: String
     let iconContent: Icon.Content
     let style: Style
@@ -24,9 +26,9 @@ public struct BadgeList: View {
                 Text(
                     label,
                     size: size.textSize,
-                    color: .custom(labelColor.color),
-                    accentColor: style.iconColor
+                    color: .custom(labelColor.color)
                 )
+                .textAccentColor(textAccentColor ?? style.iconColor)
                 .textLinkColor(.custom(labelColor.color))
             }
         }
@@ -88,10 +90,7 @@ public extension BadgeList {
         public var backgroundColor: Color {
             switch self {
                 case .neutral:                              return .cloudLight
-                case .status(.info):                        return .blueLight
-                case .status(.success):                     return .greenLight
-                case .status(.warning):                     return .orangeLight
-                case .status(.critical):                    return .redLight
+                case .status(let status):                   return status.lightColor
                 case .custom(_, let backgroundColor):       return backgroundColor
             }
         }
@@ -99,10 +98,7 @@ public extension BadgeList {
         public var iconColor: UIColor {
             switch self {
                 case .neutral:                              return .inkNormal
-                case .status(.info):                        return .blueNormal
-                case .status(.success):                     return .greenNormal
-                case .status(.warning):                     return .orangeNormal
-                case .status(.critical):                    return .redNormal
+                case .status(let status):                   return status.uiColor
                 case .custom(let iconColor, _):             return iconColor
             }
         }

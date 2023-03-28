@@ -25,8 +25,7 @@ public struct ButtonLink: View {
                         Text(
                             label,
                             color: nil,
-                            weight: .medium,
-                            accentColor: style.color.normal
+                            weight: .medium
                         )
                         // Ignore any potential `TextLinks`
                         .allowsHitTesting(false)
@@ -211,6 +210,8 @@ struct ButtonLinkPreviews: PreviewProvider {
             icon: .kiwicom,
             action: {}
         )
+        .textAccentColor(Status.success.darkUIColor)
+        .textLinkColor(.status(.critical))
         .padding(.medium)
         .previewDisplayName()
     }

@@ -13,7 +13,6 @@ public struct Select: View {
     @Binding var messageHeight: CGFloat
     
     let label: String
-    let labelAccentColor: UIColor?
     let prefix: Icon.Content
     let value: String?
     let placeholder: String
@@ -25,7 +24,6 @@ public struct Select: View {
     public var body: some View {
         FieldWrapper(
             label,
-            labelAccentColor: labelAccentColor,
             message: message,
             messageHeight: $messageHeight
         ) {
@@ -97,7 +95,6 @@ public extension Select {
     /// Creates Orbit Select component.
     init(
         _ label: String = "",
-        labelAccentColor: UIColor? = nil,
         prefix: Icon.Content = .none,
         value: String?,
         placeholder: String = "",
@@ -108,7 +105,6 @@ public extension Select {
         action: @escaping () -> Void
     ) {
         self.label = label
-        self.labelAccentColor = labelAccentColor
         self.prefix = prefix
         self.value = value
         self.placeholder = placeholder
@@ -241,13 +237,13 @@ struct SelectPreviews: PreviewProvider {
 
                 Select(
                     FieldLabelPreviews.longLabel,
-                    labelAccentColor: .orangeNormal,
                     prefix: .image(.orbit(.google)),
                     value: "Bad Value with a very long text that should overflow",
                     message: .error("Error message, but also very long and multi-line to test that it works."),
                     action: {}
                 )
                 .textLinkColor(.status(.critical))
+                .textAccentColor(.orangeNormal)
             }
         }
         .padding(.medium)

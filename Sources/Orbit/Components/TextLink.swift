@@ -106,10 +106,7 @@ public extension TextLink {
             switch self {
                 case .primary:              return .productDark
                 case .secondary:            return .inkDark
-                case .status(.info):        return .blueDark
-                case .status(.success):     return .greenDark
-                case .status(.warning):     return .orangeDark
-                case .status(.critical):    return .redDark
+                case .status(let status):   return status.darkUIColor
                 case .custom(let color):    return color
             }
         }

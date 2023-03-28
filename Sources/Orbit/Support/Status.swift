@@ -20,11 +20,41 @@ public enum Status {
 
     /// Default color associated with status.
     var color: Color {
+        .init(uiColor)
+    }
+
+    /// Default UIColor associated with status.
+    var uiColor: UIColor {
         switch self {
             case .info:         return .blueNormal
             case .success:      return .greenNormal
             case .warning:      return .orangeNormal
             case .critical:     return .redNormal
+        }
+    }
+
+    /// Default light color associated with status.
+    var lightColor: Color {
+        switch self {
+            case .info:         return .blueLight
+            case .success:      return .greenLight
+            case .warning:      return .orangeLight
+            case .critical:     return .redLight
+        }
+    }
+
+    /// Default text color associated with status.
+    var darkColor: Color {
+        .init(darkUIColor)
+    }
+
+    /// Default text color associated with status.
+    var darkUIColor: UIColor {
+        switch self {
+            case .info:         return .blueDark
+            case .success:      return .greenDark
+            case .warning:      return .orangeDark
+            case .critical:     return .redDark
         }
     }
 }

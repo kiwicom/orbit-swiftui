@@ -18,52 +18,41 @@ public enum Message: Equatable, Hashable, CustomStringConvertible {
 
     public var isEmphasis: Bool {
         switch self {
-            case .error, .help, .warning:           return true
-            case .normal:                           return false
+            case .error, .help, .warning:   return true
+            case .normal:                   return false
         }
     }
 
     public var isError: Bool {
         switch self {
-            case .error:                            return true
-            case .normal, .help, .warning:          return false
+            case .error:                    return true
+            case .normal, .help, .warning:  return false
+        }
+    }
+
+    public var status: Status? {
+        switch self {
+            case .normal:   return nil
+            case .help:     return .info
+            case .warning:  return .warning
+            case .error:    return .critical
         }
     }
 
     public var color: Color {
-        switch self {
-            case .normal:   return .inkNormal
-            case .help:     return .blueNormal
-            case .warning:  return .orangeNormal
-            case .error:    return .redNormal
-        }
+        .init(uiColor)
     }
 
     public var uiColor: UIColor {
-        switch self {
-            case .normal:   return .inkNormal
-            case .help:     return .blueNormal
-            case .warning:  return .orangeNormal
-            case .error:    return .redNormal
-        }
+        status?.uiColor ?? .inkNormal
     }
 
     public var darkColor: Color {
-        switch self {
-            case .normal:   return .inkDark
-            case .help:     return .blueDark
-            case .warning:  return .orangeDark
-            case .error:    return .redDark
-        }
+        status?.darkColor ?? .inkDark
     }
 
     public var lightColor: Color {
-        switch self {
-            case .normal:   return .cloudLight
-            case .help:     return .blueLight
-            case .warning:  return .orangeLight
-            case .error:    return .redLight
-        }
+        status?.lightColor ?? .cloudLight
     }
 
     public var icon: Icon.Symbol {

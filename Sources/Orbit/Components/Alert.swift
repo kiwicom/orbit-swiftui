@@ -189,15 +189,6 @@ public struct Alert<Content: View>: View {
         }
     }
 
-    var textColor: UIColor {
-        switch status {
-            case .info:     return .blueDark
-            case .success:  return .greenDark
-            case .warning:  return .orangeDark
-            case .critical: return .redDark
-        }
-    }
-
     var primaryButtonStyle: Orbit.Button.Style {
         .status(status, subtle: false)
     }

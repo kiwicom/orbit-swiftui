@@ -83,14 +83,11 @@ public extension Badge {
                 case .light:                                return .cloudNormal
                 case .lightInverted:                        return .clear
                 case .neutral:                              return .cloudNormal
+                case .status(_, true):                      return .clear
                 case .status(.info, false):                 return .blueLightHover
-                case .status(.info, true):                  return .clear
                 case .status(.success, false):              return .greenLightHover
-                case .status(.success, true):               return .clear
                 case .status(.warning, false):              return .orangeLightHover
-                case .status(.warning, true):               return .clear
                 case .status(.critical, false):             return .redLightHover
-                case .status(.critical, true):              return .clear
                 case .custom(_, let outlineColor, _):       return outlineColor
                 case .gradient:                             return .clear
             }
@@ -101,14 +98,8 @@ public extension Badge {
                 case .light:                                Color.whiteDarker
                 case .lightInverted:                        Color.inkDark
                 case .neutral:                              Color.cloudLight
-                case .status(.info, false):                 Color.blueLight
-                case .status(.info, true):                  Color.blueNormal
-                case .status(.success, false):              Color.greenLight
-                case .status(.success, true):               Color.greenNormal
-                case .status(.warning, false):              Color.orangeLight
-                case .status(.warning, true):               Color.orangeNormal
-                case .status(.critical, false):             Color.redLight
-                case .status(.critical, true):              Color.redNormal
+                case .status(let status, true):             status.color
+                case .status(let status, false):            status.lightColor
                 case .custom(_, _, let backgroundColor):    backgroundColor
                 case .gradient(let gradient):               gradient.background
             }
@@ -119,14 +110,8 @@ public extension Badge {
                 case .light:                                return .inkDark
                 case .lightInverted:                        return .whiteNormal
                 case .neutral:                              return .inkDark
-                case .status(.info, false):                 return .blueDark
-                case .status(.info, true):                  return .whiteNormal
-                case .status(.success, false):              return .greenDark
-                case .status(.success, true):               return .whiteNormal
-                case .status(.warning, false):              return .orangeDark
-                case .status(.warning, true):               return .whiteNormal
-                case .status(.critical, false):             return .redDark
-                case .status(.critical, true):              return .whiteNormal
+                case .status(let status, false):            return status.darkUIColor
+                case .status(_, true):                      return .whiteNormal
                 case .custom(let labelColor, _, _):         return labelColor
                 case .gradient:                             return .whiteNormal
             }
