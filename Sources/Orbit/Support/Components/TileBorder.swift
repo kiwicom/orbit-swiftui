@@ -14,10 +14,11 @@ public struct TileBorderModifier: ViewModifier {
 
     static let animation: Animation = .easeIn(duration: 0.15)
 
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.status) var status
+
     let style: TileBorderStyle
     let isSelected: Bool
-    let status: Status?
 
     public func body(content: Content) -> some View {
         content
@@ -111,14 +112,12 @@ public extension View {
     /// Decorates content with a border similar to ``Tile`` or ``Card`` appearance using specified style.
     func tileBorder(
         _ style: TileBorderStyle = .default,
-        isSelected: Bool = false,
-        status: Status? = nil
+        isSelected: Bool = false
     ) -> some View {
         modifier(
             TileBorderModifier(
                 style: style,
-                isSelected: isSelected,
-                status: status
+                isSelected: isSelected
             )
         )
     }
@@ -149,13 +148,16 @@ struct TileBorderModifierPreviews: PreviewProvider {
                 .background(Color.blueLight)
                 .tileBorder(isSelected: true)
 
-            content
-                .background(Color.blueLight)
-                .tileBorder(status: .critical)
+            Group {
+                content
+                    .background(Color.blueLight)
+                    .tileBorder()
 
-            content
-                .background(Color.blueLight)
-                .tileBorder(isSelected: true, status: .critical)
+                content
+                    .background(Color.blueLight)
+                    .tileBorder(isSelected: true)
+            }
+            .status(.critical)
 
             ListChoice("ListChoice", showSeparator: false, action: {})
                 .fixedSize()

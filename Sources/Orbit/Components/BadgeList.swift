@@ -7,7 +7,8 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/badgelist/)
 public struct BadgeList: View {
 
-    @Environment(\.textAccentColor) var textAccentColor
+    @Environment(\.status) private var status
+    @Environment(\.textAccentColor) private var textAccentColor
 
     let label: String
     let iconContent: Icon.Content
@@ -19,13 +20,13 @@ public struct BadgeList: View {
         if isEmpty == false {
             HStack(alignment: alignment, spacing: .xSmall) {
                 badgeOrEmptySpace
-                    .foregroundColor(style.iconColor)
+                    .foregroundColor(iconColor)
                     .padding(.xxSmall)
                     .background(badgeBackground)
 
                 Text(label, size: size.textSize)
                     .foregroundColor(labelColor.color)
-                    .textAccentColor(textAccentColor ?? style.iconColor)
+                    .textAccentColor(textAccentColor ?? iconColor)
                     .textLinkColor(.custom(labelColor.color))
             }
         }
@@ -42,13 +43,33 @@ public struct BadgeList: View {
 
     @ViewBuilder var badgeBackground: some View {
         if iconContent.isEmpty == false {
-            style.backgroundColor
+            backgroundColor
                 .clipShape(Circle())
+        }
+    }
+
+    public var iconColor: Color {
+        switch style {
+            case .neutral:                              return .inkNormal
+            case .status(let status):                   return (status ?? defaultStatus).color
+            case .custom(let iconColor, _):             return iconColor
+        }
+    }
+
+    public var backgroundColor: Color {
+        switch style {
+            case .neutral:                              return .cloudLight
+            case .status(let status):                   return (status ?? defaultStatus).lightColor
+            case .custom(_, let backgroundColor):       return backgroundColor
         }
     }
 
     var alignment: VerticalAlignment {
         iconContent.isEmpty ? .top : .firstTextBaseline
+    }
+
+    var defaultStatus: Status {
+        status ?? .info
     }
 
     var isEmpty: Bool {
@@ -60,6 +81,9 @@ public struct BadgeList: View {
 public extension BadgeList {
 
     /// Creates Orbit BadgeList component.
+    ///
+    /// - Parameters:
+    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ label: String = "",
         icon: Icon.Content = .none,
@@ -81,24 +105,8 @@ public extension BadgeList {
     enum Style: Equatable, Hashable {
 
         case neutral
-        case status(_ status: Status)
+        case status(_ status: Status?)
         case custom(iconColor: Color, backgroundColor: Color)
-
-        public var backgroundColor: Color {
-            switch self {
-                case .neutral:                              return .cloudLight
-                case .status(let status):                   return status.lightColor
-                case .custom(_, let backgroundColor):       return backgroundColor
-            }
-        }
-
-        public var iconColor: Color {
-            switch self {
-                case .neutral:                              return .inkNormal
-                case .status(let status):                   return status.color
-                case .custom(let iconColor, _):             return iconColor
-            }
-        }
     }
 
     enum LabelColor {
@@ -189,7 +197,9 @@ struct BadgeListPreviews: PreviewProvider {
             BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", icon: .countryFlag("cz"), style: .status(.critical))
             BadgeList("This is simple <ref>BadgeList</ref> item with custom image", icon: .image(.orbit(.facebook)), style: .status(.success))
             BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color", labelColor: .custom(.blueDark))
+            BadgeList("This is a <ref>BadgeList</ref> with <strong>status</strong> override", icon: .sfSymbol("info.circle.fill"), style: .status(nil))
         }
+        .status(.success)
         .padding(.medium)
         .previewDisplayName()
     }

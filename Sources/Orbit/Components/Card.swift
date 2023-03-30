@@ -1,20 +1,5 @@
 import SwiftUI
 
-public enum CardAction {
-    case none
-    case buttonLink(_ label: String, style: ButtonLink.Style = .primary, action: () -> Void)
-}
-
-/// Specifies the padding and spacing behavior of Card content.
-public enum CardContentLayout {
-    /// Content fills all available space with no padding or spacing.
-    case fill
-    /// Content with `.medium` padding and overridable spacing.
-    case `default`(spacing: CGFloat = .medium)
-    /// Content with custom padding and spacing.
-    case custom(padding: CGFloat, spacing: CGFloat)
-}
-
 /// Separates content into sections.
 ///
 /// Card is a wrapping component around a custom content.
@@ -23,7 +8,7 @@ public enum CardContentLayout {
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Card<Content: View>: View {
 
-    @Environment(\.idealSize) var idealSize
+    @Environment(\.idealSize) private var idealSize
 
     let title: String
     let description: String
@@ -34,7 +19,6 @@ public struct Card<Content: View>: View {
     let contentAlignment: HorizontalAlignment
     let showBorder: Bool
     let titleStyle: Heading.Style
-    let status: Status?
     let backgroundColor: Color?
     @ViewBuilder let content: Content
 
@@ -53,8 +37,7 @@ public struct Card<Content: View>: View {
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
         .background(backgroundColor)
         .tileBorder(
-            showBorder ? .iOS : .none,
-            status: status
+            showBorder ? .iOS : .none
         )
         .ignoreScreenLayoutHorizontalPadding(limitToSizeClass: .compact)
         .accessibilityElement(children: .contain)
@@ -137,7 +120,6 @@ public extension Card {
         headerSpacing: CGFloat = .medium,
         showBorder: Bool = true,
         titleStyle: Heading.Style = .title4,
-        status: Status? = nil,
         backgroundColor: Color? = .whiteDarker,
         contentLayout: CardContentLayout = .default(),
         contentAlignment: HorizontalAlignment = .leading,
@@ -150,7 +132,6 @@ public extension Card {
         self.headerSpacing = headerSpacing
         self.showBorder = showBorder
         self.titleStyle = titleStyle
-        self.status = status
         self.backgroundColor = backgroundColor
         self.contentLayout = contentLayout
         self.contentAlignment = contentAlignment
@@ -165,6 +146,24 @@ public extension AccessibilityID {
     static let cardIcon                 = Self(rawValue: "orbit.card.icon")
     static let cardDescription          = Self(rawValue: "orbit.card.description")
     static let cardActionButtonLink     = Self(rawValue: "orbit.card.action.buttonLink")
+}
+
+// MARK: - Types
+
+/// Specifies the trailing action of Card component.
+public enum CardAction {
+    case none
+    case buttonLink(_ label: String, style: ButtonLink.Style = .primary, action: () -> Void)
+}
+
+/// Specifies the padding and spacing behavior of Card content.
+public enum CardContentLayout {
+    /// Content fills all available space with no padding or spacing.
+    case fill
+    /// Content with `.medium` padding and overridable spacing.
+    case `default`(spacing: CGFloat = .medium)
+    /// Content with custom padding and spacing.
+    case custom(padding: CGFloat, spacing: CGFloat)
 }
 
 // MARK: - Previews
@@ -282,11 +281,11 @@ struct CardPreviews: PreviewProvider {
         Card(
             "Card with very very very very very very long and multi-line title",
             description: "Very very very very very long and multi-line description",
-            action: .buttonLink("ButtonLink with a long description", action: {}),
-            status: .critical
+            action: .buttonLink("ButtonLink with a long description", action: {})
         ) {
             contentPlaceholder
         }
+        .status(.critical)
         .previewDisplayName()
     }
     

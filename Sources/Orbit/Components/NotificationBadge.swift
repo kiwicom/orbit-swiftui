@@ -5,7 +5,8 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/notificationbadge/)
 public struct NotificationBadge: View {
 
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.status) private var status
+    @Environment(\.sizeCategory) private var sizeCategory
 
     let content: Content
     let style: Badge.Style
@@ -14,14 +15,10 @@ public struct NotificationBadge: View {
         if isEmpty == false {
             contentView
                 .padding(.xxSmall) // = 24 height @ normal size
-                .foregroundColor(style.labelColor)
+                .foregroundColor(labelColor)
                 .background(
-                    style.background
-                        .clipShape(shape)
-                )
-                .overlay(
-                    shape
-                        .strokeBorder(style.outlineColor, lineWidth: BorderWidth.thin)
+                    background
+                        .clipShape(Circle())
                 )
                 .fixedSize()
         }
@@ -33,19 +30,39 @@ public struct NotificationBadge: View {
                 Text(text, size: .small)
                     .foregroundColor(nil)
                     .fontWeight(.medium)
-                    .textLinkColor(.custom(style.labelColor))
+                    .textLinkColor(.custom(labelColor))
                     .frame(minWidth: minTextWidth)
             case .icon(let icon):
                 Icon(content: icon, size: .small)
         }
     }
 
-    var minTextWidth: CGFloat {
-        Text.Size.small.lineHeight * sizeCategory.ratio
+    @ViewBuilder var background: some View {
+        switch style {
+            case .light:                                Color.whiteDarker
+            case .lightInverted:                        Color.inkDark
+            case .neutral:                              Color.cloudLight
+            case .status(let status, true):             (status ?? defaultStatus).color
+            case .status(let status, false):            (status ?? defaultStatus).lightColor
+            case .custom(_, _, let backgroundColor):    backgroundColor
+            case .gradient(let gradient):               gradient.background
+        }
     }
 
-    var shape: some InsettableShape {
-        Circle()
+    var labelColor: Color {
+        switch style {
+            case .light:                                return .inkDark
+            case .lightInverted:                        return .whiteNormal
+            case .neutral:                              return .inkDark
+            case .status(let status, false):            return (status ?? defaultStatus).darkColor
+            case .status(_, true):                      return .whiteNormal
+            case .custom(let labelColor, _, _):         return labelColor
+            case .gradient:                             return .whiteNormal
+        }
+    }
+
+    var minTextWidth: CGFloat {
+        Text.Size.small.lineHeight * sizeCategory.ratio
     }
 
     var isEmpty: Bool {
@@ -54,18 +71,28 @@ public struct NotificationBadge: View {
             case .icon(let icon):   return icon.isEmpty
         }
     }
+
+    var defaultStatus: Status {
+        status ?? .info
+    }
 }
 
 // MARK: - Inits
 public extension NotificationBadge {
     
     /// Creates Orbit NotificationBadge component containing text.
-    init(_ label: String, style: Badge.Style = .neutral) {
+    ///
+    /// - Parameters:
+    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    init(_ label: String, style: Badge.Style = .status(nil)) {
         self.init(content: .text(label), style: style)
     }
 
     /// Creates Orbit NotificationBadge component containing an icon.
-    init(_ icon: Icon.Content, style: Badge.Style = .neutral) {
+    ///
+    /// - Parameters:
+    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    init(_ icon: Icon.Content, style: Badge.Style = .status(nil)) {
         self.init(content: .icon(icon), style: style)
     }
 }
@@ -86,7 +113,7 @@ struct NotificationBadgePreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             sizing
-            statuses
+            styles
             gradients
             mix
         }
@@ -103,13 +130,13 @@ struct NotificationBadgePreviews: PreviewProvider {
     }
 
     static var sizing: some View {
-        NotificationBadge("88")
+        NotificationBadge("88", style: .neutral)
             .measured()
             .padding(.medium)
             .previewDisplayName()
     }
 
-    static var statuses: some View {
+    static var styles: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
             VStack(alignment: .leading, spacing: .medium) {
                 badges(.light)

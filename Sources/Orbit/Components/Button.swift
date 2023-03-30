@@ -6,7 +6,8 @@ import SwiftUI
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Button: View {
 
-    @Environment(\.idealSize) var idealSize
+    @Environment(\.status) private var status
+    @Environment(\.idealSize) private var idealSize
 
     let label: String
     let iconContent: Icon.Content
@@ -18,7 +19,7 @@ public struct Button: View {
     public var body: some View {
         SwiftUI.Button(
             action: {
-                presentHapticFeedback()
+                HapticsProvider.sendHapticFeedback(hapticFeedback)
                 action()
             },
             label: {
@@ -31,7 +32,7 @@ public struct Button: View {
 
                     HStack(spacing: .xSmall) {
                         Icon(content: iconContent, size: size.textSize.iconSize)
-                            .foregroundColor(style.foregroundColor)
+                            .foregroundColor(foregroundColor)
                         textWrapper
                     }
 
@@ -40,14 +41,14 @@ public struct Button: View {
                     }
 
                     Icon(content: disclosureIconContent, size: size.textSize.iconSize)
-                        .foregroundColor(style.foregroundColor)
+                        .foregroundColor(foregroundColor)
                 }
                 .padding(.vertical, size.verticalPadding)
                 .padding(.leading, leadingPadding)
                 .padding(.trailing, trailingPadding)
             }
         )
-        .buttonStyle(ButtonStyle(style: style, size: size))
+        .buttonStyle(ButtonStyle(style: style, status: status, size: size))
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
     }
 
@@ -63,9 +64,22 @@ public struct Button: View {
 
     @ViewBuilder var text: some View {
         Text(label, size: size.textSize)
-            .foregroundColor(style.foregroundColor)
+            .foregroundColor(foregroundColor)
             .fontWeight(.medium)
-            .textLinkColor(.custom(style.foregroundColor))
+            .textLinkColor(.custom(foregroundColor))
+    }
+
+    public var foregroundColor: Color {
+        switch style {
+            case .primary:                      return .whiteNormal
+            case .primarySubtle:                return .productDark
+            case .secondary:                    return .inkDark
+            case .critical:                     return .whiteNormal
+            case .criticalSubtle:               return .redDark
+            case .status(_, false):             return .whiteNormal
+            case .status(let status, true):     return (status ?? defaultStatus).darkHoverColor
+            case .gradient:                     return .whiteNormal
+        }
     }
 
     var isIconOnly: Bool {
@@ -80,18 +94,28 @@ public struct Button: View {
         label.isEmpty == false && disclosureIconContent.isEmpty ? size.horizontalPadding : size.horizontalIconPadding
     }
 
-    func presentHapticFeedback() {
+    var defaultStatus: Status {
+        status ?? .info
+    }
+
+    var resolvedStatus: Status {
         switch style {
-            case .primary:
-                HapticsProvider.sendHapticFeedback(.light(1))
-            case .primarySubtle, .secondary, .status(.info, _), .gradient:
-                HapticsProvider.sendHapticFeedback(.light(0.5))
-            case .critical, .criticalSubtle, .status(.critical, _):
-                HapticsProvider.sendHapticFeedback(.notification(.error))
-            case .status(.warning, _):
-                HapticsProvider.sendHapticFeedback(.notification(.warning))
-            case .status(.success, _):
-                HapticsProvider.sendHapticFeedback(.light(0.5))
+            case .status(let status, _):    return status ?? defaultStatus
+            default:                        return .info
+        }
+    }
+
+    var hapticFeedback: HapticsProvider.HapticFeedbackType {
+        switch style {
+            case .primary:                                  return .light(1)
+            case .primarySubtle, .secondary, .gradient:     return .light(0.5)
+            case .critical, .criticalSubtle:                return .notification(.error)
+            case .status:
+                switch resolvedStatus {
+                    case .info, .success:                   return .light(0.5)
+                    case .warning:                          return .notification(.warning)
+                    case .critical:                         return .notification(.error)
+                }
         }
     }
 }
@@ -100,6 +124,9 @@ public struct Button: View {
 public extension Button {
 
     /// Creates Orbit Button component.
+    ///
+    /// - Parameters:
+    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ label: String,
         icon: Icon.Content = .none,
@@ -117,6 +144,9 @@ public extension Button {
     }
 
     /// Creates Orbit Button component with icon only.
+    ///
+    /// - Parameters:
+    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ icon: Icon.Content,
         style: Style = .primary,
@@ -143,62 +173,8 @@ extension Button {
         case secondary
         case critical
         case criticalSubtle
-        case status(_ status: Status, subtle: Bool = false)
+        case status(Status?, isSubtle: Bool = false)
         case gradient(Gradient)
-
-        public var foregroundColor: Color {
-            switch self {
-                case .primary:                  return .whiteNormal
-                case .primarySubtle:            return .productDark
-                case .secondary:                return .inkDark
-                case .critical:                 return .whiteNormal
-                case .criticalSubtle:           return .redDark
-                case .status(.critical, false): return .whiteNormal
-                case .status(.critical, true):  return .redDarkHover
-                case .status(.info, false):     return .whiteNormal
-                case .status(.info, true):      return .blueDarkHover
-                case .status(.success, false):  return .whiteNormal
-                case .status(.success, true):   return .greenDarkHover
-                case .status(.warning, false):  return .whiteNormal
-                case .status(.warning, true):   return .orangeDarkHover
-                case .gradient:                 return .whiteNormal
-            }
-        }
-
-        @ViewBuilder public var background: some View {
-            switch self {
-                case .primary:                      Color.productNormal
-                case .primarySubtle:                Color.productLight
-                case .secondary:                    Color.cloudNormal
-                case .critical:                     Color.redNormal
-                case .criticalSubtle:               Color.redLight
-                case .status(let status, false):    status.color
-                case .status(.critical, true):      Color.redLightHover
-                case .status(.info, true):          Color.blueLightHover
-                case .status(.success, true):       Color.greenLightHover
-                case .status(.warning, true):       Color.orangeLightHover
-                case .gradient(let gradient):       gradient.background
-            }
-        }
-        
-        @ViewBuilder public var backgroundActive: some View {
-            switch self {
-                case .primary:                  Color.productNormalActive
-                case .primarySubtle:            Color.productLightActive
-                case .secondary:                Color.cloudNormalActive
-                case .critical:                 Color.redNormalActive
-                case .criticalSubtle:           Color.redLightActive
-                case .status(.critical, false): Color.redNormalActive
-                case .status(.critical, true):  Color.redLightActive
-                case .status(.info, false):     Color.blueNormalActive
-                case .status(.info, true):      Color.blueLightActive
-                case .status(.success, false):  Color.greenNormalActive
-                case .status(.success, true):   Color.greenLightActive
-                case .status(.warning, false):  Color.orangeNormalActive
-                case .status(.warning, true):   Color.orangeLightActive
-                case .gradient(let gradient):   gradient.color
-            }
-        }
     }
     
     public enum Size {
@@ -238,6 +214,7 @@ extension Button {
     public struct ButtonStyle: SwiftUI.ButtonStyle {
 
         var style: Style
+        var status: Status?
         var size: Size
 
         public func makeBody(configuration: Configuration) -> some View {
@@ -249,10 +226,40 @@ extension Button {
         
         @ViewBuilder func background(for configuration: Configuration) -> some View {
             if configuration.isPressed {
-                style.backgroundActive
+                backgroundActive
             } else {
-                style.background
+                background
             }
+        }
+
+        @ViewBuilder var background: some View {
+            switch style {
+                case .primary:                      Color.productNormal
+                case .primarySubtle:                Color.productLight
+                case .secondary:                    Color.cloudNormal
+                case .critical:                     Color.redNormal
+                case .criticalSubtle:               Color.redLight
+                case .status(let status, false):    (status ?? defaultStatus).color
+                case .status(let status, true):     (status ?? defaultStatus).lightHoverColor
+                case .gradient(let gradient):       gradient.background
+            }
+        }
+
+        @ViewBuilder var backgroundActive: some View {
+            switch style {
+                case .primary:                      Color.productNormalActive
+                case .primarySubtle:                Color.productLightActive
+                case .secondary:                    Color.cloudNormalActive
+                case .critical:                     Color.redNormalActive
+                case .criticalSubtle:               Color.redLightActive
+                case .status(let status, false):    (status ?? defaultStatus).activeColor
+                case .status(let status, true):     (status ?? defaultStatus).lightActiveColor
+                case .gradient(let gradient):       gradient.color
+            }
+        }
+
+        var defaultStatus: Status {
+            status ?? .info
         }
     }
 
@@ -410,7 +417,7 @@ struct ButtonPreviews: PreviewProvider {
     @ViewBuilder static func statusButtonStack(_ status: Status) -> some View {
         VStack(spacing: .xSmall) {
             statusButtons(.status(status))
-            statusButtons(.status(status, subtle: true))
+            statusButtons(.status(status, isSubtle: true))
         }
     }
 

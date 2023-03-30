@@ -5,6 +5,8 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/buttonlink/)
 public struct ButtonLink: View {
 
+    @Environment(\.status) private var status
+
     let label: String
     let style: Style
     let iconContent: Icon.Content
@@ -28,13 +30,27 @@ public struct ButtonLink: View {
                             .fontWeight(.medium)
                             // Ignore any potential `TextLinks`
                             .allowsHitTesting(false)
-                            .textLinkColor(.custom(style.color.normal))
+                            .textLinkColor(.custom(colors.normal))
                     }
                     .padding(.vertical, verticalPadding)
                 }
             )
-            .buttonStyle(OrbitStyle(style: style, size: size))
+            .buttonStyle(OrbitStyle(colors: colors, size: size))
         }
+    }
+
+    public var colors: (normal: Color, active: Color) {
+        switch style {
+            case .primary:              return (.productNormal, .productLightActive)
+            case .secondary:            return (.inkDark, .cloudDark)
+            case .critical:             return (.redNormal, .redLightActive)
+            case .status(let status):   return (status ?? defaultStatus).colors
+            case .custom(let colors):   return colors
+        }
+    }
+
+    var defaultStatus: Status {
+        status ?? .info
     }
 
     var verticalPadding: CGFloat {
@@ -50,6 +66,9 @@ public struct ButtonLink: View {
 public extension ButtonLink {
 
     /// Creates Orbit ButtonLink component.
+    ///
+    /// - Parameters:
+    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ label: String = "",
         style: Style = .primary,
@@ -72,21 +91,8 @@ public extension ButtonLink {
         case primary
         case secondary
         case critical
-        case status(_ status: Status)
+        case status(_ status: Status?)
         case custom(colors: (normal: Color, active: Color))
-
-        public var color: (normal: Color, active: Color) {
-            switch self {
-                case .primary:              return (.productNormal, .productLightActive)
-                case .secondary:            return (.inkDark, .cloudDark)
-                case .critical:             return (.redNormal, .redLightActive)
-                case .status(.info):        return (.blueNormal, .blueLightActive)
-                case .status(.success):     return (.greenNormal, .greenLightActive)
-                case .status(.warning):     return (.orangeNormal, .orangeLightActive)
-                case .status(.critical):    return (.redNormal, .redLightActive)
-                case .custom(let colors):   return colors
-            }
-        }
 
         public static func ==(lhs: Self, rhs: Self) -> Bool {
             switch (lhs, rhs) {
@@ -119,15 +125,22 @@ public extension ButtonLink {
     
     struct OrbitStyle: ButtonStyle {
 
-        let style: Style
+        let colors: (normal: Color, active: Color)
         let size: ButtonLink.Size
 
         public func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .foregroundColor(configuration.isPressed ? style.color.active : style.color.normal)
+                .foregroundColor(configuration.isPressed ? colors.active : colors.normal)
                 .frame(maxWidth: size.maxWidth)
                 .contentShape(Rectangle())
         }
+    }
+}
+
+private extension Status {
+
+    var colors: (normal: Color, active: Color) {
+        (color, lightActiveColor)
     }
 }
 

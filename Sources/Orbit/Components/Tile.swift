@@ -22,9 +22,9 @@ public struct TileButtonStyle: SwiftUI.ButtonStyle {
             .background(backgroundColor(isPressed: configuration.isPressed))
             .tileBorder(
                 style,
-                isSelected: isSelected,
-                status: status
+                isSelected: isSelected
             )
+            .status(status)
     }
 
     func backgroundColor(isPressed: Bool) -> Color {
@@ -53,9 +53,10 @@ public enum TileDisclosure: Equatable {
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Tile<Content: View>: View {
 
-    @Environment(\.isInsideTileGroup) var isInsideTileGroup
-    @Environment(\.isTileSeparatorVisible) var isTileSeparatorVisible
-    @Environment(\.idealSize) var idealSize
+    @Environment(\.idealSize) private var idealSize
+    @Environment(\.isInsideTileGroup) private var isInsideTileGroup
+    @Environment(\.isTileSeparatorVisible) private var isTileSeparatorVisible
+    @Environment(\.status) private var status
 
     public let verticalTextPadding: CGFloat = 14 // = 52 height @ normal size
 
@@ -64,7 +65,6 @@ public struct Tile<Content: View>: View {
     let iconContent: Icon.Content
     let disclosure: TileDisclosure
     let showBorder: Bool
-    let status: Status?
     let backgroundColor: BackgroundColor?
     let titleStyle: Heading.Style
     let descriptionColor: Color
@@ -192,16 +192,12 @@ public struct Tile<Content: View>: View {
 public extension Tile {
     
     /// Creates Orbit Tile component.
-    ///
-    /// - Parameters:
-    ///   - style: Appearance of tile. Can be styled to match iOS default table row.
     init(
         _ title: String = "",
         description: String = "",
         icon: Icon.Content = .none,
         disclosure: TileDisclosure = .icon(.chevronForward),
         showBorder: Bool = true,
-        status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title4,
         descriptionColor: Color = .inkNormal,
@@ -213,7 +209,6 @@ public extension Tile {
         self.iconContent = icon
         self.disclosure = disclosure
         self.showBorder = showBorder
-        self.status = status
         self.backgroundColor = backgroundColor
         self.titleStyle = titleStyle
         self.descriptionColor = descriptionColor
@@ -227,7 +222,7 @@ public extension Tile {
 
     /// Sets the visibility of the separator associated with this tile.
     ///
-    /// Only applies if this tile is contained in a ``TileGroup``.
+    /// Only applies if the tile is contained in a ``TileGroup``.
     ///
     /// - Parameter isVisible: Whether the separator is visible or not.
     func tileSeparator(_ isVisible: Bool) -> some View {
@@ -322,8 +317,10 @@ struct TilePreviews: PreviewProvider {
             Tile("Title with very very very very very long multiline text", description: descriptionMultiline, icon: .airplane, action: {}) {
                 contentPlaceholder
             }
-            Tile(title, description: description, icon: .symbol(.airplane, color: .blueNormal), status: .info, action: {})
-            Tile("SF Symbol", description: description, icon: .sfSymbol("info.circle.fill"), status: .critical, action: {})
+            Tile(title, description: description, icon: .symbol(.airplane, color: .blueNormal), action: {})
+                .status(.info)
+            Tile("SF Symbol", description: description, icon: .sfSymbol("info.circle.fill"), action: {})
+                .status(.critical)
             Tile("Country Flag", description: description, icon: .countryFlag("cz"), disclosure: .buttonLink("Action", style: .primary), action: {})
             Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .critical), action: {})
             Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid), action: {})

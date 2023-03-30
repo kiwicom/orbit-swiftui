@@ -1,19 +1,5 @@
 import SwiftUI
 
-public enum AlertButtons {
-    case none
-    case primary(Button.Content)
-    case secondary(Button.Content)
-    case primaryAndSecondary(Button.Content, Button.Content)
-
-    public var isVisible: Bool {
-        switch self {
-            case .primary, .secondary, .primaryAndSecondary:    return true
-            case .none:                                         return false
-        }
-    }
-}
-
 /// Breaks the main user flow to present information.
 ///
 /// There are times when just simple information isn’t enough and the user needs
@@ -28,26 +14,27 @@ public enum AlertButtons {
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Alert<Content: View>: View {
 
-    @Environment(\.idealSize) var idealSize
+    @Environment(\.idealSize) private var idealSize
+    @Environment(\.status) private var status
 
-    let style: AlertStyle
     let title: String
     let description: String
     let iconContent: Icon.Content
     let buttons: AlertButtons
-    let status: Status
-    let isSuppressed: Bool
-    @ViewBuilder let customContent: Content
+    let style: AlertStyle
+    @ViewBuilder let content: Content
+
+    private let variant: AlertVariant
 
     public var body: some View {
-        content
+        variantContent
             .background(background)
             .cornerRadius(BorderRadius.default)
             .accessibilityElement(children: .contain)
     }
 
-    @ViewBuilder var content: some View {
-        switch style {
+    @ViewBuilder var variantContent: some View {
+        switch variant {
             case .default:  defaultContent
             case .inline:   inlineContent
         }
@@ -60,7 +47,7 @@ public struct Alert<Content: View>: View {
 
             VStack(alignment: .leading, spacing: .medium) {
                 defaultHeader
-                customContent
+                content
                 defaultButtons
             }
         }
@@ -105,7 +92,7 @@ public struct Alert<Content: View>: View {
 
     @ViewBuilder var icon: some View {
         Icon(content: iconContent)
-            .foregroundColor(status.color)
+            .foregroundColor(foregroundColor)
             .accessibility(.alertIcon)
     }
 
@@ -164,40 +151,50 @@ public struct Alert<Content: View>: View {
                     .strokeBorder(strokeColor, lineWidth: 1)
             )
             .overlay(
-                status.color
+                foregroundColor
                     .frame(height: 3),
                 alignment: .top
             )
     }
+
+    var foregroundColor: Color {
+        switch style {
+            case .status(let status, _):        return (status ?? defaultStatus).color
+        }
+    }
     
     var backgroundColor: Color {
-        switch (status, isSuppressed) {
-            case (_, true):             return .cloudLight
-            case (.info, _):            return .blueLight
-            case (.success, _):         return .greenLight
-            case (.warning, _):         return .orangeLight
-            case (.critical, _):        return .redLight
+        switch style {
+            case .status(_, true):              return .cloudLight
+            case .status(let status, false):    return (status ?? defaultStatus).lightColor
         }
     }
 
     var strokeColor: Color {
-        switch (status, isSuppressed) {
-            case (_, true):             return .cloudLightHover
-            case (.info, _):            return .blueLightHover
-            case (.success, _):         return .greenLightHover
-            case (.warning, _):         return .orangeLightHover
-            case (.critical, _):        return .redLightHover
+        switch style {
+            case .status(_, true):              return .cloudLightHover
+            case .status(let status, false):    return (status ?? defaultStatus).lightHoverColor
         }
     }
 
     var primaryButtonStyle: Orbit.Button.Style {
-        .status(status, subtle: false)
+        switch style {
+            case .status(let status, _):
+                return .status(status ?? defaultStatus, isSubtle: false)
+        }
     }
 
     var secondaryButtonStyle: Orbit.Button.Style {
-        isSuppressed
-            ? .secondary
-            : .status(status, subtle: true)
+        switch style {
+            case .status(_, true):
+                return .secondary
+            case .status(let status, false):
+                return .status(status ?? defaultStatus, isSubtle: true)
+        }
+    }
+
+    var defaultStatus: Status {
+        status ?? .info
     }
 
     var isInlineHeaderEmpty: Bool {
@@ -208,62 +205,44 @@ public struct Alert<Content: View>: View {
 // MARK: - Inits
 public extension Alert {
     
-    /// Creates Orbit Alert component including custom content.
+    /// Creates Orbit Alert component.
+    ///
+    /// - Parameters:
+    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ title: String = "",
         description: String = "",
         icon: Icon.Content = .none,
         buttons: AlertButtons = .none,
-        status: Status = .info,
-        isSuppressed: Bool = false,
-        @ViewBuilder content: () -> Content
+        style: AlertStyle = .status(nil, isSubtle: false),
+        @ViewBuilder content: () -> Content = { EmptyView() }
     ) {
         self.title = title
         self.description = description
         self.iconContent = icon
         self.buttons = buttons
-        self.status = status
-        self.isSuppressed = isSuppressed
-        self.style = .default
-        self.customContent = content()
-    }
-    
-    /// Creates Orbit Alert component.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Content = .none,
-        buttons: AlertButtons = .none,
-        status: Status = .info,
-        isSuppressed: Bool = false
-    ) where Content == EmptyView {
-        self.init(
-            title,
-            description: description,
-            icon: icon,
-            buttons: buttons,
-            status: status,
-            isSuppressed: isSuppressed,
-            content: { EmptyView() }
-        )
+        self.style = style
+        self.variant = .default
+        self.content = content()
     }
 
     /// Creates Orbit Alert (inline) component.
+    ///
+    /// - Parameters:
+    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ title: String = "",
         icon: Icon.Content = .none,
         button: Button.Content? = nil,
-        status: Status = .info,
-        isSuppressed: Bool = false
+        style: AlertStyle = .status(nil, isSubtle: false)
     ) where Content == EmptyView {
         self.title = title
         self.description = ""
         self.iconContent = icon
         self.buttons = button.map { .primary($0) } ?? .none
-        self.status = status
-        self.isSuppressed = isSuppressed
-        self.style = .inline
-        self.customContent = EmptyView()
+        self.style = style
+        self.variant = .inline
+        self.content = EmptyView()
     }
 }
 
@@ -277,10 +256,48 @@ public extension AccessibilityID {
     static let alertDescription         = Self(rawValue: "orbit.alert.description")
 }
 
-// MARK: - Styles
-enum AlertStyle {
+// MARK: - Types
+
+enum AlertVariant {
     case `default`
     case inline
+}
+
+public enum AlertButtons {
+    case none
+    case primary(Button.Content)
+    case secondary(Button.Content)
+    case primaryAndSecondary(Button.Content, Button.Content)
+
+    public var isVisible: Bool {
+        switch self {
+            case .primary, .secondary, .primaryAndSecondary:    return true
+            case .none:                                         return false
+        }
+    }
+}
+
+/// A style of Orbit Alert component.
+public enum AlertStyle {
+
+    /// A style related to a `status`. Can be optionally modified using `status()` modifier when `nil` value is provided.
+    case status(Status? = nil, isSubtle: Bool = false)
+
+    public static var info: Self {
+        .status(.info)
+    }
+
+    public static var success: Self {
+        .status(.success)
+    }
+
+    public static var warning: Self {
+        .status(.warning)
+    }
+
+    public static var critical: Self {
+        .status(.critical)
+    }
 }
 
 // MARK: - Previews
@@ -301,6 +318,7 @@ struct AlertPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            mixed
 
             Group {
                 basic
@@ -324,6 +342,19 @@ struct AlertPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
+        Alert(
+            title,
+            description: description,
+            icon: .informationCircle,
+            buttons: primaryAndSecondaryConfiguration,
+            style: .status(.info, isSubtle: false)
+        ) {
+            contentPlaceholder
+        }
+        .previewDisplayName()
+    }
+
+    static var mixed: some View {
         VStack(alignment: .leading, spacing: .large) {
             Alert(
                 "Alert with\n<u>multiline</u> title",
@@ -337,22 +368,31 @@ struct AlertPreviews: PreviewProvider {
             }
 
             Group {
-                Alert("Alert title", buttons: .primary("Primary"), status: .info)
-                Alert(description: "Alert description", buttons: .primary("Primary"), status: .info)
-                Alert("Alert title", status: .info)
-                Alert(description: "Alert description", status: .info)
+                Alert("Alert title", buttons: .primary("Primary"))
+                Alert(description: "Alert description", buttons: .primary("Primary"))
+                Alert("Alert title")
+                Alert(description: "Alert description")
             }
 
-            Alert("Inline alert", icon: .grid, button: "Primary", status: .warning, isSuppressed: false)
-            Alert("Inline alert", button: "Primary", status: .warning, isSuppressed: false)
+            Group {
+                Alert("Inline alert", icon: .grid, button: "Primary")
+                Alert("Inline alert", button: "Primary")
+            }
+            .status(.warning)
 
-            Alert("Inline alert with no button", icon: .informationCircle, status: .success)
-            Alert("Inline alert with no button", status: .success)
-                .idealSize()
-            Alert(button: .init(stringLiteral: "Primary"), status: .critical)
-                .idealSize()
+            Group {
+                Alert("Inline alert with no button", icon: .informationCircle)
+                Alert("Inline alert with no button")
+                    .idealSize()
+            }
+            .status(.success)
 
-            Alert("Inline alert with very very very very very very very very very very very long and <u>multiline</u> title", icon: .grid, button: "Primary", status: .warning, isSuppressed: false)
+            Alert(button: .init(stringLiteral: "Primary"))
+                .idealSize()
+                .status(.critical)
+
+            Alert("Inline alert with very very very very very very very very very very very long and <u>multiline</u> title", icon: .grid, button: "Primary")
+                .status(.warning)
         }
         .previewDisplayName()
     }
@@ -403,9 +443,9 @@ struct AlertPreviews: PreviewProvider {
             description: description,
             icon: .symbol(icon),
             buttons: primaryAndSecondaryConfiguration,
-            status: status,
-            isSuppressed: isSuppressed
+            style: .status(nil, isSubtle: isSuppressed)
         )
+        .status(status)
     }
 
     static func alerts(showIcons: Bool, isSuppressed: Bool) -> some View {
@@ -419,10 +459,10 @@ struct AlertPreviews: PreviewProvider {
 
     static func inlineAlerts(showIcon: Bool, isSuppressed: Bool) -> some View {
         VStack(spacing: .medium) {
-            Alert("Informational message", icon: showIcon ? .informationCircle : .none, button: "Primary", status: .info, isSuppressed: isSuppressed)
-            Alert("Success message", icon: showIcon ? .checkCircle : .none, button: "Primary", status: .success, isSuppressed: isSuppressed)
-            Alert("Warning message", icon: showIcon ? .alertCircle : .none, button: "Primary", status: .warning, isSuppressed: isSuppressed)
-            Alert("Critical message", icon: showIcon ? .alertCircle : .none, button: "Primary", status: .critical, isSuppressed: isSuppressed)
+            Alert("Informational message", icon: showIcon ? .informationCircle : .none, button: "Primary", style: .status(nil, isSubtle: isSuppressed))
+            Alert("Success message", icon: showIcon ? .checkCircle : .none, button: "Primary", style: .status(.success, isSubtle: isSuppressed))
+            Alert("Warning message", icon: showIcon ? .alertCircle : .none, button: "Primary", style: .status(.warning, isSubtle: isSuppressed))
+            Alert("Critical message", icon: showIcon ? .alertCircle : .none, button: "Primary", style: .status(.critical, isSubtle: isSuppressed))
         }
     }
 
@@ -463,7 +503,7 @@ struct AlertPreviews: PreviewProvider {
     }
 
     static var snapshot: some View {
-        standalone
+        mixed
             .padding(.medium)
     }
 }

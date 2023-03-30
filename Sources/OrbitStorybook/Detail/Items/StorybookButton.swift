@@ -70,7 +70,7 @@ struct StorybookButton {
     @ViewBuilder static func statusButtonStack(_ status: Status) -> some View {
         VStack(spacing: .xSmall) {
             statusButtons(.status(status))
-            statusButtons(.status(status, subtle: true))
+            statusButtons(.status(status, isSubtle: true))
         }
     }
 

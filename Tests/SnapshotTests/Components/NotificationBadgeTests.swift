@@ -4,7 +4,7 @@ import XCTest
 class NotificationBadgeTests: SnapshotTestCase {
 
     func testNotificationBadges() {
-        assert(NotificationBadgePreviews.statuses)
+        assert(NotificationBadgePreviews.styles)
         assert(NotificationBadgePreviews.sizing)
     }
 }

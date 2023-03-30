@@ -86,11 +86,11 @@ struct StorybookCard {
         Card(
             "Card with very very very very very very long and multi-line title",
             description: "Very very very very very long and multi-line description",
-            action: .buttonLink("ButtonLink with a long description", action: {}),
-            status: .critical
+            action: .buttonLink("ButtonLink with a long description", action: {})
         ) {
             contentPlaceholder
         }
+        .status(.critical)
     }
 
     static var clear: some View {
