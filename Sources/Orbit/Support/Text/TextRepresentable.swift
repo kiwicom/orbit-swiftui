@@ -5,5 +5,8 @@ import SwiftUI
 /// Use the `+` operator to concatenate two `TextRepresentable` elements.
 public protocol TextRepresentable {
 
-    func swiftUIText(sizeCategory: ContentSizeCategory) -> SwiftUI.Text?
+    func swiftUIText(
+        sizeCategory: ContentSizeCategory,
+        textAccentColor: Color?
+    ) -> SwiftUI.Text?
 }

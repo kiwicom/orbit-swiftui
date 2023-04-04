@@ -33,7 +33,11 @@ public struct Tag: View {
 
                         HStack(spacing: 6) {
                             Icon(content: iconContent, size: Text.Size.normal.iconSize)
-                            Text(label, color: nil, weight: .medium)
+                                .fontWeight(.medium)
+                            
+                            Text(label)
+                                .foregroundColor(nil)
+                                .fontWeight(.medium)
                         }
                         .fixedSize(horizontal: true, vertical: false)
 

@@ -6,30 +6,42 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/text/)
 /// - Important: Component has fixed vertical size.
-public struct Text: View, TextBuildable {
+public struct Text: View, FormattedTextBuildable {
 
+    @Environment(\.multilineTextAlignment) private var multilineTextAlignment
+    @Environment(\.lineSpacing) private var lineSpacing
     @Environment(\.textAccentColor) private var textAccentColor
     @Environment(\.sizeCategory) private var sizeCategory
 
-    let content: String
-    let size: Size
-    let color: Color?
-    let isSelectable: Bool
+    private let content: String
+    private let size: Size
+    private let isSelectable: Bool
 
     // Builder properties
-    var weight: Font.Weight
-    var lineSpacing: CGFloat?
-    var alignment: TextAlignment
-    var strikethrough: Bool
-    var kerning: CGFloat
-    var accentColor: UIColor?
+    var baselineOffset: CGFloat?
+    var fontWeight: Font.Weight?
+    var foregroundColor: Color?
+    var strikethrough: Bool?
+    var kerning: CGFloat?
+    var accentColor: Color?
+    var isBold: Bool?
+    var isItalic: Bool?
+    var isUnderline: Bool?
+    var isMonospacedDigit: Bool?
+
+    // The Orbit Text consists of up to 3 layers:
+    //
+    // 1) SwiftUI.Text base layer, either:
+    //      - SwiftUI.Text(verbatim:)           (when text is a plain text only)
+    //      - SwiftUI.Text(attributedString:)   (when text contains any Orbit html formatting)
+    // 2) TextLink-only overlay                 (when text contains any TextLink; limited native modifier support)
+    // 3) Long-tap-to-copy gesture overlay      (when isSelectable == true)
 
     public var body: some View {
         if content.isEmpty == false {
-            text(sizeCategory: sizeCategory)
+            text(sizeCategory: sizeCategory, textAccentColor: textAccentColor)
                 .lineSpacing(lineSpacingAdjusted)
-                .multilineTextAlignment(alignment)
-                .overlay(selectableText)
+                .overlay(selectableLabelWrapper)
                 // If the text contains links, the TextLink overlay takes accessibility priority
                 .accessibility(hidden: content.containsTextLinks)
                 .overlay(textLinks)
@@ -40,92 +52,189 @@ public struct Text: View, TextBuildable {
 
     @ViewBuilder var textLinks: some View {
         if content.containsTextLinks {
-            GeometryReader { geometry in
-                // TextLink has embedded accessibility and exposes full text including separate link elements
-                TextLink(content: textWithOnlyTextLinksVisible, bounds: geometry.size)
-            }
+            TextLink(textLinkAttributedString)
         }
     }
 
-    @ViewBuilder var selectableText: some View {
+    @ViewBuilder var selectableLabelWrapper: some View {
         if isSelectable {
-            GeometryReader { geometry in
-                SelectableLabelWrapper(text: textWithTransparentTextLinks.string)
-                    .frame(
-                        width: geometry.size.width,
-                        height: geometry.size.height
-                    )
-            }
+            SelectableLabelWrapper(
+                attributedString().string
+            )
         }
     }
 
-    func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
-        if content.containsHtmlFormatting {
-            return textContent {
-                SwiftUI.Text(textWithTransparentTextLinks)
-            }
+    func foregroundColorWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+        if let foregroundColor {
+            return text
+                .foregroundColor(foregroundColor)
         } else {
-            return textContent {
-                plainTextContent {
-                    SwiftUI.Text(verbatim: content)
-                }
-            }
+            return text
+        }
+    }
+
+    func boldWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+        if #available(iOS 16.0, *), let isBold {
+            return text
+                .bold(isBold)
+        }
+        else if let isBold, isBold {
+            return text
+                .bold()
+        } else {
+            return text
+        }
+    }
+
+    func italicWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+        if #available(iOS 16.0, *), let isItalic {
+            return text
+                .italic(isItalic)
+        }
+        else if let isItalic, isItalic {
+            return text
+                .italic()
+        } else {
+            return text
+        }
+    }
+
+    func strikethroughWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+        if let strikethrough {
+            return text
+                .strikethrough(strikethrough)
+        } else {
+            return text
+        }
+    }
+
+    func underlineWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+        if let isUnderline {
+            return text
+                .underline(isUnderline)
+        } else {
+            return text
+        }
+    }
+
+    func monospacedDigitWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+        if #available(iOS 15.0, *), let isMonospacedDigit, isMonospacedDigit {
+            return text
+                .monospacedDigit()
+        } else {
+            return text
+        }
+    }
+
+    func kerningWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+        if let kerning {
+            return text
+                .kerning(kerning)
+        } else {
+            return text
+        }
+    }
+
+    func baselineOffsetWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+        if let baselineOffset {
+            return text
+                .baselineOffset(baselineOffset)
+        } else {
+            return text
+        }
+    }
+
+    func fontWeightWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+        if let fontWeight {
+            return text
+                .fontWeight(fontWeight)
+        } else {
+            return text
+        }
+    }
+
+    func modifierWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+        // Stacks all optional modifier overrides
+        // except those that are not relevant to mixed html formatted text
+        monospacedDigitWrapper(
+            underlineWrapper(
+                baselineOffsetWrapper(
+                    strikethroughWrapper(
+                        kerningWrapper(
+                            italicWrapper(
+                                // fontWeight and bold are omitted as they would override the mixed AttributedString
+                                text
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    }
+
+    func text(sizeCategory: ContentSizeCategory, textAccentColor: Color?, isConcatenated: Bool = false) -> SwiftUI.Text {
+        if content.containsHtmlFormatting {
+            return modifierWrapper(
+                SwiftUI.Text(
+                    attributedString(
+                        textAccentColor: textAccentColor,
+                        isConcatenated: isConcatenated,
+                        sizeCategory: sizeCategory
+                    )
+                )
+            )
+        } else {
+            return modifierWrapper(
+                fontWeightWrapper(
+                    boldWrapper(
+                        foregroundColorWrapper(
+                            SwiftUI.Text(verbatim: content)
+                        )
+                    )
+                )
+            )
             .orbitFont(
                 size: size.value,
-                weight: weight,
+                weight: resolvedFontWeight ?? .regular,
                 sizeCategory: sizeCategory
             )
         }
     }
 
-    func textContent(@ViewBuilder content: () -> SwiftUI.Text) -> SwiftUI.Text {
-        content()
-            .strikethrough(strikethrough, color: foregroundColor.map(SwiftUI.Color.init))
-            .kerning(kerning)
-    }
-
-    func plainTextContent(@ViewBuilder content: () -> SwiftUI.Text) -> SwiftUI.Text {
-        if let foregroundColor = foregroundColor {
-            return content()
-                .foregroundColor(SwiftUI.Color(foregroundColor))
-        } else {
-            return content()
-        }
-    }
-
-    var textWithOnlyTextLinksVisible: NSAttributedString {
+    var textLinkAttributedString: NSAttributedString {
         TagAttributedStringBuilder.all.attributedString(
             content,
-            alignment: alignment,
+            alignment: multilineTextAlignment,
             fontSize: scaledSize,
-            fontWeight: weight,
+            fontWeight: resolvedFontWeight,
             lineSpacing: lineSpacingAdjusted,
             kerning: kerning,
+            strikethrough: strikethrough ?? false,
             color: .clear,
             accentColor: .clear
         )
     }
 
-    var textWithTransparentTextLinks: NSAttributedString {
+    func attributedString(
+        textAccentColor: Color? = nil,
+        isConcatenated: Bool = false,
+        sizeCategory: ContentSizeCategory = .large
+    ) -> NSAttributedString {
         TagAttributedStringBuilder.all.attributedString(
             content,
-            alignment: alignment,
-            fontSize: scaledSize,
-            fontWeight: weight,
+            alignment: multilineTextAlignment,
+            fontSize: size.value * sizeCategory.ratio,
+            fontWeight: resolvedFontWeight,
             lineSpacing: lineSpacingAdjusted,
             kerning: kerning,
-            color: foregroundColor,
-            linkColor: .clear,
-            accentColor: resolvedAccentColor
+            color: foregroundColor?.uiColor,
+            linkColor: isConcatenated ? nil : .clear,
+            accentColor: (accentColor ?? textAccentColor ?? foregroundColor ?? .inkDark).uiColor
         )
     }
 
-    var resolvedAccentColor: UIColor {
-        accentColor ?? textAccentColor ?? Color.inkDark.uiValue
-    }
-    
-    var foregroundColor: UIColor? {
-        color?.uiValue
+    var resolvedFontWeight: Font.Weight? {
+        isBold == true ? .bold : fontWeight
     }
 
     var scaledSize: CGFloat {
@@ -133,7 +242,7 @@ public struct Text: View, TextBuildable {
     }
 
     var lineSpacingAdjusted: CGFloat {
-        (designatedLineHeight - originalLineHeight) + (lineSpacing ?? 0)
+        (designatedLineHeight - originalLineHeight) + lineSpacing
     }
 
     var lineHeightPadding: CGFloat {
@@ -154,39 +263,28 @@ public extension Text {
     
     /// Creates Orbit Text component that displays a string literal.
     ///
-    /// Can be further modified by following modifiers:
-    /// - `textAccentColor()`
+    /// Modifiers like `textAccentColor()` or `fontWeight()` can be used to further adjust the formatting.
+    /// To specify the formatting and behaviour for `TextLink`s found in the text, use `textLinkAction()` and
+    /// `textLinkColor()` modifiers.
     ///
     /// - Parameters:
     ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
     ///   - size: Font size.
-    ///   - color: Font color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
-    ///   - weight: Base font weight (overridable by formatting).
-    ///   - lineSpacing: Distance in points between the bottom of one line fragment and the top of the next.
-    ///   - alignment: Horizontal multi-line alignment.
     ///   - isSelectable: Determines if text is copyable using long tap gesture.
-    ///   - strikethrough: Determines if strikethrough should be applied.
-    ///   - kerning: Additional spacing between characters.
+    ///
+    /// - Important: The text concatenation does not support interactive TextLinks. It also does not fully support some global SwiftUI native text formatting view modifiers.
+    /// For proper rendering of TextLinks, any required text formatting modifiers must be also called on the Text directly.
     init(
         _ content: String,
         size: Size = .normal,
-        color: Color? = .inkDark,
-        weight: Font.Weight = .regular,
-        lineSpacing: CGFloat? = nil,
-        alignment: TextAlignment = .leading,
-        isSelectable: Bool = false,
-        strikethrough: Bool = false,
-        kerning: CGFloat = 0
+        isSelectable: Bool = false
     ) {
         self.content = content
         self.size = size
-        self.color = color
-        self.weight = weight
-        self.lineSpacing = lineSpacing
-        self.alignment = alignment
         self.isSelectable = isSelectable
-        self.strikethrough = strikethrough
-        self.kerning = kerning
+
+        // Set a default color to use in case it is not provided by a call site
+        self.foregroundColor = .inkDark
     }
 }
 
@@ -233,27 +331,6 @@ public extension Text {
             .custom(lineHeight)
         }
     }
-
-    /// Orbit text color.
-    enum Color: Equatable {
-        case inkDark
-        case inkNormal
-        case white
-        case custom(UIColor)
-
-        public var value: SwiftUI.Color {
-            SwiftUI.Color(uiValue)
-        }
-        
-        public var uiValue: UIColor {
-            switch self {
-                case .inkDark:              return .inkDark
-                case .inkNormal:            return .inkNormal
-                case .white:                return .whiteNormal
-                case .custom(let color):    return color
-            }
-        }
-    }
 }
 
 extension TextAlignment {
@@ -271,10 +348,18 @@ extension TextAlignment {
 // MARK: - TextRepresentable
 extension Text: TextRepresentable {
 
-    public func swiftUIText(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
+    public func swiftUIText(sizeCategory: ContentSizeCategory, textAccentColor: Color?) -> SwiftUI.Text? {
         if content.isEmpty { return nil }
 
-        return text(sizeCategory: sizeCategory)
+        return text(sizeCategory: sizeCategory, textAccentColor: textAccentColor, isConcatenated: true)
+    }
+}
+
+// MARK: - Equatable
+extension Text: Equatable {
+
+    public static func == (lhs: Text, rhs: Text) -> Bool {
+        lhs.content == rhs.content
     }
 }
 
@@ -284,11 +369,18 @@ struct TextPreviews: PreviewProvider {
     static let multilineText = "Text with multiline content \n with no formatting or text links"
     static let multilineFormattedText = "Text with <ref>formatting</ref>,<br> <u>multiline</u> content <br> and <a href=\"...\">text link</a>"
 
+    static let plainText = "Text"
+    static let markdownText = "Text **str** *ita*"
+    static let htmlText = "Text <strong>str</strong> <u>und</u> <ref>acc</ref> <applink1>lnk</applink1>"
+    static let plusText = " + "
+
     static var previews: some View {
         PreviewWrapper {
             standalone
             sizes
+            multilineFormatting
             formatting
+            monospaced
             lineHeight
             lineSpacing
             interactive
@@ -296,11 +388,30 @@ struct TextPreviews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 
-    static var standalone: some View {
-        VStack {
-            Text("Plain text with no formatting")
+    @ViewBuilder static var standalone: some View {
+        VStack(alignment: .trailing, spacing: .medium) {
+            Text("Multiline text\nplain with with no formatting")
+            Text("Multiline text\n<strong>selectable</strong> (with long tap gesture)", isSelectable: true)
+
+            Text(
+"""
+Multiline text <u>underlined</u>, <strong>strong</strong>, <ref>accented</ref>,
+<strong><u>underlined strong</u></strong>, <ref><u>underlined accented</u></ref>
+"""
+            )
+
+            Text("""
+Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, <ref>accented</ref>,
+<strong><u>underlined strong</u></strong>, <ref><u>underlined accented</u></ref>,
+<strong><applink1>TextLink strong</applink1></strong>
+"""
+            )
+            .textAccentColor(.orangeNormal)
+
             Text("") // Results in EmptyView
         }
+        .textAccentColor(.blueNormal)
+        .multilineTextAlignment(.trailing)
         .padding(.medium)
         .previewDisplayName()
     }
@@ -336,7 +447,7 @@ struct TextPreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static var formatting: some View {
+    static var multilineFormatting: some View {
         VStack(alignment: .leading, spacing: .medium) {
             Group {
                 Text("Selectable text (on long tap)", isSelectable: true)
@@ -346,44 +457,72 @@ struct TextPreviews: PreviewProvider {
                 Text("<applink1>Text</applink1> <u>formatted</u> <strong>and</strong> <ref>accented</ref>")
                     .textAccentColor(.orangeNormal)
 
-                Text("Text with kerning and strikethrough", lineSpacing: 10, alignment: .trailing, strikethrough: true, kerning: 6)
-                Text(
-                    "Text <u>with kerning</u> <strong>and</strong> <ref>strikethrough</ref>",
-                    lineSpacing: 10,
-                    alignment: .trailing,
-                    strikethrough: true,
-                    kerning: 6
-                )
-                Text(
-                    "<applink1>Text</applink1> <u>with kerning</u> <strong>and</strong> <applink2>strikethrough</applink2>",
-                    lineSpacing: 10,
-                    alignment: .trailing,
-                    strikethrough: true,
-                    kerning: 6
-                )
+                if #available(iOS 16.0, *) {
+                    Group {
+                        Text("Text with kerning and strikethrough")
+                        Text("Text <u>with kerning</u> <strong>and</strong> <ref>strikethrough</ref>")
+                        Text(
+                            "<applink1>Text</applink1> <u>with kerning</u> <strong>and</strong> <strong><applink2>strikethrough</applink2></strong>"
+                        )
+                        .kerning(6)
+                        .strikethrough()
+                    }
+                    .textAccentColor(.orangeNormal)
+                    .lineSpacing(10)
+                    .kerning(6)
+                    .strikethrough()
+                }
             }
             .border(Color.cloudDark, width: .hairline)
 
-            Text(multilineText, color: .custom(.greenDark), alignment: .trailing)
+            Text(multilineText)
+                .foregroundColor(.greenDark)
                 .background(Color.greenLight)
-            Text(multilineText, color: nil, alignment: .trailing)
+            Text(multilineText)
+                .foregroundColor(nil)
                 .foregroundColor(.blueDark)
                 .background(Color.blueLight)
-            Text(multilineFormattedText, color: .custom(.greenDark), alignment: .trailing)
+            Text(multilineFormattedText)
+                .foregroundColor(.greenDark)
                 .textAccentColor(.orangeDark)
                 .background(Color.greenLight)
-            Text(multilineFormattedText, color: nil, alignment: .trailing)
+            Text(multilineFormattedText)
+                .foregroundColor(nil)
                 .textAccentColor(.orangeDark)
                 .foregroundColor(.blueDark)
                 .background(Color.blueLight)
-            
+
             // This text may reveal issues between iOS TextLink word wrapping
             Text(
                 "By continuing, you accept the <applink1>Terms Of Use</applink1> and <applink2>Privacy Policy</applink2>.",
-                size: .small,
-                color: .inkNormal
+                size: .small
             )
+            .foregroundColor(.inkNormal)
             .textLinkColor(.secondary)
+            .multilineTextAlignment(.leading)
+        }
+        .multilineTextAlignment(.trailing)
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
+    @ViewBuilder static var formatting: some View {
+        TextFormattingPreviews.FormattingTable()
+    }
+
+    static var monospaced: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                Group {
+                    Text("1111111111")
+                    Text("8888888888")
+                    Text("1111111111")
+                        .monospacedDigit()
+                    Text("8888888888")
+                        .monospacedDigit()
+                }
+                .border(Color.cloudNormal, width: .hairline)
+            }
         }
         .padding(.medium)
         .previewDisplayName()
@@ -414,20 +553,21 @@ struct TextPreviews: PreviewProvider {
         HStack(alignment: .top, spacing: .xxxSmall) {
             VStack(alignment: .trailing, spacing: .xxxSmall) {
                 Group {
-                    Text("Text single line", size: .large, lineSpacing: .xxxSmall)
+                    Text("Text single line", size: .large)
                         .background(Color.redLightHover)
-                    Text("Text <applink1>single</applink1> line", size: .large, lineSpacing: .xxxSmall)
+                    Text("Text <applink1>single</applink1> line", size: .large)
                         .background(Color.redLightHover.opacity(0.7))
-                    Text("Text <strong>single</strong> line", size: .large, lineSpacing: .xxxSmall)
+                    Text("Text <strong>single</strong> line", size: .large)
                         .background(Color.redLightHover.opacity(0.4))
                 }
                 .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerFirstTextBaseline)
             }
 
             Group {
-                Text("Multliline\nwith\n<strong>formatting</strong>", size: .large, lineSpacing: .xxxSmall)
-                Text("Multliline\nwith\n<applink1>links</applink1>", size: .large, lineSpacing: .xxxSmall)
+                Text("Multliline\nwith\n<strong>formatting</strong>", size: .large)
+                Text("Multliline\nwith\n<applink1>links</applink1>", size: .large)
             }
+            .lineSpacing(.xxxSmall)
             .background(Color.redLightHover.opacity(0.7))
             .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerFirstTextBaseline)
             .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerLastTextBaseline)
@@ -462,10 +602,10 @@ struct TextPreviews: PreviewProvider {
                         HTML <a href="https://www.apple.com">links</a> with \
                         <u>underline</u> and <strong>strong</strong> support.
                         """,
-                        size: .custom(12),
-                        color: .custom(.blueLightActive),
-                        weight: .bold
+                        size: .custom(12)
                     )
+                    .foregroundColor(.blueLightActive)
+                    .bold()
                     .textAccentColor(.blueNormal)
                     .border(Color.cloudNormal)
                     .padding(.leading, 200 * (1 - state.wrappedValue.1))
@@ -495,10 +635,10 @@ struct TextPreviews: PreviewProvider {
                         HTML <a href="https://www.apple.com">links</a> with \
                         <u>underline</u> and <strong>strong</strong> support.
                         """,
-                        size: .custom(22),
-                        color: .inkNormal,
-                        weight: .bold
+                        size: .custom(22)
                     )
+                    .foregroundColor(.inkNormal)
+                    .bold()
                     .lineLimit(2)
                     .border(Color.cloudNormal)
                 }
@@ -520,7 +660,7 @@ struct TextPreviews: PreviewProvider {
                     "\(sizeText) \(formatted ? "<applink1>" : "")\(size)\(formatted ? "</applink1>" : "")",
                     size: size
                 )
-                .textAccentColor(Status.info.darkUIColor)
+                .textAccentColor(Status.info.darkColor)
                 .fixedSize()
                 .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerLastTextBaseline)
 
@@ -550,9 +690,12 @@ struct TextPreviews: PreviewProvider {
 
     static func text(_ content: String, size: Text.Size, weight: Font.Weight) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
-            Text(content, size: size, weight: weight)
+            Text(content, size: size)
+                .fontWeight(weight)
             Spacer()
-            Text("\(Int(size.value))/\(Int(size.lineHeight))", color: .inkNormal, weight: .medium)
+            Text("\(Int(size.value))/\(Int(size.lineHeight))")
+                .foregroundColor(.inkNormal)
+                .fontWeight(.medium)
         }
     }
 }

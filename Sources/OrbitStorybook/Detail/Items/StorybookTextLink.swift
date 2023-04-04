@@ -43,8 +43,8 @@ struct StorybookTextLink {
                     state.wrappedValue.1 = "Button"
                 }
 
-                Text("Tapped \(state.wrappedValue.0)x", color: .inkNormal)
-                Text("Tapped \(state.wrappedValue.1)", color: .inkNormal)
+                Text("Tapped \(state.wrappedValue.0)x")
+                Text("Tapped \(state.wrappedValue.1)")
             }
         }
         .previewDisplayName()

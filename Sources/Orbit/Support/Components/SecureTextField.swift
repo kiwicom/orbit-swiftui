@@ -49,7 +49,7 @@ struct SecureTextField: UIViewRepresentable {
         textField.textContentType = style.textContentType
         textField.keyboardType = style.keyboardType
         textField.font = style.font
-        textField.textColor = isEnabled ? style.state.textUIColor : .cloudDarkActive
+        textField.textColor = isEnabled ? style.state.textColor.uiColor : .cloudDarkActive
         textField.clearsOnBeginEditing = false
         textField.isEnabled = isEnabled
         textField.adjustsFontForContentSizeCategory = true

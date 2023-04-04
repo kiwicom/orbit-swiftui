@@ -14,7 +14,7 @@ public struct NotificationBadge: View {
         if isEmpty == false {
             contentView
                 .padding(.xxSmall) // = 24 height @ normal size
-                .foregroundColor(Color(style.labelColor))
+                .foregroundColor(style.labelColor)
                 .background(
                     style.background
                         .clipShape(shape)
@@ -30,14 +30,11 @@ public struct NotificationBadge: View {
     @ViewBuilder var contentView: some View {
         switch content {
             case .text(let text):
-                Text(
-                    text,
-                    size: .small,
-                    color: .none,
-                    weight: .medium
-                )
-                .textLinkColor(.custom(style.labelColor))
-                .frame(minWidth: minTextWidth)
+                Text(text, size: .small)
+                    .foregroundColor(nil)
+                    .fontWeight(.medium)
+                    .textLinkColor(.custom(style.labelColor))
+                    .frame(minWidth: minTextWidth)
             case .icon(let icon):
                 Icon(content: icon, size: .small)
         }

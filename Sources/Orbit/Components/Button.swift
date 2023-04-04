@@ -62,13 +62,10 @@ public struct Button: View {
     }
 
     @ViewBuilder var text: some View {
-        Text(
-            label,
-            size: size.textSize,
-            color: .custom(style.foregroundUIColor),
-            weight: .medium
-        )
-        .textLinkColor(.custom(style.foregroundUIColor))
+        Text(label, size: size.textSize)
+            .foregroundColor(style.foregroundColor)
+            .fontWeight(.medium)
+            .textLinkColor(.custom(style.foregroundColor))
     }
 
     var isIconOnly: Bool {
@@ -150,10 +147,6 @@ extension Button {
         case gradient(Gradient)
 
         public var foregroundColor: Color {
-            Color(foregroundUIColor)
-        }
-
-        public var foregroundUIColor: UIColor {
             switch self {
                 case .primary:                  return .whiteNormal
                 case .primarySubtle:            return .productDark

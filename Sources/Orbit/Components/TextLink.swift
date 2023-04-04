@@ -8,10 +8,10 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/textlink/)
 public struct TextLink: UIViewRepresentable {
 
-    @Environment(\.textLinkAction) var textLinkAction
-    @Environment(\.textLinkColor) var textLinkColor
+    @Environment(\.textLinkAction) private var textLinkAction
+    @Environment(\.textLinkColor) private var textLinkColor
 
-    let content: NSAttributedString
+    private let content: NSAttributedString
     
     public func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -36,7 +36,7 @@ public struct TextLink: UIViewRepresentable {
         uiView.update(
             content: content,
             lineLimit: context.environment.lineLimit ?? 0,
-            color: textLinkColor?.uiValue ?? Color.primary.uiValue
+            color: textLinkColor?.value.uiColor ?? Color.primary.value.uiColor
         )
     }
     
@@ -93,17 +93,13 @@ public extension TextLink {
         case primary
         case secondary
         case status(Status)
-        case custom(UIColor)
+        case custom(SwiftUI.Color)
 
         public var value: SwiftUI.Color {
-            SwiftUI.Color(uiValue)
-        }
-
-        public var uiValue: UIColor {
             switch self {
                 case .primary:              return .productDark
                 case .secondary:            return .inkDark
-                case .status(let status):   return status.darkUIColor
+                case .status(let status):   return status.darkColor
                 case .custom(let color):    return color
             }
         }
@@ -176,8 +172,8 @@ struct TextLinkPreviews: PreviewProvider {
                     state.wrappedValue.1 = "Button"
                 }
                 
-                Text("Tapped \(state.wrappedValue.0)x", color: .inkNormal)
-                Text("Tapped \(state.wrappedValue.1)", color: .inkNormal)
+                Text("Tapped \(state.wrappedValue.0)x")
+                Text("Tapped \(state.wrappedValue.1)")
             }
         }
         .previewDisplayName()

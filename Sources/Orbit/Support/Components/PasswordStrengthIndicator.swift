@@ -11,7 +11,8 @@ public struct PasswordStrengthIndicator: View {
 
                 indicator
 
-                Text(text, size: .small, color: .custom(uiColor))
+                Text(text, size: .small)
+                    .foregroundColor(color)
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }
             .animation(.easeOut, value: passwordStrength)
@@ -30,7 +31,7 @@ public struct PasswordStrengthIndicator: View {
     var bar: some View {
         HStack(spacing: 0) {
             Capsule()
-                .fill(Color(uiColor))
+                .fill(color)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             ForEach(0 ..< spacers, id: \.self) { _ in
@@ -58,7 +59,7 @@ public struct PasswordStrengthIndicator: View {
         }
     }
 
-    var uiColor: UIColor {
+    var color: Color {
         switch passwordStrength {
             case .empty:    return .clear
             case .weak:     return .redNormal

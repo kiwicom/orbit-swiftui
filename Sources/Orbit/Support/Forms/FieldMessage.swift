@@ -15,7 +15,8 @@ public struct FieldMessage: View {
                     .accessibility(.fieldMessageIcon)
                     // A workaround for current Orbit non-matching icon size
                     .alignmentGuide(.firstTextBaseline) { $0.height * 0.82 }
-                Text(message.description, color: .custom(message.uiColor))
+                Text(message.description)
+                    .foregroundColor(message.color)
                     .accessibility(.fieldMessage)
             }
             .transition(.opacity.animation(.easeOut(duration: 0.2)))

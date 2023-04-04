@@ -109,9 +109,12 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 
                 if isHeaderTextEmpty == false {
                     VStack(alignment: .leading, spacing: .xxxSmall) {
-                        Text(title, weight: .medium)
+                        Text(title)
+                            .fontWeight(.medium)
                             .accessibility(.listChoiceTitle)
-                        Text(description, size: .small, color: .inkNormal)
+                        
+                        Text(description, size: .small)
+                            .foregroundColor(.inkNormal)
                             .accessibility(.listChoiceDescription)
                     }
                 }
@@ -293,7 +296,8 @@ public extension ListChoice where HeaderContent == Text {
             action: action,
             content: content
         ) {
-            Text(value, weight: .medium)
+            Text(value)
+                .fontWeight(.medium)
         }
     }
 }

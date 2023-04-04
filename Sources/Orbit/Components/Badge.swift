@@ -18,17 +18,18 @@ public struct Badge: View {
         if isEmpty == false {
             HStack(spacing: .xxSmall) {
                 Icon(content: iconContent, size: .small)
+                    .fontWeight(.medium)
 
                 Text(
                     label,
-                    size: .small,
-                    color: nil,
-                    weight: .medium
+                    size: .small
                 )
+                .foregroundColor(nil)
+                .fontWeight(.medium)
                 .textLinkColor(.custom(style.labelColor))
                 .frame(minWidth: minTextWidth)
             }
-            .foregroundColor(Color(style.labelColor))
+            .foregroundColor(style.labelColor)
             .padding(.vertical, .xxSmall) // = 24 height @ normal size
             .padding(.horizontal, .xSmall)
             .background(
@@ -75,7 +76,7 @@ public extension Badge {
         case lightInverted
         case neutral
         case status(_ status: Status, inverted: Bool = false)
-        case custom(labelColor: UIColor, outlineColor: SwiftUI.Color, backgroundColor: SwiftUI.Color)
+        case custom(labelColor: SwiftUI.Color, outlineColor: SwiftUI.Color, backgroundColor: SwiftUI.Color)
         case gradient(Gradient)
 
         public var outlineColor: Color {
@@ -105,12 +106,12 @@ public extension Badge {
             }
         }
 
-        public var labelColor: UIColor {
+        public var labelColor: Color {
             switch self {
                 case .light:                                return .inkDark
                 case .lightInverted:                        return .whiteNormal
                 case .neutral:                              return .inkDark
-                case .status(let status, false):            return status.darkUIColor
+                case .status(let status, false):            return status.darkColor
                 case .status(_, true):                      return .whiteNormal
                 case .custom(let labelColor, _, _):         return labelColor
                 case .gradient:                             return .whiteNormal
@@ -126,7 +127,7 @@ struct BadgePreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             sizing
-            statuses
+            styles
             gradients
             mix
         }
@@ -157,7 +158,7 @@ struct BadgePreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static var statuses: some View {
+    static var styles: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
             VStack(alignment: .leading, spacing: .medium) {
                 badges(.light)
@@ -214,6 +215,10 @@ struct BadgePreviews: PreviewProvider {
 
             HStack(spacing: .small) {
                 Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
+                if #available(iOS 16.0, *) {
+                    Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
+                        .fontWeight(.black)
+                }
                 Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
             }
         }

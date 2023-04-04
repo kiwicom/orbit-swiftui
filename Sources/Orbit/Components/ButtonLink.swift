@@ -21,15 +21,14 @@ public struct ButtonLink: View {
                 label: {
                     HStack(spacing: .xSmall) {
                         Icon(content: iconContent)
+                            .fontWeight(.medium)
 
-                        Text(
-                            label,
-                            color: nil,
-                            weight: .medium
-                        )
-                        // Ignore any potential `TextLinks`
-                        .allowsHitTesting(false)
-                        .textLinkColor(.custom(style.color.normal))
+                        Text(label)
+                            .foregroundColor(nil)
+                            .fontWeight(.medium)
+                            // Ignore any potential `TextLinks`
+                            .allowsHitTesting(false)
+                            .textLinkColor(.custom(style.color.normal))
                     }
                     .padding(.vertical, verticalPadding)
                 }
@@ -74,9 +73,9 @@ public extension ButtonLink {
         case secondary
         case critical
         case status(_ status: Status)
-        case custom(colors: (normal: UIColor, active: UIColor))
+        case custom(colors: (normal: Color, active: Color))
 
-        public var color: (normal: UIColor, active: UIColor) {
+        public var color: (normal: Color, active: Color) {
             switch self {
                 case .primary:              return (.productNormal, .productLightActive)
                 case .secondary:            return (.inkDark, .cloudDark)
@@ -125,7 +124,7 @@ public extension ButtonLink {
 
         public func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .foregroundColor(Color(configuration.isPressed ? style.color.active : style.color.normal))
+                .foregroundColor(configuration.isPressed ? style.color.active : style.color.normal)
                 .frame(maxWidth: size.maxWidth)
                 .contentShape(Rectangle())
         }
@@ -210,7 +209,7 @@ struct ButtonLinkPreviews: PreviewProvider {
             icon: .kiwicom,
             action: {}
         )
-        .textAccentColor(Status.success.darkUIColor)
+        .textAccentColor(Status.success.darkColor)
         .textLinkColor(.status(.critical))
         .padding(.medium)
         .previewDisplayName()

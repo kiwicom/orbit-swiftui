@@ -23,9 +23,13 @@ public struct Radio: View {
             label: {
                 if title.isEmpty == false || description.isEmpty == false {
                     VStack(alignment: .leading, spacing: 1) {
-                        Text(title, color: labelColor, weight: .medium)
+                        Text(title)
+                            .foregroundColor(labelColor)
+                            .fontWeight(.medium)
                             .accessibility(.radioTitle)
-                        Text(description, size: .small, color: descriptionColor)
+                        
+                        Text(description, size: .small)
+                            .foregroundColor(descriptionColor)
                             .accessibility(.radioDescription)
                     }
                 }
@@ -36,12 +40,12 @@ public struct Radio: View {
         )
     }
 
-    var labelColor: Text.Color {
-        isEnabled ? .inkDark : .custom(.cloudDarkHover)
+    var labelColor: Color {
+        isEnabled ? .inkDark : .cloudDarkHover
     }
 
-    var descriptionColor: Text.Color {
-        isEnabled ? .inkNormal : .custom(.cloudDarkHover)
+    var descriptionColor: Color {
+        isEnabled ? .inkNormal : .cloudDarkHover
     }
 }
 

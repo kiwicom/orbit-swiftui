@@ -31,12 +31,12 @@ struct TextConcatenationPreviews: PreviewProvider {
             + Icon(.grid, size: .xLarge)
             + Icon(.grid, size: .small)
             + Heading(" San Pedro de Alcantara", style: .title1)
-            + Icon(countryCode: "us")
             + Text(" ")
-            + Icon(countryCode: "us", size: .small)
             + Icon(sfSymbol: "info.circle", size: .large)
-            + Icon(image: .orbit(.navigateClose), baselineOffset: -1)
-            + Text(" (Delayed)", size: .xLarge, color: .inkNormal)
+            + Icon(image: .orbit(.navigateClose))
+                .baselineOffset(-1)
+            + Text(" (Delayed)", size: .xLarge)
+                .foregroundColor(.inkNormal)
         )
         .previewDisplayName()
     }
@@ -44,14 +44,18 @@ struct TextConcatenationPreviews: PreviewProvider {
     static var formatting: some View {
         (
             Icon(.grid, size: .xLarge, color: nil)
-            + Text(" Text", size: .xLarge, color: nil)
-            + Icon(.informationCircle, size: .large, color: nil, baselineOffset: -1)
+            + Text(" Text ", size: .xLarge)
+                .foregroundColor(nil)
+                .bold()
+                .italic()
+            + Icon(.informationCircle, size: .large, color: nil)
+                .baselineOffset(-1)
             + Icon(sfSymbol: "info.circle.fill", size: .large, color: nil)
             + Text(
-                "<ref>Text</ref> with <strong>formatting</strong>",
-                size: .small,
-                color: nil
+                " <ref>Text</ref> with <strong>formatting</strong>",
+                size: .small
             )
+            .foregroundColor(nil)
             .textAccentColor(.orangeNormal)
 
             + Icon(.check, size: .small, color: .greenDark)
@@ -77,7 +81,8 @@ struct TextConcatenationPreviews: PreviewProvider {
             Heading(label, style: style)
                 + Icon(.flightReturn, size: .custom(style.size), color: .inkNormal)
                 + Heading(label, style: style)
-                + Text(" and Text", color: nil)
+                + Text(" and Text")
+                    .foregroundColor(nil)
         }
         .foregroundColor(.blueDark)
         .previewDisplayName()

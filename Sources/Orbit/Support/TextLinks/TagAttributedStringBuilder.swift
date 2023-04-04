@@ -75,7 +75,8 @@ final class TagAttributedStringBuilder {
         fontSize: CGFloat,
         fontWeight: Font.Weight?,
         lineSpacing: CGFloat?,
-        kerning: CGFloat = 0,
+        kerning: CGFloat? = 0,
+        strikethrough: Bool = false,
         color: UIColor? = nil,
         linkColor: UIColor? = nil,
         accentColor: UIColor? = nil
@@ -99,7 +100,9 @@ final class TagAttributedStringBuilder {
         if strikethrough {
             textAttributes[.strikethroughStyle] = NSUnderlineStyle.single.rawValue
         }
-        textAttributes[.foregroundColor] = color
+        if let color {
+            textAttributes[.foregroundColor] = color
+        }
         textAttributes[.paragraphStyle] = paragraphStyle
 
         var linksAttributes: [NSAttributedString.Key: Any] = [:]
@@ -203,6 +206,8 @@ private extension TagAttributedStringBuilder.Tag {
     ) -> NSAttributedString? {
 
         let fontWeight = fontWeight?.uiKit
+        let relativeMedium = fontWeight?.relativeMedium ?? .medium
+        let relativeStrong = fontWeight?.relativeStrong ?? .bold
 
         switch self {
             case .anchor, .applink:
@@ -216,7 +221,7 @@ private extension TagAttributedStringBuilder.Tag {
 
                 let attributes = [
                     .link: url,
-                    .font: UIFont.orbit(size: font.pointSize, weight: fontWeight ?? .medium),
+                    .font: UIFont.orbit(size: font.pointSize, weight: relativeMedium),
                     .underlineStyle: NSUnderlineStyle.single.rawValue
                 ].merging(tagTextAttributes, uniquingKeysWith: { $1 })
                 
@@ -234,9 +239,9 @@ private extension TagAttributedStringBuilder.Tag {
                 if let font = tagTextAttributes[.font] as? UIFont {
                     boldFont = font
                 } else if let font = textAttributes[.font] as? UIFont {
-                    boldFont = .orbit(size: font.pointSize, weight: fontWeight ?? .bold)
+                    boldFont = .orbit(size: font.pointSize, weight: relativeStrong)
                 } else {
-                    boldFont = .orbit(size: Text.Size.normal.value, weight: fontWeight ?? .bold)
+                    boldFont = .orbit(size: Text.Size.normal.value, weight: relativeStrong)
                 }
 
                 return stringByAddingAttributes([.font: boldFont], to: currentAttributedString, at: result.ranges[1])
@@ -261,7 +266,10 @@ private extension TagAttributedStringBuilder.Tag {
                 }
 
                 return stringByAddingAttributes(
-                    [.foregroundColor: color, .font: UIFont.orbit(size: font.pointSize, weight: fontWeight ?? .bold)],
+                    [
+                        .foregroundColor: color,
+                        .font: UIFont.orbit(size: font.pointSize, weight: relativeStrong)
+                    ],
                     to: currentAttributedString,
                     at: result.ranges[1]
                 )
@@ -336,6 +344,39 @@ private extension NSMutableAttributedString {
         if mutableString.contains(stringToReplace) {
             let rangeOfStringToBeReplaced = mutableString.range(of: stringToReplace)
             replaceCharacters(in: rangeOfStringToBeReplaced, with: newStringPart)
+        }
+    }
+}
+
+private extension UIFont.Weight {
+
+    var relativeMedium: Self {
+        switch self {
+            case .ultraLight:   return .thin
+            case .thin:         return .light
+            case .light:        return .regular
+            case .regular:      return .medium
+            case .medium:       return .semibold
+            case .semibold:     return .bold
+            case .bold:         return .heavy
+            case .heavy:        return .black
+            case .black:        return .black
+            default:            return .medium
+        }
+    }
+
+    var relativeStrong: Self {
+        switch self {
+            case .ultraLight:   return .regular
+            case .thin:         return .medium
+            case .light:        return .semibold
+            case .regular:      return .bold
+            case .medium:       return .heavy
+            case .semibold:     return .black
+            case .bold:         return .black
+            case .heavy:        return .black
+            case .black:        return .black
+            default:            return .bold
         }
     }
 }

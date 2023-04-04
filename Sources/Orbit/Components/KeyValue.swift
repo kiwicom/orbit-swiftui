@@ -12,7 +12,9 @@ public struct KeyValue: View {
 
     public var body: some View {
         KeyValueField(key, size: size, alignment: alignment) {
-            Text(value, size: size.valueSize, weight: .medium, alignment: .init(alignment), isSelectable: true)
+            Text(value, size: size.valueSize, isSelectable: true)
+                .fontWeight(.medium)
+                .multilineTextAlignment(.init(alignment))
         }
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(key))

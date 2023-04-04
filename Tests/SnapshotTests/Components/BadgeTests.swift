@@ -4,7 +4,7 @@ import XCTest
 class BadgeTests: SnapshotTestCase {
 
     func testBadges() {
-        assert(BadgePreviews.statuses)
+        assert(BadgePreviews.styles)
         assert(BadgePreviews.sizing)
     }
 }

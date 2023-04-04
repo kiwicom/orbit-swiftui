@@ -306,8 +306,11 @@ private struct ColorContent: View {
                 )
 
             Group {
-                Text(label, size: .small, color: .custom(.black), weight: .medium)
-                + Text(optionalText, size: .small, color: .custom(.gray))
+                Text(label, size: .small)
+                    .foregroundColor(.black)
+                    .fontWeight(.medium)
+                + Text(optionalText, size: .small)
+                    .foregroundColor(.gray)
             }
             .padding(.small)
 
@@ -334,8 +337,11 @@ private struct ColorGradientContent: View {
                 .frame(height: 88)
 
             Group {
-                Text(label, size: .small, color: .custom(.black), weight: .medium)
-                + Text("\n:gradient", size: .small, color: .custom(.gray))
+                Text(label, size: .small)
+                    .foregroundColor(.black)
+                    .fontWeight(.medium)
+                + Text("\n:gradient", size: .small)
+                    .foregroundColor(.gray)
             }
             .padding(.small)
 

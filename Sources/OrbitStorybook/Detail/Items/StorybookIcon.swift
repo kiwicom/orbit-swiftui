@@ -52,20 +52,25 @@ struct StorybookIcon {
                 Group {
                     Text("Text", size: .small)
                     Icon(sfSymbol: sfSymbol, size: .small, color: nil)
-                    Icon(sfSymbol: sfSymbol, size: .small, color: nil, baselineOffset: .xxxSmall)
+                    Icon(sfSymbol: sfSymbol, size: .small, color: nil)
+                        .baselineOffset(.xxxSmall)
 
                     Icon(.informationCircle, size: .small, color: nil)
-                    Icon(.informationCircle, size: .small, color: nil, baselineOffset: .xxxSmall)
+                    Icon(.informationCircle, size: .small, color: nil)
+                        .baselineOffset(.xxxSmall)
 
                     Group {
                         Icon(image: .orbit(.navigateClose), size: .small, tint: nil)
-                        Icon(image: .orbit(.navigateClose), size: .small, tint: nil, baselineOffset: .xxxSmall)
+                        Icon(image: .orbit(.navigateClose), size: .small, tint: nil)
+                            .baselineOffset(.xxxSmall)
                         Icon(image: .orbit(.facebook), size: .small)
-                        Icon(image: .orbit(.facebook), size: .small, baselineOffset: .xxxSmall)
+                        Icon(image: .orbit(.facebook), size: .small)
+                            .baselineOffset(.xxxSmall)
                     }
 
                     Icon(countryCode: "us", size: .small)
-                    Icon(countryCode: "us", size: .small, baselineOffset: .xxxSmall)
+                    Icon(countryCode: "us", size: .small)
+                        .baselineOffset(.xxxSmall)
                 }
                 .border(Color.cloudLightActive, width: .hairline)
             }
@@ -81,15 +86,19 @@ struct StorybookIcon {
             (
                 Text("Text", size: .small)
                 + Icon(sfSymbol: sfSymbol, size: .small, color: nil)
-                + Icon(sfSymbol: sfSymbol, size: .small, color: nil, baselineOffset: .xxxSmall)
+                + Icon(sfSymbol: sfSymbol, size: .small, color: nil)
+                    .baselineOffset(.xxxSmall)
 
                 + Icon(.informationCircle, size: .small, color: nil)
-                + Icon(.informationCircle, size: .small, color: nil, baselineOffset: .xxxSmall)
+                + Icon(.informationCircle, size: .small, color: nil)
+                    .baselineOffset(.xxxSmall)
 
                 + Icon(image: .orbit(.navigateClose), tint: nil)
-                + Icon(image: .orbit(.navigateClose), tint: nil, baselineOffset: .xxxSmall)
+                + Icon(image: .orbit(.navigateClose), tint: nil)
+                    .baselineOffset(.xxxSmall)
                 + Icon(image: .orbit(.facebook))
-                + Icon(image: .orbit(.facebook), baselineOffset: .xxxSmall)
+                + Icon(image: .orbit(.facebook))
+                    .baselineOffset(.xxxSmall)
             )
             .foregroundColor(Color.greenDark)
             .overlay(
@@ -130,9 +139,11 @@ struct StorybookIcon {
         .previewDisplayName()
     }
 
-    static func size(iconSize: Icon.Size, textSize: Orbit.Text.Size, color: UIColor) -> some View {
+    static func size(iconSize: Icon.Size, textSize: Orbit.Text.Size, color: Color) -> some View {
         HStack(spacing: .xSmall) {
-            Text("\(Int(iconSize.value))", color: .custom(color), weight: .bold)
+            Text("\(Int(iconSize.value))")
+                .foregroundColor(color)
+                .bold()
 
             HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
                 Icon(.passengers, size: iconSize)

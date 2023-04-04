@@ -21,15 +21,7 @@ public enum Gradient {
             case .bundleTop:                return .inkDark
         }
     }
-    
-    public var uiColor: UIColor {
-        switch self {
-            case .bundleBasic:              return .bundleBasic
-            case .bundleMedium:             return .bundleMedium
-            case .bundleTop:                return .inkDark
-        }
-    }
-    
+
     public var startColor: Color {
         switch self {
             case .bundleBasic:              return .bundleBasicStart
@@ -38,23 +30,7 @@ public enum Gradient {
         }
     }
     
-    public var startUiColor: UIColor {
-        switch self {
-            case .bundleBasic:              return .bundleBasicStart
-            case .bundleMedium:             return .bundleMediumStart
-            case .bundleTop:                return .bundleTopStart
-        }
-    }
-    
     public var endColor: Color {
-        switch self {
-            case .bundleBasic:              return .bundleBasicEnd
-            case .bundleMedium:             return .bundleMediumEnd
-            case .bundleTop:                return .bundleTopEnd
-        }
-    }
-    
-    public var endUiColor: UIColor {
         switch self {
             case .bundleBasic:              return .bundleBasicEnd
             case .bundleMedium:             return .bundleMediumEnd

@@ -67,7 +67,7 @@ public struct Tile<Content: View>: View {
     let status: Status?
     let backgroundColor: BackgroundColor?
     let titleStyle: Heading.Style
-    let descriptionColor: Text.Color
+    let descriptionColor: Color
     let action: () -> Void
     @ViewBuilder let content: Content
 
@@ -120,7 +120,9 @@ public struct Tile<Content: View>: View {
                 VStack(alignment: .leading, spacing: .xxSmall) {
                     Heading(title, style: titleStyle)
                         .accessibility(.tileTitle)
-                    Text(description, color: .inkNormal)
+
+                    Text(description)
+                        .foregroundColor(descriptionColor)
                         .accessibility(.tileDescription)
                 }
 
@@ -202,7 +204,7 @@ public extension Tile {
         status: Status? = nil,
         backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title4,
-        descriptionColor: Text.Color = .inkNormal,
+        descriptionColor: Color = .inkNormal,
         action: @escaping () -> Void,
         @ViewBuilder content: () -> Content = { EmptyView() }
     ) {

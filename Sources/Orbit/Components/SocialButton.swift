@@ -29,7 +29,9 @@ public struct SocialButton: View {
                         .scaledToFit()
                         .frame(width: .large * sizeCategory.ratio)
 
-                    Text(label, size: .normal, color: nil, weight: .medium)
+                    Text(label, size: .normal)
+                        .foregroundColor(nil)
+                        .fontWeight(.medium)
                         .padding(.vertical, Button.Size.default.verticalPadding)
 
                     if idealSize.horizontal == nil {

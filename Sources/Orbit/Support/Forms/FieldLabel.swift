@@ -6,7 +6,8 @@ public struct FieldLabel: View {
     let label: String
 
     public var body: some View {
-        Text(label, size: .normal, weight: .medium)
+        Text(label, size: .normal)
+            .fontWeight(.medium)
             .accessibility(.fieldLabel)
     }
 

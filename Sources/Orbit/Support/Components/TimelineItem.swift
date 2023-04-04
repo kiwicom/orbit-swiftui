@@ -23,7 +23,11 @@ public struct TimelineItem<Footer: View>: View {
             
             VStack(alignment: .leading, spacing: .xxSmall) {
                 header
-                Text(description, size: .normal, color: .custom(type.textColor))
+                    .foregroundColor(type.textColor)
+
+                Text(description, size: .normal)
+                    .foregroundColor(type.textColor)
+
                 footer
             }
         }
@@ -45,8 +49,10 @@ public struct TimelineItem<Footer: View>: View {
     }
 
     @ViewBuilder var headerContent: some View {
-        Heading(label, style: .title5, color: .custom(type.textColor))
-        Text(sublabel, size: .small, color: .custom(type.textColor))
+        Heading(label, style: .title5)
+            .foregroundColor(nil)
+        Text(sublabel, size: .small)
+            .foregroundColor(nil)
     }
 
     var alignment: VerticalAlignment {
@@ -128,7 +134,7 @@ public enum TimelineItemType: Equatable {
         }
     }
 
-    public var textColor: UIColor {
+    public var textColor: Color {
         isCurrentStep ? .inkDark : .inkLight
     }
 
@@ -252,10 +258,10 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
                 VStack {
                     Text(
                         "1 Passenger must check in with the airline for a possible fee",
-                        size: .custom(50),
-                        color: .custom(TimelineItemType.present(.warning).textColor),
-                        weight: .bold
+                        size: .custom(50)
                     )
+                    .foregroundColor(TimelineItemType.present(.warning).color)
+                    .bold()
                     .padding(.leading, .xSmall)
                 }
             }

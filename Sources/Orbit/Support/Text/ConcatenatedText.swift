@@ -3,11 +3,12 @@ import SwiftUI
 struct ConcatenatedText: View {
 
     @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.textAccentColor) var textAccentColor
 
-    let content: (ContentSizeCategory) -> SwiftUI.Text?
+    let content: (ContentSizeCategory, Color?) -> SwiftUI.Text?
 
     var body: some View {
-        if let content = content(sizeCategory) {
+        if let content = content(sizeCategory, textAccentColor) {
             content
         }
     }
@@ -15,8 +16,8 @@ struct ConcatenatedText: View {
 
 extension ConcatenatedText: TextRepresentable {
 
-    func swiftUIText(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
-        content(sizeCategory)
+    func swiftUIText(sizeCategory: ContentSizeCategory, textAccentColor: Color?) -> SwiftUI.Text? {
+        content(sizeCategory, textAccentColor)
     }
 }
 
@@ -26,15 +27,15 @@ extension ConcatenatedText {
         if let concatenatedText = TextRepresentable as? ConcatenatedText {
             self = concatenatedText
         } else {
-            self.init(content: TextRepresentable.swiftUIText(sizeCategory:))
+            self.init(content: TextRepresentable.swiftUIText(sizeCategory:textAccentColor:))
         }
     }
 }
 
 
 func +(left: ConcatenatedText, right: ConcatenatedText) -> ConcatenatedText {
-    .init { configration in
-        transform(left: left.content(configration), right: right.content(configration))
+    .init { sizeCategory, textAccentColor in
+        transform(left: left.content(sizeCategory, textAccentColor), right: right.content(sizeCategory, textAccentColor))
     }
 }
 
