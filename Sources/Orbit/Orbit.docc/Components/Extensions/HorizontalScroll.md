@@ -8,5 +8,6 @@
 
 ### Customizing Appearance
 
+- ``HorizontalScrollReader``
 - ``HorizontalScrollItemWidth``
 - ``HorizontalScrollItemHeight``
