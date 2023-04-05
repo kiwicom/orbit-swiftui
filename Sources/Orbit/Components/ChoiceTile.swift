@@ -55,7 +55,6 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
                     messageView
                     centerIndicator
                 }
-                .padding(.top, badgeOverlay.isEmpty ? 0 : .small)
                 .overlay(indicatorOverlay, alignment: indicatorAlignment)
                 .padding(padding)
                 .frame(maxWidth: idealSize.horizontal == true ? nil: .infinity, alignment: .leading)
@@ -119,6 +118,7 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
                         headerContent
                     }
                     .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
+                    .padding(.top, .small)
             }
         }
     }
@@ -428,8 +428,6 @@ struct ChoiceTilePreviews: PreviewProvider {
         choiceTile(titleStyle: .title4, showHeader: true, isError: false, isSelected: false)
         choiceTile(titleStyle: .title4, showHeader: true, isError: false, isSelected: true)
         choiceTile(titleStyle: .title3, showHeader: true, isError: false, isSelected: false)
-        choiceTile(titleStyle: .title3, showHeader: true, isError: false, isSelected: true)
-        choiceTile(titleStyle: .title4, showHeader: false, isError: false, isSelected: false)
         choiceTile(titleStyle: .title4, showHeader: false, isError: false, isSelected: true)
         choiceTile(titleStyle: .title4, showHeader: true, isError: true, isSelected: false)
         choiceTile(titleStyle: .title4, showHeader: true, isError: true, isSelected: true)
@@ -437,11 +435,7 @@ struct ChoiceTilePreviews: PreviewProvider {
 
     @ViewBuilder static var contentCentered: some View {
         choiceTileCentered(titleStyle: .title4, showIllustration: true, isError: false, isSelected: false)
-        choiceTileCentered(titleStyle: .title4, showIllustration: true, isError: false, isSelected: true)
-        choiceTileCentered(titleStyle: .title3, showIllustration: true, isError: false, isSelected: false)
-        choiceTileCentered(titleStyle: .title3, showIllustration: true, isError: false, isSelected: true)
-        choiceTileCentered(titleStyle: .title3, showIllustration: false, isError: false, isSelected: false)
-        choiceTileCentered(titleStyle: .title3, showIllustration: false, isError: false, isSelected: true)
+        choiceTileCentered(titleStyle: .title4, showIllustration: false, isError: false, isSelected: true)
         choiceTileCentered(titleStyle: .title4, showIllustration: true, isError: true, isSelected: false)
         choiceTileCentered(titleStyle: .title4, showIllustration: true, isError: true, isSelected: true)
     }
