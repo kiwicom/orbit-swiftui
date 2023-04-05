@@ -260,6 +260,12 @@ public extension Color {
             case .whiteDarker: return.whiteDarker
             case .whiteHover: return.whiteHover
             case .whiteLighter: return.whiteLighter
+            case .bundleBasicStart: return .bundleBasicStart
+            case .bundleBasicEnd: return .bundleBasicEnd
+            case .bundleMediumStart: return .bundleMediumStart
+            case .bundleMediumEnd: return .bundleMediumEnd
+            case .bundleTopStart: return .bundleTopStart
+            case .bundleTopEnd: return .bundleTopEnd
             default: return .label
         }
     }

@@ -92,12 +92,12 @@ public extension LinearGradient {
 
 public extension Color {
     
-    static var bundleBasicStart = Color(red: 0.882, green: 0.243, blue: 0.231)
-    static var bundleBasicEnd = Color(red: 0.91, green: 0.494, blue: 0.035)
-    static var bundleMediumStart = Color(red: 0.216, green: 0.098, blue: 0.671)
-    static var bundleMediumEnd = Color(red: 0.522, green: 0.224, blue: 0.859)
-    static var bundleTopStart = Color(red: 0.176, green: 0.176, blue: 0.18)
-    static var bundleTopEnd = Color(red: 0.412, green: 0.431, blue: 0.451)
+    static var bundleBasicStart = Color(UIColor.bundleBasicStart)
+    static var bundleBasicEnd = Color(UIColor.bundleBasicEnd)
+    static var bundleMediumStart = Color(UIColor.bundleMediumStart)
+    static var bundleMediumEnd = Color(UIColor.bundleMediumEnd)
+    static var bundleTopStart = Color(UIColor.bundleTopStart)
+    static var bundleTopEnd = Color(UIColor.bundleTopEnd)
 }
 
 public extension UIColor {

@@ -88,6 +88,12 @@ public extension Color {{
     var uiColor: UIColor {{
         switch self {{
 {caseList}
+            case .bundleBasicStart: return .bundleBasicStart
+            case .bundleBasicEnd: return .bundleBasicEnd
+            case .bundleMediumStart: return .bundleMediumStart
+            case .bundleMediumEnd: return .bundleMediumEnd
+            case .bundleTopStart: return .bundleTopStart
+            case .bundleTopEnd: return .bundleTopEnd
             default: return .label
         }}
     }}
