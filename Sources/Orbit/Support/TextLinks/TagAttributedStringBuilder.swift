@@ -31,6 +31,7 @@ final class TagAttributedStringBuilder {
 
     func attributedString(
         _ string: String,
+        fontWeight: Font.Weight?,
         textAttributes: [NSAttributedString.Key: Any],
         tagTextAttributes: [Tag: [NSAttributedString.Key: Any]]
     ) -> NSAttributedString {
@@ -50,6 +51,7 @@ final class TagAttributedStringBuilder {
 
                 guard let tagAttributedString = tag.attributedString(
                     from: result,
+                    fontWeight: fontWeight,
                     currentAttributedString: NSAttributedString(attributedString: attributedString),
                     textAttributes: textAttributes,
                     tagTextAttributes: tagTextAttributes[tag] ?? [:]
@@ -71,7 +73,7 @@ final class TagAttributedStringBuilder {
         _ string: String,
         alignment: TextAlignment,
         fontSize: CGFloat,
-        fontWeight: Font.Weight = .regular,
+        fontWeight: Font.Weight?,
         lineSpacing: CGFloat?,
         kerning: CGFloat = 0,
         color: UIColor? = nil,
@@ -90,8 +92,13 @@ final class TagAttributedStringBuilder {
             : kerning
 
         var textAttributes: [NSAttributedString.Key: Any] = [:]
-        textAttributes[.font] = UIFont.orbit(size: fontSize, weight: fontWeight.uiKit)
-        textAttributes[.kern] = adjustedKerning
+        textAttributes[.font] = UIFont.orbit(size: fontSize, weight: (fontWeight ?? .regular).uiKit)
+        if let adjustedKerning {
+            textAttributes[.kern] = adjustedKerning
+        }
+        if strikethrough {
+            textAttributes[.strikethroughStyle] = NSUnderlineStyle.single.rawValue
+        }
         textAttributes[.foregroundColor] = color
         textAttributes[.paragraphStyle] = paragraphStyle
 
@@ -103,6 +110,7 @@ final class TagAttributedStringBuilder {
 
         return attributedString(
             string,
+            fontWeight: fontWeight,
             textAttributes: textAttributes,
             tagTextAttributes: [
                 .anchor: linksAttributes,
@@ -188,10 +196,13 @@ private extension TagAttributedStringBuilder.Tag {
 
     func attributedString(
         from result: TagAttributedStringBuilderTagFinder.Result,
+        fontWeight: Font.Weight?,
         currentAttributedString: NSAttributedString,
         textAttributes: [NSAttributedString.Key: Any],
         tagTextAttributes: [NSAttributedString.Key: Any]
     ) -> NSAttributedString? {
+
+        let fontWeight = fontWeight?.uiKit
 
         switch self {
             case .anchor, .applink:
@@ -205,7 +216,7 @@ private extension TagAttributedStringBuilder.Tag {
 
                 let attributes = [
                     .link: url,
-                    .font: UIFont.orbit(size: font.pointSize, weight: .medium),
+                    .font: UIFont.orbit(size: font.pointSize, weight: fontWeight ?? .medium),
                     .underlineStyle: NSUnderlineStyle.single.rawValue
                 ].merging(tagTextAttributes, uniquingKeysWith: { $1 })
                 
@@ -223,9 +234,9 @@ private extension TagAttributedStringBuilder.Tag {
                 if let font = tagTextAttributes[.font] as? UIFont {
                     boldFont = font
                 } else if let font = textAttributes[.font] as? UIFont {
-                    boldFont = .orbit(size: font.pointSize, weight: .bold)
+                    boldFont = .orbit(size: font.pointSize, weight: fontWeight ?? .bold)
                 } else {
-                    boldFont = .orbit(size: Text.Size.normal.value, weight: .bold)
+                    boldFont = .orbit(size: Text.Size.normal.value, weight: fontWeight ?? .bold)
                 }
 
                 return stringByAddingAttributes([.font: boldFont], to: currentAttributedString, at: result.ranges[1])
@@ -250,7 +261,7 @@ private extension TagAttributedStringBuilder.Tag {
                 }
 
                 return stringByAddingAttributes(
-                    [.foregroundColor: color, .font: UIFont.orbit(size: font.pointSize, weight: .bold)],
+                    [.foregroundColor: color, .font: UIFont.orbit(size: font.pointSize, weight: fontWeight ?? .bold)],
                     to: currentAttributedString,
                     at: result.ranges[1]
                 )
