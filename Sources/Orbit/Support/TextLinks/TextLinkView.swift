@@ -6,14 +6,13 @@ import SwiftUI
 public final class TextLinkView: UITextView, UITextViewDelegate {
 
     let action: TextLink.Action
-    private var size: CGSize
 
     override public var canBecomeFirstResponder: Bool {
         // disable text selection while allowing link interaction
         false
     }
 
-    public init(layoutManager: NSLayoutManager = .init(), size: CGSize, action: @escaping TextLink.Action) {
+    public init(layoutManager: NSLayoutManager = .init(), action: @escaping TextLink.Action) {
         let textContainer = NSTextContainer()
         let textStorage = NSTextStorage()
         textStorage.addLayoutManager(layoutManager)
@@ -21,7 +20,6 @@ public final class TextLinkView: UITextView, UITextViewDelegate {
         layoutManager.allowsNonContiguousLayout = true
         layoutManager.limitsLayoutForSuspiciousContents = false
 
-        self.size = size
         self.action = action
 
         super.init(frame: .zero, textContainer: textContainer)
@@ -57,14 +55,12 @@ public final class TextLinkView: UITextView, UITextViewDelegate {
 
     func update(
         content: NSAttributedString,
-        size: CGSize,
         lineLimit: Int,
         color: UIColor?
     ) {
         tintColor = color
         textContainer.maximumNumberOfLines = lineLimit
         self.attributedText = content
-        self.size = size
     }
 
     private func removeInsets() {
@@ -78,6 +74,7 @@ public final class TextLinkView: UITextView, UITextViewDelegate {
     }
 
     override public var intrinsicContentSize: CGSize {
-        size
+        // Required to fit the SwiftUI content
+        .zero
     }
 }

@@ -6,17 +6,12 @@ struct SelectableLabelWrapper: UIViewRepresentable {
     let text: String
     private let selectableLabel = SelectableLabel()
 
-    init(text: String) {
+    init(_ text: String) {
         self.text = text
     }
 
     func makeUIView(context _: Context) -> UILabel {
-
         selectableLabel.text = text
-
-        selectableLabel.setContentHuggingPriority(.required, for: .horizontal)
-        selectableLabel.setContentHuggingPriority(.required, for: .vertical)
-
         selectableLabel.textColor = .clear
         return selectableLabel
     }
@@ -68,5 +63,10 @@ private final class SelectableLabel: UILabel {
             self.becomeFirstResponder()
             UIMenuController.shared.showMenu(from: self, rect: self.bounds)
         }
+    }
+
+    override var intrinsicContentSize: CGSize {
+        // Required to fit the SwiftUI content
+        .zero
     }
 }

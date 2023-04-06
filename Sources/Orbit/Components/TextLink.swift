@@ -12,14 +12,13 @@ public struct TextLink: UIViewRepresentable {
     @Environment(\.textLinkColor) var textLinkColor
 
     let content: NSAttributedString
-    let bounds: CGSize
     
     public func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
 
     public func makeUIView(context: UIViewRepresentableContext<TextLink>) -> TextLinkView {
-        let textLinkView = TextLinkView(layoutManager: NSLayoutManager(), size: bounds) {
+        let textLinkView = TextLinkView(layoutManager: NSLayoutManager()) {
             HapticsProvider.sendHapticFeedback(.light(0.5))
             textLinkAction?($0, $1)
         }
@@ -36,7 +35,6 @@ public struct TextLink: UIViewRepresentable {
     public func updateUIView(_ uiView: TextLinkView, context: UIViewRepresentableContext<TextLink>) {
         uiView.update(
             content: content,
-            size: bounds,
             lineLimit: context.environment.lineLimit ?? 0,
             color: textLinkColor?.uiValue ?? Color.primary.uiValue
         )
@@ -79,9 +77,8 @@ extension TextLink {
     ///
     /// The component has a size of the original text, but it only display detected links, hiding any non-link content.
     /// Use `textLink(color:)` to override the TextLink colors.
-    public init(_ content: NSAttributedString, bounds: CGSize) {
+    public init(_ content: NSAttributedString) {
         self.content = content
-        self.bounds = bounds
     }
 }
 
@@ -134,10 +131,8 @@ struct TextLinkPreviews: PreviewProvider {
                 fontSize: Text.Size.normal.value,
                 fontWeight: .regular,
                 lineSpacing: nil
-            ),
-            bounds: .zero
+            )
         )
-        .frame(width: 100, height: 60)
         .previewDisplayName()
     }
 
