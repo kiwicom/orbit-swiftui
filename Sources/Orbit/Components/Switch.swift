@@ -58,9 +58,9 @@ public struct Switch: View {
         if hasIcon {
             Icon(
                 isOn ? .lock : .lockOpen,
-                size: .custom(Icon.Size.small.value * sizeCategory.controlRatio),
-                color: iconTint
+                size: .custom(Icon.Size.small.value * sizeCategory.controlRatio)
             )
+            .foregroundColor(iconTint)
             .environment(\.sizeCategory, .large)
         } else {
             Circle()

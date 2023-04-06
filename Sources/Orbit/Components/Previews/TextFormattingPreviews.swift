@@ -545,7 +545,8 @@ private extension View {
     @available(iOS 16.0, *)
     func warning() -> some View {
         overlay(
-            Icon(.alert, size: .custom(8), color: .redNormal)
+            Icon(.alert, size: .custom(8))
+                .foregroundColor(.redNormal)
                 .underline(false)
                 .baselineOffset(0)
                 .kerning(0)

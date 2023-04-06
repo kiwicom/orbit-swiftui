@@ -11,15 +11,15 @@ public struct BadgeList: View {
     @Environment(\.textAccentColor) private var textAccentColor
 
     let label: String
-    let iconContent: Icon.Content
+    let icon: Icon.Content?
     let style: Style
     let labelColor: LabelColor
     let size: Size
 
     public var body: some View {
         if isEmpty == false {
-            HStack(alignment: alignment, spacing: .xSmall) {
-                badgeOrEmptySpace
+            HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+                Icon(icon, size: .small)
                     .foregroundColor(iconColor)
                     .padding(.xxSmall)
                     .background(badgeBackground)
@@ -32,20 +32,9 @@ public struct BadgeList: View {
         }
     }
 
-    @ViewBuilder var badgeOrEmptySpace: some View {
-        if iconContent.isEmpty {
-            Color.clear
-                .frame(width: .medium, height: .medium)
-        } else {
-            Icon(content: iconContent, size: .small)
-        }
-    }
-
     @ViewBuilder var badgeBackground: some View {
-        if iconContent.isEmpty == false {
-            backgroundColor
-                .clipShape(Circle())
-        }
+        backgroundColor
+            .clipShape(Circle())
     }
 
     public var iconColor: Color {
@@ -64,16 +53,16 @@ public struct BadgeList: View {
         }
     }
 
-    var alignment: VerticalAlignment {
-        iconContent.isEmpty ? .top : .firstTextBaseline
-    }
-
     var defaultStatus: Status {
         status ?? .info
     }
 
     var isEmpty: Bool {
-        label.isEmpty && iconContent.isEmpty
+        label.isEmpty && isIconEmpty
+    }
+
+    var isIconEmpty: Bool {
+        icon?.isEmpty ?? true
     }
 }
 
@@ -86,13 +75,13 @@ public extension BadgeList {
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ label: String = "",
-        icon: Icon.Content = .none,
+        icon: Icon.Content? = nil,
         style: Style = .neutral,
         labelColor: LabelColor = .primary,
         size: Size = .normal
     ) {
         self.label = label
-        self.iconContent = icon
+        self.icon = icon
         self.style = style
         self.labelColor = labelColor
         self.size = size

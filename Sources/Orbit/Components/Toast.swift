@@ -3,26 +3,6 @@ import SwiftUI
 
 /// Toast shows a brief message that’s clear & understandable.
 ///
-/// Apply ``Toast`` as a `.top` overlay to an existing view.
-/// Provide an instance of ``ToastQueue``, which manages a queue of toasts.
-///
-/// The following example shows a ``Toast`` applied to a view:
-///
-///    ```swift
-///    let toastQueue = ToastQueue()
-///
-///    var body: some View {
-///        VStack {
-///            // content over which to display Toasts
-///        }
-///        .overlay(Toast(toastQueue: toastQueue))
-///    }
-///    ```
-///
-/// Use ``ToastWrapper`` if you need gesture handling, but no queue management.
-///
-/// Use ``ToastContent`` if you don't need gesture handling or queue management.
-///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/toast/)
 /// - Important: Component expands horizontally to infinity.
 public struct Toast: View {
@@ -46,6 +26,25 @@ public struct Toast: View {
     }
     
     /// Creates Orbit Toast component with queue management and gesture handling.
+    ///
+    /// Apply ``Toast`` as a `.top` overlay to an existing view.
+    /// Provide an instance of ``ToastQueue``, which manages a queue of toasts.
+    ///
+    /// The following example shows a ``Toast`` applied to a view:
+    ///
+    ///    ```swift
+    ///    let toastQueue = ToastQueue()
+    ///
+    ///    var body: some View {
+    ///        VStack {
+    ///            // content over which to display Toasts
+    ///        }
+    ///        .overlay(Toast(toastQueue: toastQueue), alignment: .top)
+    ///    }
+    ///    ```
+    /// Alternatively:
+    /// - ``ToastWrapper`` can be used when gesture handling is needed, but no queue management.
+    /// - ``ToastContent`` when neither gesture handling or queue management is needed.
     public init(toastQueue: ToastQueue) {
         self.toastQueue = toastQueue
     }
@@ -54,15 +53,15 @@ public struct Toast: View {
 /// Variant of Orbit `Toast` component with no gesture handling or queue management.
 public struct ToastContent: View {
 
-    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.colorScheme) private var colorScheme
 
     let description: String
-    let iconContent: Icon.Content
+    let icon: Icon.Content?
     let progress: CGFloat
     
     public var body: some View {
         HStack(alignment: .top, spacing: .xSmall) {
-            Icon(content: iconContent)
+            Icon(content: icon)
             Text(description)
                 .foregroundColor(nil)
             Spacer(minLength: 0)
@@ -107,9 +106,9 @@ public struct ToastContent: View {
     }
     
     /// Creates Orbit `Toast` component variant with no gesture handling or queue management.
-    public init(_ description: String, icon: Icon.Content = .none, progress: CGFloat = 0) {
+    public init(_ description: String, icon: Icon.Content? = nil, progress: CGFloat = 0) {
         self.description = description
-        self.iconContent = icon
+        self.icon = icon
         self.progress = progress
     }
 }
@@ -121,7 +120,7 @@ public struct ToastWrapper: View {
     static let maxOffsetY: CGFloat = 10
     
     let description: String
-    let iconContent: Icon.Content
+    let icon: Icon.Content?
     let progress: CGFloat
     let pauseAction: () -> Void
     let resumeAction: () -> Void
@@ -131,7 +130,7 @@ public struct ToastWrapper: View {
     @State private var gaveFeedback: Bool = false
     
     public var body: some View {
-        ToastContent(description, icon: iconContent, progress: progress)
+        ToastContent(description, icon: icon, progress: progress)
             .opacity(opacity)
             .offset(y: cappedOffsetY)
             .gesture(
@@ -173,14 +172,14 @@ public struct ToastWrapper: View {
     /// Creates Orbit `Toast` component variant with gesture handling.
     public init(
         _ description: String,
-        icon: Icon.Content = .none,
+        icon: Icon.Content? = nil,
         progress: CGFloat = 0,
         pauseAction: @escaping () -> Void,
         resumeAction: @escaping() -> Void,
         dismissAction: @escaping () -> Void
     ) {
         self.description = description
-        self.iconContent = icon
+        self.icon = icon
         self.progress = progress
         self.pauseAction = pauseAction
         self.resumeAction = resumeAction

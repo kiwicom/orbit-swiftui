@@ -13,10 +13,10 @@ public struct Select: View {
     @Binding var messageHeight: CGFloat
     
     let label: String
-    let prefix: Icon.Content
+    let prefix: Icon.Content?
     let value: String?
     let prompt: String
-    let suffix: Icon.Content
+    let suffix: Icon.Content?
     let state: InputState
     let message: Message?
     let action: () -> Void
@@ -86,7 +86,11 @@ public struct Select: View {
     }
 
     var leadingPadding: CGFloat {
-        prefix.isEmpty ? .small : 0
+        isPrefixEmpty ? .small : 0
+    }
+
+    var isPrefixEmpty: Bool {
+        prefix?.isEmpty ?? true
     }
 }
 
@@ -96,10 +100,10 @@ public extension Select {
     /// Creates Orbit Select component.
     init(
         _ label: String = "",
-        prefix: Icon.Content = .none,
+        prefix: Icon.Content? = nil,
         value: String?,
         prompt: String = "",
-        suffix: Icon.Content = .chevronDown,
+        suffix: Icon.Content? = nil,
         state: InputState = .default,
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
@@ -185,8 +189,8 @@ struct SelectPreviews: PreviewProvider {
         _ label: String = InputFieldPreviews.label,
         value: String?,
         prompt: String = InputFieldPreviews.prompt,
-        prefix: Icon.Content = .grid,
-        suffix: Icon.Content = .chevronDown,
+        prefix: Icon.Content? = .grid,
+        suffix: Icon.Content? = .chevronDown,
         message: Message? = nil
     ) -> some View {
         Select(label, prefix: prefix, value: value, prompt: prompt, suffix: suffix, message: message, action: {})

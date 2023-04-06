@@ -1,50 +1,5 @@
 import SwiftUI
 
-/// Button style wrapper for Tile-like components.
-/// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
-public struct TileButtonStyle: SwiftUI.ButtonStyle {
-
-    let style: TileBorderStyle
-    let isSelected: Bool
-    let status: Status?
-    let backgroundColor: Tile.BackgroundColor?
-
-    /// Creates button style wrapper for Tile-like components.
-    public init(style: TileBorderStyle = .default, isSelected: Bool = false, status: Status? = nil, backgroundColor: Tile.BackgroundColor? = nil) {
-        self.style = style
-        self.isSelected = isSelected
-        self.status = status
-        self.backgroundColor = backgroundColor
-    }
-
-    public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .background(backgroundColor(isPressed: configuration.isPressed))
-            .tileBorder(
-                style,
-                isSelected: isSelected
-            )
-            .status(status)
-    }
-
-    func backgroundColor(isPressed: Bool) -> Color {
-        switch (backgroundColor, isPressed) {
-            case (let backgroundColor?, true):          return backgroundColor.active
-            case (let backgroundColor?, false):         return backgroundColor.normal
-            case (.none, true):                         return .whiteHover
-            case (.none, false):                        return .whiteDarker
-        }
-    }
-}
-
-public enum TileDisclosure: Equatable {
-    case none
-    /// Icon with optional color override.
-    case icon(Icon.Content, alignment: VerticalAlignment = .center)
-    /// ButtonLink indicator.
-    case buttonLink(_ label: String, style: ButtonLink.Style = .primary)
-}
-
 /// Groups actionable content to make it easy to scan.
 ///
 /// Can be used standalone or wrapped inside a ``TileGroup``.
@@ -62,7 +17,7 @@ public struct Tile<Content: View>: View {
 
     let title: String
     let description: String
-    let iconContent: Icon.Content
+    let icon: Icon.Content?
     let disclosure: TileDisclosure
     let showBorder: Bool
     let backgroundColor: BackgroundColor?
@@ -112,7 +67,7 @@ public struct Tile<Content: View>: View {
     @ViewBuilder var header: some View {
         if isHeaderEmpty == false {
             HStack(alignment: .top, spacing: 0) {
-                Icon(content: iconContent, size: titleStyle.iconSize)
+                Icon(content: icon, size: titleStyle.iconSize)
                     .foregroundColor(.inkDark)
                     .padding(.trailing, .xSmall)
                     .accessibility(.tileIcon)
@@ -176,7 +131,7 @@ public struct Tile<Content: View>: View {
     }
 
     var separatorPadding: CGFloat {
-        iconContent.isEmpty ? .medium : .xxxLarge
+        isIconEmpty ? .medium : .xxxLarge
     }
     
     var tileBorderStyle: TileBorderStyle {
@@ -184,7 +139,11 @@ public struct Tile<Content: View>: View {
     }
     
     var isHeaderEmpty: Bool {
-        title.isEmpty && description.isEmpty && iconContent.isEmpty
+        title.isEmpty && description.isEmpty && isIconEmpty
+    }
+
+    var isIconEmpty: Bool {
+        icon?.isEmpty ?? true
     }
 }
 
@@ -195,7 +154,7 @@ public extension Tile {
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content = .none,
+        icon: Icon.Content? = nil,
         disclosure: TileDisclosure = .icon(.chevronForward),
         showBorder: Bool = true,
         backgroundColor: BackgroundColor? = nil,
@@ -206,7 +165,7 @@ public extension Tile {
     ) {
         self.title = title
         self.description = description
-        self.iconContent = icon
+        self.icon = icon
         self.disclosure = disclosure
         self.showBorder = showBorder
         self.backgroundColor = backgroundColor
@@ -232,9 +191,56 @@ public extension Tile {
 }
 
 // MARK: - Types
+
 public extension Tile {
 
     typealias BackgroundColor = (normal: Color, active: Color)
+}
+
+/// Button style wrapper for Tile-like components.
+///
+/// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
+public struct TileButtonStyle: SwiftUI.ButtonStyle {
+
+    let style: TileBorderStyle
+    let isSelected: Bool
+    let status: Status?
+    let backgroundColor: Tile.BackgroundColor?
+
+    /// Creates button style wrapper for Tile-like components.
+    public init(style: TileBorderStyle = .default, isSelected: Bool = false, status: Status? = nil, backgroundColor: Tile.BackgroundColor? = nil) {
+        self.style = style
+        self.isSelected = isSelected
+        self.status = status
+        self.backgroundColor = backgroundColor
+    }
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(backgroundColor(isPressed: configuration.isPressed))
+            .tileBorder(
+                style,
+                isSelected: isSelected
+            )
+            .status(status)
+    }
+
+    func backgroundColor(isPressed: Bool) -> Color {
+        switch (backgroundColor, isPressed) {
+            case (let backgroundColor?, true):          return backgroundColor.active
+            case (let backgroundColor?, false):         return backgroundColor.normal
+            case (.none, true):                         return .whiteHover
+            case (.none, false):                        return .whiteDarker
+        }
+    }
+}
+
+public enum TileDisclosure: Equatable {
+    case none
+    /// Icon with optional color override.
+    case icon(Icon.Content, alignment: VerticalAlignment = .center)
+    /// ButtonLink indicator.
+    case buttonLink(_ label: String, style: ButtonLink.Style = .primary)
 }
 
 // MARK: - Identifiers

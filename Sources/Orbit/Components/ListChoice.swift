@@ -1,27 +1,5 @@
 import SwiftUI
 
-public enum ListChoiceDisclosure: Equatable {
-    
-    public enum ButtonType {
-        case add
-        case remove
-    }
-    
-    case none
-    /// An iOS-style disclosure indicator.
-    case disclosure(Color = .inkNormal)
-    /// A non-interactive button.
-    case button(type: ButtonType)
-    /// A non-interactive ButtonLink.
-    case buttonLink(String, style: ButtonLink.Style = .primary)
-    /// A non-interactive checkbox.
-    case checkbox(isChecked: Bool = true, state: Checkbox.State = .normal)
-    /// A non-interactive radio.
-    case radio(isChecked: Bool = true, state: Radio.State = .normal)
-    /// An icon content.
-    case icon(Icon.Content)
-}
-
 /// Shows one of a selectable list of items with similar structures.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/listchoice/)
@@ -34,7 +12,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
 
     let title: String
     let description: String
-    let iconContent: Icon.Content
+    let icon: Icon.Content?
     let value: String
     let disclosure: ListChoiceDisclosure
     let showSeparator: Bool
@@ -44,15 +22,12 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
 
     public var body: some View {
         if isEmpty == false {
-            SwiftUI.Button(
-                action: {
-                    HapticsProvider.sendHapticFeedback(.light(0.5))
-                    action()
-                },
-                label: {
-                    buttonContent
-                }
-            )
+            SwiftUI.Button {
+                HapticsProvider.sendHapticFeedback(.light(0.5))
+                action()
+            } label: {
+                buttonContent
+            }
             .buttonStyle(ListChoiceButtonStyle())
             .accessibilityElement(children: .ignore)
             .accessibility(label: .init(title))
@@ -103,7 +78,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     @ViewBuilder var headerTexts: some View {
         if isHeaderEmpty == false {
             HStack(alignment: .top, spacing: .xSmall) {
-                Icon(content: iconContent)
+                Icon(content: icon)
                     .foregroundColor(.inkDark)
                     .accessibility(.listChoiceIcon)
                 
@@ -129,7 +104,8 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
             case .none:
                 EmptyView()
             case .disclosure(let color):
-                Icon(.chevronForward, color: color)
+                Icon(.chevronForward)
+                    .foregroundColor(color)
                     .padding(.leading, -.xSmall)
             case .button(let type):
                 disclosureButton(type: type)
@@ -163,7 +139,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
             return 0
         }
         
-        if iconContent.isEmpty {
+        if isIconEmpty {
             return .medium
         }
         
@@ -175,7 +151,11 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     }
     
     var isHeaderEmpty: Bool {
-        iconContent.isEmpty && isHeaderTextEmpty
+        isIconEmpty && isHeaderTextEmpty
+    }
+
+    var isIconEmpty: Bool {
+        icon?.isEmpty ?? true
     }
 
     var isCustomHeaderEmpty: Bool {
@@ -202,7 +182,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     private init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content = .none,
+        icon: Icon.Content? = nil,
         value: String = "",
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
@@ -213,7 +193,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
         self.title = title
         self.description = description
         self.value = value
-        self.iconContent = icon
+        self.icon = icon
         self.disclosure = disclosure
         self.showSeparator = showSeparator
         self.action = action
@@ -229,7 +209,7 @@ public extension ListChoice {
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content = .none,
+        icon: Icon.Content? = nil,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void,
@@ -253,7 +233,7 @@ public extension ListChoice {
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content = .none,
+        icon: Icon.Content? = nil,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void,
@@ -279,7 +259,7 @@ public extension ListChoice where HeaderContent == Text {
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content = .none,
+        icon: Icon.Content? = nil,
         value: String,
         disclosure: ListChoiceDisclosure = .disclosure(),
         showSeparator: Bool = true,
@@ -302,23 +282,45 @@ public extension ListChoice where HeaderContent == Text {
     }
 }
 
-extension ListChoice {
-    
-    // Button style wrapper for ListChoice.
-    // Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
-    struct ListChoiceButtonStyle: SwiftUI.ButtonStyle {
+// MARK: - Types
 
-        func makeBody(configuration: Configuration) -> some View {
-            configuration.label
-                .background(
-                    backgroundColor(isPressed: configuration.isPressed)
-                        .contentShape(Rectangle())
-                )
-        }
+public enum ListChoiceDisclosure: Equatable {
 
-        func backgroundColor(isPressed: Bool) -> Color {
-            isPressed ? .inkNormal.opacity(0.06) : .clear
-        }
+    public enum ButtonType {
+        case add
+        case remove
+    }
+
+    case none
+    /// An iOS-style disclosure indicator.
+    case disclosure(Color = .inkNormal)
+    /// A non-interactive button.
+    case button(type: ButtonType)
+    /// A non-interactive ButtonLink.
+    case buttonLink(String, style: ButtonLink.Style = .primary)
+    /// A non-interactive checkbox.
+    case checkbox(isChecked: Bool = true, state: Checkbox.State = .normal)
+    /// A non-interactive radio.
+    case radio(isChecked: Bool = true, state: Radio.State = .normal)
+    /// An icon content.
+    case icon(Icon.Content)
+}
+
+/// ButtonStyle for Orbit ListChoice component.
+///
+/// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
+public struct ListChoiceButtonStyle: SwiftUI.ButtonStyle {
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(
+                backgroundColor(isPressed: configuration.isPressed)
+                    .contentShape(Rectangle())
+            )
+    }
+
+    func backgroundColor(isPressed: Bool) -> Color {
+        isPressed ? .inkNormal.opacity(0.06) : .clear
     }
 }
 

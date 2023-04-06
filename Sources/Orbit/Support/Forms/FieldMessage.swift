@@ -11,14 +11,19 @@ public struct FieldMessage: View {
     public var body: some View {
         if let message = message, message.isEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: spacing) {
-                Icon(message.icon, size: .small, color: message.color)
-                    .accessibility(.fieldMessageIcon)
+                if let icon = message.icon {
+                    Icon(icon, size: .small)
+                        .foregroundColor(nil)
+                        .accessibility(.fieldMessageIcon)
                     // A workaround for current Orbit non-matching icon size
-                    .alignmentGuide(.firstTextBaseline) { $0.height * 0.82 }
+                        .alignmentGuide(.firstTextBaseline) { $0.height * 0.82 }
+                }
+
                 Text(message.description)
-                    .foregroundColor(message.color)
+                    .foregroundColor(nil)
                     .accessibility(.fieldMessage)
             }
+            .foregroundColor(message.color)
             .transition(.opacity.animation(.easeOut(duration: 0.2)))
             .accessibilityElement(children: .combine)
         }

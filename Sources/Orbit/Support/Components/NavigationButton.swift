@@ -92,10 +92,10 @@ struct NavigationButtonPreviews: PreviewProvider {
                         Group {
                             NavigationButton(.close, action: {})
                             if #available(iOS 16.0, *) {
-                                BarButton(content: .sfSymbol("xmark", color: .inkDark), action: {})
+                                BarButton(.sfSymbol("xmark", color: .inkDark), action: {})
                                     .fontWeight(.bold)
                             } else {
-                                BarButton(content: .sfSymbol("xmark", color: .inkDark), action: {})
+                                BarButton(.sfSymbol("xmark", color: .inkDark), action: {})
                             }
                             BarButton(.close, action: {})
                         }
@@ -116,10 +116,10 @@ struct NavigationButtonPreviews: PreviewProvider {
                         Group {
                             NavigationButton(.back, action: {})
                             if #available(iOS 16.0, *) {
-                                BarButton(content: .sfSymbol("arrow.backward", color: .inkDark), action: {})
+                                BarButton(.sfSymbol("arrow.backward", color: .inkDark), action: {})
                                     .fontWeight(.bold)
                             } else {
-                                BarButton(content: .sfSymbol("arrow.backward", color: .inkDark), action: {})
+                                BarButton(.sfSymbol("arrow.backward", color: .inkDark), action: {})
                             }
                             BarButton(.chevronBackward, action: {})
                         }

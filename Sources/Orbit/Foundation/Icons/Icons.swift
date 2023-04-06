@@ -3,8 +3,6 @@
 public extension Icon {
 
     enum Symbol: CaseIterable {
-        /// Absence of Orbit icon.
-        case none
         /// Orbit `accommodation` icon symbol.
         case accommodation
         /// Orbit `accountCircle` icon symbol.
@@ -590,7 +588,6 @@ public extension Icon {
 
         public var value: String {
             switch self {
-                case .none: return ""
                 case .accommodation: return "\u{4389}"
                 case .accountCircle: return "\u{7884}"
                 case .admin: return "\u{1251}"

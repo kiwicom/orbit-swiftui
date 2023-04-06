@@ -31,7 +31,7 @@ public struct BarButton: View {
 
     /// Creates Orbit BarButton component using the provided icon content.
     public init(
-        content: Icon.Content,
+        _ content: Icon.Content,
         size: Icon.Size = .large,
         alignment: HorizontalAlignment = .center,
         action: @escaping () -> Void
@@ -40,22 +40,6 @@ public struct BarButton: View {
         self.size = size
         self.alignment = alignment
         self.action = action
-    }
-
-    /// Creates Orbit BarButton component using the provided icon symbol.
-    public init(
-        _ symbol: Icon.Symbol,
-        size: Icon.Size = .large,
-        color: Color? = .inkDark,
-        alignment: HorizontalAlignment = .center,
-        action: @escaping () -> Void
-    ) {
-        self.init(
-            content: .symbol(symbol, color: color),
-            size: size,
-            alignment: alignment,
-            action: action
-        )
     }
 }
 
@@ -94,7 +78,6 @@ struct BarButtonPreviews: PreviewProvider {
     static var standalone: some View {
         VStack{
             BarButton(.grid, action: {})
-            BarButton(.none, action: {})
         }
         .previewDisplayName()
     }
@@ -109,10 +92,10 @@ struct BarButtonPreviews: PreviewProvider {
                             BarButton(.grid, alignment: .leading, action: {})
                             BarButton(.questionCircle, action: {})
                                 .foregroundColor(.blueDark)
-                            BarButton(content: .symbol(.questionCircle, color: .redNormal), action: {})
-                            BarButton(content: .sfSymbol("questionmark.circle.fill"), size: .normal, action: {})
+                            BarButton(.symbol(.questionCircle, color: .redNormal), action: {})
+                            BarButton(.sfSymbol("questionmark.circle.fill"), size: .normal, action: {})
                                 .foregroundColor(.greenDark)
-                            BarButton(content: .countryFlag("cz"), action: {})
+                            BarButton(.countryFlag("cz"), action: {})
                         }
                         .border(.cloudNormal.opacity(0.4))
                     }
@@ -121,10 +104,10 @@ struct BarButtonPreviews: PreviewProvider {
                     trailing: HStack(spacing: 0) {
                         Group {
                             if #available(iOS 16.0, *) {
-                                BarButton(content: .sfSymbol("square.and.arrow.up"), size: .normal, action: {})
+                                BarButton(.sfSymbol("square.and.arrow.up"), size: .normal, action: {})
                                     .fontWeight(.medium)
                             } else {
-                                BarButton(content: .sfSymbol("square.and.arrow.up"), size: .normal, action: {})
+                                BarButton(.sfSymbol("square.and.arrow.up"), size: .normal, action: {})
                             }
                             BarButton(.shareIos, action: {})
                             BarButton(.grid, alignment: .trailing, action: {})

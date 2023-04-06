@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// One item of a list.
+/// One item in Orbit List component.
 ///
 /// - Related components
 ///   - ``List``
@@ -10,42 +10,26 @@ public struct ListItem: View {
 
     public static let defaultSpacing: CGFloat = .xSmall
 
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.sizeCategory) private var sizeCategory
 
-    let text: String
-    let iconContent: Icon.Content
-    let iconSize: Icon.Size?
-    let size: Text.Size
-    let spacing: CGFloat
-    let style: ListItem.Style
+    private let text: String
+    private let icon: Icon.Content?
+    private let iconSize: Icon.Size?
+    private let size: Text.Size
+    private let spacing: CGFloat
+    private let style: ListItem.Style
 
     public var body: some View {
-        HStack(alignment: alignment, spacing: spacing) {
-            icon
-                .frame(width: dynamicIconSize, height: dynamicIconSize)
+        HStack(alignment: .firstTextBaseline, spacing: spacing) {
+            Icon(content: icon, size: iconSize ?? size.iconSize)
+                .foregroundColor(nil)
 
             Text(text, size: size)
                 .foregroundColor(nil)
                 .fontWeight(style.weight)
         }
-        .padding(.leading, Self.defaultSpacing - spacing)
         .foregroundColor(style.textColor)
-    }
-
-    @ViewBuilder var icon: some View {
-        if iconContent.isEmpty {
-            Color.clear
-        } else {
-            Icon(content: iconContent, size: iconSize ?? size.iconSize)
-        }
-    }
-
-    var dynamicIconSize: CGFloat {
-        size.iconSize.value * sizeCategory.ratio
-    }
-
-    var alignment: VerticalAlignment {
-        iconContent.isEmpty ? .top : .firstTextBaseline
+        .padding(.leading, Self.defaultSpacing - spacing)
     }
 }
 
@@ -55,14 +39,14 @@ public extension ListItem {
     /// Creates Orbit ListItem component using the provided icon.
     init(
         _ text: String = "",
-        icon: Icon.Content,
+        icon: Icon.Content?,
         size: Text.Size = .normal,
         iconSize: Icon.Size? = nil,
         spacing: CGFloat = .xSmall,
         style: ListItem.Style = .primary
     ) {
         self.text = text
-        self.iconContent = icon
+        self.icon = icon
         self.size = size
         self.iconSize = iconSize
         self.spacing = spacing
@@ -78,7 +62,7 @@ public extension ListItem {
     ) {
         self.init(
             text,
-            icon: .circleSmall,
+            icon: .symbol(.circleSmall),
             size: size,
             iconSize: .custom(size.value),
             spacing: spacing,

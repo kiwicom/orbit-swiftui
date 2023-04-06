@@ -4,8 +4,8 @@ import SwiftUI
 /// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
 struct InputStyle: ButtonStyle {
 
-    var prefix: Icon.Content = .none
-    var suffix: Icon.Content = .none
+    var prefix: Icon.Content?
+    var suffix: Icon.Content?
     let prefixAccessibilityID: AccessibilityID
     let suffixAccessibilityID: AccessibilityID
     var state: InputState = .default

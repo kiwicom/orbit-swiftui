@@ -103,14 +103,14 @@ public enum TimelineItemType: Equatable {
     case present(Status? = nil)
     case future
 
-    public var iconSymbol: Icon.Symbol {
+    public var icon: Icon.Content? {
         switch self {
             case .past:                  return .checkCircle
             case .present(.critical):    return .closeCircle
             case .present(.warning):     return .alertCircle
             case .present(.success):     return .checkCircle
-            case .present:               return .none
-            case .future:                return .none
+            case .present:               return nil
+            case .future:                return nil
         }
     }
 

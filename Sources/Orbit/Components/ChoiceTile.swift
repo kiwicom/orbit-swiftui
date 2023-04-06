@@ -31,7 +31,7 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
     let title: String
     let description: String
     let badgeOverlay: String
-    let iconContent: Icon.Content
+    let icon: Icon.Content?
     let illustration: Illustration.Image
     let indicator: ChoiceTileIndicator
     let titleStyle: Heading.Style
@@ -81,7 +81,7 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
             switch alignment {
                 case .default:
                     HStack(alignment: .top, spacing: 0) {
-                        Icon(content: iconContent, size: titleStyle.iconSize)
+                        Icon(content: icon, size: titleStyle.iconSize)
                             .foregroundColor(.inkDark)
                             .padding(.trailing, .xSmall)
                             .accessibility(.choiceTileIcon)
@@ -108,7 +108,7 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
                 case .center:
                     VStack(spacing: .xxSmall) {
                         if illustration == .none {
-                            Icon(content: iconContent, size: titleStyle.iconSize)
+                            Icon(content: icon, size: titleStyle.iconSize)
                                 .padding(.bottom, .xxSmall)
                         } else {
                             Illustration(illustration, layout: .resizeable)
@@ -172,7 +172,11 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
     }
 
     var isHeaderContentEmpty: Bool {
-        title.isEmpty && description.isEmpty && iconContent.isEmpty && headerContent is EmptyView
+        title.isEmpty && description.isEmpty && isIconEmpty && headerContent is EmptyView
+    }
+
+    var isIconEmpty: Bool {
+        icon?.isEmpty ?? true
     }
 
     var shouldSelectIndicator: Bool {
@@ -241,7 +245,7 @@ public extension ChoiceTile {
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content = .none,
+        icon: Icon.Content? = nil,
         illustration: Illustration.Image = .none,
         badgeOverlay: String = "",
         indicator: ChoiceTileIndicator = .radio,
@@ -256,7 +260,7 @@ public extension ChoiceTile {
     ) {
         self.title = title
         self.description = description
-        self.iconContent = icon
+        self.icon = icon
         self.illustration = illustration
         self.badgeOverlay = badgeOverlay
         self.indicator = indicator

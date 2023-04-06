@@ -12,9 +12,9 @@ public enum Status {
 public extension Status {
 
     /// Default icon associated with status.
-    var icon: Icon.Symbol {
+    var icon: Icon.Symbol? {
         switch self {
-            case .info:         return .none
+            case .info:         return nil
             case .success:      return .informationCircle
             case .warning:      return .alert
             case .critical:     return .alertCircle

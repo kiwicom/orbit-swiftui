@@ -9,7 +9,7 @@ public struct ButtonLink: View {
 
     let label: String
     let style: Style
-    let iconContent: Icon.Content
+    let icon: Icon.Content?
     let size: Size
     let action: () -> Void
 
@@ -22,7 +22,7 @@ public struct ButtonLink: View {
                 },
                 label: {
                     HStack(spacing: .xSmall) {
-                        Icon(content: iconContent)
+                        Icon(content: icon)
                             .fontWeight(.medium)
 
                         Text(label)
@@ -72,13 +72,13 @@ public extension ButtonLink {
     init(
         _ label: String = "",
         style: Style = .primary,
-        icon: Icon.Content = .none,
+        icon: Icon.Content? = nil,
         size: Size = .default,
         action: @escaping () -> Void
     ) {
         self.label = label
         self.style = style
-        self.iconContent = icon
+        self.icon = icon
         self.size = size
         self.action = action
     }

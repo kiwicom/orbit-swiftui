@@ -10,8 +10,8 @@ public struct Button: View {
     @Environment(\.idealSize) private var idealSize
 
     let label: String
-    let iconContent: Icon.Content
-    let disclosureIconContent: Icon.Content
+    let icon: Icon.Content?
+    let disclosureIcon: Icon.Content?
     let style: Style
     let size: Size
     let action: () -> Void
@@ -26,12 +26,12 @@ public struct Button: View {
                 HStack(spacing: 0) {
                     TextStrut(size.textSize)
 
-                    if disclosureIconContent.isEmpty, idealSize.horizontal == nil {
+                    if isDisclosureIconEmpty, idealSize.horizontal == nil {
                         Spacer(minLength: 0)
                     }
 
                     HStack(spacing: .xSmall) {
-                        Icon(content: iconContent, size: size.textSize.iconSize)
+                        Icon(content: icon, size: size.textSize.iconSize)
                             .foregroundColor(foregroundColor)
                         textWrapper
                     }
@@ -40,7 +40,7 @@ public struct Button: View {
                         Spacer(minLength: 0)
                     }
 
-                    Icon(content: disclosureIconContent, size: size.textSize.iconSize)
+                    Icon(content: disclosureIcon, size: size.textSize.iconSize)
                         .foregroundColor(foregroundColor)
                 }
                 .padding(.vertical, size.verticalPadding)
@@ -83,15 +83,27 @@ public struct Button: View {
     }
 
     var isIconOnly: Bool {
-        iconContent.isEmpty == false && label.isEmpty
+        isIconEmpty == false && label.isEmpty
     }
 
     var leadingPadding: CGFloat {
-        label.isEmpty == false && iconContent.isEmpty ? size.horizontalPadding : size.horizontalIconPadding
+        label.isEmpty == false && isIconEmpty
+            ? size.horizontalPadding
+            : size.horizontalIconPadding
     }
 
     var trailingPadding: CGFloat {
-        label.isEmpty == false && disclosureIconContent.isEmpty ? size.horizontalPadding : size.horizontalIconPadding
+        label.isEmpty == false && isDisclosureIconEmpty
+            ? size.horizontalPadding
+            : size.horizontalIconPadding
+    }
+
+    private var isIconEmpty: Bool {
+        icon?.isEmpty ?? true
+    }
+
+    private var isDisclosureIconEmpty: Bool {
+        disclosureIcon?.isEmpty ?? true
     }
 
     var defaultStatus: Status {
@@ -129,15 +141,15 @@ public extension Button {
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ label: String,
-        icon: Icon.Content = .none,
-        disclosureIcon: Icon.Content = .none,
+        icon: Icon.Content? = nil,
+        disclosureIcon: Icon.Content? = nil,
         style: Style = .primary,
         size: Size = .default,
         action: @escaping () -> Void
     ) {
         self.label = label
-        self.iconContent = icon
-        self.disclosureIconContent = disclosureIcon
+        self.icon = icon
+        self.disclosureIcon = disclosureIcon
         self.style = style
         self.size = size
         self.action = action

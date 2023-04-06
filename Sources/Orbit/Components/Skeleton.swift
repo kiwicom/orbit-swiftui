@@ -8,11 +8,11 @@ public struct Skeleton: View {
     public static let color: Color = .cloudNormal
     public static let lightColor: Color = .cloudLight
 
-    @State var color: Color = Self.color
+    @State private var color: Color = Self.color
 
-    let preset: Preset
-    let borderRadius: CGFloat
-    let animation: Animation
+    private let preset: Preset
+    private let borderRadius: CGFloat
+    private let animation: Animation
 
     public var body: some View {
         content
