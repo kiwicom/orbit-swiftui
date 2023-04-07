@@ -1,10 +1,10 @@
 import SwiftUI
 
-public extension Color {
+public extension ShapeStyle where Self == Color {
 
     /// Orbit screen background color (darker in both `light` and `dark` modes).
-    static let screen = Color("Screen", bundle: .orbit)
+    static var screen: Color { .init("Screen", bundle: .orbit) }
 
     /// Orbit screen modal overlay color.
-    static let overlay = Color.inkDark.opacity(0.45)
+    static var overlay: Color { .inkDark.opacity(0.45) }
 }
