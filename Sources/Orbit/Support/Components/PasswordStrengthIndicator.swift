@@ -22,7 +22,7 @@ public struct PasswordStrengthIndicator: View {
 
     var indicator: some View {
         Capsule()
-            .fill(Color.cloudNormal)
+            .fill(.cloudNormal)
             .overlay(bar)
             .frame(height: .xxSmall)
             .frame(maxWidth: .infinity, alignment: .leading)

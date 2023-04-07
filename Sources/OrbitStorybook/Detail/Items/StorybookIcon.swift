@@ -72,9 +72,9 @@ struct StorybookIcon {
                     Icon(countryCode: "us", size: .small)
                         .baselineOffset(.xxxSmall)
                 }
-                .border(Color.cloudLightActive, width: .hairline)
+                .border(.cloudLightActive, width: .hairline)
             }
-            .foregroundColor(Color.greenDark)
+            .foregroundColor(.greenDark)
             .overlay(
                 Separator(color: .redNormal, thickness: .hairline),
                 alignment: .centerFirstTextBaseline
@@ -100,7 +100,7 @@ struct StorybookIcon {
                 + Icon(image: .orbit(.facebook))
                     .baselineOffset(.xxxSmall)
             )
-            .foregroundColor(Color.greenDark)
+            .foregroundColor(.greenDark)
             .overlay(
                 Separator(color: .redNormal, thickness: .hairline),
                 alignment: .centerFirstTextBaseline

@@ -48,23 +48,18 @@ extension Tab {
             switch self {
                 case .default:                              return .inkDark
                 case .underlined(let color):                return color
-                case .underlinedGradient(let gradient):     return gradient.color
+                case .underlinedGradient(let gradient):     return gradient.foregroundColor
             }
         }
 
-        public var startColor: Color {
+        public var underline: LinearGradient {
             switch self {
-                case .default:                              return .whiteDarker
-                case .underlined(let color):                return color
-                case .underlinedGradient(let gradient):     return gradient.startColor
-            }
-        }
-
-        public var endColor: Color {
-            switch self {
-                case .default:                              return .whiteDarker
-                case .underlined(let color):                return color
-                case .underlinedGradient(let gradient):     return gradient.endColor
+                case .default:
+                    return .linearGradient(colors: [.whiteDarker, .whiteDarker], startPoint: .bottom, endPoint: .top)
+                case .underlined(let color):
+                    return .linearGradient(colors: [color, color], startPoint: .bottom, endPoint: .top)
+                case .underlinedGradient(let gradient):
+                    return gradient.background
             }
         }
     }
@@ -111,7 +106,7 @@ struct TabPreviews: PreviewProvider {
                 Tab("Default", style: .default)
                 Tab("Underlined", style: .underlined(.inkDark))
             }
-            .border(Color.cloudNormal)
+            .border(.cloudNormal)
         }
         .padding(.medium)
         .previewDisplayName()
@@ -119,7 +114,7 @@ struct TabPreviews: PreviewProvider {
 
     static var sizing: some View {
         Tab("Tab")
-            .border(Color.cloudNormal)
+            .border(.cloudNormal)
             .measured()
             .padding(.medium)
             .previewDisplayName()
@@ -134,7 +129,7 @@ struct TabPreviews: PreviewProvider {
                     .foregroundColor(.bundleMedium)
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
-            .border(Color.cloudNormal)
+            .border(.cloudNormal)
         }
         .padding(.medium)
         .previewDisplayName()

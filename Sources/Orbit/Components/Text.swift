@@ -473,7 +473,7 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                     .strikethrough()
                 }
             }
-            .border(Color.cloudDark, width: .hairline)
+            .border(.cloudDark, width: .hairline)
 
             Text(multilineText)
                 .foregroundColor(.greenDark)
@@ -521,7 +521,7 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                     Text("8888888888")
                         .monospacedDigit()
                 }
-                .border(Color.cloudNormal, width: .hairline)
+                .border(.cloudNormal, width: .hairline)
             }
         }
         .padding(.medium)
@@ -588,7 +588,7 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                         """
                     )
                     .textAccentColor(.redNormal)
-                    .border(Color.cloudDark, width: .hairline)
+                    .border(.cloudDark, width: .hairline)
                     .padding(.trailing, 200 * (1 - state.wrappedValue.0))
 
                     Slider(
@@ -607,7 +607,7 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                     .foregroundColor(.blueLightActive)
                     .bold()
                     .textAccentColor(.blueNormal)
-                    .border(Color.cloudNormal)
+                    .border(.cloudNormal)
                     .padding(.leading, 200 * (1 - state.wrappedValue.1))
 
                     Slider(
@@ -620,7 +620,7 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                         A normal basic very very long text that contains no tags or links.
                         """
                     )
-                    .border(Color.cloudNormal)
+                    .border(.cloudNormal)
                     .padding(.trailing, 200 * (1 - state.wrappedValue.2))
 
                     Slider(
@@ -640,7 +640,7 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                     .foregroundColor(.inkNormal)
                     .bold()
                     .lineLimit(2)
-                    .border(Color.cloudNormal)
+                    .border(.cloudNormal)
                 }
             }
         }
@@ -668,13 +668,13 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                     .environment(\.sizeCategory, .large)
             }
             .padding(.trailing, .xxSmall)
-            .border(Color.redNormal, width: .hairline)
+            .border(.redNormal, width: .hairline)
             .measured()
             .padding(.trailing, 40 * sizeCategory.controlRatio)
             .overlay(
                 SwiftUI.Text("T")
                     .orbitFont(size: size.value, sizeCategory: sizeCategory)
-                    .border(Color.redNormal, width: .hairline)
+                    .border(.redNormal, width: .hairline)
                     .measured()
                 ,
                 alignment: .trailing

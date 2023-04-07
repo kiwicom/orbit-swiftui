@@ -17,7 +17,7 @@ struct StorybookText {
                     .strikethrough()
                     .kerning(6)
             }
-            .border(Color.cloudDark, width: .hairline)
+            .border(.cloudDark, width: .hairline)
 
             Group {
                 Text(multilineText)

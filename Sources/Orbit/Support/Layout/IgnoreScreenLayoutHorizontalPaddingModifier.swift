@@ -80,6 +80,6 @@ struct ScreenLayoutHorizontalPaddingModifierPreviews: PreviewProvider {
 
             Button("Button", action: {})
         }
-        .border(Color.cloudLight)
+        .border(.cloudLight)
     }
 }

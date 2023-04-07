@@ -180,7 +180,7 @@ struct ButtonLinkPreviews: PreviewProvider {
                 ButtonLink("ButtonLink small button", size: .buttonSmall, action: {})
                 ButtonLink("ButtonLink small button", icon: .grid, size: .buttonSmall, action: {})
             }
-            .border(Color.cloudNormal)
+            .border(.cloudNormal)
             .measured()
         }
         .padding(.medium)

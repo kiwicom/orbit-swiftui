@@ -198,9 +198,9 @@ struct HeadingPreviews: PreviewProvider {
             }
             .multilineTextAlignment(.trailing)
             .lineSpacing(10)
-            .border(Color.cloudNormal)
+            .border(.cloudNormal)
         }
-        .foregroundColor(Color.blueNormal)
+        .foregroundColor(.blueNormal)
         .padding(.medium)
         .previewDisplayName()
     }
@@ -323,13 +323,13 @@ struct HeadingPreviews: PreviewProvider {
                     .environment(\.sizeCategory, .large)
             }
             .padding(.trailing, .xxSmall)
-            .border(Color.redNormal, width: .hairline)
+            .border(.redNormal, width: .hairline)
             .measured()
             .padding(.trailing, 40 * sizeCategory.controlRatio)
             .overlay(
                 SwiftUI.Text("T")
                     .orbitFont(size: style.size, sizeCategory: sizeCategory)
-                    .border(Color.redNormal, width: .hairline)
+                    .border(.redNormal, width: .hairline)
                     .measured()
                 ,
                 alignment: .trailing

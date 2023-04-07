@@ -81,7 +81,7 @@ struct ElevationModifier: ViewModifier {
         RoundedRectangle(cornerRadius: borderRadius)
             // Inset to prevent overlay aliasing issues
             .inset(by: 0.15)
-            .fill(Color.whiteDarker)
+            .fill(.whiteDarker)
             // Required for correct rendering of snapshot tests
             .drawingGroup()
     }
@@ -208,7 +208,7 @@ struct ElevationPreviews: PreviewProvider {
                 .offset(x: 20, y: 20)
         }
         .padding(80)
-        .background(Gradient.bundleTop.background.opacity(0.05))
+        .background(Color.inkDark.opacity(0.05))
         .environment(\.isElevationEnabled, false)
         .compositingGroup()
         .elevation(.level3)
@@ -234,7 +234,7 @@ struct ElevationPreviews: PreviewProvider {
             }
         }
         .padding(80)
-        .background(Gradient.bundleTop.background.opacity(0.05))
+        .background(Color.inkDark.opacity(0.05))
         .previewDisplayName("Without Compositing Group (Default)")
     }
 
