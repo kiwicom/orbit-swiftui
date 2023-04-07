@@ -9,7 +9,7 @@ echo "Checking that all components have snapshot tests..."
 
 ERROR=false
 
-for COMPONENT_NAME in `find $COMPONENTS_DIR -type f -exec basename {} .swift \; | sort`; do
+for COMPONENT_NAME in `find $COMPONENTS_DIR -type f -not -path "*Previews*" -exec basename {} .swift \; | sort`; do
     TEST_FILEPATH="$TESTS_DIR/${COMPONENT_NAME}Tests.swift"    
     
     if test -f $TEST_FILEPATH; then
