@@ -84,7 +84,8 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
                             Heading(title, style: titleStyle)
                                 .accessibility(.choiceTileTitle)
 
-                            Text(description, color: .inkNormal)
+                            Text(description)
+                                .foregroundColor(.inkNormal)
                                 .accessibility(.choiceTileDescription)
                         }
                         // A workaround for a layout issue when applied to headerContent
@@ -109,14 +110,16 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
                                 .padding(.bottom, .xxSmall)
                         }
 
-                        Heading(title, style: titleStyle, alignment: .center)
+                        Heading(title, style: titleStyle)
                             .accessibility(.choiceTileTitle)
 
-                        Text(description, color: .inkNormal, alignment: .center)
+                        Text(description)
+                            .foregroundColor(.inkNormal)
                             .accessibility(.choiceTileDescription)
 
                         headerContent
                     }
+                    .multilineTextAlignment(.center)
                     .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
                     .padding(.top, .small)
             }

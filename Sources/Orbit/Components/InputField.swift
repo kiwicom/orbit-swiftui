@@ -107,7 +107,8 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
 
     @ViewBuilder var textFieldPlaceholder: some View {
         if showPlaceholder {
-            Text(placeholder, color: .none)
+            Text(placeholder)
+                .foregroundColor(nil)
                 .padding(.leading, leadingPadding)
                 .foregroundColor(isEnabled ? state.placeholderColor : .cloudDarkActive)
         }
@@ -115,7 +116,9 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
 
     @ViewBuilder var compactLabel: some View {
         if style == .compact {
-            Text(label, color: .custom(compactLabelColor), weight: .medium)
+            Text(label)
+                .foregroundColor(compactLabelColor)
+                .fontWeight(.medium)
                 .padding(.leading, prefix.isEmpty ? .small : 0)
         }
     }
@@ -196,7 +199,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
         message?.description ?? ""
     }
 
-    var compactLabelColor: UIColor {
+    var compactLabelColor: Color {
         showPlaceholder ? .inkDark : .inkLight
     }
 

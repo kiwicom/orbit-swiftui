@@ -40,11 +40,7 @@ public enum Message: Equatable, Hashable, CustomStringConvertible {
     }
 
     public var color: Color {
-        .init(uiColor)
-    }
-
-    public var uiColor: UIColor {
-        status?.uiColor ?? .inkNormal
+        status?.color ?? .inkNormal
     }
 
     public var darkColor: Color {

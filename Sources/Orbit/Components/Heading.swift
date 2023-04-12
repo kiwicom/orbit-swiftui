@@ -3,21 +3,25 @@ import SwiftUI
 /// Shows the content hierarchy and improves the reading experience. Also known as Title.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/heading/)
-public struct Heading: View, TextBuildable {
+public struct Heading: View, FormattedTextBuildable {
 
     @Environment(\.sizeCategory) var sizeCategory
 
     let content: String
     let style: Style
-    let color: Color?
     let isSelectable: Bool
 
     // Builder properties
-    var lineSpacing: CGFloat?
-    var alignment: TextAlignment
-    var strikethrough: Bool
-    var kerning: CGFloat
-    var accentColor: UIColor?
+    var baselineOffset: CGFloat?
+    var fontWeight: Font.Weight?
+    var foregroundColor: Color?
+    var strikethrough: Bool?
+    var kerning: CGFloat?
+    var accentColor: Color?
+    var isBold: Bool?
+    var isItalic: Bool?
+    var isMonospacedDigit: Bool?
+    var isUnderline: Bool?
 
     public var body: some View {
         textContent
@@ -28,20 +32,23 @@ public struct Heading: View, TextBuildable {
         Text(
             content,
             size: .custom(style.size, lineHeight: style.lineHeight),
-            color: color?.textColor,
-            weight: style.weight,
-            lineSpacing: lineSpacing,
-            alignment: alignment,
-            isSelectable: isSelectable,
-            strikethrough: strikethrough,
-            kerning: kerning
+            isSelectable: isSelectable
         )
+        .fontWeight(fontWeight)
         .textAccentColor(accentColor)
+        .baselineOffset(baselineOffset)
+        .bold(isBold)
+        .italic(isItalic)
+        .kerning(kerning)
+        .monospacedDigit(isMonospacedDigit)
+        .strikethrough(strikethrough)
+        .underline(isUnderline)
+        .foregroundColor(foregroundColor)
     }
 
-    func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
+    func text(sizeCategory: ContentSizeCategory, textAccentColor: Color?) -> SwiftUI.Text {
         textContent
-            .text(sizeCategory: sizeCategory)
+            .text(sizeCategory: sizeCategory, textAccentColor: textAccentColor)
     }
 }
 
@@ -50,67 +57,31 @@ public extension Heading {
 
     /// Creates Orbit Heading component.
     ///
-    /// Can be further modified by following modifiers:
-    /// - `textAccentColor()`
+    /// Modifiers like `textAccentColor()` or `italic()` can be used to further adjust the formatting.
+    /// To specify the formatting and behaviour for `TextLink`s found in the text, use `textLinkAction()` and
+    /// `textLinkColor()` modifiers.
     /// 
     /// - Parameters:
     ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
     ///   - style: Heading style.
-    ///   - color: Font color. Can be set to `nil` and specified later using `.foregroundColor()` modifier.
-    ///   - lineSpacing: Distance in points between the bottom of one line fragment and the top of the next.
-    ///   - alignment: Horizontal multi-line alignment.
     ///   - isSelectable: Determines if text is copyable using long tap gesture.
-    ///   - strikethrough: Determines if strikethrough should be applied.
-    ///   - kerning: Additional spacing between characters.
     init(
         _ content: String,
         style: Style,
-        color: Color? = .inkDark,
-        lineSpacing: CGFloat? = nil,
-        alignment: TextAlignment = .leading,
-        isSelectable: Bool = false,
-        strikethrough: Bool = false,
-        kerning: CGFloat = 0
+        isSelectable: Bool = false
     ) {
         self.content = content
         self.style = style
-        self.color = color
-        self.lineSpacing = lineSpacing
-        self.alignment = alignment
         self.isSelectable = isSelectable
-        self.strikethrough = strikethrough
-        self.kerning = kerning
+
+        // Set a default color to use in case it is not provided by a call site
+        self.foregroundColor = .inkDark
+        self.fontWeight = style.weight
     }
 }
 
 // MARK: - Types
 public extension Heading {
-
-    /// Orbit Heading color.
-    enum Color: Equatable {
-        /// The default Heading color.
-        case inkDark
-        /// Custom Heading color.
-        case custom(UIColor)
-
-        public var value: SwiftUI.Color {
-            SwiftUI.Color(uiValue)
-        }
-
-        public var uiValue: UIColor {
-            switch self {
-                case .inkDark:              return .inkDark
-                case .custom(let color):    return color
-            }
-        }
-
-        public var textColor: Text.Color? {
-            switch self {
-                case .inkDark:              return .inkDark
-                case .custom(let color):    return .custom(color)
-            }
-        }
-    }
 
     enum Style {
         /// 28 pts.
@@ -170,10 +141,10 @@ public extension Heading {
 // MARK: - TextRepresentable
 extension Heading: TextRepresentable {
 
-    public func swiftUIText(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
+    public func swiftUIText(sizeCategory: ContentSizeCategory, textAccentColor: Color?) -> SwiftUI.Text? {
         if content.isEmpty { return nil }
 
-        return text(sizeCategory: sizeCategory)
+        return text(sizeCategory: sizeCategory, textAccentColor: textAccentColor)
     }
 }
 
@@ -204,15 +175,29 @@ struct HeadingPreviews: PreviewProvider {
     static var formatted: some View {
         VStack(alignment: .trailing, spacing: .medium) {
             Group {
-                Heading("Multiline\nlong heading", style: .title2, color: .custom(.inkNormal), lineSpacing: 10, alignment: .trailing, strikethrough: true, kerning: 5)
+                Heading("Multiline\nlong heading", style: .title2)
+                    .foregroundColor(.inkNormal)
                     .textAccentColor(.greenDark)
+                    .kerning(5)
+                    .strikethrough()
+                    .underline()
 
-                Heading("Multiline\n<ref>long</ref> heading", style: .title2, color: nil, lineSpacing: 10, alignment: .trailing, strikethrough: true, kerning: 5)
+                Heading("Multiline\n<ref>long</ref> heading", style: .title2)
+                    .foregroundColor(nil)
                     .textAccentColor(.redNormal)
+                    .kerning(5)
+                    .strikethrough()
+                    .underline()
 
-                Heading("Multiline\n<applink1>long</applink1> heading", style: .title2, color: .custom(.orangeNormal), lineSpacing: 10, alignment: .trailing, strikethrough: true, kerning: 5)
-                    .textAccentColor(.greenDark)
+                Heading("Multiline\n<applink1>long</applink1> heading", style: .title2)
+                    .foregroundColor(.orangeNormal)
+                    .textAccentColor(.blueDark)
+                    .kerning(5)
+                    .strikethrough()
+                    .underline()
             }
+            .multilineTextAlignment(.trailing)
+            .lineSpacing(10)
             .border(Color.cloudNormal)
         }
         .foregroundColor(Color.blueNormal)
@@ -226,7 +211,7 @@ struct HeadingPreviews: PreviewProvider {
             formattedHeading("<ref><u>Title 2</u></ref> with a very very large and <strong>multiline</strong> content", style: .title2)
             formattedHeading("<ref><u>Title 3</u></ref> with a very very very very large and <strong>multiline</strong> content", style: .title3)
             formattedHeading("<ref><u>Title 4</u></ref> with a very very very very large and <strong>multiline</strong> content", style: .title4)
-            formattedHeading("<ref><u>Title 5</u></ref> with a very very very very very large and <strong>multiline</strong> content", style: .title5, color: .custom(.blueDarker))
+            formattedHeading("<ref><u>Title 5</u></ref> with a very very very very very large and <strong>multiline</strong> content", style: .title5, color: .blueDarker)
             formattedHeading("<ref><u>TITLE 6</u></ref> WITH A VERY VERY VERY VERY VERY LARGE AND <strong>MULTILINE</strong> CONTENT", style: .title6, color: nil)
         }
         .foregroundColor(.inkNormal)
@@ -262,20 +247,21 @@ struct HeadingPreviews: PreviewProvider {
         HStack(alignment: .top, spacing: .xxxSmall) {
             VStack(alignment: .trailing, spacing: .xxxSmall) {
                 Group {
-                    Heading("Single line", style: .title2, lineSpacing: .xxxSmall)
+                    Heading("Single line", style: .title2)
                         .background(Color.redLightHover)
-                    Heading("<applink1>Single</applink1> line", style: .title2, lineSpacing: .xxxSmall)
+                    Heading("<applink1>Single</applink1> line", style: .title2)
                         .background(Color.redLightHover.opacity(0.7))
-                    Heading("<strong>Single</strong> line", style: .title2, lineSpacing: .xxxSmall)
+                    Heading("<strong>Single</strong> line", style: .title2)
                         .background(Color.redLightHover.opacity(0.4))
                 }
                 .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerFirstTextBaseline)
             }
 
             Group {
-                Heading("Multiline\nwith\n<strong>formatting</strong>", style: .title2, lineSpacing: .xxxSmall)
-                Heading("Multiline\nwith\n<applink1>links</applink1>", style: .title2, lineSpacing: .xxxSmall)
+                Heading("Multiline\nwith\n<strong>formatting</strong>", style: .title2)
+                Heading("Multiline\nwith\n<applink1>links</applink1>", style: .title2)
             }
+            .lineSpacing(.xxxSmall)
             .background(Color.redLightHover.opacity(0.7))
             .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerFirstTextBaseline)
             .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerLastTextBaseline)
@@ -290,24 +276,30 @@ struct HeadingPreviews: PreviewProvider {
             +
             Heading(" <ref><u>Title 4</u></ref> with <strong>multiline</strong>", style: .title4)
             +
-            Heading(" <ref><u>Title 5</u></ref> with <strong>multiline</strong>", style: .title5, color: .custom(.greenDark))
+            Heading(" <ref><u>Title 5</u></ref> with <strong>multiline</strong>", style: .title5)
+                .foregroundColor(.greenDark)
                 .textAccentColor(.blueDarker)
             +
-            Heading(" <ref><u>TITLE 6</u></ref> WITH <strong>MULTILINE</strong> CONTENT", style: .title6, color: nil)
+            Heading(" <ref><u>TITLE 6</u></ref> WITH <strong>MULTILINE</strong> CONTENT", style: .title6)
+                .foregroundColor(nil)
             +
-            Text(" and Text", color: nil)
+            Text(" and Text")
+                .foregroundColor(nil)
         }
         .foregroundColor(.inkDark)
         .padding(.medium)
         .previewDisplayName()
     }
 
-    static func formattedHeading(_ content: String, style: Heading.Style, color: Heading.Color? = .inkDark) -> some View {
+    static func formattedHeading(_ content: String, style: Heading.Style, color: Color? = .inkDark) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
-            Heading(content, style: style, color: color)
+            Heading(content, style: style)
+                .foregroundColor(color)
                 .textAccentColor(.blueNormal)
             Spacer()
-            Text("\(Int(style.size))/\(Int(style.lineHeight))", color: .inkNormal, weight: .medium)
+            Text("\(Int(style.size))/\(Int(style.lineHeight))")
+                .foregroundColor(.inkNormal)
+                .fontWeight(.medium)
         }
     }
 
@@ -323,7 +315,7 @@ struct HeadingPreviews: PreviewProvider {
                     "\(formatted ? "<ref>" : "")\(String(describing:style).capitalized)\(formatted ? "</ref>" : "")",
                     style: style
                 )
-                .textAccentColor(Status.info.darkUIColor)
+                .textAccentColor(Status.info.darkColor)
                 .fixedSize()
                 .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerLastTextBaseline)
 

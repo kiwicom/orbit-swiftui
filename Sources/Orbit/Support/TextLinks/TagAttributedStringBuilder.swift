@@ -31,6 +31,7 @@ final class TagAttributedStringBuilder {
 
     func attributedString(
         _ string: String,
+        fontWeight: Font.Weight?,
         textAttributes: [NSAttributedString.Key: Any],
         tagTextAttributes: [Tag: [NSAttributedString.Key: Any]]
     ) -> NSAttributedString {
@@ -50,6 +51,7 @@ final class TagAttributedStringBuilder {
 
                 guard let tagAttributedString = tag.attributedString(
                     from: result,
+                    fontWeight: fontWeight,
                     currentAttributedString: NSAttributedString(attributedString: attributedString),
                     textAttributes: textAttributes,
                     tagTextAttributes: tagTextAttributes[tag] ?? [:]
@@ -71,9 +73,10 @@ final class TagAttributedStringBuilder {
         _ string: String,
         alignment: TextAlignment,
         fontSize: CGFloat,
-        fontWeight: Font.Weight = .regular,
+        fontWeight: Font.Weight?,
         lineSpacing: CGFloat?,
-        kerning: CGFloat = 0,
+        kerning: CGFloat? = 0,
+        strikethrough: Bool = false,
         color: UIColor? = nil,
         linkColor: UIColor? = nil,
         accentColor: UIColor? = nil
@@ -90,9 +93,16 @@ final class TagAttributedStringBuilder {
             : kerning
 
         var textAttributes: [NSAttributedString.Key: Any] = [:]
-        textAttributes[.font] = UIFont.orbit(size: fontSize, weight: fontWeight.uiKit)
-        textAttributes[.kern] = adjustedKerning
-        textAttributes[.foregroundColor] = color
+        textAttributes[.font] = UIFont.orbit(size: fontSize, weight: (fontWeight ?? .regular).uiKit)
+        if let adjustedKerning {
+            textAttributes[.kern] = adjustedKerning
+        }
+        if strikethrough {
+            textAttributes[.strikethroughStyle] = NSUnderlineStyle.single.rawValue
+        }
+        if let color {
+            textAttributes[.foregroundColor] = color
+        }
         textAttributes[.paragraphStyle] = paragraphStyle
 
         var linksAttributes: [NSAttributedString.Key: Any] = [:]
@@ -103,6 +113,7 @@ final class TagAttributedStringBuilder {
 
         return attributedString(
             string,
+            fontWeight: fontWeight,
             textAttributes: textAttributes,
             tagTextAttributes: [
                 .anchor: linksAttributes,
@@ -188,10 +199,15 @@ private extension TagAttributedStringBuilder.Tag {
 
     func attributedString(
         from result: TagAttributedStringBuilderTagFinder.Result,
+        fontWeight: Font.Weight?,
         currentAttributedString: NSAttributedString,
         textAttributes: [NSAttributedString.Key: Any],
         tagTextAttributes: [NSAttributedString.Key: Any]
     ) -> NSAttributedString? {
+
+        let fontWeight = fontWeight?.uiKit
+        let relativeMedium = fontWeight?.relativeMedium ?? .medium
+        let relativeStrong = fontWeight?.relativeStrong ?? .bold
 
         switch self {
             case .anchor, .applink:
@@ -205,7 +221,7 @@ private extension TagAttributedStringBuilder.Tag {
 
                 let attributes = [
                     .link: url,
-                    .font: UIFont.orbit(size: font.pointSize, weight: .medium),
+                    .font: UIFont.orbit(size: font.pointSize, weight: relativeMedium),
                     .underlineStyle: NSUnderlineStyle.single.rawValue
                 ].merging(tagTextAttributes, uniquingKeysWith: { $1 })
                 
@@ -223,9 +239,9 @@ private extension TagAttributedStringBuilder.Tag {
                 if let font = tagTextAttributes[.font] as? UIFont {
                     boldFont = font
                 } else if let font = textAttributes[.font] as? UIFont {
-                    boldFont = .orbit(size: font.pointSize, weight: .bold)
+                    boldFont = .orbit(size: font.pointSize, weight: relativeStrong)
                 } else {
-                    boldFont = .orbit(size: Text.Size.normal.value, weight: .bold)
+                    boldFont = .orbit(size: Text.Size.normal.value, weight: relativeStrong)
                 }
 
                 return stringByAddingAttributes([.font: boldFont], to: currentAttributedString, at: result.ranges[1])
@@ -250,7 +266,10 @@ private extension TagAttributedStringBuilder.Tag {
                 }
 
                 return stringByAddingAttributes(
-                    [.foregroundColor: color, .font: UIFont.orbit(size: font.pointSize, weight: .bold)],
+                    [
+                        .foregroundColor: color,
+                        .font: UIFont.orbit(size: font.pointSize, weight: relativeStrong)
+                    ],
                     to: currentAttributedString,
                     at: result.ranges[1]
                 )
@@ -325,6 +344,39 @@ private extension NSMutableAttributedString {
         if mutableString.contains(stringToReplace) {
             let rangeOfStringToBeReplaced = mutableString.range(of: stringToReplace)
             replaceCharacters(in: rangeOfStringToBeReplaced, with: newStringPart)
+        }
+    }
+}
+
+private extension UIFont.Weight {
+
+    var relativeMedium: Self {
+        switch self {
+            case .ultraLight:   return .thin
+            case .thin:         return .light
+            case .light:        return .regular
+            case .regular:      return .medium
+            case .medium:       return .semibold
+            case .semibold:     return .bold
+            case .bold:         return .heavy
+            case .heavy:        return .black
+            case .black:        return .black
+            default:            return .medium
+        }
+    }
+
+    var relativeStrong: Self {
+        switch self {
+            case .ultraLight:   return .regular
+            case .thin:         return .medium
+            case .light:        return .semibold
+            case .regular:      return .bold
+            case .medium:       return .heavy
+            case .semibold:     return .black
+            case .bold:         return .black
+            case .heavy:        return .black
+            case .black:        return .black
+            default:            return .bold
         }
     }
 }

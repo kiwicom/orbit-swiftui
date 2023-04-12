@@ -110,7 +110,8 @@ public struct Alert<Content: View>: View {
     }
 
     @ViewBuilder var titleView: some View {
-        Text(title, weight: .bold)
+        Text(title)
+            .bold()
             .accessibility(.alertTitle)
     }
 

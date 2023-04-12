@@ -45,7 +45,8 @@ public struct SegmentedSwitch: View {
     }
 
     @ViewBuilder func segment(title: String) -> some View {
-        Text(title, alignment: .center)
+        Text(title)
+            .multilineTextAlignment(.center)
             .padding(.horizontal, .xSmall)
             .padding(.vertical, verticalTextPadding)
             .frame(maxWidth: .infinity)

@@ -79,9 +79,12 @@ struct StorybookTypography {
 
     @ViewBuilder static func text(_ content: String, size: Orbit.Text.Size, weight: Font.Weight) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
-            Text(content, size: size, weight: weight)
+            Text(content, size: size)
+                .fontWeight(weight)
             Spacer()
-            Text("\(Int(size.value))/\(Int(size.lineHeight))", color: .inkNormal, weight: .medium)
+            Text("\(Int(size.value))/\(Int(size.lineHeight))")
+                .foregroundColor(.inkNormal)
+                .fontWeight(.medium)
         }
     }
 
@@ -112,7 +115,9 @@ struct StorybookTypography {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
             Heading(content, style: style)
             Spacer()
-            Text("\(Int(style.size))/\(Int(style.lineHeight))", color: .inkNormal, weight: .medium)
+            Text("\(Int(style.size))/\(Int(style.lineHeight))")
+                .foregroundColor(.inkNormal)
+                .fontWeight(.medium)
         }
     }
 }

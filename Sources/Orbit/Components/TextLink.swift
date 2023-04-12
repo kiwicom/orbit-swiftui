@@ -8,18 +8,17 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/textlink/)
 public struct TextLink: UIViewRepresentable {
 
-    @Environment(\.textLinkAction) var textLinkAction
-    @Environment(\.textLinkColor) var textLinkColor
+    @Environment(\.textLinkAction) private var textLinkAction
+    @Environment(\.textLinkColor) private var textLinkColor
 
-    let content: NSAttributedString
-    let bounds: CGSize
+    private let content: NSAttributedString
     
     public func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
 
     public func makeUIView(context: UIViewRepresentableContext<TextLink>) -> TextLinkView {
-        let textLinkView = TextLinkView(layoutManager: NSLayoutManager(), size: bounds) {
+        let textLinkView = TextLinkView(layoutManager: NSLayoutManager()) {
             HapticsProvider.sendHapticFeedback(.light(0.5))
             textLinkAction?($0, $1)
         }
@@ -36,9 +35,8 @@ public struct TextLink: UIViewRepresentable {
     public func updateUIView(_ uiView: TextLinkView, context: UIViewRepresentableContext<TextLink>) {
         uiView.update(
             content: content,
-            size: bounds,
             lineLimit: context.environment.lineLimit ?? 0,
-            color: textLinkColor?.uiValue ?? Color.primary.uiValue
+            color: textLinkColor?.value.uiColor ?? Color.primary.value.uiColor
         )
     }
     
@@ -79,9 +77,8 @@ extension TextLink {
     ///
     /// The component has a size of the original text, but it only display detected links, hiding any non-link content.
     /// Use `textLink(color:)` to override the TextLink colors.
-    public init(_ content: NSAttributedString, bounds: CGSize) {
+    public init(_ content: NSAttributedString) {
         self.content = content
-        self.bounds = bounds
     }
 }
 
@@ -96,17 +93,13 @@ public extension TextLink {
         case primary
         case secondary
         case status(Status)
-        case custom(UIColor)
+        case custom(SwiftUI.Color)
 
         public var value: SwiftUI.Color {
-            SwiftUI.Color(uiValue)
-        }
-
-        public var uiValue: UIColor {
             switch self {
                 case .primary:              return .productDark
                 case .secondary:            return .inkDark
-                case .status(let status):   return status.darkUIColor
+                case .status(let status):   return status.darkColor
                 case .custom(let color):    return color
             }
         }
@@ -134,10 +127,8 @@ struct TextLinkPreviews: PreviewProvider {
                 fontSize: Text.Size.normal.value,
                 fontWeight: .regular,
                 lineSpacing: nil
-            ),
-            bounds: .zero
+            )
         )
-        .frame(width: 100, height: 60)
         .previewDisplayName()
     }
 
@@ -181,8 +172,8 @@ struct TextLinkPreviews: PreviewProvider {
                     state.wrappedValue.1 = "Button"
                 }
                 
-                Text("Tapped \(state.wrappedValue.0)x", color: .inkNormal)
-                Text("Tapped \(state.wrappedValue.1)", color: .inkNormal)
+                Text("Tapped \(state.wrappedValue.0)x")
+                Text("Tapped \(state.wrappedValue.1)")
             }
         }
         .previewDisplayName()

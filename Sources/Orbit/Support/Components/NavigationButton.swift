@@ -91,7 +91,12 @@ struct NavigationButtonPreviews: PreviewProvider {
                     leading: HStack(spacing: 0) {
                         Group {
                             NavigationButton(.close, action: {})
-                            BarButton(content: .sfSymbol("xmark", color: .inkDark, weight: .bold), action: {})
+                            if #available(iOS 16.0, *) {
+                                BarButton(content: .sfSymbol("xmark", color: .inkDark), action: {})
+                                    .fontWeight(.bold)
+                            } else {
+                                BarButton(content: .sfSymbol("xmark", color: .inkDark), action: {})
+                            }
                             BarButton(.close, action: {})
                         }
                         .border(Color.cloudNormal.opacity(0.3))
@@ -110,7 +115,12 @@ struct NavigationButtonPreviews: PreviewProvider {
                     leading: HStack(spacing: 0) {
                         Group {
                             NavigationButton(.back, action: {})
-                            BarButton(content: .sfSymbol("arrow.backward", color: .inkDark, weight: .bold), action: {})
+                            if #available(iOS 16.0, *) {
+                                BarButton(content: .sfSymbol("arrow.backward", color: .inkDark), action: {})
+                                    .fontWeight(.bold)
+                            } else {
+                                BarButton(content: .sfSymbol("arrow.backward", color: .inkDark), action: {})
+                            }
                             BarButton(.chevronBackward, action: {})
                         }
                         .border(Color.cloudNormal.opacity(0.3))

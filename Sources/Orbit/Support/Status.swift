@@ -20,11 +20,6 @@ public enum Status {
 
     /// Default color associated with status.
     var color: Color {
-        .init(uiColor)
-    }
-
-    /// Default UIColor associated with status.
-    var uiColor: UIColor {
         switch self {
             case .info:         return .blueNormal
             case .success:      return .greenNormal
@@ -45,11 +40,6 @@ public enum Status {
 
     /// Default text color associated with status.
     var darkColor: Color {
-        .init(darkUIColor)
-    }
-
-    /// Default text color associated with status.
-    var darkUIColor: UIColor {
         switch self {
             case .info:         return .blueDark
             case .success:      return .greenDark

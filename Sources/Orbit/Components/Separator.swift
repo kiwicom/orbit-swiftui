@@ -6,7 +6,7 @@ import SwiftUI
 public struct Separator: View {
 
     let label: String
-    let labelColor: Text.Color
+    let labelColor: Color
     let color: Color
     let thickness: CGFloat
 
@@ -17,7 +17,10 @@ public struct Separator: View {
             HStack(spacing: .xxxSmall) {
                 leadingLine
 
-                Text(label, size: .small, color: labelColor, weight: .medium, alignment: .center)
+                Text(label, size: .small)
+                    .foregroundColor(labelColor)
+                    .fontWeight(.medium)
+                    .multilineTextAlignment(.center)
                     .layoutPriority(1)
 
                 trailingLine
@@ -55,7 +58,7 @@ public extension Separator {
     /// Creates Orbit Separator component.
     init(
         _ label: String = "",
-        labelColor: Text.Color = .inkNormal,
+        labelColor: Color = .inkNormal,
         color: Color = .cloudNormal,
         thickness: Thickness = .default
     ) {
@@ -112,7 +115,7 @@ struct SeparatorPreviews: PreviewProvider {
 
     static var mix: some View {
         VStack(spacing: .xLarge) {
-            Separator("Custom colors", labelColor: .custom(.productDark), color: .blueNormal)
+            Separator("Custom colors", labelColor: .productDark, color: .blueNormal)
             Separator("Separator with very very very very very long and multiline label")
             Separator("Hairline thickness", thickness: .hairline)
             Separator("Custom thickness", thickness: .custom(.xSmall))

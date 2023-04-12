@@ -25,11 +25,14 @@ public struct EmptyState: View {
     @ViewBuilder var texts: some View {
         if title.isEmpty == false || description.isEmpty == false {
             VStack(spacing: .xSmall) {
-                Heading(title, style: .title4, alignment: .center)
+                Heading(title, style: .title4)
                     .accessibility(.emptyStateTitle)
-                Text(description, color: .inkNormal, alignment: .center)
+                
+                Text(description)
+                    .foregroundColor(.inkNormal)
                     .accessibility(.emptyStateDescription)
             }
+            .multilineTextAlignment(.center)
         }
     }
     

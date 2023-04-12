@@ -21,7 +21,8 @@ public struct Dialog<Content: View>: View {
                 Heading(title, style: .title3)
                     .accessibility(.dialogTitle)
 
-                Text(description, color: .inkNormal)
+                Text(description)
+                    .foregroundColor(.inkNormal)
                     .accessibility(.dialogDescription)
             }
 

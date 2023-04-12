@@ -24,10 +24,12 @@ public struct ListItem: View {
             icon
                 .frame(width: dynamicIconSize, height: dynamicIconSize)
 
-            Text(text, size: size, color: nil, weight: style.weight)
+            Text(text, size: size)
+                .foregroundColor(nil)
+                .fontWeight(style.weight)
         }
         .padding(.leading, Self.defaultSpacing - spacing)
-        .foregroundColor(style.textColor.value)
+        .foregroundColor(style.textColor)
     }
 
     @ViewBuilder var icon: some View {
@@ -91,13 +93,13 @@ public extension ListItem {
     enum Style {
         case primary
         case secondary
-        case custom(color: UIColor = .inkDark, weight: Font.Weight = .regular)
+        case custom(color: Color = .inkDark, weight: Font.Weight = .regular)
 
-        public var textColor: Text.Color {
+        public var textColor: Color {
             switch self {
                 case .primary:                  return .inkDark
                 case .secondary:                return .inkNormal
-                case .custom(let color, _):     return .custom(color)
+                case .custom(let color, _):     return color
             }
         }
         

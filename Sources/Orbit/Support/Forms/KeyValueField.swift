@@ -12,12 +12,14 @@ public struct KeyValueField<Content: View>: View {
 
     public var body: some View {
         VStack(alignment: alignment, spacing: 0) {
-            Text(key, size: size.keySize, color: .inkNormal, alignment: .init(alignment))
+            Text(key, size: size.keySize)
+                .foregroundColor(.inkNormal)
                 .accessibility(.keyValueKey)
 
             content
                 .accessibility(.keyValueValue)
         }
+        .multilineTextAlignment(.init(alignment))
     }
 }
 
@@ -54,11 +56,12 @@ struct KeyValueFieldPreviews: PreviewProvider {
             }
 
             KeyValueField("Key") {
-                SwiftUI.Text("Custom text").kerning(10)
+                Text("Custom text")
+                    .kerning(10)
             }
 
             KeyValueField("Multiline and very long key", alignment: .trailing) {
-                Text("Multiline and very long value", alignment: .trailing)
+                Text("Multiline and very long value")
             }
             .frame(width: 100)
         }

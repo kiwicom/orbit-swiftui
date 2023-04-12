@@ -19,17 +19,14 @@ public struct BadgeList: View {
         if isEmpty == false {
             HStack(alignment: alignment, spacing: .xSmall) {
                 badgeOrEmptySpace
-                    .foregroundColor(.init(style.iconColor))
+                    .foregroundColor(style.iconColor)
                     .padding(.xxSmall)
                     .background(badgeBackground)
 
-                Text(
-                    label,
-                    size: size.textSize,
-                    color: .custom(labelColor.color)
-                )
-                .textAccentColor(textAccentColor ?? style.iconColor)
-                .textLinkColor(.custom(labelColor.color))
+                Text(label, size: size.textSize)
+                    .foregroundColor(labelColor.color)
+                    .textAccentColor(textAccentColor ?? style.iconColor)
+                    .textLinkColor(.custom(labelColor.color))
             }
         }
     }
@@ -85,7 +82,7 @@ public extension BadgeList {
 
         case neutral
         case status(_ status: Status)
-        case custom(iconColor: UIColor, backgroundColor: SwiftUI.Color)
+        case custom(iconColor: Color, backgroundColor: Color)
 
         public var backgroundColor: Color {
             switch self {
@@ -95,10 +92,10 @@ public extension BadgeList {
             }
         }
 
-        public var iconColor: UIColor {
+        public var iconColor: Color {
             switch self {
                 case .neutral:                              return .inkNormal
-                case .status(let status):                   return status.uiColor
+                case .status(let status):                   return status.color
                 case .custom(let iconColor, _):             return iconColor
             }
         }
@@ -107,9 +104,9 @@ public extension BadgeList {
     enum LabelColor {
         case primary
         case secondary
-        case custom(_ color: UIColor)
+        case custom(_ color: Color)
 
-        var color: UIColor {
+        var color: Color {
             switch self {
                 case .primary:              return .inkDark
                 case .secondary:            return .inkNormal
@@ -143,7 +140,7 @@ struct BadgeListPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             smallSecondary
-            statuses
+            styles
             mix
         }
         .previewLayout(.sizeThatFits)
@@ -165,7 +162,7 @@ struct BadgeListPreviews: PreviewProvider {
             .previewDisplayName()
     }
 
-    static var statuses: some View {
+    static var styles: some View {
         VStack(alignment: .leading, spacing: .xxLarge) {
             VStack(alignment: .leading, spacing: .medium) {
                 BadgeList(longLabel, icon: .grid)
