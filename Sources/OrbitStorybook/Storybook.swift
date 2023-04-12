@@ -101,19 +101,27 @@ public struct Storybook: View {
     }
 
     @ViewBuilder func tile(_ item: Item) -> some View {
-        Tile(disclosure: .none, showBorder: item.tabs.isEmpty == false) {
-            selectedItem = item
-        } content: {
-            HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-                Icon(content: item.tabs.isEmpty ? .timelapse : .sfSymbol(item.sfSymbol))
-                Heading(String(describing: item).titleCased, style: .title5)
+        if item.tabs.isEmpty {
+            tileContent(item)
+                .padding(.vertical, .xxSmall)
+                .opacity(0.5)
+        } else {
+            Tile(disclosure: .none, showBorder: item.tabs.isEmpty == false) {
+                selectedItem = item
+            } content: {
+                tileContent(item)
             }
-            .padding(.small)
         }
-        .environment(\.isElevationEnabled, item.tabs.isEmpty == false)
-        .opacity(item.tabs.isEmpty ? 0.4 : 1)
-        .disabled(item.tabs.isEmpty)
-        .frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder func tileContent(_ item: Item) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 0) {
+            Icon(content: item.tabs.isEmpty ? .timelapse : .sfSymbol(item.sfSymbol), size: .small)
+                .padding(.trailing, .xSmall)
+            Heading(String(describing: item).titleCased, style: .title6)
+            Spacer(minLength: 0)
+        }
+        .padding(.small)
     }
 
     func invertColorScheme() {
