@@ -8,7 +8,8 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/badge/)
 public struct Badge: View {
 
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.status) private var status
+    @Environment(\.sizeCategory) private var sizeCategory
 
     let label: String
     let iconContent: Icon.Content
@@ -26,20 +27,28 @@ public struct Badge: View {
                 )
                 .foregroundColor(nil)
                 .fontWeight(.medium)
-                .textLinkColor(.custom(style.labelColor))
+                .textLinkColor(.custom(labelColor))
                 .frame(minWidth: minTextWidth)
             }
-            .foregroundColor(style.labelColor)
+            .foregroundColor(labelColor)
             .padding(.vertical, .xxSmall) // = 24 height @ normal size
             .padding(.horizontal, .xSmall)
             .background(
-                style.background
+                background
                     .clipShape(shape)
             )
-            .overlay(
-                shape
-                    .strokeBorder(style.outlineColor, lineWidth: BorderWidth.thin)
-            )
+        }
+    }
+
+    @ViewBuilder var background: some View {
+        switch style {
+            case .light:                                Color.whiteDarker
+            case .lightInverted:                        Color.inkDark
+            case .neutral:                              Color.cloudLight
+            case .status(let status, true):             (status ?? defaultStatus).color
+            case .status(let status, false):            (status ?? defaultStatus).lightColor
+            case .custom(_, _, let backgroundColor):    backgroundColor
+            case .gradient(let gradient):               gradient.background
         }
     }
 
@@ -54,12 +63,31 @@ public struct Badge: View {
     var isEmpty: Bool {
         iconContent.isEmpty && label.isEmpty
     }
+
+    var labelColor: Color {
+        switch style {
+            case .light:                                return .inkDark
+            case .lightInverted:                        return .whiteNormal
+            case .neutral:                              return .inkDark
+            case .status(let status, false):            return (status ?? defaultStatus).darkColor
+            case .status(_, true):                      return .whiteNormal
+            case .custom(let labelColor, _, _):         return labelColor
+            case .gradient:                             return .whiteNormal
+        }
+    }
+
+    var defaultStatus: Status {
+        status ?? .info
+    }
 }
 
 // MARK: - Inits
 public extension Badge {
     
     /// Creates Orbit Badge component.
+    ///
+    /// - Parameters:
+    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(_ label: String = "", icon: Icon.Content = .none, style: Style = .neutral) {
         self.label = label
         self.iconContent = icon
@@ -75,47 +103,12 @@ public extension Badge {
         case light
         case lightInverted
         case neutral
-        case status(_ status: Status, inverted: Bool = false)
-        case custom(labelColor: SwiftUI.Color, outlineColor: SwiftUI.Color, backgroundColor: SwiftUI.Color)
+        case status(_ status: Status? = nil, inverted: Bool = false)
+        case custom(labelColor: Color, outlineColor: Color, backgroundColor: Color)
         case gradient(Gradient)
 
-        public var outlineColor: Color {
-            switch self {
-                case .light:                                return .cloudNormal
-                case .lightInverted:                        return .clear
-                case .neutral:                              return .cloudNormal
-                case .status(_, true):                      return .clear
-                case .status(.info, false):                 return .blueLightHover
-                case .status(.success, false):              return .greenLightHover
-                case .status(.warning, false):              return .orangeLightHover
-                case .status(.critical, false):             return .redLightHover
-                case .custom(_, let outlineColor, _):       return outlineColor
-                case .gradient:                             return .clear
-            }
-        }
-
-        @ViewBuilder public var background: some View {
-            switch self {
-                case .light:                                Color.whiteDarker
-                case .lightInverted:                        Color.inkDark
-                case .neutral:                              Color.cloudLight
-                case .status(let status, true):             status.color
-                case .status(let status, false):            status.lightColor
-                case .custom(_, _, let backgroundColor):    backgroundColor
-                case .gradient(let gradient):               gradient.background
-            }
-        }
-
-        public var labelColor: Color {
-            switch self {
-                case .light:                                return .inkDark
-                case .lightInverted:                        return .whiteNormal
-                case .neutral:                              return .inkDark
-                case .status(let status, false):            return status.darkColor
-                case .status(_, true):                      return .whiteNormal
-                case .custom(let labelColor, _, _):         return labelColor
-                case .gradient:                             return .whiteNormal
-            }
+        public static var status: Self {
+            .status(nil)
         }
     }
 }

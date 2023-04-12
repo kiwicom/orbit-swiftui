@@ -23,7 +23,8 @@ public enum ChoiceTileAlignment {
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct ChoiceTile<HeaderContent: View, Content: View>: View {
 
-    @Environment(\.idealSize) var idealSize
+    @Environment(\.idealSize) private var idealSize
+    @Environment(\.status) private var status
 
     public let padding: CGFloat = .small
 
@@ -60,7 +61,12 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
                 .frame(maxWidth: idealSize.horizontal == true ? nil: .infinity, alignment: .leading)
             }
         )
-        .buttonStyle(TileButtonStyle(isSelected: isSelected, status: errorShouldHighlightBorder ? .critical : nil))
+        .buttonStyle(
+            TileButtonStyle(
+                isSelected: isSelected,
+                status: errorShouldHighlightBorder ? .critical : status
+            )
+        )
         .overlay(badgeOverlayView, alignment: .top)
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(title))

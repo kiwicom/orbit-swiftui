@@ -111,10 +111,10 @@ struct PasswordStrengthIndicatorPreviews: PreviewProvider {
                     Button("weak", style: .critical) {
                         strength.wrappedValue = .weak(title: "Weak")
                     }
-                    Button("medium", style: .status(.warning, subtle: false)) {
+                    Button("medium", style: .status(.warning)) {
                         strength.wrappedValue = .medium(title: "Medium")
                     }
-                    Button("strong", style: .status(.success, subtle: false)) {
+                    Button("strong", style: .status(.success)) {
                         strength.wrappedValue = .strong(title: "Strong")
                     }
                 }

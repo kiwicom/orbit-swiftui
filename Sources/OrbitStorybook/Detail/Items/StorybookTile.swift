@@ -28,8 +28,9 @@ struct StorybookTile {
             Tile("Title with very very very very very long multiline text", description: descriptionMultiline, icon: .airplane, action: {}) {
                 contentPlaceholder
             }
-            Tile(title, description: description, icon: .symbol(.airplane, color: .blueNormal), status: .info, action: {})
-            Tile("SF Symbol", description: description, icon: .sfSymbol("info.circle.fill"), status: .critical, action: {})
+            Tile(title, description: description, icon: .symbol(.airplane, color: .blueNormal), action: {})
+            Tile("SF Symbol", description: description, icon: .sfSymbol("info.circle.fill"), action: {})
+                .status(.critical)
             Tile("Country Flag", description: description, icon: .countryFlag("cz"), disclosure: .buttonLink("Action", style: .primary), action: {})
             Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .critical), action: {})
             Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid), action: {})
