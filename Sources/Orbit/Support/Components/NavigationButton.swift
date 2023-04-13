@@ -99,7 +99,7 @@ struct NavigationButtonPreviews: PreviewProvider {
                             }
                             BarButton(.close, action: {})
                         }
-                        .border(Color.cloudNormal.opacity(0.3))
+                        .border(.cloudNormal.opacity(0.3))
                     }
                 )
         }
@@ -123,14 +123,14 @@ struct NavigationButtonPreviews: PreviewProvider {
                             }
                             BarButton(.chevronBackward, action: {})
                         }
-                        .border(Color.cloudNormal.opacity(0.3))
+                        .border(.cloudNormal.opacity(0.3))
                     },
                     trailing: HStack(spacing: 0) {
                         Group {
                             BarButton(.shareIos, action: {})
                             BarButton(.grid, alignment: .trailing, action: {})
                         }
-                        .border(Color.cloudNormal.opacity(0.3))
+                        .border(.cloudNormal.opacity(0.3))
                     }
                 )
         }

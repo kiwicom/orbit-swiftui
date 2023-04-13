@@ -48,10 +48,10 @@ public struct Tabs<Content: View>: View {
 
     @ViewBuilder var background: some View {
         RoundedRectangle(cornerRadius: BorderRadius.default)
-            .fill(Color.cloudLight)
+            .fill(.cloudLight)
             .overlay(
                 RoundedRectangle(cornerRadius: BorderRadius.default)
-                    .stroke(Color.cloudNormal, lineWidth: BorderWidth.thin)
+                    .stroke(.cloudNormal, lineWidth: BorderWidth.thin)
             )
     }
 
@@ -102,20 +102,14 @@ public struct Tabs<Content: View>: View {
     @ViewBuilder func activeTabBackground(style: Tab.TabStyle) -> some View {
         VStack(spacing: 0) {
             Color.whiteDarker
-            underline(style: style)
+
+            Rectangle()
+                .fill(style.underline)
                 .frame(height: underlineHeight * sizeCategory.ratio)
         }
         .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1))
         .elevation(.level1, shape: .roundedRectangle(borderRadius: BorderRadius.default - 1))
         .padding(.xxxSmall)
-    }
-
-    @ViewBuilder func underline(style: Tab.TabStyle) -> some View {
-        LinearGradient(
-            colors: [style.startColor, style.endColor],
-            startPoint: .bottomLeading,
-            endPoint: .topTrailing
-        )
     }
 
     var maxTabWidth: CGFloat? {

@@ -2,19 +2,20 @@ import SwiftUI
 
 /// Defines Orbit gradient styles.
 public enum Gradient {
+    
     case bundleBasic
     case bundleMedium
     case bundleTop
     
-    @ViewBuilder public var background: some View {
+    public var background: LinearGradient {
         switch self {
-            case .bundleBasic:              LinearGradient.bundleBasic
-            case .bundleMedium:             LinearGradient.bundleMedium
-            case .bundleTop:                LinearGradient.bundleTop
+            case .bundleBasic:              return .bundleBasic
+            case .bundleMedium:             return .bundleMedium
+            case .bundleTop:                return .bundleTop
         }
     }
     
-    public var color: Color {
+    public var foregroundColor: Color {
         switch self {
             case .bundleBasic:              return .bundleBasic
             case .bundleMedium:             return .bundleMedium
@@ -39,9 +40,9 @@ public enum Gradient {
     }
 }
 
-public extension LinearGradient {
+public extension ShapeStyle where Self == LinearGradient {
 
-    static var bundleBasic: LinearGradient {
+    static var bundleBasic: Self {
         .init(
             colors: [.bundleBasicStart, .bundleBasicEnd],
             startPoint: .bottomLeading,
@@ -49,7 +50,7 @@ public extension LinearGradient {
         )
     }
     
-    static var bundleMedium: LinearGradient {
+    static var bundleMedium: Self {
         .init(
             colors: [.bundleMediumStart, .bundleMediumEnd],
             startPoint: .bottomLeading,
@@ -57,7 +58,7 @@ public extension LinearGradient {
         )
     }
     
-    static var bundleTop: LinearGradient {
+    static var bundleTop: Self {
         .init(
             colors: [.bundleTopStart, .bundleTopEnd],
             startPoint: .bottomLeading,
@@ -67,13 +68,23 @@ public extension LinearGradient {
 }
 
 public extension Color {
+
+    static var bundleBasicStart: Color = .init(.bundleBasicStart)
+    static var bundleBasicEnd: Color = .init(.bundleBasicEnd)
+    static var bundleMediumStart: Color = .init(.bundleMediumStart)
+    static var bundleMediumEnd: Color = .init(.bundleMediumEnd)
+    static var bundleTopStart: Color = .init(.bundleTopStart)
+    static var bundleTopEnd: Color = .init(.bundleTopEnd)
+}
+
+public extension ShapeStyle where Self == Color {
     
-    static var bundleBasicStart = Color(UIColor.bundleBasicStart)
-    static var bundleBasicEnd = Color(UIColor.bundleBasicEnd)
-    static var bundleMediumStart = Color(UIColor.bundleMediumStart)
-    static var bundleMediumEnd = Color(UIColor.bundleMediumEnd)
-    static var bundleTopStart = Color(UIColor.bundleTopStart)
-    static var bundleTopEnd = Color(UIColor.bundleTopEnd)
+    static var bundleBasicStart: Self { .bundleBasicStart }
+    static var bundleBasicEnd: Self { .bundleBasicEnd }
+    static var bundleMediumStart: Self { .bundleMediumStart }
+    static var bundleMediumEnd: Self { .bundleMediumEnd }
+    static var bundleTopStart: Self { .bundleTopStart }
+    static var bundleTopEnd: Self { .bundleTopEnd }
 }
 
 public extension UIColor {

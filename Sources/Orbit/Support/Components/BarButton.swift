@@ -113,7 +113,7 @@ struct BarButtonPreviews: PreviewProvider {
                                 .foregroundColor(.greenDark)
                             BarButton(content: .countryFlag("cz"), action: {})
                         }
-                        .border(Color.cloudNormal.opacity(0.4))
+                        .border(.cloudNormal.opacity(0.4))
                     }
                 )
                 .navigationBarItems(
@@ -129,7 +129,7 @@ struct BarButtonPreviews: PreviewProvider {
                             BarButton(.grid, alignment: .trailing, action: {})
                         }
                         .foregroundColor(.inkDark)
-                        .border(Color.cloudNormal.opacity(0.4))
+                        .border(.cloudNormal.opacity(0.4))
                     }
                 )
         }

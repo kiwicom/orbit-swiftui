@@ -8,11 +8,11 @@ public struct Progress: View {
     public var body: some View {
         Capsule()
             .frame(height: Self.height)
-            .foregroundColor(Color.cloudNormal)
+            .foregroundColor(.cloudNormal)
             .overlay(
                 GeometryReader { geometry in
                     Capsule()
-                        .foregroundColor(Color.productNormalActive)
+                        .foregroundColor(.productNormalActive)
                         .padding(.trailing, geometry.size.width * (1 - max(min(1, progress), 0)))
                         .animation(.easeOut, value: progress)
                 },

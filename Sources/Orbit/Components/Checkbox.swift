@@ -132,28 +132,28 @@ public extension Checkbox {
 
         func indicatorStrokeColor(isPressed: Bool) -> some ShapeStyle {
             switch (isEnabled, isChecked, isPressed) {
-                case (true, true, false):       return Color.blueNormal
-                case (true, true, true):        return Color.blueLightActive
-                case (_, _, _):                 return Color.cloudDark
+                case (true, true, false):       return .blueNormal
+                case (true, true, true):        return .blueLightActive
+                case (_, _, _):                 return .cloudDark
             }
         }
 
         func indicatorBackgroundColor(isPressed: Bool) -> some ShapeStyle {
             switch (isEnabled, isChecked, isPressed) {
-                case (true, true, false):       return Color.blueNormal
-                case (true, true, true):        return Color.blueLightActive
-                case (false, false, _):         return Color.cloudNormal
-                case (false, true, _):          return Color.cloudDark
-                case (_, _, _):                 return Color.clear
+                case (true, true, false):       return .blueNormal
+                case (true, true, true):        return .blueLightActive
+                case (false, false, _):         return .cloudNormal
+                case (false, true, _):          return .cloudDark
+                case (_, _, _):                 return .clear
             }
         }
 
         func indicatorOverlayStrokeColor(isPressed: Bool) -> some ShapeStyle {
             switch (state, isPressed) {
-                case (.normal, true):           return Color.blueNormal
-                case (.error, true):            return Color.redLightActive
-                case (.error, false):           return Color.redNormal
-                case (_, _):                    return Color.clear
+                case (.normal, true):           return .blueNormal
+                case (.error, true):            return .redLightActive
+                case (.error, false):           return .redNormal
+                case (_, _):                    return .clear
             }
         }
 

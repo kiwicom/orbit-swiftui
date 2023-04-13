@@ -254,7 +254,7 @@ extension Button {
                 case .criticalSubtle:               Color.redLightActive
                 case .status(let status, false):    (status ?? defaultStatus).activeColor
                 case .status(let status, true):     (status ?? defaultStatus).lightActiveColor
-                case .gradient(let gradient):       gradient.color
+                case .gradient(let gradient):       gradient.foregroundColor
             }
         }
 

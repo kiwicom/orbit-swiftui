@@ -35,7 +35,7 @@ struct StorybookIcons {
                     .overlay(
                         Rectangle()
                             .strokeBorder(style: StrokeStyle(lineWidth: .hairline, lineCap: .round, dash: [.xxxSmall]))
-                            .foregroundColor(Color.inkLight)
+                            .foregroundColor(.inkLight)
                     )
             }
             .padding(.horizontal, .xxSmall)

@@ -32,11 +32,11 @@ struct StorybookButtonLink {
     static var sizes: some View {
         VStack(alignment: .leading, spacing: .small) {
             ButtonLink("ButtonLink intrinsic size", icon: .baggageSet, action: {})
-                .border(Color.cloudNormal)
+                .border(.cloudNormal)
             ButtonLink("ButtonLink small button size", icon: .baggageSet, size: .buttonSmall, action: {})
-                .border(Color.cloudNormal)
+                .border(.cloudNormal)
             ButtonLink("ButtonLink button size", icon: .baggageSet, size: .button, action: {})
-                .border(Color.cloudNormal)
+                .border(.cloudNormal)
         }
         .previewDisplayName()
     }

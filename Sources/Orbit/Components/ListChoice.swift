@@ -391,7 +391,7 @@ struct ListChoicePreviews: PreviewProvider {
                 ListChoice(description: "ListChoice", disclosure: .none, action: {})
                 ListChoice("ListChoice", action: {})
             }
-            .border(Color.cloudLight)
+            .border(.cloudLight)
             .measured()
         }
         .fixedSize(horizontal: false, vertical: true)
