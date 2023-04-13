@@ -12,7 +12,7 @@ public enum InputFieldStyle {
 
 /// Also known as textbox. Offers users a simple input for a form.
 ///
-/// When you have additional information or helpful examples, include placeholder text to help users along.
+/// When you have additional information or helpful examples, include prompt text to help users along.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/inputfield/)
 /// - Important: Component expands horizontally unless prevented by `fixedSize` modifier.
@@ -32,7 +32,6 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     @Binding var value: Value
     var prefix: Icon.Content = .none
     var suffix: Icon.Content = .none
-    var placeholder: String = ""
     var state: InputState = .default
     var textContent: UITextContentType? = nil
     var keyboard: UIKeyboardType = .default
@@ -44,6 +43,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     var style: InputFieldStyle = .default
     let mode: Mode
     var suffixAction: (() -> Void)? = nil
+    private var prompt: String = ""
 
     public var body: some View {
         FieldWrapper(
@@ -85,7 +85,7 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(label))
         .accessibility(value: .init(value.description))
-        .accessibility(hint: .init(messageDescription.isEmpty ? placeholder : messageDescription))
+        .accessibility(hint: .init(messageDescription.isEmpty ? prompt : messageDescription))
         .accessibility(addTraits: .isButton)
     }
 
@@ -225,7 +225,7 @@ public extension InputField {
         value: Binding<Value>,
         prefix: Icon.Content = .none,
         suffix: Icon.Content = .none,
-        placeholder: String = "",
+        prompt: String = "",
         state: InputState = .default,
         textContent: UITextContentType? = nil,
         keyboard: UIKeyboardType = .default,
@@ -346,7 +346,7 @@ struct InputFieldPreviews: PreviewProvider {
     static let value = "Value"
     static let passwordValue = "someVeryLongPasswordValue"
     static let longValue = "\(String(repeating: "very ", count: 15))long value"
-    static let placeholder = "Placeholder"
+    static let prompt = "Placeholder"
     static let helpMessage = "Help message"
     static let errorMessage = "Error message"
     static let longErrorMessage = "Very \(String(repeating: "very ", count: 8))long error message"
@@ -400,8 +400,8 @@ struct InputFieldPreviews: PreviewProvider {
                 inputField("", value: "", message: .none)
                 inputField("", value: "", prefix: .none, suffix: .none)
                 inputField("", value: "Value", prefix: .none, suffix: .none)
-                inputField("", value: "", prefix: .grid, suffix: .none, placeholder: "")
-                inputField("", value: "", prefix: .none, suffix: .none, placeholder: "")
+                inputField("", value: "", prefix: .grid, suffix: .none, prompt: "")
+                inputField("", value: "", prefix: .none, suffix: .none, prompt: "")
                 inputField("", value: "Password", prefix: .none, suffix: .none, isSecure: true)
                 inputField("", value: "Password", prefix: .none, suffix: .none, isSecure: true)
                     .disabled(true)
@@ -418,7 +418,7 @@ struct InputFieldPreviews: PreviewProvider {
             inputField("Disabled", value: passwordValue, isSecure: true)
                 .disabled(true)
             inputField(passwordLabel, value: passwordValue, isSecure: true)
-            inputField(passwordLabel, value: "", prefix: .none, placeholder: "Input password", isSecure: true)
+            inputField(passwordLabel, value: "", prefix: .none, prompt: "Input password", isSecure: true)
             inputField(passwordLabel, value: passwordValue, suffix: .none, isSecure: true, passwordStrength: .weak(title: "Weak"), message: .error("Error message"))
             inputField(passwordLabel, value: passwordValue, prefix: .none, suffix: .none, isSecure: true, passwordStrength: .medium(title: "Medium"), message: .help("Help message"))
             inputField(passwordLabel, value: passwordValue, isSecure: true, passwordStrength: .strong(title: "Strong"))
@@ -460,7 +460,7 @@ struct InputFieldPreviews: PreviewProvider {
         value: String = value,
         prefix: Icon.Content = .grid,
         suffix: Icon.Content = .grid,
-        placeholder: String = placeholder,
+        prompt: String = prompt,
         state: InputState = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
@@ -473,7 +473,7 @@ struct InputFieldPreviews: PreviewProvider {
                 value: value,
                 prefix: prefix,
                 suffix: suffix,
-                placeholder: placeholder,
+                prompt: prompt,
                 state: state,
                 isSecure: isSecure,
                 passwordStrength: passwordStrength,
@@ -530,7 +530,7 @@ struct InputFieldLivePreviews: PreviewProvider {
                         "InputField",
                         value: $textValue,
                         suffix: .email,
-                        placeholder: "Placeholder",
+                        prompt: "Placeholder",
                         message: message,
                         suffixAction: {
                             intValue = 1

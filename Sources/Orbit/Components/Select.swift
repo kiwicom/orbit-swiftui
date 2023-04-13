@@ -15,7 +15,7 @@ public struct Select: View {
     let label: String
     let prefix: Icon.Content
     let value: String?
-    let placeholder: String
+    let prompt: String
     let suffix: Icon.Content
     let state: InputState
     let message: Message?
@@ -56,7 +56,7 @@ public struct Select: View {
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(label))
         .accessibility(value: .init(value ?? ""))
-        .accessibility(hint: .init(messageDescription.isEmpty ? placeholder : messageDescription))
+        .accessibility(hint: .init(messageDescription.isEmpty ? prompt : messageDescription))
         .accessibility(addTraits: .isButton)
     }
 
@@ -68,7 +68,7 @@ public struct Select: View {
     }
 
     var inputLabel: String {
-        value ?? placeholder
+        value ?? prompt
     }
 
     var textColor: Color {
@@ -98,7 +98,7 @@ public extension Select {
         _ label: String = "",
         prefix: Icon.Content = .none,
         value: String?,
-        placeholder: String = "",
+        prompt: String = "",
         suffix: Icon.Content = .chevronDown,
         state: InputState = .default,
         message: Message? = nil,
@@ -108,7 +108,7 @@ public extension Select {
         self.label = label
         self.prefix = prefix
         self.value = value
-        self.placeholder = placeholder
+        self.prompt = prompt
         self.suffix = suffix
         self.state = state
         self.message = message
@@ -159,7 +159,7 @@ struct SelectPreviews: PreviewProvider {
                 select("", value: "Value with a very long value")
                 select("", value: "Value", prefix: .none, suffix: .none)
                 select("", value: nil, prefix: .none, suffix: .none)
-                select("", value: nil, placeholder: "", prefix: .none, suffix: .none)
+                select("", value: nil, prompt: "", prefix: .none, suffix: .none)
             }
             .frame(width: 200)
             .measured()
@@ -184,12 +184,12 @@ struct SelectPreviews: PreviewProvider {
     static func select(
         _ label: String = InputFieldPreviews.label,
         value: String?,
-        placeholder: String = InputFieldPreviews.placeholder,
+        prompt: String = InputFieldPreviews.prompt,
         prefix: Icon.Content = .grid,
         suffix: Icon.Content = .chevronDown,
         message: Message? = nil
     ) -> some View {
-        Select(label, prefix: prefix, value: value, placeholder: placeholder, suffix: suffix, message: message, action: {})
+        Select(label, prefix: prefix, value: value, prompt: prompt, suffix: suffix, message: message, action: {})
     }
 
     @ViewBuilder static var mix: some View {
@@ -199,9 +199,9 @@ struct SelectPreviews: PreviewProvider {
                 Select("No Suffix", value: "Value", suffix: .none, action: {})
                 Select("Label", value: "Value", action: {})
                 Select("", prefix: .grid, value: "Value", action: {})
-                Select("", prefix: .airplane, value: nil, placeholder: "Please select", action: {})
+                Select("", prefix: .airplane, value: nil, prompt: "Please select", action: {})
                 Select("Label (Empty Value)", prefix: .airplane, value: "", action: {})
-                Select("Label (No Value)", prefix: .airplane, value: nil, placeholder: "Please select", action: {})
+                Select("Label (No Value)", prefix: .airplane, value: nil, prompt: "Please select", action: {})
                 Select("Label", prefix: .phone, value: "Value", action: {})
                 Select("Label", prefix: .countryFlag("us"), value: "Value", action: {})
             }
@@ -214,7 +214,7 @@ struct SelectPreviews: PreviewProvider {
                     "Label (Disabled)",
                     prefix: .airplane,
                     value: nil,
-                    placeholder: "Please select",
+                    prompt: "Please select",
                     action: {}
                 )
                 .disabled(true)
@@ -224,7 +224,7 @@ struct SelectPreviews: PreviewProvider {
                     "Label (Modified)",
                     prefix: .airplane,
                     value: nil,
-                    placeholder: "Please select",
+                    prompt: "Please select",
                     state: .modified,
                     action: {}
                 )

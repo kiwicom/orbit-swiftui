@@ -13,7 +13,7 @@ struct StorybookInputField {
     static let value = "Value"
     static let passwordValue = "someVeryLongPasswordValue"
     static let longValue = "\(String(repeating: "very ", count: 15))long value"
-    static let placeholder = "Placeholder"
+    static let prompt = "Placeholder"
     static let helpMessage = "Help message"
     static let errorMessage = "Error message"
     static let longErrorMessage = "Very \(String(repeating: "very ", count: 8))long error message"
@@ -44,7 +44,7 @@ struct StorybookInputField {
     static var password: some View {
         VStack(spacing: .medium) {
             inputField(passwordLabel, value: passwordValue, isSecure: true)
-            inputField(passwordLabel, value: "", prefix: .none, placeholder: "Input password", isSecure: true)
+            inputField(passwordLabel, value: "", prefix: .none, prompt: "Input password", isSecure: true)
             inputField(passwordLabel, value: passwordValue, suffix: .none, isSecure: true, passwordStrength: .weak(title: "Weak"), message: .error("Error message"))
             inputField(passwordLabel, value: passwordValue, prefix: .none, suffix: .none, isSecure: true, passwordStrength: .medium(title: "Medium"), message: .help("Help message"))
             inputField(passwordLabel, value: passwordValue, isSecure: true, passwordStrength: .strong(title: "Strong"))
@@ -84,7 +84,7 @@ struct StorybookInputField {
         value: String = value,
         prefix: Icon.Content = .grid,
         suffix: Icon.Content = .grid,
-        placeholder: String = placeholder,
+        prompt: String = prompt,
         state: InputState = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
@@ -97,7 +97,7 @@ struct StorybookInputField {
                 value: value,
                 prefix: prefix,
                 suffix: suffix,
-                placeholder: placeholder,
+                prompt: prompt,
                 state: state,
                 isSecure: isSecure,
                 passwordStrength: passwordStrength,
