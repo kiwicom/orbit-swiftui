@@ -101,7 +101,7 @@ struct InputContent<Content: View>: View {
 
         switch state {
             case .modified:             return .blueDark
-            case .default:              return .inkNormal
+            case .default:              return .inkDark
         }
     }
 
