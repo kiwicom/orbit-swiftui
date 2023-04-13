@@ -1,49 +1,41 @@
 import SwiftUI
 import UIKit
 
-/// Style variant for Orbit InputField component.
-public enum InputFieldStyle {
-
-    /// Style with label positioned above the InputField.
-    case `default`
-    /// Style with compact label positioned inside the InputField.
-    case compact
-}
-
 /// Also known as textbox. Offers users a simple input for a form.
 ///
 /// When you have additional information or helpful examples, include prompt text to help users along.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/inputfield/)
 /// - Important: Component expands horizontally unless prevented by `fixedSize` modifier.
-public struct InputField<Value>: View where Value: LosslessStringConvertible {
-
-    enum Mode {
-        case actionsHandler(onEditingChanged: (Bool) -> Void, onCommit: () -> Void, isSecure: Bool)
-        case formatter(formatter: Formatter)
-    }
+public struct InputField: View {
 
     @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.inputFieldBeginEditingAction) private var inputFieldBeginEditingAction
+    @Environment(\.inputFieldEndEditingAction) private var inputFieldEndEditingAction
     @Environment(\.isEnabled) private var isEnabled
+
     @State private var isEditing: Bool = false
     @State private var isSecureTextRedacted: Bool = true
 
-    var label: String = ""
-    @Binding var value: Value
-    var prefix: Icon.Content = .none
-    var suffix: Icon.Content = .none
-    var state: InputState = .default
-    var textContent: UITextContentType? = nil
-    var keyboard: UIKeyboardType = .default
-    var autocapitalization: UITextAutocapitalizationType = .none
-    var isAutocompleteEnabled: Bool = false
-    var message: Message? = nil
-    @Binding var messageHeight: CGFloat
-    var style: InputFieldStyle = .default
-    let mode: Mode
-    var suffixAction: (() -> Void)? = nil
+    private var label: String = ""
+    @Binding private var value: String
+    private var prefix: Icon.Content = .none
+    private var suffix: Icon.Content = .none
     private var prompt: String = ""
+    private var state: InputState = .default
+    private var style: InputFieldStyle = .default
+
+    private var isSecure: Bool = false
     private var passwordStrength: PasswordStrengthIndicator.PasswordStrength?
+    private var message: Message? = nil
+    @Binding private var messageHeight: CGFloat
+    private var suffixAction: (() -> Void)? = nil
+
+    // Builder properties (keyboard related)
+    private var autocapitalizationType: UITextAutocapitalizationType = .none
+    private var isAutocorrectionDisabled: Bool = true
+    private var keyboardType: UIKeyboardType = .default
+    private var textContentType: UITextContentType? = nil
 
     public var body: some View {
         FieldWrapper(
@@ -64,23 +56,17 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
                 HStack(alignment: .firstTextBaseline, spacing: .small) {
                     compactLabel
 
-                    input
-                        .lineLimit(1)
-                        .padding(.leading, leadingPadding)
-                        .textFieldStyle(TextFieldStyle(leadingPadding: 0))
-                        .autocapitalization(autocapitalization)
-                        .disableAutocorrection(isAutocompleteEnabled == false)
-                        .textContentType(textContent)
-                        .keyboardType(keyboard)
-                        .orbitFont(size: Text.Size.normal.value)
-                        .accentColor(.blueNormal)
-                        .background(textFieldPlaceholder, alignment: .leading)
-                        .accessibility(.inputFieldValue)
+                    HStack(spacing: 0) {
+                        textField
+                        secureTextRedactedButton
+                    }
                 }
             }
         } footer: {
-            PasswordStrengthIndicator(passwordStrength: passwordStrength)
-                .padding(.top, .xxSmall)
+            if let passwordStrength {
+                PasswordStrengthIndicator(passwordStrength: passwordStrength)
+                    .padding(.top, .xxSmall)
+            }
         }
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(label))
@@ -89,32 +75,34 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
         .accessibility(addTraits: .isButton)
     }
 
-    @ViewBuilder var input: some View {
-        switch mode {
-            case .actionsHandler(let onEditingChanged, let onCommit, let isSecure):
-                if isSecure {
-                    HStack(spacing: 0) {
-                        secureField(onEditingChanged: onEditingChanged, onCommit: onCommit)
-                        secureTextRedactedToggle
-                    }
-                } else {
-                    textField(onEditingChanged: onEditingChanged, onCommit: onCommit)
-                }
-            case .formatter(let formatter):
-                TextField("", value: $value, formatter: formatter)
+    @ViewBuilder private var textField: some View {
+        TextField(
+            value: $value,
+            prompt: prompt,
+            isSecureTextEntry: isSecure && isSecureTextRedacted,
+            isAutocorrectionDisabled: isAutocorrectionDisabled,
+            keyboardType: keyboardType,
+            textContentType: textContentType,
+            autocapitalizationType: autocapitalizationType,
+            font: .orbit(size: Text.Size.normal.value * sizeCategory.ratio, weight: .regular),
+            state: state,
+            leadingPadding: leadingPadding,
+            trailingPadding: trailingPadding
+        )
+        .lineLimit(1)
+        .accentColor(.blueNormal)
+        .accessibility(.inputFieldValue)
+        .inputFieldBeginEditingAction {
+            isEditing = true
+            inputFieldBeginEditingAction()
+        }
+        .inputFieldEndEditingAction {
+            isEditing = false
+            inputFieldEndEditingAction()
         }
     }
 
-    @ViewBuilder var textFieldPlaceholder: some View {
-        if showPlaceholder {
-            Text(placeholder)
-                .foregroundColor(nil)
-                .padding(.leading, leadingPadding)
-                .foregroundColor(isEnabled ? state.placeholderColor : .cloudDarkActive)
-        }
-    }
-
-    @ViewBuilder var compactLabel: some View {
+    @ViewBuilder private var compactLabel: some View {
         if style == .compact {
             Text(label)
                 .foregroundColor(compactLabelColor)
@@ -123,92 +111,43 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
         }
     }
 
-    @ViewBuilder var secureTextRedactedToggle: some View {
-        if value.description.isEmpty == false, isEnabled {
+    @ViewBuilder private var secureTextRedactedButton: some View {
+        if isSecure, value.description.isEmpty == false, isEnabled {
             Icon(isSecureTextRedacted ? .visibility : .visibilityOff, color: .inkNormal)
-                .padding(.vertical, .xSmall)
                 .padding(.horizontal, .small)
+                .padding(.vertical, .xSmall + 3) // = 44 height @ normal size
                 .contentShape(Rectangle())
                 .onTapGesture {
                     isSecureTextRedacted.toggle()
                 }
                 .accessibility(addTraits: .isButton)
                 .accessibility(.inputFieldPasswordToggle)
-                .padding(.vertical, 3) // = 44 height @ normal size
         }
     }
 
-    @ViewBuilder func secureField(
-        onEditingChanged: @escaping (Bool) -> Void,
-        onCommit: @escaping () -> Void
-    ) -> some View {
-        SecureTextField(
-            text: Binding(
-                get: { self.value.description },
-                set: { self.value = Value.init($0) ?? self.value }
-            ),
-            isSecured: $isSecureTextRedacted,
-            isEditing: $isEditing,
-            style: .init(
-                textContentType: textContent,
-                keyboardType: keyboard,
-                font: .orbit(size: Text.Size.normal.value * sizeCategory.ratio, weight: .regular),
-                state: state
-            ),
-            onEditingChanged: onEditingChanged,
-            onCommit: onCommit
-        )
-    }
-
-    @ViewBuilder func textField(
-        onEditingChanged: @escaping (Bool) -> Void,
-        onCommit: @escaping () -> Void
-    ) -> some View {
-        TextField(
-            "",
-            text: Binding(
-                get: { self.value.description },
-                set: { self.value = Value.init($0) ?? self.value }
-            ),
-            onEditingChanged: { isEditing in
-                self.isEditing = isEditing
-                onEditingChanged(isEditing)
-            },
-            onCommit: onCommit
-        )
-        .padding(.trailing, suffix == .none ? .small : 0)
-    }
-
-    var isSecure: Bool {
-        switch mode {
-            case .actionsHandler(_, _, let isSecure):
-                return isSecure
-            case .formatter(_):
-                return false
-        }
-    }
-
-    var fieldLabel: String {
+    private var fieldLabel: String {
         switch style {
             case .default:          return label
             case .compact:          return ""
         }
     }
 
-    var messageDescription: String {
+    private var messageDescription: String {
         message?.description ?? ""
     }
 
-    var compactLabelColor: Color {
-        showPlaceholder ? .inkDark : .inkLight
+    private var compactLabelColor: Color {
+        value.description.isEmpty ? .inkDark : .inkLight
     }
 
-    var showPlaceholder: Bool {
-        value.description.isEmpty
+    private var leadingPadding: CGFloat {
+        prefix.isEmpty && style == .default
+            ? .small
+            : 0
     }
 
-    var leadingPadding: CGFloat {
-        prefix.isEmpty && style == .default ? .small : 0
+    private var trailingPadding: CGFloat {
+        suffix == .none ? .small : 0
     }
 }
 
@@ -216,116 +155,74 @@ public extension InputField {
 
     /// Creates Orbit InputField component.
     ///
+    /// The keyboard related modifiers can be used directly on this component to modify the keyboard behaviour:
+    /// - `autocapitalization()`
+    /// - `autocorrectionDisabled()`
+    /// - `keyboardType()`
+    /// - `textContentType()`
+    ///
     /// - Parameters:
-    ///     - message: Message below InputField.
-    ///     - messageHeight: Binding to the current height of message.
-    ///     - suffixAction: Optional separate action on suffix icon tap.
+    ///   - message: Optional message below the InputField.
+    ///   - messageHeight: Binding to the current height of the optional message.
+    ///   - suffixAction: Optional action when suffix icon is tapped.
     init(
         _ label: String = "",
-        value: Binding<Value>,
+        value: Binding<String>,
         prefix: Icon.Content = .none,
         suffix: Icon.Content = .none,
         prompt: String = "",
         state: InputState = .default,
-        textContent: UITextContentType? = nil,
-        keyboard: UIKeyboardType = .default,
-        autocapitalization: UITextAutocapitalizationType = .none,
-        isAutocompleteEnabled: Bool = false,
+        style: InputFieldStyle = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
-        style: InputFieldStyle = .default,
-        onEditingChanged: @escaping (Bool) -> Void = { _ in },
-        onCommit: @escaping () -> Void = {},
-        suffixAction: (() -> Void)? = nil
-    ) where Value == String {
-        self.init(
-            label: label,
-            value: value,
-            prefix: prefix,
-            suffix: suffix,
-            placeholder: placeholder,
-            state: state,
-            textContent: textContent,
-            keyboard: keyboard,
-            autocapitalization: autocapitalization,
-            isAutocompleteEnabled: isAutocompleteEnabled,
-            passwordStrength: passwordStrength,
-            message: message,
-            messageHeight: messageHeight,
-            style: style,
-            mode: .actionsHandler(onEditingChanged: onEditingChanged, onCommit: onCommit, isSecure: isSecure),
-            suffixAction: suffixAction
-        )
-    }
-
-    /// Creates Orbit InputField component using a provided Formatter
-    /// that will format an input without changing underlying value when it's committed
-    ///
-    /// - Parameters:
-    ///     - message: Message below InputField.
-    ///     - messageHeight: Binding to the current height of message.
-    ///     - formatter: A formatter to use when converting between the
-    ///     string the user edits and the underlying value.
-    ///     If `formatter` can't perform the conversion, the text field doesn't
-    ///     modify `binding.value`.
-    ///     - suffixAction: Optional separate action on suffix icon tap.
-    init(
-        _ label: String = "",
-        value: Binding<Value>,
-        prefix: Icon.Content = .none,
-        suffix: Icon.Content = .none,
-        placeholder: String = "",
-        state: InputState = .default,
-        textContent: UITextContentType? = nil,
-        keyboard: UIKeyboardType = .default,
-        autocapitalization: UITextAutocapitalizationType = .none,
-        isAutocompleteEnabled: Bool = false,
-        message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
-        style: InputFieldStyle = .default,
-        formatter: Formatter,
         suffixAction: (() -> Void)? = nil
     ) {
-        self.init(
-            label: label,
-            value: value,
-            prefix: prefix,
-            suffix: suffix,
-            placeholder: placeholder,
-            state: state,
-            textContent: textContent,
-            keyboard: keyboard,
-            autocapitalization: autocapitalization,
-            isAutocompleteEnabled: isAutocompleteEnabled,
-            passwordStrength: .empty,
-            message: message,
-            messageHeight: messageHeight,
-            style: style,
-            mode: .formatter(formatter: formatter),
-            suffixAction: suffixAction
-        )
+        self.label = label
+        self._value = value
+        self.prefix = prefix
+        self.suffix = suffix
+        self.prompt = prompt
+        self.state = state
+        self.style = style
+        self.isSecure = isSecure
+        self.passwordStrength = passwordStrength
+        self.message = message
+        self._messageHeight = messageHeight
+        self.suffixAction = suffixAction
+    }
+
+    /// Returns a modified Orbit InputField with provided auto-capitalization type.
+    func autocapitalization(_ style: UITextAutocapitalizationType) -> Self {
+        set(\.autocapitalizationType, to: style)
+    }
+
+    /// Returns a modified Orbit InputField with provided autocorrection type.
+    func autocorrectionDisabled(_ disable: Bool = true) -> Self {
+        set(\.isAutocorrectionDisabled, to: disable)
+    }
+
+    /// Returns a modified Orbit InputField with provided keyboard type.
+    func keyboardType(_ type: UIKeyboardType) -> Self {
+        set(\.keyboardType, to: type)
+    }
+
+    /// Returns a modified Orbit InputField with provided content type.
+    func textContentType(_ textContentType: UITextContentType?) -> Self {
+        set(\.textContentType, to: textContentType)
     }
 }
 
 // MARK: - Types
-public extension InputField {
-    
-    struct TextFieldStyle : SwiftUI.TextFieldStyle {
-        
-        let leadingPadding: CGFloat
-        
-        public init(leadingPadding: CGFloat = .xSmall) {
-            self.leadingPadding = leadingPadding
-        }
-        
-        public func _body(configuration: TextField<Self._Label>) -> some View {
-            configuration
-                .padding(.leading, leadingPadding)
-                .padding(.vertical, .small)
-        }
-    }
+
+/// Style variant for Orbit InputField component.
+public enum InputFieldStyle {
+
+    /// Style with label positioned above the InputField.
+    case `default`
+    /// Style with compact label positioned inside the InputField.
+    case compact
 }
 
 // MARK: - Identifiers
@@ -335,6 +232,16 @@ public extension AccessibilityID {
     static let inputFieldSuffix             = Self(rawValue: "orbit.inputfield.suffix")
     static let inputFieldValue              = Self(rawValue: "orbit.inputfield.value")
     static let inputFieldPasswordToggle     = Self(rawValue: "orbit.inputfield.password.toggle")
+}
+
+// MARK: - Private
+private extension InputField {
+
+    func set<V>(_ keypath: WritableKeyPath<Self, V>, to value: V) -> Self {
+        var copy = self
+        copy[keyPath: keypath] = value
+        return copy
+    }
 }
 
 // MARK: - Previews
@@ -363,8 +270,22 @@ struct InputFieldPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        StateWrapper(value) { state in
-            InputField(label, value: state, prefix: .grid, suffix: .grid, placeholder: placeholder, state: .default)
+        VStack(spacing: .medium) {
+            StateWrapper(value) { state in
+                InputField(label, value: state, prompt: prompt, state: .default)
+            }
+            StateWrapper("") { state in
+                InputField(label, value: state, prompt: prompt, state: .default)
+            }
+            StateWrapper(value) { state in
+                InputField(label, value: state, prefix: .grid, suffix: .grid, prompt: prompt, state: .default)
+            }
+            StateWrapper("") { state in
+                InputField(label, value: state, prefix: .grid, suffix: .grid, prompt: prompt, state: .default)
+            }
+            StateWrapper(value) { state in
+                InputField("Secure", value: state, prefix: .grid, prompt: prompt, state: .default, isSecure: true)
+            }
         }
         .padding(.medium)
         .previewDisplayName()
@@ -475,34 +396,16 @@ struct InputFieldPreviews: PreviewProvider {
                 suffix: suffix,
                 prompt: prompt,
                 state: state,
+                style: style,
                 isSecure: isSecure,
                 passwordStrength: passwordStrength,
-                message: message,
-                style: style
+                message: message
             )
         }
     }
 }
 
 struct InputFieldLivePreviews: PreviewProvider {
-
-    class UppercaseAlphabetFormatter: Formatter {
-
-        override func string(for obj: Any?) -> String? {
-            guard let string = obj as? String else { return nil }
-
-            return string.uppercased()
-        }
-
-        override func getObjectValue(
-            _ obj: AutoreleasingUnsafeMutablePointer<AnyObject?>?,
-            for string: String,
-            errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?
-        ) -> Bool {
-            obj?.pointee = string.lowercased() as AnyObject
-            return true
-        }
-    }
 
     static var previews: some View {
         PreviewWrapper()
@@ -522,10 +425,6 @@ struct InputFieldLivePreviews: PreviewProvider {
         var body: some View {
             ScrollView {
                 VStack(alignment: .leading, spacing: .medium) {
-                    Heading("Heading", style: .title2)
-
-                    Text("Some text, but also very long and multi-line to test that it works.")
-
                     InputField(
                         "InputField",
                         value: $textValue,
@@ -538,24 +437,18 @@ struct InputFieldLivePreviews: PreviewProvider {
                     )
                     .disabled(true)
 
-                    Text("Some text, but also very long and multi-line to test that it works.")
+                    if #available(iOS 16.0, *) {
+                        VStack(alignment: .leading, spacing: .medium) {
+                            Text("InputField with uppercasing the input")
 
-                    VStack(alignment: .leading, spacing: .medium) {
-                        Text("InputField uppercasing the input, but not changing projected value:")
-
-                        InputField(
-                            value: $textValue,
-                            placeholder: "Uppercased",
-                            formatter: UppercaseAlphabetFormatter()
-                        )
-
-                        Text("Number: \(intValue)")
-
-                        InputField(
-                            value: $intValue,
-                            placeholder: "Decimal formatter",
-                            formatter: formatter
-                        )
+                            InputField(
+                                value: $textValue,
+                                prompt: "Uppercased"
+                            )
+                            .onChange(of: textValue) { value in
+                                textValue = value.uppercased()
+                            }
+                        }
                     }
 
                     Spacer(minLength: 0)
@@ -584,12 +477,6 @@ struct InputFieldLivePreviews: PreviewProvider {
             }
             .previewDisplayName("Run Live Preview with Input Field")
         }
-
-        let formatter: NumberFormatter = {
-            let formatter = NumberFormatter()
-            formatter.numberStyle = .decimal
-            return formatter
-        }()
     }
 
     static var securedWrapper: some View {
@@ -599,16 +486,14 @@ struct InputFieldLivePreviews: PreviewProvider {
 
                 InputField(
                     value: state,
-                    suffix: .none,
-                    textContent: .password,
                     isSecure: true,
                     passwordStrength: validate(password: state.wrappedValue)
                 )
+                .textContentType(.password)
             }
-            .padding()
-            .previewDisplayName()
-
         }
+        .padding()
+        .previewDisplayName()
     }
 
     static func validate(password: String) -> PasswordStrengthIndicator.PasswordStrength? {
