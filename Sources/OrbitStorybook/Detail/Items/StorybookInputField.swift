@@ -87,7 +87,7 @@ struct StorybookInputField {
         prompt: String = prompt,
         state: InputState = .default,
         isSecure: Bool = false,
-        passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
+        passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
         style: InputFieldStyle = .default
     ) -> some View {

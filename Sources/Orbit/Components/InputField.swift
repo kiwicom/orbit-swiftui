@@ -37,13 +37,13 @@ public struct InputField<Value>: View where Value: LosslessStringConvertible {
     var keyboard: UIKeyboardType = .default
     var autocapitalization: UITextAutocapitalizationType = .none
     var isAutocompleteEnabled: Bool = false
-    var passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty
     var message: Message? = nil
     @Binding var messageHeight: CGFloat
     var style: InputFieldStyle = .default
     let mode: Mode
     var suffixAction: (() -> Void)? = nil
     private var prompt: String = ""
+    private var passwordStrength: PasswordStrengthIndicator.PasswordStrength?
 
     public var body: some View {
         FieldWrapper(
@@ -232,7 +232,7 @@ public extension InputField {
         autocapitalization: UITextAutocapitalizationType = .none,
         isAutocompleteEnabled: Bool = false,
         isSecure: Bool = false,
-        passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
+        passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         style: InputFieldStyle = .default,
@@ -463,7 +463,7 @@ struct InputFieldPreviews: PreviewProvider {
         prompt: String = prompt,
         state: InputState = .default,
         isSecure: Bool = false,
-        passwordStrength: PasswordStrengthIndicator.PasswordStrength = .empty,
+        passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
         style: InputFieldStyle = .default
     ) -> some View {
@@ -611,9 +611,9 @@ struct InputFieldLivePreviews: PreviewProvider {
         }
     }
 
-    static func validate(password: String) -> PasswordStrengthIndicator.PasswordStrength {
+    static func validate(password: String) -> PasswordStrengthIndicator.PasswordStrength? {
         switch password.count {
-            case 0:         return .empty
+            case 0:         return nil
             case 1...3:     return .weak(title: "Weak")
             case 4...6:     return .medium(title: "Medium")
             default:        return .strong(title: "Strong")
