@@ -20,6 +20,7 @@ public struct FieldMessage: View {
                     .accessibility(.fieldMessage)
             }
             .transition(.opacity.animation(.easeOut(duration: 0.2)))
+            .accessibilityElement(children: .combine)
         }
     }
 

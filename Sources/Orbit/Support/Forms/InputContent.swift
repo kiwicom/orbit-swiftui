@@ -29,16 +29,7 @@ struct InputContent<Content: View>: View {
                 Spacer(minLength: 0)
             }
 
-            if let suffixAction = suffixAction {
-                BarButton(content: suffix, size: .normal) {
-                    suffixAction()
-                }
-                .foregroundColor(suffixColor)
-                .accessibility(addTraits: .isButton)
-                .accessibility(suffixAccessibilityID)
-            } else {
-                suffixIcon
-            }
+            suffixIcon
 
             TextStrut()
                 .padding(.vertical, verticalPadding)
@@ -57,15 +48,29 @@ struct InputContent<Content: View>: View {
             .padding(.horizontal, .xSmall)
             .padding(.vertical, verticalPadding)
             .accessibility(prefixAccessibilityID)
+            // The component should expose the label as a part of the field primary input or action
+            .accessibility(hidden: true)
     }
 
     @ViewBuilder var suffixIcon: some View {
-        Icon(content: suffix)
+        suffixContent
             .foregroundColor(suffixColor)
-            .padding(.horizontal, .xSmall)
-            .padding(.vertical, verticalPadding)
-            .contentShape(Rectangle())
             .accessibility(suffixAccessibilityID)
+    }
+
+    @ViewBuilder var suffixContent: some View {
+        if let suffixAction = suffixAction {
+            BarButton(content: suffix, size: .normal) {
+                suffixAction()
+            }
+            .accessibility(addTraits: .isButton)
+        } else {
+            Icon(content: suffix)
+                .padding(.horizontal, .xSmall)
+                .padding(.vertical, verticalPadding)
+                // The component should expose the label as a part of the field primary input or action
+                .accessibility(hidden: true)
+        }
     }
 
     @ViewBuilder var border: some View {
@@ -133,8 +138,13 @@ struct InputContentPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        InputContent(prefix: .visa, suffix: .checkCircle, state: .default) {
-            EmptyView()
+        VStack(spacing: .medium) {
+            InputContent(prefix: .visa, suffix: .checkCircle, state: .default) {
+                EmptyView()
+            }
+            InputContent(prefix: .visa, suffix: .checkCircle, state: .default, suffixAction: {}) {
+                EmptyView()
+            }
         }
         .padding(.medium)
         .previewDisplayName()

@@ -13,6 +13,8 @@ public struct FieldWrapper<Label: View, Content: View, Footer: View>: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             label
+                // The component should expose the label as a part of the field primary input or action
+                .accessibility(hidden: true)
                 .padding(.bottom, .xxSmall)
 
             content
