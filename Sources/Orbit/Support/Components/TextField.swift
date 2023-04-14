@@ -64,10 +64,10 @@ struct TextField: UIViewRepresentable {
             return
         }
 
-        // Workaround. Without it, UITextField will erase it's own current value on first input
-        let didUserJustDidStartEditing = uiView.isSecureTextEntry && uiView.text == value
+        // Prevent UITextField erasing the current value
+        let isBeginEditing = uiView.isSecureTextEntry && uiView.text == value
         let isTextModifiedOutsideTextField = value != context.coordinator.textFieldValue
-        if didUserJustDidStartEditing || isTextModifiedOutsideTextField {
+        if isBeginEditing || isTextModifiedOutsideTextField {
             uiView.text?.removeAll()
             uiView.insertText(value)
         }
