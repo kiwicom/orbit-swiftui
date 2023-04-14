@@ -27,7 +27,7 @@ public struct Icon: View, TextBuildable {
         }
     }
 
-    @ViewBuilder var iconContent: some View {
+    @ViewBuilder private var iconContent: some View {
         switch icon {
             case .none:
                 EmptyView()
@@ -36,7 +36,7 @@ public struct Icon: View, TextBuildable {
                     .frame(width: dynamicSize, height: dynamicSize)
             case .skeleton:
                 Skeleton(.atomic(.rectangle))
-                    .frame(width: dynamicSize, height: dynamicSize)
+                    .frame(width: dynamicSize - .xxxSmall, height: dynamicSize - .xxxSmall)
             case .symbol(let symbol, let color):
                 alignmentWrapper {
                     foregroundColorWrapper(color: color) {
@@ -73,13 +73,13 @@ public struct Icon: View, TextBuildable {
         }
     }
 
-    @ViewBuilder func alignmentWrapper(@ViewBuilder content: () -> some View) -> some View {
+    @ViewBuilder private func alignmentWrapper(@ViewBuilder content: () -> some View) -> some View {
         content()
             .alignmentGuide(.firstTextBaseline, computeValue: baseline)
             .alignmentGuide(.lastTextBaseline, computeValue: baseline)
     }
 
-    @ViewBuilder func foregroundColorWrapper(color: Color?, @ViewBuilder content: () -> some View) -> some View {
+    @ViewBuilder private func foregroundColorWrapper(color: Color?, @ViewBuilder content: () -> some View) -> some View {
         if let color = color ?? foregroundColor {
             content()
                 .foregroundColor(color)
@@ -88,27 +88,27 @@ public struct Icon: View, TextBuildable {
         }
     }
 
-    var dynamicSize: CGFloat {
-        round(size.value * sizeCategory.ratio)
-    }
-
-    var sfSymbolSize: CGFloat {
-        round(size.value * Self.sfSymbolToOrbitSymbolSizeRatio)
-    }
-
-    var sfSymbolDynamicSize: CGFloat {
-        round(sfSymbolSize * sizeCategory.ratio)
-    }
-
-    var resolvedBaselineOffset: CGFloat {
-        baselineOffset ?? 0
-    }
-
-    var isEmpty: Bool {
+    public var isEmpty: Bool {
         icon?.isEmpty ?? true
     }
 
-    func baseline(_ dimensions: ViewDimensions) -> CGFloat {
+    private var dynamicSize: CGFloat {
+        round(size.value * sizeCategory.ratio)
+    }
+
+    private var sfSymbolSize: CGFloat {
+        round(size.value * Self.sfSymbolToOrbitSymbolSizeRatio)
+    }
+
+    private var sfSymbolDynamicSize: CGFloat {
+        round(sfSymbolSize * sizeCategory.ratio)
+    }
+
+    private var resolvedBaselineOffset: CGFloat {
+        baselineOffset ?? 0
+    }
+
+    private func baseline(_ dimensions: ViewDimensions) -> CGFloat {
         dimensions.height * Self.symbolBaseline + resolvedBaselineOffset
     }
 }
@@ -260,31 +260,28 @@ extension Icon: TextRepresentable {
             case .skeleton:
                 assertionFailure("text representation of skeleton icon is not supported")
                 return nil
-            case .symbol(let symbol, let color?):
+            case .symbol(let symbol, let color):
                 return symbolWrapper(sizeCategory: sizeCategory) {
-                    SwiftUI.Text(verbatim: symbol.value)
-                        .foregroundColor(color)
+                    foregroundColorWrapper(color: color) {
+                        SwiftUI.Text(verbatim: symbol.value)
+                    }
                 }
-            case .symbol(let symbol, nil):
-                return symbolWrapper(sizeCategory: sizeCategory) {
-                    SwiftUI.Text(verbatim: symbol.value)
+            case .image(let image, let tint, _):
+                return baselineWrapper {
+                    imageBaselineWrapper {
+                        foregroundColorWrapper(color: tint) {
+                            SwiftUI.Text(image)
+                        }
+                    }
                 }
-            case .image(let image, let tint?, _):
-                return baselineWrapper(SwiftUI.Text(image))
-                    .foregroundColor(tint)
-            case .image(let image, _, _):
-                return baselineWrapper(SwiftUI.Text(image))
             case .countryFlag:
                 assertionFailure("text representation of countryFlag icon is not supported")
                 return nil
-            case .sfSymbol(let systemName, let color?):
+            case .sfSymbol(let systemName, let color):
                 return sfSymbolWrapper(sizeCategory: sizeCategory) {
-                    SwiftUI.Text(Image(systemName: systemName))
-                        .foregroundColor(color)
-                }
-            case .sfSymbol(let systemName, nil):
-                return sfSymbolWrapper(sizeCategory: sizeCategory) {
-                    SwiftUI.Text(Image(systemName: systemName))
+                    foregroundColorWrapper(color: color) {
+                        SwiftUI.Text(Image(systemName: systemName))
+                    }
                 }
         }
     }
@@ -301,14 +298,13 @@ extension Icon: TextRepresentable {
             case .skeleton:
                 assertionFailure("text representation of skeleton icon is not supported")
                 return nil
-            case .symbol(let symbol, let color?):
+            case .symbol(let symbol, let color):
                 return symbolWrapper(sizeCategory: sizeCategory) {
-                    baselineWrapper(SwiftUI.Text(verbatim: symbol.value))
-                        .foregroundColor(color)
-                }
-            case .symbol(let symbol, nil):
-                return symbolWrapper(sizeCategory: sizeCategory) {
-                    baselineWrapper(SwiftUI.Text(verbatim: symbol.value))
+                    baselineWrapper {
+                        foregroundColorWrapper(color: color) {
+                            SwiftUI.Text(verbatim: symbol.value)
+                        }
+                    }
                 }
             case .countryFlag:
                 assertionFailure("text representation of countryFlag icon is not supported")
@@ -319,34 +315,41 @@ extension Icon: TextRepresentable {
         }
     }
 
-    func symbolWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
-        symbolBaselineWrapper(
-            text()
-                .font(.orbitIcon(size: size.value)),
-            sizeCategory: sizeCategory
-        )
-    }
-
-    func sfSymbolWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
-        baselineWrapper(
-            text()
-                .font(.system(size: sfSymbolSize * sizeCategory.ratio))
-                .fontWeight(fontWeight)
-
-        )
-    }
-
-    func baselineWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
-        if let baselineOffset {
-            return text
-                .baselineOffset(baselineOffset)
+    func foregroundColorWrapper(color: Color?, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+        if let color = color ?? foregroundColor {
+            return text()
+                .foregroundColor(color)
         } else {
-            return text
+            return text()
         }
     }
 
-    func symbolBaselineWrapper(_ text: SwiftUI.Text, sizeCategory: ContentSizeCategory) -> SwiftUI.Text {
-        text
+    func symbolWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+        imageBaselineWrapper {
+            text()
+                .font(.orbitIcon(size: size.value))
+        }
+    }
+
+    func sfSymbolWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+        baselineWrapper {
+            text()
+                .font(.system(size: sfSymbolSize * sizeCategory.ratio))
+                .fontWeight(fontWeight)
+        }
+    }
+
+    func baselineWrapper(@ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+        if let baselineOffset {
+            return text()
+                .baselineOffset(baselineOffset)
+        } else {
+            return text()
+        }
+    }
+
+    func imageBaselineWrapper(@ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+        text()
             .baselineOffset(textBaselineOffset(baselineOffset, sizeCategory: sizeCategory))
     }
 
@@ -398,7 +401,15 @@ struct IconPreviews: PreviewProvider {
     static var standalone: some View {
         VStack(spacing: .medium) {
             Icon(.informationCircle)
+            Icon(.informationCircle)
+                .foregroundColor(nil)
+            Icon(.informationCircle)
+                .foregroundColor(.blueNormal)
             Icon(.placeholder)
+            Icon(.skeleton)
+            Icon(.transparent)
+                .border(.inkNormal, width: .hairline)
+            Icon(nil) // Results in EmptyView
         }
         .padding(.medium)
         .previewDisplayName()
@@ -469,20 +480,20 @@ struct IconPreviews: PreviewProvider {
                 Group {
                     Text("Text", size: .small)
                     Icon(sfSymbol, size: .small)
-                        .foregroundColor(nil)
+                        .foregroundColor(.blueNormal)
                     Icon(sfSymbol, size: .small)
                         .foregroundColor(nil)
                         .baselineOffset(.xxxSmall)
 
                     Icon(.informationCircle, size: .small)
-                        .foregroundColor(nil)
+                        .foregroundColor(.blueNormal)
                     Icon(.informationCircle, size: .small)
                         .foregroundColor(nil)
                         .baselineOffset(.xxxSmall)
 
                     Group {
                         Icon(.orbit(.navigateClose), size: .small)
-                            .foregroundColor(nil)
+                            .foregroundColor(.blueNormal)
                         Icon(.orbit(.navigateClose), size: .small)
                             .foregroundColor(nil)
                             .baselineOffset(.xxxSmall)
@@ -509,19 +520,19 @@ struct IconPreviews: PreviewProvider {
             (
                 Text("Text", size: .small)
                 + Icon(sfSymbol, size: .small)
-                    .foregroundColor(nil)
+                    .foregroundColor(.blueNormal)
                 + Icon(sfSymbol, size: .small)
                     .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
 
                 + Icon(.informationCircle, size: .small)
-                    .foregroundColor(nil)
+                    .foregroundColor(.blueNormal)
                 + Icon(.informationCircle, size: .small)
                     .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
 
                 + Icon(.orbit(.navigateClose))
-                    .foregroundColor(nil)
+                    .foregroundColor(.blueNormal)
                 + Icon(.orbit(.navigateClose))
                     .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
@@ -548,6 +559,7 @@ struct IconPreviews: PreviewProvider {
                 Icon(.grid)
                     .foregroundColor(nil)
                 Icon(.grid)
+                    .foregroundColor(nil)
                 Icon(.symbol(.grid))
                     .foregroundColor(nil)
             }
@@ -559,6 +571,7 @@ struct IconPreviews: PreviewProvider {
                 Icon(sfSymbol)
                     .foregroundColor(nil)
                 Icon(sfSymbol)
+                    .foregroundColor(nil)
                 Icon(sfSymbol)
                     .foregroundColor(nil)
             }
@@ -570,6 +583,7 @@ struct IconPreviews: PreviewProvider {
                 Icon(.orbit(.navigateClose))
                     .foregroundColor(nil)
                 Icon(.orbit(.navigateClose))
+                    .foregroundColor(nil)
                 Icon(.orbit(.navigateClose))
                     .foregroundColor(nil)
             }
