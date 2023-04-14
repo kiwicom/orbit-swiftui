@@ -82,7 +82,6 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
                 case .default:
                     HStack(alignment: .top, spacing: 0) {
                         Icon(icon, size: titleStyle.iconSize)
-                            .foregroundColor(.inkDark)
                             .padding(.trailing, .xSmall)
                             .accessibility(.choiceTileIcon)
 

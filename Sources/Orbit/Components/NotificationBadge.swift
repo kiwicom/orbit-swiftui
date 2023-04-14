@@ -34,6 +34,7 @@ public struct NotificationBadge: View {
                     .frame(minWidth: minTextWidth)
             case .icon(let icon):
                 Icon(icon, size: .small)
+                    .foregroundColor(nil)
         }
     }
 

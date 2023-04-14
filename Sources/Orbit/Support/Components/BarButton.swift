@@ -90,11 +90,9 @@ struct BarButtonPreviews: PreviewProvider {
                     leading: HStack(spacing: 0) {
                         Group {
                             BarButton(.grid, alignment: .leading, action: {})
-                            BarButton(.questionCircle, action: {})
-                                .foregroundColor(.blueDark)
+                            BarButton(.symbol(.questionCircle, color: .blueDark), action: {})
                             BarButton(.symbol(.questionCircle, color: .redNormal), action: {})
-                            BarButton(.sfSymbol("questionmark.circle.fill"), size: .normal, action: {})
-                                .foregroundColor(.greenDark)
+                            BarButton(.sfSymbol("questionmark.circle.fill", color: .greenDark), size: .normal, action: {})
                             BarButton(.countryFlag("cz"), action: {})
                         }
                         .border(.cloudNormal.opacity(0.4))
@@ -112,7 +110,6 @@ struct BarButtonPreviews: PreviewProvider {
                             BarButton(.shareIos, action: {})
                             BarButton(.grid, alignment: .trailing, action: {})
                         }
-                        .foregroundColor(.inkDark)
                         .border(.cloudNormal.opacity(0.4))
                     }
                 )

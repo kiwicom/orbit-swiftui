@@ -36,6 +36,7 @@ public struct Select: View {
                     HStack(spacing: 0) {
                         buttonLabel
                             .padding(.leading, leadingPadding)
+                            .padding(.trailing, trailingPadding)
                             .padding(.vertical, verticalTextPadding)
 
                         TextStrut()
@@ -89,8 +90,16 @@ public struct Select: View {
         isPrefixEmpty ? .small : 0
     }
 
+    var trailingPadding: CGFloat {
+        isSuffixEmpty ? .small : 0
+    }
+
     var isPrefixEmpty: Bool {
         prefix?.isEmpty ?? true
+    }
+
+    var isSuffixEmpty: Bool {
+        suffix?.isEmpty ?? true
     }
 }
 
@@ -103,7 +112,7 @@ public extension Select {
         prefix: Icon.Content? = nil,
         value: String?,
         prompt: String = "",
-        suffix: Icon.Content? = nil,
+        suffix: Icon.Content? = .chevronDown,
         state: InputState = .default,
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
@@ -150,10 +159,14 @@ struct SelectPreviews: PreviewProvider {
     }
 
     static var idealSize: some View {
-        Select("Ideal size", prefix: .grid, value: InputFieldPreviews.value, action: {})
-            .idealSize()
-            .padding(.medium)
-            .previewDisplayName()
+        VStack(spacing: .medium) {
+            Select("Ideal size", prefix: .grid, value: InputFieldPreviews.value, action: {})
+            Select("Ideal size", prefix: .grid, value: InputFieldPreviews.value, suffix: nil, action: {})
+            Select("Ideal size", value: InputFieldPreviews.value, suffix: nil, action: {})
+        }
+        .idealSize()
+        .padding(.medium)
+        .previewDisplayName()
     }
 
     static var sizing: some View {

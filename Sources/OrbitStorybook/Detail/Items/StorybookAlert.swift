@@ -103,11 +103,11 @@ struct StorybookAlert {
         }
     }
 
-    static func alert(_ title: String, status: Status, icon: Icon.Symbol, isSuppressed: Bool) -> some View {
+    static func alert(_ title: String, status: Status, icon: Icon.Symbol?, isSuppressed: Bool) -> some View {
         Alert(
             title,
             description: description,
-            icon: .symbol(icon),
+            icon: icon.map { Icon.Content.symbol($0) },
             buttons: primaryAndSecondaryConfiguration,
             style: .status(status, isSubtle: isSuppressed)
         )
@@ -115,10 +115,10 @@ struct StorybookAlert {
 
     static func alerts(showIcons: Bool, isSuppressed: Bool) -> some View {
         VStack(spacing: .medium) {
-            alert("Informational message", status: .info, icon: showIcons ? .informationCircle : .none, isSuppressed: isSuppressed)
-            alert("Success message", status: .success, icon: showIcons ? .checkCircle : .none, isSuppressed: isSuppressed)
-            alert("Warning message", status: .warning, icon: showIcons ? .alertCircle : .none, isSuppressed: isSuppressed)
-            alert("Critical message", status: .critical, icon: showIcons ? .alertCircle : .none, isSuppressed: isSuppressed)
+            alert("Informational message", status: .info, icon: showIcons ? .informationCircle : nil, isSuppressed: isSuppressed)
+            alert("Success message", status: .success, icon: showIcons ? .checkCircle : nil, isSuppressed: isSuppressed)
+            alert("Warning message", status: .warning, icon: showIcons ? .alertCircle : nil, isSuppressed: isSuppressed)
+            alert("Critical message", status: .critical, icon: showIcons ? .alertCircle : nil, isSuppressed: isSuppressed)
         }
     }
 

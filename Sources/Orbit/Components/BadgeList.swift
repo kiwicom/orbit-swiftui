@@ -33,8 +33,10 @@ public struct BadgeList: View {
     }
 
     @ViewBuilder var badgeBackground: some View {
-        backgroundColor
-            .clipShape(Circle())
+        if isIconEmpty == false, icon != .transparent {
+            backgroundColor
+                .clipShape(Circle())
+        }
     }
 
     public var iconColor: Color {
@@ -186,6 +188,7 @@ struct BadgeListPreviews: PreviewProvider {
             BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", icon: .countryFlag("cz"), style: .status(.critical))
             BadgeList("This is simple <ref>BadgeList</ref> item with custom image", icon: .image(.orbit(.facebook)), style: .status(.success))
             BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color", labelColor: .custom(.blueDark))
+            BadgeList("This is <ref>BadgeList</ref> item with transparent icon and custom color", icon: .transparent, labelColor: .custom(.blueDark))
             BadgeList("This is a <ref>BadgeList</ref> with <strong>status</strong> override", icon: .sfSymbol("info.circle.fill"), style: .status(nil))
         }
         .status(.success)

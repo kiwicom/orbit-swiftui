@@ -116,6 +116,8 @@ public struct InputField: View {
             BarButton(isSecureTextRedacted ? .visibility : .visibilityOff, size: .normal) {
                 isSecureTextRedacted.toggle()
             }
+            .padding(.leading, .xSmall)
+            .padding(.trailing, isSuffixEmpty ? .xxSmall : 0)
             .accessibility(.inputFieldPasswordToggle)
         }
     }
@@ -146,7 +148,11 @@ public struct InputField: View {
     }
 
     private var trailingPadding: CGFloat {
-        suffix == .none ? .small : 0
+        isSuffixEmpty ? .small : 0
+    }
+
+    private var isSuffixEmpty: Bool {
+        suffix?.isEmpty ?? true
     }
 }
 
@@ -260,6 +266,7 @@ struct InputFieldPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            fixedSize
             styles
             sizing
             password
@@ -286,6 +293,29 @@ struct InputFieldPreviews: PreviewProvider {
                 InputField("Secure", value: state, prefix: .grid, prompt: prompt, state: .default, isSecure: true)
             }
         }
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
+    static var fixedSize: some View {
+        VStack(spacing: .medium) {
+            StateWrapper("Long value") { state in
+                InputField(label, value: state, prompt: prompt, state: .default)
+            }
+            StateWrapper("") { state in
+                InputField(label, value: state, prompt: prompt, state: .default)
+            }
+            StateWrapper(value) { state in
+                InputField(label, value: state, prefix: .grid, suffix: .grid, prompt: prompt, state: .default)
+            }
+            StateWrapper("") { state in
+                InputField(label, value: state, prefix: .grid, suffix: .grid, prompt: prompt, state: .default)
+            }
+            StateWrapper(value) { state in
+                InputField("Secure", value: state, prefix: .grid, prompt: prompt, state: .default, isSecure: true)
+            }
+        }
+        .frame(width: 80)
         .padding(.medium)
         .previewDisplayName()
     }

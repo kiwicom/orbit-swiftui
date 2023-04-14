@@ -23,6 +23,7 @@ public struct ButtonLink: View {
                 label: {
                     HStack(spacing: .xSmall) {
                         Icon(icon)
+                            .foregroundColor(nil)
                             .fontWeight(.medium)
 
                         Text(label)

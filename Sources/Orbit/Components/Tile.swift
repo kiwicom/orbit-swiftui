@@ -68,7 +68,6 @@ public struct Tile<Content: View>: View {
         if isHeaderEmpty == false {
             HStack(alignment: .top, spacing: 0) {
                 Icon(icon, size: titleStyle.iconSize)
-                    .foregroundColor(.inkDark)
                     .padding(.trailing, .xSmall)
                     .accessibility(.tileIcon)
 

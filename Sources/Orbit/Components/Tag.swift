@@ -33,6 +33,7 @@ public struct Tag: View {
 
                         HStack(spacing: 6) {
                             Icon(icon, size: Text.Size.normal.iconSize)
+                                .foregroundColor(nil)
                                 .fontWeight(.medium)
                             
                             Text(label)

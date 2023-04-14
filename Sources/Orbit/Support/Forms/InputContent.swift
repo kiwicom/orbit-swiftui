@@ -45,7 +45,8 @@ struct InputContent<Content: View>: View {
     @ViewBuilder var prefixIcon: some View {
         Icon(prefix)
             .foregroundColor(prefixColor)
-            .padding(.horizontal, .xSmall)
+            .padding(.leading, .small)
+            .padding(.trailing, .xSmall)
             .padding(.vertical, verticalPadding)
             .accessibility(prefixAccessibilityID)
             // The component should expose the label as a part of the field primary input or action
@@ -64,10 +65,12 @@ struct InputContent<Content: View>: View {
                 BarButton(suffix, size: .normal) {
                     suffixAction()
                 }
+                .padding(.trailing, .xxSmall)
                 .accessibility(addTraits: .isButton)
             } else {
                 Icon(suffix)
-                    .padding(.horizontal, .xSmall)
+                    .padding(.leading, .xSmall)
+                    .padding(.trailing, .small)
                     .padding(.vertical, verticalPadding)
                     // The component should expose the label as a part of the field primary input or action
                     .accessibility(hidden: true)

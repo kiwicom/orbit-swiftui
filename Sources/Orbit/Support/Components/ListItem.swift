@@ -22,13 +22,12 @@ public struct ListItem: View {
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: spacing) {
             Icon(icon, size: iconSize ?? size.iconSize)
-                .foregroundColor(nil)
+                .foregroundColor(style.textColor)
 
             Text(text, size: size)
-                .foregroundColor(nil)
+                .foregroundColor(style.textColor)
                 .fontWeight(style.weight)
         }
-        .foregroundColor(style.textColor)
         .padding(.leading, Self.defaultSpacing - spacing)
     }
 }

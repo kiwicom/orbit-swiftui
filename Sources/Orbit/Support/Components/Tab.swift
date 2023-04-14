@@ -13,6 +13,7 @@ public struct Tab: View {
         // FIXME: Convert to Button with .title4 style for a background touch feedback
         HStack(spacing: .xSmall) {
             Icon(icon)
+                .foregroundColor(nil)
                 .fontWeight(.medium)
             
             Text(label)

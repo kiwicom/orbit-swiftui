@@ -19,6 +19,7 @@ public struct Badge: View {
         if isEmpty == false {
             HStack(spacing: .xxSmall) {
                 Icon(icon, size: .small)
+                    .foregroundColor(nil)
                     .fontWeight(.medium)
 
                 Text(

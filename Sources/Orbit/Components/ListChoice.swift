@@ -79,7 +79,6 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
         if isHeaderEmpty == false {
             HStack(alignment: .top, spacing: .xSmall) {
                 Icon(icon)
-                    .foregroundColor(.inkDark)
                     .accessibility(.listChoiceIcon)
                 
                 if isHeaderTextEmpty == false {
