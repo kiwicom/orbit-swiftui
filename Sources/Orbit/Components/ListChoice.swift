@@ -78,7 +78,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     @ViewBuilder var headerTexts: some View {
         if isHeaderEmpty == false {
             HStack(alignment: .top, spacing: .xSmall) {
-                Icon(content: icon)
+                Icon(icon)
                     .foregroundColor(.inkDark)
                     .accessibility(.listChoiceIcon)
                 
@@ -116,7 +116,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
             case .radio(let isChecked, let state):
                 Radio(state: state, isChecked: .constant(isChecked))
             case .icon(let content):
-                Icon(content: content)
+                Icon(content)
         }
     }
     

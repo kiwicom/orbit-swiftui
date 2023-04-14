@@ -43,7 +43,7 @@ struct InputContent<Content: View>: View {
     }
 
     @ViewBuilder var prefixIcon: some View {
-        Icon(content: prefix)
+        Icon(prefix)
             .foregroundColor(prefixColor)
             .padding(.horizontal, .xSmall)
             .padding(.vertical, verticalPadding)
@@ -66,7 +66,7 @@ struct InputContent<Content: View>: View {
                 }
                 .accessibility(addTraits: .isButton)
             } else {
-                Icon(content: suffix)
+                Icon(suffix)
                     .padding(.horizontal, .xSmall)
                     .padding(.vertical, verticalPadding)
                     // The component should expose the label as a part of the field primary input or action

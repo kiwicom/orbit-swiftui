@@ -22,7 +22,7 @@ public struct ButtonLink: View {
                 },
                 label: {
                     HStack(spacing: .xSmall) {
-                        Icon(content: icon)
+                        Icon(icon)
                             .fontWeight(.medium)
 
                         Text(label)

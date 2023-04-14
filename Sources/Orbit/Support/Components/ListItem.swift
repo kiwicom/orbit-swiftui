@@ -21,7 +21,7 @@ public struct ListItem: View {
 
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: spacing) {
-            Icon(content: icon, size: iconSize ?? size.iconSize)
+            Icon(icon, size: iconSize ?? size.iconSize)
                 .foregroundColor(nil)
 
             Text(text, size: size)

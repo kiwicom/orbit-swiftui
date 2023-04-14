@@ -67,7 +67,7 @@ public struct Tile<Content: View>: View {
     @ViewBuilder var header: some View {
         if isHeaderEmpty == false {
             HStack(alignment: .top, spacing: 0) {
-                Icon(content: icon, size: titleStyle.iconSize)
+                Icon(icon, size: titleStyle.iconSize)
                     .foregroundColor(.inkDark)
                     .padding(.trailing, .xSmall)
                     .accessibility(.tileIcon)
@@ -116,7 +116,7 @@ public struct Tile<Content: View>: View {
             case .none, .buttonLink:
                 EmptyView()
             case .icon(let icon, _):
-                Icon(content: icon)
+                Icon(icon)
                     .foregroundColor(.inkNormal)
                     .padding(.leading, .xSmall)
                     .accessibility(.tileDisclosureIcon)

@@ -18,7 +18,7 @@ public struct Badge: View {
     public var body: some View {
         if isEmpty == false {
             HStack(spacing: .xxSmall) {
-                Icon(content: icon, size: .small)
+                Icon(icon, size: .small)
                     .fontWeight(.medium)
 
                 Text(

@@ -91,7 +91,7 @@ public struct Alert<Content: View>: View {
     }
 
     @ViewBuilder var iconContent: some View {
-        Icon(content: icon)
+        Icon(icon)
             .foregroundColor(foregroundColor)
             .accessibility(.alertIcon)
     }

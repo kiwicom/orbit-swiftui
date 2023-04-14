@@ -10,10 +10,10 @@ public struct Icon: View, TextBuildable {
     /// Approximate Orbit icon symbol baseline.
     public static let symbolBaseline: CGFloat = 0.77
 
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.sizeCategory) private var sizeCategory
 
-    let icon: Content?
-    let size: Size
+    private let icon: Content?
+    private let size: Size
 
     // Builder properties
     var baselineOffset: CGFloat?
@@ -120,7 +120,7 @@ public extension Icon {
     ///
     /// - Parameters:
     ///     - content: Icon content. Can optionally include the color override that has a priority over the `.foregroundColor` modifier.
-    init(content: Icon.Content?, size: Size = .normal) {
+    init(_ content: Icon.Content?, size: Size = .normal) {
         self.icon = content
         self.size = size
 
@@ -128,18 +128,10 @@ public extension Icon {
         self.foregroundColor = .inkDark
     }
 
-    /// Creates Orbit Icon component for provided Orbit icon symbol with specified color.
-    init(_ symbol: Icon.Symbol, size: Size = .normal) {
-        self.init(
-            content: .symbol(symbol, color: nil),
-            size: size
-        )
-    }
-
     /// Creates Orbit Icon component for provided Image.
     init(_ image: Image, size: Size = .normal) {
         self.init(
-            content: .image(image, tint: nil),
+            .image(image, tint: nil),
             size: size
         )
     }
@@ -147,7 +139,7 @@ public extension Icon {
     /// Creates Orbit Icon component for provided SF Symbol with specified color.
     init(_ systemName: String, size: Size = .normal) {
         self.init(
-            content: .sfSymbol(systemName, color: nil),
+            .sfSymbol(systemName, color: nil),
             size: size
         )
     }
@@ -157,7 +149,7 @@ public extension Icon {
 public extension Icon {
 
     /// Defines icon content for use in other components.
-    enum Content: Equatable {
+    enum Content: Equatable, Hashable {
         /// Orbit transparent icon placeholder.
         case transparent
         /// Orbit skeleton loading icon placeholder.
@@ -188,6 +180,15 @@ public extension Icon {
                 case .image:                            return ""
                 case .countryFlag(let countryCode):     return countryCode.uppercased()
                 case .sfSymbol(let sfSymbol, _):        return sfSymbol
+            }
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            switch self {
+                case .transparent, .skeleton, .image:   break
+                case .symbol(let symbol, _):            hasher.combine(symbol)
+                case .countryFlag(let countryCode):     hasher.combine(countryCode)
+                case .sfSymbol(let sfSymbol, _):        hasher.combine(sfSymbol)
             }
         }
     }
@@ -490,8 +491,8 @@ struct IconPreviews: PreviewProvider {
                             .baselineOffset(.xxxSmall)
                     }
 
-                    Icon(content: .countryFlag("us"), size: .small)
-                    Icon(content: .countryFlag("us"), size: .small)
+                    Icon(.countryFlag("us"), size: .small)
+                    Icon(.countryFlag("us"), size: .small)
                         .baselineOffset(.xxxSmall)
                 }
                 .border(.cloudLightActive, width: .hairline)
@@ -547,7 +548,7 @@ struct IconPreviews: PreviewProvider {
                 Icon(.grid)
                     .foregroundColor(nil)
                 Icon(.grid)
-                Icon(content: .symbol(.grid))
+                Icon(.symbol(.grid))
                     .foregroundColor(nil)
             }
 
@@ -583,8 +584,8 @@ struct IconPreviews: PreviewProvider {
             ForEach(flippableSymbols, id: \.value) { symbol in
                 HStack {
                     Text(String(describing: symbol), size: .small)
-                    Icon(symbol)
-                    Icon(symbol)
+                    Icon(.symbol(symbol))
+                    Icon(.symbol(symbol))
                         .environment(\.layoutDirection, .rightToLeft)
                 }
             }
@@ -624,9 +625,9 @@ struct IconPreviews: PreviewProvider {
         HStack(spacing: .xSmall) {
             HStack(alignment: alignment, spacing: .xxSmall) {
                 Group {
-                    Icon(content: .countryFlag("us"), size: size)
+                    Icon(.countryFlag("us"), size: size)
                     Icon(.orbit(.facebook), size: size)
-                    Icon(content: .sfSymbol(sfSymbol), size: size)
+                    Icon(.sfSymbol(sfSymbol), size: size)
                     Icon(.informationCircle, size: size)
                     content()
                 }

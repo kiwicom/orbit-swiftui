@@ -12,7 +12,7 @@ public struct StepperButton: View {
     
     public var body: some View {
         SwiftUI.Button(action: action) {
-            Icon(icon)
+            Icon(.symbol(icon))
                 .foregroundColor(color)
         }
         .frame(width: size, height: size)

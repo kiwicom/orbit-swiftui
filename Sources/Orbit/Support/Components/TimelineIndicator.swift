@@ -72,7 +72,7 @@ struct TimelineIndicator: View {
 
                 }
             case .present(.warning), .present(.critical), .present(.success), .past:
-                Icon(content: type.icon, size: .small)
+                Icon(type.icon, size: .small)
                     .foregroundColor(type.color)
                     .background(Circle().fill(Color.whiteNormal).padding(2))
         }

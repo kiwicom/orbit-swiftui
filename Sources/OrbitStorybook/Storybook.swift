@@ -116,7 +116,7 @@ public struct Storybook: View {
 
     @ViewBuilder func tileContent(_ item: Item) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 0) {
-            Icon(content: item.tabs.isEmpty ? .timelapse : .sfSymbol(item.sfSymbol), size: .small)
+            Icon(item.tabs.isEmpty ? .timelapse : .sfSymbol(item.sfSymbol), size: .small)
                 .padding(.trailing, .xSmall)
             Heading(String(describing: item).titleCased, style: .title6)
             Spacer(minLength: 0)

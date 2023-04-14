@@ -81,7 +81,7 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
             switch alignment {
                 case .default:
                     HStack(alignment: .top, spacing: 0) {
-                        Icon(content: icon, size: titleStyle.iconSize)
+                        Icon(icon, size: titleStyle.iconSize)
                             .foregroundColor(.inkDark)
                             .padding(.trailing, .xSmall)
                             .accessibility(.choiceTileIcon)
@@ -108,7 +108,7 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
                 case .center:
                     VStack(spacing: .xxSmall) {
                         if illustration == .none {
-                            Icon(content: icon, size: titleStyle.iconSize)
+                            Icon(icon, size: titleStyle.iconSize)
                                 .padding(.bottom, .xxSmall)
                         } else {
                             Illustration(illustration, layout: .resizeable)

@@ -114,24 +114,24 @@ struct StorybookIcon {
                     Icon(.grid)
                     Icon(.grid, color: .blueNormal)
                     Icon(.grid, color: nil)
-                    Icon(content: .grid)
-                    Icon(content: .symbol(.grid, color: nil))
+                    Icon(.grid)
+                    Icon(.symbol(.grid, color: nil))
                 }
 
                 HStack(alignment: .firstTextBaseline) {
                     Icon(sfSymbol: sfSymbol)
                     Icon(sfSymbol: sfSymbol, color: .blueNormal)
                     Icon(sfSymbol: sfSymbol, color: nil)
-                    Icon(content: .sfSymbol(sfSymbol))
-                    Icon(content: .sfSymbol(sfSymbol, color: nil))
+                    Icon(.sfSymbol(sfSymbol))
+                    Icon(.sfSymbol(sfSymbol, color: nil))
                 }
 
                 HStack(alignment: .firstTextBaseline) {
                     Icon(image: .orbit(.navigateClose))
                     Icon(image: .orbit(.navigateClose), tint: .blueNormal)
                     Icon(image: .orbit(.navigateClose), tint: nil)
-                    Icon(content: .image(.orbit(.navigateClose)))
-                    Icon(content: .image(.orbit(.navigateClose), tint: nil))
+                    Icon(.image(.orbit(.navigateClose)))
+                    Icon(.image(.orbit(.navigateClose), tint: nil))
                 }
             }
             .foregroundColor(.greenNormalHover)

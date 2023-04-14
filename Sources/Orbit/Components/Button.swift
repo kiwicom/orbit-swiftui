@@ -31,7 +31,7 @@ public struct Button: View {
                     }
 
                     HStack(spacing: .xSmall) {
-                        Icon(content: icon, size: size.textSize.iconSize)
+                        Icon(icon, size: size.textSize.iconSize)
                             .foregroundColor(foregroundColor)
                         textWrapper
                     }
@@ -40,7 +40,7 @@ public struct Button: View {
                         Spacer(minLength: 0)
                     }
 
-                    Icon(content: disclosureIcon, size: size.textSize.iconSize)
+                    Icon(disclosureIcon, size: size.textSize.iconSize)
                         .foregroundColor(foregroundColor)
                 }
                 .padding(.vertical, size.verticalPadding)

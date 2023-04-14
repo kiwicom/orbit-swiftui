@@ -13,7 +13,7 @@ public struct BarButton: View {
             HapticsProvider.sendHapticFeedback(.light(0.5))
             action()
         } label: {
-            Icon(content: content, size: size)
+            Icon(content, size: size)
                 .padding(.vertical, .xSmall)
                 .padding(horizontalEdges, .xSmall)
                 .contentShape(Rectangle())
