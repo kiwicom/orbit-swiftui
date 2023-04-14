@@ -17,25 +17,25 @@ public struct InputField: View {
     @State private var isEditing: Bool = false
     @State private var isSecureTextRedacted: Bool = true
 
-    private var label: String = ""
+    private var label: String
     @Binding private var value: String
-    private var prefix: Icon.Content = .none
-    private var suffix: Icon.Content = .none
-    private var prompt: String = ""
-    private var state: InputState = .default
-    private var style: InputFieldStyle = .default
+    private var prefix: Icon.Content
+    private var suffix: Icon.Content
+    private var prompt: String
+    private var state: InputState
+    private var style: InputFieldStyle
 
-    private var isSecure: Bool = false
+    private var isSecure: Bool
     private var passwordStrength: PasswordStrengthIndicator.PasswordStrength?
-    private var message: Message? = nil
+    private var message: Message?
     @Binding private var messageHeight: CGFloat
-    private var suffixAction: (() -> Void)? = nil
+    private var suffixAction: (() -> Void)?
 
     // Builder properties (keyboard related)
     private var autocapitalizationType: UITextAutocapitalizationType = .none
     private var isAutocorrectionDisabled: Bool = true
     private var keyboardType: UIKeyboardType = .default
-    private var textContentType: UITextContentType? = nil
+    private var textContentType: UITextContentType?
 
     public var body: some View {
         FieldWrapper(
