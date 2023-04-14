@@ -3,8 +3,8 @@ import SwiftUI
 /// Content for inputs that share common layout with a prefix and suffix.
 struct InputContent<Content: View>: View {
 
-    @Environment(\.idealSize) var idealSize
-    @Environment(\.isEnabled) var isEnabled
+    @Environment(\.idealSize) private var idealSize
+    @Environment(\.isEnabled) private var isEnabled
 
     public let verticalPadding: CGFloat = .small // = 44 @ normal text size
 
@@ -30,9 +30,12 @@ struct InputContent<Content: View>: View {
             }
 
             if let suffixAction = suffixAction {
-                suffixIcon
-                    .onTapGesture(perform: suffixAction)
-                    .accessibility(addTraits: .isButton)
+                BarButton(content: suffix, size: .normal) {
+                    suffixAction()
+                }
+                .foregroundColor(suffixColor)
+                .accessibility(addTraits: .isButton)
+                .accessibility(suffixAccessibilityID)
             } else {
                 suffixIcon
             }

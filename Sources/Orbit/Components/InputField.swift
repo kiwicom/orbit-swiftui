@@ -113,15 +113,10 @@ public struct InputField: View {
 
     @ViewBuilder private var secureTextRedactedButton: some View {
         if isSecure, value.description.isEmpty == false, isEnabled {
-            Icon(isSecureTextRedacted ? .visibility : .visibilityOff)
-                .padding(.horizontal, .small)
-                .padding(.vertical, .xSmall + 3) // = 44 height @ normal size
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    isSecureTextRedacted.toggle()
-                }
-                .accessibility(addTraits: .isButton)
-                .accessibility(.inputFieldPasswordToggle)
+            BarButton(isSecureTextRedacted ? .visibility : .visibilityOff, size: .normal) {
+                isSecureTextRedacted.toggle()
+            }
+            .accessibility(.inputFieldPasswordToggle)
         }
     }
 
