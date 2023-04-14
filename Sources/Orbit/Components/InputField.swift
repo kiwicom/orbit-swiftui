@@ -68,11 +68,6 @@ public struct InputField: View {
                     .padding(.top, .xxSmall)
             }
         }
-        .accessibilityElement(children: .ignore)
-        .accessibility(label: .init(label))
-        .accessibility(value: .init(value.description))
-        .accessibility(hint: .init(messageDescription.isEmpty ? prompt : messageDescription))
-        .accessibility(addTraits: .isButton)
     }
 
     @ViewBuilder private var textField: some View {
@@ -91,6 +86,11 @@ public struct InputField: View {
         )
         .lineLimit(1)
         .accentColor(.blueNormal)
+        .accessibility(
+            label: .init(
+                label + (prefix.accessibilityLabel.isEmpty ? "" : ", \(prefix.accessibilityLabel)")
+            )
+        )
         .accessibility(.inputFieldValue)
         .inputFieldBeginEditingAction {
             isEditing = true
