@@ -23,6 +23,7 @@ public struct Icon: View, TextBuildable {
     public var body: some View {
         if content.isEmpty == false {
             iconContent
+                .accessibility(label: .init(content.accessibilityLabel))
         }
     }
 
@@ -199,6 +200,16 @@ public extension Icon {
                 case .image:                            return false
                 case .countryFlag(let countryCode):     return countryCode.isEmpty
                 case .sfSymbol(let sfSymbol, _):        return sfSymbol.isEmpty
+            }
+        }
+
+        public var accessibilityLabel: String {
+            switch self {
+                case .symbol(.none, _):                 return ""
+                case .symbol(let symbol, _):            return String(describing: symbol).titleCased
+                case .image:                            return ""
+                case .countryFlag(let countryCode):     return countryCode.uppercased()
+                case .sfSymbol(let sfSymbol, _):        return sfSymbol
             }
         }
     }

@@ -9,7 +9,7 @@ struct StorybookSelect {
         <strong>Label</strong> with a \(String(repeating: "very ", count: 20))long \
         <ref>multiline</ref> label and <applink1>TextLink</applink1>
         """
-    static let placeholder = "Placeholder"
+    static let prompt = "Placeholder"
     static let value = "Value"
     static let helpMessage = "Help message"
     static let errorMessage = "Error message"
@@ -32,9 +32,9 @@ struct StorybookSelect {
             Group {
                 Select("Label", value: "Value", action: {})
                 Select("", prefix: .grid, value: "Value", action: {})
-                Select("", prefix: .airplane, value: nil, placeholder: "Please select", action: {})
+                Select("", prefix: .airplane, value: nil, prompt: "Please select", action: {})
                 Select("Label (Empty Value)", prefix: .airplane, value: "", action: {})
-                Select("Label (No Value)", prefix: .airplane, value: nil, placeholder: "Please select", action: {})
+                Select("Label (No Value)", prefix: .airplane, value: nil, prompt: "Please select", action: {})
                 Select("Label", prefix: .phone, value: "Value", action: {})
                 Select("Label", prefix: .countryFlag("us"), value: "Value", action: {})
             }
@@ -47,7 +47,7 @@ struct StorybookSelect {
                     "Label (Disabled)",
                     prefix: .airplane,
                     value: nil,
-                    placeholder: "Please select",
+                    prompt: "Please select",
                     action: {}
                 )
                 .disabled(true)
@@ -57,7 +57,7 @@ struct StorybookSelect {
                     "Label (Modified)",
                     prefix: .airplane,
                     value: nil,
-                    placeholder: "Please select",
+                    prompt: "Please select",
                     state: .modified,
                     action: {}
                 )
@@ -84,7 +84,7 @@ struct StorybookSelect {
     }
 
     static func select(value: String, message: Message? = nil) -> some View {
-        Select(label, prefix: .grid, value: value, placeholder: placeholder, message: message, action: {})
+        Select(label, prefix: .grid, value: value, prompt: prompt, message: message, action: {})
     }
 }
 

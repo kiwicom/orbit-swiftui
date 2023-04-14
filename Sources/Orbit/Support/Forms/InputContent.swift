@@ -3,8 +3,8 @@ import SwiftUI
 /// Content for inputs that share common layout with a prefix and suffix.
 struct InputContent<Content: View>: View {
 
-    @Environment(\.idealSize) var idealSize
-    @Environment(\.isEnabled) var isEnabled
+    @Environment(\.idealSize) private var idealSize
+    @Environment(\.isEnabled) private var isEnabled
 
     public let verticalPadding: CGFloat = .small // = 44 @ normal text size
 
@@ -29,13 +29,7 @@ struct InputContent<Content: View>: View {
                 Spacer(minLength: 0)
             }
 
-            if let suffixAction = suffixAction {
-                suffixIcon
-                    .onTapGesture(perform: suffixAction)
-                    .accessibility(addTraits: .isButton)
-            } else {
-                suffixIcon
-            }
+            suffixIcon
 
             TextStrut()
                 .padding(.vertical, verticalPadding)
@@ -54,15 +48,29 @@ struct InputContent<Content: View>: View {
             .padding(.horizontal, .xSmall)
             .padding(.vertical, verticalPadding)
             .accessibility(prefixAccessibilityID)
+            // The component should expose the label as a part of the field primary input or action
+            .accessibility(hidden: true)
     }
 
     @ViewBuilder var suffixIcon: some View {
-        Icon(content: suffix)
+        suffixContent
             .foregroundColor(suffixColor)
-            .padding(.horizontal, .xSmall)
-            .padding(.vertical, verticalPadding)
-            .contentShape(Rectangle())
             .accessibility(suffixAccessibilityID)
+    }
+
+    @ViewBuilder var suffixContent: some View {
+        if let suffixAction = suffixAction {
+            BarButton(content: suffix, size: .normal) {
+                suffixAction()
+            }
+            .accessibility(addTraits: .isButton)
+        } else {
+            Icon(content: suffix)
+                .padding(.horizontal, .xSmall)
+                .padding(.vertical, verticalPadding)
+                // The component should expose the label as a part of the field primary input or action
+                .accessibility(hidden: true)
+        }
     }
 
     @ViewBuilder var border: some View {
@@ -101,7 +109,7 @@ struct InputContent<Content: View>: View {
 
         switch state {
             case .modified:             return .blueDark
-            case .default:              return .inkNormal
+            case .default:              return .inkDark
         }
     }
 
@@ -130,8 +138,13 @@ struct InputContentPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        InputContent(prefix: .visa, suffix: .checkCircle, state: .default) {
-            EmptyView()
+        VStack(spacing: .medium) {
+            InputContent(prefix: .visa, suffix: .checkCircle, state: .default) {
+                EmptyView()
+            }
+            InputContent(prefix: .visa, suffix: .checkCircle, state: .default, suffixAction: {}) {
+                EmptyView()
+            }
         }
         .padding(.medium)
         .previewDisplayName()

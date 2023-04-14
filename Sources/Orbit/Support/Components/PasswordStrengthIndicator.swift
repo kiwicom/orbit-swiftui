@@ -8,7 +8,6 @@ public struct PasswordStrengthIndicator: View {
     public var body: some View {
         if text.isEmpty == false {
             HStack(spacing: .medium) {
-
                 indicator
 
                 Text(text, size: .small)
@@ -43,7 +42,6 @@ public struct PasswordStrengthIndicator: View {
 
     var text: String {
         switch passwordStrength {
-            case .empty:               return ""
             case .weak(let title):     return title
             case .medium(let title):   return title
             case .strong(let title):   return title
@@ -52,7 +50,6 @@ public struct PasswordStrengthIndicator: View {
 
     var spacers: Int {
         switch passwordStrength {
-            case .empty:    return 4
             case .weak:     return 3
             case .medium:   return 1
             case .strong:   return 0
@@ -61,7 +58,6 @@ public struct PasswordStrengthIndicator: View {
 
     var color: Color {
         switch passwordStrength {
-            case .empty:    return .clear
             case .weak:     return .redNormal
             case .medium:   return .orangeNormal
             case .strong:   return .greenNormal
@@ -77,7 +73,6 @@ public struct PasswordStrengthIndicator: View {
 public extension PasswordStrengthIndicator {
 
     enum PasswordStrength: Equatable {
-        case empty
         case weak(title: String)
         case medium(title: String)
         case strong(title: String)
@@ -87,7 +82,7 @@ public extension PasswordStrengthIndicator {
 // MARK: - Identifiers
 public extension AccessibilityID {
 
-    static let passwordStrengthIndicator    = Self(rawValue: "orbit.passwordstrengthindicator")
+    static let passwordStrengthIndicator = Self(rawValue: "orbit.passwordstrengthindicator")
 }
 
 // MARK: - Previews
@@ -95,14 +90,23 @@ struct PasswordStrengthIndicatorPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            PasswordStrengthIndicator(passwordStrength: .empty)
+            standalone
+            interactive
+        }
+        .previewLayout(.sizeThatFits)
+        .padding(.medium)
+    }
+
+    static var standalone: some View {
+        VStack(spacing: .medium) {
             PasswordStrengthIndicator(passwordStrength: .weak(title: "Weak"))
             PasswordStrengthIndicator(passwordStrength: .medium(title: "Medium"))
             PasswordStrengthIndicator(passwordStrength: .strong(title: "Strong"))
         }
-        .previewLayout(.sizeThatFits)
-        .padding()
+        .previewDisplayName()
+    }
 
+    static var interactive: some View {
         StateWrapper(PasswordStrengthIndicator.PasswordStrength.weak(title: "weak")) { strength in
             VStack {
                 PasswordStrengthIndicator(passwordStrength: strength.wrappedValue)
@@ -120,7 +124,6 @@ struct PasswordStrengthIndicatorPreviews: PreviewProvider {
                 }
             }
         }
-        .previewLayout(.sizeThatFits)
-        .padding()
+        .previewDisplayName()
     }
 }
