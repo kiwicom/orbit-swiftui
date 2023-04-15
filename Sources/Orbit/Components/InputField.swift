@@ -35,6 +35,7 @@ public struct InputField: View {
     private var autocapitalizationType: UITextAutocapitalizationType = .none
     private var isAutocorrectionDisabled: Bool = true
     private var keyboardType: UIKeyboardType = .default
+    private var returnKeyType: UIReturnKeyType = .default
     private var textContentType: UITextContentType?
 
     public var body: some View {
@@ -75,6 +76,7 @@ public struct InputField: View {
             value: $value,
             prompt: prompt,
             isSecureTextEntry: isSecure && isSecureTextRedacted,
+            returnKeyType: returnKeyType,
             isAutocorrectionDisabled: isAutocorrectionDisabled,
             keyboardType: keyboardType,
             textContentType: textContentType,
@@ -216,6 +218,11 @@ public extension InputField {
     /// Returns a modified Orbit InputField with provided content type.
     func textContentType(_ textContentType: UITextContentType?) -> Self {
         set(\.textContentType, to: textContentType)
+    }
+
+    /// Returns a modified Orbit InputField with provided keyboard return type.
+    func returnKeyType(_ returnKeyType: UIReturnKeyType) -> Self {
+        set(\.returnKeyType, to: returnKeyType)
     }
 }
 

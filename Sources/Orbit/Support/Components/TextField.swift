@@ -14,6 +14,7 @@ struct TextField: UIViewRepresentable {
     var isSecureTextEntry: Bool = false
 
     // Keyboard related
+    var returnKeyType: UIReturnKeyType = .default
     var isAutocorrectionDisabled: Bool = true
     var keyboardType: UIKeyboardType = .default
     var textContentType: UITextContentType?
@@ -43,6 +44,7 @@ struct TextField: UIViewRepresentable {
         uiView.isSecureTextEntry = isSecureTextEntry
 
         // Keyboard related
+        uiView.returnKeyType = returnKeyType
         uiView.autocorrectionType = isAutocorrectionDisabled ? .no : .default
         uiView.keyboardType = keyboardType
         uiView.textContentType = textContentType
