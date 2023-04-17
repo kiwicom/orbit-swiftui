@@ -18,17 +18,25 @@ public struct ListItem: View {
     private let size: Text.Size
     private let spacing: CGFloat
     private let style: ListItem.Style
+    private let isDefault: Bool
 
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: spacing) {
             Icon(icon, size: iconSize ?? size.iconSize)
                 .foregroundColor(style.textColor)
+                .padding(.leading, iconPadding)
 
             Text(text, size: size)
                 .foregroundColor(style.textColor)
                 .fontWeight(style.weight)
         }
         .padding(.leading, Self.defaultSpacing - spacing)
+    }
+
+    var iconPadding: CGFloat {
+        guard isDefault else { return 0 }
+
+        return sizeCategory.ratio * size.iconSize.value / 4
     }
 }
 
@@ -50,23 +58,23 @@ public extension ListItem {
         self.iconSize = iconSize
         self.spacing = spacing
         self.style = style
+        self.isDefault = false
     }
 
     /// Creates Orbit ListItem component with default appearance, using the `circleSmall` icon.
     init(
         _ text: String = "",
         size: Text.Size = .normal,
-        spacing: CGFloat = .xxxSmall,
+        spacing: CGFloat = .xxSmall,
         style: ListItem.Style = .primary
     ) {
-        self.init(
-            text,
-            icon: .symbol(.circleSmall),
-            size: size,
-            iconSize: .custom(size.value),
-            spacing: spacing,
-            style: style
-        )
+        self.text = text
+        self.icon = .symbol(.circleSmall)
+        self.size = size
+        self.iconSize = .custom(size.value)
+        self.spacing = spacing
+        self.style = style
+        self.isDefault = true
     }
 }
 
@@ -141,6 +149,9 @@ struct ListItemPreviews: PreviewProvider {
     
     static var mix: some View {
         List {
+            ListItem("ListItem", size: .xLarge)
+            ListItem("ListItem with custom icon", icon: .symbol(.check, color: .greenNormal), size: .xLarge)
+            ListItem("ListItem")
             ListItem("ListItem with custom icon", icon: .symbol(.check, color: .greenNormal))
             ListItem("ListItem with custom icon", icon: .check, spacing: .xxxSmall)
             ListItem("ListItem with SF Symbol", icon: .sfSymbol("info.circle.fill"))
