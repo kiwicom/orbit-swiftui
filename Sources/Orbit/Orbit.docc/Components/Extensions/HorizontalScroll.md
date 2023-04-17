@@ -10,4 +10,3 @@
 
 - ``HorizontalScrollReader``
 - ``HorizontalScrollItemWidth``
-- ``HorizontalScrollItemHeight``
