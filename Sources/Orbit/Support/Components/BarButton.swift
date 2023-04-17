@@ -105,7 +105,7 @@ struct BarButtonPreviews: PreviewProvider {
                                 BarButton(.sfSymbol("square.and.arrow.up"), size: .normal, action: {})
                                     .fontWeight(.medium)
                             } else {
-                                BarButton(.sfSymbol("square.and.arrow.up"), size: .normal, action: {})
+                                BarButton(.sfSymbol("square.and.arrow.up", weight: .medium), size: .normal, action: {})
                             }
                             BarButton(.shareIos, action: {})
                             BarButton(.grid, alignment: .trailing, action: {})

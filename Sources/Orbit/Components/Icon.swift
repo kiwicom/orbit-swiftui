@@ -61,10 +61,10 @@ public struct Icon: View, TextBuildable {
                     CountryFlag(countryCode, size: size)
                         .frame(height: dynamicSize)
                 }
-            case .sfSymbol(let systemName, let color):
+            case .sfSymbol(let systemName, let color, let weight):
                 foregroundColorWrapper(color: color) {
                     Image(systemName: systemName)
-                        .font(.system(size: sfSymbolDynamicSize, weight: fontWeight ?? .regular))
+                        .font(.system(size: sfSymbolDynamicSize, weight: weight ?? fontWeight ?? .regular))
                         .alignmentGuide(.firstTextBaseline) { $0[.firstTextBaseline] + resolvedBaselineOffset }
                         .alignmentGuide(.lastTextBaseline) { $0[.lastTextBaseline] + resolvedBaselineOffset }
                         .frame(height: dynamicSize)
@@ -161,14 +161,14 @@ public extension Icon {
         /// Orbit CountryFlag content, suitable for use as icon.
         case countryFlag(String)
         /// SF Symbol with optional color specified. If not specified, it can be overridden using `.foregroundColor()` modifier.
-        case sfSymbol(String, color: Color? = nil)
+        case sfSymbol(String, color: Color? = nil, weight: Font.Weight? = .regular)
 
         /// Specifies whether the item has a non-empty content.
         public var isEmpty: Bool {
             switch self {
                 case .symbol, .transparent, .skeleton, .image:  return false
                 case .countryFlag(let countryCode):             return countryCode.isEmpty
-                case .sfSymbol(let sfSymbol, _):                return sfSymbol.isEmpty
+                case .sfSymbol(let sfSymbol, _, _):             return sfSymbol.isEmpty
             }
         }
 
@@ -179,7 +179,7 @@ public extension Icon {
                 case .symbol(let symbol, _):            return String(describing: symbol).titleCased
                 case .image:                            return ""
                 case .countryFlag(let countryCode):     return countryCode.uppercased()
-                case .sfSymbol(let sfSymbol, _):        return sfSymbol
+                case .sfSymbol(let sfSymbol, _, _):     return sfSymbol
             }
         }
 
@@ -188,7 +188,7 @@ public extension Icon {
                 case .transparent, .skeleton, .image:   break
                 case .symbol(let symbol, _):            hasher.combine(symbol)
                 case .countryFlag(let countryCode):     hasher.combine(countryCode)
-                case .sfSymbol(let sfSymbol, _):        hasher.combine(sfSymbol)
+                case .sfSymbol(let sfSymbol, _, _):     hasher.combine(sfSymbol)
             }
         }
     }
@@ -277,8 +277,8 @@ extension Icon: TextRepresentable {
             case .countryFlag:
                 assertionFailure("text representation of countryFlag icon is not supported")
                 return nil
-            case .sfSymbol(let systemName, let color):
-                return sfSymbolWrapper(sizeCategory: sizeCategory) {
+            case .sfSymbol(let systemName, let color, let weight):
+                return sfSymbolWrapper(sizeCategory: sizeCategory, weight: weight) {
                     foregroundColorWrapper(color: color) {
                         SwiftUI.Text(Image(systemName: systemName))
                     }
@@ -331,11 +331,10 @@ extension Icon: TextRepresentable {
         }
     }
 
-    func sfSymbolWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+    func sfSymbolWrapper(sizeCategory: ContentSizeCategory, weight: Font.Weight?, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
         baselineWrapper {
             text()
-                .font(.system(size: sfSymbolSize * sizeCategory.ratio))
-                .fontWeight(fontWeight)
+                .fontWeight(weight ?? fontWeight)
         }
     }
 
