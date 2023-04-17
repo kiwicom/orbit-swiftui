@@ -38,7 +38,8 @@ public struct SocialButton: View {
                         Spacer(minLength: 0)
                     }
 
-                    Icon(.chevronForward, size: .large, color: nil)
+                    Icon(.chevronForward, size: .large)
+                        .foregroundColor(nil)
                 }
                 .foregroundColor(labelColor)
             }

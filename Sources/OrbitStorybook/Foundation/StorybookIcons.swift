@@ -3,7 +3,7 @@ import Orbit
 
 struct StorybookIcons {
 
-    static var icons: [Icon.Symbol] { Icon.Symbol.allCases.filter { $0 != .none} }
+    static var icons: [Icon.Symbol] { Icon.Symbol.allCases }
 
     @ViewBuilder static func storybook(filter: String = "") -> some View {
         LazyVStack(alignment: .leading, spacing: .xSmall) {
@@ -24,7 +24,7 @@ struct StorybookIcons {
     @ViewBuilder static func icon(index: Int, filter: String) -> some View {
         if let icon = iconSymbol(index: index, filter: filter) {
             VStack(spacing: .xxSmall) {
-                Icon(icon)
+                Icon(.symbol(icon))
                 
                 Text(String(describing: icon).titleCased, size: .custom(10), isSelectable: true)
                     .foregroundColor(.inkNormal)

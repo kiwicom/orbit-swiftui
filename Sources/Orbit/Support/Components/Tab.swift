@@ -6,13 +6,14 @@ import SwiftUI
 public struct Tab: View {
 
     let label: String
-    let iconContent: Icon.Content
+    let icon: Icon.Content?
     let style: TabStyle
 
     public var body: some View {
         // FIXME: Convert to Button with .title4 style for a background touch feedback
         HStack(spacing: .xSmall) {
-            Icon(content: iconContent)
+            Icon(icon)
+                .foregroundColor(nil)
                 .fontWeight(.medium)
             
             Text(label)
@@ -29,9 +30,9 @@ public struct Tab: View {
     }
 
     /// Creates Orbit Tab component, a building block for Tabs component.
-    public init(_ label: String, icon: Icon.Content = .none, style: TabStyle = .default) {
+    public init(_ label: String, icon: Icon.Content? = nil, style: TabStyle = .default) {
         self.label = label
-        self.iconContent = icon
+        self.icon = icon
         self.style = style
     }
 }

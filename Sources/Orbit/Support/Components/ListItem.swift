@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// One item of a list.
+/// One item in Orbit List component.
 ///
 /// - Related components
 ///   - ``List``
@@ -10,42 +10,33 @@ public struct ListItem: View {
 
     public static let defaultSpacing: CGFloat = .xSmall
 
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.sizeCategory) private var sizeCategory
 
-    let text: String
-    let iconContent: Icon.Content
-    let iconSize: Icon.Size?
-    let size: Text.Size
-    let spacing: CGFloat
-    let style: ListItem.Style
+    private let text: String
+    private let icon: Icon.Content?
+    private let iconSize: Icon.Size?
+    private let size: Text.Size
+    private let spacing: CGFloat
+    private let style: ListItem.Style
+    private let isDefault: Bool
 
     public var body: some View {
-        HStack(alignment: alignment, spacing: spacing) {
-            icon
-                .frame(width: dynamicIconSize, height: dynamicIconSize)
+        HStack(alignment: .firstTextBaseline, spacing: spacing) {
+            Icon(icon, size: iconSize ?? size.iconSize)
+                .foregroundColor(style.textColor)
+                .padding(.leading, iconPadding)
 
             Text(text, size: size)
-                .foregroundColor(nil)
+                .foregroundColor(style.textColor)
                 .fontWeight(style.weight)
         }
         .padding(.leading, Self.defaultSpacing - spacing)
-        .foregroundColor(style.textColor)
     }
 
-    @ViewBuilder var icon: some View {
-        if iconContent.isEmpty {
-            Color.clear
-        } else {
-            Icon(content: iconContent, size: iconSize ?? size.iconSize)
-        }
-    }
+    var iconPadding: CGFloat {
+        guard isDefault else { return 0 }
 
-    var dynamicIconSize: CGFloat {
-        size.iconSize.value * sizeCategory.ratio
-    }
-
-    var alignment: VerticalAlignment {
-        iconContent.isEmpty ? .top : .firstTextBaseline
+        return sizeCategory.ratio * size.iconSize.value / 4
     }
 }
 
@@ -55,35 +46,35 @@ public extension ListItem {
     /// Creates Orbit ListItem component using the provided icon.
     init(
         _ text: String = "",
-        icon: Icon.Content,
+        icon: Icon.Content?,
         size: Text.Size = .normal,
         iconSize: Icon.Size? = nil,
         spacing: CGFloat = .xSmall,
         style: ListItem.Style = .primary
     ) {
         self.text = text
-        self.iconContent = icon
+        self.icon = icon
         self.size = size
         self.iconSize = iconSize
         self.spacing = spacing
         self.style = style
+        self.isDefault = false
     }
 
     /// Creates Orbit ListItem component with default appearance, using the `circleSmall` icon.
     init(
         _ text: String = "",
         size: Text.Size = .normal,
-        spacing: CGFloat = .xxxSmall,
+        spacing: CGFloat = .xxSmall,
         style: ListItem.Style = .primary
     ) {
-        self.init(
-            text,
-            icon: .circleSmall,
-            size: size,
-            iconSize: .custom(size.value),
-            spacing: spacing,
-            style: style
-        )
+        self.text = text
+        self.icon = .symbol(.circleSmall)
+        self.size = size
+        self.iconSize = .custom(size.value)
+        self.spacing = spacing
+        self.style = style
+        self.isDefault = true
     }
 }
 
@@ -158,6 +149,9 @@ struct ListItemPreviews: PreviewProvider {
     
     static var mix: some View {
         List {
+            ListItem("ListItem", size: .xLarge)
+            ListItem("ListItem with custom icon", icon: .symbol(.check, color: .greenNormal), size: .xLarge)
+            ListItem("ListItem")
             ListItem("ListItem with custom icon", icon: .symbol(.check, color: .greenNormal))
             ListItem("ListItem with custom icon", icon: .check, spacing: .xxxSmall)
             ListItem("ListItem with SF Symbol", icon: .sfSymbol("info.circle.fill"))

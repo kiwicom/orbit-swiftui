@@ -51,25 +51,31 @@ struct StorybookIcon {
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
                     Text("Text", size: .small)
-                    Icon(sfSymbol: sfSymbol, size: .small, color: nil)
-                    Icon(sfSymbol: sfSymbol, size: .small, color: nil)
+                    Icon(sfSymbol, size: .small)
+                        .foregroundColor(nil)
+                    Icon(sfSymbol, size: .small)
+                        .foregroundColor(nil)
                         .baselineOffset(.xxxSmall)
 
-                    Icon(.informationCircle, size: .small, color: nil)
-                    Icon(.informationCircle, size: .small, color: nil)
+                    Icon(.informationCircle, size: .small)
+                        .foregroundColor(nil)
+                    Icon(.informationCircle, size: .small)
+                        .foregroundColor(nil)
                         .baselineOffset(.xxxSmall)
 
                     Group {
-                        Icon(image: .orbit(.navigateClose), size: .small, tint: nil)
-                        Icon(image: .orbit(.navigateClose), size: .small, tint: nil)
+                        Icon(.orbit(.navigateClose), size: .small)
+                            .foregroundColor(nil)
+                        Icon(.orbit(.navigateClose), size: .small)
+                            .foregroundColor(nil)
                             .baselineOffset(.xxxSmall)
-                        Icon(image: .orbit(.facebook), size: .small)
-                        Icon(image: .orbit(.facebook), size: .small)
+                        Icon(.orbit(.facebook), size: .small)
+                        Icon(.orbit(.facebook), size: .small)
                             .baselineOffset(.xxxSmall)
                     }
 
-                    Icon(countryCode: "us", size: .small)
-                    Icon(countryCode: "us", size: .small)
+                    Icon(.countryFlag("us"), size: .small)
+                    Icon(.countryFlag("us"), size: .small)
                         .baselineOffset(.xxxSmall)
                 }
                 .border(.cloudLightActive, width: .hairline)
@@ -85,19 +91,25 @@ struct StorybookIcon {
 
             (
                 Text("Text", size: .small)
-                + Icon(sfSymbol: sfSymbol, size: .small, color: nil)
-                + Icon(sfSymbol: sfSymbol, size: .small, color: nil)
+                + Icon(sfSymbol, size: .small)
+                    .foregroundColor(nil)
+                + Icon(sfSymbol, size: .small)
+                    .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
 
-                + Icon(.informationCircle, size: .small, color: nil)
-                + Icon(.informationCircle, size: .small, color: nil)
+                + Icon(.informationCircle, size: .small)
+                    .foregroundColor(nil)
+                + Icon(.informationCircle, size: .small)
+                    .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
 
-                + Icon(image: .orbit(.navigateClose), tint: nil)
-                + Icon(image: .orbit(.navigateClose), tint: nil)
+                + Icon(.orbit(.navigateClose))
+                    .foregroundColor(nil)
+                + Icon(.orbit(.navigateClose))
+                    .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
-                + Icon(image: .orbit(.facebook))
-                + Icon(image: .orbit(.facebook))
+                + Icon(.orbit(.facebook))
+                + Icon(.orbit(.facebook))
                     .baselineOffset(.xxxSmall)
             )
             .foregroundColor(.greenDark)
@@ -112,26 +124,38 @@ struct StorybookIcon {
             VStack(alignment: .leading, spacing: .small) {
                 HStack(alignment: .firstTextBaseline) {
                     Icon(.grid)
-                    Icon(.grid, color: .blueNormal)
-                    Icon(.grid, color: nil)
-                    Icon(content: .grid)
-                    Icon(content: .symbol(.grid, color: nil))
+                    Icon(.grid)
+                        .foregroundColor(.blueNormal)
+                    Icon(.grid)
+                        .foregroundColor(nil)
+                    Icon(.symbol(.grid))
+                        .foregroundColor(nil)
+                    Icon(.symbol(.grid, color: nil))
+                        .foregroundColor(nil)
                 }
 
                 HStack(alignment: .firstTextBaseline) {
-                    Icon(sfSymbol: sfSymbol)
-                    Icon(sfSymbol: sfSymbol, color: .blueNormal)
-                    Icon(sfSymbol: sfSymbol, color: nil)
-                    Icon(content: .sfSymbol(sfSymbol))
-                    Icon(content: .sfSymbol(sfSymbol, color: nil))
+                    Icon(sfSymbol)
+                    Icon(sfSymbol)
+                        .foregroundColor(.blueNormal)
+                    Icon(sfSymbol)
+                        .foregroundColor(nil)
+                    Icon(.sfSymbol(sfSymbol))
+                        .foregroundColor(nil)
+                    Icon(.sfSymbol(sfSymbol))
+                        .foregroundColor(nil)
                 }
 
                 HStack(alignment: .firstTextBaseline) {
-                    Icon(image: .orbit(.navigateClose))
-                    Icon(image: .orbit(.navigateClose), tint: .blueNormal)
-                    Icon(image: .orbit(.navigateClose), tint: nil)
-                    Icon(content: .image(.orbit(.navigateClose)))
-                    Icon(content: .image(.orbit(.navigateClose), tint: nil))
+                    Icon(.orbit(.navigateClose))
+                    Icon(.orbit(.navigateClose))
+                        .foregroundColor(.blueNormal)
+                    Icon(.orbit(.navigateClose))
+                        .foregroundColor(nil)
+                    Icon(.image(.orbit(.navigateClose)))
+                        .foregroundColor(nil)
+                    Icon(.image(.orbit(.navigateClose)))
+                        .foregroundColor(nil)
                 }
             }
             .foregroundColor(.greenNormalHover)
@@ -170,9 +194,9 @@ struct StorybookIcon {
         HStack(spacing: .xSmall) {
             HStack(alignment: alignment, spacing: .xxSmall) {
                 Group {
-                    Icon(countryCode: "us", size: size)
-                    Icon(image: .orbit(.facebook), size: size)
-                    Icon(sfSymbol: sfSymbol, size: size)
+                    Icon(.countryFlag("us"), size: size)
+                    Icon(.orbit(.facebook), size: size)
+                    Icon(sfSymbol, size: size)
                     Icon(.informationCircle, size: size)
                     content()
                 }

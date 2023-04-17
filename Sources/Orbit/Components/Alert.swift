@@ -19,7 +19,7 @@ public struct Alert<Content: View>: View {
 
     let title: String
     let description: String
-    let iconContent: Icon.Content
+    let icon: Icon.Content?
     let buttons: AlertButtons
     let style: AlertStyle
     @ViewBuilder let content: Content
@@ -42,7 +42,7 @@ public struct Alert<Content: View>: View {
 
     @ViewBuilder var defaultContent: some View {
         HStack(alignment: .top, spacing: .xSmall) {
-            icon
+            iconContent
                 .padding(.leading, -.xxSmall)
 
             VStack(alignment: .leading, spacing: .medium) {
@@ -70,7 +70,7 @@ public struct Alert<Content: View>: View {
     @ViewBuilder var defaultHeader: some View {
         if title.isEmpty == false || description.isEmpty == false {
             VStack(alignment: .leading, spacing: .xxSmall) {
-                titleView
+                titleContent
                 Text(description)
                     .textLinkColor(.secondary)
                     .accessibility(.alertDescription)
@@ -81,8 +81,8 @@ public struct Alert<Content: View>: View {
     @ViewBuilder var inlineHeader: some View {
         if isInlineHeaderEmpty == false {
             HStack(alignment: .top, spacing: .xSmall) {
-                icon
-                titleView
+                iconContent
+                titleContent
             }
             .padding(.vertical, 14)
             .padding(.horizontal, .small)
@@ -90,13 +90,13 @@ public struct Alert<Content: View>: View {
         }
     }
 
-    @ViewBuilder var icon: some View {
-        Icon(content: iconContent)
+    @ViewBuilder var iconContent: some View {
+        Icon(icon)
             .foregroundColor(foregroundColor)
             .accessibility(.alertIcon)
     }
 
-    @ViewBuilder var titleView: some View {
+    @ViewBuilder var titleContent: some View {
         Text(title)
             .bold()
             .accessibility(.alertTitle)
@@ -198,7 +198,11 @@ public struct Alert<Content: View>: View {
     }
 
     var isInlineHeaderEmpty: Bool {
-        iconContent.isEmpty && title.isEmpty
+        isIconEmpty && title.isEmpty
+    }
+
+    private var isIconEmpty: Bool {
+        icon?.isEmpty ?? true
     }
 }
 
@@ -212,14 +216,14 @@ public extension Alert {
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content = .none,
+        icon: Icon.Content? = nil,
         buttons: AlertButtons = .none,
         style: AlertStyle = .status(nil, isSubtle: false),
         @ViewBuilder content: () -> Content = { EmptyView() }
     ) {
         self.title = title
         self.description = description
-        self.iconContent = icon
+        self.icon = icon
         self.buttons = buttons
         self.style = style
         self.variant = .default
@@ -232,13 +236,13 @@ public extension Alert {
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ title: String = "",
-        icon: Icon.Content = .none,
+        icon: Icon.Content? = nil,
         button: Button.Content? = nil,
         style: AlertStyle = .status(nil, isSubtle: false)
     ) where Content == EmptyView {
         self.title = title
         self.description = ""
-        self.iconContent = icon
+        self.icon = icon
         self.buttons = button.map { .primary($0) } ?? .none
         self.style = style
         self.variant = .inline
@@ -437,11 +441,11 @@ struct AlertPreviews: PreviewProvider {
             .previewDisplayName()
     }
 
-    static func alert(_ title: String, status: Status, icon: Icon.Symbol, isSuppressed: Bool) -> some View {
+    static func alert(_ title: String, status: Status, icon: Icon.Symbol?, isSuppressed: Bool) -> some View {
         Alert(
             title,
             description: description,
-            icon: .symbol(icon),
+            icon: icon.map { Icon.Content.symbol($0) },
             buttons: primaryAndSecondaryConfiguration,
             style: .status(nil, isSubtle: isSuppressed)
         )
@@ -450,7 +454,7 @@ struct AlertPreviews: PreviewProvider {
 
     static func alerts(showIcons: Bool, isSuppressed: Bool) -> some View {
         VStack(spacing: .medium) {
-            alert("Informational message", status: .info, icon: showIcons ? .informationCircle : .none, isSuppressed: isSuppressed)
+            alert("Informational message", status: .info, icon: showIcons ? .informationCircle : nil, isSuppressed: isSuppressed)
             alert("Success message", status: .success, icon: showIcons ? .checkCircle : .none, isSuppressed: isSuppressed)
             alert("Warning message", status: .warning, icon: showIcons ? .alertCircle : .none, isSuppressed: isSuppressed)
             alert("Critical message", status: .critical, icon: showIcons ? .alertCircle : .none, isSuppressed: isSuppressed)

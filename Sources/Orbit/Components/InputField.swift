@@ -19,8 +19,8 @@ public struct InputField: View {
 
     private var label: String
     @Binding private var value: String
-    private var prefix: Icon.Content
-    private var suffix: Icon.Content
+    private var prefix: Icon.Content?
+    private var suffix: Icon.Content?
     private var prompt: String
     private var state: InputState
     private var style: InputFieldStyle
@@ -88,7 +88,7 @@ public struct InputField: View {
         .accentColor(.blueNormal)
         .accessibility(
             label: .init(
-                label + (prefix.accessibilityLabel.isEmpty ? "" : ", \(prefix.accessibilityLabel)")
+                [label, prefix?.accessibilityLabel ?? "", suffix?.accessibilityLabel ?? ""].joined(separator: ", ")
             )
         )
         .accessibility(.inputFieldValue)
@@ -107,7 +107,7 @@ public struct InputField: View {
             Text(label)
                 .foregroundColor(compactLabelColor)
                 .fontWeight(.medium)
-                .padding(.leading, prefix.isEmpty ? .small : 0)
+                .padding(.leading, isPrefixEmpty ? .small : 0)
         }
     }
 
@@ -116,6 +116,8 @@ public struct InputField: View {
             BarButton(isSecureTextRedacted ? .visibility : .visibilityOff, size: .normal) {
                 isSecureTextRedacted.toggle()
             }
+            .padding(.leading, .xSmall)
+            .padding(.trailing, isSuffixEmpty ? .xxSmall : 0)
             .accessibility(.inputFieldPasswordToggle)
         }
     }
@@ -136,13 +138,21 @@ public struct InputField: View {
     }
 
     private var leadingPadding: CGFloat {
-        prefix.isEmpty && style == .default
+        isPrefixEmpty && style == .default
             ? .small
             : 0
     }
 
+    private var isPrefixEmpty: Bool {
+        prefix?.isEmpty ?? true
+    }
+
     private var trailingPadding: CGFloat {
-        suffix == .none ? .small : 0
+        isSuffixEmpty ? .small : 0
+    }
+
+    private var isSuffixEmpty: Bool {
+        suffix?.isEmpty ?? true
     }
 }
 
@@ -163,8 +173,8 @@ public extension InputField {
     init(
         _ label: String = "",
         value: Binding<String>,
-        prefix: Icon.Content = .none,
-        suffix: Icon.Content = .none,
+        prefix: Icon.Content? = nil,
+        suffix: Icon.Content? = nil,
         prompt: String = "",
         state: InputState = .default,
         style: InputFieldStyle = .default,
@@ -256,6 +266,7 @@ struct InputFieldPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            fixedSize
             styles
             sizing
             password
@@ -282,6 +293,29 @@ struct InputFieldPreviews: PreviewProvider {
                 InputField("Secure", value: state, prefix: .grid, prompt: prompt, state: .default, isSecure: true)
             }
         }
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
+    static var fixedSize: some View {
+        VStack(spacing: .medium) {
+            StateWrapper("Long value") { state in
+                InputField(label, value: state, prompt: prompt, state: .default)
+            }
+            StateWrapper("") { state in
+                InputField(label, value: state, prompt: prompt, state: .default)
+            }
+            StateWrapper(value) { state in
+                InputField(label, value: state, prefix: .grid, suffix: .grid, prompt: prompt, state: .default)
+            }
+            StateWrapper("") { state in
+                InputField(label, value: state, prefix: .grid, suffix: .grid, prompt: prompt, state: .default)
+            }
+            StateWrapper(value) { state in
+                InputField("Secure", value: state, prefix: .grid, prompt: prompt, state: .default, isSecure: true)
+            }
+        }
+        .frame(width: 80)
         .padding(.medium)
         .previewDisplayName()
     }
@@ -374,8 +408,8 @@ struct InputFieldPreviews: PreviewProvider {
     static func inputField(
         _ label: String = label,
         value: String = value,
-        prefix: Icon.Content = .grid,
-        suffix: Icon.Content = .grid,
+        prefix: Icon.Content? = .grid,
+        suffix: Icon.Content? = .grid,
         prompt: String = prompt,
         state: InputState = .default,
         isSecure: Bool = false,

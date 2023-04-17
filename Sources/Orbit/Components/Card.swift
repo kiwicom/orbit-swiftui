@@ -12,7 +12,7 @@ public struct Card<Content: View>: View {
 
     let title: String
     let description: String
-    let iconContent: Icon.Content
+    let icon: Icon.Content?
     let action: CardAction
     let headerSpacing: CGFloat
     let contentLayout: CardContentLayout
@@ -46,7 +46,7 @@ public struct Card<Content: View>: View {
     @ViewBuilder var header: some View {
         if isHeaderEmpty == false {
             HStack(alignment: .top, spacing: 0) {
-                Icon(content: iconContent, size: titleStyle.iconSize)
+                Icon(icon, size: titleStyle.iconSize)
                     .padding(.trailing, .xSmall)
                     .accessibility(.cardIcon)
                 
@@ -80,7 +80,7 @@ public struct Card<Content: View>: View {
     }
 
     var isHeaderEmpty: Bool {
-        if case .none = action, iconContent.isEmpty, title.isEmpty, description.isEmpty {
+        if case .none = action, isIconEmpty, title.isEmpty, description.isEmpty {
             return true
         } else {
             return false
@@ -89,6 +89,10 @@ public struct Card<Content: View>: View {
 
     var isContentEmpty: Bool {
         content is EmptyView
+    }
+
+    var isIconEmpty: Bool {
+        icon?.isEmpty ?? true
     }
     
     var contentPadding: CGFloat {
@@ -115,7 +119,7 @@ public extension Card {
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content = .none,
+        icon: Icon.Content? = nil,
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
         showBorder: Bool = true,
@@ -127,7 +131,7 @@ public extension Card {
     ) {
         self.title = title
         self.description = description
-        self.iconContent = icon
+        self.icon = icon
         self.action = action
         self.headerSpacing = headerSpacing
         self.showBorder = showBorder

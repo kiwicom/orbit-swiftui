@@ -13,10 +13,10 @@ public struct Select: View {
     @Binding var messageHeight: CGFloat
     
     let label: String
-    let prefix: Icon.Content
+    let prefix: Icon.Content?
     let value: String?
     let prompt: String
-    let suffix: Icon.Content
+    let suffix: Icon.Content?
     let state: InputState
     let message: Message?
     let action: () -> Void
@@ -36,6 +36,7 @@ public struct Select: View {
                     HStack(spacing: 0) {
                         buttonLabel
                             .padding(.leading, leadingPadding)
+                            .padding(.trailing, trailingPadding)
                             .padding(.vertical, verticalTextPadding)
 
                         TextStrut()
@@ -86,7 +87,19 @@ public struct Select: View {
     }
 
     var leadingPadding: CGFloat {
-        prefix.isEmpty ? .small : 0
+        isPrefixEmpty ? .small : 0
+    }
+
+    var trailingPadding: CGFloat {
+        isSuffixEmpty ? .small : 0
+    }
+
+    var isPrefixEmpty: Bool {
+        prefix?.isEmpty ?? true
+    }
+
+    var isSuffixEmpty: Bool {
+        suffix?.isEmpty ?? true
     }
 }
 
@@ -96,10 +109,10 @@ public extension Select {
     /// Creates Orbit Select component.
     init(
         _ label: String = "",
-        prefix: Icon.Content = .none,
+        prefix: Icon.Content? = nil,
         value: String?,
         prompt: String = "",
-        suffix: Icon.Content = .chevronDown,
+        suffix: Icon.Content? = .chevronDown,
         state: InputState = .default,
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
@@ -146,10 +159,14 @@ struct SelectPreviews: PreviewProvider {
     }
 
     static var idealSize: some View {
-        Select("Ideal size", prefix: .grid, value: InputFieldPreviews.value, action: {})
-            .idealSize()
-            .padding(.medium)
-            .previewDisplayName()
+        VStack(spacing: .medium) {
+            Select("Ideal size", prefix: .grid, value: InputFieldPreviews.value, action: {})
+            Select("Ideal size", prefix: .grid, value: InputFieldPreviews.value, suffix: nil, action: {})
+            Select("Ideal size", value: InputFieldPreviews.value, suffix: nil, action: {})
+        }
+        .idealSize()
+        .padding(.medium)
+        .previewDisplayName()
     }
 
     static var sizing: some View {
@@ -185,8 +202,8 @@ struct SelectPreviews: PreviewProvider {
         _ label: String = InputFieldPreviews.label,
         value: String?,
         prompt: String = InputFieldPreviews.prompt,
-        prefix: Icon.Content = .grid,
-        suffix: Icon.Content = .chevronDown,
+        prefix: Icon.Content? = .grid,
+        suffix: Icon.Content? = .chevronDown,
         message: Message? = nil
     ) -> some View {
         Select(label, prefix: prefix, value: value, prompt: prompt, suffix: suffix, message: message, action: {})

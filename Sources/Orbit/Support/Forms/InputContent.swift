@@ -8,8 +8,8 @@ struct InputContent<Content: View>: View {
 
     public let verticalPadding: CGFloat = .small // = 44 @ normal text size
 
-    var prefix: Icon.Content = .none
-    var suffix: Icon.Content = .none
+    var prefix: Icon.Content?
+    var suffix: Icon.Content?
     var prefixAccessibilityID: AccessibilityID = .selectPrefix
     var suffixAccessibilityID: AccessibilityID = .selectSuffix
     var state: InputState = .default
@@ -43,9 +43,10 @@ struct InputContent<Content: View>: View {
     }
 
     @ViewBuilder var prefixIcon: some View {
-        Icon(content: prefix)
+        Icon(prefix)
             .foregroundColor(prefixColor)
-            .padding(.horizontal, .xSmall)
+            .padding(.leading, .small)
+            .padding(.trailing, .xSmall)
             .padding(.vertical, verticalPadding)
             .accessibility(prefixAccessibilityID)
             // The component should expose the label as a part of the field primary input or action
@@ -59,17 +60,21 @@ struct InputContent<Content: View>: View {
     }
 
     @ViewBuilder var suffixContent: some View {
-        if let suffixAction = suffixAction {
-            BarButton(content: suffix, size: .normal) {
-                suffixAction()
+        if let suffix {
+            if let suffixAction = suffixAction {
+                BarButton(suffix, size: .normal) {
+                    suffixAction()
+                }
+                .padding(.trailing, .xxSmall)
+                .accessibility(addTraits: .isButton)
+            } else {
+                Icon(suffix)
+                    .padding(.leading, .xSmall)
+                    .padding(.trailing, .small)
+                    .padding(.vertical, verticalPadding)
+                    // The component should expose the label as a part of the field primary input or action
+                    .accessibility(hidden: true)
             }
-            .accessibility(addTraits: .isButton)
-        } else {
-            Icon(content: suffix)
-                .padding(.horizontal, .xSmall)
-                .padding(.vertical, verticalPadding)
-                // The component should expose the label as a part of the field primary input or action
-                .accessibility(hidden: true)
         }
     }
 

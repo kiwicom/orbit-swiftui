@@ -12,13 +12,14 @@ public struct Badge: View {
     @Environment(\.sizeCategory) private var sizeCategory
 
     let label: String
-    let iconContent: Icon.Content
+    let icon: Icon.Content?
     var style: Style
 
     public var body: some View {
         if isEmpty == false {
             HStack(spacing: .xxSmall) {
-                Icon(content: iconContent, size: .small)
+                Icon(icon, size: .small)
+                    .foregroundColor(nil)
                     .fontWeight(.medium)
 
                 Text(
@@ -61,7 +62,11 @@ public struct Badge: View {
     }
 
     var isEmpty: Bool {
-        iconContent.isEmpty && label.isEmpty
+        isIconEmpty && label.isEmpty
+    }
+
+    var isIconEmpty: Bool {
+        icon?.isEmpty ?? true
     }
 
     var labelColor: Color {
@@ -88,9 +93,9 @@ public extension Badge {
     ///
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
-    init(_ label: String = "", icon: Icon.Content = .none, style: Style = .neutral) {
+    init(_ label: String = "", icon: Icon.Content? = nil, style: Style = .neutral) {
         self.label = label
-        self.iconContent = icon
+        self.icon = icon
         self.style = style
     }
 }

@@ -12,7 +12,7 @@ public struct Tag: View {
     @Environment(\.idealSize) var idealSize
 
     let label: String
-    let iconContent: Icon.Content
+    let icon: Icon.Content?
     let style: Style
     let isFocused: Bool
     let isActive: Bool
@@ -32,7 +32,8 @@ public struct Tag: View {
                         }
 
                         HStack(spacing: 6) {
-                            Icon(content: iconContent, size: Text.Size.normal.iconSize)
+                            Icon(icon, size: Text.Size.normal.iconSize)
+                                .foregroundColor(nil)
                                 .fontWeight(.medium)
                             
                             Text(label)
@@ -55,7 +56,11 @@ public struct Tag: View {
     }
 
     var isEmpty: Bool {
-        label.isEmpty && iconContent.isEmpty
+        label.isEmpty && isIconEmpty
+    }
+
+    var isIconEmpty: Bool {
+        icon?.isEmpty ?? true
     }
 }
 
@@ -65,7 +70,7 @@ public extension Tag {
     /// Creates Orbit Tag component.
     init(
         _ label: String = "",
-        icon: Icon.Content = .none,
+        icon: Icon.Content? = nil,
         style: Style = .default,
         isFocused: Bool = true,
         isActive: Bool = false,
@@ -73,7 +78,7 @@ public extension Tag {
     ) {
         self.init(
             label: label,
-            iconContent: icon,
+            icon: icon,
             style: style,
             isFocused: isFocused,
             isActive: isActive,
@@ -111,7 +116,8 @@ extension Tag {
                     .lineLimit(1)
 
                 if case .removable(let removeAction) = style {
-                    Icon(.closeCircle, size: .small, color: iconColor(isPressed: configuration.isPressed))
+                    Icon(.closeCircle, size: .small)
+                        .foregroundColor(iconColor(isPressed: configuration.isPressed))
                         .onTapGesture(perform: removeAction)
                         .accessibility(addTraits: .isButton)
                 }

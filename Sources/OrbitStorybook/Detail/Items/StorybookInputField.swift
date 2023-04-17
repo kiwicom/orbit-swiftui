@@ -82,8 +82,8 @@ struct StorybookInputField {
     static func inputField(
         _ label: String = label,
         value: String = value,
-        prefix: Icon.Content = .grid,
-        suffix: Icon.Content = .grid,
+        prefix: Icon.Content? = .grid,
+        suffix: Icon.Content? = .grid,
         prompt: String = prompt,
         state: InputState = .default,
         isSecure: Bool = false,

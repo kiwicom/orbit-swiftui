@@ -30,10 +30,11 @@ struct TextConcatenationPreviews: PreviewProvider {
         Heading("Hanoi ", style: .title1)
             + Icon(.grid, size: .xLarge)
             + Icon(.grid, size: .small)
+                .foregroundColor(.blueDark)
             + Heading(" San Pedro de Alcantara", style: .title1)
             + Text(" ")
-            + Icon(sfSymbol: "info.circle", size: .large)
-            + Icon(image: .orbit(.navigateClose))
+            + Icon("info.circle", size: .large)
+            + Icon(.orbit(.navigateClose))
                 .baselineOffset(-1)
             + Text(" (Delayed)", size: .xLarge)
                 .foregroundColor(.inkNormal)
@@ -43,14 +44,17 @@ struct TextConcatenationPreviews: PreviewProvider {
 
     static var formatting: some View {
         (
-            Icon(.grid, size: .xLarge, color: nil)
+            Icon(.grid, size: .xLarge)
+                .foregroundColor(nil)
             + Text(" Text ", size: .xLarge)
                 .foregroundColor(nil)
                 .bold()
                 .italic()
-            + Icon(.informationCircle, size: .large, color: nil)
+            + Icon(.informationCircle, size: .large)
+                .foregroundColor(nil)
                 .baselineOffset(-1)
-            + Icon(sfSymbol: "info.circle.fill", size: .large, color: nil)
+            + Icon("info.circle.fill", size: .large)
+                .foregroundColor(nil)
             + Text(
                 " <ref>Text</ref> with <strong>formatting</strong>",
                 size: .small
@@ -58,7 +62,8 @@ struct TextConcatenationPreviews: PreviewProvider {
             .foregroundColor(nil)
             .textAccentColor(.orangeNormal)
 
-            + Icon(.check, size: .small, color: .greenDark)
+            + Icon(.check, size: .small)
+                .foregroundColor(.greenDark)
         )
         .foregroundColor(.blueDark)
         .previewDisplayName()
@@ -79,7 +84,8 @@ struct TextConcatenationPreviews: PreviewProvider {
     static func concatenatedText(_ label: String, style: Heading.Style) -> some View {
         HStack {
             Heading(label, style: style)
-                + Icon(.flightReturn, size: .custom(style.size), color: .inkNormal)
+                + Icon(.flightReturn, size: .custom(style.size))
+                    .foregroundColor(.inkNormal)
                 + Heading(label, style: style)
                 + Text(" and Text")
                     .foregroundColor(nil)
