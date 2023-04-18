@@ -73,10 +73,12 @@ struct TextField: UIViewRepresentable {
             return
         }
 
-        // Prevent UITextField erasing the current value
-        let isBeginEditing = uiView.isSecureTextEntry && uiView.text == value
-        let isTextModifiedOutsideTextField = value != context.coordinator.textFieldValue
-        if isBeginEditing || isTextModifiedOutsideTextField {
+        // Check to prevent UITextField erasing the current value
+        let isBeginSecureTextEditing = uiView.isSecureTextEntry && uiView.text == value
+        // Check to allow updating the value from the binding
+        let isModifiedByBinding = value != context.coordinator.textFieldValue
+
+        if isBeginSecureTextEditing || isModifiedByBinding {
             uiView.text?.removeAll()
             uiView.insertText(value)
         }
@@ -85,7 +87,7 @@ struct TextField: UIViewRepresentable {
     func makeCoordinator() -> Coordinator {
         Coordinator(
             identifier: identifier,
-            value: $value,
+            value: value,
             inputFieldBeginEditingAction: inputFieldBeginEditingAction,
             inputFieldBeginEditingIdentifiableAction: inputFieldBeginEditingIdentifiableAction,
             inputFieldEndEditingAction: inputFieldEndEditingAction,
@@ -94,13 +96,15 @@ struct TextField: UIViewRepresentable {
             inputFieldShouldReturnIdentifiableAction: inputFieldShouldReturnIdentifiableAction,
             inputFieldShouldChangeCharactersAction: inputFieldShouldChangeCharactersAction,
             inputFieldShouldChangeCharactersIdentifiableAction: inputFieldShouldChangeCharactersIdentifiableAction
-        )
+        ) { replacedValue in
+            value = replacedValue
+        }
     }
 
-    class Coordinator: NSObject, UITextFieldDelegate {
+    class Coordinator: NSObject, UITextFieldDelegate, ObservableObject {
 
         let identifier: AnyHashable?
-        @Binding var value: String
+        let value: String
         let inputFieldBeginEditingAction: () -> Void
         let inputFieldBeginEditingIdentifiableAction: (AnyHashable) -> Void
         let inputFieldEndEditingAction: () -> Void
@@ -109,16 +113,18 @@ struct TextField: UIViewRepresentable {
         let inputFieldShouldReturnIdentifiableAction: ((AnyHashable) -> Bool)?
         let inputFieldShouldChangeCharactersAction: ((NSString, NSRange, String) -> InputFieldShouldChangeResult)?
         let inputFieldShouldChangeCharactersIdentifiableAction: ((AnyHashable, NSString, NSRange, String) -> InputFieldShouldChangeResult)?
+        let updateValue: (String) -> Void
 
+        // Required for checking the recent value of textfield (for cases when system clears the actual value).
         private(set) lazy var textFieldValue: String = value {
             didSet {
-                value = textFieldValue
+                updateValue(textFieldValue)
             }
         }
 
         init(
             identifier: AnyHashable?,
-            value: Binding<String>,
+            value: String,
             inputFieldBeginEditingAction: @escaping () -> Void,
             inputFieldBeginEditingIdentifiableAction: @escaping (AnyHashable) -> Void,
             inputFieldEndEditingAction: @escaping () -> Void,
@@ -126,10 +132,11 @@ struct TextField: UIViewRepresentable {
             inputFieldShouldReturnAction: (() -> Bool)?,
             inputFieldShouldReturnIdentifiableAction: ((AnyHashable) -> Bool)?,
             inputFieldShouldChangeCharactersAction: ((NSString, NSRange, String) -> InputFieldShouldChangeResult)?,
-            inputFieldShouldChangeCharactersIdentifiableAction: ((AnyHashable, NSString, NSRange, String) -> InputFieldShouldChangeResult)?
+            inputFieldShouldChangeCharactersIdentifiableAction: ((AnyHashable, NSString, NSRange, String) -> InputFieldShouldChangeResult)?,
+            replaceValue: @escaping (String) -> Void
         ) {
             self.identifier = identifier
-            self._value = value
+            self.value = value
             self.inputFieldBeginEditingAction = inputFieldBeginEditingAction
             self.inputFieldBeginEditingIdentifiableAction = inputFieldBeginEditingIdentifiableAction
             self.inputFieldEndEditingAction = inputFieldEndEditingAction
@@ -138,6 +145,7 @@ struct TextField: UIViewRepresentable {
             self.inputFieldShouldReturnIdentifiableAction = inputFieldShouldReturnIdentifiableAction
             self.inputFieldShouldChangeCharactersAction = inputFieldShouldChangeCharactersAction
             self.inputFieldShouldChangeCharactersIdentifiableAction = inputFieldShouldChangeCharactersIdentifiableAction
+            self.updateValue = replaceValue
         }
 
         func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -149,8 +157,6 @@ struct TextField: UIViewRepresentable {
         }
 
         func textFieldDidEndEditing(_ textField: UITextField) {
-            textFieldValue = textField.text ?? ""
-
             inputFieldEndEditingAction()
 
             if let identifier {
@@ -196,11 +202,7 @@ struct TextField: UIViewRepresentable {
                 case .replace(let modifiedTextFieldValue):
                     // Refuse the proposed change, replace the textfield with modified value
                     textField.text = modifiedTextFieldValue
-
-                    // Dispatch is required to apply the modified change
-                    DispatchQueue.main.async { [weak self] in
-                        self?.textFieldValue = modifiedTextFieldValue
-                    }
+                    textFieldValue = modifiedTextFieldValue
                     return false
                 case .reject:
                     return false
@@ -218,11 +220,13 @@ class InsetableTextField: UITextField {
     var insets = UIEdgeInsets(top: 11, left: 0, bottom: 11, right: 0)
 
     override func textRect(forBounds bounds: CGRect) -> CGRect {
-        super.textRect(forBounds: bounds).inset(by: insets)
+        guard Thread.isMainThread else { return .zero }
+        return super.textRect(forBounds: bounds).inset(by: insets)
     }
 
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
-        super.textRect(forBounds: bounds).inset(by: insets)
+        guard Thread.isMainThread else { return .zero }
+        return super.textRect(forBounds: bounds).inset(by: insets)
     }
 }
 
