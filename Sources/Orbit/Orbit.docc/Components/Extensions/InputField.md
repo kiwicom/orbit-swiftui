@@ -6,7 +6,7 @@
 
 ## Topics
 
-### Events Delegation
+### UITextField delegation
 
 - ``inputFieldBeginEditingAction(_:)-2n7iu``
 - ``inputFieldBeginEditingAction(_:)-63rdh``
@@ -17,6 +17,11 @@
 - ``inputFieldShouldChangeCharactersAction(_:)-81vme``
 - ``inputFieldShouldChangeCharactersAction(_:)-7xzq2``
 - ``InputFieldShouldChangeResult``
+
+### UITextField components
+
+- ``TextField``
+- ``InsetableTextField``
 
 ### Customizing Appearance 
 

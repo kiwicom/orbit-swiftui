@@ -1,8 +1,8 @@
 import SwiftUI
 import UIKit
 
-// Wrapper over UITextField with larger touch area.
-struct TextField: UIViewRepresentable {
+/// Orbit wrapper over `UITextField` with larger touch area and action handling.
+public struct TextField: UIViewRepresentable, TextFieldBuildable {
 
     @Environment(\.identifier) private var identifier
     @Environment(\.isEnabled) private var isEnabled: Bool
@@ -15,29 +15,29 @@ struct TextField: UIViewRepresentable {
     @Environment(\.inputFieldShouldChangeCharactersAction) private var inputFieldShouldChangeCharactersAction
     @Environment(\.inputFieldShouldChangeCharactersIdentifiableAction) private var inputFieldShouldChangeCharactersIdentifiableAction
 
-    @Binding var value: String
+    @Binding private var value: String
+    private var prompt: String
+    private var isSecureTextEntry: Bool
+    private var font: UIFont
+    private var state: InputState
+    private var leadingPadding: CGFloat
+    private var trailingPadding: CGFloat
 
-    var prompt = ""
-    var isSecureTextEntry: Bool = false
-
-    // Keyboard related
+    // Builder properties (keyboard related)
     var returnKeyType: UIReturnKeyType = .default
-    var isAutocorrectionDisabled: Bool = true
+    var isAutocorrectionDisabled: Bool = false
     var keyboardType: UIKeyboardType = .default
     var textContentType: UITextContentType?
     var autocapitalizationType: UITextAutocapitalizationType = .sentences
+    var shouldDeleteBackwardAction: (String) -> Bool = { _ in true }
 
-    var font: UIFont = .orbit
-    var state: InputState = .default
-    var leadingPadding: CGFloat = 0
-    var trailingPadding: CGFloat = 0
-
-    func makeUIView(context: Context) -> InsetableTextField {
+    public func makeUIView(context: Context) -> InsetableTextField {
         let textField = InsetableTextField()
         textField.delegate = context.coordinator
 
         textField.clearsOnBeginEditing = false
         textField.adjustsFontForContentSizeCategory = false
+        textField.tintColor = .blueNormal
 
         textField.setContentHuggingPriority(.defaultHigh, for: .vertical)
         textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
@@ -45,7 +45,7 @@ struct TextField: UIViewRepresentable {
         return textField
     }
 
-    func updateUIView(_ uiView: InsetableTextField, context: Context) {
+    public func updateUIView(_ uiView: InsetableTextField, context: Context) {
         uiView.insets.left = leadingPadding
         uiView.insets.right = trailingPadding
         uiView.isSecureTextEntry = isSecureTextEntry
@@ -56,6 +56,7 @@ struct TextField: UIViewRepresentable {
         uiView.keyboardType = keyboardType
         uiView.textContentType = textContentType
         uiView.autocapitalizationType = autocapitalizationType
+        uiView.shouldDeleteBackwardAction = shouldDeleteBackwardAction
 
         uiView.font = font
         uiView.textColor = isEnabled ? state.textColor.uiColor : .cloudDarkActive
@@ -84,7 +85,7 @@ struct TextField: UIViewRepresentable {
         }
     }
 
-    func makeCoordinator() -> Coordinator {
+    public func makeCoordinator() -> Coordinator {
         Coordinator(
             identifier: identifier,
             value: value,
@@ -101,7 +102,7 @@ struct TextField: UIViewRepresentable {
         }
     }
 
-    class Coordinator: NSObject, UITextFieldDelegate, ObservableObject {
+    public final class Coordinator: NSObject, UITextFieldDelegate, ObservableObject {
 
         let identifier: AnyHashable?
         let value: String
@@ -148,7 +149,7 @@ struct TextField: UIViewRepresentable {
             self.updateValue = replaceValue
         }
 
-        func textFieldDidBeginEditing(_ textField: UITextField) {
+        public func textFieldDidBeginEditing(_ textField: UITextField) {
             inputFieldBeginEditingAction()
 
             if let identifier {
@@ -156,7 +157,7 @@ struct TextField: UIViewRepresentable {
             }
         }
 
-        func textFieldDidEndEditing(_ textField: UITextField) {
+        public func textFieldDidEndEditing(_ textField: UITextField) {
             DispatchQueue.main.async { [weak self] in
                 self?.inputFieldEndEditingAction()
 
@@ -166,7 +167,7 @@ struct TextField: UIViewRepresentable {
             }
         }
 
-        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
             let shouldReturn: Bool
 
             if let inputFieldShouldReturnIdentifiableAction, let identifier {
@@ -184,7 +185,7 @@ struct TextField: UIViewRepresentable {
             return shouldReturn
         }
 
-        func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
             let text = ((textField.text ?? "") as NSString)
             let result: InputFieldShouldChangeResult
 
@@ -213,24 +214,30 @@ struct TextField: UIViewRepresentable {
     }
 }
 
-// MARK: - Types
+// MARK: - Inits
+public extension TextField {
 
-/// UITextField with a larger touch area.
-class InsetableTextField: UITextField {
-
-    // .small size would cause a resize issue in secure mode
-    var insets = UIEdgeInsets(top: 11, left: 0, bottom: 11, right: 0)
-
-    override func textRect(forBounds bounds: CGRect) -> CGRect {
-        guard Thread.isMainThread else { return .zero }
-        return super.textRect(forBounds: bounds).inset(by: insets)
-    }
-
-    override func editingRect(forBounds bounds: CGRect) -> CGRect {
-        guard Thread.isMainThread else { return .zero }
-        return super.textRect(forBounds: bounds).inset(by: insets)
+    /// Creates Orbit TextField wrapper over UITextField, used internally in `InputField`.
+    init(
+        value: Binding<String>,
+        prompt: String = "",
+        isSecureTextEntry: Bool = false,
+        font: UIFont = .orbit,
+        state: InputState = .default,
+        leadingPadding: CGFloat = 0,
+        trailingPadding: CGFloat = 0
+    ) {
+        self._value = value
+        self.prompt = prompt
+        self.isSecureTextEntry = isSecureTextEntry
+        self.font = font
+        self.state = state
+        self.leadingPadding = leadingPadding
+        self.trailingPadding = trailingPadding
     }
 }
+
+// MARK: - Types
 
 /// The result of Orbit `inputFieldShouldChangeCharactersAction`.
 public enum InputFieldShouldChangeResult {

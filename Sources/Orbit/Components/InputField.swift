@@ -7,7 +7,7 @@ import UIKit
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/inputfield/)
 /// - Important: Component expands horizontally unless prevented by `fixedSize` modifier.
-public struct InputField: View {
+public struct InputField: View, TextFieldBuildable {
 
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.inputFieldBeginEditingAction) private var inputFieldBeginEditingAction
@@ -32,11 +32,12 @@ public struct InputField: View {
     private var suffixAction: (() -> Void)?
 
     // Builder properties (keyboard related)
-    private var autocapitalizationType: UITextAutocapitalizationType = .none
-    private var isAutocorrectionDisabled: Bool = true
-    private var keyboardType: UIKeyboardType = .default
-    private var returnKeyType: UIReturnKeyType = .default
-    private var textContentType: UITextContentType?
+    var autocapitalizationType: UITextAutocapitalizationType = .none
+    var isAutocorrectionDisabled: Bool = false
+    var keyboardType: UIKeyboardType = .default
+    var returnKeyType: UIReturnKeyType = .default
+    var textContentType: UITextContentType?
+    var shouldDeleteBackwardAction: (String) -> Bool = { _ in true }
 
     public var body: some View {
         FieldWrapper(
@@ -76,18 +77,17 @@ public struct InputField: View {
             value: $value,
             prompt: prompt,
             isSecureTextEntry: isSecure && isSecureTextRedacted,
-            returnKeyType: returnKeyType,
-            isAutocorrectionDisabled: isAutocorrectionDisabled,
-            keyboardType: keyboardType,
-            textContentType: textContentType,
-            autocapitalizationType: autocapitalizationType,
             font: .orbit(size: Text.Size.normal.value * sizeCategory.ratio, weight: .regular),
             state: state,
             leadingPadding: leadingPadding,
             trailingPadding: trailingPadding
         )
-        .lineLimit(1)
-        .accentColor(.blueNormal)
+        .returnKeyType(returnKeyType)
+        .autocorrectionDisabled(isAutocorrectionDisabled)
+        .keyboardType(keyboardType)
+        .textContentType(textContentType)
+        .autocapitalization(autocapitalizationType)
+        .shouldDeleteBackwardAction(shouldDeleteBackwardAction)
         .accessibility(
             label: .init(
                 [label, prefix?.accessibilityLabel ?? "", suffix?.accessibilityLabel ?? ""].joined(separator: ", ")
@@ -198,31 +198,6 @@ public extension InputField {
         self.message = message
         self._messageHeight = messageHeight
         self.suffixAction = suffixAction
-    }
-
-    /// Returns a modified Orbit InputField with provided auto-capitalization type.
-    func autocapitalization(_ style: UITextAutocapitalizationType) -> Self {
-        set(\.autocapitalizationType, to: style)
-    }
-
-    /// Returns a modified Orbit InputField with provided autocorrection type.
-    func autocorrectionDisabled(_ disable: Bool = true) -> Self {
-        set(\.isAutocorrectionDisabled, to: disable)
-    }
-
-    /// Returns a modified Orbit InputField with provided keyboard type.
-    func keyboardType(_ type: UIKeyboardType) -> Self {
-        set(\.keyboardType, to: type)
-    }
-
-    /// Returns a modified Orbit InputField with provided content type.
-    func textContentType(_ textContentType: UITextContentType?) -> Self {
-        set(\.textContentType, to: textContentType)
-    }
-
-    /// Returns a modified Orbit InputField with provided keyboard return type.
-    func returnKeyType(_ returnKeyType: UIReturnKeyType) -> Self {
-        set(\.returnKeyType, to: returnKeyType)
     }
 }
 
