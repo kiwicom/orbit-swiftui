@@ -157,10 +157,12 @@ struct TextField: UIViewRepresentable {
         }
 
         func textFieldDidEndEditing(_ textField: UITextField) {
-            inputFieldEndEditingAction()
+            DispatchQueue.main.async { [weak self] in
+                self?.inputFieldEndEditingAction()
 
-            if let identifier {
-                inputFieldEndEditingIdentifiableAction(identifier)
+                if let identifier = self?.identifier {
+                    self?.inputFieldEndEditingIdentifiableAction(identifier)
+                }
             }
         }
 
