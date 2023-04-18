@@ -268,7 +268,7 @@ extension Icon: TextRepresentable {
                 }
             case .image(let image, let tint, _):
                 return baselineWrapper {
-                    imageBaselineWrapper {
+                    imageBaselineWrapper(sizeCategory: sizeCategory) {
                         foregroundColorWrapper(color: tint) {
                             SwiftUI.Text(image)
                         }
@@ -325,7 +325,7 @@ extension Icon: TextRepresentable {
     }
 
     func symbolWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
-        imageBaselineWrapper {
+        imageBaselineWrapper(sizeCategory: sizeCategory) {
             text()
                 .font(.orbitIcon(size: size.value))
         }
@@ -347,7 +347,7 @@ extension Icon: TextRepresentable {
         }
     }
 
-    func imageBaselineWrapper(@ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+    func imageBaselineWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
         text()
             .baselineOffset(textBaselineOffset(baselineOffset, sizeCategory: sizeCategory))
     }

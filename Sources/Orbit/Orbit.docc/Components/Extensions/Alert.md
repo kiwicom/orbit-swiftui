@@ -6,7 +6,7 @@
 
 ## Topics
 
-### Style
+### Customizing Appearance
 
 - ``AlertStyle``
 

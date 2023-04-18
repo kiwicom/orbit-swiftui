@@ -1,0 +1,273 @@
+import SwiftUI
+import UIKit
+
+/// Orbit wrapper over `UITextField` with larger touch area and action handling.
+public struct TextField: UIViewRepresentable, TextFieldBuildable {
+
+    @Environment(\.identifier) private var identifier
+    @Environment(\.isEnabled) private var isEnabled: Bool
+    @Environment(\.inputFieldBeginEditingAction) private var inputFieldBeginEditingAction
+    @Environment(\.inputFieldBeginEditingIdentifiableAction) private var inputFieldBeginEditingIdentifiableAction
+    @Environment(\.inputFieldEndEditingAction) private var inputFieldEndEditingAction
+    @Environment(\.inputFieldEndEditingIdentifiableAction) private var inputFieldEndEditingIdentifiableAction
+    @Environment(\.inputFieldShouldReturnAction) private var inputFieldShouldReturnAction
+    @Environment(\.inputFieldShouldReturnIdentifiableAction) private var inputFieldShouldReturnIdentifiableAction
+    @Environment(\.inputFieldShouldChangeCharactersAction) private var inputFieldShouldChangeCharactersAction
+    @Environment(\.inputFieldShouldChangeCharactersIdentifiableAction) private var inputFieldShouldChangeCharactersIdentifiableAction
+
+    @Binding private var value: String
+    private var prompt: String
+    private var isSecureTextEntry: Bool
+    private var font: UIFont
+    private var state: InputState
+    private var leadingPadding: CGFloat
+    private var trailingPadding: CGFloat
+
+    // Builder properties (keyboard related)
+    var returnKeyType: UIReturnKeyType = .default
+    var isAutocorrectionDisabled: Bool = false
+    var keyboardType: UIKeyboardType = .default
+    var textContentType: UITextContentType?
+    var autocapitalizationType: UITextAutocapitalizationType = .sentences
+    var shouldDeleteBackwardAction: (String) -> Bool = { _ in true }
+
+    public func makeUIView(context: Context) -> InsetableTextField {
+        let textField = InsetableTextField()
+        textField.delegate = context.coordinator
+
+        textField.clearsOnBeginEditing = false
+        textField.adjustsFontForContentSizeCategory = false
+        textField.tintColor = .blueNormal
+
+        textField.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+
+        return textField
+    }
+
+    public func updateUIView(_ uiView: InsetableTextField, context: Context) {
+        uiView.insets.left = leadingPadding
+        uiView.insets.right = trailingPadding
+        uiView.isSecureTextEntry = isSecureTextEntry
+
+        // Keyboard related
+        uiView.returnKeyType = returnKeyType
+        uiView.autocorrectionType = isAutocorrectionDisabled ? .no : .default
+        uiView.keyboardType = keyboardType
+        uiView.textContentType = textContentType
+        uiView.autocapitalizationType = autocapitalizationType
+        uiView.shouldDeleteBackwardAction = shouldDeleteBackwardAction
+
+        uiView.font = font
+        uiView.textColor = isEnabled ? state.textColor.uiColor : .cloudDarkActive
+        uiView.isEnabled = isEnabled
+
+        uiView.attributedPlaceholder = .init(
+            string: prompt,
+            attributes: [
+                .foregroundColor: isEnabled ? state.placeholderColor.uiColor : .cloudDarkActive
+            ]
+        )
+
+        guard uiView.isFirstResponder else {
+            uiView.text = value
+            return
+        }
+
+        // Check to prevent UITextField erasing the current value
+        let isBeginSecureTextEditing = uiView.isSecureTextEntry && uiView.text == value
+        // Check to allow updating the value from the binding
+        let isModifiedByBinding = value != context.coordinator.textFieldValue
+
+        if isBeginSecureTextEditing || isModifiedByBinding {
+            uiView.text?.removeAll()
+            uiView.insertText(value)
+        }
+    }
+
+    public func makeCoordinator() -> Coordinator {
+        Coordinator(
+            identifier: identifier,
+            value: value,
+            inputFieldBeginEditingAction: inputFieldBeginEditingAction,
+            inputFieldBeginEditingIdentifiableAction: inputFieldBeginEditingIdentifiableAction,
+            inputFieldEndEditingAction: inputFieldEndEditingAction,
+            inputFieldEndEditingIdentifiableAction: inputFieldEndEditingIdentifiableAction,
+            inputFieldShouldReturnAction: inputFieldShouldReturnAction,
+            inputFieldShouldReturnIdentifiableAction: inputFieldShouldReturnIdentifiableAction,
+            inputFieldShouldChangeCharactersAction: inputFieldShouldChangeCharactersAction,
+            inputFieldShouldChangeCharactersIdentifiableAction: inputFieldShouldChangeCharactersIdentifiableAction
+        ) { replacedValue in
+            value = replacedValue
+        }
+    }
+
+    public final class Coordinator: NSObject, UITextFieldDelegate, ObservableObject {
+
+        let identifier: AnyHashable?
+        let value: String
+        let inputFieldBeginEditingAction: () -> Void
+        let inputFieldBeginEditingIdentifiableAction: (AnyHashable) -> Void
+        let inputFieldEndEditingAction: () -> Void
+        let inputFieldEndEditingIdentifiableAction: (AnyHashable) -> Void
+        let inputFieldShouldReturnAction: (() -> Bool)?
+        let inputFieldShouldReturnIdentifiableAction: ((AnyHashable) -> Bool)?
+        let inputFieldShouldChangeCharactersAction: ((NSString, NSRange, String) -> InputFieldShouldChangeResult)?
+        let inputFieldShouldChangeCharactersIdentifiableAction: ((AnyHashable, NSString, NSRange, String) -> InputFieldShouldChangeResult)?
+        let updateValue: (String) -> Void
+
+        // Required for checking the recent value of textfield (for cases when system clears the actual value).
+        private(set) lazy var textFieldValue: String = value {
+            didSet {
+                updateValue(textFieldValue)
+            }
+        }
+
+        init(
+            identifier: AnyHashable?,
+            value: String,
+            inputFieldBeginEditingAction: @escaping () -> Void,
+            inputFieldBeginEditingIdentifiableAction: @escaping (AnyHashable) -> Void,
+            inputFieldEndEditingAction: @escaping () -> Void,
+            inputFieldEndEditingIdentifiableAction: @escaping (AnyHashable) -> Void,
+            inputFieldShouldReturnAction: (() -> Bool)?,
+            inputFieldShouldReturnIdentifiableAction: ((AnyHashable) -> Bool)?,
+            inputFieldShouldChangeCharactersAction: ((NSString, NSRange, String) -> InputFieldShouldChangeResult)?,
+            inputFieldShouldChangeCharactersIdentifiableAction: ((AnyHashable, NSString, NSRange, String) -> InputFieldShouldChangeResult)?,
+            replaceValue: @escaping (String) -> Void
+        ) {
+            self.identifier = identifier
+            self.value = value
+            self.inputFieldBeginEditingAction = inputFieldBeginEditingAction
+            self.inputFieldBeginEditingIdentifiableAction = inputFieldBeginEditingIdentifiableAction
+            self.inputFieldEndEditingAction = inputFieldEndEditingAction
+            self.inputFieldEndEditingIdentifiableAction = inputFieldEndEditingIdentifiableAction
+            self.inputFieldShouldReturnAction = inputFieldShouldReturnAction
+            self.inputFieldShouldReturnIdentifiableAction = inputFieldShouldReturnIdentifiableAction
+            self.inputFieldShouldChangeCharactersAction = inputFieldShouldChangeCharactersAction
+            self.inputFieldShouldChangeCharactersIdentifiableAction = inputFieldShouldChangeCharactersIdentifiableAction
+            self.updateValue = replaceValue
+        }
+
+        public func textFieldDidBeginEditing(_ textField: UITextField) {
+            inputFieldBeginEditingAction()
+
+            if let identifier {
+                inputFieldBeginEditingIdentifiableAction(identifier)
+            }
+        }
+
+        public func textFieldDidEndEditing(_ textField: UITextField) {
+            DispatchQueue.main.async { [weak self] in
+                self?.inputFieldEndEditingAction()
+
+                if let identifier = self?.identifier {
+                    self?.inputFieldEndEditingIdentifiableAction(identifier)
+                }
+            }
+        }
+
+        public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            let shouldReturn: Bool
+
+            if let inputFieldShouldReturnIdentifiableAction, let identifier {
+                shouldReturn = inputFieldShouldReturnIdentifiableAction(identifier)
+            } else if let inputFieldShouldReturnAction {
+                shouldReturn = inputFieldShouldReturnAction()
+            } else {
+                shouldReturn = true
+            }
+
+            if shouldReturn {
+                textField.resignFirstResponder()
+            }
+
+            return shouldReturn
+        }
+
+        public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+            let text = ((textField.text ?? "") as NSString)
+            let result: InputFieldShouldChangeResult
+
+            if let inputFieldShouldChangeCharactersIdentifiableAction, let identifier {
+                result = inputFieldShouldChangeCharactersIdentifiableAction(identifier, text, range, string)
+            } else if let inputFieldShouldChangeCharactersAction {
+                result = inputFieldShouldChangeCharactersAction(text, range, string)
+            } else {
+                result = .accept
+            }
+
+            switch result {
+                case .accept:
+                    // Accept the proposed change
+                    textFieldValue = text.replacingCharacters(in: range, with: string)
+                    return true
+                case .replace(let modifiedTextFieldValue):
+                    // Refuse the proposed change, replace the textfield with modified value
+                    textField.text = modifiedTextFieldValue
+                    textFieldValue = modifiedTextFieldValue
+                    return false
+                case .reject:
+                    return false
+            }
+        }
+    }
+}
+
+// MARK: - Inits
+public extension TextField {
+
+    /// Creates Orbit TextField wrapper over UITextField, used internally in `InputField`.
+    init(
+        value: Binding<String>,
+        prompt: String = "",
+        isSecureTextEntry: Bool = false,
+        font: UIFont = .orbit,
+        state: InputState = .default,
+        leadingPadding: CGFloat = 0,
+        trailingPadding: CGFloat = 0
+    ) {
+        self._value = value
+        self.prompt = prompt
+        self.isSecureTextEntry = isSecureTextEntry
+        self.font = font
+        self.state = state
+        self.leadingPadding = leadingPadding
+        self.trailingPadding = trailingPadding
+    }
+}
+
+// MARK: - Types
+
+/// The result of Orbit `inputFieldShouldChangeCharactersAction`.
+public enum InputFieldShouldChangeResult {
+    /// Specifies that proposed changes should be accepted.
+    case accept
+    /// Specifies that proposed changes should not be accepted, making the `InputField` keeping the previous value.
+    case reject
+    /// Specifies that proposed changes should not be accepted and the current value of `InputField` should be replaced with proposed `replacementValue` instead.
+    case replace(_ replacementValue: String)
+}
+
+// MARK: - Previews
+struct TextFieldPreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            Group {
+                StateWrapper("") { value in
+                    TextField(value: value, prompt: "Enter value", isSecureTextEntry: true)
+                }
+                StateWrapper("value") { value in
+                    TextField(value: value, prompt: "Enter value", isSecureTextEntry: true)
+                }
+                StateWrapper("value") { value in
+                    TextField(value: value, prompt: "Enter value", isSecureTextEntry: false)
+                }
+            }
+            .border(.black, width: .hairline)
+        }
+        .padding(.medium)
+        .previewLayout(.sizeThatFits)
+    }
+}

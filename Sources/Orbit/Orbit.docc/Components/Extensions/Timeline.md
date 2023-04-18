@@ -10,6 +10,6 @@
 
 - ``TimelineItem``
 
-### Style 
+### Customizing Appearance 
 
 - ``TimelineItemType``

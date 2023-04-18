@@ -1,22 +1,5 @@
 import SwiftUI
 
-public enum ChoiceTileIndicator {
-    
-    public enum Alignment {
-        case bottomTrailing
-        case bottom
-    }
-    
-    case none
-    case radio
-    case checkbox
-}
-
-public enum ChoiceTileAlignment {
-    case `default`
-    case center
-}
-
 /// Enables users to encapsulate radio or checkbox to pick exactly one option from a group.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/choice-tile/)
@@ -50,15 +33,20 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
                 action()
             },
             label: {
-                VStack(alignment: contentAlignment, spacing: padding) {
-                    header
-                    content
-                    messageView
-                    centerIndicator
+                HStack(spacing: 0) {
+                    VStack(alignment: contentAlignment, spacing: padding) {
+                        header
+                        content
+                        messageView
+                        centerIndicator
+                    }
+
+                    TextStrut(.normal)
+                        .padding(.vertical, .xxSmall)   // Minimum 52pt @ normal size
                 }
+                .frame(maxWidth: idealSize.horizontal == true ? nil: .infinity, alignment: .leading)
                 .overlay(indicatorOverlay, alignment: indicatorAlignment)
                 .padding(padding)
-                .frame(maxWidth: idealSize.horizontal == true ? nil: .infinity, alignment: .leading)
             }
         )
         .buttonStyle(
@@ -274,6 +262,27 @@ public extension ChoiceTile {
     }
 }
 
+// MARK: - Types
+
+/// An indicator used for Orbit ChoiceTile.
+public enum ChoiceTileIndicator {
+
+    public enum Alignment {
+        case bottomTrailing
+        case bottom
+    }
+
+    case none
+    case radio
+    case checkbox
+}
+
+/// Alignment variant of Orbit ChoiceTile.
+public enum ChoiceTileAlignment {
+    case `default`
+    case center
+}
+
 // MARK: - Identifiers
 public extension AccessibilityID {
 
@@ -326,6 +335,28 @@ struct ChoiceTilePreviews: PreviewProvider {
                 ChoiceTile("ChoiceTile", action: {})
                 ChoiceTile(icon: .grid, action: {})
                 ChoiceTile(description: "ChoiceTile", icon: .grid, action: {})
+
+                ChoiceTile {
+                    // No action
+                } headerContent: {
+                    Text("Value")
+                }
+
+                ChoiceTile {
+                    // No action
+                } content: {
+                    Text("Value")
+                }
+
+                ChoiceTile {
+                    // No action
+                } content: {
+                    Text("Intrinsic Content")
+                        .foregroundColor(.inkNormal)
+                        .padding(.horizontal, .xxLarge)
+                        .background(Color.productLightActive.opacity(0.3))
+                }
+                .idealSize()
             }
             .measured()
         }

@@ -10,6 +10,7 @@ Define `Circular Pro` or any custom font to be used for each font weight variant
 
 ```swift
 Font.orbitFonts = [
+    ...
     .regular: Bundle.main.url(forResource: "Circular20-Book.otf", withExtension: nil),
     .medium: Bundle.main.url(forResource: "Circular20-Medium.otf", withExtension: nil),
     .bold: Bundle.main.url(forResource: "Circular20-Bold.otf", withExtension: nil),

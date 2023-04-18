@@ -12,9 +12,17 @@ public extension Font {
     
     /// Fonts used for rendering text in Orbit.
     static var orbitFonts: [Font.Weight: URL?] = [
+        .ultraLight: Bundle.orbit.url(forResource: "Circular20-Book.otf", withExtension: nil),
+        .thin: Bundle.orbit.url(forResource: "Circular20-Book.otf", withExtension: nil),
+        .light: Bundle.orbit.url(forResource: "Circular20-Book.otf", withExtension: nil),
         .regular: Bundle.orbit.url(forResource: "Circular20-Book.otf", withExtension: nil),
+
         .medium: Bundle.orbit.url(forResource: "Circular20-Medium.otf", withExtension: nil),
+        .semibold: Bundle.orbit.url(forResource: "Circular20-Medium.otf", withExtension: nil),
+
         .bold: Bundle.orbit.url(forResource: "Circular20-Bold.otf", withExtension: nil),
+
+        .heavy: Bundle.orbit.url(forResource: "Circular20-Black.otf", withExtension: nil),
         .black: Bundle.orbit.url(forResource: "Circular20-Black.otf", withExtension: nil),
     ]
 
