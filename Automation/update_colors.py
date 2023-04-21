@@ -163,11 +163,10 @@ def get_inversed_colors(name, colors):
     return inverted_base
 
   if name.startswith('inkDark'):
-    # (too light) inverted_base = [186, 199, 213]
+    inverted_base = [186, 199, 213]
+    predefined_dark = True
+  elif name.startswith('inkNormal'):
     inverted_base = [128, 152, 178]
-    predefined_light = True
-  elif name.startswith('ink'):
-    inverted_base = [255, 255, 255]
 
   if name.startswith('product'):
     inverted_base = [0, 203, 174]
