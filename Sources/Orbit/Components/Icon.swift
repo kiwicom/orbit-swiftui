@@ -401,7 +401,6 @@ struct IconPreviews: PreviewProvider {
         VStack(spacing: .medium) {
             Icon(.informationCircle)
             Icon(.informationCircle)
-                .foregroundColor(nil)
             Icon(.informationCircle)
                 .foregroundColor(.blueNormal)
             Icon(.placeholder)
@@ -481,20 +480,17 @@ struct IconPreviews: PreviewProvider {
                     Icon(sfSymbol, size: .small)
                         .foregroundColor(.blueNormal)
                     Icon(sfSymbol, size: .small)
-                        .foregroundColor(nil)
                         .baselineOffset(.xxxSmall)
 
                     Icon(.informationCircle, size: .small)
                         .foregroundColor(.blueNormal)
                     Icon(.informationCircle, size: .small)
-                        .foregroundColor(nil)
                         .baselineOffset(.xxxSmall)
 
                     Group {
                         Icon(.orbit(.navigateClose), size: .small)
                             .foregroundColor(.blueNormal)
                         Icon(.orbit(.navigateClose), size: .small)
-                            .foregroundColor(nil)
                             .baselineOffset(.xxxSmall)
                         Icon(.orbit(.facebook), size: .small)
                         Icon(.orbit(.facebook), size: .small)
@@ -521,19 +517,16 @@ struct IconPreviews: PreviewProvider {
                 + Icon(sfSymbol, size: .small)
                     .foregroundColor(.blueNormal)
                 + Icon(sfSymbol, size: .small)
-                    .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
 
                 + Icon(.informationCircle, size: .small)
                     .foregroundColor(.blueNormal)
                 + Icon(.informationCircle, size: .small)
-                    .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
 
                 + Icon(.orbit(.navigateClose))
                     .foregroundColor(.blueNormal)
                 + Icon(.orbit(.navigateClose))
-                    .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
                 + Icon(.orbit(.facebook))
                 + Icon(.orbit(.facebook))
@@ -556,11 +549,8 @@ struct IconPreviews: PreviewProvider {
                 Icon(.grid)
                     .foregroundColor(.blueNormal)
                 Icon(.grid)
-                    .foregroundColor(nil)
                 Icon(.grid)
-                    .foregroundColor(nil)
                 Icon(.symbol(.grid))
-                    .foregroundColor(nil)
             }
 
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
@@ -568,11 +558,8 @@ struct IconPreviews: PreviewProvider {
                 Icon(sfSymbol)
                     .foregroundColor(.blueNormal)
                 Icon(sfSymbol)
-                    .foregroundColor(nil)
                 Icon(sfSymbol)
-                    .foregroundColor(nil)
                 Icon(sfSymbol)
-                    .foregroundColor(nil)
             }
 
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
@@ -580,11 +567,8 @@ struct IconPreviews: PreviewProvider {
                 Icon(.orbit(.navigateClose))
                     .foregroundColor(.blueNormal)
                 Icon(.orbit(.navigateClose))
-                    .foregroundColor(nil)
                 Icon(.orbit(.navigateClose))
-                    .foregroundColor(nil)
                 Icon(.orbit(.navigateClose))
-                    .foregroundColor(nil)
             }
         }
         .foregroundColor(.greenNormalHover)

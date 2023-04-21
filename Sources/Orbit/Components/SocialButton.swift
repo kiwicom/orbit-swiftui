@@ -30,7 +30,6 @@ public struct SocialButton: View {
                         .frame(width: .large * sizeCategory.ratio)
 
                     Text(label, size: .normal)
-                        .foregroundColor(nil)
                         .fontWeight(.medium)
                         .padding(.vertical, Button.Size.default.verticalPadding)
 
@@ -39,7 +38,6 @@ public struct SocialButton: View {
                     }
 
                     Icon(.chevronForward, size: .large)
-                        .foregroundColor(nil)
                 }
                 .foregroundColor(labelColor)
             }

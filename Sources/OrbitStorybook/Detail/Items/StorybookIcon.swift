@@ -52,22 +52,16 @@ struct StorybookIcon {
                 Group {
                     Text("Text", size: .small)
                     Icon(sfSymbol, size: .small)
-                        .foregroundColor(nil)
                     Icon(sfSymbol, size: .small)
-                        .foregroundColor(nil)
                         .baselineOffset(.xxxSmall)
 
                     Icon(.informationCircle, size: .small)
-                        .foregroundColor(nil)
                     Icon(.informationCircle, size: .small)
-                        .foregroundColor(nil)
                         .baselineOffset(.xxxSmall)
 
                     Group {
                         Icon(.orbit(.navigateClose), size: .small)
-                            .foregroundColor(nil)
                         Icon(.orbit(.navigateClose), size: .small)
-                            .foregroundColor(nil)
                             .baselineOffset(.xxxSmall)
                         Icon(.orbit(.facebook), size: .small)
                         Icon(.orbit(.facebook), size: .small)
@@ -92,21 +86,15 @@ struct StorybookIcon {
             (
                 Text("Text", size: .small)
                 + Icon(sfSymbol, size: .small)
-                    .foregroundColor(nil)
                 + Icon(sfSymbol, size: .small)
-                    .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
 
                 + Icon(.informationCircle, size: .small)
-                    .foregroundColor(nil)
                 + Icon(.informationCircle, size: .small)
-                    .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
 
                 + Icon(.orbit(.navigateClose))
-                    .foregroundColor(nil)
                 + Icon(.orbit(.navigateClose))
-                    .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
                 + Icon(.orbit(.facebook))
                 + Icon(.orbit(.facebook))
@@ -127,11 +115,8 @@ struct StorybookIcon {
                     Icon(.grid)
                         .foregroundColor(.blueNormal)
                     Icon(.grid)
-                        .foregroundColor(nil)
                     Icon(.symbol(.grid))
-                        .foregroundColor(nil)
                     Icon(.symbol(.grid, color: nil))
-                        .foregroundColor(nil)
                 }
 
                 HStack(alignment: .firstTextBaseline) {
@@ -139,11 +124,8 @@ struct StorybookIcon {
                     Icon(sfSymbol)
                         .foregroundColor(.blueNormal)
                     Icon(sfSymbol)
-                        .foregroundColor(nil)
                     Icon(.sfSymbol(sfSymbol))
-                        .foregroundColor(nil)
                     Icon(.sfSymbol(sfSymbol))
-                        .foregroundColor(nil)
                 }
 
                 HStack(alignment: .firstTextBaseline) {
@@ -151,11 +133,8 @@ struct StorybookIcon {
                     Icon(.orbit(.navigateClose))
                         .foregroundColor(.blueNormal)
                     Icon(.orbit(.navigateClose))
-                        .foregroundColor(nil)
                     Icon(.image(.orbit(.navigateClose)))
-                        .foregroundColor(nil)
                     Icon(.image(.orbit(.navigateClose)))
-                        .foregroundColor(nil)
                 }
             }
             .foregroundColor(.greenNormalHover)

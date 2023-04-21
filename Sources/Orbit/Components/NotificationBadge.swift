@@ -28,13 +28,11 @@ public struct NotificationBadge: View {
         switch content {
             case .text(let text):
                 Text(text, size: .small)
-                    .foregroundColor(nil)
                     .fontWeight(.medium)
                     .textLinkColor(.custom(labelColor))
                     .frame(minWidth: minTextWidth)
             case .icon(let icon):
                 Icon(icon, size: .small)
-                    .foregroundColor(nil)
         }
     }
 

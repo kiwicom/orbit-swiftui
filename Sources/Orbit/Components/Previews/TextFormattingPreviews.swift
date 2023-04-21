@@ -74,7 +74,6 @@ struct TextFormattingPreviews: PreviewProvider {
                 VStack(alignment: .leading, spacing: 0) {
                     nativeText(plainText)
                     text(plainText)
-                        .foregroundColor(nil)
                 }
                 .foregroundColor(.blueNormal)
 
@@ -88,7 +87,6 @@ struct TextFormattingPreviews: PreviewProvider {
                 VStack(alignment: .leading, spacing: 0) {
                     nativeText(markdownText)
                     text(htmlText)
-                        .foregroundColor(nil)
                 }
                 .foregroundColor(.blueNormal)
 
@@ -110,14 +108,14 @@ struct TextFormattingPreviews: PreviewProvider {
                     nativeText(plainText).reference()
                     + nplus().reference()
                     + nativeText(plainText)
-                    + nplus().foregroundColor(nil)
+                    + nplus()
                     + nativeText(markdownText)
 
                     text(plainText).reference()
                     + plus().reference()
-                    + text(plainText).foregroundColor(nil)
+                    + text(plainText)
                     + plus()
-                    + text(htmlText).foregroundColor(nil)
+                    + text(htmlText)
                 }
                 .foregroundColor(.blueNormal)
             }
@@ -459,7 +457,7 @@ struct TextFormattingPreviews: PreviewProvider {
                 VStack(alignment: .leading, spacing: 0) {
                     nativeText(plainText)
                     text(plainText)
-                    .foregroundColor(nil)            }
+                }
                 .foregroundColor(.blueNormal)
                 .strikethrough()
                 .underline()
@@ -478,7 +476,6 @@ struct TextFormattingPreviews: PreviewProvider {
                 VStack(alignment: .leading, spacing: 0) {
                     nativeText(markdownText)
                     text(htmlText)
-                        .foregroundColor(nil)
                 }
                 .foregroundColor(.blueNormal)
                 .strikethrough()
@@ -502,14 +499,14 @@ struct TextFormattingPreviews: PreviewProvider {
                     nativeText(plainText).strikethrough(false).underline(false).reference()
                     + nplus().strikethrough(false).underline(false).reference()
                     + nativeText(plainText)
-                    + nplus().foregroundColor(nil).strikethrough(false).underline(false)
+                    + nplus().strikethrough(false).underline(false)
                     + nativeText(markdownText)
 
                     text(plainText).strikethrough(false).underline(false).reference()
                     + plus().strikethrough(false).underline(false).reference()
-                    + text(plainText).foregroundColor(nil)
+                    + text(plainText)
                     + plus().strikethrough(false).underline(false)
-                    + text(htmlText).foregroundColor(nil)
+                    + text(htmlText)
                 }
                 .foregroundColor(.blueNormal)
                 .strikethrough()

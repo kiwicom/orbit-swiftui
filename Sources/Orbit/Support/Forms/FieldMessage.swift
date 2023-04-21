@@ -13,14 +13,12 @@ public struct FieldMessage: View {
             HStack(alignment: .firstTextBaseline, spacing: spacing) {
                 if let icon = message.icon {
                     Icon(icon, size: .small)
-                        .foregroundColor(nil)
                         .accessibility(hidden: true)
                     // A workaround for current Orbit non-matching icon size
                         .alignmentGuide(.firstTextBaseline) { $0.height * 0.82 }
                 }
 
                 Text(message.description)
-                    .foregroundColor(nil)
             }
             .foregroundColor(message.color)
             .transition(.opacity.animation(.easeOut(duration: 0.2)))

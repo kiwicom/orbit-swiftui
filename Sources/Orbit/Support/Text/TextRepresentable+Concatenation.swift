@@ -45,21 +45,16 @@ struct TextConcatenationPreviews: PreviewProvider {
     static var formatting: some View {
         (
             Icon(.grid, size: .xLarge)
-                .foregroundColor(nil)
             + Text(" Text ", size: .xLarge)
-                .foregroundColor(nil)
                 .bold()
                 .italic()
             + Icon(.informationCircle, size: .large)
-                .foregroundColor(nil)
                 .baselineOffset(-1)
             + Icon("info.circle.fill", size: .large)
-                .foregroundColor(nil)
             + Text(
                 " <ref>Text</ref> with <strong>formatting</strong>",
                 size: .small
             )
-            .foregroundColor(nil)
             .textAccentColor(.orangeNormal)
 
             + Icon(.check, size: .small)
@@ -88,7 +83,6 @@ struct TextConcatenationPreviews: PreviewProvider {
                     .foregroundColor(.inkNormal)
                 + Heading(label, style: style)
                 + Text(" and Text")
-                    .foregroundColor(nil)
         }
         .foregroundColor(.blueDark)
         .previewDisplayName()

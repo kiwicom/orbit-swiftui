@@ -63,7 +63,6 @@ public struct Select: View {
 
     @ViewBuilder var buttonLabel: some View {
         Text(inputLabel)
-            .foregroundColor(nil)
             .foregroundColor(textColor)
             .accessibility(.selectValue)
     }

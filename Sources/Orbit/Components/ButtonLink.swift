@@ -23,11 +23,9 @@ public struct ButtonLink: View {
                 label: {
                     HStack(spacing: .xSmall) {
                         Icon(icon)
-                            .foregroundColor(nil)
                             .fontWeight(.medium)
 
                         Text(label)
-                            .foregroundColor(nil)
                             .fontWeight(.medium)
                             // Ignore any potential `TextLinks`
                             .allowsHitTesting(false)

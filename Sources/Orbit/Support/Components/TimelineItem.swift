@@ -50,9 +50,7 @@ public struct TimelineItem<Footer: View>: View {
 
     @ViewBuilder var headerContent: some View {
         Heading(label, style: .title5)
-            .foregroundColor(nil)
         Text(sublabel, size: .small)
-            .foregroundColor(nil)
     }
 
     var alignment: VerticalAlignment {

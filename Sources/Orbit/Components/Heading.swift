@@ -183,7 +183,6 @@ struct HeadingPreviews: PreviewProvider {
                     .underline()
 
                 Heading("Multiline\n<ref>long</ref> heading", style: .title2)
-                    .foregroundColor(nil)
                     .textAccentColor(.redNormal)
                     .kerning(5)
                     .strikethrough()
@@ -281,10 +280,8 @@ struct HeadingPreviews: PreviewProvider {
                 .textAccentColor(.blueDarker)
             +
             Heading(" <ref><u>TITLE 6</u></ref> WITH <strong>MULTILINE</strong> CONTENT", style: .title6)
-                .foregroundColor(nil)
             +
             Text(" and Text")
-                .foregroundColor(nil)
         }
         .foregroundColor(.inkDark)
         .padding(.medium)

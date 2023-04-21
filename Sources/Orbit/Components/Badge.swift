@@ -19,14 +19,12 @@ public struct Badge: View {
         if isEmpty == false {
             HStack(spacing: .xxSmall) {
                 Icon(icon, size: .small)
-                    .foregroundColor(nil)
                     .fontWeight(.medium)
 
                 Text(
                     label,
                     size: .small
                 )
-                .foregroundColor(nil)
                 .fontWeight(.medium)
                 .textLinkColor(.custom(labelColor))
                 .frame(minWidth: minTextWidth)
