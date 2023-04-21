@@ -90,10 +90,9 @@ public struct InputField: View, TextFieldBuildable {
         .shouldDeleteBackwardAction(shouldDeleteBackwardAction)
         .accessibility(
             label: .init(
-                [label, prefix?.accessibilityLabel ?? "", suffix?.accessibilityLabel ?? ""].joined(separator: ", ")
+                [label, prefix?.accessibilityLabel, suffix?.accessibilityLabel].compactMap { $0 }.joined(separator: ", ")
             )
         )
-        .accessibility(.inputFieldValue)
         .inputFieldBeginEditingAction {
             isEditing = true
             inputFieldBeginEditingAction()
@@ -217,7 +216,6 @@ public extension AccessibilityID {
 
     static let inputFieldPrefix             = Self(rawValue: "orbit.inputfield.prefix")
     static let inputFieldSuffix             = Self(rawValue: "orbit.inputfield.suffix")
-    static let inputFieldValue              = Self(rawValue: "orbit.inputfield.value")
     static let inputFieldPasswordToggle     = Self(rawValue: "orbit.inputfield.password.toggle")
 }
 

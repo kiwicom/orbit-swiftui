@@ -22,4 +22,29 @@ public class InsetableTextField: UITextField {
             super.deleteBackward()
         }
     }
+
+    public override var isSecureTextEntry: Bool {
+        didSet {
+            if isSecureTextEntry, oldValue == false, isFirstResponder, let text {
+                // Prevent erasing the current value
+                replace(withText: text, keepingCapacity: true)
+            }
+        }
+    }
+
+    public override func becomeFirstResponder() -> Bool {
+        let success = super.becomeFirstResponder()
+
+        // Prevent erasing the current value
+        if isSecureTextEntry, let text {
+            replace(withText: text, keepingCapacity: true)
+        }
+        
+        return success
+    }
+
+    public func replace(withText text: String, keepingCapacity: Bool = false) {
+        self.text?.removeAll(keepingCapacity: keepingCapacity)
+        insertText(text)
+    }
 }

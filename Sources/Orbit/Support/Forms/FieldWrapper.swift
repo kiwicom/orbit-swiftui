@@ -26,7 +26,6 @@ public struct FieldWrapper<Label: View, Content: View, Footer: View>: View {
                     FieldMessage(message)
                         .padding(.top, .xxSmall)
                 }
-                .animation(.easeOut(duration: 0.2), value: message)
             }
         }
     }

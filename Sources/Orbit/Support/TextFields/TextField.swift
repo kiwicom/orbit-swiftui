@@ -42,6 +42,9 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         textField.setContentHuggingPriority(.defaultHigh, for: .vertical)
         textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
+        // Set initial text value to distinguish from binding updates
+        textField.text = value
+
         return textField
     }
 
@@ -69,26 +72,17 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
             ]
         )
 
-        guard uiView.isFirstResponder else {
-            uiView.text = value
-            return
-        }
-
-        // Check to prevent UITextField erasing the current value
-        let isBeginSecureTextEditing = uiView.isSecureTextEntry && uiView.text == value
-        // Check to allow updating the value from the binding
-        let isModifiedByBinding = value != context.coordinator.textFieldValue
-
-        if isBeginSecureTextEditing || isModifiedByBinding {
-            uiView.text?.removeAll()
-            uiView.insertText(value)
+        // Check if the binding value is updated to replace the text content
+        if value != context.coordinator.textFieldValue {
+            context.coordinator.textFieldValue = value
+            uiView.replace(withText: value)
         }
     }
 
     public func makeCoordinator() -> Coordinator {
         Coordinator(
             identifier: identifier,
-            value: value,
+            value: $value,
             inputFieldBeginEditingAction: inputFieldBeginEditingAction,
             inputFieldBeginEditingIdentifiableAction: inputFieldBeginEditingIdentifiableAction,
             inputFieldEndEditingAction: inputFieldEndEditingAction,
@@ -97,15 +91,13 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
             inputFieldShouldReturnIdentifiableAction: inputFieldShouldReturnIdentifiableAction,
             inputFieldShouldChangeCharactersAction: inputFieldShouldChangeCharactersAction,
             inputFieldShouldChangeCharactersIdentifiableAction: inputFieldShouldChangeCharactersIdentifiableAction
-        ) { replacedValue in
-            value = replacedValue
-        }
+        )
     }
 
     public final class Coordinator: NSObject, UITextFieldDelegate, ObservableObject {
 
         let identifier: AnyHashable?
-        let value: String
+        @Binding var value: String
         let inputFieldBeginEditingAction: () -> Void
         let inputFieldBeginEditingIdentifiableAction: (AnyHashable) -> Void
         let inputFieldEndEditingAction: () -> Void
@@ -114,18 +106,13 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         let inputFieldShouldReturnIdentifiableAction: ((AnyHashable) -> Bool)?
         let inputFieldShouldChangeCharactersAction: ((NSString, NSRange, String) -> InputFieldShouldChangeResult)?
         let inputFieldShouldChangeCharactersIdentifiableAction: ((AnyHashable, NSString, NSRange, String) -> InputFieldShouldChangeResult)?
-        let updateValue: (String) -> Void
 
-        // Required for checking the recent value of textfield (for cases when system clears the actual value).
-        private(set) lazy var textFieldValue: String = value {
-            didSet {
-                updateValue(textFieldValue)
-            }
-        }
+        // Required for differentiating between actual value and binding value.
+        fileprivate var textFieldValue: String
 
         init(
             identifier: AnyHashable?,
-            value: String,
+            value: Binding<String>,
             inputFieldBeginEditingAction: @escaping () -> Void,
             inputFieldBeginEditingIdentifiableAction: @escaping (AnyHashable) -> Void,
             inputFieldEndEditingAction: @escaping () -> Void,
@@ -133,11 +120,11 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
             inputFieldShouldReturnAction: (() -> Bool)?,
             inputFieldShouldReturnIdentifiableAction: ((AnyHashable) -> Bool)?,
             inputFieldShouldChangeCharactersAction: ((NSString, NSRange, String) -> InputFieldShouldChangeResult)?,
-            inputFieldShouldChangeCharactersIdentifiableAction: ((AnyHashable, NSString, NSRange, String) -> InputFieldShouldChangeResult)?,
-            replaceValue: @escaping (String) -> Void
+            inputFieldShouldChangeCharactersIdentifiableAction: ((AnyHashable, NSString, NSRange, String) -> InputFieldShouldChangeResult)?
         ) {
             self.identifier = identifier
-            self.value = value
+            self._value = value
+            self.textFieldValue = value.wrappedValue
             self.inputFieldBeginEditingAction = inputFieldBeginEditingAction
             self.inputFieldBeginEditingIdentifiableAction = inputFieldBeginEditingIdentifiableAction
             self.inputFieldEndEditingAction = inputFieldEndEditingAction
@@ -146,23 +133,24 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
             self.inputFieldShouldReturnIdentifiableAction = inputFieldShouldReturnIdentifiableAction
             self.inputFieldShouldChangeCharactersAction = inputFieldShouldChangeCharactersAction
             self.inputFieldShouldChangeCharactersIdentifiableAction = inputFieldShouldChangeCharactersIdentifiableAction
-            self.updateValue = replaceValue
         }
 
         public func textFieldDidBeginEditing(_ textField: UITextField) {
-            inputFieldBeginEditingAction()
+            Task { @MainActor in
+                inputFieldBeginEditingAction()
 
-            if let identifier {
-                inputFieldBeginEditingIdentifiableAction(identifier)
+                if let identifier {
+                    inputFieldBeginEditingIdentifiableAction(identifier)
+                }
             }
         }
 
         public func textFieldDidEndEditing(_ textField: UITextField) {
-            DispatchQueue.main.async { [weak self] in
-                self?.inputFieldEndEditingAction()
+            Task { @MainActor in
+                inputFieldEndEditingAction()
 
-                if let identifier = self?.identifier {
-                    self?.inputFieldEndEditingIdentifiableAction(identifier)
+                if let identifier {
+                    inputFieldEndEditingIdentifiableAction(identifier)
                 }
             }
         }
@@ -200,15 +188,24 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
             switch result {
                 case .accept:
                     // Accept the proposed change
-                    textFieldValue = text.replacingCharacters(in: range, with: string)
+                    let newValue = text.replacingCharacters(in: range, with: string)
+                    replaceValue(with: newValue)
                     return true
-                case .replace(let modifiedTextFieldValue):
-                    // Refuse the proposed change, replace the textfield with modified value
-                    textField.text = modifiedTextFieldValue
-                    textFieldValue = modifiedTextFieldValue
+                case .replace(let modifiedValue):
+                    // Refuse the proposed change, replace the text with modified value
+                    textField.text = modifiedValue
+                    replaceValue(with: modifiedValue)
                     return false
                 case .reject:
                     return false
+            }
+        }
+
+        func replaceValue(with text: String) {
+            textFieldValue = text
+
+            Task { @MainActor in
+                value = textFieldValue
             }
         }
     }

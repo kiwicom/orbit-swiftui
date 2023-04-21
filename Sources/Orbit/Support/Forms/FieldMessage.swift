@@ -14,14 +14,13 @@ public struct FieldMessage: View {
                 if let icon = message.icon {
                     Icon(icon, size: .small)
                         .foregroundColor(nil)
-                        .accessibility(.fieldMessageIcon)
+                        .accessibility(hidden: true)
                     // A workaround for current Orbit non-matching icon size
                         .alignmentGuide(.firstTextBaseline) { $0.height * 0.82 }
                 }
 
                 Text(message.description)
                     .foregroundColor(nil)
-                    .accessibility(.fieldMessage)
             }
             .foregroundColor(message.color)
             .transition(.opacity.animation(.easeOut(duration: 0.2)))
@@ -33,13 +32,6 @@ public struct FieldMessage: View {
         self.message = message
         self.spacing = spacing
     }
-}
-
-// MARK: - Identifiers
-public extension AccessibilityID {
-
-    static let fieldMessage         = Self(rawValue: "orbit.field.message")
-    static let fieldMessageIcon     = Self(rawValue: "orbit.field.message.icon")
 }
 
 // MARK: - Previews
