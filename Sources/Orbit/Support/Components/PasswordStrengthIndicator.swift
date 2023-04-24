@@ -9,12 +9,12 @@ public struct PasswordStrengthIndicator: View {
         if text.isEmpty == false {
             HStack(spacing: .medium) {
                 indicator
+                    .animation(.easeOut, value: passwordStrength)
 
                 Text(text, size: .small)
-                    .foregroundColor(color)
+                    .textColor(color)
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }
-            .animation(.easeOut, value: passwordStrength)
             .accessibility(.passwordStrengthIndicator)
         }
     }

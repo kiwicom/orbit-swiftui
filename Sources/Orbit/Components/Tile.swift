@@ -76,7 +76,7 @@ public struct Tile<Content: View>: View {
                         .accessibility(.tileTitle)
 
                     Text(description)
-                        .foregroundColor(descriptionColor)
+                        .textColor(descriptionColor)
                         .accessibility(.tileDescription)
                 }
 
@@ -104,6 +104,7 @@ public struct Tile<Content: View>: View {
                 EmptyView()
             case .buttonLink(let label, let style):
                 ButtonLink(label, style: style, action: {})
+                    .textColor(nil)
                     .disabled(true)
                     .padding(.vertical, -.xxxSmall)
                     .accessibility(.tileDisclosureButtonLink)
@@ -116,7 +117,7 @@ public struct Tile<Content: View>: View {
                 EmptyView()
             case .icon(let icon, _):
                 Icon(icon)
-                    .foregroundColor(.inkNormal)
+                    .iconColor(.inkNormal)
                     .padding(.leading, .xSmall)
                     .accessibility(.tileDisclosureIcon)
         }
@@ -275,9 +276,14 @@ struct TilePreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Tile(title, description: description, icon: .grid, action: {})
-            .padding(.medium)
-            .previewDisplayName()
+        VStack(spacing: .medium) {
+            Tile(title, description: description, icon: .grid, action: {})
+            Tile(title, description: description, icon: .grid, action: {}) {
+                contentPlaceholder
+            }
+        }
+        .padding(.medium)
+        .previewDisplayName()
     }
 
     static var idealSize: some View {

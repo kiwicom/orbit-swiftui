@@ -15,7 +15,7 @@ public enum Gradient {
         }
     }
     
-    public var foregroundColor: Color {
+    public var textColor: Color {
         switch self {
             case .bundleBasic:              return .bundleBasic
             case .bundleMedium:             return .bundleMedium

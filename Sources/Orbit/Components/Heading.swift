@@ -14,7 +14,7 @@ public struct Heading: View, FormattedTextBuildable {
     // Builder properties
     var baselineOffset: CGFloat?
     var fontWeight: Font.Weight?
-    var foregroundColor: Color?
+    var color: Color?
     var strikethrough: Bool?
     var kerning: CGFloat?
     var accentColor: Color?
@@ -43,12 +43,12 @@ public struct Heading: View, FormattedTextBuildable {
         .monospacedDigit(isMonospacedDigit)
         .strikethrough(strikethrough)
         .underline(isUnderline)
-        .foregroundColor(foregroundColor)
+        .textColor(color)
     }
 
-    func text(sizeCategory: ContentSizeCategory, textAccentColor: Color?) -> SwiftUI.Text {
+    func text(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text {
         textContent
-            .text(sizeCategory: sizeCategory, textAccentColor: textAccentColor)
+            .text(textRepresentableEnvironment: textRepresentableEnvironment)
     }
 }
 
@@ -74,8 +74,7 @@ public extension Heading {
         self.style = style
         self.isSelectable = isSelectable
 
-        // Set a default color to use in case it is not provided by a call site
-        self.foregroundColor = .inkDark
+        // Set default weight
         self.fontWeight = style.weight
     }
 }
@@ -141,10 +140,10 @@ public extension Heading {
 // MARK: - TextRepresentable
 extension Heading: TextRepresentable {
 
-    public func swiftUIText(sizeCategory: ContentSizeCategory, textAccentColor: Color?) -> SwiftUI.Text? {
+    public func swiftUIText(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
         if content.isEmpty { return nil }
 
-        return text(sizeCategory: sizeCategory, textAccentColor: textAccentColor)
+        return text(textRepresentableEnvironment: textRepresentableEnvironment)
     }
 }
 
@@ -176,7 +175,7 @@ struct HeadingPreviews: PreviewProvider {
         VStack(alignment: .trailing, spacing: .medium) {
             Group {
                 Heading("Multiline\nlong heading", style: .title2)
-                    .foregroundColor(.inkNormal)
+                    .textColor(.inkNormal)
                     .textAccentColor(.greenDark)
                     .kerning(5)
                     .strikethrough()
@@ -189,7 +188,7 @@ struct HeadingPreviews: PreviewProvider {
                     .underline()
 
                 Heading("Multiline\n<applink1>long</applink1> heading", style: .title2)
-                    .foregroundColor(.orangeNormal)
+                    .textColor(.orangeNormal)
                     .textAccentColor(.blueDark)
                     .kerning(5)
                     .strikethrough()
@@ -199,7 +198,7 @@ struct HeadingPreviews: PreviewProvider {
             .lineSpacing(10)
             .border(.cloudNormal)
         }
-        .foregroundColor(.blueNormal)
+        .textColor(.blueNormal)
         .padding(.medium)
         .previewDisplayName()
     }
@@ -213,7 +212,7 @@ struct HeadingPreviews: PreviewProvider {
             formattedHeading("<ref><u>Title 5</u></ref> with a very very very very very large and <strong>multiline</strong> content", style: .title5, color: .blueDarker)
             formattedHeading("<ref><u>TITLE 6</u></ref> WITH A VERY VERY VERY VERY VERY LARGE AND <strong>MULTILINE</strong> CONTENT", style: .title6, color: nil)
         }
-        .foregroundColor(.inkNormal)
+        .textColor(.inkNormal)
         .padding(.medium)
         .previewDisplayName()
     }
@@ -276,14 +275,14 @@ struct HeadingPreviews: PreviewProvider {
             Heading(" <ref><u>Title 4</u></ref> with <strong>multiline</strong>", style: .title4)
             +
             Heading(" <ref><u>Title 5</u></ref> with <strong>multiline</strong>", style: .title5)
-                .foregroundColor(.greenDark)
+                .textColor(.greenDark)
                 .textAccentColor(.blueDarker)
             +
             Heading(" <ref><u>TITLE 6</u></ref> WITH <strong>MULTILINE</strong> CONTENT", style: .title6)
             +
             Text(" and Text")
         }
-        .foregroundColor(.inkDark)
+        .textColor(.inkDark)
         .padding(.medium)
         .previewDisplayName()
     }
@@ -291,11 +290,11 @@ struct HeadingPreviews: PreviewProvider {
     static func formattedHeading(_ content: String, style: Heading.Style, color: Color? = .inkDark) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
             Heading(content, style: style)
-                .foregroundColor(color)
+                .textColor(color)
                 .textAccentColor(.blueNormal)
             Spacer()
             Text("\(Int(style.size))/\(Int(style.lineHeight))")
-                .foregroundColor(.inkNormal)
+                .textColor(.inkNormal)
                 .fontWeight(.medium)
         }
     }

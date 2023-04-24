@@ -60,7 +60,7 @@ public struct Switch: View {
                 isOn ? .lock : .lockOpen,
                 size: .custom(Icon.Size.small.value * sizeCategory.controlRatio)
             )
-            .foregroundColor(iconTint)
+            .iconColor(iconTint)
             .environment(\.sizeCategory, .large)
         } else {
             Circle()

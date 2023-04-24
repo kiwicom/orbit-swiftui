@@ -78,7 +78,7 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
                                 .accessibility(.choiceTileTitle)
 
                             Text(description)
-                                .foregroundColor(.inkNormal)
+                                .textColor(.inkNormal)
                                 .accessibility(.choiceTileDescription)
                         }
                         // A workaround for a layout issue when applied to headerContent
@@ -107,7 +107,7 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
                             .accessibility(.choiceTileTitle)
 
                         Text(description)
-                            .foregroundColor(.inkNormal)
+                            .textColor(.inkNormal)
                             .accessibility(.choiceTileDescription)
 
                         headerContent
@@ -352,7 +352,7 @@ struct ChoiceTilePreviews: PreviewProvider {
                     // No action
                 } content: {
                     Text("Intrinsic Content")
-                        .foregroundColor(.inkNormal)
+                        .textColor(.inkNormal)
                         .padding(.horizontal, .xxLarge)
                         .background(Color.productLightActive.opacity(0.3))
                 }

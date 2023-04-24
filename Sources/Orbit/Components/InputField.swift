@@ -106,7 +106,7 @@ public struct InputField: View, TextFieldBuildable {
     @ViewBuilder private var compactLabel: some View {
         if style == .compact {
             Text(label)
-                .foregroundColor(compactLabelColor)
+                .textColor(compactLabelColor)
                 .fontWeight(.medium)
                 .padding(.leading, isPrefixEmpty ? .small : 0)
         }

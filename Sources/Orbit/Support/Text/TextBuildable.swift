@@ -7,7 +7,7 @@ protocol TextBuildable {
 
     var baselineOffset: CGFloat? { get set }
     var fontWeight: Font.Weight? { get set }
-    var foregroundColor: Color? { get set }
+    var color: Color? { get set }
 }
 
 protocol FormattedTextBuildable: TextBuildable {
@@ -44,9 +44,10 @@ public extension Text {
     /// Returns a modified Orbit text with provided color.
     ///
     /// - Parameters:
-    ///   - color: The color to use when displaying this text. When the value is `nil`, the environment value will be used instead.
-    func foregroundColor(_ color: Color?) -> Self {
-        set(\.foregroundColor, to: color)
+    ///   - color: The color to use when displaying this text.
+    ///   When the value is `nil`,  the environment value `textColor` or the default `inkDark` color will be used in this order.
+    func textColor(_ color: Color?) -> Self {
+        set(\.color, to: color)
     }
 
     /// Returns a modified Orbit text with provided accent color.
@@ -185,9 +186,10 @@ public extension Heading {
     /// Returns a modified Orbit heading with provided color.
     ///
     /// - Parameters:
-    ///   - color: The color to use when displaying this heading. When the value is `nil`, the environment value will be used instead.
-    func foregroundColor(_ color: Color?) -> Self {
-        set(\.foregroundColor, to: color)
+    ///   - color: The color to use when displaying this heading.
+    ///   When the value is `nil`,  the environment value `textColor` or the default `inkDark` color will be used in this order.
+    func textColor(_ color: Color?) -> Self {
+        set(\.color, to: color)
     }
 
     /// Returns a modified Orbit heading with applied vertical offset for the text relative to its baseline.
@@ -324,8 +326,9 @@ public extension Icon {
     /// Returns a modified Orbit icon with provided color.
     ///
     /// - Parameters:
-    ///   - color: The color to use when displaying this icon. When the value is `nil`, the environment value will be used instead.
-    func foregroundColor(_ color: Color?) -> Self {
-        set(\.foregroundColor, to: color)
+    ///   - color: The color to use when displaying this icon.
+    ///   When the value is `nil`,  the environment values `iconColor`, `textColor` or the default `inkDark` color will be used in this order.
+    func iconColor(_ color: Color?) -> Self {
+        set(\.color, to: color)
     }
 }

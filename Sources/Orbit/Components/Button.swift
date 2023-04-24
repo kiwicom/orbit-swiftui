@@ -7,7 +7,10 @@ import SwiftUI
 public struct Button: View {
 
     @Environment(\.status) private var status
+    @Environment(\.iconColor) private var iconColor
     @Environment(\.idealSize) private var idealSize
+    @Environment(\.textColor) private var textColor
+    @Environment(\.textLinkColor) private var textLinkColor
 
     let label: String
     let icon: Icon.Content?
@@ -32,7 +35,7 @@ public struct Button: View {
 
                     HStack(spacing: .xSmall) {
                         Icon(icon, size: size.textSize.iconSize)
-                            .foregroundColor(foregroundColor)
+                            .iconColor(iconColor)
                         textWrapper
                     }
 
@@ -41,8 +44,8 @@ public struct Button: View {
                     }
 
                     Icon(disclosureIcon, size: size.textSize.iconSize)
-                        .foregroundColor(foregroundColor)
                 }
+                .textColor(resolvedTextColor)
                 .padding(.vertical, size.verticalPadding)
                 .padding(.leading, leadingPadding)
                 .padding(.trailing, trailingPadding)
@@ -64,12 +67,15 @@ public struct Button: View {
 
     @ViewBuilder var text: some View {
         Text(label, size: size.textSize)
-            .foregroundColor(foregroundColor)
             .fontWeight(.medium)
-            .textLinkColor(.custom(foregroundColor))
+            .textLinkColor(textLinkColor ?? .custom(resolvedTextColor))
     }
 
-    public var foregroundColor: Color {
+    var resolvedTextColor: Color {
+        textColor ?? styleTextColor
+    }
+
+    var styleTextColor: Color {
         switch style {
             case .primary:                      return .whiteNormal
             case .primarySubtle:                return .productDark
@@ -266,7 +272,7 @@ extension Button {
                 case .criticalSubtle:               Color.redLightActive
                 case .status(let status, false):    (status ?? defaultStatus).activeColor
                 case .status(let status, true):     (status ?? defaultStatus).lightActiveColor
-                case .gradient(let gradient):       gradient.foregroundColor
+                case .gradient(let gradient):       gradient.textColor
             }
         }
 

@@ -47,7 +47,7 @@ struct TimelineIndicator: View {
             case .future:
                 Circle()
                     .strokeBorder(type.color, lineWidth: 2)
-                    .background(Circle().fill(Color.whiteNormal))
+                    .background(Circle().fill(.whiteNormal))
                     .frame(width: .small * sizeCategory.ratio, height: .small * sizeCategory.ratio)
             case .present(nil):
                 ZStack(alignment: .center) {
@@ -61,7 +61,7 @@ struct TimelineIndicator: View {
 
                     Circle()
                         .strokeBorder(type.color, lineWidth: 2)
-                        .background(Circle().fill(Color.whiteNormal))
+                        .background(Circle().fill(.whiteNormal))
                         .frame(width: .small * sizeCategory.ratio, height: .small * sizeCategory.ratio)
 
                     Circle()
@@ -73,8 +73,8 @@ struct TimelineIndicator: View {
                 }
             case .present(.warning), .present(.critical), .present(.success), .past:
                 Icon(type.icon, size: .small)
-                    .foregroundColor(type.color)
-                    .background(Circle().fill(Color.whiteNormal).padding(2))
+                    .iconColor(type.color)
+                    .background(Circle().fill(.whiteNormal).padding(2))
         }
     }
 

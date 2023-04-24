@@ -29,7 +29,7 @@ public struct Badge: View {
                 .textLinkColor(.custom(labelColor))
                 .frame(minWidth: minTextWidth)
             }
-            .foregroundColor(labelColor)
+            .textColor(labelColor)
             .padding(.vertical, .xxSmall) // = 24 height @ normal size
             .padding(.horizontal, .xSmall)
             .background(

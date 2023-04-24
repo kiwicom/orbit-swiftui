@@ -13,13 +13,13 @@ import Orbit
         .frame(height: 80)
         .overlay(
             Text("Custom content")
-                .foregroundColor(.inkNormal)
+                .textColor(.inkNormal)
         )
 }
 
 @ViewBuilder var intrinsicContentPlaceholder: some View {
     Text("Content")
-        .foregroundColor(.inkNormal)
+        .textColor(.inkNormal)
         .padding(.medium)
         .background(Color.productLightActive.opacity(0.3))
 }

@@ -7,7 +7,8 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/radio/)
 public struct Radio: View {
 
-    @Environment(\.isEnabled) var isEnabled
+    @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.textColor) private var textColor
 
     let title: String
     let description: String
@@ -24,12 +25,12 @@ public struct Radio: View {
                 if title.isEmpty == false || description.isEmpty == false {
                     VStack(alignment: .leading, spacing: 1) {
                         Text(title)
-                            .foregroundColor(labelColor)
+                            .textColor(labelColor)
                             .fontWeight(.medium)
                             .accessibility(.radioTitle)
                         
                         Text(description, size: .small)
-                            .foregroundColor(descriptionColor)
+                            .textColor(descriptionColor)
                             .accessibility(.radioDescription)
                     }
                 }
@@ -41,11 +42,15 @@ public struct Radio: View {
     }
 
     var labelColor: Color {
-        isEnabled ? .inkDark : .cloudDarkHover
+        isEnabled
+            ? textColor ?? .inkDark
+            : .cloudDarkHover
     }
 
     var descriptionColor: Color {
-        isEnabled ? .inkNormal : .cloudDarkHover
+        isEnabled
+            ? .inkNormal
+            : .cloudDarkHover
     }
 }
 

@@ -14,13 +14,13 @@ extension PreviewProvider {
             .frame(height: 80)
             .overlay(
                 Text("Custom content")
-                    .foregroundColor(.inkNormal)
+                    .textColor(.inkNormal)
             )
     }
 
     @ViewBuilder static var intrinsicContentPlaceholder: some View {
         Text("Content")
-            .foregroundColor(.inkNormal)
+            .textColor(.inkNormal)
             .padding(.medium)
             .background(Color.productLightActive.opacity(0.3))
     }

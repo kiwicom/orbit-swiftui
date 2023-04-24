@@ -88,7 +88,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                             .accessibility(.listChoiceTitle)
                         
                         Text(description, size: .small)
-                            .foregroundColor(.inkNormal)
+                            .textColor(.inkNormal)
                             .accessibility(.listChoiceDescription)
                     }
                 }
@@ -104,7 +104,7 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
                 EmptyView()
             case .disclosure(let color):
                 Icon(.chevronForward)
-                    .foregroundColor(color)
+                    .textColor(color)
                     .padding(.leading, -.xSmall)
             case .button(let type):
                 disclosureButton(type: type)

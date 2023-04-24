@@ -20,7 +20,8 @@ public struct FieldMessage: View {
 
                 Text(message.description)
             }
-            .foregroundColor(message.color)
+            .iconColor(nil)
+            .textColor(message.color)
             .transition(.opacity.animation(.easeOut(duration: 0.2)))
             .accessibilityElement(children: .combine)
         }

@@ -18,6 +18,7 @@ public struct EmptyState: View {
             texts
             
             actions
+                .textColor(nil)
         }
         .accessibilityElement(children: .contain)
     }
@@ -29,7 +30,7 @@ public struct EmptyState: View {
                     .accessibility(.emptyStateTitle)
                 
                 Text(description)
-                    .foregroundColor(.inkNormal)
+                    .textColor(.inkNormal)
                     .accessibility(.emptyStateDescription)
             }
             .multilineTextAlignment(.center)

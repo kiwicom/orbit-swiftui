@@ -13,14 +13,14 @@ public struct StepperButton: View {
     public var body: some View {
         SwiftUI.Button(action: action) {
             Icon(.symbol(icon))
-                .foregroundColor(color)
+                .textColor(color)
         }
         .frame(width: size, height: size)
         .buttonStyle(OrbitStyle(style: style))
     }
 
     var color: Color {
-        isEnabled ? style.foregroundActiveColor : style.foregroundColor
+        isEnabled ? style.textActiveColor : style.textColor
     }
 
     var size: CGFloat {

@@ -43,11 +43,11 @@ extension Tab {
         case underlined(Color)
         case underlinedGradient(Orbit.Gradient)
 
-        public var textColor: Color {
+        public var textColor: Color? {
             switch self {
-                case .default:                              return .inkDark
+                case .default:                              return nil
                 case .underlined(let color):                return color
-                case .underlinedGradient(let gradient):     return gradient.foregroundColor
+                case .underlinedGradient(let gradient):     return gradient.textColor
             }
         }
 
@@ -123,9 +123,9 @@ struct TabPreviews: PreviewProvider {
         HStack(spacing: 0) {
             Group {
                 Tab("Light", style: .underlinedGradient(.bundleBasic))
-                    .foregroundColor(.bundleBasic)
+                    .textColor(.bundleBasic)
                 Tab("Comfort longer option", style: .underlinedGradient(.bundleMedium))
-                    .foregroundColor(.bundleMedium)
+                    .textColor(.bundleMedium)
                 Tab("All", style: .underlinedGradient(.bundleTop))
             }
             .border(.cloudNormal)

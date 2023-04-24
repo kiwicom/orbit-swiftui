@@ -5,8 +5,13 @@ import SwiftUI
 /// Use the `+` operator to concatenate two `TextRepresentable` elements.
 public protocol TextRepresentable {
 
-    func swiftUIText(
-        sizeCategory: ContentSizeCategory,
-        textAccentColor: Color?
-    ) -> SwiftUI.Text?
+    func swiftUIText(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text?
+}
+
+/// Environment values required for proper formatting of concatenated Orbit text components.
+public struct TextRepresentableEnvironment {
+    let iconColor: Color?
+    let sizeCategory: ContentSizeCategory
+    let textAccentColor: Color?
+    let textColor: Color?
 }

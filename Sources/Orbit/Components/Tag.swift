@@ -9,7 +9,8 @@ public struct Tag: View {
     public static let horizontalPadding: CGFloat = .xSmall
     public static let verticalPadding: CGFloat = 6 // = 32 height @ normal size text size
 
-    @Environment(\.idealSize) var idealSize
+    @Environment(\.idealSize) private var idealSize
+    @Environment(\.textColor) private var textColor
 
     let label: String
     let icon: Icon.Content?
@@ -44,12 +45,21 @@ public struct Tag: View {
                             Spacer(minLength: 0)
                         }
                     }
+                    .textColor(textColor ?? labelColor)
                     .padding(.vertical, Self.verticalPadding)
                 }
             )
             .buttonStyle(
                 OrbitStyle(style: style, isFocused: isFocused, isSelected: isSelected, isActive: isActive)
             )
+        }
+    }
+
+    var labelColor: Color {
+        switch (isFocused, isSelected) {
+            case (_, true):                 return .whiteNormal
+            case (true, false):             return .blueDarker
+            case (false, false):            return .inkDark
         }
     }
 
@@ -110,31 +120,21 @@ extension Tag {
         public func makeBody(configuration: Configuration) -> some View {
             HStack(spacing: .xSmall) {
                 configuration.label
-                    .foregroundColor(labelColor)
                     .lineLimit(1)
 
                 if case .removable(let removeAction) = style {
                     Icon(.closeCircle, size: .small)
-                        .foregroundColor(iconColor(isPressed: configuration.isPressed))
+                        .iconColor(iconColor(isPressed: configuration.isPressed))
                         .onTapGesture(perform: removeAction)
                         .accessibility(addTraits: .isButton)
                 }
             }
-            .foregroundColor(labelColor)
             .padding(.horizontal, Tag.horizontalPadding)
             .background(
                 backgroundColor(isPressed: configuration.isPressed)
                     .animation(nil)
             )
             .cornerRadius(BorderRadius.default)
-        }
-
-        var labelColor: Color {
-            switch (isFocused, isSelected) {
-                case (_, true):                 return .whiteNormal
-                case (true, false):             return .blueDarker
-                case (false, false):            return .inkDark
-            }
         }
 
         /// Creates ButtonStyle matching Orbit Tag component.

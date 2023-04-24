@@ -23,10 +23,10 @@ public struct TimelineItem<Footer: View>: View {
             
             VStack(alignment: .leading, spacing: .xxSmall) {
                 header
-                    .foregroundColor(type.textColor)
+                    .textColor(type.textColor)
 
                 Text(description, size: .normal)
-                    .foregroundColor(type.textColor)
+                    .textColor(type.textColor)
 
                 footer
             }
@@ -258,7 +258,7 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
                         "1 Passenger must check in with the airline for a possible fee",
                         size: .custom(50)
                     )
-                    .foregroundColor(TimelineItemType.present(.warning).color)
+                    .textColor(TimelineItemType.present(.warning).color)
                     .bold()
                     .padding(.leading, .xSmall)
                 }

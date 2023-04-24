@@ -21,18 +21,18 @@ struct StorybookText {
 
             Group {
                 Text(multilineText)
-                    .foregroundColor(.greenDark)
+                    .textColor(.greenDark)
                     .background(Color.greenLight)
                 Text(multilineText)
-                    .foregroundColor(.blueDark)
+                    .textColor(.blueDark)
                     .background(Color.blueLight)
                 Text(multilineFormattedText)
-                    .foregroundColor(.greenDark)
+                    .textColor(.greenDark)
                     .textAccentColor(.orangeDark)
                     .background(Color.greenLight)
                 Text(multilineFormattedText)
                     .textAccentColor(.orangeDark)
-                    .foregroundColor(.blueDark)
+                    .textColor(.blueDark)
                     .background(Color.blueLight)
             }
             .multilineTextAlignment(.trailing)

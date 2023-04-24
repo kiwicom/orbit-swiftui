@@ -54,6 +54,7 @@ public struct Toast: View {
 public struct ToastContent: View {
 
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.textColor) private var textColor
 
     let description: String
     let icon: Icon.Content?
@@ -62,11 +63,10 @@ public struct ToastContent: View {
     public var body: some View {
         HStack(alignment: .top, spacing: .xSmall) {
             Icon(icon)
-                .foregroundColor(foregroundColor)
             Text(description)
-                .foregroundColor(foregroundColor)
             Spacer(minLength: 0)
         }
+        .textColor(textColor ?? foregroundColor)
         .padding(.small)
         .contentShape(Rectangle())
         .background(background)

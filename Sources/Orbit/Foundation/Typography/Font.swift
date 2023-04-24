@@ -67,10 +67,6 @@ public extension Font {
         return font
     }
 
-    private static func nonScalingSystemFont(size: CGFloat, weight: Font.Weight) -> Font {
-        .system(size: size, weight: weight)
-    }
-
     private static func customFont(_ name: String, size: CGFloat) -> Font {
         .custom(name, size: size)
     }

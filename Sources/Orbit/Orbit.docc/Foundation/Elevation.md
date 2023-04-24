@@ -20,7 +20,7 @@ Color.red
 
 // Pre-rendered level 3 elevation
 RoundedRectangle(cornerRadius: .small)
-    .fill(Color.blue)
+    .fill(.blue)
     .frame(width: 100, height: 100)
     .elevation(.level3, shape: .roundedRectangle(background: Color.blue, borderRadius: .small))
 ```

@@ -10,7 +10,7 @@ public struct SegmentedSwitch: View {
 
     let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
 
-    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.colorScheme) private var colorScheme
 
     @Binding private var selectedIndex: Int?
     let label: String

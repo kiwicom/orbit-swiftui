@@ -5,8 +5,9 @@ import SwiftUI
 /// - Important: Component expands horizontally to infinity.
 public struct Separator: View {
 
+    @Environment(\.textColor) private var textColor
+
     let label: String
-    let labelColor: Color
     let color: Color
     let thickness: CGFloat
 
@@ -18,7 +19,7 @@ public struct Separator: View {
                 leadingLine
 
                 Text(label, size: .small)
-                    .foregroundColor(labelColor)
+                    .textColor(textColor ?? .inkNormal)
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)
                     .layoutPriority(1)
@@ -58,12 +59,10 @@ public extension Separator {
     /// Creates Orbit Separator component.
     init(
         _ label: String = "",
-        labelColor: Color = .inkNormal,
         color: Color = .cloudNormal,
         thickness: Thickness = .default
     ) {
         self.label = label
-        self.labelColor = labelColor
         self.color = color
         self.thickness = thickness.value
     }
@@ -115,7 +114,8 @@ struct SeparatorPreviews: PreviewProvider {
 
     static var mix: some View {
         VStack(spacing: .xLarge) {
-            Separator("Custom colors", labelColor: .productDark, color: .blueNormal)
+            Separator("Custom colors", color: .blueNormal)
+                .textColor(.productDark)
             Separator("Separator with very very very very very long and multiline label")
             Separator("Hairline thickness", thickness: .hairline)
             Separator("Custom thickness", thickness: .custom(.xSmall))

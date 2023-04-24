@@ -74,7 +74,7 @@ struct StorybookIcon {
                 }
                 .border(.cloudLightActive, width: .hairline)
             }
-            .foregroundColor(.greenDark)
+            .textColor(.greenDark)
             .overlay(
                 Separator(color: .redNormal, thickness: .hairline),
                 alignment: .centerFirstTextBaseline
@@ -100,7 +100,7 @@ struct StorybookIcon {
                 + Icon(.orbit(.facebook))
                     .baselineOffset(.xxxSmall)
             )
-            .foregroundColor(.greenDark)
+            .textColor(.greenDark)
             .overlay(
                 Separator(color: .redNormal, thickness: .hairline),
                 alignment: .centerFirstTextBaseline
@@ -113,7 +113,7 @@ struct StorybookIcon {
                 HStack(alignment: .firstTextBaseline) {
                     Icon(.grid)
                     Icon(.grid)
-                        .foregroundColor(.blueNormal)
+                        .textColor(.blueNormal)
                     Icon(.grid)
                     Icon(.symbol(.grid))
                     Icon(.symbol(.grid, color: nil))
@@ -122,7 +122,7 @@ struct StorybookIcon {
                 HStack(alignment: .firstTextBaseline) {
                     Icon(sfSymbol)
                     Icon(sfSymbol)
-                        .foregroundColor(.blueNormal)
+                        .textColor(.blueNormal)
                     Icon(sfSymbol)
                     Icon(.sfSymbol(sfSymbol))
                     Icon(.sfSymbol(sfSymbol))
@@ -131,13 +131,13 @@ struct StorybookIcon {
                 HStack(alignment: .firstTextBaseline) {
                     Icon(.orbit(.navigateClose))
                     Icon(.orbit(.navigateClose))
-                        .foregroundColor(.blueNormal)
+                        .textColor(.blueNormal)
                     Icon(.orbit(.navigateClose))
                     Icon(.image(.orbit(.navigateClose)))
                     Icon(.image(.orbit(.navigateClose)))
                 }
             }
-            .foregroundColor(.greenNormalHover)
+            .textColor(.greenNormalHover)
         }
         .previewDisplayName()
     }
@@ -145,7 +145,7 @@ struct StorybookIcon {
     static func size(iconSize: Icon.Size, textSize: Orbit.Text.Size, color: Color) -> some View {
         HStack(spacing: .xSmall) {
             Text("\(Int(iconSize.value))")
-                .foregroundColor(color)
+                .textColor(color)
                 .bold()
 
             HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
