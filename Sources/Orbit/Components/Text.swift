@@ -2,10 +2,11 @@ import SwiftUI
 
 /// Renders text blocks in styles to fit the purpose.
 ///
-/// Can contain html formatted text that will be rendered as interactive ``TextLink`` layer.
+/// A view that displays one or more lines of read-only text. Text content supports html tags `<strong>`, `<u>`, `<ref>` for text formatting.
+/// The `<a href>` and `<applink>` tags support embedding interactive ``TextLink``s withing the text.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/text/)
-/// - Important: Component has fixed vertical size.
+/// - Important: Component has fixed vertical size. When the content is empty, the component results in `EmptyView`.
 public struct Text: View, FormattedTextBuildable {
 
     @Environment(\.multilineTextAlignment) private var multilineTextAlignment

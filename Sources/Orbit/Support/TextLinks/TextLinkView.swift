@@ -1,8 +1,7 @@
 import UIKit
 import SwiftUI
 
-/// Duplicate and stripped down version of AttributedTextView from SharedUI.
-@available(iOS, deprecated: 15.0, message: "Will be replaced with a native markdown-enabled Text component")
+/// A view representing `TextLink` layer.
 public final class TextLinkView: UITextView, UITextViewDelegate {
 
     let action: TextLink.Action
