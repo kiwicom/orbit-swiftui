@@ -65,14 +65,14 @@ extension Stepper {
         case primary
         case secondary
         
-        public var foregroundColor: Color {
+        public var textColor: Color {
             switch self {
                 case .primary:                  return .white.opacity(0.5)
                 case .secondary:                return .inkDark.opacity(0.5)
             }
         }
         
-        public var foregroundActiveColor: Color {
+        public var textActiveColor: Color {
             switch self {
                 case .primary:                  return .white
                 case .secondary:                return .inkDark

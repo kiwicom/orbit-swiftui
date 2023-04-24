@@ -47,7 +47,7 @@ extension NavigationButton {
 
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .foregroundColor(configuration.isPressed ? .inkLight : .inkDark)
+                .textColor(configuration.isPressed ? .inkLight : .inkDark)
         }
     }
 }

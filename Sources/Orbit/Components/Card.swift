@@ -55,7 +55,7 @@ public struct Card<Content: View>: View {
                         .accessibility(.cardTitle)
                     
                     Text(description)
-                        .foregroundColor(.inkNormal)
+                        .textColor(.inkNormal)
                         .accessibility(.cardDescription)
                 }
 
@@ -67,6 +67,7 @@ public struct Card<Content: View>: View {
                     case .buttonLink(let label, let style, let action):
                         if label.isEmpty == false {
                             ButtonLink(label, style: style, action: action)
+                                .textColor(nil)
                                 .padding(.leading, .xxxSmall)
                                 .accessibility(.cardActionButtonLink)
                         }

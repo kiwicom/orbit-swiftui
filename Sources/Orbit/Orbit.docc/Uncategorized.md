@@ -54,7 +54,3 @@ Supporting types and components under development.
 - ``IDPreferenceKey``
 - ``IDPreference``
 - ``HorizontalScrollViewProxy``
-
-### Deprecated
-
-- ``TextLinkView``

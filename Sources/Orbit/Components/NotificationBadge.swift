@@ -7,6 +7,7 @@ public struct NotificationBadge: View {
 
     @Environment(\.status) private var status
     @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.textColor) private var textColor
 
     let content: Content
     let style: Badge.Style
@@ -15,7 +16,7 @@ public struct NotificationBadge: View {
         if isEmpty == false {
             contentView
                 .padding(.xxSmall) // = 24 height @ normal size
-                .foregroundColor(labelColor)
+                .textColor(resolvedTextColor)
                 .background(
                     background
                         .clipShape(Circle())
@@ -28,13 +29,11 @@ public struct NotificationBadge: View {
         switch content {
             case .text(let text):
                 Text(text, size: .small)
-                    .foregroundColor(nil)
                     .fontWeight(.medium)
-                    .textLinkColor(.custom(labelColor))
+                    .textLinkColor(.custom(resolvedTextColor))
                     .frame(minWidth: minTextWidth)
             case .icon(let icon):
                 Icon(icon, size: .small)
-                    .foregroundColor(nil)
         }
     }
 
@@ -48,6 +47,10 @@ public struct NotificationBadge: View {
             case .custom(_, _, let backgroundColor):    backgroundColor
             case .gradient(let gradient):               gradient.background
         }
+    }
+
+    var resolvedTextColor: Color {
+        textColor ?? labelColor
     }
 
     var labelColor: Color {

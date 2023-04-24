@@ -83,7 +83,7 @@ struct StorybookTypography {
                 .fontWeight(weight)
             Spacer()
             Text("\(Int(size.value))/\(Int(size.lineHeight))")
-                .foregroundColor(.inkNormal)
+                .textColor(.inkNormal)
                 .fontWeight(.medium)
         }
     }
@@ -116,7 +116,7 @@ struct StorybookTypography {
             Heading(content, style: style)
             Spacer()
             Text("\(Int(style.size))/\(Int(style.lineHeight))")
-                .foregroundColor(.inkNormal)
+                .textColor(.inkNormal)
                 .fontWeight(.medium)
         }
     }

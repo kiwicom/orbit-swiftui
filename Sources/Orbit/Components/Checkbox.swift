@@ -8,6 +8,7 @@ import SwiftUI
 public struct Checkbox: View {
 
     @Environment(\.isEnabled) var isEnabled
+    @Environment(\.textColor) var textColor
 
     let title: String
     let description: String
@@ -24,12 +25,12 @@ public struct Checkbox: View {
                 if title.isEmpty == false || description.isEmpty == false {
                     VStack(alignment: .leading, spacing: 1) {
                         Text(title)
-                            .foregroundColor(labelColor)
+                            .textColor(labelColor)
                             .fontWeight(.medium)
                             .accessibility(.checkboxTitle)
                         
                         Text(description, size: .small)
-                            .foregroundColor(descriptionColor)
+                            .textColor(descriptionColor)
                             .accessibility(.checkboxDescription)
                     }
                 }
@@ -41,11 +42,15 @@ public struct Checkbox: View {
     }
 
     var labelColor: Color {
-        isEnabled ? .inkDark : .cloudDarkHover
+        isEnabled
+            ? textColor ?? .inkDark
+            : .cloudDarkHover
     }
 
     var descriptionColor: Color {
-        isEnabled ? .inkNormal : .cloudDarkHover
+        isEnabled
+            ? .inkNormal
+            : .cloudDarkHover
     }
 }
 
@@ -106,7 +111,7 @@ public extension Checkbox {
                 )
                 .overlay(
                     Icon(.check, size: .small)
-                        .foregroundColor(isEnabled ? .whiteNormal : .cloudNormal)
+                        .textColor(isEnabled ? .whiteNormal : .cloudNormal)
                         .opacity(isChecked ? 1 : 0)
                 )
                 .overlay(

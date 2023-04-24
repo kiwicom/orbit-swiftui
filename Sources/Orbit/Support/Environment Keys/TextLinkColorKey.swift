@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct TextLinkColorKey: EnvironmentKey {
-    static var defaultValue: TextLink.Color? = .primary
+    static var defaultValue: TextLink.Color? = nil
 }
 
 public extension EnvironmentValues {

@@ -8,7 +8,7 @@ public struct Select: View {
 
     let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
 
-    @Environment(\.isEnabled) var isEnabled: Bool
+    @Environment(\.isEnabled) private var isEnabled: Bool
 
     @Binding var messageHeight: CGFloat
     
@@ -63,8 +63,7 @@ public struct Select: View {
 
     @ViewBuilder var buttonLabel: some View {
         Text(inputLabel)
-            .foregroundColor(nil)
-            .foregroundColor(textColor)
+            .textColor(textColor)
             .accessibility(.selectValue)
     }
 

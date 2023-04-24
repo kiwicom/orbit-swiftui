@@ -5,7 +5,9 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/buttonlink/)
 public struct ButtonLink: View {
 
+    @Environment(\.iconColor) private var iconColor
     @Environment(\.status) private var status
+    @Environment(\.textColor) private var textColor
 
     let label: String
     let style: Style
@@ -23,11 +25,9 @@ public struct ButtonLink: View {
                 label: {
                     HStack(spacing: .xSmall) {
                         Icon(icon)
-                            .foregroundColor(nil)
                             .fontWeight(.medium)
 
                         Text(label)
-                            .foregroundColor(nil)
                             .fontWeight(.medium)
                             // Ignore any potential `TextLinks`
                             .allowsHitTesting(false)
@@ -36,7 +36,7 @@ public struct ButtonLink: View {
                     .padding(.vertical, verticalPadding)
                 }
             )
-            .buttonStyle(OrbitStyle(colors: colors, size: size))
+            .buttonStyle(OrbitStyle(colors: textColors ?? colors, size: size))
         }
     }
 
@@ -46,8 +46,11 @@ public struct ButtonLink: View {
             case .secondary:            return (.inkDark, .cloudDark)
             case .critical:             return (.redNormal, .redLightActive)
             case .status(let status):   return (status ?? defaultStatus).colors
-            case .custom(let colors):   return colors
         }
+    }
+
+    public var textColors: (normal: Color, active: Color)? {
+        textColor.map { (normal: $0, active: $0.opacity(0.5)) }
     }
 
     var defaultStatus: Status {
@@ -93,15 +96,13 @@ public extension ButtonLink {
         case secondary
         case critical
         case status(_ status: Status?)
-        case custom(colors: (normal: Color, active: Color))
 
         public static func ==(lhs: Self, rhs: Self) -> Bool {
             switch (lhs, rhs) {
                 case
                     (.primary, .primary),
                     (.secondary, .secondary),
-                    (.critical, .critical),
-                    (.custom, .custom):
+                    (.critical, .critical):
                     return true
                 case (.status(let lstatus), .status(let rstatus)) where lstatus == rstatus:
                     return true
@@ -131,7 +132,7 @@ public extension ButtonLink {
 
         public func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .foregroundColor(configuration.isPressed ? colors.active : colors.normal)
+                .textColor(configuration.isPressed ? colors.active : colors.normal)
                 .frame(maxWidth: size.maxWidth)
                 .contentShape(Rectangle())
         }
@@ -219,7 +220,7 @@ struct ButtonLinkPreviews: PreviewProvider {
     static var formatted: some View {
         ButtonLink(
             "Custom <u>formatted</u> <ref>ref</ref> <applink1>https://localhost</applink1>",
-            style: .custom(colors: (normal: .blueDark, active: .blueNormal)),
+            style: .primary,
             icon: .kiwicom,
             action: {}
         )

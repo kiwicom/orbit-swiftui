@@ -22,7 +22,7 @@ public struct Dialog<Content: View>: View {
                     .accessibility(.dialogTitle)
 
                 Text(description)
-                    .foregroundColor(.inkNormal)
+                    .textColor(.inkNormal)
                     .accessibility(.dialogDescription)
             }
 
@@ -30,6 +30,7 @@ public struct Dialog<Content: View>: View {
 
             VStack(spacing: .xSmall) {
                 buttons
+                    .textColor(nil)
             }
         }
         .frame(maxWidth: Layout.readableMaxWidth / 2)

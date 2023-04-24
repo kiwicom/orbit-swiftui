@@ -29,7 +29,7 @@ struct StorybookIllustrations {
                     .frame(height: 150)
                 
                 Text(String(describing: illustration).titleCased, size: .small, isSelectable: true)
-                    .foregroundColor(.inkNormal)
+                    .textColor(.inkNormal)
             }
             .padding(.horizontal, .xxSmall)
             .padding(.vertical, .xSmall)

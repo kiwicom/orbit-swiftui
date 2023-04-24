@@ -9,13 +9,14 @@ import SwiftUI
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct SocialButton: View {
 
-    @Environment(\.sizeCategory) var sizeCategory
-    @Environment(\.colorScheme) var colorScheme
-    @Environment(\.idealSize) var idealSize
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.idealSize) private var idealSize
+    @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.textColor) private var textColor
 
-    let label: String
-    let service: Service
-    let action: () -> Void
+    private let label: String
+    private let service: Service
+    private let action: () -> Void
 
     public var body: some View {
         SwiftUI.Button(
@@ -25,12 +26,11 @@ public struct SocialButton: View {
             },
             label: {
                 HStack(spacing: .xSmall) {
-                    service.logo
+                    logo
                         .scaledToFit()
                         .frame(width: .large * sizeCategory.ratio)
 
                     Text(label, size: .normal)
-                        .foregroundColor(nil)
                         .fontWeight(.medium)
                         .padding(.vertical, Button.Size.default.verticalPadding)
 
@@ -39,17 +39,26 @@ public struct SocialButton: View {
                     }
 
                     Icon(.chevronForward, size: .large)
-                        .foregroundColor(nil)
+                        .iconColor(labelColor)
                 }
-                .foregroundColor(labelColor)
+                .textColor(textColor ?? labelColor)
             }
         )
         .buttonStyle(OrbitStyle(backgroundColor: backgroundColor, idealSize: idealSize))
     }
 
+    @ViewBuilder var logo: some View {
+        switch service {
+            case .apple:        Self.appleLogo.foregroundColor(.whiteNormal).padding(1)
+            case .google:       Self.googleLogo
+            case .facebook:     Self.facebookLogo
+            case .email:        Icon(.email, size: .large)
+        }
+    }
+
     var labelColor: Color {
         switch service {
-            case .apple:        return colorScheme == .light ? .white : .black
+            case .apple:        return .whiteNormal
             case .google:       return .inkDark
             case .facebook:     return .inkDark
             case .email:        return .inkDark
@@ -83,41 +92,15 @@ public extension SocialButton {
 // MARK: - Types
 extension SocialButton {
 
-    private static var appleLogoImage: Image {
-        if #available(iOS 14.0, *) {
-            return Image(systemName: "applelogo")
-        } else {
-            return Image.orbit(.apple)
-        }
-    }
-
-    private static let appleLogo = appleLogoImage
+    private static let appleLogo = Image.orbit(.apple).renderingMode(.template).resizable()
     private static let googleLogo = Image.orbit(.google).resizable()
     private static let facebookLogo = Image.orbit(.facebook).resizable()
 
     public enum Service {
-
         case apple
         case google
         case facebook
         case email
-
-        @ViewBuilder var logo: some View {
-            switch self {
-                case .apple:
-                    if #available(iOS 14.0, *) {
-                        SocialButton.appleLogo
-                            .font(.body)
-                            .padding(.horizontal, .xxxSmall)
-                            .padding(.bottom, .xxSmall)
-                    } else {
-                        SocialButton.appleLogo
-                    }
-                case .google:                               SocialButton.googleLogo
-                case .facebook:                             SocialButton.facebookLogo
-                case .email:                                Icon(.email, size: .large)
-            }
-        }
     }
 
     struct OrbitStyle: ButtonStyle {

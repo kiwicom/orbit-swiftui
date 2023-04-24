@@ -281,7 +281,7 @@ private struct ColorContent: View {
                         SwiftUI.Text("\(hexStringFromColor(uiColor.pointee))")
                             .font(.system(.caption, design: .monospaced).monospacedDigit())
                             .fontWeight(.medium)
-                            .foregroundColor(uiColor.pointee.brightness > 0.6 ? .inkDark : .whiteNormal)
+                            .textColor(uiColor.pointee.brightness > 0.6 ? .inkDark : .whiteNormal)
 
                         Spacer(minLength: .medium)
 
@@ -307,10 +307,10 @@ private struct ColorContent: View {
 
             Group {
                 Text(label, size: .small)
-                    .foregroundColor(.black)
+                    .textColor(.black)
                     .fontWeight(.medium)
                 + Text(optionalText, size: .small)
-                    .foregroundColor(.gray)
+                    .textColor(.gray)
             }
             .padding(.small)
 
@@ -338,10 +338,10 @@ private struct ColorGradientContent: View {
 
             Group {
                 Text(label, size: .small)
-                    .foregroundColor(.black)
+                    .textColor(.black)
                     .fontWeight(.medium)
                 + Text("\n:gradient", size: .small)
-                    .foregroundColor(.gray)
+                    .textColor(.gray)
             }
             .padding(.small)
 

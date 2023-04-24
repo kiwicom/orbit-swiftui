@@ -11,6 +11,7 @@ public struct ListItem: View {
     public static let defaultSpacing: CGFloat = .xSmall
 
     @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.textColor) private var textColor
 
     private let text: String
     private let icon: Icon.Content?
@@ -23,13 +24,12 @@ public struct ListItem: View {
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: spacing) {
             Icon(icon, size: iconSize ?? size.iconSize)
-                .foregroundColor(style.textColor)
                 .padding(.leading, iconPadding)
 
             Text(text, size: size)
-                .foregroundColor(style.textColor)
                 .fontWeight(style.weight)
         }
+        .textColor(textColor ?? style.textColor)
         .padding(.leading, Self.defaultSpacing - spacing)
     }
 

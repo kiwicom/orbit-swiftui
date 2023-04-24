@@ -5,6 +5,7 @@ struct InputContent<Content: View>: View {
 
     @Environment(\.idealSize) private var idealSize
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.textColor) private var textColor
 
     public let verticalPadding: CGFloat = .small // = 44 @ normal text size
 
@@ -34,7 +35,7 @@ struct InputContent<Content: View>: View {
             TextStrut()
                 .padding(.vertical, verticalPadding)
         }
-        .foregroundColor(isEnabled ? state.textColor : .cloudDarkActive)
+        .textColor(resolvedTextColor)
         .background(
             backgroundColor(isPressed: isPressed).animation(.default, value: message)
         )
@@ -44,7 +45,6 @@ struct InputContent<Content: View>: View {
 
     @ViewBuilder var prefixIcon: some View {
         Icon(prefix)
-            .foregroundColor(prefixColor)
             .padding(.leading, .small)
             .padding(.trailing, .xSmall)
             .padding(.vertical, verticalPadding)
@@ -55,7 +55,6 @@ struct InputContent<Content: View>: View {
 
     @ViewBuilder var suffixIcon: some View {
         suffixContent
-            .foregroundColor(suffixColor)
             .accessibility(suffixAccessibilityID)
     }
 
@@ -82,6 +81,12 @@ struct InputContent<Content: View>: View {
         RoundedRectangle(cornerRadius: BorderRadius.default)
             .strokeBorder(outlineColor(isPressed: isPressed), lineWidth: BorderWidth.active)
     }
+
+    private var resolvedTextColor: Color {
+        isEnabled
+            ? textColor ?? state.textColor
+            : .cloudDarkActive
+    }
     
     private func backgroundColor(isPressed: Bool) -> Color {
         if isEnabled == false {
@@ -93,28 +98,6 @@ struct InputContent<Content: View>: View {
             case (.default, false):     return .cloudNormal
             case (.modified, true):     return .blueLight
             case (.modified, false):    return .blueLightHover
-        }
-    }
-
-    private var prefixColor: Color {
-        if isEnabled == false {
-            return .cloudDarkActive
-        }
-
-        switch state {
-            case .modified:             return .blueDark
-            case .default:              return .inkDark
-        }
-    }
-
-    private var suffixColor: Color {
-        if isEnabled == false {
-            return .cloudDarkActive
-        }
-
-        switch state {
-            case .modified:             return .blueDark
-            case .default:              return .inkDark
         }
     }
 
@@ -144,7 +127,7 @@ struct InputContentPreviews: PreviewProvider {
 
     static var standalone: some View {
         VStack(spacing: .medium) {
-            InputContent(prefix: .visa, suffix: .checkCircle, state: .default) {
+            InputContent(prefix: .visa, suffix: .checkCircle, state: .modified) {
                 EmptyView()
             }
             InputContent(prefix: .visa, suffix: .checkCircle, state: .default, suffixAction: {}) {

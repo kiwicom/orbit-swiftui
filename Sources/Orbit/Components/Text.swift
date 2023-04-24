@@ -2,15 +2,17 @@ import SwiftUI
 
 /// Renders text blocks in styles to fit the purpose.
 ///
-/// Can contain html formatted text that will be rendered as interactive ``TextLink`` layer.
+/// A view that displays one or more lines of read-only text. Text content supports html tags `<strong>`, `<u>`, `<ref>` for text formatting.
+/// The `<a href>` and `<applink>` tags support embedding interactive ``TextLink``s withing the text.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/text/)
-/// - Important: Component has fixed vertical size.
+/// - Important: Component has fixed vertical size. When the content is empty, the component results in `EmptyView`.
 public struct Text: View, FormattedTextBuildable {
 
     @Environment(\.multilineTextAlignment) private var multilineTextAlignment
     @Environment(\.lineSpacing) private var lineSpacing
     @Environment(\.textAccentColor) private var textAccentColor
+    @Environment(\.textColor) private var textColor
     @Environment(\.sizeCategory) private var sizeCategory
 
     private let content: String
@@ -20,7 +22,7 @@ public struct Text: View, FormattedTextBuildable {
     // Builder properties
     var baselineOffset: CGFloat?
     var fontWeight: Font.Weight?
-    var foregroundColor: Color?
+    var color: Color?
     var strikethrough: Bool?
     var kerning: CGFloat?
     var accentColor: Color?
@@ -39,8 +41,8 @@ public struct Text: View, FormattedTextBuildable {
 
     public var body: some View {
         if content.isEmpty == false {
-            text(sizeCategory: sizeCategory, textAccentColor: textAccentColor)
-                .lineSpacing(lineSpacingAdjusted)
+            text(textRepresentableEnvironment: textRepresentableEnvironment)
+                .lineSpacing(lineSpacingAdjusted(sizeCategory: sizeCategory))
                 .overlay(selectableLabelWrapper)
                 // If the text contains links, the TextLink overlay takes accessibility priority
                 .accessibility(hidden: content.containsTextLinks)
@@ -50,30 +52,57 @@ public struct Text: View, FormattedTextBuildable {
         }
     }
 
-    @ViewBuilder var textLinks: some View {
+    @ViewBuilder private var textLinks: some View {
         if content.containsTextLinks {
             TextLink(textLinkAttributedString)
         }
     }
 
-    @ViewBuilder var selectableLabelWrapper: some View {
+    @ViewBuilder private var selectableLabelWrapper: some View {
         if isSelectable {
             SelectableLabelWrapper(
-                attributedString().string
+                attributedString(textRepresentableEnvironment: textRepresentableEnvironment).string
             )
         }
     }
 
-    func foregroundColorWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
-        if let foregroundColor {
-            return text
-                .foregroundColor(foregroundColor)
+    func text(textRepresentableEnvironment: TextRepresentableEnvironment, isConcatenated: Bool = false) -> SwiftUI.Text {
+        if content.containsHtmlFormatting {
+            return modifierWrapper(
+                SwiftUI.Text(
+                    attributedString(
+                        textRepresentableEnvironment: textRepresentableEnvironment,
+                        isConcatenated: isConcatenated
+                    )
+                )
+            )
         } else {
-            return text
+            return modifierWrapper(
+                fontWeightWrapper(
+                    boldWrapper(
+                        SwiftUI.Text(verbatim: content)
+                            .foregroundColor(resolvedColor(textRepresentableEnvironment))
+                    )
+                )
+            )
+            .orbitFont(
+                size: size.value,
+                weight: resolvedFontWeight ?? .regular,
+                sizeCategory: textRepresentableEnvironment.sizeCategory
+            )
         }
     }
 
-    func boldWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+    private var textRepresentableEnvironment: TextRepresentableEnvironment {
+        .init(
+            iconColor: nil,
+            sizeCategory: sizeCategory,
+            textAccentColor: textAccentColor,
+            textColor: textColor
+        )
+    }
+
+    private func boldWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
         if #available(iOS 16.0, *), let isBold {
             return text
                 .bold(isBold)
@@ -86,7 +115,7 @@ public struct Text: View, FormattedTextBuildable {
         }
     }
 
-    func italicWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+    private func italicWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
         if #available(iOS 16.0, *), let isItalic {
             return text
                 .italic(isItalic)
@@ -99,7 +128,7 @@ public struct Text: View, FormattedTextBuildable {
         }
     }
 
-    func strikethroughWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+    private func strikethroughWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
         if let strikethrough {
             return text
                 .strikethrough(strikethrough)
@@ -108,7 +137,7 @@ public struct Text: View, FormattedTextBuildable {
         }
     }
 
-    func underlineWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+    private func underlineWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
         if let isUnderline {
             return text
                 .underline(isUnderline)
@@ -117,7 +146,7 @@ public struct Text: View, FormattedTextBuildable {
         }
     }
 
-    func monospacedDigitWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+    private func monospacedDigitWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
         if #available(iOS 15.0, *), let isMonospacedDigit, isMonospacedDigit {
             return text
                 .monospacedDigit()
@@ -126,7 +155,7 @@ public struct Text: View, FormattedTextBuildable {
         }
     }
 
-    func kerningWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+    private func kerningWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
         if let kerning {
             return text
                 .kerning(kerning)
@@ -135,7 +164,7 @@ public struct Text: View, FormattedTextBuildable {
         }
     }
 
-    func baselineOffsetWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+    private func baselineOffsetWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
         if let baselineOffset {
             return text
                 .baselineOffset(baselineOffset)
@@ -144,7 +173,7 @@ public struct Text: View, FormattedTextBuildable {
         }
     }
 
-    func fontWeightWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+    private func fontWeightWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
         if let fontWeight {
             return text
                 .fontWeight(fontWeight)
@@ -153,7 +182,7 @@ public struct Text: View, FormattedTextBuildable {
         }
     }
 
-    func modifierWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
+    private func modifierWrapper(_ text: SwiftUI.Text) -> SwiftUI.Text {
         // Stacks all optional modifier overrides
         // except those that are not relevant to mixed html formatted text
         monospacedDigitWrapper(
@@ -172,42 +201,14 @@ public struct Text: View, FormattedTextBuildable {
         )
     }
 
-    func text(sizeCategory: ContentSizeCategory, textAccentColor: Color?, isConcatenated: Bool = false) -> SwiftUI.Text {
-        if content.containsHtmlFormatting {
-            return modifierWrapper(
-                SwiftUI.Text(
-                    attributedString(
-                        textAccentColor: textAccentColor,
-                        isConcatenated: isConcatenated,
-                        sizeCategory: sizeCategory
-                    )
-                )
-            )
-        } else {
-            return modifierWrapper(
-                fontWeightWrapper(
-                    boldWrapper(
-                        foregroundColorWrapper(
-                            SwiftUI.Text(verbatim: content)
-                        )
-                    )
-                )
-            )
-            .orbitFont(
-                size: size.value,
-                weight: resolvedFontWeight ?? .regular,
-                sizeCategory: sizeCategory
-            )
-        }
-    }
-
-    var textLinkAttributedString: NSAttributedString {
+    // The TextRepresentableEnvironment is not used because the TextLink concatenation is not supported
+    private var textLinkAttributedString: NSAttributedString {
         TagAttributedStringBuilder.all.attributedString(
             content,
             alignment: multilineTextAlignment,
             fontSize: scaledSize,
             fontWeight: resolvedFontWeight,
-            lineSpacing: lineSpacingAdjusted,
+            lineSpacing: lineSpacingAdjusted(sizeCategory: sizeCategory),
             kerning: kerning,
             strikethrough: strikethrough ?? false,
             color: .clear,
@@ -215,46 +216,55 @@ public struct Text: View, FormattedTextBuildable {
         )
     }
 
-    func attributedString(
-        textAccentColor: Color? = nil,
-        isConcatenated: Bool = false,
-        sizeCategory: ContentSizeCategory = .large
+    private func attributedString(
+        textRepresentableEnvironment: TextRepresentableEnvironment,
+        isConcatenated: Bool = false
     ) -> NSAttributedString {
         TagAttributedStringBuilder.all.attributedString(
             content,
             alignment: multilineTextAlignment,
-            fontSize: size.value * sizeCategory.ratio,
+            fontSize: size.value * textRepresentableEnvironment.sizeCategory.ratio,
             fontWeight: resolvedFontWeight,
-            lineSpacing: lineSpacingAdjusted,
+            lineSpacing: lineSpacingAdjusted(sizeCategory: textRepresentableEnvironment.sizeCategory),
             kerning: kerning,
-            color: foregroundColor?.uiColor,
+            color: resolvedColor(textRepresentableEnvironment).uiColor,
             linkColor: isConcatenated ? nil : .clear,
-            accentColor: (accentColor ?? textAccentColor ?? foregroundColor ?? .inkDark).uiColor
+            accentColor: resolvedAccentColor(textRepresentableEnvironment).uiColor
         )
     }
 
-    var resolvedFontWeight: Font.Weight? {
+    private func resolvedAccentColor(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> Color {
+        accentColor
+            ?? textRepresentableEnvironment.textAccentColor
+            ?? resolvedColor(textRepresentableEnvironment)
+    }
+
+    private func resolvedColor(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> Color {
+        color ?? textRepresentableEnvironment.textColor ?? .inkDark
+    }
+
+    private var resolvedFontWeight: Font.Weight? {
         isBold == true ? .bold : fontWeight
     }
 
-    var scaledSize: CGFloat {
-        size.value * sizeCategory.ratio
+    private func designatedLineHeight(sizeCategory: ContentSizeCategory) -> CGFloat {
+        size.lineHeight * sizeCategory.ratio
     }
 
-    var lineSpacingAdjusted: CGFloat {
-        (designatedLineHeight - originalLineHeight) + lineSpacing
+    private var lineHeightPadding: CGFloat {
+        (designatedLineHeight(sizeCategory: sizeCategory) - originalLineHeight) / 2
     }
 
-    var lineHeightPadding: CGFloat {
-        (designatedLineHeight - originalLineHeight) / 2
+    private func lineSpacingAdjusted(sizeCategory: ContentSizeCategory) -> CGFloat {
+        (designatedLineHeight(sizeCategory: sizeCategory) - originalLineHeight) + lineSpacing
     }
 
-    var originalLineHeight: CGFloat {
+    private var originalLineHeight: CGFloat {
         UIFont.lineHeight(size: scaledSize)
     }
 
-    var designatedLineHeight: CGFloat {
-        size.lineHeight * sizeCategory.ratio
+    private var scaledSize: CGFloat {
+        size.value * sizeCategory.ratio
     }
 }
 
@@ -282,9 +292,6 @@ public extension Text {
         self.content = content
         self.size = size
         self.isSelectable = isSelectable
-
-        // Set a default color to use in case it is not provided by a call site
-        self.foregroundColor = .inkDark
     }
 }
 
@@ -348,10 +355,10 @@ extension TextAlignment {
 // MARK: - TextRepresentable
 extension Text: TextRepresentable {
 
-    public func swiftUIText(sizeCategory: ContentSizeCategory, textAccentColor: Color?) -> SwiftUI.Text? {
+    public func swiftUIText(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
         if content.isEmpty { return nil }
 
-        return text(sizeCategory: sizeCategory, textAccentColor: textAccentColor, isConcatenated: true)
+        return text(textRepresentableEnvironment: textRepresentableEnvironment, isConcatenated: true)
     }
 }
 
@@ -476,20 +483,18 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
             .border(.cloudDark, width: .hairline)
 
             Text(multilineText)
-                .foregroundColor(.greenDark)
+                .textColor(.greenDark)
                 .background(Color.greenLight)
             Text(multilineText)
-                .foregroundColor(nil)
-                .foregroundColor(.blueDark)
+                .textColor(.blueDark)
                 .background(Color.blueLight)
             Text(multilineFormattedText)
-                .foregroundColor(.greenDark)
+                .textColor(.greenDark)
                 .textAccentColor(.orangeDark)
                 .background(Color.greenLight)
             Text(multilineFormattedText)
-                .foregroundColor(nil)
                 .textAccentColor(.orangeDark)
-                .foregroundColor(.blueDark)
+                .textColor(.blueDark)
                 .background(Color.blueLight)
 
             // This text may reveal issues between iOS TextLink word wrapping
@@ -497,7 +502,7 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                 "By continuing, you accept the <applink1>Terms Of Use</applink1> and <applink2>Privacy Policy</applink2>.",
                 size: .small
             )
-            .foregroundColor(.inkNormal)
+            .textColor(.inkNormal)
             .textLinkColor(.secondary)
             .multilineTextAlignment(.leading)
         }
@@ -604,7 +609,7 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                         """,
                         size: .custom(12)
                     )
-                    .foregroundColor(.blueLightActive)
+                    .textColor(.blueLightActive)
                     .bold()
                     .textAccentColor(.blueNormal)
                     .border(.cloudNormal)
@@ -637,7 +642,7 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                         """,
                         size: .custom(22)
                     )
-                    .foregroundColor(.inkNormal)
+                    .textColor(.inkNormal)
                     .bold()
                     .lineLimit(2)
                     .border(.cloudNormal)
@@ -694,7 +699,7 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                 .fontWeight(weight)
             Spacer()
             Text("\(Int(size.value))/\(Int(size.lineHeight))")
-                .foregroundColor(.inkNormal)
+                .textColor(.inkNormal)
                 .fontWeight(.medium)
         }
     }

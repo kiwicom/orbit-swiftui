@@ -10,7 +10,9 @@ public struct Icon: View, TextBuildable {
     /// Approximate Orbit icon symbol baseline.
     public static let symbolBaseline: CGFloat = 0.77
 
+    @Environment(\.iconColor) private var iconColor
     @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.textColor) private var textColor
 
     private let icon: Content?
     private let size: Size
@@ -18,7 +20,7 @@ public struct Icon: View, TextBuildable {
     // Builder properties
     var baselineOffset: CGFloat?
     var fontWeight: Font.Weight?
-    var foregroundColor: Color?
+    var color: Color?
 
     public var body: some View {
         if let icon, icon.isEmpty == false {
@@ -39,7 +41,7 @@ public struct Icon: View, TextBuildable {
                     .frame(width: dynamicSize - .xxxSmall, height: dynamicSize - .xxxSmall)
             case .symbol(let symbol, let color):
                 alignmentWrapper {
-                    foregroundColorWrapper(color: color) {
+                    colorWrapper(color: color) {
                         SwiftUI.Text(verbatim: symbol.value)
                             .font(.orbitIcon(size: size.value))
                                 .frame(height: dynamicSize)
@@ -49,7 +51,7 @@ public struct Icon: View, TextBuildable {
                     }
             case .image(let image, let color, let mode):
                 alignmentWrapper {
-                    foregroundColorWrapper(color: color) {
+                    colorWrapper(color: color) {
                         image
                             .resizable()
                             .aspectRatio(contentMode: mode)
@@ -62,7 +64,7 @@ public struct Icon: View, TextBuildable {
                         .frame(height: dynamicSize)
                 }
             case .sfSymbol(let systemName, let color, let weight):
-                foregroundColorWrapper(color: color) {
+                colorWrapper(color: color) {
                     Image(systemName: systemName)
                         .font(.system(size: sfSymbolDynamicSize, weight: weight ?? fontWeight ?? .regular))
                         .alignmentGuide(.firstTextBaseline) { $0[.firstTextBaseline] + resolvedBaselineOffset }
@@ -79,17 +81,17 @@ public struct Icon: View, TextBuildable {
             .alignmentGuide(.lastTextBaseline, computeValue: baseline)
     }
 
-    @ViewBuilder private func foregroundColorWrapper(color: Color?, @ViewBuilder content: () -> some View) -> some View {
-        if let color = color ?? foregroundColor {
-            content()
-                .foregroundColor(color)
-        } else {
-            content()
-        }
+    @ViewBuilder private func colorWrapper(color: Color?, @ViewBuilder content: () -> some View) -> some View {
+        content()
+            .foregroundColor(color ?? resolvedColor)
     }
 
     public var isEmpty: Bool {
         icon?.isEmpty ?? true
+    }
+
+    private var resolvedColor: Color {
+        color ?? iconColor ?? textColor ?? .inkDark
     }
 
     private var dynamicSize: CGFloat {
@@ -119,13 +121,10 @@ public extension Icon {
     /// Creates Orbit Icon component for provided icon content.
     ///
     /// - Parameters:
-    ///     - content: Icon content. Can optionally include the color override that has a priority over the `.foregroundColor` modifier.
+    ///     - content: Icon content. Can optionally include the color override that has a priority over the `.textColor` modifier.
     init(_ content: Icon.Content?, size: Size = .normal) {
         self.icon = content
         self.size = size
-
-        // Set a default color to use in case it is not provided by a call site or in the Icon.Content
-        self.foregroundColor = .inkDark
     }
 
     /// Creates Orbit Icon component for provided Image.
@@ -150,17 +149,17 @@ public extension Icon {
 
     /// Defines icon content for use in other components.
     enum Content: Equatable, Hashable {
-        /// Orbit transparent icon placeholder.
+        /// Orbit transparent icon placeholder. Useful when the layout should behave as if the icon was present.
         case transparent
         /// Orbit skeleton loading icon placeholder.
         case skeleton
-        /// Orbit icon symbol with optional color specified. If not specified, it can be overridden using `.foregroundColor()` modifier.
+        /// Orbit icon symbol with optional color specified. If not specified, it can be overridden using `.textColor()` modifier.
         case symbol(Symbol, color: Color? = nil)
-        /// Custom Image, suitable for use as icon with optional tint color specified. If not specified, it can be overridden using `.foregroundColor()` modifier.
+        /// Custom Image, suitable for use as icon with optional tint color specified. If not specified, it can be overridden using `.textColor()` modifier.
         case image(Image, tint: Color? = nil, mode: ContentMode = .fit)
         /// Orbit CountryFlag content, suitable for use as icon.
         case countryFlag(String)
-        /// SF Symbol with optional color specified. If not specified, it can be overridden using `.foregroundColor()` modifier.
+        /// SF Symbol with optional color specified. If not specified, it can be overridden using `.textColor()` modifier.
         case sfSymbol(String, color: Color? = nil, weight: Font.Weight? = .regular)
 
         /// Specifies whether the item has a non-empty content.
@@ -235,25 +234,25 @@ public extension Icon {
 // MARK: - TextRepresentable
 extension Icon: TextRepresentable {
 
-    public func swiftUIText(sizeCategory: ContentSizeCategory, textAccentColor: Color?) -> SwiftUI.Text? {
+    public func swiftUIText(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
         if isEmpty {
             return nil
         }
 
         if #available(iOS 14.0, *) {
-            return text(sizeCategory: sizeCategory)
+            return text(textRepresentableEnvironment: textRepresentableEnvironment)
         } else {
-            return textFallback(sizeCategory: sizeCategory)
+            return textFallback(textRepresentableEnvironment: textRepresentableEnvironment)
         }
     }
 
     @available(iOS 14.0, *)
-    func text(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
+    func text(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
         switch icon {
             case .none:
                 return nil
             case .transparent:
-                return symbolWrapper(sizeCategory: sizeCategory) {
+                return symbolWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory) {
                     SwiftUI.Text(verbatim: Icon.Symbol.grid.value)
                         .foregroundColor(.clear)
                 }
@@ -261,15 +260,15 @@ extension Icon: TextRepresentable {
                 assertionFailure("text representation of skeleton icon is not supported")
                 return nil
             case .symbol(let symbol, let color):
-                return symbolWrapper(sizeCategory: sizeCategory) {
-                    foregroundColorWrapper(color: color) {
+                return symbolWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory) {
+                    colorWrapper(color: color, textRepresentableEnvironment: textRepresentableEnvironment) {
                         SwiftUI.Text(verbatim: symbol.value)
                     }
                 }
             case .image(let image, let tint, _):
                 return baselineWrapper {
-                    imageBaselineWrapper(sizeCategory: sizeCategory) {
-                        foregroundColorWrapper(color: tint) {
+                    imageBaselineWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory) {
+                        colorWrapper(color: tint, textRepresentableEnvironment: textRepresentableEnvironment) {
                             SwiftUI.Text(image)
                         }
                     }
@@ -278,20 +277,20 @@ extension Icon: TextRepresentable {
                 assertionFailure("text representation of countryFlag icon is not supported")
                 return nil
             case .sfSymbol(let systemName, let color, let weight):
-                return sfSymbolWrapper(sizeCategory: sizeCategory, weight: weight) {
-                    foregroundColorWrapper(color: color) {
+                return sfSymbolWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory, weight: weight) {
+                    colorWrapper(color: color, textRepresentableEnvironment: textRepresentableEnvironment) {
                         SwiftUI.Text(Image(systemName: systemName))
                     }
                 }
         }
     }
 
-    func textFallback(sizeCategory: ContentSizeCategory) -> SwiftUI.Text? {
+    private func textFallback(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
         switch icon {
             case .none:
                 return nil
             case .transparent:
-                return symbolWrapper(sizeCategory: sizeCategory) {
+                return symbolWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory) {
                     SwiftUI.Text(verbatim: Icon.Symbol.grid.value)
                         .foregroundColor(.clear)
                 }
@@ -299,9 +298,9 @@ extension Icon: TextRepresentable {
                 assertionFailure("text representation of skeleton icon is not supported")
                 return nil
             case .symbol(let symbol, let color):
-                return symbolWrapper(sizeCategory: sizeCategory) {
+                return symbolWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory) {
                     baselineWrapper {
-                        foregroundColorWrapper(color: color) {
+                        colorWrapper(color: color, textRepresentableEnvironment: textRepresentableEnvironment) {
                             SwiftUI.Text(verbatim: symbol.value)
                         }
                     }
@@ -315,30 +314,26 @@ extension Icon: TextRepresentable {
         }
     }
 
-    func foregroundColorWrapper(color: Color?, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
-        if let color = color ?? foregroundColor {
-            return text()
-                .foregroundColor(color)
-        } else {
-            return text()
-        }
+    private func colorWrapper(color: Color?, textRepresentableEnvironment: TextRepresentableEnvironment, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+        text()
+            .foregroundColor(color ?? resolvedColor(textRepresentableEnvironment: textRepresentableEnvironment))
     }
 
-    func symbolWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+    private func symbolWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
         imageBaselineWrapper(sizeCategory: sizeCategory) {
             text()
                 .font(.orbitIcon(size: size.value))
         }
     }
 
-    func sfSymbolWrapper(sizeCategory: ContentSizeCategory, weight: Font.Weight?, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+    private func sfSymbolWrapper(sizeCategory: ContentSizeCategory, weight: Font.Weight?, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
         baselineWrapper {
             text()
                 .fontWeight(weight ?? fontWeight)
         }
     }
 
-    func baselineWrapper(@ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+    private func baselineWrapper(@ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
         if let baselineOffset {
             return text()
                 .baselineOffset(baselineOffset)
@@ -347,12 +342,16 @@ extension Icon: TextRepresentable {
         }
     }
 
-    func imageBaselineWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+    private func resolvedColor(textRepresentableEnvironment: TextRepresentableEnvironment) -> Color {
+        color ?? textRepresentableEnvironment.iconColor ?? textRepresentableEnvironment.textColor ?? .inkDark
+    }
+
+    private func imageBaselineWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
         text()
             .baselineOffset(textBaselineOffset(baselineOffset, sizeCategory: sizeCategory))
     }
 
-    func textBaselineOffset(_ baselineOffset: CGFloat?, sizeCategory: ContentSizeCategory) -> CGFloat {
+    private func textBaselineOffset(_ baselineOffset: CGFloat?, sizeCategory: ContentSizeCategory) -> CGFloat {
         (-size.value * sizeCategory.ratio) * (1 - Self.symbolBaseline) + resolvedBaselineOffset
     }
 }
@@ -401,10 +400,10 @@ struct IconPreviews: PreviewProvider {
         VStack(spacing: .medium) {
             Icon(.informationCircle)
             Icon(.informationCircle)
-                .foregroundColor(nil)
-            Icon(.informationCircle)
-                .foregroundColor(.blueNormal)
+                .iconColor(.blueNormal)
             Icon(.placeholder)
+                .textColor(.blueNormal)
+                .iconColor(.redNormal)
             Icon(.skeleton)
             Icon(.transparent)
                 .border(.inkNormal, width: .hairline)
@@ -479,22 +478,19 @@ struct IconPreviews: PreviewProvider {
                 Group {
                     Text("Text", size: .small)
                     Icon(sfSymbol, size: .small)
-                        .foregroundColor(.blueNormal)
+                        .iconColor(.blueNormal)
                     Icon(sfSymbol, size: .small)
-                        .foregroundColor(nil)
                         .baselineOffset(.xxxSmall)
 
                     Icon(.informationCircle, size: .small)
-                        .foregroundColor(.blueNormal)
+                        .iconColor(.blueNormal)
                     Icon(.informationCircle, size: .small)
-                        .foregroundColor(nil)
                         .baselineOffset(.xxxSmall)
 
                     Group {
                         Icon(.orbit(.navigateClose), size: .small)
-                            .foregroundColor(.blueNormal)
+                            .iconColor(.blueNormal)
                         Icon(.orbit(.navigateClose), size: .small)
-                            .foregroundColor(nil)
                             .baselineOffset(.xxxSmall)
                         Icon(.orbit(.facebook), size: .small)
                         Icon(.orbit(.facebook), size: .small)
@@ -507,7 +503,7 @@ struct IconPreviews: PreviewProvider {
                 }
                 .border(.cloudLightActive, width: .hairline)
             }
-            .foregroundColor(.greenDark)
+            .textColor(.greenDark)
             .overlay(
                 Separator(color: .redNormal, thickness: .hairline),
                 alignment: .centerFirstTextBaseline
@@ -519,27 +515,24 @@ struct IconPreviews: PreviewProvider {
             (
                 Text("Text", size: .small)
                 + Icon(sfSymbol, size: .small)
-                    .foregroundColor(.blueNormal)
+                    .iconColor(.blueNormal)
                 + Icon(sfSymbol, size: .small)
-                    .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
 
                 + Icon(.informationCircle, size: .small)
-                    .foregroundColor(.blueNormal)
+                    .iconColor(.blueNormal)
                 + Icon(.informationCircle, size: .small)
-                    .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
 
                 + Icon(.orbit(.navigateClose))
-                    .foregroundColor(.blueNormal)
+                    .iconColor(.blueNormal)
                 + Icon(.orbit(.navigateClose))
-                    .foregroundColor(nil)
                     .baselineOffset(.xxxSmall)
                 + Icon(.orbit(.facebook))
                 + Icon(.orbit(.facebook))
                     .baselineOffset(.xxxSmall)
             )
-            .foregroundColor(.greenDark)
+            .textColor(.greenDark)
             .overlay(
                 Separator(color: .redNormal, thickness: .hairline),
                 alignment: .centerFirstTextBaseline
@@ -553,41 +546,38 @@ struct IconPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .small) {
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
                 Icon(.grid)
+                    .textColor(nil)
                 Icon(.grid)
-                    .foregroundColor(.blueNormal)
+                    .iconColor(.blueNormal)
                 Icon(.grid)
-                    .foregroundColor(nil)
+                    .textColor(.blueNormal)
                 Icon(.grid)
-                    .foregroundColor(nil)
                 Icon(.symbol(.grid))
-                    .foregroundColor(nil)
             }
 
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
                 Icon(sfSymbol)
+                    .textColor(nil)
                 Icon(sfSymbol)
-                    .foregroundColor(.blueNormal)
+                    .iconColor(.blueNormal)
                 Icon(sfSymbol)
-                    .foregroundColor(nil)
+                    .textColor(.blueNormal)
                 Icon(sfSymbol)
-                    .foregroundColor(nil)
-                Icon(sfSymbol)
-                    .foregroundColor(nil)
+                Icon(.sfSymbol(sfSymbol))
             }
 
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
                 Icon(.orbit(.navigateClose))
+                    .textColor(nil)
                 Icon(.orbit(.navigateClose))
-                    .foregroundColor(.blueNormal)
+                    .iconColor(.blueNormal)
                 Icon(.orbit(.navigateClose))
-                    .foregroundColor(nil)
+                    .textColor(.blueNormal)
                 Icon(.orbit(.navigateClose))
-                    .foregroundColor(nil)
-                Icon(.orbit(.navigateClose))
-                    .foregroundColor(nil)
+                Icon(.image(.orbit(.navigateClose)))
             }
         }
-        .foregroundColor(.greenNormalHover)
+        .textColor(.greenNormalHover)
         .padding(.medium)
         .previewDisplayName()
     }
@@ -610,7 +600,7 @@ struct IconPreviews: PreviewProvider {
     static func size(iconSize: Icon.Size, textSize: Text.Size, color: Color) -> some View {
         HStack(spacing: .xSmall) {
             Text("\(Int(iconSize.value))")
-                .foregroundColor(color)
+                .textColor(color)
                 .bold()
 
             HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {

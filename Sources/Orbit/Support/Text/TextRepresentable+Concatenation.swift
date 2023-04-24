@@ -29,15 +29,22 @@ struct TextConcatenationPreviews: PreviewProvider {
         (
         Heading("Hanoi ", style: .title1)
             + Icon(.grid, size: .xLarge)
+            + Icon(.symbol(.grid, color: .redNormal), size: .small)
+                .iconColor(.blueDark)
             + Icon(.grid, size: .small)
-                .foregroundColor(.blueDark)
+                .iconColor(.blueDark)
             + Heading(" San Pedro de Alcantara", style: .title1)
+                .textColor(.blueNormal)
+                .fontWeight(.black)
+                .strikethrough()
             + Text(" ")
             + Icon("info.circle", size: .large)
+                .iconColor(.blueDark)
             + Icon(.orbit(.navigateClose))
+                .iconColor(.blueDark)
                 .baselineOffset(-1)
             + Text(" (Delayed)", size: .xLarge)
-                .foregroundColor(.inkNormal)
+                .textColor(.inkNormal)
         )
         .previewDisplayName()
     }
@@ -45,27 +52,22 @@ struct TextConcatenationPreviews: PreviewProvider {
     static var formatting: some View {
         (
             Icon(.grid, size: .xLarge)
-                .foregroundColor(nil)
             + Text(" Text ", size: .xLarge)
-                .foregroundColor(nil)
                 .bold()
                 .italic()
             + Icon(.informationCircle, size: .large)
-                .foregroundColor(nil)
                 .baselineOffset(-1)
             + Icon("info.circle.fill", size: .large)
-                .foregroundColor(nil)
             + Text(
                 " <ref>Text</ref> with <strong>formatting</strong>",
                 size: .small
             )
-            .foregroundColor(nil)
-            .textAccentColor(.orangeNormal)
 
             + Icon(.check, size: .small)
-                .foregroundColor(.greenDark)
+                .iconColor(.greenDark)
         )
-        .foregroundColor(.blueDark)
+        .textColor(.blueDark)
+        .textAccentColor(.orangeNormal)
         .previewDisplayName()
     }
 
@@ -84,13 +86,14 @@ struct TextConcatenationPreviews: PreviewProvider {
     static func concatenatedText(_ label: String, style: Heading.Style) -> some View {
         HStack {
             Heading(label, style: style)
+                .textColor(.inkDark)
                 + Icon(.flightReturn, size: .custom(style.size))
-                    .foregroundColor(.inkNormal)
+                    .iconColor(.inkNormal)
                 + Heading(label, style: style)
+                    .textColor(.inkDark)
                 + Text(" and Text")
-                    .foregroundColor(nil)
         }
-        .foregroundColor(.blueDark)
+        .textColor(.blueDark)
         .previewDisplayName()
     }
 }

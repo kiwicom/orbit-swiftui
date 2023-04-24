@@ -2,22 +2,33 @@ import SwiftUI
 
 struct ConcatenatedText: View {
 
+    @Environment(\.iconColor) var iconColor
     @Environment(\.sizeCategory) var sizeCategory
     @Environment(\.textAccentColor) var textAccentColor
+    @Environment(\.textColor) var textColor
 
-    let content: (ContentSizeCategory, Color?) -> SwiftUI.Text?
+    let content: (TextRepresentableEnvironment) -> SwiftUI.Text?
 
     var body: some View {
-        if let content = content(sizeCategory, textAccentColor) {
+        if let content = content(textRepresentableEnvironment) {
             content
         }
+    }
+
+    var textRepresentableEnvironment: TextRepresentableEnvironment {
+        .init(
+            iconColor: iconColor,
+            sizeCategory: sizeCategory,
+            textAccentColor: textAccentColor,
+            textColor: textColor
+        )
     }
 }
 
 extension ConcatenatedText: TextRepresentable {
 
-    func swiftUIText(sizeCategory: ContentSizeCategory, textAccentColor: Color?) -> SwiftUI.Text? {
-        content(sizeCategory, textAccentColor)
+    func swiftUIText(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
+        content(textRepresentableEnvironment)
     }
 }
 
@@ -27,15 +38,18 @@ extension ConcatenatedText {
         if let concatenatedText = TextRepresentable as? ConcatenatedText {
             self = concatenatedText
         } else {
-            self.init(content: TextRepresentable.swiftUIText(sizeCategory:textAccentColor:))
+            self.init(content: TextRepresentable.swiftUIText)
         }
     }
 }
 
 
 func +(left: ConcatenatedText, right: ConcatenatedText) -> ConcatenatedText {
-    .init { sizeCategory, textAccentColor in
-        transform(left: left.content(sizeCategory, textAccentColor), right: right.content(sizeCategory, textAccentColor))
+    .init { textRepresentableEnvironment in
+        transform(
+            left: left.content(textRepresentableEnvironment),
+            right: right.content(textRepresentableEnvironment)
+        )
     }
 }
 

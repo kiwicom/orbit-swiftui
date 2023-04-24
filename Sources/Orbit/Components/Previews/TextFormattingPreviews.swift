@@ -68,29 +68,29 @@ struct TextFormattingPreviews: PreviewProvider {
                     nativeText(plainText)
                         .foregroundColor(.blueNormal)
                     text(plainText)
-                        .foregroundColor(.blueNormal)
+                        .textColor(.blueNormal)
                 }
 
                 VStack(alignment: .leading, spacing: 0) {
                     nativeText(plainText)
                     text(plainText)
-                        .foregroundColor(nil)
                 }
                 .foregroundColor(.blueNormal)
+                .textColor(.blueNormal)
 
                 VStack(alignment: .leading, spacing: 0) {
                     nativeText(markdownText)
                         .foregroundColor(.blueNormal)
                     text(htmlText)
-                        .foregroundColor(.blueNormal)
+                        .textColor(.blueNormal)
                 }
 
                 VStack(alignment: .leading, spacing: 0) {
                     nativeText(markdownText)
                     text(htmlText)
-                        .foregroundColor(nil)
                 }
                 .foregroundColor(.blueNormal)
+                .textColor(.blueNormal)
 
                 VStack(alignment: .leading, spacing: 0) {
                     nativeText(plainText).reference()
@@ -101,25 +101,26 @@ struct TextFormattingPreviews: PreviewProvider {
 
                     text(plainText).reference()
                     + plus().reference()
-                    + text(plainText).foregroundColor(.blueNormal)
+                    + text(plainText).textColor(.blueNormal)
                     + plus()
-                    + text(htmlText).foregroundColor(.blueNormal)
+                    + text(htmlText).textColor(.blueNormal)
                 }
 
                 VStack(alignment: .leading, spacing: 0) {
                     nativeText(plainText).reference()
                     + nplus().reference()
                     + nativeText(plainText)
-                    + nplus().foregroundColor(nil)
+                    + nplus()
                     + nativeText(markdownText)
 
                     text(plainText).reference()
                     + plus().reference()
-                    + text(plainText).foregroundColor(nil)
+                    + text(plainText)
                     + plus()
-                    + text(htmlText).foregroundColor(nil)
+                    + text(htmlText)
                 }
                 .foregroundColor(.blueNormal)
+                .textColor(.blueNormal)
             }
         }
 
@@ -451,7 +452,7 @@ struct TextFormattingPreviews: PreviewProvider {
                         .strikethrough()
                         .underline()
                     text(plainText)
-                        .foregroundColor(.blueNormal)
+                        .textColor(.blueNormal)
                         .strikethrough()
                         .underline()
                 }
@@ -459,8 +460,9 @@ struct TextFormattingPreviews: PreviewProvider {
                 VStack(alignment: .leading, spacing: 0) {
                     nativeText(plainText)
                     text(plainText)
-                    .foregroundColor(nil)            }
+                }
                 .foregroundColor(.blueNormal)
+                .textColor(.blueNormal)
                 .strikethrough()
                 .underline()
 
@@ -470,7 +472,7 @@ struct TextFormattingPreviews: PreviewProvider {
                         .strikethrough()
                         .underline()
                     text(htmlText)
-                        .foregroundColor(.blueNormal)
+                        .textColor(.blueNormal)
                         .strikethrough()
                         .underline()
                 }
@@ -478,9 +480,9 @@ struct TextFormattingPreviews: PreviewProvider {
                 VStack(alignment: .leading, spacing: 0) {
                     nativeText(markdownText)
                     text(htmlText)
-                        .foregroundColor(nil)
                 }
                 .foregroundColor(.blueNormal)
+                .textColor(.blueNormal)
                 .strikethrough()
                 .underline()
 
@@ -493,25 +495,26 @@ struct TextFormattingPreviews: PreviewProvider {
 
                     text(plainText).reference()
                     + plus().reference()
-                    + text(plainText).foregroundColor(.blueNormal).strikethrough().underline()
+                    + text(plainText).textColor(.blueNormal).strikethrough().underline()
                     + plus()
-                    + text(htmlText).foregroundColor(.blueNormal).strikethrough().underline()
+                    + text(htmlText).textColor(.blueNormal).strikethrough().underline()
                 }
 
                 VStack(alignment: .leading, spacing: 0) {
                     nativeText(plainText).strikethrough(false).underline(false).reference()
                     + nplus().strikethrough(false).underline(false).reference()
                     + nativeText(plainText)
-                    + nplus().foregroundColor(nil).strikethrough(false).underline(false)
+                    + nplus().strikethrough(false).underline(false)
                     + nativeText(markdownText)
 
                     text(plainText).strikethrough(false).underline(false).reference()
                     + plus().strikethrough(false).underline(false).reference()
-                    + text(plainText).foregroundColor(nil)
+                    + text(plainText)
                     + plus().strikethrough(false).underline(false)
-                    + text(htmlText).foregroundColor(nil)
+                    + text(htmlText)
                 }
                 .foregroundColor(.blueNormal)
+                .textColor(.blueNormal)
                 .strikethrough()
                 .underline()
             }
@@ -546,7 +549,7 @@ private extension View {
     func warning() -> some View {
         overlay(
             Icon(.alert, size: .custom(8))
-                .foregroundColor(.redNormal)
+                .textColor(.redNormal)
                 .underline(false)
                 .baselineOffset(0)
                 .kerning(0)
@@ -566,6 +569,6 @@ private extension SwiftUI.Text {
 private extension Text {
 
     func reference() -> Text {
-        foregroundColor(.cloudDark)
+        textColor(.cloudDark)
     }
 }

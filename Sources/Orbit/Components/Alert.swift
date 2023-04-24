@@ -14,8 +14,11 @@ import SwiftUI
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Alert<Content: View>: View {
 
+    @Environment(\.iconColor) private var iconColor
     @Environment(\.idealSize) private var idealSize
     @Environment(\.status) private var status
+    @Environment(\.textColor) private var textColor
+    @Environment(\.textLinkColor) private var textLinkColor
 
     let title: String
     let description: String
@@ -72,7 +75,7 @@ public struct Alert<Content: View>: View {
             VStack(alignment: .leading, spacing: .xxSmall) {
                 titleContent
                 Text(description)
-                    .textLinkColor(.secondary)
+                    .textLinkColor(textLinkColor ?? textColor.map { TextLink.Color.custom($0) } ?? .secondary)
                     .accessibility(.alertDescription)
             }
         }
@@ -92,7 +95,7 @@ public struct Alert<Content: View>: View {
 
     @ViewBuilder var iconContent: some View {
         Icon(icon)
-            .foregroundColor(foregroundColor)
+            .iconColor(iconColor ?? outlineColor)
             .accessibility(.alertIcon)
     }
 
@@ -151,13 +154,13 @@ public struct Alert<Content: View>: View {
                     .strokeBorder(strokeColor, lineWidth: 1)
             )
             .overlay(
-                foregroundColor
+                outlineColor
                     .frame(height: 3),
                 alignment: .top
             )
     }
 
-    var foregroundColor: Color {
+    var outlineColor: Color {
         switch style {
             case .status(let status, _):        return (status ?? defaultStatus).color
         }

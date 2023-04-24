@@ -22,7 +22,9 @@ public enum TabsDistribution {
 /// - Note: [Orbit definition](https://orbit.kiwi/components/structure/tabs/)
 public struct Tabs<Content: View>: View {
 
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.textColor) private var textColor
+
     @Binding var selectedIndex: Int
 
     let underlineHeight: CGFloat = .xxxSmall
@@ -73,7 +75,11 @@ public struct Tabs<Content: View>: View {
 
     @ViewBuilder func tab(_ index: Int, lastIndex: Int, _ label: String, style: Tab.TabStyle) -> some View {
         Tab(label, style: style)
-            .foregroundColor(index == selectedIndex ? style.textColor : .inkDark)
+            .textColor(
+                index == selectedIndex
+                    ? style.textColor ?? textColor
+                    : textColor ?? .inkDark
+            )
             .lineLimit(lineLimit)
             .frame(maxWidth: maxTabWidth, maxHeight: .infinity)
             .overlay(separator(index: index, lastIndex: lastIndex), alignment: .trailing)

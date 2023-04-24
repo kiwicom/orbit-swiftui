@@ -9,6 +9,7 @@ public struct BadgeList: View {
 
     @Environment(\.status) private var status
     @Environment(\.textAccentColor) private var textAccentColor
+    @Environment(\.textColor) private var textColor
 
     let label: String
     let icon: Icon.Content?
@@ -20,12 +21,12 @@ public struct BadgeList: View {
         if isEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
                 Icon(icon, size: .small)
-                    .foregroundColor(iconColor)
+                    .textColor(iconColor)
                     .padding(.xxSmall)
                     .background(badgeBackground)
 
                 Text(label, size: size.textSize)
-                    .foregroundColor(labelColor.color)
+                    .textColor(textColor ?? labelColor.color)
                     .textAccentColor(textAccentColor ?? iconColor)
                     .textLinkColor(.custom(labelColor.color))
             }

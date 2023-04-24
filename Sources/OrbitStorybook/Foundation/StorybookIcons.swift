@@ -27,7 +27,7 @@ struct StorybookIcons {
                 Icon(.symbol(icon))
                 
                 Text(String(describing: icon).titleCased, size: .custom(10), isSelectable: true)
-                    .foregroundColor(.inkNormal)
+                    .textColor(.inkNormal)
 
                 Text(String(icon.value.unicodeCodePoint), size: .custom(10), isSelectable: true)
                     .padding(.horizontal, .xxSmall)
@@ -35,7 +35,7 @@ struct StorybookIcons {
                     .overlay(
                         Rectangle()
                             .strokeBorder(style: StrokeStyle(lineWidth: .hairline, lineCap: .round, dash: [.xxxSmall]))
-                            .foregroundColor(.inkLight)
+                            .textColor(.inkLight)
                     )
             }
             .padding(.horizontal, .xxSmall)
