@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Install pngquant
+        run: sudo apt-get install -y pngquant
+      - name: Install imagemagick
+        run: sudo apt-get install -y imagemagick
       - name: Today env
         run: echo "TODAY=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
       - name: Update Illustration Tokens
