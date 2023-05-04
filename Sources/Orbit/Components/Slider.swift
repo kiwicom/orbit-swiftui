@@ -419,13 +419,13 @@ struct SliderPreviews: PreviewProvider {
                 }
             }
 
-            StateWrapper(30) { value in
+            StateWrapper(30.0) { value in
                 VStack(alignment: .leading, spacing: .small) {
                     Text("SwiftUI.Slider", size: .xLarge)
 
-                    SwiftUI.Slider(value: value, in: 0...100)
+                    SwiftUI.Slider(value: value, in: 0.0...100.0)
 
-                    SwiftUI.Slider(value: value, in: 0...100, step: 20) {
+                    SwiftUI.Slider(value: value, in: 0.0...100.0, step: 20.0) {
                         Text("Speed")
                     } minimumValueLabel: {
                         Text("0")
