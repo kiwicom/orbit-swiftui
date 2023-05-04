@@ -104,6 +104,7 @@ extension Storybook {
                 case .select:               return ["Basic", "Mix"]
                 case .separator:            return ["Basic", "Mix"]
                 case .skeleton:             return ["Basic", "Atomic"]
+                case .slider:               return ["Basic"]
                 case .socialButton:         return ["Basic"]
                 case .stepper:              return ["Basic"]
                 case .`switch`:             return ["Basic"]
@@ -152,6 +153,7 @@ extension Storybook {
                 case .select:               return "rectangle.arrowtriangle.2.outward"
                 case .separator:            return "directcurrent"
                 case .skeleton:             return "rectangle.dashed"
+                case .slider:               return "slider.horizontal.3"
                 case .socialButton:         return "lock.icloud"
                 case .stepper:              return "plusminus.circle"
                 case .`switch`:             return "switch.2"

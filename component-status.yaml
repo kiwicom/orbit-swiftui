@@ -57,7 +57,7 @@
 - component: Skeleton
   ios: Released
 - component: Slider
-  ios: Planned
+  ios: Released
 - component: SocialButton
   ios: Released
 - component: Stepper
