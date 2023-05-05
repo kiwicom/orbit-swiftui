@@ -43,8 +43,14 @@ public extension Font {
             _ = registerFont(at: iconsFontURL)
         }
 
+        var registeredFonts: [URL: CGFont] = [:]
+
         for case let (weight, url?) in orbitFonts {
-            guard let font = registerFont(at: url) else { continue }
+            guard let font = registeredFonts[url] ?? registerFont(at: url) else { continue }
+
+            if registeredFonts[url] == nil {
+                registeredFonts[url] = font
+            }
 
             orbitFontNames[weight] = font.postScriptName as String?
         }
