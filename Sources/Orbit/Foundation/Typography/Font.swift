@@ -12,18 +12,18 @@ public extension Font {
     
     /// Fonts used for rendering text in Orbit.
     static var orbitFonts: [Font.Weight: URL?] = [
-        .ultraLight: Bundle.orbit.url(forResource: "Circular20-Book.otf", withExtension: nil),
-        .thin: Bundle.orbit.url(forResource: "Circular20-Book.otf", withExtension: nil),
-        .light: Bundle.orbit.url(forResource: "Circular20-Book.otf", withExtension: nil),
-        .regular: Bundle.orbit.url(forResource: "Circular20-Book.otf", withExtension: nil),
+        .ultraLight:    Bundle.orbit.url(forResource: "Circular20-Book", withExtension: "otf"),
+        .thin:          Bundle.orbit.url(forResource: "Circular20-Book", withExtension: "otf"),
+        .light:         Bundle.orbit.url(forResource: "Circular20-Book", withExtension: "otf"),
+        .regular:       Bundle.orbit.url(forResource: "Circular20-Book", withExtension: "otf"),
 
-        .medium: Bundle.orbit.url(forResource: "Circular20-Medium.otf", withExtension: nil),
-        .semibold: Bundle.orbit.url(forResource: "Circular20-Medium.otf", withExtension: nil),
+        .medium:        Bundle.orbit.url(forResource: "Circular20-Medium", withExtension: "otf"),
+        .semibold:      Bundle.orbit.url(forResource: "Circular20-Medium", withExtension: "otf"),
 
-        .bold: Bundle.orbit.url(forResource: "Circular20-Bold.otf", withExtension: nil),
+        .bold:          Bundle.orbit.url(forResource: "Circular20-Bold", withExtension: "otf"),
 
-        .heavy: Bundle.orbit.url(forResource: "Circular20-Black.otf", withExtension: nil),
-        .black: Bundle.orbit.url(forResource: "Circular20-Black.otf", withExtension: nil),
+        .heavy:         Bundle.orbit.url(forResource: "Circular20-Black", withExtension: "otf"),
+        .black:         Bundle.orbit.url(forResource: "Circular20-Black", withExtension: "otf"),
     ]
 
     /// Creates Orbit font.
@@ -43,8 +43,14 @@ public extension Font {
             _ = registerFont(at: iconsFontURL)
         }
 
+        var registeredFonts: [URL: CGFont] = [:]
+
         for case let (weight, url?) in orbitFonts {
-            guard let font = registerFont(at: url) else { continue }
+            guard let font = registeredFonts[url] ?? registerFont(at: url) else { continue }
+
+            if registeredFonts[url] == nil {
+                registeredFonts[url] = font
+            }
 
             orbitFontNames[weight] = font.postScriptName as String?
         }
