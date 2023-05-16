@@ -52,6 +52,7 @@ public struct Tag: View {
             .buttonStyle(
                 OrbitStyle(style: style, isFocused: isFocused, isSelected: isSelected, isActive: isActive)
             )
+            .accessibility(addTraits: isSelected ? .isSelected : [])
         }
     }
 
