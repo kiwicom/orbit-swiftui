@@ -118,6 +118,8 @@ public struct ToastWrapper: View {
     
     static let minOffsetY: CGFloat = -10
     static let maxOffsetY: CGFloat = 10
+
+    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
     
     let description: String
     let icon: Icon.Content?
@@ -188,7 +190,10 @@ public struct ToastWrapper: View {
     
     private func processDragChanged() {
         if dismissProgress >= 1, gaveFeedback == false {
-            HapticsProvider.sendHapticFeedback(.notification(.warning))
+            if isHapticsEnabled {
+                HapticsProvider.sendHapticFeedback(.notification(.warning))
+            }
+            
             gaveFeedback = true
         }
         

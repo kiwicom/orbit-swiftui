@@ -11,6 +11,7 @@ public struct Button: View {
     @Environment(\.idealSize) private var idealSize
     @Environment(\.textColor) private var textColor
     @Environment(\.textLinkColor) private var textLinkColor
+    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     let label: String
     let icon: Icon.Content?
@@ -22,7 +23,10 @@ public struct Button: View {
     public var body: some View {
         SwiftUI.Button(
             action: {
-                HapticsProvider.sendHapticFeedback(hapticFeedback)
+                if isHapticsEnabled {
+                    HapticsProvider.sendHapticFeedback(hapticFeedback)
+                }
+                
                 action()
             },
             label: {

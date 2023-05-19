@@ -8,6 +8,7 @@ public struct ButtonLink: View {
     @Environment(\.iconColor) private var iconColor
     @Environment(\.status) private var status
     @Environment(\.textColor) private var textColor
+    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     let label: String
     let style: Style
@@ -19,7 +20,10 @@ public struct ButtonLink: View {
         if label.isEmpty == false {
             SwiftUI.Button(
                 action: {
-                    HapticsProvider.sendHapticFeedback(.light(0.5))
+                    if isHapticsEnabled {
+                        HapticsProvider.sendHapticFeedback(.light(0.5))
+                    }
+                    
                     action()
                 },
                 label: {

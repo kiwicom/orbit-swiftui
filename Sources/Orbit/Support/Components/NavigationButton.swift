@@ -3,13 +3,18 @@ import SwiftUI
 /// A special case of ``BarButton`` suitable for main navigation actions inside toolbar or navigation bar.
 public struct NavigationButton: View {
 
+    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
+
     private let state: State
     private let action: () -> Void
 
     public var body: some View {
         SwiftUI.Button(
             action: {
-                HapticsProvider.sendHapticFeedback(.light(0.5))
+                if isHapticsEnabled {
+                    HapticsProvider.sendHapticFeedback(.light(0.5))
+                }
+                
                 action()
             },
             label: {

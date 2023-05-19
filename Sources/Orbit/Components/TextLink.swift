@@ -10,6 +10,7 @@ public struct TextLink: UIViewRepresentable {
 
     @Environment(\.textLinkAction) private var textLinkAction
     @Environment(\.textLinkColor) private var textLinkColor
+    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     private let content: NSAttributedString
     
@@ -19,7 +20,10 @@ public struct TextLink: UIViewRepresentable {
 
     public func makeUIView(context: UIViewRepresentableContext<TextLink>) -> TextLinkView {
         let textLinkView = TextLinkView(layoutManager: NSLayoutManager()) {
-            HapticsProvider.sendHapticFeedback(.light(0.5))
+            if isHapticsEnabled {
+                HapticsProvider.sendHapticFeedback(.light(0.5))
+            }
+            
             textLinkAction?($0, $1)
         }
         

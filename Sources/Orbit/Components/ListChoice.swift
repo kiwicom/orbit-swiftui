@@ -8,7 +8,8 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
 
     public let verticalPadding: CGFloat = .small + 0.5 // = 45 height @ normal size
 
-    @Environment(\.idealSize) var idealSize
+    @Environment(\.idealSize) private var idealSize
+    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     let title: String
     let description: String
@@ -23,7 +24,10 @@ public struct ListChoice<HeaderContent: View, Content: View>: View {
     public var body: some View {
         if isEmpty == false {
             SwiftUI.Button {
-                HapticsProvider.sendHapticFeedback(.light(0.5))
+                if isHapticsEnabled {
+                    HapticsProvider.sendHapticFeedback(.light(0.5))
+                }
+                
                 action()
             } label: {
                 buttonContent
