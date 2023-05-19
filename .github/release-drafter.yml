@@ -1,13 +1,21 @@
 category-template: '### $TITLE'
 categories:
   - title: '🚀 Features'
-    label: 'feature'
+    labels:
+      - 'feature'
+      - 'enhancement'
+      - 'accessibility'
   - title: '🐛 Bug Fixes'
     label: 'bug'
   - title: '🧰 Maintenance'
     label: 'maintenance'
   - title: '📖 Documentation'
     label: 'documentation'
+  - title: '🎨 Tokens'
+    labels:
+      - 'update-colors'
+      - 'update-icons'
+      - 'update-illustrations'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&'
 exclude-labels:
