@@ -6,96 +6,72 @@ import SwiftUI
 /// SegmentedSwitch can be in error state only in unselected state.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/interaction/segmentedswitch/)
-public struct SegmentedSwitch: View {
-
-    let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
+public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
 
     @Environment(\.colorScheme) private var colorScheme
-
-    @Binding private var selectedIndex: Int?
+    @Binding private var selection: Selection?
     let label: String
     let message: Message?
-    let firstOption: String
-    let secondOption: String
+    let content: Content
 
     let borderWidth: CGFloat = BorderWidth.active
 
     public var body: some View {
         FieldWrapper(label, message: message) {
             InputContent(message: message) {
-                HStack(spacing: 0) {
-                    segment(title: firstOption)
-                        .accessibility(.segmentedSwitchFirstOption)
-
-                    separator
-
-                    segment(title: secondOption)
-                        .accessibility(.segmentedSwitchSecondOption)
-                }
-                .background(selectionBackground)
-                .fixedSize(horizontal: false, vertical: true)
+                content
+                    .environment(\.segmentSelection, selectionBinding)
+                    .overlay(separator)
+                    .backgroundPreferenceValue(IDPreferenceKey.self) { preference in
+                        selectionBackground(preference)
+                    }
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(label))
-        .accessibility(value: .init(selection?.description ?? ""))
+        .accessibility(value: .init(selection.map(String.init(describing:)) ?? ""))
         .accessibility(hint: .init(accessibilityHint))
         .accessibility(addTraits: .isButton)
         .accessibility(addTraits: selection != nil ? .isSelected : [])
     }
 
-    @ViewBuilder func segment(title: String) -> some View {
-        Text(title)
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, .xSmall)
-            .padding(.vertical, verticalTextPadding)
-            .frame(maxWidth: .infinity)
-            .contentShape(Rectangle())
-            .onTapGesture {
-                selectedIndex = title == firstOption ? 0 : 1
-            }
-    }
-
     @ViewBuilder var separator: some View {
-        separatorColor
-          .frame(width: borderWidth)
-          .frame(maxHeight: .infinity)
-          .padding(.vertical, BorderWidth.active)
+        (selection == nil ? borderColor : .clear)
+            .frame(width: borderWidth)
+            .frame(maxHeight: .infinity)
+            .padding(.vertical, BorderWidth.active)
     }
 
-    @ViewBuilder var selectionBackground: some View {
+    @ViewBuilder func selectionBackground(_ preference: IDPreferenceKey.Value) -> some View {
         HStack(spacing: 0) {
-            if selection == secondOption {
-                Spacer(minLength: 0)
-                    .layoutPriority(1)
-            }
+            if let anchor = preference.first(where: { $0.id == selection.map(AnyHashable.init) })?.bounds {
+                GeometryReader { geometry in
+                    let itemWidth = geometry.size.width / 2
 
-            (colorScheme == .light ? Color.whiteDarker : Color.cloudDarkActive)
-                .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1))
-                .padding(borderWidth)
-                .elevation(selection != nil ? .level1 : nil)
-                .layoutPriority(1)
-
-            if selection == firstOption {
-                Spacer(minLength: 0)
-                    .layoutPriority(1)
+                    background
+                        .frame(width: itemWidth)
+                        .offset(x: (geometry[anchor].minX / itemWidth).rounded(.down) * itemWidth)
+                }
+            } else {
+                background
             }
         }
-        .animation(.easeOut(duration: 0.2), value: selectedIndex)
+        .animation(.easeOut(duration: 0.2), value: selection)
     }
 
-    private var selection: String? {
-        if selectedIndex == 0 {
-            return firstOption
-        } else if selectedIndex == 1 {
-            return secondOption
-        } else {
-            return nil
-        }
+    @ViewBuilder var background: some View {
+        (colorScheme == .light ? Color.whiteDarker : Color.cloudDarkActive)
+            .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1))
+            .padding(borderWidth)
+            .elevation(selection != nil ? .level1 : nil)
     }
 
-    private var separatorColor: Color {
-        selection == nil ? borderColor : .clear
+    private var selectionBinding: Binding<AnyHashable?> {
+        Binding(
+           get: { selection.map(AnyHashable.init) },
+           set: { selection = $0?.base as? Selection }
+        )
     }
 
     private var borderColor: Color {
@@ -103,21 +79,19 @@ public struct SegmentedSwitch: View {
     }
 
     private var accessibilityHint: String {
-        "\(message?.description.appending(":") ?? "") \(firstOption)\\\(secondOption)"
+        message?.description ?? ""
     }
     
     public init(
         _ label: String = "",
-        firstOption: String,
-        secondOption: String,
-        selectedIndex: Binding<Int?>,
-        message: Message? = nil
+        selection: Binding<Selection?>,
+        message: Message? = nil,
+        @SegmentedSwitchContentBuilder content: () -> Content
     ) {
         self.label = label
-        self.firstOption = firstOption
-        self.secondOption = secondOption
-        self._selectedIndex = selectedIndex
+        self._selection = selection
         self.message = message
+        self.content = content()
     }
 }
 
@@ -126,8 +100,60 @@ public extension AccessibilityID {
     static let segmentedSwitchSecondOption = Self(rawValue: "orbit.segmentedswitch.second")
 }
 
+// MARK: - Types
+
+/// A view builder for constructing `SegmentedSwitch` content.
+@resultBuilder public enum SegmentedSwitchContentBuilder {
+
+    static let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
+
+    public static func buildBlock(_ first: some View, _ second: some View) -> some View {
+        HStack(spacing: 0) {
+            switchItem {
+                first
+                    .accessibility(.segmentedSwitchFirstOption)
+            }
+
+            TextStrut()
+                .padding(.vertical, Self.verticalTextPadding)
+
+            switchItem {
+                second
+                    .accessibility(.segmentedSwitchSecondOption)
+            }
+        }
+     }
+
+    @ViewBuilder static func switchItem(content: @escaping () -> some View) -> some View {
+        EnvironmentReader(\.segmentSelection) { selection in
+            PreferenceReader(IDPreferenceKey.self) { preference in
+                content()
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, .small)
+                    .padding(.vertical, verticalTextPadding)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        selection.wrappedValue = preference.first?.id
+                    }
+            }
+        }
+    }
+}
+
+struct SegmentSelectionKey: EnvironmentKey {
+    static let defaultValue: Binding<AnyHashable?> = .constant(nil)
+}
+
+extension EnvironmentValues {
+    var segmentSelection: Binding<AnyHashable?> {
+        get { self[SegmentSelectionKey.self] }
+        set { self[SegmentSelectionKey.self] = newValue }
+    }
+}
+
 // MARK: - Previews
 struct SegmentedSwitchPreviews: PreviewProvider {
+
     static var previews: some View {
         PreviewWrapper {
             unselected
@@ -148,18 +174,18 @@ struct SegmentedSwitchPreviews: PreviewProvider {
 
     static var sizing: some View {
         VStack(spacing: .medium) {
-            segmentedSwitch(selectedIndex: nil, label: "")
+            segmentedSwitch(selection: nil, label: "")
                 .measured()
-            segmentedSwitch(selectedIndex: 1, label: "")
+            segmentedSwitch(selection: .female, label: "")
                 .measured()
-            segmentedSwitch(selectedIndex: 1, secondOption: "Multiline\nOption", label: "")
+            segmentedSwitch(selection: .female, secondOption: "Multiline\nOption", label: "")
                 .measured()
         }
         .previewDisplayName()
     }
 
     static var selected: some View {
-        segmentedSwitch(selectedIndex: 0)
+        segmentedSwitch(selection: .male)
             .previewDisplayName()
     }
 
@@ -174,15 +200,16 @@ struct SegmentedSwitchPreviews: PreviewProvider {
     }
 
     static var interactive: some View {
-        StateWrapper(Int?(2)) { value in
+        StateWrapper(Gender?.some(.male)) { value in
             VStack(spacing: .large) {
-                SegmentedSwitch(
-                    "Gender\nmultiline",
-                    firstOption: "Male with long name",
-                    secondOption: "Female with much longer name",
-                    selectedIndex: value
-                )
-                Text(value.wrappedValue?.description ?? "")
+                SegmentedSwitch("Gender\nmultiline", selection: value) {
+                    Text("Male with long name")
+                        .identifier(Gender.male)
+
+                    Text("Female with much longer name")
+                        .identifier(Gender.female)
+                }
+                Text(value.wrappedValue.map(String.init(describing:)) ?? "")
             }
         }
         .previewDisplayName()
@@ -198,21 +225,27 @@ struct SegmentedSwitchPreviews: PreviewProvider {
         .padding(.medium)
     }
 
+    enum Gender {
+        case male
+        case female
+    }
+
     static func segmentedSwitch(
-        selectedIndex: Int? = nil,
+        selection: Gender? = nil,
         firstOption: String = "Male",
         secondOption: String = "Female",
         label: String = "Gender",
         message: Message? = nil
     ) -> some View {
-        StateWrapper(selectedIndex) { value in
-            SegmentedSwitch(
-                label,
-                firstOption: firstOption,
-                secondOption: secondOption,
-                selectedIndex: value,
-                message: message
-            )
+        StateWrapper(selection) { value in
+            SegmentedSwitch(label, selection: value, message: message) {
+                Text(firstOption)
+                    .identifier(Gender.male)
+
+                Text(secondOption)
+                    .identifier(Gender.female)
+            }
+            .multilineTextAlignment(.center)
         }
     }
 }
