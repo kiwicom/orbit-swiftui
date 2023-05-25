@@ -9,84 +9,149 @@ import SwiftUI
 public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
 
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.idealSize) private var idealSize
     @Binding private var selection: Selection?
     let label: String
     let message: Message?
     let content: Content
 
     let borderWidth: CGFloat = BorderWidth.active
+    let horizontalPadding: CGFloat = .small
 
     public var body: some View {
         FieldWrapper(label, message: message) {
             InputContent(message: message) {
-                content
-                    .environment(\.segmentSelection, selectionBinding)
-                    .overlay(separator)
-                    .backgroundPreferenceValue(IDPreferenceKey.self) { preference in
-                        selectionBackground(preference)
-                    }
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibility(label: .init(label))
-        .accessibility(value: .init(selection.map(String.init(describing:)) ?? ""))
-        .accessibility(hint: .init(accessibilityHint))
-        .accessibility(addTraits: .isButton)
-        .accessibility(addTraits: selection != nil ? .isSelected : [])
-    }
-
-    @ViewBuilder var separator: some View {
-        (selection == nil ? borderColor : .clear)
-            .frame(width: borderWidth)
-            .frame(maxHeight: .infinity)
-            .padding(.vertical, BorderWidth.active)
-    }
-
-    @ViewBuilder func selectionBackground(_ preference: IDPreferenceKey.Value) -> some View {
-        HStack(spacing: 0) {
-            if let anchor = preference.first(where: { $0.id == selection.map(AnyHashable.init) })?.bounds {
-                GeometryReader { geometry in
-                    let itemWidth = geometry.size.width / 2
-
-                    background
-                        .frame(width: itemWidth)
-                        .offset(x: (geometry[anchor].minX / itemWidth).rounded(.down) * itemWidth)
+                HStack(spacing: borderWidth) {
+                    content
+                        .allowsHitTesting(false)
+                        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
+                        .padding(.horizontal, horizontalPadding)
+                        .padding(.vertical, .small) // = 44 @ normal text size
+                        .multilineTextAlignment(.center)
                 }
-            } else {
-                background
+                .backgroundPreferenceValue(IDPreferenceKey.self) { preferences in
+                    selectedSegmentButton(preferences: preferences)
+                }
+                .backgroundPreferenceValue(IDPreferenceKey.self) { preferences in
+                    unselectedSegmentButtons(preferences)
+                }
             }
         }
+        .accessibilityElement(children: .contain)
+        .accessibility(label: .init(label))
+        .accessibility(hint: .init(message?.description ?? ""))
+    }
+
+    @ViewBuilder func selectedSegmentButton(preferences: [IDPreference]) -> some View {
+        if let index = preferences.firstIndex(where: isSelected) {
+            segmentButton(preferences: preferences, index: index) {
+                segmentBackground
+                    .elevation(.level1)
+            }
+            .animation(.easeOut(duration: 0.2), value: selection)
+        }
+    }
+
+    @ViewBuilder func unselectedSegmentButtons(_ preferences: [IDPreference]) -> some View {
+        ForEach(unselectedPreferences(preferences), id: \.1.id) { index, preference in
+            segmentButton(preferences: preferences, index: index) {
+                Color.cloudNormal
+            }
+        }
+        .overlay(
+            noSelectionBackground(preferences)
+        )
         .animation(.easeOut(duration: 0.2), value: selection)
     }
 
-    @ViewBuilder var background: some View {
+    @ViewBuilder func segmentButton(
+        preferences: [IDPreference],
+        index: Int,
+        @ViewBuilder label: @escaping () -> some View
+    ) -> some View {
+        let preference = preferences[index]
+        let isSelected = isSelected(preference)
+
+        GeometryReader { geometry in
+            let (width, minX) = measurements(
+                index: index,
+                preferences: preferences,
+                idealSize: isIdealSize,
+                horizontalPadding: horizontalPadding,
+                separatorWidth: borderWidth,
+                in: geometry
+            )
+
+            SwiftUI.Button {
+                selection = selection(from: preference)
+            } label: {
+                label()
+            }
+            .buttonStyle(.backgroundHighlight(isActive: isSelected, borderWidth: borderWidth))
+            .frame(width: width)
+            .offset(x: minX)
+            .accessibility(value: .init((selection(from: preference)).map(String.init(describing:)) ?? ""))
+            .accessibility(addTraits: isSelected ? .isSelected : [])
+        }
+    }
+
+    @ViewBuilder func noSelectionBackground(_ preferences: [IDPreference]) -> some View {
+        if selection == nil {
+            GeometryReader { geometry in
+                segmentBackground
+                    .overlay(
+                        separator
+                            .offset(
+                                x: measurements(
+                                    index: 1,
+                                    preferences: preferences,
+                                    idealSize: isIdealSize,
+                                    horizontalPadding: horizontalPadding,
+                                    separatorWidth: borderWidth,
+                                    in: geometry
+                                ).minX
+                            ),
+                        alignment: .leading
+                    )
+                    .allowsHitTesting(false)
+            }
+        }
+    }
+
+    @ViewBuilder var segmentBackground: some View {
         (colorScheme == .light ? Color.whiteDarker : Color.cloudDarkActive)
             .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1))
             .padding(borderWidth)
-            .elevation(selection != nil ? .level1 : nil)
     }
 
-    private var selectionBinding: Binding<AnyHashable?> {
-        Binding(
-           get: { selection.map(AnyHashable.init) },
-           set: { selection = $0?.base as? Selection }
-        )
+    @ViewBuilder var separator: some View {
+        (message?.status?.color ?? .cloudNormal)
+            .frame(width: borderWidth)
+            .frame(maxHeight: .infinity)
+            .padding(.vertical, borderWidth)
     }
 
-    private var borderColor: Color {
-        message?.status?.color ?? .cloudNormal
+    private func unselectedPreferences(_ preferences: [IDPreference]) -> [(Int, IDPreference)] {
+        preferences.enumerated().filter { isSelected($0.element) == false }
     }
 
-    private var accessibilityHint: String {
-        message?.description ?? ""
+    private func isSelected(_ preference: IDPreference) -> Bool {
+        selection == selection(from: preference)
+    }
+
+    private func selection(from preference: IDPreference) -> Selection? {
+        preference.id.base as? Selection
+    }
+
+    private var isIdealSize: Bool {
+        idealSize.horizontal == true
     }
     
     public init(
         _ label: String = "",
         selection: Binding<Selection?>,
         message: Message? = nil,
-        @SegmentedSwitchContentBuilder content: () -> Content
+        @ViewBuilder content: () -> Content
     ) {
         self.label = label
         self._selection = selection
@@ -95,68 +160,41 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
     }
 }
 
-public extension AccessibilityID {
-    static let segmentedSwitchFirstOption = Self(rawValue: "orbit.segmentedswitch.first")
-    static let segmentedSwitchSecondOption = Self(rawValue: "orbit.segmentedswitch.second")
-}
-
-// MARK: - Types
-
-/// A view builder for constructing `SegmentedSwitch` content.
-@resultBuilder public enum SegmentedSwitchContentBuilder {
-
-    static let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
-
-    public static func buildBlock(_ first: some View, _ second: some View) -> some View {
-        HStack(spacing: 0) {
-            switchItem {
-                first
-                    .accessibility(.segmentedSwitchFirstOption)
-            }
-
-            TextStrut()
-                .padding(.vertical, Self.verticalTextPadding)
-
-            switchItem {
-                second
-                    .accessibility(.segmentedSwitchSecondOption)
-            }
+private func measurements(
+    index: Int,
+    preferences: [IDPreference],
+    idealSize: Bool,
+    horizontalPadding: CGFloat,
+    separatorWidth: CGFloat,
+    in geometry: GeometryProxy
+) -> (width: CGFloat, minX: CGFloat) {
+    if idealSize {
+        let minX = preferences.prefix(upTo: index).reduce(into: 0) { finalMinX, preference in
+            finalMinX += geometry[preference.bounds].width + separatorWidth + horizontalPadding * 2
         }
-     }
+        let width = geometry[preferences[index].bounds].width + horizontalPadding * 2
 
-    @ViewBuilder static func switchItem(content: @escaping () -> some View) -> some View {
-        EnvironmentReader(\.segmentSelection) { selection in
-            PreferenceReader(IDPreferenceKey.self) { preference in
-                content()
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, .small)
-                    .padding(.vertical, verticalTextPadding)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        selection.wrappedValue = preference.first?.id
-                    }
-            }
-        }
-    }
-}
+        return (width, minX)
+    } else {
+        let width = geometry.size.width / 2
+        let minX = (geometry[preferences[index].bounds].minX / width).rounded(.down) * width
 
-struct SegmentSelectionKey: EnvironmentKey {
-    static let defaultValue: Binding<AnyHashable?> = .constant(nil)
-}
-
-extension EnvironmentValues {
-    var segmentSelection: Binding<AnyHashable?> {
-        get { self[SegmentSelectionKey.self] }
-        set { self[SegmentSelectionKey.self] = newValue }
+        return (width, minX)
     }
 }
 
 // MARK: - Previews
 struct SegmentedSwitchPreviews: PreviewProvider {
 
+    enum Gender {
+        case male
+        case female
+    }
+
     static var previews: some View {
         PreviewWrapper {
             unselected
+                .idealSize()
             sizing
             selected
             help
@@ -177,6 +215,9 @@ struct SegmentedSwitchPreviews: PreviewProvider {
             segmentedSwitch(selection: nil, label: "")
                 .measured()
             segmentedSwitch(selection: .female, label: "")
+                .measured()
+            segmentedSwitch(selection: .female, label: "")
+                .idealSize()
                 .measured()
             segmentedSwitch(selection: .female, secondOption: "Multiline\nOption", label: "")
                 .measured()
@@ -225,11 +266,6 @@ struct SegmentedSwitchPreviews: PreviewProvider {
         .padding(.medium)
     }
 
-    enum Gender {
-        case male
-        case female
-    }
-
     static func segmentedSwitch(
         selection: Gender? = nil,
         firstOption: String = "Male",
@@ -245,7 +281,6 @@ struct SegmentedSwitchPreviews: PreviewProvider {
                 Text(secondOption)
                     .identifier(Gender.female)
             }
-            .multilineTextAlignment(.center)
         }
     }
 }
