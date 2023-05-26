@@ -56,6 +56,12 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
                     .accessibility(addTraits: .isButton)
                     .accessibility(addTraits: isSelected(preference) ? .isSelected : [])
             }
+            .gesture(
+                DragGesture()
+                    .onChanged { value in
+                        selection = selection(at: value.location, preferences: preferences, in: geometry)
+                    }
+            )
         }
     }
 
@@ -86,6 +92,17 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
             .frame(width: borderWidth)
             .frame(maxHeight: .infinity)
             .padding(.vertical, BorderWidth.active)
+    }
+
+    private func selection(
+        at location: CGPoint,
+        preferences: [IDPreference],
+        in geometry: GeometryProxy
+    ) -> Selection? {
+        let itemWidth = geometry.size.width / CGFloat(preferences.count)
+        let index = Int((location.x / itemWidth).rounded(.down)).clamped(to: preferences.indices.dropLast())
+
+        return selection(from: preferences[index])
     }
 
     private func isSelected(_ preference: IDPreference) -> Bool {
@@ -221,5 +238,12 @@ struct SegmentedSwitchPreviews: PreviewProvider {
             }
             .multilineTextAlignment(.center)
         }
+    }
+}
+
+private extension Comparable {
+
+    func clamped(to range: Range<Self>) -> Self {
+        min(max(self, range.lowerBound), range.upperBound)
     }
 }
