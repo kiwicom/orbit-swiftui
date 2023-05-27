@@ -158,6 +158,23 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
         self.message = message
         self.content = content()
     }
+
+    public init(
+        _ label: String = "",
+        selection: Binding<Selection>,
+        message: Message? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            label,
+            selection: .init(
+                get: { selection.wrappedValue },
+                set: { newValue in newValue.map { selection.wrappedValue = $0 } }
+            ),
+            message: message,
+            content: content
+        )
+    }
 }
 
 private func measurements(
