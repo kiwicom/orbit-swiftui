@@ -2,7 +2,26 @@ import SwiftUI
 
 /// Showing two choices from which only one can be selected.
 ///
-/// Currently SegmentedSwitch allows to have 2 segments.
+/// Specify exactly two views in the content closure,
+/// giving each an `.identifier` that matches a value
+/// of the selection binding:
+///
+/// ```
+/// enum Direction {
+///     case left
+///     case right
+/// }
+///
+/// @State var direction: Direction?
+///
+/// SegmentedSwitch(selection: $direction) {
+///     Text("Left")
+///         .identifier(Direction.left)
+///     Text("Right")
+///         .identifier(Direction.right)
+/// }
+/// ```
+///
 /// SegmentedSwitch can be in error state only in unselected state.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/interaction/segmentedswitch/)
