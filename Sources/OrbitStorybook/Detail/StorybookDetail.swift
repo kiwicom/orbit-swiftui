@@ -21,9 +21,10 @@ struct StorybookDetail: View {
     @ViewBuilder var detailView: some View {
         VStack(alignment: .leading, spacing: 0) {
             if menuItem.tabs.count > 1 {
-                Tabs(selectedIndex: $selectedTab) {
-                    ForEach(menuItem.tabs, id: \.self) { tab in
-                        Tab(tab)
+                Tabs(selection: $selectedTab) {
+                    ForEach(Array(menuItem.tabs.enumerated()), id: \.offset) { index, tab in
+                        Text(tab)
+                            .identifier(index)
                     }
                 }
                 .padding(.medium)
@@ -192,17 +193,30 @@ struct StorybookDetailPreviews: PreviewProvider {
     
     static var previews: some View {
         OrbitPreviewWrapper {
-            NavigationView {
-                StorybookDetail(menuItem: .text)
-            }
-
-            NavigationView {
-                StorybookDetail(menuItem: .badge)
-            }
-
-            NavigationView {
-                StorybookDetail(menuItem: .toast)
-            }
+            text
+            badge
+            toast
         }
+    }
+
+    static var text: some View {
+        NavigationView {
+            StorybookDetail(menuItem: .text)
+        }
+        .previewDisplayName()
+    }
+
+    static var badge: some View {
+        NavigationView {
+            StorybookDetail(menuItem: .badge)
+        }
+        .previewDisplayName()
+    }
+
+    static var toast: some View {
+        NavigationView {
+            StorybookDetail(menuItem: .toast)
+        }
+        .previewDisplayName()
     }
 }

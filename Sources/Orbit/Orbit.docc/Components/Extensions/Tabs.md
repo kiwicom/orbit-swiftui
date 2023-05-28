@@ -6,10 +6,6 @@
 
 ## Topics
 
-### Adding Content
-
-- ``Tab``
-
 ### Customizing Appearance
 
-- ``TabsDistribution``
+- ``TabStyle``
