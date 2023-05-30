@@ -106,7 +106,7 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
             } label: {
                 label()
             }
-            .buttonStyle(.backgroundHighlight(isActive: isSelected, borderWidth: borderWidth))
+            .buttonStyle(.backgroundHighlight(isActive: isSelected, borderWidth: borderWidth, pressedOpacity: 0.4))
             .frame(width: width)
             .offset(x: minX)
             .accessibility(value: .init((selection(from: preference)).map(String.init(describing:)) ?? ""))
@@ -230,7 +230,6 @@ struct SegmentedSwitchPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             unselected
-                .idealSize()
             sizing
             selected
             help
