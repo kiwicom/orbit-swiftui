@@ -6,7 +6,7 @@ import SwiftUI
 protocol TextFieldBuildable {
 
     var autocapitalizationType: UITextAutocapitalizationType { get set }
-    var isAutocorrectionDisabled: Bool { get set }
+    var isAutocorrectionDisabled: Bool? { get set }
     var keyboardType: UIKeyboardType { get set }
     var returnKeyType: UIReturnKeyType { get set }
     var textContentType: UITextContentType? { get set }
@@ -30,7 +30,7 @@ public extension TextField {
     }
 
     /// Returns a modified Orbit TextField with provided autocorrection type.
-    func autocorrectionDisabled(_ disable: Bool = true) -> Self {
+    func autocorrectionDisabled(_ disable: Bool? = true) -> Self {
         set(\.isAutocorrectionDisabled, to: disable)
     }
 
@@ -63,7 +63,7 @@ public extension InputField {
     }
 
     /// Returns a modified Orbit InputField with provided autocorrection type.
-    func autocorrectionDisabled(_ disable: Bool = true) -> Self {
+    func autocorrectionDisabled(_ disable: Bool? = true) -> Self {
         set(\.isAutocorrectionDisabled, to: disable)
     }
 

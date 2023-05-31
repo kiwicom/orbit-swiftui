@@ -25,7 +25,7 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
 
     // Builder properties (keyboard related)
     var returnKeyType: UIReturnKeyType = .default
-    var isAutocorrectionDisabled: Bool = false
+    var isAutocorrectionDisabled: Bool? = nil
     var keyboardType: UIKeyboardType = .default
     var textContentType: UITextContentType?
     var autocapitalizationType: UITextAutocapitalizationType = .sentences
@@ -57,9 +57,21 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
 
         // Keyboard related
         uiView.returnKeyType = returnKeyType
-        uiView.autocorrectionType = isAutocorrectionDisabled ? .no : .default
         uiView.keyboardType = keyboardType
         uiView.textContentType = textContentType
+
+        if let isAutocorrectionDisabled {
+            uiView.autocorrectionType = isAutocorrectionDisabled ? .no : .yes
+        } else {
+            switch textContentType {
+                case UITextContentType.emailAddress, UITextContentType.password, UITextContentType.newPassword:
+                    // If not specified, disable autocomplete for these content types
+                    uiView.autocorrectionType = .no
+                default:
+                    uiView.autocorrectionType = .default
+            }
+        }
+
         uiView.autocapitalizationType = autocapitalizationType
         uiView.shouldDeleteBackwardAction = shouldDeleteBackwardAction
 

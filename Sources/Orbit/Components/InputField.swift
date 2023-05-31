@@ -33,7 +33,7 @@ public struct InputField: View, TextFieldBuildable {
 
     // Builder properties (keyboard related)
     var autocapitalizationType: UITextAutocapitalizationType = .none
-    var isAutocorrectionDisabled: Bool = false
+    var isAutocorrectionDisabled: Bool? = false
     var keyboardType: UIKeyboardType = .default
     var returnKeyType: UIReturnKeyType = .default
     var textContentType: UITextContentType?
