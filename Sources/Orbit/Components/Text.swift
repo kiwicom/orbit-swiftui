@@ -13,6 +13,7 @@ public struct Text: View, FormattedTextBuildable {
     @Environment(\.lineSpacing) private var lineSpacing
     @Environment(\.textAccentColor) private var textAccentColor
     @Environment(\.textColor) private var textColor
+    @Environment(\.textFontWeight) private var textFontWeight
     @Environment(\.sizeCategory) private var sizeCategory
 
     private let content: String
@@ -106,8 +107,7 @@ public struct Text: View, FormattedTextBuildable {
         if #available(iOS 16.0, *), let isBold {
             return text
                 .bold(isBold)
-        }
-        else if let isBold, isBold {
+        } else if let isBold, isBold {
             return text
                 .bold()
         } else {
@@ -244,7 +244,7 @@ public struct Text: View, FormattedTextBuildable {
     }
 
     private var resolvedFontWeight: Font.Weight? {
-        isBold == true ? .bold : fontWeight
+        isBold == true ? .bold : fontWeight ?? textFontWeight
     }
 
     private func designatedLineHeight(sizeCategory: ContentSizeCategory) -> CGFloat {
