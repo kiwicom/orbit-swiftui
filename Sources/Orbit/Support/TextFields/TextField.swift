@@ -25,7 +25,7 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
 
     // Builder properties (keyboard related)
     var returnKeyType: UIReturnKeyType = .default
-    var isAutocorrectionDisabled: Bool = false
+    var isAutocorrectionDisabled: Bool? = nil
     var keyboardType: UIKeyboardType = .default
     var textContentType: UITextContentType?
     var autocapitalizationType: UITextAutocapitalizationType = .sentences
@@ -49,15 +49,29 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
     }
 
     public func updateUIView(_ uiView: InsetableTextField, context: Context) {
+        context.coordinator.isBeingUpdated = true
+
         uiView.insets.left = leadingPadding
         uiView.insets.right = trailingPadding
         uiView.isSecureTextEntry = isSecureTextEntry
 
         // Keyboard related
         uiView.returnKeyType = returnKeyType
-        uiView.autocorrectionType = isAutocorrectionDisabled ? .no : .default
         uiView.keyboardType = keyboardType
         uiView.textContentType = textContentType
+
+        if let isAutocorrectionDisabled {
+            uiView.autocorrectionType = isAutocorrectionDisabled ? .no : .yes
+        } else {
+            switch textContentType {
+                case UITextContentType.emailAddress, UITextContentType.password, UITextContentType.newPassword:
+                    // If not specified, disable autocomplete for these content types
+                    uiView.autocorrectionType = .no
+                default:
+                    uiView.autocorrectionType = .default
+            }
+        }
+
         uiView.autocapitalizationType = autocapitalizationType
         uiView.shouldDeleteBackwardAction = shouldDeleteBackwardAction
 
@@ -73,10 +87,11 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         )
 
         // Check if the binding value is updated to replace the text content
-        if value != context.coordinator.textFieldValue {
-            context.coordinator.textFieldValue = value
+        if value != uiView.text {
             uiView.replace(withText: value)
         }
+
+        context.coordinator.isBeingUpdated = false
     }
 
     public func makeCoordinator() -> Coordinator {
@@ -108,7 +123,7 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         let inputFieldShouldChangeCharactersIdentifiableAction: ((AnyHashable, NSString, NSRange, String) -> InputFieldShouldChangeResult)?
 
         // Required for differentiating between actual value and binding value.
-        fileprivate var textFieldValue: String
+        fileprivate var isBeingUpdated = false
 
         init(
             identifier: AnyHashable?,
@@ -124,7 +139,6 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         ) {
             self.identifier = identifier
             self._value = value
-            self.textFieldValue = value.wrappedValue
             self.inputFieldBeginEditingAction = inputFieldBeginEditingAction
             self.inputFieldBeginEditingIdentifiableAction = inputFieldBeginEditingIdentifiableAction
             self.inputFieldEndEditingAction = inputFieldEndEditingAction
@@ -187,25 +201,28 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
 
             switch result {
                 case .accept:
-                    // Accept the proposed change
-                    let newValue = text.replacingCharacters(in: range, with: string)
-                    replaceValue(with: newValue)
                     return true
                 case .replace(let modifiedValue):
                     // Refuse the proposed change, replace the text with modified value
                     textField.text = modifiedValue
-                    replaceValue(with: modifiedValue)
                     return false
                 case .reject:
                     return false
             }
         }
 
-        func replaceValue(with text: String) {
-            textFieldValue = text
+        public func textFieldDidChangeSelection(_ textField: UITextField) {
+            guard isBeingUpdated == false else {
+                return
+            }
 
-            Task { @MainActor in
-                value = textFieldValue
+            let newValue = textField.text ?? ""
+
+            if value != newValue {
+                // This is a safer place to report the actual value, as it can be modified by system silently.
+                // Example: `emailAddress` type being hijacked by system when using autocomplete
+                // https://github.com/lionheart/openradar-mirror/issues/18086
+                value = newValue
             }
         }
     }
