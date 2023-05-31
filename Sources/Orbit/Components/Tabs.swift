@@ -1,164 +1,270 @@
 import SwiftUI
 
-public enum TabsDistribution {
-    /// Distributes tab widths equally.
-    case equal
-    /// Distributes tab widths based on each tab intrinsic size.
-    case intrinsic
-}
-
 /// Separates content into groups within a single context.
 ///
 /// The following example shows component with 3 tabs:
 ///
-///     var body: some View {
-///         Tabs(selectedIndex: tabIndex) {
-///             Tab("one")
-///             Tab("two", style: .underlinedGradient(.ink))
-///             Tab("three", style: .underlined(.blueNormal))
-///         }
+/// ```swift
+/// var body: some View {
+///     Tabs(selection: tabIndex) {
+///         Text("one")
+///             .identifier(1)
+///         Text("two")
+///             .identifier(2)
+///             .activeTabStyle(.underlinedGradient(.ink))
+///         Text("three")
+///             .identifier(3)
+///             .activeTabStyle(.underlined(.blueNormal))
 ///     }
+/// }
+/// ```
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/structure/tabs/)
-public struct Tabs<Content: View>: View {
+public struct Tabs<Selection: Hashable, Content: View>: View {
 
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.idealSize) private var idealSize
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.textColor) private var textColor
+    @Binding private var selection: Selection
+    @State private var activeTabStyles: [ActiveTabStyle] = []
 
-    @Binding var selectedIndex: Int
-
+    let backgroundColor: Color = .cloudLight
     let underlineHeight: CGFloat = .xxxSmall
-    let lineLimit: Int?
-    let distribution: TabsDistribution
-    @ViewBuilder let content: Content
+    let content: Content
+
+    let borderWidth: CGFloat = BorderWidth.active
+    let horizontalPadding: CGFloat = .small
 
     public var body: some View {
         HStack(spacing: 0) {
             content
-                .lineLimit(lineLimit)
-                .frame(maxWidth: maxTabWidth, maxHeight: .infinity)
+                .frame(maxWidth: isIdealSize ? nil : .infinity, maxHeight: .infinity)
+                .allowsHitTesting(false)
+                .padding(.horizontal, horizontalPadding)
+                .padding(.vertical, 6) // = 32 height @ normal size
+                .multilineTextAlignment(.center)
+                .textFontWeight(.medium)
+                .environment(\.selectedTabIdentifier, AnyHashable(selection))
         }
-        .fixedSize(horizontal: false, vertical: true)
-        .hidden()
-        .backgroundPreferenceValue(Tab.PreferenceKey.self) { preferences in
-            GeometryReader { geometry in
-                tabs(for: preferences, in: geometry)
-            }
+        .onPreferenceChange(ActiveTabStyleKey.self) { value in
+            activeTabStyles = value
+        }
+        .backgroundPreferenceValue(IDPreferenceKey.self) { preferences in
+            tabsBackground(preferences)
         }
         .background(background)
+        .fixedSize(horizontal: false, vertical: true)
+        .accessibilityElement(children: .contain)
+    }
+
+    @ViewBuilder func tabsBackground(_ preferences: [IDPreference]) -> some View {
+        selectedTabButton(preferences)
+            .background(separators(preferences))
+            .background(unselectedTabButtons(preferences))
+            .animation(.easeOut(duration: 0.2), value: selection)
+    }
+
+    @ViewBuilder func selectedTabButton(_ preferences: [IDPreference]) -> some View {
+        tabButton(preferences: preferences, index: selectedIndex(from: preferences)) { geometry in
+            VStack(spacing: 0) {
+                (colorScheme == .light ? Color.whiteDarker : Color.cloudDarkActive)
+
+                Rectangle()
+                    .fill(activeTabStyle(preferences: preferences, geometry: geometry).underline)
+                    .frame(height: underlineHeight * sizeCategory.ratio)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1))
+            .elevation(.level1, shape: .roundedRectangle(borderRadius: BorderRadius.default - 1))
+        }
+    }
+
+    @ViewBuilder func unselectedTabButtons(_ preferences: [IDPreference]) -> some View {
+        ForEach(unselectedPreferences(preferences), id: \.1.id) { index, preference in
+            tabButton(preferences: preferences, index: index) { _ in
+                backgroundColor
+                    .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1))
+            }
+        }
+    }
+
+    @ViewBuilder func tabButton(
+        preferences: [IDPreference],
+        index: Int,
+        @ViewBuilder label: @escaping (GeometryProxy) -> some View
+    ) -> some View {
+        let preference = preferences[index]
+        let isSelected = isSelected(preference)
+
+        GeometryReader { geometry in
+            let (width, minX) = measurements(
+                index: index,
+                preferences: preferences,
+                isIdealSize: isIdealSize,
+                horizontalPadding: horizontalPadding,
+                in: geometry
+            )
+
+            SwiftUI.Button {
+                if let newSelection = selection(from: preference) {
+                    selection = newSelection
+                }
+            } label: {
+                label(geometry)
+                    .padding(.xxxSmall)
+            }
+            .buttonStyle(.backgroundHighlight(isActive: isSelected, borderWidth: borderWidth, pressedOpacity: 0.7))
+            .frame(width: width)
+            .offset(x: minX)
+            .accessibility(value: .init((selection(from: preference)).map(String.init(describing:)) ?? ""))
+            .accessibility(addTraits: isSelected ? .isSelected : [])
+        }
+    }
+
+    @ViewBuilder func separators(_ preferences: [IDPreference]) -> some View {
+        let selectedIndex = selectedIndex(from: preferences)
+
+        GeometryReader { geometry in
+            ForEach(preferences.indices.dropLast(), id: \.self) { index in
+                if index != selectedIndex, index != selectedIndex - 1 {
+                    Color.cloudDark
+                        .frame(width: .hairline)
+                        .padding(.vertical, .xSmall)
+                        .offset(x: separatorXOffset(index: index, preferences: preferences, geometry: geometry))
+                }
+            }
+        }
     }
 
     @ViewBuilder var background: some View {
         RoundedRectangle(cornerRadius: BorderRadius.default)
-            .fill(.cloudLight)
+            .fill(backgroundColor)
             .overlay(
                 RoundedRectangle(cornerRadius: BorderRadius.default)
                     .stroke(.cloudNormal, lineWidth: BorderWidth.thin)
             )
     }
 
-    @ViewBuilder func tabs(for preferences: Tab.PreferenceKey.Value, in geometry: GeometryProxy) -> some View {
-        HStack(alignment: .center, spacing: 0) {
-            ForEach(preferences.indices, id: \.self) { index in
-                tab(
-                    index,
-                    lastIndex: preferences.endIndex - 1,
-                    preferences[index].label,
-                    style: preferences[index].style
-                )
-            }
-        }
-        .fixedSize(horizontal: false, vertical: true)
-        .background(activeTab(for: preferences, in: geometry), alignment: .leading)
-        .animation(.easeOut(duration: 0.2), value: selectedIndex)
+    private func activeTabStyle(preferences: [IDPreference], geometry: GeometryProxy) -> TabStyle {
+        guard let preference = preferences.first(where: isSelected) else { return .default }
+
+        let activeBounds = geometry[preference.bounds]
+
+        return activeTabStyles.first(where: { geometry[$0.bounds] == activeBounds })?.style ?? .default
     }
 
-    @ViewBuilder func tab(_ index: Int, lastIndex: Int, _ label: String, style: Tab.TabStyle) -> some View {
-        Tab(label, style: style)
-            .textColor(
-                index == selectedIndex
-                    ? style.textColor ?? textColor
-                    : textColor ?? .inkDark
-            )
-            .lineLimit(lineLimit)
-            .frame(maxWidth: maxTabWidth, maxHeight: .infinity)
-            .overlay(separator(index: index, lastIndex: lastIndex), alignment: .trailing)
-            .contentShape(Rectangle())
-            .accessibility(addTraits: .isButton)
-            .onTapGesture {
-                selectedIndex = index
-            }
+    private func unselectedPreferences(_ preferences: [IDPreference]) -> [(Int, IDPreference)] {
+        preferences.enumerated().filter { isSelected($0.element) == false }
     }
 
-    @ViewBuilder func separator(index: Int, lastIndex: Int) -> some View {
-        if (0 ..< lastIndex).contains(index), [selectedIndex, selectedIndex - 1].contains(index) == false {
-            Color.cloudDark
-                .frame(width: .hairline)
-                .padding(.vertical, .xSmall)
-        }
+    private func isSelected(_ preference: IDPreference) -> Bool {
+        selection == selection(from: preference)
     }
 
-    @ViewBuilder func activeTab(for preferences: Tab.PreferenceKey.Value, in geometry: GeometryProxy) -> some View {
-        activeTabBackground(style: preferences[selectedIndex].style)
-            .frame(width: activeTabWidth(in: preferences, geometry: geometry))
-            .offset(x: activeTabXOffset(in: preferences, geometry: geometry))
-            .frame(maxHeight: .infinity)
+    private func selection(from preference: IDPreference) -> Selection? {
+        preference.id.base as? Selection
     }
 
-    @ViewBuilder func activeTabBackground(style: Tab.TabStyle) -> some View {
-        VStack(spacing: 0) {
-            Color.whiteDarker
-
-            Rectangle()
-                .fill(style.underline)
-                .frame(height: underlineHeight * sizeCategory.ratio)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1))
-        .elevation(.level1, shape: .roundedRectangle(borderRadius: BorderRadius.default - 1))
-        .padding(.xxxSmall)
+    private func selectedIndex(from preferences: [IDPreference]) -> Int {
+        preferences.firstIndex(where: isSelected) ?? 0
     }
 
-    var maxTabWidth: CGFloat? {
-        switch distribution {
-            case .equal:        return .infinity
-            case .intrinsic:    return nil
-        }
+    private func separatorXOffset(index: Int, preferences: [IDPreference], geometry: GeometryProxy) -> CGFloat {
+
+        let (width, minX) = measurements(
+            index: index,
+            preferences: preferences,
+            isIdealSize: isIdealSize,
+            horizontalPadding: horizontalPadding,
+            in: geometry
+        )
+
+        return minX + width
     }
 
-    func activeTabXOffset(in preferences: Tab.PreferenceKey.Value, geometry: GeometryProxy) -> CGFloat {
-        switch distribution {
-            case .equal:
-                return CGFloat(selectedIndex) * geometry.size.width / CGFloat(preferences.count)
-            case .intrinsic:
-                let leadingPreferences = preferences.prefix(selectedIndex + 1)
-                return leadingPreferences.dropLast().map { geometry[$0.bounds] }.map(\.width).reduce(0, +)
-        }
+    private var isIdealSize: Bool {
+        idealSize.horizontal == true
     }
 
-    func activeTabWidth(in preferences: Tab.PreferenceKey.Value, geometry: GeometryProxy) -> CGFloat {
-        switch distribution {
-            case .equal:
-                return geometry.size.width / CGFloat(preferences.count)
-            case .intrinsic:
-                return geometry[preferences[selectedIndex].bounds].width
-        }
+    public init(selection: Binding<Selection>, @ViewBuilder content: () -> Content) {
+        self._selection = selection
+        self.content = content()
     }
 }
 
-// MARK: - Inits
-extension Tabs {
+private func measurements(
+    index: Int,
+    preferences: [IDPreference],
+    isIdealSize: Bool,
+    horizontalPadding: CGFloat,
+    in geometry: GeometryProxy
+) -> (width: CGFloat, minX: CGFloat) {
 
-    /// Creates Orbit Tabs component, a wrapper for Tab subcomponents.
-    public init(
-        selectedIndex: Binding<Int>,
-        distribution: TabsDistribution = .equal,
-        lineLimit: Int? = nil,
-        @ViewBuilder content: () -> Content
-    ) {
-        self._selectedIndex = selectedIndex
-        self.distribution = distribution
-        self.lineLimit = lineLimit
-        self.content = content()
+    let width: CGFloat
+    let minX: CGFloat
+
+    if isIdealSize {
+        width = geometry[preferences[index].bounds].width  + horizontalPadding * 2
+        minX = preferences.prefix(index).reduce(into: 0) { finalMinX, preference in
+            finalMinX += geometry[preference.bounds].width + horizontalPadding * 2
+        }
+    } else {
+        width = geometry.size.width / CGFloat(preferences.count)
+        minX = (geometry[preferences[index].bounds].minX / width).rounded(.down) * width
+    }
+
+    return (width, minX)
+}
+
+// MARK: - Types
+
+struct ActiveTabStyleModifier: ViewModifier {
+
+    @Environment(\.identifier) var parentIdentifier
+    @Environment(\.selectedTabIdentifier) var selectedIdentifier
+    @Environment(\.textColor) var textColor
+    @State var preferenceIdentifier: AnyHashable?
+    let style: TabStyle
+
+    var isSelected: Bool {
+        identifier == selectedIdentifier
+    }
+
+    var identifier: AnyHashable? {
+        // we need to check both because we don't know in which order
+        // the modifiers were applied to the content.
+        //
+        // If `.identifier` was applied first, we take it from preferences
+        // If `activeTabStyle` was applied first, we take it from environment
+        parentIdentifier ?? preferenceIdentifier
+    }
+
+    var finalTextColor: Color? {
+        isSelected
+            ? style.textColor ?? textColor
+            : textColor ?? .inkDark
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .anchorPreference(key: ActiveTabStyleKey.self, value: .bounds) { bounds in
+                [ActiveTabStyle(style: style, bounds: bounds)]
+            }
+            .onPreferenceChange(IDPreferenceKey.self) { preference in
+                preferenceIdentifier = preference.first?.id
+            }
+            .textColor(isSelected ? style.textColor : nil)
+    }
+}
+
+private struct SelectedTabIdentifierKey: EnvironmentKey {
+    static let defaultValue: AnyHashable? = nil
+}
+
+private extension EnvironmentValues {
+    var selectedTabIdentifier: AnyHashable? {
+        get { self[SelectedTabIdentifierKey.self] }
+        set { self[SelectedTabIdentifierKey.self] = newValue }
     }
 }
 
@@ -174,6 +280,7 @@ struct TabsPreviews: PreviewProvider {
             intrinsicSingleline
             equalMultiline
             equalSingleline
+            forEach
             interactive
             snapshot
         }
@@ -181,12 +288,16 @@ struct TabsPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        StateWrapper(1) { index in
-            Tabs(selectedIndex: index) {
-                Tab("One")
-                Tab("Two")
-                Tab("Three")
-                Tab("Four")
+        StateWrapper(2) { index in
+            Tabs(selection: index) {
+                Text("One")
+                    .identifier(1)
+                Text("Two")
+                    .identifier(2)
+                Text("Three")
+                    .identifier(3)
+                Text("Four")
+                    .identifier(4)
             }
         }
         .padding(.medium)
@@ -194,58 +305,99 @@ struct TabsPreviews: PreviewProvider {
     }
 
     static var standaloneIntrinsic: some View {
-        StateWrapper(1) { index in
-            Tabs(selectedIndex: index, distribution: .intrinsic) {
-                Tab("One", style: .default)
-                Tab("Two", style: .default)
+        StateWrapper(2) { index in
+            Tabs(selection: index) {
+                Text("One")
+                    .identifier(1)
+                Text("Two")
+                    .identifier(2)
             }
+            .idealSize()
         }
         .padding(.medium)
         .previewDisplayName()
     }
 
     static var sizing: some View {
-        StateWrapper(1) { index in
-            Tabs(selectedIndex: index, distribution: .intrinsic) {
-                Tab("One", style: .default)
-                Tab("Two", style: .default)
+        VStack(spacing: .medium) {
+            StateWrapper(2) { index in
+                Tabs(selection: index) {
+                    Text("One")
+                        .identifier(1)
+                    Text("Two")
+                        .identifier(2)
+                }
+                .idealSize()
             }
+            .measured()
+
+            StateWrapper(2) { index in
+                Tabs(selection: index) {
+                    Text("One")
+                        .identifier(1)
+                        .idealSize()
+                    Text("Two")
+                        .identifier(2)
+                        .idealSize()
+                }
+
+            }
+            .measured()
+            .padding()
         }
-        .measured()
-        .padding(.medium)
         .previewDisplayName()
     }
 
     static var intrinsicMultiline: some View {
-        StateWrapper(1) { index in
-            Tabs(selectedIndex: index, distribution: .intrinsic) {
-                Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
-                Tab("Comfort", style: .underlinedGradient(.bundleMedium))
-                Tab("All", style: .underlinedGradient(.bundleTop))
+        StateWrapper(2) { index in
+            Tabs(selection: index) {
+                Text("Light and much much much larger")
+                    .identifier(1)
+                    .activeTabStyle(.underlinedGradient(.bundleBasic))
+                Text("Comfort")
+                    .identifier(2)
+                    .activeTabStyle(.underlinedGradient(.bundleMedium))
+                Text("All")
+                    .identifier(3)
+                    .activeTabStyle(.underlinedGradient(.bundleTop))
             }
+            .idealSize()
         }
         .padding(.medium)
         .previewDisplayName()
     }
 
     static var intrinsicSingleline: some View {
-        StateWrapper(1) { index in
-            Tabs(selectedIndex: index, distribution: .intrinsic, lineLimit: 1) {
-                Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
-                Tab("Comfort", style: .underlined(.blueDark))
-                Tab("All")
+        StateWrapper(2) { index in
+            Tabs(selection: index) {
+                Text("Light and much much much larger")
+                    .identifier(1)
+                    .activeTabStyle(.underlinedGradient(.bundleBasic))
+                Text("Comfort")
+                    .identifier(2)
+                    .activeTabStyle(.underlined(.blueDark))
+                Text("All")
+                    .identifier(3)
             }
+            .idealSize()
+            .lineLimit(1)
         }
         .padding(.medium)
         .previewDisplayName()
     }
 
     static var equalMultiline: some View {
-        StateWrapper(1) { index in
-            Tabs(selectedIndex: index) {
-                Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
-                Tab("Comfort", style: .underlinedGradient(.bundleMedium))
-                Tab("All", style: .underlinedGradient(.bundleTop))
+        StateWrapper(2) { index in
+            Tabs(selection: index) {
+                Text("Light and much much much larger")
+                    .identifier(1)
+                    .activeTabStyle(.underlinedGradient(.bundleBasic))
+                Text("Comfort")
+                    .identifier(2)
+                    .activeTabStyle(.underlinedGradient(.bundleMedium))
+                Text("All")
+                    .identifier(3)
+                    .activeTabStyle(.underlinedGradient(.bundleTop))
             }
         }
         .padding(.medium)
@@ -253,11 +405,31 @@ struct TabsPreviews: PreviewProvider {
     }
 
     static var equalSingleline: some View {
+        StateWrapper(3) { index in
+            Tabs(selection: index) {
+                Text("Light and much much much larger")
+                    .identifier(1)
+                    .activeTabStyle(.underlinedGradient(.bundleBasic))
+                Text("Comfort")
+                    .identifier(2)
+                    .activeTabStyle(.underlinedGradient(.bundleMedium))
+                Text("All")
+                    .identifier(3)
+                    .activeTabStyle(.underlinedGradient(.bundleTop))
+            }
+            .lineLimit(1)
+        }
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
+    static var forEach: some View {
         StateWrapper(2) { index in
-            Tabs(selectedIndex: index, lineLimit: 1) {
-                Tab("Light and much much much larger", style: .underlinedGradient(.bundleBasic))
-                Tab("Comfort", style: .underlinedGradient(.bundleMedium))
-                Tab("All", style: .underlinedGradient(.bundleTop))
+            Tabs(selection: index) {
+                ForEach(1..<8) { index in
+                    Text("\(index)")
+                        .identifier(index)
+                }
             }
         }
         .padding(.medium)
@@ -267,15 +439,19 @@ struct TabsPreviews: PreviewProvider {
     static var interactive: some View {
         StateWrapper(1) { index in
             VStack(spacing: .large) {
-                Tabs(selectedIndex: index) {
-                    Tab("One", style: .default)
-                    Tab("Two", style: .default)
-                    Tab("Three", style: .default)
-                    Tab("Four", style: .default)
+                Tabs(selection: index) {
+                    Text("One")
+                        .identifier(1)
+                    Text("Two")
+                        .identifier(2)
+                    Text("Three")
+                        .identifier(3)
+                    Text("Four")
+                        .identifier(4)
                 }
 
                 Button("Toggle") {
-                    index.wrappedValue = index.wrappedValue == 1 ? 0 : 1
+                    index.wrappedValue = index.wrappedValue == 4 ? 1 : index.wrappedValue + 1
                 }
             }
         }

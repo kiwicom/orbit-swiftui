@@ -5,6 +5,7 @@ struct BackgroundHighlightButtonStyle: ButtonStyle {
 
     let isActive: Bool
     let borderWidth: CGFloat
+    let pressedOpacity: Double
 
     func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: 0) {
@@ -18,7 +19,7 @@ struct BackgroundHighlightButtonStyle: ButtonStyle {
                         Color.whiteDarker
                             .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1))
                             .padding(borderWidth)
-                            .opacity(configuration.isPressed ? 0.4 : 0)
+                            .opacity(configuration.isPressed ? pressedOpacity : 0)
                     )
                     .animation(.easeInOut(duration: 0.2), value: configuration.isPressed)
             }
@@ -28,7 +29,7 @@ struct BackgroundHighlightButtonStyle: ButtonStyle {
 
 extension ButtonStyle where Self == BackgroundHighlightButtonStyle {
 
-    static func backgroundHighlight(isActive: Bool, borderWidth: CGFloat) -> Self {
-        Self(isActive: isActive, borderWidth: borderWidth)
+    static func backgroundHighlight(isActive: Bool, borderWidth: CGFloat, pressedOpacity: Double) -> Self {
+        Self(isActive: isActive, borderWidth: borderWidth, pressedOpacity: pressedOpacity)
     }
 }
