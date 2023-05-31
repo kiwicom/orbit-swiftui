@@ -55,7 +55,7 @@ public struct Text: View, FormattedTextBuildable {
 
     @ViewBuilder private var textLinks: some View {
         if content.containsTextLinks {
-            TextLink(textLinkAttributedString)
+            TextLink(textLinkAttributedString(textRepresentableEnvironment: textRepresentableEnvironment))
         }
     }
 
@@ -88,7 +88,7 @@ public struct Text: View, FormattedTextBuildable {
             )
             .orbitFont(
                 size: size.value,
-                weight: resolvedFontWeight ?? .regular,
+                weight: resolvedFontWeight(textRepresentableEnvironment) ?? .regular,
                 sizeCategory: textRepresentableEnvironment.sizeCategory
             )
         }
@@ -99,7 +99,8 @@ public struct Text: View, FormattedTextBuildable {
             iconColor: nil,
             sizeCategory: sizeCategory,
             textAccentColor: textAccentColor,
-            textColor: textColor
+            textColor: textColor,
+            textFontWeight: textFontWeight
         )
     }
 
@@ -201,13 +202,14 @@ public struct Text: View, FormattedTextBuildable {
         )
     }
 
-    // The TextRepresentableEnvironment is not used because the TextLink concatenation is not supported
-    private var textLinkAttributedString: NSAttributedString {
+    private func textLinkAttributedString(
+        textRepresentableEnvironment: TextRepresentableEnvironment
+    ) -> NSAttributedString {
         TagAttributedStringBuilder.all.attributedString(
             content,
             alignment: multilineTextAlignment,
             fontSize: scaledSize,
-            fontWeight: resolvedFontWeight,
+            fontWeight: resolvedFontWeight(textRepresentableEnvironment),
             lineSpacing: lineSpacingAdjusted(sizeCategory: sizeCategory),
             kerning: kerning,
             strikethrough: strikethrough ?? false,
@@ -224,7 +226,7 @@ public struct Text: View, FormattedTextBuildable {
             content,
             alignment: multilineTextAlignment,
             fontSize: size.value * textRepresentableEnvironment.sizeCategory.ratio,
-            fontWeight: resolvedFontWeight,
+            fontWeight: resolvedFontWeight(textRepresentableEnvironment),
             lineSpacing: lineSpacingAdjusted(sizeCategory: textRepresentableEnvironment.sizeCategory),
             kerning: kerning,
             color: resolvedColor(textRepresentableEnvironment).uiColor,
@@ -243,8 +245,8 @@ public struct Text: View, FormattedTextBuildable {
         color ?? textRepresentableEnvironment.textColor ?? .inkDark
     }
 
-    private var resolvedFontWeight: Font.Weight? {
-        isBold == true ? .bold : fontWeight ?? textFontWeight
+    private func resolvedFontWeight(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> Font.Weight? {
+        isBold == true ? .bold : fontWeight ?? textRepresentableEnvironment.textFontWeight
     }
 
     private func designatedLineHeight(sizeCategory: ContentSizeCategory) -> CGFloat {

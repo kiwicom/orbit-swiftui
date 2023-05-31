@@ -14,4 +14,5 @@ public struct TextRepresentableEnvironment {
     let sizeCategory: ContentSizeCategory
     let textAccentColor: Color?
     let textColor: Color?
+    let textFontWeight: Font.Weight?
 }

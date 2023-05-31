@@ -6,6 +6,7 @@ struct ConcatenatedText: View {
     @Environment(\.sizeCategory) var sizeCategory
     @Environment(\.textAccentColor) var textAccentColor
     @Environment(\.textColor) var textColor
+    @Environment(\.textFontWeight) var textFontWeight
 
     let content: (TextRepresentableEnvironment) -> SwiftUI.Text?
 
@@ -20,7 +21,8 @@ struct ConcatenatedText: View {
             iconColor: iconColor,
             sizeCategory: sizeCategory,
             textAccentColor: textAccentColor,
-            textColor: textColor
+            textColor: textColor,
+            textFontWeight: textFontWeight
         )
     }
 }
