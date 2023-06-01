@@ -41,4 +41,15 @@ public struct IDPreferenceKey: PreferenceKey {
 public struct IDPreference: Equatable {
     let id: AnyHashable
     let bounds: Anchor<CGRect>
+
+    // `Anchor` is only conditionally `Equatable` since iOS 15.
+    // If synthesized, the compiler doesn't see any issues and this leads to a runtime crash on earlier iOS versions.
+    // That's why this is written here explicitly.
+    public static func == (lhs: IDPreference, rhs: IDPreference) -> Bool {
+        if #available(iOS 15, *) {
+            return lhs.id == rhs.id && lhs.bounds == rhs.bounds
+        } else {
+            return lhs.id == rhs.id
+        }
+    }
 }
