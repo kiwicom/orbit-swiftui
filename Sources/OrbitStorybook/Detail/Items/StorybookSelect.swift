@@ -71,7 +71,7 @@ struct StorybookSelect {
 
                 Select(
                     fieldLongLabel,
-                    prefix: .image(.orbit(.google)),
+                    prefix: .grid,
                     value: "Bad Value with a very long text that should overflow",
                     message: .error("Error message, but also very long and multi-line to test that it works."),
                     action: {}

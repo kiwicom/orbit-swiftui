@@ -52,15 +52,6 @@ public struct Icon: View, TextBuildable {
                                 .flipsForRightToLeftLayoutDirection(symbol.flipsForRightToLeftLayoutDirection)
                         }
                     }
-            case .image(let image, let color, let mode):
-                alignmentWrapper {
-                    colorWrapper(color: color) {
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: mode)
-                            .frame(width: dynamicSize, height: dynamicSize)
-                    }
-                }
             case .countryFlag(let countryCode):
                 alignmentWrapper {
                     CountryFlag(countryCode, size: size)
@@ -130,14 +121,6 @@ public extension Icon {
         self.size = size
     }
 
-    /// Creates Orbit Icon component for provided Image.
-    init(_ image: Image, size: Size = .normal) {
-        self.init(
-            .image(image, tint: nil),
-            size: size
-        )
-    }
-
     /// Creates Orbit Icon component for provided SF Symbol with specified color.
     init(_ systemName: String, size: Size = .normal) {
         self.init(
@@ -149,51 +132,6 @@ public extension Icon {
 
 // MARK: - Types
 public extension Icon {
-
-    /// Defines icon content for use in other components.
-    enum Content: Equatable, Hashable {
-        /// Orbit transparent icon placeholder. Useful when the layout should behave as if the icon was present.
-        case transparent
-        /// Orbit skeleton loading icon placeholder.
-        case skeleton
-        /// Orbit icon symbol with optional color specified. If not specified, it can be overridden using `.textColor()` modifier.
-        case symbol(Symbol, color: Color? = nil)
-        /// Custom Image, suitable for use as icon with optional tint color specified. If not specified, it can be overridden using `.textColor()` modifier.
-        case image(Image, tint: Color? = nil, mode: ContentMode = .fit)
-        /// Orbit CountryFlag content, suitable for use as icon.
-        case countryFlag(String)
-        /// SF Symbol with optional color specified. If not specified, it can be overridden using `.textColor()` modifier.
-        case sfSymbol(String, color: Color? = nil)
-
-        /// Specifies whether the item has a non-empty content.
-        public var isEmpty: Bool {
-            switch self {
-                case .symbol, .transparent, .skeleton, .image:  return false
-                case .countryFlag(let countryCode):             return countryCode.isEmpty
-                case .sfSymbol(let sfSymbol, _):                return sfSymbol.isEmpty
-            }
-        }
-
-        /// Accessibility label suitable for the specified icon content.
-        public var accessibilityLabel: String {
-            switch self {
-                case .transparent, .skeleton:           return ""
-                case .symbol(let symbol, _):            return String(describing: symbol).titleCased
-                case .image:                            return ""
-                case .countryFlag(let countryCode):     return countryCode.uppercased()
-                case .sfSymbol(let sfSymbol, _):        return sfSymbol
-            }
-        }
-
-        public func hash(into hasher: inout Hasher) {
-            switch self {
-                case .transparent, .skeleton, .image:   break
-                case .symbol(let symbol, _):            hasher.combine(symbol)
-                case .countryFlag(let countryCode):     hasher.combine(countryCode)
-                case .sfSymbol(let sfSymbol, _):        hasher.combine(sfSymbol)
-            }
-        }
-    }
 
     /// Preferred icon size in both dimensions. Actual size may differ based on icon content.
     enum Size: Equatable {
@@ -234,6 +172,52 @@ public extension Icon {
     }
 }
 
+// MARK: - Private
+public extension Icon {
+
+    /// Defines icon content for use in other components.
+    enum Content: Equatable, Hashable {
+        /// Orbit transparent icon placeholder. Useful when the layout should behave as if the icon was present.
+        case transparent
+        /// Orbit skeleton loading icon placeholder.
+        case skeleton
+        /// Orbit icon symbol with optional color specified. If not specified, it can be overridden using `.textColor()` modifier.
+        case symbol(Symbol, color: Color? = nil)
+        /// Orbit CountryFlag content, suitable for use as icon.
+        case countryFlag(String)
+        /// SF Symbol with optional color specified. If not specified, it can be overridden using `.textColor()` modifier.
+        case sfSymbol(String, color: Color? = nil)
+
+        /// Specifies whether the item has a non-empty content.
+        var isEmpty: Bool {
+            switch self {
+                case .symbol, .transparent, .skeleton:      return false
+                case .countryFlag(let countryCode):         return countryCode.isEmpty
+                case .sfSymbol(let sfSymbol, _):            return sfSymbol.isEmpty
+            }
+        }
+
+        /// Accessibility label suitable for the specified icon content.
+        var accessibilityLabel: String {
+            switch self {
+                case .transparent, .skeleton:           return ""
+                case .symbol(let symbol, _):            return String(describing: symbol).titleCased
+                case .countryFlag(let countryCode):     return countryCode.uppercased()
+                case .sfSymbol(let sfSymbol, _):        return sfSymbol
+            }
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            switch self {
+                case .transparent, .skeleton:           break
+                case .symbol(let symbol, _):            hasher.combine(symbol)
+                case .countryFlag(let countryCode):     hasher.combine(countryCode)
+                case .sfSymbol(let sfSymbol, _):        hasher.combine(sfSymbol)
+            }
+        }
+    }
+}
+
 // MARK: - TextRepresentable
 extension Icon: TextRepresentable {
 
@@ -266,14 +250,6 @@ extension Icon: TextRepresentable {
                 return symbolWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory) {
                     colorWrapper(color: color, textRepresentableEnvironment: textRepresentableEnvironment) {
                         SwiftUI.Text(verbatim: symbol.value)
-                    }
-                }
-            case .image(let image, let tint, _):
-                return baselineWrapper {
-                    imageBaselineWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory) {
-                        colorWrapper(color: tint, textRepresentableEnvironment: textRepresentableEnvironment) {
-                            SwiftUI.Text(image)
-                        }
                     }
                 }
             case .countryFlag:
@@ -312,7 +288,7 @@ extension Icon: TextRepresentable {
             case .countryFlag:
                 assertionFailure("text representation of countryFlag icon is not supported")
                 return nil
-            case .image, .sfSymbol:
+            case .sfSymbol:
                 assertionFailure("image and sfSymbol text representation is available in iOS 14.0 or newer")
                 return nil
         }
@@ -484,16 +460,6 @@ struct IconPreviews: PreviewProvider {
                     Icon(.informationCircle, size: .small)
                         .baselineOffset(.xxxSmall)
 
-                    Group {
-                        Icon(.orbit(.navigateClose), size: .small)
-                            .iconColor(.blueNormal)
-                        Icon(.orbit(.navigateClose), size: .small)
-                            .baselineOffset(.xxxSmall)
-                        Icon(.orbit(.facebook), size: .small)
-                        Icon(.orbit(.facebook), size: .small)
-                            .baselineOffset(.xxxSmall)
-                    }
-
                     Icon(.countryFlag("us"), size: .small)
                     Icon(.countryFlag("us"), size: .small)
                         .baselineOffset(.xxxSmall)
@@ -519,14 +485,6 @@ struct IconPreviews: PreviewProvider {
                 + Icon(.informationCircle, size: .small)
                     .iconColor(.blueNormal)
                 + Icon(.informationCircle, size: .small)
-                    .baselineOffset(.xxxSmall)
-
-                + Icon(.orbit(.navigateClose))
-                    .iconColor(.blueNormal)
-                + Icon(.orbit(.navigateClose))
-                    .baselineOffset(.xxxSmall)
-                + Icon(.orbit(.facebook))
-                + Icon(.orbit(.facebook))
                     .baselineOffset(.xxxSmall)
             )
             .textColor(.greenDark)
@@ -561,17 +519,6 @@ struct IconPreviews: PreviewProvider {
                     .textColor(.blueNormal)
                 Icon(sfSymbol)
                 Icon(.sfSymbol(sfSymbol))
-            }
-
-            HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-                Icon(.orbit(.navigateClose))
-                    .textColor(nil)
-                Icon(.orbit(.navigateClose))
-                    .iconColor(.blueNormal)
-                Icon(.orbit(.navigateClose))
-                    .textColor(.blueNormal)
-                Icon(.orbit(.navigateClose))
-                Icon(.image(.orbit(.navigateClose)))
             }
         }
         .textColor(.greenNormalHover)
@@ -626,7 +573,6 @@ struct IconPreviews: PreviewProvider {
             HStack(alignment: alignment, spacing: .xxSmall) {
                 Group {
                     Icon(.countryFlag("us"), size: size)
-                    Icon(.orbit(.facebook), size: size)
                     Icon(.sfSymbol(sfSymbol), size: size)
                     Icon(.informationCircle, size: size)
                     content()

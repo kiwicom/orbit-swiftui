@@ -37,7 +37,6 @@ struct StorybookButton {
         VStack(alignment: .leading, spacing: .xLarge) {
             Button("Button with SF Symbol", icon: .sfSymbol("info.circle.fill"), action: {})
             Button("Button with Flag", icon: .countryFlag("cz"), action: {})
-            Button("Button with Image", icon: .image(.orbit(.facebook)), action: {})
         }
         .previewDisplayName()
     }

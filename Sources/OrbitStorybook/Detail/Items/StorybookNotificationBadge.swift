@@ -42,10 +42,6 @@ struct StorybookNotificationBadge {
                 )
 
                 NotificationBadge(.countryFlag("us"))
-            }
-
-            HStack(spacing: .small) {
-                NotificationBadge(.image(.orbit(.facebook)))
                 NotificationBadge(.sfSymbol("ant.fill"))
             }
         }

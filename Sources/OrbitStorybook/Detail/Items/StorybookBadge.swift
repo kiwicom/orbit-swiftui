@@ -52,11 +52,6 @@ struct StorybookBadge {
             }
 
             HStack(spacing: .small) {
-                Badge("Image", icon: .image(.orbit(.facebook)))
-                Badge("Image", icon: .image(.orbit(.facebook)), style: .status(.success, inverted: true))
-            }
-
-            HStack(spacing: .small) {
                 Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
                 Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
             }
