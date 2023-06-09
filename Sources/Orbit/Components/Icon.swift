@@ -55,7 +55,7 @@ public struct Icon: View, TextBuildable {
             case .sfSymbol(let systemName, let color):
                 colorWrapper(color: color) {
                     Image(systemName: systemName)
-                        .font(.system(size: sfSymbolDynamicSize, weight: textFontWeight ?? fontWeight ?? Self.sfSymbolDefaultWeight))
+                        .font(sfSymbolFont(sizeCategory: sizeCategory, textFontWeight: textFontWeight))
                         .alignmentGuide(.firstTextBaseline) { $0[.firstTextBaseline] + resolvedBaselineOffset }
                         .alignmentGuide(.lastTextBaseline) { $0[.lastTextBaseline] + resolvedBaselineOffset }
                         .frame(height: dynamicSize)
@@ -79,6 +79,13 @@ public struct Icon: View, TextBuildable {
         icon?.isEmpty ?? true
     }
 
+    func sfSymbolFont(sizeCategory: ContentSizeCategory, textFontWeight: Font.Weight?) -> Font {
+        .system(
+            size: sfSymbolSize * sizeCategory.ratio,
+            weight: fontWeight ?? textFontWeight ?? Self.sfSymbolDefaultWeight
+        )
+    }
+
     private var resolvedColor: Color {
         color ?? iconColor ?? textColor ?? .inkDark
     }
@@ -89,10 +96,6 @@ public struct Icon: View, TextBuildable {
 
     private var sfSymbolSize: CGFloat {
         round(size.value * Self.sfSymbolToOrbitSymbolSizeRatio)
-    }
-
-    private var sfSymbolDynamicSize: CGFloat {
-        round(sfSymbolSize * sizeCategory.ratio)
     }
 
     private var resolvedBaselineOffset: CGFloat {
@@ -246,7 +249,12 @@ extension Icon: TextRepresentable {
                 return baselineWrapper {
                     colorWrapper(color: color, textRepresentableEnvironment: textRepresentableEnvironment) {
                         SwiftUI.Text(Image(systemName: systemName))
-                            .fontWeight(textRepresentableEnvironment.textFontWeight ?? fontWeight ?? Self.sfSymbolDefaultWeight)
+                            .font(
+                                sfSymbolFont(
+                                    sizeCategory: textRepresentableEnvironment.sizeCategory,
+                                    textFontWeight: textRepresentableEnvironment.textFontWeight
+                                )
+                            )
                     }
                 }
         }
