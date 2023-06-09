@@ -55,7 +55,7 @@ struct StorybookInputField {
     static var mix: some View {
         VStack(spacing: .medium) {
             inputField("Empty", value: "", prefix: .symbol(.grid, color: .blueDark), suffix: .symbol(.grid, color: .blueDark))
-            inputField("Disabled, Empty", value: "", prefix: .countryFlag("cz"), suffix: .countryFlag("us"))
+            inputField("Disabled, Empty", value: "", prefix: .transparent, suffix: .transparent)
                 .disabled(true)
             inputField("Disabled", value: "Disabled Value", prefix: .sfSymbol("info.circle.fill"), suffix: .sfSymbol("info.circle.fill"))
                 .disabled(true)
@@ -73,7 +73,7 @@ struct StorybookInputField {
 
             HStack(spacing: .medium) {
                 inputField(value: "No label")
-                inputField(value: "Flag prefix", prefix: .countryFlag("us"))
+                inputField(value: "Flag prefix", prefix: .transparent)
             }
         }
         .previewDisplayName()

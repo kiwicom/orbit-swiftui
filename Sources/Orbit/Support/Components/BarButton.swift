@@ -98,7 +98,7 @@ struct BarButtonPreviews: PreviewProvider {
                             BarButton(.symbol(.questionCircle, color: .blueDark), action: {})
                             BarButton(.symbol(.questionCircle, color: .redNormal), action: {})
                             BarButton(.sfSymbol("questionmark.circle.fill", color: .greenDark), size: .normal, action: {})
-                            BarButton(.countryFlag("cz"), action: {})
+                            BarButton(.transparent, action: {})
                         }
                         .border(.cloudNormal.opacity(0.4))
                     }

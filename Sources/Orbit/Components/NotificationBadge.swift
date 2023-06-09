@@ -180,7 +180,7 @@ struct NotificationBadgePreviews: PreviewProvider {
                     )
                 )
 
-                NotificationBadge(.countryFlag("us"))
+                NotificationBadge(.transparent)
                 NotificationBadge(.sfSymbol("ant.fill"))
             }
         }

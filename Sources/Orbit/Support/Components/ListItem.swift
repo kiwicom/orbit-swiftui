@@ -156,7 +156,7 @@ struct ListItemPreviews: PreviewProvider {
             ListItem("ListItem with custom icon", icon: .check, spacing: .xxxSmall)
             ListItem("ListItem with SF Symbol", icon: .sfSymbol("info.circle.fill"))
             ListItem("ListItem with SF Symbol", icon: .sfSymbol("info.circle.fill", color: .blueDark))
-            ListItem("ListItem with flag", icon: .countryFlag("cz"))
+            ListItem("ListItem with flag", icon: .transparent)
             ListItem("ListItem with custom icon", icon: .check, style: .custom(color: .blueDark))
             ListItem("ListItem with no icon", icon: .none)
         }

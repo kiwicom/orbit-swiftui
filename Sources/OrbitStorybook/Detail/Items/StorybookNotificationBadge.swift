@@ -41,7 +41,7 @@ struct StorybookNotificationBadge {
                     )
                 )
 
-                NotificationBadge(.countryFlag("us"))
+                NotificationBadge(.transparent)
                 NotificationBadge(.sfSymbol("ant.fill"))
             }
         }

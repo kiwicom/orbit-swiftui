@@ -447,7 +447,7 @@ struct ChoiceTilePreviews: PreviewProvider {
             StateWrapper(false) { isSelected in
                 ChoiceTile(
                     description: "Long and multiline description with no title",
-                    icon: .countryFlag("cz"),
+                    icon: .transparent,
                     isSelected: isSelected.wrappedValue,
                     message: .warning("Warning multiline and very very very very long message")
                 ) {

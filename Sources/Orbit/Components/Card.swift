@@ -304,7 +304,7 @@ struct CardPreviews: PreviewProvider {
         ) {
             VStack(spacing: 0) {
                 ListChoice("ListChoice", action: {})
-                ListChoice("ListChoice", icon: .countryFlag("us"), action: {})
+                ListChoice("ListChoice", icon: .transparent, action: {})
                 ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false, action: {})
             }
             .padding(.top, .xSmall)

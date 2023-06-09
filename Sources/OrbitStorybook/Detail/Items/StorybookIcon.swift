@@ -59,8 +59,8 @@ struct StorybookIcon {
                     Icon(.informationCircle, size: .small)
                         .baselineOffset(.xxxSmall)
 
-                    Icon(.countryFlag("us"), size: .small)
-                    Icon(.countryFlag("us"), size: .small)
+                    Icon(.transparent, size: .small)
+                    Icon(.transparent, size: .small)
                         .baselineOffset(.xxxSmall)
                 }
                 .border(.cloudLightActive, width: .hairline)
@@ -148,7 +148,7 @@ struct StorybookIcon {
         HStack(spacing: .xSmall) {
             HStack(alignment: alignment, spacing: .xxSmall) {
                 Group {
-                    Icon(.countryFlag("us"), size: size)
+                    Icon(.transparent, size: size)
                     Icon(sfSymbol, size: size)
                     Icon(.informationCircle, size: size)
                     content()

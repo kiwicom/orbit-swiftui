@@ -52,11 +52,6 @@ public struct Icon: View, TextBuildable {
                                 .flipsForRightToLeftLayoutDirection(symbol.flipsForRightToLeftLayoutDirection)
                         }
                     }
-            case .countryFlag(let countryCode):
-                alignmentWrapper {
-                    CountryFlag(countryCode, size: size)
-                        .frame(height: dynamicSize)
-                }
             case .sfSymbol(let systemName, let color):
                 colorWrapper(color: color) {
                     Image(systemName: systemName)
@@ -183,8 +178,6 @@ public extension Icon {
         case skeleton
         /// Orbit icon symbol with optional color specified. If not specified, it can be overridden using `.textColor()` modifier.
         case symbol(Symbol, color: Color? = nil)
-        /// Orbit CountryFlag content, suitable for use as icon.
-        case countryFlag(String)
         /// SF Symbol with optional color specified. If not specified, it can be overridden using `.textColor()` modifier.
         case sfSymbol(String, color: Color? = nil)
 
@@ -192,7 +185,6 @@ public extension Icon {
         var isEmpty: Bool {
             switch self {
                 case .symbol, .transparent, .skeleton:      return false
-                case .countryFlag(let countryCode):         return countryCode.isEmpty
                 case .sfSymbol(let sfSymbol, _):            return sfSymbol.isEmpty
             }
         }
@@ -202,7 +194,6 @@ public extension Icon {
             switch self {
                 case .transparent, .skeleton:           return ""
                 case .symbol(let symbol, _):            return String(describing: symbol).titleCased
-                case .countryFlag(let countryCode):     return countryCode.uppercased()
                 case .sfSymbol(let sfSymbol, _):        return sfSymbol
             }
         }
@@ -211,7 +202,6 @@ public extension Icon {
             switch self {
                 case .transparent, .skeleton:           break
                 case .symbol(let symbol, _):            hasher.combine(symbol)
-                case .countryFlag(let countryCode):     hasher.combine(countryCode)
                 case .sfSymbol(let sfSymbol, _):        hasher.combine(sfSymbol)
             }
         }
@@ -252,9 +242,6 @@ extension Icon: TextRepresentable {
                         SwiftUI.Text(verbatim: symbol.value)
                     }
                 }
-            case .countryFlag:
-                assertionFailure("text representation of countryFlag icon is not supported")
-                return nil
             case .sfSymbol(let systemName, let color):
                 return baselineWrapper {
                     colorWrapper(color: color, textRepresentableEnvironment: textRepresentableEnvironment) {
@@ -285,9 +272,6 @@ extension Icon: TextRepresentable {
                         }
                     }
                 }
-            case .countryFlag:
-                assertionFailure("text representation of countryFlag icon is not supported")
-                return nil
             case .sfSymbol:
                 assertionFailure("image and sfSymbol text representation is available in iOS 14.0 or newer")
                 return nil
@@ -459,10 +443,6 @@ struct IconPreviews: PreviewProvider {
                         .iconColor(.blueNormal)
                     Icon(.informationCircle, size: .small)
                         .baselineOffset(.xxxSmall)
-
-                    Icon(.countryFlag("us"), size: .small)
-                    Icon(.countryFlag("us"), size: .small)
-                        .baselineOffset(.xxxSmall)
                 }
                 .border(.cloudLightActive, width: .hairline)
             }
@@ -572,7 +552,6 @@ struct IconPreviews: PreviewProvider {
         HStack(spacing: .xSmall) {
             HStack(alignment: alignment, spacing: .xxSmall) {
                 Group {
-                    Icon(.countryFlag("us"), size: size)
                     Icon(.sfSymbol(sfSymbol), size: size)
                     Icon(.informationCircle, size: size)
                     content()

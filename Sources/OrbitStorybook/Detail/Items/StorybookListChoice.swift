@@ -92,7 +92,7 @@ struct StorybookListChoice {
             ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false, action: {})
             ListChoice(title, icon: .airplane, disclosure: .none, action: {})
             ListChoice(title, icon: .symbol(.airplane, color: .blueNormal), disclosure: .none, action: {})
-            ListChoice(title, description: description, icon: .countryFlag("cs"), disclosure: .none, action: {})
+            ListChoice(title, description: description, icon: .transparent, disclosure: .none, action: {})
             ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none, action: {})
             ListChoice(title, description: description, disclosure: .none, action: {}) {
                 EmptyView()

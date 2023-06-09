@@ -47,8 +47,8 @@ struct StorybookBadge {
                     )
                 )
 
-                Badge("Flag", icon: .countryFlag("us"))
-                Badge("Flag", icon: .countryFlag("us"), style: .status(.critical, inverted: true))
+                Badge("Flag", icon: .transparent)
+                Badge("Flag", icon: .transparent, style: .status(.critical, inverted: true))
             }
 
             HStack(spacing: .small) {

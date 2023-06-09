@@ -242,7 +242,7 @@ struct ButtonLinkPreviews: PreviewProvider {
     }
 
     static var countryFlag: some View {
-        ButtonLink("Flag", icon: .countryFlag("us"), action: {})
+        ButtonLink("Flag", icon: .transparent, action: {})
             .padding(.medium)
             .previewDisplayName()
     }

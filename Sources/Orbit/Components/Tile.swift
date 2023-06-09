@@ -336,7 +336,7 @@ struct TilePreviews: PreviewProvider {
                 .status(.info)
             Tile("SF Symbol", description: description, icon: .sfSymbol("info.circle.fill"), action: {})
                 .status(.critical)
-            Tile("Country Flag", description: description, icon: .countryFlag("cz"), disclosure: .buttonLink("Action", style: .primary), action: {})
+            Tile("Country Flag", description: description, icon: .transparent, disclosure: .buttonLink("Action", style: .primary), action: {})
             Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .critical), action: {})
             Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid), action: {})
         }
