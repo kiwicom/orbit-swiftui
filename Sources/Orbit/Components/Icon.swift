@@ -9,10 +9,13 @@ public struct Icon: View, TextBuildable {
     public static let sfSymbolToOrbitSymbolSizeRatio: CGFloat = 0.75
     /// Approximate Orbit icon symbol baseline.
     public static let symbolBaseline: CGFloat = 0.77
+    /// Default SF Symbol weight matching Orbit icon symbols.
+    public static let sfSymbolDefaultWeight: Font.Weight = .medium
 
     @Environment(\.iconColor) private var iconColor
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.textColor) private var textColor
+    @Environment(\.textFontWeight) private var textFontWeight
 
     private let icon: Content?
     private let size: Size
@@ -24,12 +27,12 @@ public struct Icon: View, TextBuildable {
 
     public var body: some View {
         if let icon, icon.isEmpty == false {
-            iconContent
+            content
                 .accessibility(label: .init(icon.accessibilityLabel))
         }
     }
 
-    @ViewBuilder private var iconContent: some View {
+    @ViewBuilder private var content: some View {
         switch icon {
             case .none:
                 EmptyView()
@@ -63,10 +66,10 @@ public struct Icon: View, TextBuildable {
                     CountryFlag(countryCode, size: size)
                         .frame(height: dynamicSize)
                 }
-            case .sfSymbol(let systemName, let color, let weight):
+            case .sfSymbol(let systemName, let color):
                 colorWrapper(color: color) {
                     Image(systemName: systemName)
-                        .font(.system(size: sfSymbolDynamicSize, weight: weight ?? fontWeight ?? .regular))
+                        .font(.system(size: sfSymbolDynamicSize, weight: textFontWeight ?? fontWeight ?? Self.sfSymbolDefaultWeight))
                         .alignmentGuide(.firstTextBaseline) { $0[.firstTextBaseline] + resolvedBaselineOffset }
                         .alignmentGuide(.lastTextBaseline) { $0[.lastTextBaseline] + resolvedBaselineOffset }
                         .frame(height: dynamicSize)
@@ -160,14 +163,14 @@ public extension Icon {
         /// Orbit CountryFlag content, suitable for use as icon.
         case countryFlag(String)
         /// SF Symbol with optional color specified. If not specified, it can be overridden using `.textColor()` modifier.
-        case sfSymbol(String, color: Color? = nil, weight: Font.Weight? = .regular)
+        case sfSymbol(String, color: Color? = nil)
 
         /// Specifies whether the item has a non-empty content.
         public var isEmpty: Bool {
             switch self {
                 case .symbol, .transparent, .skeleton, .image:  return false
                 case .countryFlag(let countryCode):             return countryCode.isEmpty
-                case .sfSymbol(let sfSymbol, _, _):             return sfSymbol.isEmpty
+                case .sfSymbol(let sfSymbol, _):                return sfSymbol.isEmpty
             }
         }
 
@@ -178,7 +181,7 @@ public extension Icon {
                 case .symbol(let symbol, _):            return String(describing: symbol).titleCased
                 case .image:                            return ""
                 case .countryFlag(let countryCode):     return countryCode.uppercased()
-                case .sfSymbol(let sfSymbol, _, _):     return sfSymbol
+                case .sfSymbol(let sfSymbol, _):        return sfSymbol
             }
         }
 
@@ -187,7 +190,7 @@ public extension Icon {
                 case .transparent, .skeleton, .image:   break
                 case .symbol(let symbol, _):            hasher.combine(symbol)
                 case .countryFlag(let countryCode):     hasher.combine(countryCode)
-                case .sfSymbol(let sfSymbol, _, _):     hasher.combine(sfSymbol)
+                case .sfSymbol(let sfSymbol, _):        hasher.combine(sfSymbol)
             }
         }
     }
@@ -276,10 +279,11 @@ extension Icon: TextRepresentable {
             case .countryFlag:
                 assertionFailure("text representation of countryFlag icon is not supported")
                 return nil
-            case .sfSymbol(let systemName, let color, let weight):
-                return sfSymbolWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory, weight: weight) {
+            case .sfSymbol(let systemName, let color):
+                return baselineWrapper {
                     colorWrapper(color: color, textRepresentableEnvironment: textRepresentableEnvironment) {
                         SwiftUI.Text(Image(systemName: systemName))
+                            .fontWeight(textRepresentableEnvironment.textFontWeight ?? fontWeight ?? Self.sfSymbolDefaultWeight)
                     }
                 }
         }
@@ -323,13 +327,6 @@ extension Icon: TextRepresentable {
         imageBaselineWrapper(sizeCategory: sizeCategory) {
             text()
                 .font(.orbitIcon(size: size.value))
-        }
-    }
-
-    private func sfSymbolWrapper(sizeCategory: ContentSizeCategory, weight: Font.Weight?, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
-        baselineWrapper {
-            text()
-                .fontWeight(weight ?? fontWeight)
         }
     }
 

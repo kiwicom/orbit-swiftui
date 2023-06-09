@@ -106,12 +106,8 @@ struct BarButtonPreviews: PreviewProvider {
                 .navigationBarItems(
                     trailing: HStack(spacing: 0) {
                         Group {
-                            if #available(iOS 16.0, *) {
-                                BarButton(.sfSymbol("square.and.arrow.up"), size: .normal, action: {})
-                                    .fontWeight(.medium)
-                            } else {
-                                BarButton(.sfSymbol("square.and.arrow.up", weight: .medium), size: .normal, action: {})
-                            }
+                            BarButton(.sfSymbol("square.and.arrow.up"), size: .normal, action: {})
+                                .textFontWeight(.medium)
                             BarButton(.shareIos, action: {})
                             BarButton(.grid, alignment: .trailing, action: {})
                         }

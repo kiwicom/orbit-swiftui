@@ -211,10 +211,8 @@ struct BadgePreviews: PreviewProvider {
 
             HStack(spacing: .small) {
                 Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
-                if #available(iOS 16.0, *) {
-                    Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
-                        .fontWeight(.black)
-                }
+                Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
+                    .textFontWeight(.black)
                 Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
             }
         }
