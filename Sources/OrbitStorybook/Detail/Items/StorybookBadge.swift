@@ -39,7 +39,7 @@ struct StorybookBadge {
             HStack(spacing: .small) {
                 Badge(
                     "Custom",
-                    icon: .symbol(.airplane, color: .pink),
+                    leadingIcon: .symbol(.airplane, color: .pink),
                     style: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
@@ -47,18 +47,18 @@ struct StorybookBadge {
                     )
                 )
 
-                Badge("Flag", icon: .countryFlag("us"))
-                Badge("Flag", icon: .countryFlag("us"), style: .status(.critical, inverted: true))
+                Badge("Flag", leadingIcon: .countryFlag("us"))
+                Badge("Flag", leadingIcon: .countryFlag("us"), style: .status(.critical, inverted: true))
             }
 
             HStack(spacing: .small) {
-                Badge("Image", icon: .image(.orbit(.facebook)))
-                Badge("Image", icon: .image(.orbit(.facebook)), style: .status(.success, inverted: true))
+                Badge("Image", leadingIcon: .image(.orbit(.facebook)))
+                Badge("Image", leadingIcon: .image(.orbit(.facebook)), style: .status(.success, inverted: true))
             }
 
             HStack(spacing: .small) {
-                Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
-                Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
+                Badge("SF Symbol", leadingIcon: .sfSymbol("info.circle.fill"))
+                Badge("SF Symbol", leadingIcon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
             }
         }
         .previewDisplayName()
@@ -67,8 +67,9 @@ struct StorybookBadge {
     static func badges(_ style: Badge.Style) -> some View {
         HStack(spacing: .small) {
             Badge("label", style: style)
-            Badge("label", icon: .grid, style: style)
-            Badge(icon: .grid, style: style)
+            Badge("label", leadingIcon: .grid, style: style)
+            Badge(leadingIcon: .grid, style: style)
+            Badge("label", trailingIcon: .grid, style: style)
             Badge("1", style: style)
         }
     }

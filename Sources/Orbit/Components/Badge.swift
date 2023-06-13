@@ -12,29 +12,30 @@ public struct Badge: View {
     @Environment(\.sizeCategory) private var sizeCategory
 
     let label: String
-    let icon: Icon.Content?
+    let leadingIcon: Icon.Content?
+    let trailingIcon: Icon.Content?
     var style: Style
 
     public var body: some View {
         if isEmpty == false {
             HStack(spacing: .xxSmall) {
-                Icon(icon, size: .small)
+                Icon(leadingIcon, size: .small)
                     .fontWeight(.medium)
 
-                Text(
-                    label,
-                    size: .small
-                )
-                .fontWeight(.medium)
-                .textLinkColor(.custom(labelColor))
-                .frame(minWidth: minTextWidth)
+                Text(label, size: .small)
+                    .fontWeight(.medium)
+                    .textLinkColor(.custom(labelColor))
+                    .frame(minWidth: minTextWidth)
+
+                Icon(trailingIcon, size: .small)
+                    .fontWeight(.medium)
             }
             .textColor(labelColor)
             .padding(.vertical, .xxSmall) // = 24 height @ normal size
             .padding(.horizontal, .xSmall)
             .background(
                 background
-                    .clipShape(shape)
+                    .clipShape(Capsule())
             )
         }
     }
@@ -55,16 +56,16 @@ public struct Badge: View {
         Text.Size.small.lineHeight * sizeCategory.ratio - .xSmall
     }
 
-    var shape: some InsettableShape {
-        Capsule()
-    }
-
     var isEmpty: Bool {
-        isIconEmpty && label.isEmpty
+        isLeadingIconEmpty && label.isEmpty && isTrailingIconEmpty
     }
 
-    var isIconEmpty: Bool {
-        icon?.isEmpty ?? true
+    var isLeadingIconEmpty: Bool {
+        leadingIcon?.isEmpty ?? true
+    }
+
+    var isTrailingIconEmpty: Bool {
+        trailingIcon?.isEmpty ?? true
     }
 
     var labelColor: Color {
@@ -91,9 +92,15 @@ public extension Badge {
     ///
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
-    init(_ label: String = "", icon: Icon.Content? = nil, style: Style = .neutral) {
+    init(
+        _ label: String = "",
+        leadingIcon: Icon.Content? = nil,
+        trailingIcon: Icon.Content? = nil,
+        style: Style = .neutral
+    ) {
         self.label = label
-        self.icon = icon
+        self.leadingIcon = leadingIcon
+        self.trailingIcon = trailingIcon
         self.style = style
     }
 }
@@ -132,7 +139,7 @@ struct BadgePreviews: PreviewProvider {
 
     static var standalone: some View {
         VStack(spacing: 0) {
-            Badge("label", icon: .grid)
+            Badge("label", leadingIcon: .grid)
             Badge()    // EmptyView
             Badge("")  // EmptyView
         }
@@ -144,9 +151,10 @@ struct BadgePreviews: PreviewProvider {
         VStack(alignment: .trailing, spacing: .xSmall) {
             Group {
                 Badge("Badge")
-                Badge("Badge", icon: .grid)
-                Badge(icon: .grid)
-                Badge("Multiline\nBadge", icon: .grid)
+                Badge("Badge", leadingIcon: .grid)
+                Badge("Badge", leadingIcon: .grid, trailingIcon: .grid)
+                Badge(leadingIcon: .grid)
+                Badge("Multiline\nBadge", leadingIcon: .grid)
             }
             .measured()
         }
@@ -192,7 +200,7 @@ struct BadgePreviews: PreviewProvider {
             HStack(spacing: .small) {
                 Badge(
                     "Custom",
-                    icon: .symbol(.airplane, color: .pink),
+                    leadingIcon: .symbol(.airplane, color: .pink),
                     style: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
@@ -200,22 +208,22 @@ struct BadgePreviews: PreviewProvider {
                     )
                 )
 
-                Badge("Flag", icon: .countryFlag("us"))
-                Badge("Flag", icon: .countryFlag("us"), style: .status(.critical, inverted: true))
+                Badge("Flag", leadingIcon: .countryFlag("us"))
+                Badge("Flag", leadingIcon: .countryFlag("us"), style: .status(.critical, inverted: true))
             }
 
             HStack(spacing: .small) {
-                Badge("Image", icon: .image(.orbit(.facebook)))
-                Badge("Image", icon: .image(.orbit(.facebook)), style: .status(.success, inverted: true))
+                Badge("Image", leadingIcon: .image(.orbit(.facebook)))
+                Badge("Image", leadingIcon: .image(.orbit(.facebook)), style: .status(.success, inverted: true))
             }
 
             HStack(spacing: .small) {
-                Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
+                Badge("SF Symbol", leadingIcon: .sfSymbol("info.circle.fill"))
                 if #available(iOS 16.0, *) {
-                    Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
+                    Badge("SF Symbol", leadingIcon: .sfSymbol("info.circle.fill"))
                         .fontWeight(.black)
                 }
-                Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
+                Badge("SF Symbol", leadingIcon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
             }
         }
         .padding(.medium)
@@ -225,8 +233,9 @@ struct BadgePreviews: PreviewProvider {
     static func badges(_ style: Badge.Style) -> some View {
         HStack(spacing: .small) {
             Badge("label", style: style)
-            Badge("label", icon: .grid, style: style)
-            Badge(icon: .grid, style: style)
+            Badge("label", leadingIcon: .grid, style: style)
+            Badge(leadingIcon: .grid, style: style)
+            Badge("label", trailingIcon: .grid, style: style)
             Badge("1", style: style)
         }
     }
