@@ -7,7 +7,7 @@ import UIKit
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/inputfield/)
 /// - Important: Component expands horizontally unless prevented by `fixedSize` modifier.
-public struct InputField: View, TextFieldBuildable {
+public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
 
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.inputFieldBeginEditingAction) private var inputFieldBeginEditingAction
@@ -19,17 +19,16 @@ public struct InputField: View, TextFieldBuildable {
 
     private var label: String
     @Binding private var value: String
-    private var prefix: Icon.Content?
-    private var suffix: Icon.Content?
     private var prompt: String
     private var state: InputState
     private var style: InputFieldStyle
+    @ViewBuilder private let prefix: Prefix
+    @ViewBuilder private let suffix: Suffix
 
     private var isSecure: Bool
     private var passwordStrength: PasswordStrengthIndicator.PasswordStrength?
     private var message: Message?
     @Binding private var messageHeight: CGFloat
-    private var suffixAction: (() -> Void)?
 
     // Builder properties (keyboard related)
     var autocapitalizationType: UITextAutocapitalizationType = .none
@@ -45,22 +44,22 @@ public struct InputField: View, TextFieldBuildable {
             message: message,
             messageHeight: $messageHeight
         ) {
-            InputContent(
-                prefix: prefix,
-                suffix: suffix,
-                prefixAccessibilityID: .inputFieldPrefix,
-                suffixAccessibilityID: .inputFieldSuffix,
-                state: state,
-                message: message,
-                isEditing: isEditing,
-                suffixAction: suffixAction
-            ) {
+            InputContent(state: state, message: message, isEditing: isEditing) {
                 HStack(alignment: .firstTextBaseline, spacing: .small) {
                     compactLabel
-
-                    HStack(spacing: 0) {
-                        textField
+                    textField
+                }
+            } prefix: {
+                prefix
+                    .accessibility(.inputFieldPrefix)
+                    .accessibility(hidden: true)
+            } suffix: {
+                if suffix.isEmpty == false || showSecureTextRedactedButton {
+                    HStack(spacing: .small) {
                         secureTextRedactedButton
+                            .accessibility(.inputFieldPasswordToggle)
+                        suffix
+                            .accessibility(.inputFieldSuffix)
                     }
                 }
             }
@@ -88,11 +87,7 @@ public struct InputField: View, TextFieldBuildable {
         .textContentType(textContentType)
         .autocapitalization(autocapitalizationType)
         .shouldDeleteBackwardAction(shouldDeleteBackwardAction)
-        .accessibility(
-            label: .init(
-                [label, prefix?.accessibilityLabel, suffix?.accessibilityLabel].compactMap { $0 }.joined(separator: ", ")
-            )
-        )
+        .accessibility(label: .init(label))
         .inputFieldBeginEditingAction {
             isEditing = true
             inputFieldBeginEditingAction()
@@ -108,18 +103,15 @@ public struct InputField: View, TextFieldBuildable {
             Text(label)
                 .textColor(compactLabelColor)
                 .fontWeight(.medium)
-                .padding(.leading, isPrefixEmpty ? .small : 0)
+                .padding(.leading, prefix.isEmpty ? .small : 0)
         }
     }
 
     @ViewBuilder private var secureTextRedactedButton: some View {
-        if isSecure, value.description.isEmpty == false, isEnabled {
-            BarButton(isSecureTextRedacted ? .visibility : .visibilityOff, size: .normal) {
+        if showSecureTextRedactedButton {
+            IconButton(isSecureTextRedacted ? .visibility : .visibilityOff) {
                 isSecureTextRedacted.toggle()
             }
-            .padding(.leading, .xSmall)
-            .padding(.trailing, isSuffixEmpty ? .xxSmall : 0)
-            .accessibility(.inputFieldPasswordToggle)
         }
     }
 
@@ -139,21 +131,17 @@ public struct InputField: View, TextFieldBuildable {
     }
 
     private var leadingPadding: CGFloat {
-        isPrefixEmpty && style == .default
+        prefix.isEmpty && style == .default
             ? .small
             : 0
     }
 
-    private var isPrefixEmpty: Bool {
-        prefix?.isEmpty ?? true
-    }
-
     private var trailingPadding: CGFloat {
-        isSuffixEmpty ? .small : 0
+        suffix.isEmpty ? .small : 0
     }
 
-    private var isSuffixEmpty: Bool {
-        suffix?.isEmpty ?? true
+    private var showSecureTextRedactedButton: Bool {
+        isSecure && value.description.isEmpty == false && isEnabled
     }
 }
 
@@ -174,8 +162,48 @@ public extension InputField {
     init(
         _ label: String = "",
         value: Binding<String>,
-        prefix: Icon.Content? = nil,
-        suffix: Icon.Content? = nil,
+        prefix: Icon.Symbol? = nil,
+        suffix: Icon.Symbol? = nil,
+        prompt: String = "",
+        state: InputState = .default,
+        style: InputFieldStyle = .default,
+        isSecure: Bool = false,
+        passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
+        message: Message? = nil,
+        messageHeight: Binding<CGFloat> = .constant(0)
+    ) where Prefix == Icon, Suffix == Icon {
+        self.init(
+            label,
+            value: value,
+            prompt: prompt,
+            state: state,
+            style: style,
+            isSecure: isSecure,
+            passwordStrength: passwordStrength,
+            message: message,
+            messageHeight: messageHeight
+        ) {
+            Icon(prefix)
+        } suffix: {
+            Icon(suffix)
+        }
+    }
+
+    /// Creates Orbit InputField component with custom prefix or suffix.
+    ///
+    /// The keyboard related modifiers can be used directly on this component to modify the keyboard behaviour:
+    /// - `autocapitalization()`
+    /// - `autocorrectionDisabled()`
+    /// - `keyboardType()`
+    /// - `textContentType()`
+    ///
+    /// - Parameters:
+    ///   - message: Optional message below the InputField.
+    ///   - messageHeight: Binding to the current height of the optional message.
+    ///   - suffixAction: Optional action when suffix icon is tapped.
+    init(
+        _ label: String = "",
+        value: Binding<String>,
         prompt: String = "",
         state: InputState = .default,
         style: InputFieldStyle = .default,
@@ -183,12 +211,11 @@ public extension InputField {
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
-        suffixAction: (() -> Void)? = nil
+        @ViewBuilder prefix: () -> Prefix,
+        @ViewBuilder suffix: () -> Suffix = { EmptyView() }
     ) {
         self.label = label
         self._value = value
-        self.prefix = prefix
-        self.suffix = suffix
         self.prompt = prompt
         self.state = state
         self.style = style
@@ -196,7 +223,8 @@ public extension InputField {
         self.passwordStrength = passwordStrength
         self.message = message
         self._messageHeight = messageHeight
-        self.suffixAction = suffixAction
+        self.prefix = prefix()
+        self.suffix = suffix()
     }
 }
 
@@ -295,7 +323,7 @@ struct InputFieldPreviews: PreviewProvider {
                 InputField("Secure", value: state, prefix: .grid, prompt: prompt, state: .default, isSecure: true)
             }
         }
-        .frame(width: 80)
+        .frame(width: 100)
         .padding(.medium)
         .previewDisplayName()
     }
@@ -328,12 +356,12 @@ struct InputFieldPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .small) {
             Group {
                 inputField("", value: "", message: .none)
-                inputField("", value: "", prefix: .none, suffix: .none)
-                inputField("", value: "Value", prefix: .none, suffix: .none)
-                inputField("", value: "", prefix: .grid, suffix: .none, prompt: "")
-                inputField("", value: "", prefix: .none, suffix: .none, prompt: "")
-                inputField("", value: "Password", prefix: .none, suffix: .none, isSecure: true)
-                inputField("", value: "Password", prefix: .none, suffix: .none, isSecure: true)
+                inputField("", value: "", prefix: nil, suffix: nil)
+                inputField("", value: "Value", prefix: nil, suffix: nil)
+                inputField("", value: "", suffix: nil, prompt: "")
+                inputField("", value: "", prefix: nil, suffix: nil, prompt: "")
+                inputField("", value: "Password", prefix: nil, suffix: nil, isSecure: true)
+                inputField("", value: "Password", prefix: nil, suffix: nil, isSecure: true)
                     .disabled(true)
             }
             .frame(width: 200)
@@ -359,10 +387,17 @@ struct InputFieldPreviews: PreviewProvider {
 
     static var mix: some View {
         VStack(spacing: .medium) {
-            inputField("Empty", value: "", prefix: .symbol(.grid, color: .blueDark), suffix: .symbol(.grid, color: .blueDark))
-            inputField("Disabled, Empty", value: "", prefix: .transparent, suffix: .transparent)
+            inputField("Empty", value: "", prefix: .grid, suffix: .grid)
+                .iconColor(.blueDark)
+            StateWrapper(value) { value in
+                InputField("Disabled, Empty", value: value) {
+                    CountryFlag("us")
+                } suffix: {
+                    CountryFlag("cz")
+                }
                 .disabled(true)
-            inputField("Disabled", value: "Disabled Value", prefix: .sfSymbol("info.circle.fill"), suffix: .sfSymbol("info.circle.fill"))
+            }
+            inputField("Disabled", value: "Disabled Value", prefix: .informationCircle, suffix: .informationCircle)
                 .disabled(true)
             inputField("Modified from previous state", value: "Modified value", state: .modified)
             inputField("Focused", value: "Focused / Help", message: .help("Help message"))
@@ -378,7 +413,14 @@ struct InputFieldPreviews: PreviewProvider {
 
             HStack(spacing: .medium) {
                 inputField(value: "No label")
-                inputField(value: "Flag prefix", prefix: .transparent)
+
+                StateWrapper(value) { value in
+                    InputField("Flag prefix", value: value) {
+                        CountryFlag("us")
+                    } suffix: {
+                        EmptyView()
+                    }
+                }
             }
         }
         .padding(.medium)
@@ -388,8 +430,8 @@ struct InputFieldPreviews: PreviewProvider {
     static func inputField(
         _ label: String = label,
         value: String = value,
-        prefix: Icon.Content? = .grid,
-        suffix: Icon.Content? = .grid,
+        prefix: Icon.Symbol? = .grid,
+        suffix: Icon.Symbol? = .grid,
         prompt: String = prompt,
         state: InputState = .default,
         isSecure: Bool = false,
@@ -434,16 +476,14 @@ struct InputFieldLivePreviews: PreviewProvider {
         var body: some View {
             ScrollView {
                 VStack(alignment: .leading, spacing: .medium) {
-                    InputField(
-                        "InputField",
-                        value: $textValue,
-                        suffix: .email,
-                        prompt: "Placeholder",
-                        message: message,
-                        suffixAction: {
-                            intValue = 1
-                        }
-                    )
+                    InputField("InputField", value: $textValue, prompt: "Placeholder", message: message) {
+                        EmptyView()
+                    } suffix: {
+                        Icon(.email)
+                            .onTapGesture {
+                                intValue = 1
+                            }
+                    }
                     .disabled(true)
 
                     if #available(iOS 16.0, *) {

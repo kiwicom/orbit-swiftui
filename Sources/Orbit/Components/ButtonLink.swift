@@ -3,7 +3,7 @@ import SwiftUI
 /// Displays a single, less important action a user can take.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/buttonlink/)
-public struct ButtonLink: View {
+public struct ButtonLink<Icon: View>: View {
 
     @Environment(\.iconColor) private var iconColor
     @Environment(\.status) private var status
@@ -11,13 +11,13 @@ public struct ButtonLink: View {
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     let label: String
-    let style: Style
-    let icon: Icon.Content?
-    let size: Size
+    let type: ButtonLinkType
+    let size: ButtonLinkSize
     let action: () -> Void
+    @ViewBuilder let icon: Icon
 
     public var body: some View {
-        if label.isEmpty == false {
+        if isEmpty == false {
             SwiftUI.Button(
                 action: {
                     if isHapticsEnabled {
@@ -28,8 +28,9 @@ public struct ButtonLink: View {
                 },
                 label: {
                     HStack(spacing: .xSmall) {
-                        Icon(icon)
-                            .fontWeight(.medium)
+                        icon
+                            .textFontWeight(.medium)
+                            .font(.system(size: Orbit.Icon.Size.normal.value))
 
                         Text(label)
                             .fontWeight(.medium)
@@ -40,12 +41,12 @@ public struct ButtonLink: View {
                     .padding(.vertical, verticalPadding)
                 }
             )
-            .buttonStyle(OrbitStyle(colors: textColors ?? colors, size: size))
+            .buttonStyle(ButtonLinkButtonStyle(colors: textColors ?? colors, size: size))
         }
     }
 
     public var colors: (normal: Color, active: Color) {
-        switch style {
+        switch type {
             case .primary:              return (.productNormal, .productLightActive)
             case .secondary:            return (.inkDark, .cloudDark)
             case .critical:             return (.redNormal, .redLightActive)
@@ -68,6 +69,10 @@ public struct ButtonLink: View {
             case .buttonSmall:          return 6        // = 32 height @ normal size
         }
     }
+
+    var isEmpty: Bool {
+        label.isEmpty && icon.isEmpty
+    }
 }
 
 // MARK: - Inits
@@ -79,67 +84,79 @@ public extension ButtonLink {
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ label: String = "",
-        style: Style = .primary,
-        icon: Icon.Content? = nil,
-        size: Size = .default,
+        type: ButtonLinkType = .primary,
+        icon: Icon.Symbol? = nil,
+        size: ButtonLinkSize = .default,
         action: @escaping () -> Void
+    ) where Icon == Orbit.Icon {
+        self.init(
+            label,
+            type: type,
+            size: size
+        ) {
+            action()
+        } icon: {
+            Icon(icon)
+        }
+    }
+
+    /// Creates Orbit ButtonLink component with custom icon.
+    ///
+    /// - Parameters:
+    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    init(
+        _ label: String = "",
+        type: ButtonLinkType = .primary,
+        size: ButtonLinkSize = .default,
+        action: @escaping () -> Void,
+        @ViewBuilder icon: () -> Icon
     ) {
         self.label = label
-        self.style = style
-        self.icon = icon
+        self.type = type
         self.size = size
         self.action = action
+        self.icon = icon()
     }
 }
 
 // MARK: - Types
-public extension ButtonLink {
 
-    enum Style: Equatable {
-        case primary
-        case secondary
-        case critical
-        case status(_ status: Status?)
+public enum ButtonLinkType: Equatable {
 
-        public static func ==(lhs: Self, rhs: Self) -> Bool {
-            switch (lhs, rhs) {
-                case
-                    (.primary, .primary),
-                    (.secondary, .secondary),
-                    (.critical, .critical):
-                    return true
-                case (.status(let lstatus), .status(let rstatus)) where lstatus == rstatus:
-                    return true
-                default:
-                    return false
-            }
+    case primary
+    case secondary
+    case critical
+    case status(_ status: Status?)
+}
+
+public enum ButtonLinkSize: Equatable {
+    case `default`
+    case button
+    case buttonSmall
+
+    public var maxWidth: CGFloat? {
+        switch self {
+            case .default:                  return nil
+            case .button, .buttonSmall:     return .infinity
         }
     }
+}
 
-    enum Size {
-        case `default`
-        case button
-        case buttonSmall
-        
-        public var maxWidth: CGFloat? {
-            switch self {
-                case .default:                  return nil
-                case .button, .buttonSmall:     return .infinity
-            }
-        }
+public struct ButtonLinkButtonStyle: ButtonStyle {
+
+    let colors: (normal: Color, active: Color)
+    let size: ButtonLinkSize
+
+    public init(colors: (normal: Color, active: Color), size: ButtonLinkSize) {
+        self.colors = colors
+        self.size = size
     }
-    
-    struct OrbitStyle: ButtonStyle {
 
-        let colors: (normal: Color, active: Color)
-        let size: ButtonLink.Size
-
-        public func makeBody(configuration: Configuration) -> some View {
-            configuration.label
-                .textColor(configuration.isPressed ? colors.active : colors.normal)
-                .frame(maxWidth: size.maxWidth)
-                .contentShape(Rectangle())
-        }
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .textColor(configuration.isPressed ? colors.active : colors.normal)
+            .frame(maxWidth: size.maxWidth)
+            .contentShape(Rectangle())
     }
 }
 
@@ -159,7 +176,6 @@ struct ButtonLinkPreviews: PreviewProvider {
             sizing
             formatted
             iconOnly
-            countryFlag
             styles
             statuses
         }
@@ -196,14 +212,14 @@ struct ButtonLinkPreviews: PreviewProvider {
     static var styles: some View {
         HStack(spacing: .xxLarge) {
             VStack(alignment: .leading, spacing: .large) {
-                ButtonLink("ButtonLink Primary", style: .primary, action: {})
-                ButtonLink("ButtonLink Secondary", style: .secondary, action: {})
-                ButtonLink("ButtonLink Critical", style: .critical, action: {})
+                ButtonLink("ButtonLink Primary", type: .primary, action: {})
+                ButtonLink("ButtonLink Secondary", type: .secondary, action: {})
+                ButtonLink("ButtonLink Critical", type: .critical, action: {})
             }
             VStack(alignment: .leading, spacing: .large) {
-                ButtonLink("ButtonLink Primary", style: .primary, icon: .accommodation, action: {})
-                ButtonLink("ButtonLink Secondary", style: .secondary, icon: .airplaneDown, action: {})
-                ButtonLink("ButtonLink Critical", style: .critical, icon: .alertCircle, action: {})
+                ButtonLink("ButtonLink Primary", type: .primary, icon: .accommodation, action: {})
+                ButtonLink("ButtonLink Secondary", type: .secondary, icon: .airplaneDown, action: {})
+                ButtonLink("ButtonLink Critical", type: .critical, icon: .alertCircle, action: {})
             }
         }
         .padding(.medium)
@@ -212,10 +228,10 @@ struct ButtonLinkPreviews: PreviewProvider {
     
     static var statuses: some View {
         VStack(alignment: .leading, spacing: .large) {
-            ButtonLink("ButtonLink Info", style: .status(.info), icon: .informationCircle, action: {})
-            ButtonLink("ButtonLink Success", style: .status(.success), icon: .checkCircle, action: {})
-            ButtonLink("ButtonLink Warning", style: .status(.warning), icon: .alert, action: {})
-            ButtonLink("ButtonLink Critical", style: .status(.critical), icon: .alertCircle, action: {})
+            ButtonLink("ButtonLink Info", type: .status(.info), icon: .informationCircle, action: {})
+            ButtonLink("ButtonLink Success", type: .status(.success), icon: .checkCircle, action: {})
+            ButtonLink("ButtonLink Warning", type: .status(.warning), icon: .alert, action: {})
+            ButtonLink("ButtonLink Critical", type: .status(.critical), icon: .alertCircle, action: {})
         }
         .padding(.medium)
         .previewDisplayName()
@@ -224,7 +240,6 @@ struct ButtonLinkPreviews: PreviewProvider {
     static var formatted: some View {
         ButtonLink(
             "Custom <u>formatted</u> <ref>ref</ref> <applink1>https://localhost</applink1>",
-            style: .primary,
             icon: .kiwicom,
             action: {}
         )
@@ -236,13 +251,6 @@ struct ButtonLinkPreviews: PreviewProvider {
 
     static var iconOnly: some View {
         ButtonLink(icon: .kiwicom, action: {})
-            .background(Color.blueLight)
-            .padding(.medium)
-            .previewDisplayName()
-    }
-
-    static var countryFlag: some View {
-        ButtonLink("Flag", icon: .transparent, action: {})
             .padding(.medium)
             .previewDisplayName()
     }

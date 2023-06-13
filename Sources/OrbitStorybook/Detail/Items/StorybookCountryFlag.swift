@@ -37,7 +37,7 @@ struct StorybookCountryFlag {
             }
             HStack(spacing: .small) {
                 Text("Custom size")
-                CountryFlag("us", size: .custom(60))
+                CountryFlag("us", size: .width(60))
             }
         }
         .previewDisplayName()

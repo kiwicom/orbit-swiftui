@@ -57,7 +57,7 @@ public struct ToastContent: View {
     @Environment(\.textColor) private var textColor
 
     let description: String
-    let icon: Icon.Content?
+    let icon: Icon.Symbol?
     let progress: CGFloat
     
     public var body: some View {
@@ -106,7 +106,7 @@ public struct ToastContent: View {
     }
     
     /// Creates Orbit `Toast` component variant with no gesture handling or queue management.
-    public init(_ description: String, icon: Icon.Content? = nil, progress: CGFloat = 0) {
+    public init(_ description: String, icon: Icon.Symbol? = nil, progress: CGFloat = 0) {
         self.description = description
         self.icon = icon
         self.progress = progress
@@ -122,7 +122,7 @@ public struct ToastWrapper: View {
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
     
     let description: String
-    let icon: Icon.Content?
+    let icon: Icon.Symbol?
     let progress: CGFloat
     let pauseAction: () -> Void
     let resumeAction: () -> Void
@@ -174,7 +174,7 @@ public struct ToastWrapper: View {
     /// Creates Orbit `Toast` component variant with gesture handling.
     public init(
         _ description: String,
-        icon: Icon.Content? = nil,
+        icon: Icon.Symbol? = nil,
         progress: CGFloat = 0,
         pauseAction: @escaping () -> Void,
         resumeAction: @escaping() -> Void,

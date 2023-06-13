@@ -41,8 +41,8 @@ public struct EmptyState: View {
         switch action {
             case .none:
                 EmptyView()
-            case .button(let label, let style, let action):
-                Button(label, style: style, action: action)
+            case .button(let label, let type, let action):
+                Button(label, type: type, action: action)
                     .idealSize()
                     .accessibility(.emptyStateButton)
         }
@@ -54,7 +54,7 @@ public extension EmptyState {
     
     enum Action {
         case none
-        case button(_ label: String, style: Button.Style = .primary, action: () -> Void)
+        case button(_ label: String, type: ButtonType = .primary, action: () -> Void)
     }
 }
 
@@ -106,7 +106,7 @@ struct EmptyStatePreviews: PreviewProvider {
     }
     
     static var subtle: some View {
-        EmptyState(title, description: description, illustration: .error404, action: .button(button, style: .primarySubtle, action: {}))
+        EmptyState(title, description: description, illustration: .error404, action: .button(button, type: .primarySubtle, action: {}))
             .previewDisplayName()
     }
     

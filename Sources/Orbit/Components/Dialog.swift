@@ -49,7 +49,7 @@ public struct Dialog<Content: View>: View {
             case .primary(let primaryButton),
                  .primaryAndSecondary(let primaryButton, _),
                  .primarySecondaryAndTertiary(let primaryButton, _, _):
-                Button(primaryButton.label, style: style.buttonStyle, action: primaryButton.action)
+                Button(primaryButton.label, type: style.buttonType, action: primaryButton.action)
                     .accessibility(.dialogButtonPrimary)
         }
 
@@ -58,7 +58,7 @@ public struct Dialog<Content: View>: View {
                 EmptyView()
             case .primaryAndSecondary(_, let secondaryButton),
                  .primarySecondaryAndTertiary(_, let secondaryButton, _):
-                ButtonLink(secondaryButton.label, style: style.buttonLinkStyle, size: .button, action: secondaryButton.action)
+                ButtonLink(secondaryButton.label, type: style.buttonLinkType, size: .button, action: secondaryButton.action)
                     .accessibility(.dialogButtonSecondary)
         }
 
@@ -66,7 +66,7 @@ public struct Dialog<Content: View>: View {
             case .primary, .primaryAndSecondary:
                 EmptyView()
             case .primarySecondaryAndTertiary(_, _, let tertiaryButton):
-                ButtonLink(tertiaryButton.label, style: style.buttonLinkStyle, size: .button, action: tertiaryButton.action)
+                ButtonLink(tertiaryButton.label, type: style.buttonLinkType, size: .button, action: tertiaryButton.action)
                     .accessibility(.dialogButtonTertiary)
         }
     }
@@ -101,23 +101,23 @@ extension Dialog {
 extension Dialog {
 
     public enum Buttons {
-        case primary(Button.Content)
-        case primaryAndSecondary(Button.Content, Button.Content)
-        case primarySecondaryAndTertiary(Button.Content, Button.Content, Button.Content)
+        case primary(ButtonContent)
+        case primaryAndSecondary(ButtonContent, ButtonContent)
+        case primarySecondaryAndTertiary(ButtonContent, ButtonContent, ButtonContent)
     }
 
     public enum Style {
         case primary
         case critical
 
-        public var buttonStyle: Orbit.Button.Style {
+        public var buttonType: ButtonType {
             switch self {
                 case .primary:              return .primary
                 case .critical:             return .critical
             }
         }
 
-        public var buttonLinkStyle: Orbit.ButtonLink.Style {
+        public var buttonLinkType: ButtonLinkType {
             switch self {
                 case .primary:              return .primary
                 case .critical:             return .critical

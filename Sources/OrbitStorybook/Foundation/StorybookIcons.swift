@@ -24,7 +24,7 @@ struct StorybookIcons {
     @ViewBuilder static func icon(index: Int, filter: String) -> some View {
         if let icon = iconSymbol(index: index, filter: filter) {
             VStack(spacing: .xxSmall) {
-                Icon(.symbol(icon))
+                Icon(icon)
                 
                 Text(String(describing: icon).titleCased, size: .custom(10), isSelectable: true)
                     .textColor(.inkNormal)

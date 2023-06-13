@@ -1,6 +1,28 @@
 import SwiftUI
 
-/// An icon matching Orbit name.
+/// An Orbit Icon component.
+///
+/// Icon is concatenable with Text and Heading components, allowing the construction of multiline texts that include icons.
+/// Apart from Orbit symbol, an Icon can be constructed from SF Symbol with matching Orbit icon size.
+///
+/// ```swift
+/// Text("2") + Icon("multiply") + Icon(.baggage)
+/// ```
+///
+/// Icon can be further styled using either `Icon` modifiers or global modifiers `iconColor`, `textColor`, `textFontWeight`, `baselineOffset`.
+///
+/// ```swift
+/// VStack {
+///   Icon(.grid)
+///     .iconColor(nil)
+///
+///   Icon("circle.fill")
+///     .fontWeight(.bold)
+///     .baselineOffset(-2)
+/// }
+/// .iconColor(.redNormal)
+/// .textFontWeight(.medium)
+/// ```
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/icon/)
 public struct Icon: View, TextBuildable {
@@ -17,7 +39,7 @@ public struct Icon: View, TextBuildable {
     @Environment(\.textColor) private var textColor
     @Environment(\.textFontWeight) private var textFontWeight
 
-    private let icon: Content?
+    private let content: Content?
     private let size: Size
 
     // Builder properties
@@ -26,60 +48,35 @@ public struct Icon: View, TextBuildable {
     var color: Color?
 
     public var body: some View {
-        if let icon, icon.isEmpty == false {
-            content
-                .accessibility(label: .init(icon.accessibilityLabel))
-        }
-    }
-
-    @ViewBuilder private var content: some View {
-        switch icon {
-            case .none:
+        switch content {
+            case .none, .sfSymbol(""):
                 EmptyView()
-            case .transparent:
-                Color.clear
-                    .frame(width: dynamicSize, height: dynamicSize)
-            case .skeleton:
-                Skeleton(.atomic(.rectangle))
-                    .frame(width: dynamicSize - .xxxSmall, height: dynamicSize - .xxxSmall)
-            case .symbol(let symbol, let color):
-                alignmentWrapper {
-                    colorWrapper(color: color) {
-                        SwiftUI.Text(verbatim: symbol.value)
-                            .font(.orbitIcon(size: size.value))
-                                .frame(height: dynamicSize)
-                                .frame(minWidth: dynamicSize)
-                                .flipsForRightToLeftLayoutDirection(symbol.flipsForRightToLeftLayoutDirection)
-                        }
-                    }
-            case .sfSymbol(let systemName, let color):
-                colorWrapper(color: color) {
-                    Image(systemName: systemName)
-                        .font(sfSymbolFont(sizeCategory: sizeCategory, textFontWeight: textFontWeight))
-                        .alignmentGuide(.firstTextBaseline) { $0[.firstTextBaseline] + resolvedBaselineOffset }
-                        .alignmentGuide(.lastTextBaseline) { $0[.lastTextBaseline] + resolvedBaselineOffset }
-                        .frame(height: dynamicSize)
-                        .frame(minWidth: dynamicSize)
-                }
+            case .symbol(let symbol):
+                SwiftUI.Text(verbatim: symbol.value)
+                    .font(.orbitIcon(size: size.value))
+                    .foregroundColor(resolvedColor)
+                    .flipsForRightToLeftLayoutDirection(symbol.flipsForRightToLeftLayoutDirection)
+                    .frame(height: dynamicSize)
+                    .frame(minWidth: dynamicSize)
+                    .alignmentGuide(.firstTextBaseline, computeValue: baseline)
+                    .alignmentGuide(.lastTextBaseline, computeValue: baseline)
+                    .accessibility(label: .init(String(describing: symbol).titleCased))
+            case .sfSymbol(let systemName):
+                Image(systemName: systemName)
+                    .font(sfSymbolFont(sizeCategory: sizeCategory, textFontWeight: textFontWeight))
+                    .foregroundColor(resolvedColor)
+                    .frame(height: dynamicSize)
+                    .frame(minWidth: dynamicSize)
+                    .alignmentGuide(.firstTextBaseline) { $0[.firstTextBaseline] + resolvedBaselineOffset }
+                    .alignmentGuide(.lastTextBaseline) { $0[.lastTextBaseline] + resolvedBaselineOffset }
         }
-    }
-
-    @ViewBuilder private func alignmentWrapper(@ViewBuilder content: () -> some View) -> some View {
-        content()
-            .alignmentGuide(.firstTextBaseline, computeValue: baseline)
-            .alignmentGuide(.lastTextBaseline, computeValue: baseline)
-    }
-
-    @ViewBuilder private func colorWrapper(color: Color?, @ViewBuilder content: () -> some View) -> some View {
-        content()
-            .foregroundColor(color ?? resolvedColor)
     }
 
     public var isEmpty: Bool {
-        icon?.isEmpty ?? true
+        content?.isEmpty ?? true
     }
 
-    func sfSymbolFont(sizeCategory: ContentSizeCategory, textFontWeight: Font.Weight?) -> Font {
+    private func sfSymbolFont(sizeCategory: ContentSizeCategory, textFontWeight: Font.Weight?) -> Font {
         .system(
             size: sfSymbolSize * sizeCategory.ratio,
             weight: fontWeight ?? textFontWeight ?? Self.sfSymbolDefaultWeight
@@ -105,24 +102,28 @@ public struct Icon: View, TextBuildable {
     private func baseline(_ dimensions: ViewDimensions) -> CGFloat {
         dimensions.height * Self.symbolBaseline + resolvedBaselineOffset
     }
+
+    private init(_ content: Content?, size: Size = .normal) {
+        self.content = content
+        self.size = size
+    }
 }
 
 // MARK: - Inits
 public extension Icon {
-    
-    /// Creates Orbit Icon component for provided icon content.
-    ///
-    /// - Parameters:
-    ///     - content: Icon content. Can optionally include the color override that has a priority over the `.textColor` modifier.
-    init(_ content: Icon.Content?, size: Size = .normal) {
-        self.icon = content
-        self.size = size
+
+    /// Creates Orbit Icon component for provided Orbit symbol.
+    init(_ symbol: Icon.Symbol?, size: Size = .normal) {
+        self.init(
+            symbol.map { Icon.Content.symbol($0) },
+            size: size
+        )
     }
 
-    /// Creates Orbit Icon component for provided SF Symbol with specified color.
+    /// Creates Orbit Icon component for provided SF Symbol that matches the Orbit symbol sizing, reflecting the Dynamic Type settings.
     init(_ systemName: String, size: Size = .normal) {
         self.init(
-            .sfSymbol(systemName, color: nil),
+            .sfSymbol(systemName),
             size: size
         )
     }
@@ -144,16 +145,6 @@ public extension Icon {
         /// Custom size.
         case custom(CGFloat)
 
-        /// Icon size matching `Text` size.
-        public static func text(_ size: Text.Size) -> Self {
-            size.iconSize
-        }
-
-        /// Icon size matching `Heading` style.
-        public static func heading(_ style: Heading.Style) -> Self {
-            style.iconSize
-        }
-
         public var value: CGFloat {
             switch self {
                 case .small:                            return 16
@@ -163,49 +154,20 @@ public extension Icon {
                 case .custom(let size):                 return size
             }
         }
-        
-        public static func == (lhs: Icon.Size, rhs: Icon.Size) -> Bool {
-            lhs.value == rhs.value
-        }
     }
 }
 
 // MARK: - Private
-public extension Icon {
+private extension Icon {
 
-    /// Defines icon content for use in other components.
-    enum Content: Equatable, Hashable {
-        /// Orbit transparent icon placeholder. Useful when the layout should behave as if the icon was present.
-        case transparent
-        /// Orbit skeleton loading icon placeholder.
-        case skeleton
-        /// Orbit icon symbol with optional color specified. If not specified, it can be overridden using `.textColor()` modifier.
-        case symbol(Symbol, color: Color? = nil)
-        /// SF Symbol with optional color specified. If not specified, it can be overridden using `.textColor()` modifier.
-        case sfSymbol(String, color: Color? = nil)
+    enum Content {
+        case symbol(Symbol)
+        case sfSymbol(String)
 
-        /// Specifies whether the item has a non-empty content.
         var isEmpty: Bool {
             switch self {
-                case .symbol, .transparent, .skeleton:      return false
-                case .sfSymbol(let sfSymbol, _):            return sfSymbol.isEmpty
-            }
-        }
-
-        /// Accessibility label suitable for the specified icon content.
-        var accessibilityLabel: String {
-            switch self {
-                case .transparent, .skeleton:           return ""
-                case .symbol(let symbol, _):            return String(describing: symbol).titleCased
-                case .sfSymbol(let sfSymbol, _):        return sfSymbol
-            }
-        }
-
-        public func hash(into hasher: inout Hasher) {
-            switch self {
-                case .transparent, .skeleton:           break
-                case .symbol(let symbol, _):            hasher.combine(symbol)
-                case .sfSymbol(let sfSymbol, _):        hasher.combine(sfSymbol)
+                case .symbol:                           return false
+                case .sfSymbol(let sfSymbol):           return sfSymbol.isEmpty
             }
         }
     }
@@ -215,10 +177,6 @@ public extension Icon {
 extension Icon: TextRepresentable {
 
     public func swiftUIText(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
-        if isEmpty {
-            return nil
-        }
-
         if #available(iOS 14.0, *) {
             return text(textRepresentableEnvironment: textRepresentableEnvironment)
         } else {
@@ -228,26 +186,18 @@ extension Icon: TextRepresentable {
 
     @available(iOS 14.0, *)
     func text(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
-        switch icon {
+        switch content {
             case .none:
                 return nil
-            case .transparent:
+            case .symbol(let symbol):
                 return symbolWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory) {
-                    SwiftUI.Text(verbatim: Icon.Symbol.grid.value)
-                        .foregroundColor(.clear)
-                }
-            case .skeleton:
-                assertionFailure("text representation of skeleton icon is not supported")
-                return nil
-            case .symbol(let symbol, let color):
-                return symbolWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory) {
-                    colorWrapper(color: color, textRepresentableEnvironment: textRepresentableEnvironment) {
+                    colorWrapper(textRepresentableEnvironment: textRepresentableEnvironment) {
                         SwiftUI.Text(verbatim: symbol.value)
                     }
                 }
-            case .sfSymbol(let systemName, let color):
+            case .sfSymbol(let systemName):
                 return baselineWrapper {
-                    colorWrapper(color: color, textRepresentableEnvironment: textRepresentableEnvironment) {
+                    colorWrapper(textRepresentableEnvironment: textRepresentableEnvironment) {
                         SwiftUI.Text(Image(systemName: systemName))
                             .font(
                                 sfSymbolFont(
@@ -261,34 +211,26 @@ extension Icon: TextRepresentable {
     }
 
     private func textFallback(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
-        switch icon {
+        switch content {
             case .none:
                 return nil
-            case .transparent:
-                return symbolWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory) {
-                    SwiftUI.Text(verbatim: Icon.Symbol.grid.value)
-                        .foregroundColor(.clear)
-                }
-            case .skeleton:
-                assertionFailure("text representation of skeleton icon is not supported")
-                return nil
-            case .symbol(let symbol, let color):
+            case .symbol(let symbol):
                 return symbolWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory) {
                     baselineWrapper {
-                        colorWrapper(color: color, textRepresentableEnvironment: textRepresentableEnvironment) {
+                        colorWrapper(textRepresentableEnvironment: textRepresentableEnvironment) {
                             SwiftUI.Text(verbatim: symbol.value)
                         }
                     }
                 }
             case .sfSymbol:
-                assertionFailure("image and sfSymbol text representation is available in iOS 14.0 or newer")
+                assertionFailure("Icon sfSymbol text representation is available in iOS 14.0 or newer")
                 return nil
         }
     }
 
-    private func colorWrapper(color: Color?, textRepresentableEnvironment: TextRepresentableEnvironment, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+    private func colorWrapper(textRepresentableEnvironment: TextRepresentableEnvironment, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
         text()
-            .foregroundColor(color ?? resolvedColor(textRepresentableEnvironment: textRepresentableEnvironment))
+            .foregroundColor(resolvedColor(textRepresentableEnvironment: textRepresentableEnvironment))
     }
 
     private func symbolWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
@@ -369,10 +311,15 @@ struct IconPreviews: PreviewProvider {
             Icon(.placeholder)
                 .textColor(.blueNormal)
                 .iconColor(.redNormal)
-            Icon(.skeleton)
-            Icon(.transparent)
+            Icon(.grid)
+                .opacity(0)
+                .padding(-1)
+                .overlay(Skeleton(.atomic(.rectangle)))
+            Icon(.grid)
+                .opacity(0)
                 .border(.inkNormal, width: .hairline)
-            Icon(nil) // Results in EmptyView
+            Icon("") // Results in EmptyView
+                .border(.inkNormal, width: .hairline)
         }
         .padding(.medium)
         .previewDisplayName()
@@ -491,22 +438,20 @@ struct IconPreviews: PreviewProvider {
                 Icon(.grid)
                     .textColor(nil)
                 Icon(.grid)
+                    .iconColor(.inkDark)
+                Icon(.grid)
                     .iconColor(.blueNormal)
                 Icon(.grid)
-                    .textColor(.blueNormal)
-                Icon(.grid)
-                Icon(.symbol(.grid))
             }
 
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
                 Icon(sfSymbol)
                     .textColor(nil)
                 Icon(sfSymbol)
+                    .iconColor(.inkDark)
+                Icon(sfSymbol)
                     .iconColor(.blueNormal)
                 Icon(sfSymbol)
-                    .textColor(.blueNormal)
-                Icon(sfSymbol)
-                Icon(.sfSymbol(sfSymbol))
             }
         }
         .textColor(.greenNormalHover)
@@ -519,8 +464,8 @@ struct IconPreviews: PreviewProvider {
             ForEach(flippableSymbols, id: \.value) { symbol in
                 HStack {
                     Text(String(describing: symbol), size: .small)
-                    Icon(.symbol(symbol))
-                    Icon(.symbol(symbol))
+                    Icon(symbol)
+                    Icon(symbol)
                         .environment(\.layoutDirection, .rightToLeft)
                 }
             }
@@ -560,7 +505,7 @@ struct IconPreviews: PreviewProvider {
         HStack(spacing: .xSmall) {
             HStack(alignment: alignment, spacing: .xxSmall) {
                 Group {
-                    Icon(.sfSymbol(sfSymbol), size: size)
+                    Icon(sfSymbol, size: size)
                     Icon(.informationCircle, size: size)
                     content()
                 }

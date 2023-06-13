@@ -36,7 +36,11 @@ struct StorybookSelect {
                 Select("Label (Empty Value)", prefix: .airplane, value: "", action: {})
                 Select("Label (No Value)", prefix: .airplane, value: nil, prompt: "Please select", action: {})
                 Select("Label", prefix: .phone, value: "Value", action: {})
-                Select("Label", prefix: .transparent, value: "Value", action: {})
+                Select("Label", value: "Value") {
+                    // No action
+                } prefix: {
+                    CountryFlag("us")
+                }
             }
 
             Group {

@@ -1,14 +1,14 @@
 import SwiftUI
 
 /// An icon-based bar button for suitable for actions inside toolbar or navigation bar.
-public struct BarButton: View {
+public struct BarButton<Icon: View>: View {
 
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    private let content: Icon.Content
-    private let size: Icon.Size
+    private let size: Orbit.Icon.Size
     private let alignment: HorizontalAlignment
     private let action: () -> Void
+    @ViewBuilder private let icon: Icon
 
     public var body: some View {
         SwiftUI.Button {
@@ -18,12 +18,12 @@ public struct BarButton: View {
 
             action()
         } label: {
-            Icon(content, size: size)
+            icon
                 .padding(.vertical, .xSmall)
                 .padding(horizontalEdges, .xSmall)
                 .contentShape(Rectangle())
         }
-        .buttonStyle(.barButton())
+        .buttonStyle(IconButtonStyle())
     }
 
     var horizontalEdges: Edge.Set {
@@ -34,38 +34,34 @@ public struct BarButton: View {
         }
     }
 
-    /// Creates Orbit BarButton component using the provided icon content.
+    /// Creates Orbit BarButton component.
     public init(
-        _ content: Icon.Content,
+        _ icon: Icon.Symbol,
         size: Icon.Size = .large,
         alignment: HorizontalAlignment = .center,
         action: @escaping () -> Void
+    ) where Icon == Orbit.Icon {
+        self.init(
+            size: size,
+            alignment: alignment
+        ) {
+            action()
+        } icon: {
+            Icon(icon, size: size)
+        }
+    }
+
+    /// Creates Orbit BarButton component with custom icon.
+    public init(
+        size: Orbit.Icon.Size = .large,
+        alignment: HorizontalAlignment = .center,
+        action: @escaping () -> Void,
+        @ViewBuilder icon: () -> Icon
     ) {
-        self.content = content
         self.size = size
         self.alignment = alignment
         self.action = action
-    }
-}
-
-// MARK: - Button Style
-extension BarButton {
-
-    struct ButtonStyle: SwiftUI.ButtonStyle {
-
-        func makeBody(configuration: Configuration) -> some View {
-            configuration.label
-                .opacity(configuration.isPressed ? 0.5 : 1)
-                .scaleEffect(configuration.isPressed ? 0.95 : 1)
-                .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
-        }
-    }
-}
-
-extension SwiftUI.ButtonStyle where Self == BarButton.ButtonStyle {
-
-    static func barButton() -> Self {
-        Self()
+        self.icon = icon()
     }
 }
 
@@ -95,10 +91,19 @@ struct BarButtonPreviews: PreviewProvider {
                     leading: HStack(spacing: 0) {
                         Group {
                             BarButton(.grid, alignment: .leading, action: {})
-                            BarButton(.symbol(.questionCircle, color: .blueDark), action: {})
-                            BarButton(.symbol(.questionCircle, color: .redNormal), action: {})
-                            BarButton(.sfSymbol("questionmark.circle.fill", color: .greenDark), size: .normal, action: {})
-                            BarButton(.transparent, action: {})
+                            BarButton(.questionCircle, action: {})
+                                .iconColor(.blueDark)
+                            BarButton {
+                                // No action
+                            } icon: {
+                                Icon("questionmark.circle.fill")
+                                    .iconColor(.greenDark)
+                            }
+                            BarButton {
+                                // No action
+                            } icon: {
+                                CountryFlag("cz", size: .large)
+                            }
                         }
                         .border(.cloudNormal.opacity(0.4))
                     }
@@ -106,8 +111,13 @@ struct BarButtonPreviews: PreviewProvider {
                 .navigationBarItems(
                     trailing: HStack(spacing: 0) {
                         Group {
-                            BarButton(.sfSymbol("square.and.arrow.up"), size: .normal, action: {})
-                                .textFontWeight(.medium)
+                            BarButton {
+                                // No action
+                            } icon: {
+                                Icon("square.and.arrow.up")
+                                    .fontWeight(.medium)
+                            }
+
                             BarButton(.shareIos, action: {})
                             BarButton(.grid, alignment: .trailing, action: {})
                         }

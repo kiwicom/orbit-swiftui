@@ -15,7 +15,7 @@ public struct List<Content: View>: View {
     }
 
     /// Creates Orbit List component, wrapping ListItem content.
-    public init(spacing: CGFloat = .xSmall, @ViewBuilder content: () -> Content) {
+    public init(spacing: CGFloat = .xxSmall, @ViewBuilder content: () -> Content) {
         self.spacing = spacing
         self.content = content()
     }
@@ -39,14 +39,16 @@ struct ListPreviews: PreviewProvider {
     static var standalone: some View {
         List {
             ListItem(listItemText)
-            ListItem(listItemText, style: .secondary)
-            ListItem(listItemText, spacing: 0, style: .secondary)
+            ListItem(listItemText, type: .secondary)
             ListItem(listItemText, icon: .circleSmall)
-            ListItem(listItemText, icon: .circleSmall, style: .secondary)
-            ListItem(listItemText, icon: .grid, iconSize: .small)
-            ListItem(listItemText, icon: .grid, iconSize: .normal, spacing: 0)
-            ListItem(listItemText, icon: .symbol(.check, color: .greenNormal))
-            ListItem(listItemText, icon: .none)
+            ListItem(listItemText, icon: .circleSmall, type: .secondary)
+            ListItem(listItemText) {
+                Icon(.grid, size: .small)
+            }
+            ListItem(listItemText, icon: .grid)
+            ListItem(listItemText, icon: .check)
+                .iconColor(.greenNormal)
+            ListItem(listItemText, icon: nil)
         }
         .previewDisplayName()
     }
@@ -66,13 +68,13 @@ struct ListPreviews: PreviewProvider {
             Separator()
 
             List {
-                ListItem(listItemText, style: .secondary)
-                ListItem(listItemText, style: .secondary)
+                ListItem(listItemText, type: .secondary)
+                ListItem(listItemText, type: .secondary)
             }
 
             List {
-                ListItem(listItemText, size: .large, style: .secondary)
-                ListItem(listItemText, size: .large, style: .secondary)
+                ListItem(listItemText, size: .large, type: .secondary)
+                ListItem(listItemText, size: .large, type: .secondary)
             }
         }
         .previewDisplayName()
@@ -84,9 +86,11 @@ struct ListPreviews: PreviewProvider {
                 ListItem(listItemText)
                 ListItem(listItemText, icon: .circleSmall)
                 ListItem(listItemText, icon: .grid)
-                ListItem(listItemText, icon: .symbol(.check, color: .greenNormal))
+                ListItem(listItemText, icon: .check)
+                    .iconColor(.greenNormal)
                 ListItem(listItemText, icon: .none)
-                ListItem(listItemText, icon: .symbol(.accountCircle, color: .orangeNormal))
+                ListItem(listItemText, icon: .accountCircle)
+                    .iconColor(.orangeNormal)
             }
 
             Separator()
@@ -103,9 +107,7 @@ struct ListPreviews: PreviewProvider {
 
             List(spacing: .small) {
                 ListItem(listItemText)
-                ListItem(listItemText, style: .secondary)
-                ListItem(listItemText, spacing: 0)
-                ListItem(listItemText, spacing: 12)
+                ListItem(listItemText, type: .secondary)
             }
         }
         .previewDisplayName()

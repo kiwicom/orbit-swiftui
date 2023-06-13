@@ -155,9 +155,11 @@ struct ScreenLayoutModifierPreviews: PreviewProvider {
 
     static var snapshot: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            Alert(AlertPreviews.title, description: AlertPreviews.description, icon: .grid, buttons: AlertPreviews.primaryAndSecondaryConfiguration) {
+            Alert(AlertPreviews.title, description: AlertPreviews.description, buttons: AlertPreviews.primaryAndSecondaryConfiguration) {
                 Illustration(.accommodation)
                     .padding(.horizontal, .xxLarge)
+            } icon: {
+                Icon(.grid)
             }
 
             Text(TextPreviews.multilineFormattedText)
@@ -167,7 +169,7 @@ struct ScreenLayoutModifierPreviews: PreviewProvider {
 
             Button("Button", icon: .grid, action: {})
 
-            Card("Card title", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink", action: {})) {
+            Card("Card title", description: "Card description", action: .buttonLink("ButtonLink", action: {})) {
                 TileGroup {
                     Tile("Tile 1", action: {})
                     Tile("Tile 2", action: {})

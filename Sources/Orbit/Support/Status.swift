@@ -1,8 +1,7 @@
 import SwiftUI
 
 /// Non-default status of a component.
-public enum Status {
-
+public enum Status: Equatable {
     case info
     case success
     case warning

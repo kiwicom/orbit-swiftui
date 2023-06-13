@@ -3,18 +3,20 @@ import SwiftUI
 /// Shows simple, non-interactive information in a circular badge.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/notificationbadge/)
-public struct NotificationBadge: View {
+public struct NotificationBadge<Content: View>: View {
 
     @Environment(\.status) private var status
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.textColor) private var textColor
 
-    let content: Content
-    let style: Badge.Style
+    private let style: BadgeStyle
+    @ViewBuilder private let content: Content
 
     public var body: some View {
         if isEmpty == false {
-            contentView
+            content
+                .textLinkColor(.custom(resolvedTextColor))
+                .frame(minWidth: minWidth)
                 .padding(.xxSmall) // = 24 height @ normal size
                 .textColor(resolvedTextColor)
                 .background(
@@ -22,18 +24,6 @@ public struct NotificationBadge: View {
                         .clipShape(Circle())
                 )
                 .fixedSize()
-        }
-    }
-
-    @ViewBuilder var contentView: some View {
-        switch content {
-            case .text(let text):
-                Text(text, size: .small)
-                    .fontWeight(.medium)
-                    .textLinkColor(.custom(resolvedTextColor))
-                    .frame(minWidth: minTextWidth)
-            case .icon(let icon):
-                Icon(icon, size: .small)
         }
     }
 
@@ -65,39 +55,55 @@ public struct NotificationBadge: View {
         }
     }
 
-    var minTextWidth: CGFloat {
+    var minWidth: CGFloat {
         Text.Size.small.lineHeight * sizeCategory.ratio
-    }
-
-    var isEmpty: Bool {
-        switch content {
-            case .text(let text):   return text.isEmpty
-            case .icon(let icon):   return icon.isEmpty
-        }
     }
 
     var defaultStatus: Status {
         status ?? .info
     }
+
+    /// Creates Orbit NotificationBadge component with custom content.
+    ///
+    /// - Parameters:
+    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    public init(
+        style: BadgeStyle = .status(nil),
+        @ViewBuilder content: () -> Content
+    ) {
+        self.style = style
+        self.content = content()
+    }
 }
 
 // MARK: - Inits
 public extension NotificationBadge {
-    
+
     /// Creates Orbit NotificationBadge component containing text.
     ///
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
-    init(_ label: String, style: Badge.Style = .status(nil)) {
-        self.init(content: .text(label), style: style)
+    init(
+        _ label: String,
+        style: BadgeStyle = .status(nil)
+    ) where Content == Text {
+        self.init(style: style) {
+            Text(label, size: .small)
+                .fontWeight(.medium)
+        }
     }
 
-    /// Creates Orbit NotificationBadge component containing an icon.
+    /// Creates Orbit NotificationBadge component containing icon.
     ///
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
-    init(_ icon: Icon.Content, style: Badge.Style = .status(nil)) {
-        self.init(content: .icon(icon), style: style)
+    init(
+        _ icon: Icon.Symbol,
+        style: BadgeStyle = .status(nil)
+    ) where Content == Icon {
+        self.init(style: style) {
+            Icon(icon, size: .small)
+        }
     }
 }
 
@@ -105,7 +111,7 @@ public extension NotificationBadge {
 public extension NotificationBadge {
 
     enum Content {
-        case icon(Icon.Content)
+        case icon(Icon.Symbol)
         case text(String)
     }
 }
@@ -172,23 +178,28 @@ struct NotificationBadgePreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .xLarge) {
             HStack(spacing: .small) {
                 NotificationBadge(
-                    .symbol(.airplane, color: .pink),
+                    .airplane,
                     style: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
                         backgroundColor: .whiteNormal
                     )
                 )
+                .iconColor(.pink)
 
-                NotificationBadge(.transparent)
-                NotificationBadge(.sfSymbol("ant.fill"))
+                NotificationBadge {
+                    CountryFlag("us")
+                }
+                NotificationBadge {
+                    Icon("ant.fill")
+                }
             }
         }
         .padding(.medium)
         .previewDisplayName()
     }
 
-    static func badges(_ style: Badge.Style) -> some View {
+    static func badges(_ style: BadgeStyle) -> some View {
         HStack(spacing: .medium) {
             NotificationBadge(.grid, style: style)
             NotificationBadge("1", style: style)

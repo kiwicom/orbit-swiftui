@@ -33,22 +33,27 @@ struct StorybookNotificationBadge {
         VStack(alignment: .leading, spacing: .xLarge) {
             HStack(spacing: .small) {
                 NotificationBadge(
-                    .symbol(.airplane, color: .pink),
+                    .airplane,
                     style: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
                         backgroundColor: .whiteNormal
                     )
                 )
+                .iconColor(.pink)
 
-                NotificationBadge(.transparent)
-                NotificationBadge(.sfSymbol("ant.fill"))
+                NotificationBadge {
+                    CountryFlag("us")
+                }
+                NotificationBadge {
+                    Icon("ant.fill")
+                }
             }
         }
         .previewDisplayName()
     }
 
-    static func badges(_ style: Badge.Style) -> some View {
+    static func badges(_ style: BadgeStyle) -> some View {
         HStack(spacing: .medium) {
             NotificationBadge(.grid, style: style)
             NotificationBadge("1", style: style)

@@ -29,8 +29,8 @@ struct TextConcatenationPreviews: PreviewProvider {
         (
         Heading("Hanoi ", style: .title1)
             + Icon(.grid, size: .xLarge)
-            + Icon(.symbol(.grid, color: .redNormal), size: .small)
-                .iconColor(.blueDark)
+            + Icon(.grid, size: .small)
+                .iconColor(.redNormal)
             + Icon(.grid, size: .small)
                 .iconColor(.blueDark)
             + Heading(" San Pedro de Alcantara", style: .title1)
@@ -59,7 +59,6 @@ struct TextConcatenationPreviews: PreviewProvider {
                 " <ref>Text</ref> with <strong>formatting</strong>",
                 size: .small
             )
-
             + Icon(.check, size: .small)
                 .iconColor(.greenDark)
         )

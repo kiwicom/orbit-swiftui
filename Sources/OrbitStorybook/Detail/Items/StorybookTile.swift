@@ -16,7 +16,9 @@ struct StorybookTile {
             Tile(title, icon: .airplane, action: {})
             Tile(title, description: description, action: {})
             Tile(title, description: description, icon: .airplane, action: {})
-            Tile(action: {}) {
+            Tile {
+                // No action
+            } content: {
                 contentPlaceholder
             }
         }
@@ -28,16 +30,29 @@ struct StorybookTile {
             Tile("Title with very very very very very long multiline text", description: descriptionMultiline, icon: .airplane, action: {}) {
                 contentPlaceholder
             }
-            Tile(title, description: description, icon: .symbol(.airplane, color: .blueNormal), action: {})
-            Tile("SF Symbol", description: description, icon: .sfSymbol("info.circle.fill"), action: {})
+            Tile(title, description: description, icon: .airplane, action: {})
+                .iconColor(.blueNormal)
+            Tile("SF Symbol", description: description) {
+                // No action
+            } icon: {
+                Icon("info.circle.fill")
+            }
                 .status(.critical)
-            Tile("Country Flag", description: description, icon: .transparent, disclosure: .buttonLink("Action", style: .primary), action: {})
-            Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .critical), action: {})
+            Tile("Country Flag", description: description, disclosure: .buttonLink("Action", type: .primary)) {
+                // No action
+            } icon: {
+                CountryFlag("us")
+            }
+            Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", type: .critical), action: {})
             Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid), action: {})
-            Tile(disclosure: .none, action: {}) {
+            Tile(disclosure: .none) {
+                // No action
+            } content: {
                 contentPlaceholder
             }
-            Tile("Tile with custom content", disclosure: .none, action: {}) {
+            Tile("Tile with custom content", disclosure: .none) {
+                // No action
+            } content: {
                 contentPlaceholder
             }
             Tile(

@@ -4,21 +4,18 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tag/)
 /// - Important: Component can expand horizontally by using `idealSize` modifier.
-public struct Tag: View {
-
-    public static let horizontalPadding: CGFloat = .xSmall
-    public static let verticalPadding: CGFloat = 6 // = 32 height @ normal size text size
+public struct Tag<Icon: View>: View {
 
     @Environment(\.idealSize) private var idealSize
     @Environment(\.textColor) private var textColor
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    let label: String
-    let icon: Icon.Content?
-    let style: Style
-    let isFocused: Bool
-    let isActive: Bool
-    @Binding var isSelected: Bool
+    private let label: String
+    private let style: TagStyle
+    private let isFocused: Bool
+    private let isActive: Bool
+    @Binding private var isSelected: Bool
+    @ViewBuilder private let icon: Icon
 
     public var body: some View {
         if isEmpty == false {
@@ -37,12 +34,13 @@ public struct Tag: View {
                         }
 
                         HStack(spacing: 6) {
-                            Icon(icon, size: Text.Size.normal.iconSize)
-                                .fontWeight(.medium)
+                            icon
+                                .font(.system(size: Text.Size.normal.iconSize.value))
+                                .foregroundColor(textColor ?? labelColor)
                             
                             Text(label)
-                                .fontWeight(.medium)
                         }
+                        .textFontWeight(.medium)
                         .fixedSize(horizontal: true, vertical: false)
 
                         if idealSize.horizontal == false {
@@ -50,11 +48,15 @@ public struct Tag: View {
                         }
                     }
                     .textColor(textColor ?? labelColor)
-                    .padding(.vertical, Self.verticalPadding)
                 }
             )
             .buttonStyle(
-                OrbitStyle(style: style, isFocused: isFocused, isSelected: isSelected, isActive: isActive)
+                TagButtonStyle(
+                    style: style,
+                    isFocused: isFocused,
+                    isSelected: isSelected,
+                    isActive: isActive
+                )
             )
             .accessibility(addTraits: isSelected ? .isSelected : [])
         }
@@ -69,115 +71,133 @@ public struct Tag: View {
     }
 
     var isEmpty: Bool {
-        label.isEmpty && isIconEmpty
-    }
-
-    var isIconEmpty: Bool {
-        icon?.isEmpty ?? true
+        label.isEmpty && icon.isEmpty
     }
 }
 
 // MARK: - Inits
 public extension Tag {
-    
+
+    /// Creates Orbit Tag component with custom icon.
+    init(
+        _ label: String = "",
+        style: TagStyle = .default,
+        isFocused: Bool = true,
+        isActive: Bool = false,
+        isSelected: Binding<Bool>,
+        @ViewBuilder icon: () -> Icon
+    ) {
+        self.label = label
+        self.style = style
+        self.isFocused = isFocused
+        self.isActive = isActive
+        self._isSelected = isSelected
+        self.icon = icon()
+    }
+
     /// Creates Orbit Tag component.
     init(
         _ label: String = "",
-        icon: Icon.Content? = nil,
-        style: Style = .default,
+        icon: Icon.Symbol? = nil,
+        style: TagStyle = .default,
         isFocused: Bool = true,
         isActive: Bool = false,
         isSelected: Binding<Bool>
-    ) {
+    ) where Icon == Orbit.Icon {
         self.init(
-            label: label,
-            icon: icon,
+            label,
             style: style,
             isFocused: isFocused,
             isActive: isActive,
             isSelected: isSelected
-        )
+        ) {
+            Icon(icon, size: Text.Size.normal.iconSize)
+        }
     }
 }
 
 // MARK: - Types
-extension Tag {
 
-    public enum Style: Equatable {
-        case `default`
-        case removable(action: () -> Void)
+public enum TagStyle: Equatable {
 
-        public static func == (lhs: Tag.Style, rhs: Tag.Style) -> Bool {
-            switch (lhs, rhs) {
-                case (.default, .default):      return true
-                case (.removable, .removable):  return true
-                default:                        return false
+    case `default`
+    case removable(action: () -> Void)
+
+    public static func == (lhs: TagStyle, rhs: TagStyle) -> Bool {
+        switch (lhs, rhs) {
+            case (.default, .default):      return true
+            case (.removable, .removable):  return true
+            default:                        return false
+        }
+    }
+}
+
+public struct TagButtonStyle: ButtonStyle {
+
+    public static let horizontalPadding: CGFloat = .xSmall
+    public static let verticalPadding: CGFloat = 6 // = 32 height @ normal size text size
+
+    let style: TagStyle
+    let isFocused: Bool
+    let isSelected: Bool
+    let isActive: Bool
+
+    public func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: .xSmall) {
+            configuration.label
+                .lineLimit(1)
+
+            if case .removable(let removeAction) = style {
+                Orbit.Icon(.closeCircle, size: .small)
+                    .iconColor(iconColor(isPressed: configuration.isPressed))
+                    .onTapGesture(perform: removeAction)
+                    .accessibility(addTraits: .isButton)
             }
+        }
+        .padding(.horizontal, Self.horizontalPadding)
+        .padding(.vertical, Self.verticalPadding)
+        .background(
+            backgroundColor(isPressed: configuration.isPressed)
+                .animation(nil)
+        )
+        .cornerRadius(BorderRadius.default)
+    }
+
+    /// Creates ButtonStyle matching Orbit Tag component.
+    public init(
+        style: TagStyle,
+        isFocused: Bool,
+        isSelected: Bool,
+        isActive: Bool = false
+    ) {
+        self.style = style
+        self.isFocused = isFocused
+        self.isSelected = isSelected
+        self.isActive = isActive
+    }
+
+    func backgroundColor(isPressed: Bool) -> Color {
+        switch (isFocused, isSelected, isPressed || isActive) {
+            case (true, false, false):      return .blueLight
+            case (true, true, false):       return .blueNormal
+            case (false, false, false):     return .cloudNormal
+            case (false, true, false):      return .inkLightHover
+            // Pressed
+            case (true, false, true):       return .blueLightActive
+            case (true, true, true):        return .blueNormalActive
+            case (false, false, true):      return .cloudNormalActive
+            case (false, true, true):       return .inkNormalHover
         }
     }
 
-    public struct OrbitStyle: ButtonStyle {
-        let style: Style
-        let isFocused: Bool
-        let isSelected: Bool
-        let isActive: Bool
-
-        public func makeBody(configuration: Configuration) -> some View {
-            HStack(spacing: .xSmall) {
-                configuration.label
-                    .lineLimit(1)
-
-                if case .removable(let removeAction) = style {
-                    Icon(.closeCircle, size: .small)
-                        .iconColor(iconColor(isPressed: configuration.isPressed))
-                        .onTapGesture(perform: removeAction)
-                        .accessibility(addTraits: .isButton)
-                }
-            }
-            .padding(.horizontal, Tag.horizontalPadding)
-            .background(
-                backgroundColor(isPressed: configuration.isPressed)
-                    .animation(nil)
-            )
-            .cornerRadius(BorderRadius.default)
-        }
-
-        /// Creates ButtonStyle matching Orbit Tag component.
-        public init(
-            style: Style,
-            isFocused: Bool,
-            isSelected: Bool,
-            isActive: Bool = false
-        ) {
-            self.style = style
-            self.isFocused = isFocused
-            self.isSelected = isSelected
-            self.isActive = isActive
-        }
-
-        func backgroundColor(isPressed: Bool) -> Color {
-            switch (isFocused, isSelected, isPressed || isActive) {
-                case (true, false, false):      return .blueLight
-                case (true, true, false):       return .blueNormal
-                case (false, false, false):     return .cloudNormal
-                case (false, true, false):      return .inkLightHover
-                // Pressed
-                case (true, false, true):       return .blueLightActive
-                case (true, true, true):        return .blueNormalActive
-                case (false, false, true):      return .cloudNormalActive
-                case (false, true, true):       return .inkNormalHover
-            }
-        }
-
-        func iconColor(isPressed: Bool) -> Color {
-            switch (isSelected, isFocused, isPressed || isActive) {
-                case (true, _, _):              return .whiteNormal
-                case (false, true, false):      return .blueDarker.opacity(0.3)
-                case (false, false, false):     return .inkDark.opacity(0.3)
-                // Pressed
-                case (false, true, true):       return .blueDarker
-                case (false, false, true):      return .inkDark
-            }
+    func iconColor(isPressed: Bool) -> Color {
+        switch (isSelected, isFocused, isPressed || isActive) {
+            case (true, _, _):              return .whiteNormal
+            case (false, true, false):      return .blueDarker.opacity(0.3)
+            case (false, false, false):     return .inkDark.opacity(0.3)
+            // Pressed
+            case (false, true, true):       return .blueDarker
+            case (false, false, true):      return .inkDark
         }
     }
 }
@@ -251,7 +271,7 @@ struct TagPreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static func stack(style: Tag.Style, isFocused: Bool, idealWidth: Bool? = nil) -> some View {
+    static func stack(style: TagStyle, isFocused: Bool, idealWidth: Bool? = nil) -> some View {
         HStack(spacing: .medium) {
             VStack(spacing: .small) {
                 tag(style: style, isFocused: isFocused, isSelected: false, isActive: false)
@@ -266,7 +286,7 @@ struct TagPreviews: PreviewProvider {
         .idealSize(horizontal: idealWidth)
     }
 
-    static func tag(style: Tag.Style, isFocused: Bool, isSelected: Bool, isActive: Bool) -> some View {
+    static func tag(style: TagStyle, isFocused: Bool, isSelected: Bool, isActive: Bool) -> some View {
         StateWrapper((style, isSelected, true)) { state in
             Tag(
                 label,

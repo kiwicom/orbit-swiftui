@@ -13,7 +13,7 @@ struct StorybookCard {
     }
 
     static var standalone: some View {
-        Card("Card title", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink", action: {})) {
+        Card("Card title", description: "Card description", action: .buttonLink("ButtonLink", action: {})) {
             contentPlaceholder
             contentPlaceholder
         }
@@ -57,7 +57,7 @@ struct StorybookCard {
     }
 
     static var cardWithTiles: some View {
-        Card("Card with mixed content", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink", action: {})) {
+        Card("Card with mixed content", description: "Card description", action: .buttonLink("ButtonLink", action: {})) {
             contentPlaceholder
                 .frame(height: 30).clipped()
             Tile("Tile", action: {})
@@ -103,7 +103,11 @@ struct StorybookCard {
         ) {
             VStack(spacing: 0) {
                 ListChoice("ListChoice", action: {})
-                ListChoice("ListChoice", icon: .transparent, action: {})
+                ListChoice("ListChoice") {
+                    // No action
+                } icon: {
+                    CountryFlag("us")
+                }
                 ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false, action: {})
             }
             .padding(.top, .xSmall)

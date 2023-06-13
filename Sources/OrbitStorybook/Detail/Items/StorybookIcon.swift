@@ -58,10 +58,6 @@ struct StorybookIcon {
                     Icon(.informationCircle, size: .small)
                     Icon(.informationCircle, size: .small)
                         .baselineOffset(.xxxSmall)
-
-                    Icon(.transparent, size: .small)
-                    Icon(.transparent, size: .small)
-                        .baselineOffset(.xxxSmall)
                 }
                 .border(.cloudLightActive, width: .hairline)
             }
@@ -98,18 +94,12 @@ struct StorybookIcon {
                     Icon(.grid)
                     Icon(.grid)
                         .textColor(.blueNormal)
-                    Icon(.grid)
-                    Icon(.symbol(.grid))
-                    Icon(.symbol(.grid, color: nil))
                 }
 
                 HStack(alignment: .firstTextBaseline) {
                     Icon(sfSymbol)
                     Icon(sfSymbol)
                         .textColor(.blueNormal)
-                    Icon(sfSymbol)
-                    Icon(.sfSymbol(sfSymbol))
-                    Icon(.sfSymbol(sfSymbol))
                 }
             }
             .textColor(.greenNormalHover)
@@ -148,7 +138,6 @@ struct StorybookIcon {
         HStack(spacing: .xSmall) {
             HStack(alignment: alignment, spacing: .xxSmall) {
                 Group {
-                    Icon(.transparent, size: size)
                     Icon(sfSymbol, size: size)
                     Icon(.informationCircle, size: size)
                     content()

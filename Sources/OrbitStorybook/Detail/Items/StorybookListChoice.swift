@@ -24,12 +24,12 @@ struct StorybookListChoice {
             ListChoice(title, description: description, icon: .airplane, value: value, action: {})
             ListChoice(title, description: description, action: {}) {
                 EmptyView()
-            } headerContent: {
+            } header: {
                 badge
             }
             ListChoice(title, description: description, icon: .grid, action: {}) {
                 EmptyView()
-            } headerContent: {
+            } header: {
                 badge
             }
         }
@@ -49,7 +49,7 @@ struct StorybookListChoice {
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: addButton, action: {})
             ListChoice(title, description: description, icon: .airplane, disclosure: removeButton, action: {}) {
                 contentPlaceholder
-            } headerContent: {
+            } header: {
                 headerContent
             }
         }
@@ -71,7 +71,7 @@ struct StorybookListChoice {
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: uncheckedCheckbox, action: {})
             ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox, action: {}) {
                 contentPlaceholder
-            } headerContent: {
+            } header: {
                 headerContent
             }
         }
@@ -91,17 +91,22 @@ struct StorybookListChoice {
             ListChoice(title, description: description, disclosure: .none, action: {})
             ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false, action: {})
             ListChoice(title, icon: .airplane, disclosure: .none, action: {})
-            ListChoice(title, icon: .symbol(.airplane, color: .blueNormal), disclosure: .none, action: {})
-            ListChoice(title, description: description, icon: .transparent, disclosure: .none, action: {})
+            ListChoice(title, icon: .airplane, disclosure: .none, action: {})
+                .iconColor(.blueNormal)
+            ListChoice(title, description: description, disclosure: .none) {
+                // No action
+            } icon: {
+                CountryFlag("us")
+            }
             ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none, action: {})
             ListChoice(title, description: description, disclosure: .none, action: {}) {
                 EmptyView()
-            } headerContent: {
+            } header: {
                 badge
             }
             ListChoice(disclosure: .none, action: {}) {
                 contentPlaceholder
-            } headerContent: {
+            } header: {
                 headerContent
             }
         }
@@ -125,7 +130,7 @@ struct StorybookListChoice {
                 action: {}
             ) {
                 contentPlaceholder
-            } headerContent: {
+            } header: {
                 headerContent
             }
         }

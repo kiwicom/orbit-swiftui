@@ -35,32 +35,40 @@ struct StorybookButton {
 
     @ViewBuilder static var mix: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
-            Button("Button with SF Symbol", icon: .sfSymbol("info.circle.fill"), action: {})
-            Button("Button with Flag", icon: .transparent, action: {})
+            Button("Button with SF Symbol") {
+                // No action
+            } icon: {
+                Icon("info.circle.fill")
+            }
+            Button("Button with Flag") {
+                // No action
+            } icon: {
+                CountryFlag("us")
+            }
         }
         .previewDisplayName()
     }
 
-    @ViewBuilder static func buttons(_ style: Orbit.Button.Style) -> some View {
+    @ViewBuilder static func buttons(_ type: ButtonType) -> some View {
         VStack(spacing: .small) {
             HStack(spacing: .small) {
-                Button("Label", style: style, action: {})
-                Button("Label", icon: .grid, style: style, action: {})
+                Button("Label", type: type, action: {})
+                Button("Label", icon: .grid, type: type, action: {})
             }
             HStack(spacing: .small) {
-                Button("Label", disclosureIcon: .chevronForward, style: style, action: {})
-                Button("Label", icon: .grid, disclosureIcon: .chevronForward, style: style, action: {})
+                Button("Label", disclosureIcon: .chevronForward, type: type, action: {})
+                Button("Label", icon: .grid, disclosureIcon: .chevronForward, type: type, action: {})
             }
             HStack(spacing: .small) {
-                Button("Label", style: style, action: {})
+                Button("Label", type: type, action: {})
                     .idealSize()
-                Button(.grid, style: style, action: {})
+                Button(.grid, type: type, action: {})
                 Spacer()
             }
             HStack(spacing: .small) {
-                Button("Label", style: style, size: .small, action: {})
+                Button("Label", type: type, size: .small, action: {})
                     .idealSize()
-                Button(.grid, style: style, size: .small, action: {})
+                Button(.grid, type: type, size: .small, action: {})
                 Spacer()
             }
         }
@@ -73,13 +81,13 @@ struct StorybookButton {
         }
     }
 
-    @ViewBuilder static func statusButtons(_ style: Orbit.Button.Style) -> some View {
+    @ViewBuilder static func statusButtons(_ type: ButtonType) -> some View {
         HStack(spacing: .xSmall) {
             Group {
-                Button("Label", style: style, size: .small, action: {})
-                Button("Label", icon: .grid, disclosureIcon: .chevronForward, style: style, size: .small, action: {})
-                Button("Label", disclosureIcon: .chevronForward, style: style, size: .small, action: {})
-                Button(.grid, style: style, size: .small, action: {})
+                Button("Label", type: type, size: .small, action: {})
+                Button("Label", icon: .grid, disclosureIcon: .chevronForward, type: type, size: .small, action: {})
+                Button("Label", disclosureIcon: .chevronForward, type: type, size: .small, action: {})
+                Button(.grid, type: type, size: .small, action: {})
             }
             .idealSize()
 

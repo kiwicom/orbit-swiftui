@@ -6,100 +6,82 @@ import SwiftUI
 ///   - ``List``
 ///
 /// - [Orbit](https://orbit.kiwi/components/structure/list/)
-public struct ListItem: View {
-
-    public static let defaultSpacing: CGFloat = .xSmall
+public struct ListItem<Icon: View>: View {
 
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.textColor) private var textColor
 
     private let text: String
-    private let icon: Icon.Content?
-    private let iconSize: Icon.Size?
     private let size: Text.Size
-    private let spacing: CGFloat
-    private let style: ListItem.Style
-    private let isDefault: Bool
+    private let type: ListItemType
+    @ViewBuilder private let icon: Icon
 
     public var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: spacing) {
-            Icon(icon, size: iconSize ?? size.iconSize)
-                .padding(.leading, iconPadding)
+        HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+            if icon.isEmpty {
+                Orbit.Icon(.placeholder, size: size.iconSize)
+                    .opacity(0)
+            } else {
+                icon
+            }
 
             Text(text, size: size)
-                .fontWeight(style.weight)
         }
-        .textColor(textColor ?? style.textColor)
-        .padding(.leading, Self.defaultSpacing - spacing)
-    }
-
-    var iconPadding: CGFloat {
-        guard isDefault else { return 0 }
-
-        return sizeCategory.ratio * size.iconSize.value / 4
+        .textColor(textColor ?? type.textColor)
     }
 }
 
 // MARK: - Inits
 public extension ListItem {
 
-    /// Creates Orbit ListItem component using the provided icon.
+    /// Creates Orbit ListItem component.
     init(
         _ text: String = "",
-        icon: Icon.Content?,
+        icon: Icon.Symbol? = .circleSmall,
         size: Text.Size = .normal,
-        iconSize: Icon.Size? = nil,
-        spacing: CGFloat = .xSmall,
-        style: ListItem.Style = .primary
-    ) {
-        self.text = text
-        self.icon = icon
-        self.size = size
-        self.iconSize = iconSize
-        self.spacing = spacing
-        self.style = style
-        self.isDefault = false
+        type: ListItemType = .primary
+    ) where Icon == Orbit.Icon {
+        self.init(
+            text,
+            size: size,
+            type: type
+        ) {
+            Icon(icon, size: size.iconSize)
+        }
     }
 
-    /// Creates Orbit ListItem component with default appearance, using the `circleSmall` icon.
+    /// Creates Orbit ListItem component.
     init(
         _ text: String = "",
         size: Text.Size = .normal,
-        spacing: CGFloat = .xxSmall,
-        style: ListItem.Style = .primary
+        type: ListItemType = .primary,
+        @ViewBuilder icon: () -> Icon
     ) {
         self.text = text
-        self.icon = .symbol(.circleSmall)
         self.size = size
-        self.iconSize = .custom(size.value)
-        self.spacing = spacing
-        self.style = style
-        self.isDefault = true
+        self.type = type
+        self.icon = icon()
     }
 }
 
 // MARK: - Types
-public extension ListItem {
 
-    enum Style {
-        case primary
-        case secondary
-        case custom(color: Color = .inkDark, weight: Font.Weight = .regular)
+public enum ListItemType {
 
-        public var textColor: Color {
-            switch self {
-                case .primary:                  return .inkDark
-                case .secondary:                return .inkNormal
-                case .custom(let color, _):     return color
-            }
+    case primary
+    case secondary
+
+    public var textColor: Color {
+        switch self {
+            case .primary:                  return .inkDark
+            case .secondary:                return .inkNormal
         }
-        
-        public var weight: Font.Weight {
-            switch self {
-                case .primary:                  return .regular
-                case .secondary:                return .regular
-                case .custom(_, let weight):    return weight
-            }
+    }
+
+    public var weight: Font.Weight {
+        switch self {
+            case .primary:                  return .regular
+            case .secondary:                return .regular
         }
     }
 }
@@ -124,12 +106,12 @@ struct ListItemPreviews: PreviewProvider {
 
     static var sizes: some View {
         List(spacing: .medium) {
-            ListItem("ListItem - small", size: .small, style: .primary)
-            ListItem("ListItem - small, secondary", size: .small, style: .secondary)
+            ListItem("ListItem - small", size: .small, type: .primary)
+            ListItem("ListItem - small, secondary", size: .small, type: .secondary)
             ListItem("ListItem - normal")
-            ListItem("ListItem - normal, secondary", size: .normal, style: .secondary)
-            ListItem("ListItem - large", size: .large, style: .primary)
-            ListItem("ListItem - large, secondary", size: .large, style: .secondary)
+            ListItem("ListItem - normal, secondary", size: .normal, type: .secondary)
+            ListItem("ListItem - large", size: .large, type: .primary)
+            ListItem("ListItem - large, secondary", size: .large, type: .secondary)
         }
         .padding(.medium)
         .previewDisplayName()
@@ -137,11 +119,14 @@ struct ListItemPreviews: PreviewProvider {
     
     static var links: some View {
         List {
-            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, size: .small, style: .secondary)
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, size: .small, type: .secondary)
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#)
-            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, style: .custom(color: .greenNormal))
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#)
+                .textColor(.greenNormal)
                 .textLinkColor(.custom(.orangeDark))
-            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, icon: .symbol(.circleSmall, color: .blueNormal), style: .custom(color: .greenNormal))
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, icon: .circleSmall)
+                .iconColor(.blueNormal)
+                .textColor(.greenNormal)
         }
         .padding(.medium)
         .previewDisplayName()
@@ -150,14 +135,23 @@ struct ListItemPreviews: PreviewProvider {
     static var mix: some View {
         List {
             ListItem("ListItem", size: .xLarge)
-            ListItem("ListItem with custom icon", icon: .symbol(.check, color: .greenNormal), size: .xLarge)
+            ListItem("ListItem with custom icon", icon: .check, size: .xLarge)
+                .textColor(.greenNormal)
             ListItem("ListItem")
-            ListItem("ListItem with custom icon", icon: .symbol(.check, color: .greenNormal))
-            ListItem("ListItem with custom icon", icon: .check, spacing: .xxxSmall)
-            ListItem("ListItem with SF Symbol", icon: .sfSymbol("info.circle.fill"))
-            ListItem("ListItem with SF Symbol", icon: .sfSymbol("info.circle.fill", color: .blueDark))
-            ListItem("ListItem with flag", icon: .transparent)
-            ListItem("ListItem with custom icon", icon: .check, style: .custom(color: .blueDark))
+            ListItem("ListItem with custom icon", icon: .check)
+                .textColor(.greenNormal)
+            ListItem("ListItem with SF Symbol") {
+                Icon("info.circle.fill")
+            }
+            ListItem("ListItem with SF Symbol") {
+                Icon("info.circle.fill")
+                    .iconColor(.blueDark)
+            }
+            ListItem("ListItem with flag") {
+                CountryFlag("cz")
+            }
+            ListItem("ListItem with custom icon")
+                .textColor(.blueDark)
             ListItem("ListItem with no icon", icon: .none)
         }
         .padding(.medium)

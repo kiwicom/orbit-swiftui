@@ -54,11 +54,25 @@ struct StorybookInputField {
 
     static var mix: some View {
         VStack(spacing: .medium) {
-            inputField("Empty", value: "", prefix: .symbol(.grid, color: .blueDark), suffix: .symbol(.grid, color: .blueDark))
-            inputField("Disabled, Empty", value: "", prefix: .transparent, suffix: .transparent)
+            inputField("Empty", value: "", prefix: .grid, suffix: .grid)
+                .iconColor(.blueDark)
+
+            StateWrapper("") { value in
+                InputField("Disabled, Empty", value: value) {
+                    CountryFlag("cz")
+                } suffix: {
+                    CountryFlag("us")
+                }
                 .disabled(true)
-            inputField("Disabled", value: "Disabled Value", prefix: .sfSymbol("info.circle.fill"), suffix: .sfSymbol("info.circle.fill"))
-                .disabled(true)
+            }
+
+            InputField("Disabled", value: .constant("Disabled Value")) {
+                Icon("info.circle.fill")
+            } suffix: {
+                Icon("info.circle.fill")
+            }
+            .disabled(true)
+
             inputField("Modified from previous state", value: "Modified value", state: .modified)
             inputField("Focused", value: "Focused / Help", message: .help("Help message"))
             inputField(
@@ -73,7 +87,12 @@ struct StorybookInputField {
 
             HStack(spacing: .medium) {
                 inputField(value: "No label")
-                inputField(value: "Flag prefix", prefix: .transparent)
+
+                StateWrapper("Flag prefix") { value in
+                    InputField(value: value) {
+                        CountryFlag("cz")
+                    }
+                }
             }
         }
         .previewDisplayName()
@@ -82,8 +101,8 @@ struct StorybookInputField {
     static func inputField(
         _ label: String = label,
         value: String = value,
-        prefix: Icon.Content? = .grid,
-        suffix: Icon.Content? = .grid,
+        prefix: Icon.Symbol? = .grid,
+        suffix: Icon.Symbol? = .grid,
         prompt: String = prompt,
         state: InputState = .default,
         isSecure: Bool = false,

@@ -6,14 +6,14 @@ struct StorybookButtonLink {
     static var basic: some View {
         HStack(spacing: .xxLarge) {
             VStack(alignment: .leading, spacing: .large) {
-                ButtonLink("ButtonLink Primary", style: .primary, action: {})
-                ButtonLink("ButtonLink Secondary", style: .secondary, action: {})
-                ButtonLink("ButtonLink Critical", style: .critical, action: {})
+                ButtonLink("ButtonLink Primary", type: .primary, action: {})
+                ButtonLink("ButtonLink Secondary", type: .secondary, action: {})
+                ButtonLink("ButtonLink Critical", type: .critical, action: {})
             }
             VStack(alignment: .leading, spacing: .large) {
-                ButtonLink("ButtonLink Primary", style: .primary, icon: .accommodation, action: {})
-                ButtonLink("ButtonLink Secondary", style: .secondary, icon: .airplaneDown, action: {})
-                ButtonLink("ButtonLink Critical", style: .critical, icon: .alertCircle, action: {})
+                ButtonLink("ButtonLink Primary", type: .primary, icon: .accommodation, action: {})
+                ButtonLink("ButtonLink Secondary", type: .secondary, icon: .airplaneDown, action: {})
+                ButtonLink("ButtonLink Critical", type: .critical, icon: .alertCircle, action: {})
             }
         }
         .previewDisplayName()
@@ -21,10 +21,10 @@ struct StorybookButtonLink {
 
     static var status: some View {
         VStack(alignment: .leading, spacing: .large) {
-            ButtonLink("ButtonLink Info", style: .status(.info), icon: .informationCircle, action: {})
-            ButtonLink("ButtonLink Success", style: .status(.success), icon: .checkCircle, action: {})
-            ButtonLink("ButtonLink Warning", style: .status(.warning), icon: .alert, action: {})
-            ButtonLink("ButtonLink Critical", style: .status(.critical), icon: .alertCircle, action: {})
+            ButtonLink("ButtonLink Info", type: .status(.info), icon: .informationCircle, action: {})
+            ButtonLink("ButtonLink Success", type: .status(.success), icon: .checkCircle, action: {})
+            ButtonLink("ButtonLink Warning", type: .status(.warning), icon: .alert, action: {})
+            ButtonLink("ButtonLink Critical", type: .status(.critical), icon: .alertCircle, action: {})
         }
         .previewDisplayName()
     }
