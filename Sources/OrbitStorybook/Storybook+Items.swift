@@ -88,6 +88,7 @@ extension Storybook {
                 case .choiceTile:           return ["Basic", "Centered", "Mix"]
                 case .collapse:             return ["Basic"]
                 case .countryFlag:          return ["Basic"]
+                case .coupon:               return ["Basic"]
                 case .dialog:               return ["Basic"]
                 case .emptyState:           return ["Basic"]
                 case .heading:              return ["Basic"]
@@ -137,6 +138,7 @@ extension Storybook {
                 case .choiceTile:           return "rectangle.badge.checkmark"
                 case .collapse:             return "chevron.down"
                 case .countryFlag:          return "flag.fill"
+                case .coupon:               return "textformat.abc.dottedunderline"
                 case .dialog:               return "text.bubble.fill"
                 case .emptyState:           return "icloud.slash"
                 case .heading:              return "textformat.size.larger"

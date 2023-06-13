@@ -18,6 +18,8 @@
   ios: Released
 - component: CountryFlag
   ios: Released
+- component: Coupon
+  ios: Released
 - component: Dialog
   ios: Released
 - component: EmptyState
