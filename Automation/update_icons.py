@@ -23,7 +23,7 @@ source_header = '''
 
 source_template = source_header + '''public extension Icon {{
 
-    enum Symbol: CaseIterable {{
+    enum Symbol: CaseIterable, Equatable {{
 {cases}
 
         public var value: String {{
@@ -32,12 +32,6 @@ source_template = source_header + '''public extension Icon {{
             }}
         }}
     }}
-}}
-'''
-
-source_extensions_template = source_header + '''public extension Icon.Content {{
-
-{values}
 }}
 '''
 
@@ -72,7 +66,6 @@ if __name__ == "__main__":
     
     icons_folder = iconsFolderPath()
     icons_swift_path = icons_folder.joinpath(icons_filename)
-    icons_content_swift_path = icons_folder.joinpath("Icon.Content+Extensions.swift")
     icon_font_path = icons_folder.joinpath("Icons.ttf")
     
     zip_name = "font.zip"
@@ -88,7 +81,6 @@ if __name__ == "__main__":
 
     case_lines = []
     value_lines = []
-    value_extension_lines = []
 
     for icon_name, value in sorted(icon_values.items(), key = lambda x: x[0].lower()):
         
@@ -106,14 +98,9 @@ if __name__ == "__main__":
         swift_icon_key = dots_to_camel_case(swift_icon_name)
         case_lines.append(f"        /// Orbit `{swift_icon_name}` icon symbol.\n        case {swift_icon_key}")
         value_lines.append(f"                case .{swift_icon_key}: return \"{swift_value}\"")
-        value_extension_lines.append(f"    /// Orbit `{swift_icon_name}` icon symbol with unspecified color.\n    static let {swift_icon_key}: Self = .symbol(.{swift_icon_key})")
             
     updated_file_content = source_template.format(cases = '\n'.join(case_lines), values = '\n'.join(value_lines))
-    updated_extensions_file_content = source_extensions_template.format(values = '\n'.join(value_extension_lines))
     
     with open(icons_swift_path, "w+") as source_file:
         source_file.write(updated_file_content)
-
-    with open(icons_content_swift_path, "w+") as source_file:
-        source_file.write(updated_extensions_file_content)
         
