@@ -269,6 +269,10 @@ public extension Icon {
         case grid
         /// Orbit `gym` icon symbol.
         case gym
+        /// Orbit `heart` icon symbol.
+        case heart
+        /// Orbit `heartOutline` icon symbol.
+        case heartOutline
         /// Orbit `history` icon symbol.
         case history
         /// Orbit `inbox` icon symbol.
@@ -417,6 +421,8 @@ public extension Icon {
         case phone
         /// Orbit `pin` icon symbol.
         case pin
+        /// Orbit `pinOutline` icon symbol.
+        case pinOutline
         /// Orbit `placeholder` icon symbol.
         case placeholder
         /// Orbit `play` icon symbol.
@@ -721,6 +727,8 @@ public extension Icon {
                 case .gpsOff: return "\u{7022}"
                 case .grid: return "\u{7408}"
                 case .gym: return "\u{5801}"
+                case .heart: return "\u{5934}"
+                case .heartOutline: return "\u{4911}"
                 case .history: return "\u{4847}"
                 case .inbox: return "\u{2187}"
                 case .infant: return "\u{1304}"
@@ -795,6 +803,7 @@ public extension Icon {
                 case .pharmacy: return "\u{6797}"
                 case .phone: return "\u{3895}"
                 case .pin: return "\u{3914}"
+                case .pinOutline: return "\u{9270}"
                 case .placeholder: return "\u{1255}"
                 case .play: return "\u{4956}"
                 case .playground: return "\u{6111}"
