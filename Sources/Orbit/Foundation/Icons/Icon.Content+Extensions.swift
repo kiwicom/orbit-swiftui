@@ -268,6 +268,10 @@ public extension Icon.Content {
     static let grid: Self = .symbol(.grid)
     /// Orbit `gym` icon symbol with unspecified color.
     static let gym: Self = .symbol(.gym)
+    /// Orbit `heart` icon symbol with unspecified color.
+    static let heart: Self = .symbol(.heart)
+    /// Orbit `heartOutline` icon symbol with unspecified color.
+    static let heartOutline: Self = .symbol(.heartOutline)
     /// Orbit `history` icon symbol with unspecified color.
     static let history: Self = .symbol(.history)
     /// Orbit `inbox` icon symbol with unspecified color.
@@ -416,6 +420,8 @@ public extension Icon.Content {
     static let phone: Self = .symbol(.phone)
     /// Orbit `pin` icon symbol with unspecified color.
     static let pin: Self = .symbol(.pin)
+    /// Orbit `pinOutline` icon symbol with unspecified color.
+    static let pinOutline: Self = .symbol(.pinOutline)
     /// Orbit `placeholder` icon symbol with unspecified color.
     static let placeholder: Self = .symbol(.placeholder)
     /// Orbit `play` icon symbol with unspecified color.
