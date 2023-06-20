@@ -12,9 +12,10 @@ public struct Switch: View {
     static let borderColor = Color(white: 0.2, opacity: 0.25)
     static let animation = Animation.spring(response: 0.25, dampingFraction: 0.6)
 
-    @Environment(\.sizeCategory) var sizeCategory
-    @Environment(\.colorScheme) var colorScheme
-    @Environment(\.isEnabled) var isEnabled
+    @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
     @Binding var isOn: Bool
 
     let hasIcon: Bool
@@ -24,7 +25,10 @@ public struct Switch: View {
             .overlay(indicator)
             .accessibility(addTraits: [.isButton])
             .onTapGesture {
-                HapticsProvider.sendHapticFeedback(.light(0.5))
+                if isHapticsEnabled {
+                    HapticsProvider.sendHapticFeedback(.light(0.5))
+                }
+                
                 isOn.toggle()
             }
             .disabled(isEnabled == false)

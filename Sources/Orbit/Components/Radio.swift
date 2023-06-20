@@ -9,6 +9,7 @@ public struct Radio: View {
 
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.textColor) private var textColor
+    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     let title: String
     let description: String
@@ -18,7 +19,10 @@ public struct Radio: View {
     public var body: some View {
         SwiftUI.Button(
             action: {
-                HapticsProvider.sendHapticFeedback(.light(0.5))
+                if isHapticsEnabled {
+                    HapticsProvider.sendHapticFeedback(.light(0.5))
+                }
+                
                 isChecked.toggle()
             },
             label: {

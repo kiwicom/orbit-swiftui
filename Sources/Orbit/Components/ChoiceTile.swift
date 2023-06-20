@@ -8,6 +8,7 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
 
     @Environment(\.idealSize) private var idealSize
     @Environment(\.status) private var status
+    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     public let padding: CGFloat = .small
 
@@ -29,7 +30,10 @@ public struct ChoiceTile<HeaderContent: View, Content: View>: View {
     public var body: some View {
         SwiftUI.Button(
             action: {
-                HapticsProvider.sendHapticFeedback(.light(0.3))
+                if isHapticsEnabled {
+                    HapticsProvider.sendHapticFeedback(.light(0.3))
+                }
+                
                 action()
             },
             label: {

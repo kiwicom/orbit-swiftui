@@ -9,6 +9,7 @@ public struct Select: View {
     let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
 
     @Environment(\.isEnabled) private var isEnabled: Bool
+    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     @Binding var messageHeight: CGFloat
     
@@ -29,7 +30,10 @@ public struct Select: View {
         ) {
             SwiftUI.Button(
                 action: {
-                    HapticsProvider.sendHapticFeedback(.light(0.5))
+                    if isHapticsEnabled {
+                        HapticsProvider.sendHapticFeedback(.light(0.5))
+                    }
+                    
                     action()
                 },
                 label: {

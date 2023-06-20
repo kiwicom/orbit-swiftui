@@ -3,6 +3,8 @@ import SwiftUI
 /// An icon-based bar button for suitable for actions inside toolbar or navigation bar.
 public struct BarButton: View {
 
+    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
+
     private let content: Icon.Content
     private let size: Icon.Size
     private let alignment: HorizontalAlignment
@@ -10,7 +12,10 @@ public struct BarButton: View {
 
     public var body: some View {
         SwiftUI.Button {
-            HapticsProvider.sendHapticFeedback(.light(0.5))
+            if isHapticsEnabled {
+                HapticsProvider.sendHapticFeedback(.light(0.5))
+            }
+
             action()
         } label: {
             Icon(content, size: size)

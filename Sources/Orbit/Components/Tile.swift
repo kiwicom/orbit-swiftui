@@ -12,6 +12,7 @@ public struct Tile<Content: View>: View {
     @Environment(\.isInsideTileGroup) private var isInsideTileGroup
     @Environment(\.isTileSeparatorVisible) private var isTileSeparatorVisible
     @Environment(\.status) private var status
+    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     public let verticalTextPadding: CGFloat = 14 // = 52 height @ normal size
 
@@ -29,7 +30,10 @@ public struct Tile<Content: View>: View {
     public var body: some View {
         SwiftUI.Button(
             action: {
-                HapticsProvider.sendHapticFeedback(.light(0.5))
+                if isHapticsEnabled {
+                    HapticsProvider.sendHapticFeedback(.light(0.5))
+                }
+                
                 action()
             },
             label: {

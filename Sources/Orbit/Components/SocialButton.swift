@@ -13,6 +13,7 @@ public struct SocialButton: View {
     @Environment(\.idealSize) private var idealSize
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.textColor) private var textColor
+    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     private let label: String
     private let service: Service
@@ -21,7 +22,10 @@ public struct SocialButton: View {
     public var body: some View {
         SwiftUI.Button(
             action: {
-                HapticsProvider.sendHapticFeedback(.light(0.5))
+                if isHapticsEnabled {
+                    HapticsProvider.sendHapticFeedback(.light(0.5))
+                }
+                
                 action()
             },
             label: {
