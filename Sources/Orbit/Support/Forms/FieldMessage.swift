@@ -3,10 +3,10 @@ import SwiftUI
 /// Orbit message below form fields.
 public struct FieldMessage: View {
 
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.sizeCategory) private var sizeCategory
 
-    let message: Message?
-    let spacing: CGFloat
+    private let message: Message?
+    private let spacing: CGFloat
 
     public var body: some View {
         if let message = message, message.isEmpty == false {

@@ -3,7 +3,7 @@ import SwiftUI
 /// Orbit label positioned above a form field.
 public struct FieldLabel: View {
 
-    let label: String
+    private let label: String
 
     public var body: some View {
         Text(label, size: .normal)

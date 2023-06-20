@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Content for inputs that share common layout with a prefix and suffix.
-struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
+public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
 
     @Environment(\.idealSize) private var idealSize
     @Environment(\.isEnabled) private var isEnabled
@@ -9,15 +9,15 @@ struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
 
     public let verticalPadding: CGFloat = .small // = 44 @ normal text size
 
-    let state: InputState
-    let message: Message?
-    let isPressed: Bool
-    let isEditing: Bool
-    @ViewBuilder let content: Content
-    @ViewBuilder var prefix: Prefix
-    @ViewBuilder var suffix: Suffix
+    private let state: InputState
+    private let message: Message?
+    private let isPressed: Bool
+    private let isEditing: Bool
+    @ViewBuilder private let content: Content
+    @ViewBuilder private let prefix: Prefix
+    @ViewBuilder private let suffix: Suffix
     
-    var body: some View {
+    public var body: some View {
         HStack(spacing: 0) {
             prefix
                 .padding(.leading, .small)
@@ -81,7 +81,7 @@ struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
         }
     }
 
-    init(
+    public init(
         state: InputState = .default,
         message: Message? = nil,
         isPressed: Bool = false,
