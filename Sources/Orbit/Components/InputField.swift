@@ -17,17 +17,17 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
     @State private var isEditing: Bool = false
     @State private var isSecureTextRedacted: Bool = true
 
-    private var label: String
+    private let label: String
     @Binding private var value: String
-    private var prompt: String
-    private var state: InputState
-    @ViewBuilder private let prefix: Prefix
-    @ViewBuilder private let suffix: Suffix
-
-    private var isSecure: Bool
-    private var passwordStrength: PasswordStrengthIndicator.PasswordStrength?
-    private var message: Message?
+    private let prompt: String
+    private let state: InputState
     private let labelStyle: InputLabelStyle
+    @ViewBuilder private var prefix: Prefix
+    @ViewBuilder private var suffix: Suffix
+
+    private let isSecure: Bool
+    private let passwordStrength: PasswordStrengthIndicator.PasswordStrength?
+    private let message: Message?
     @Binding private var messageHeight: CGFloat
 
     // Builder properties (keyboard related)
@@ -44,7 +44,12 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
             message: message,
             messageHeight: $messageHeight
         ) {
-            InputContent(state: state, message: message, isEditing: isEditing) {
+            InputContent(
+                state: state,
+                message: message,
+                isEditing: isEditing,
+                isPlaceholder: value.isEmpty
+            ) {
                 HStack(alignment: .firstTextBaseline, spacing: .small) {
                     compactLabel
                     textField
@@ -71,6 +76,12 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
         }
     }
 
+    @ViewBuilder private var compactLabel: some View {
+        FieldLabel(compactFieldLabel)
+            .textColor(value.isEmpty ? .inkDark : .inkLight)
+            .padding(.leading, prefix.isEmpty ? .small : 0)
+    }
+
     @ViewBuilder private var textField: some View {
         TextField(
             value: $value,
@@ -78,8 +89,8 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
             isSecureTextEntry: isSecure && isSecureTextRedacted,
             font: .orbit(size: Text.Size.normal.value * sizeCategory.ratio, weight: .regular),
             state: state,
-            leadingPadding: leadingPadding,
-            trailingPadding: trailingPadding
+            leadingPadding: textFieldLeadingPadding,
+            trailingPadding: textFieldTrailingPadding
         )
         .returnKeyType(returnKeyType)
         .autocorrectionDisabled(isAutocorrectionDisabled)
@@ -98,15 +109,6 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
         }
     }
 
-    @ViewBuilder private var compactLabel: some View {
-        if style == .compact {
-            Text(label)
-                .textColor(compactLabelColor)
-                .fontWeight(.medium)
-                .padding(.leading, prefix.isEmpty ? .small : 0)
-        }
-    }
-
     @ViewBuilder private var secureTextRedactedButton: some View {
         if showSecureTextRedactedButton {
             IconButton(isSecureTextRedacted ? .visibility : .visibilityOff) {
@@ -122,21 +124,20 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
         }
     }
 
-    private var messageDescription: String {
-        message?.description ?? ""
+    private var compactFieldLabel: String {
+        switch labelStyle {
+            case .default:          return ""
+            case .compact:          return label
+        }
     }
 
-    private var compactLabelColor: Color {
-        value.description.isEmpty ? .inkDark : .inkLight
-    }
-
-    private var leadingPadding: CGFloat {
+    private var textFieldLeadingPadding: CGFloat {
         prefix.isEmpty && labelStyle == .default
             ? .small
             : 0
     }
 
-    private var trailingPadding: CGFloat {
+    private var textFieldTrailingPadding: CGFloat {
         suffix.isEmpty ? .small : 0
     }
 
@@ -166,7 +167,7 @@ public extension InputField {
         suffix: Icon.Symbol? = nil,
         prompt: String = "",
         state: InputState = .default,
-        style: InputLabelStyle = .default,
+        labelStyle: InputLabelStyle = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
@@ -177,7 +178,7 @@ public extension InputField {
             value: value,
             prompt: prompt,
             state: state,
-            style: style,
+            labelStyle: labelStyle,
             isSecure: isSecure,
             passwordStrength: passwordStrength,
             message: message,
@@ -206,7 +207,7 @@ public extension InputField {
         value: Binding<String>,
         prompt: String = "",
         state: InputState = .default,
-        style: InputLabelStyle = .default,
+        labelStyle: InputLabelStyle = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
@@ -218,7 +219,7 @@ public extension InputField {
         self._value = value
         self.prompt = prompt
         self.state = state
-        self.labelStyle = style
+        self.labelStyle = labelStyle
         self.isSecure = isSecure
         self.passwordStrength = passwordStrength
         self.message = message
@@ -289,6 +290,15 @@ struct InputFieldPreviews: PreviewProvider {
             StateWrapper(value) { state in
                 InputField("Secure", value: state, prefix: .grid, prompt: prompt, state: .default, isSecure: true)
             }
+            StateWrapper(value) { state in
+                InputField("Compact", value: state, prefix: .grid, prompt: prompt, state: .default, labelStyle: .compact)
+            }
+            StateWrapper("") { state in
+                InputField("Compact", value: state, prefix: .grid, prompt: prompt, state: .default, labelStyle: .compact)
+            }
+            StateWrapper("") { state in
+                InputField("Compact", value: state, prompt: prompt, state: .default, labelStyle: .compact)
+            }
         }
         .padding(.medium)
         .previewDisplayName()
@@ -306,10 +316,10 @@ struct InputFieldPreviews: PreviewProvider {
                 InputField(label, value: state, prefix: .grid, suffix: .grid, prompt: prompt, state: .default)
             }
             StateWrapper("") { state in
-                InputField(label, value: state, prefix: .grid, suffix: .grid, prompt: prompt, state: .default)
+                InputField("Inline", value: state, prefix: .grid, suffix: .grid, prompt: prompt, state: .default, labelStyle: .compact)
             }
             StateWrapper(value) { state in
-                InputField("Secure", value: state, prefix: .grid, prompt: prompt, state: .default, isSecure: true)
+                InputField("Inline", value: state, prefix: .grid, prompt: prompt, state: .default, labelStyle: .compact)
             }
         }
         .frame(width: 100)
@@ -331,10 +341,10 @@ struct InputFieldPreviews: PreviewProvider {
             }
 
             Group {
-                inputField(value: longValue, prefix: .none, suffix: .none, message: .none, style: .compact)
-                inputField(value: "", prefix: .none, suffix: .none, message: .none, style: .compact)
-                inputField(value: "", message: .error(errorMessage), style: .compact)
-                inputField(value: value, message: .error(errorMessage), style: .compact)
+                inputField(value: longValue, prefix: .none, suffix: .none, message: .none, labelStyle: .compact)
+                inputField(value: "", prefix: .none, suffix: .none, message: .none, labelStyle: .compact)
+                inputField(value: "", message: .error(errorMessage), labelStyle: .compact)
+                inputField(value: value, message: .error(errorMessage), labelStyle: .compact)
             }
         }
         .padding(.medium)
@@ -398,7 +408,7 @@ struct InputFieldPreviews: PreviewProvider {
             .textLinkColor(.status(.critical))
             .textAccentColor(.orangeNormal)
             
-            inputField("Compact", style: .compact)
+            inputField("Compact", labelStyle: .compact)
 
             HStack(spacing: .medium) {
                 inputField(value: "No label")
@@ -426,7 +436,7 @@ struct InputFieldPreviews: PreviewProvider {
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
-        style: InputLabelStyle = .default
+        labelStyle: InputLabelStyle = .default
     ) -> some View {
         StateWrapper(value) { value in
             InputField(
@@ -436,7 +446,7 @@ struct InputFieldPreviews: PreviewProvider {
                 suffix: suffix,
                 prompt: prompt,
                 state: state,
-                style: style,
+                labelStyle: labelStyle,
                 isSecure: isSecure,
                 passwordStrength: passwordStrength,
                 message: message

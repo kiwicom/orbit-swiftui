@@ -118,7 +118,7 @@ struct StorybookInputField {
                 suffix: suffix,
                 prompt: prompt,
                 state: state,
-                style: style,
+                labelStyle: style,
                 isSecure: isSecure,
                 passwordStrength: passwordStrength,
                 message: message

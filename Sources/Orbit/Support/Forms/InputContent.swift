@@ -9,7 +9,6 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
 
     public let verticalPadding: CGFloat = .small // = 44 @ normal text size
 
-    private let label: String
     private let state: InputState
     private let message: Message?
     private let isPressed: Bool
@@ -26,10 +25,7 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
                 .padding(.trailing, .xSmall)
                 .padding(.vertical, verticalPadding)
 
-            HStack(alignment: .firstTextBaseline, spacing: .small) {
-                compactLabel
-                content
-            }
+            content
 
             if idealSize.horizontal == nil {
                 Spacer(minLength: 0)
@@ -50,12 +46,6 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
         .cornerRadius(BorderRadius.default)
         .overlay(border)
     }
-
-     @ViewBuilder private var compactLabel: some View {
-         FieldLabel(label)
-             .textColor(isPlaceholder ? .inkDark : .inkLight)
-             .padding(.leading, prefix.isEmpty ? .small : 0)
-     }
 
     @ViewBuilder private var border: some View {
         RoundedRectangle(cornerRadius: BorderRadius.default)
@@ -93,7 +83,6 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
     }
 
     public init(
-        label: String = "",
         state: InputState = .default,
         message: Message? = nil,
         isPressed: Bool = false,
@@ -103,7 +92,6 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
         @ViewBuilder prefix: () -> Prefix = { EmptyView() },
         @ViewBuilder suffix: () -> Suffix = { EmptyView() }
     ) {
-        self.label = label
         self.state = state
         self.message = message
         self.isPressed = isPressed

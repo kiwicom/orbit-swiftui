@@ -4,7 +4,6 @@ import SwiftUI
 /// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
 public struct InputContentButtonStyle<Prefix: View, Suffix: View>: ButtonStyle {
 
-    private let label: String
     private let state: InputState
     private let message: Message?
     private let isEditing: Bool
@@ -14,7 +13,6 @@ public struct InputContentButtonStyle<Prefix: View, Suffix: View>: ButtonStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
         InputContent(
-            label: label,
             state: state,
             message: message,
             isPressed: configuration.isPressed,
@@ -30,7 +28,6 @@ public struct InputContentButtonStyle<Prefix: View, Suffix: View>: ButtonStyle {
     }
 
     public init(
-        label: String,
         state: InputState = .default,
         message: Message? = nil,
         isEditing: Bool = false,
@@ -38,7 +35,6 @@ public struct InputContentButtonStyle<Prefix: View, Suffix: View>: ButtonStyle {
         @ViewBuilder prefix: () -> Prefix = { EmptyView() },
         @ViewBuilder suffix: () -> Suffix = { EmptyView() }
     ) {
-        self.label = label
         self.state = state
         self.message = message
         self.isEditing = isEditing
