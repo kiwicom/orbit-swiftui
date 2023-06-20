@@ -5,11 +5,11 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/collapse/)
 public struct Collapse<Header: View, Content: View>: View {
 
-    let header: Header
     let headerVerticalPadding: CGFloat
-    let content: Content
     let showSeparator: Bool
     let isExpanded: Binding<Bool>?
+    @ViewBuilder let content: Content
+    @ViewBuilder let header: Header
 
     public var body: some View {
         BindingSource(isExpanded, fallbackInitialValue: false) { $isExpanded in
@@ -22,7 +22,9 @@ public struct Collapse<Header: View, Content: View>: View {
                     HStack(spacing: 0) {
                         header
                             .accessibility(.collapseHeader)
+
                         Spacer(minLength: .xSmall)
+
                         Icon(.chevronDown)
                             .rotationEffect(isExpanded ? .degrees(180) : .zero)
                     }
@@ -53,9 +55,9 @@ public extension Collapse {
         isExpanded: Binding<Bool>,
         showSeparator: Bool = true,
         @ViewBuilder content: () -> Content,
-        @ViewBuilder headerContent: () -> Header
+        @ViewBuilder header: () -> Header
     ) {
-        self.header = headerContent()
+        self.header = header()
         self.headerVerticalPadding = 0
         self.content = content()
         self.showSeparator = showSeparator
@@ -63,8 +65,8 @@ public extension Collapse {
     }
 
     /// Creates Orbit Collapse component.
-    init(@ViewBuilder content: () -> Content, showSeparator: Bool = true, @ViewBuilder headerContent: () -> Header) {
-        self.header = headerContent()
+    init(@ViewBuilder content: () -> Content, showSeparator: Bool = true, @ViewBuilder header: () -> Header) {
+        self.header = header()
         self.headerVerticalPadding = 0
         self.content = content()
         self.showSeparator = showSeparator
@@ -146,7 +148,7 @@ struct CollapsePreviews: PreviewProvider {
             StateWrapper(isExpanded) { isExpanded in
                 Collapse(isExpanded: isExpanded) {
                     contentPlaceholder
-                } headerContent: {
+                } header: {
                     headerPlaceholder
                 }
             }
@@ -174,7 +176,7 @@ struct CollapsePreviews: PreviewProvider {
             }
             Collapse {
                 contentPlaceholder
-            } headerContent: {
+            } header: {
                 headerPlaceholder
             }
             Collapse("No separator", showSeparator: false) {

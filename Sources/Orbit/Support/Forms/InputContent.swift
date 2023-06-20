@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Content for inputs that share common layout with a prefix and suffix.
-struct InputContent<Content: View>: View {
+struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
 
     @Environment(\.idealSize) private var idealSize
     @Environment(\.isEnabled) private var isEnabled
@@ -9,20 +9,20 @@ struct InputContent<Content: View>: View {
 
     public let verticalPadding: CGFloat = .small // = 44 @ normal text size
 
-    var prefix: Icon.Content?
-    var suffix: Icon.Content?
-    var prefixAccessibilityID: AccessibilityID = .selectPrefix
-    var suffixAccessibilityID: AccessibilityID = .selectSuffix
-    var state: InputState = .default
-    var message: Message? = nil
-    var isPressed: Bool = false
-    var isEditing: Bool = false
-    var suffixAction: (() -> Void)? = nil
+    let state: InputState
+    let message: Message?
+    let isPressed: Bool
+    let isEditing: Bool
     @ViewBuilder let content: Content
+    @ViewBuilder var prefix: Prefix
+    @ViewBuilder var suffix: Suffix
     
     var body: some View {
         HStack(spacing: 0) {
-            prefixIcon
+            prefix
+                .padding(.leading, .small)
+                .padding(.trailing, .xSmall)
+                .padding(.vertical, verticalPadding)
 
             content
 
@@ -30,7 +30,10 @@ struct InputContent<Content: View>: View {
                 Spacer(minLength: 0)
             }
 
-            suffixIcon
+            suffix
+                .padding(.leading, .xSmall)
+                .padding(.trailing, .small)
+                .padding(.vertical, verticalPadding)
 
             TextStrut()
                 .padding(.vertical, verticalPadding)
@@ -41,40 +44,6 @@ struct InputContent<Content: View>: View {
         )
         .cornerRadius(BorderRadius.default)
         .overlay(border)
-    }
-
-    @ViewBuilder var prefixIcon: some View {
-        Icon(prefix)
-            .padding(.leading, .small)
-            .padding(.trailing, .xSmall)
-            .padding(.vertical, verticalPadding)
-            .accessibility(prefixAccessibilityID)
-            // The component should expose the label as a part of the field primary input or action
-            .accessibility(hidden: true)
-    }
-
-    @ViewBuilder var suffixIcon: some View {
-        suffixContent
-            .accessibility(suffixAccessibilityID)
-    }
-
-    @ViewBuilder var suffixContent: some View {
-        if let suffix {
-            if let suffixAction = suffixAction {
-                BarButton(suffix, size: .normal) {
-                    suffixAction()
-                }
-                .padding(.trailing, .xxSmall)
-                .accessibility(addTraits: .isButton)
-            } else {
-                Icon(suffix)
-                    .padding(.leading, .xSmall)
-                    .padding(.trailing, .small)
-                    .padding(.vertical, verticalPadding)
-                    // The component should expose the label as a part of the field primary input or action
-                    .accessibility(hidden: true)
-            }
-        }
     }
 
     @ViewBuilder var border: some View {
@@ -111,6 +80,24 @@ struct InputContent<Content: View>: View {
             default:                    return .clear
         }
     }
+
+    init(
+        state: InputState = .default,
+        message: Message? = nil,
+        isPressed: Bool = false,
+        isEditing: Bool = false,
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder prefix: () -> Prefix = { EmptyView() },
+        @ViewBuilder suffix: () -> Suffix = { EmptyView() }
+    ) {
+        self.state = state
+        self.message = message
+        self.isPressed = isPressed
+        self.isEditing = isEditing
+        self.content = content()
+        self.prefix = prefix()
+        self.suffix = suffix()
+    }
 }
 
 // MARK: - Previews
@@ -127,11 +114,22 @@ struct InputContentPreviews: PreviewProvider {
 
     static var standalone: some View {
         VStack(spacing: .medium) {
-            InputContent(prefix: .visa, suffix: .checkCircle, state: .modified) {
+            InputContent(state: .modified) {
                 EmptyView()
+            } prefix: {
+                Icon(.visa)
+            } suffix: {
+                Icon(.checkCircle)
             }
-            InputContent(prefix: .visa, suffix: .checkCircle, state: .default, suffixAction: {}) {
+
+            InputContent(state: .default) {
                 EmptyView()
+            } prefix: {
+                Icon(.visa)
+            } suffix: {
+                IconButton(.checkCircle, size: .normal) {
+                    // No action
+                }
             }
         }
         .padding(.medium)
@@ -141,8 +139,12 @@ struct InputContentPreviews: PreviewProvider {
     static var sizing: some View {
         VStack {
             Group {
-                InputContent(prefix: .visa, suffix: .checkCircle) {
+                InputContent {
                     Text("InputContent")
+                } prefix: {
+                    Icon(.visa)
+                } suffix: {
+                    Icon(.checkCircle)
                 }
 
                 InputContent(state: .modified) {
@@ -151,8 +153,10 @@ struct InputContentPreviews: PreviewProvider {
                         .padding(.vertical, .small)
                 }
 
-                InputContent(prefix: .grid) {
+                InputContent {
                     EmptyView()
+                } prefix: {
+                    Icon(.grid)
                 }
 
                 InputContent {
@@ -174,8 +178,12 @@ struct InputContentPreviews: PreviewProvider {
     }
 
     static var custom: some View {
-        InputContent(prefix: .visa, suffix: .checkCircle, state: .default, message: .error("", icon: .alertCircle)) {
+        InputContent(message: .error("", icon: .alertCircle)) {
             contentPlaceholder
+        } prefix: {
+            Icon(.visa)
+        } suffix: {
+            Icon(.checkCircle)
         }
         .padding(.medium)
         .previewDisplayName()

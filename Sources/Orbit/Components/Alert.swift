@@ -12,7 +12,7 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/alert/)
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
-public struct Alert<Content: View>: View {
+public struct Alert<Content: View, Icon: View>: View {
 
     @Environment(\.iconColor) private var iconColor
     @Environment(\.idealSize) private var idealSize
@@ -22,12 +22,10 @@ public struct Alert<Content: View>: View {
 
     let title: String
     let description: String
-    let icon: Icon.Content?
-    let buttons: AlertButtons
+    let buttons: AlertButtons?
     let style: AlertStyle
     @ViewBuilder let content: Content
-
-    private let variant: AlertVariant
+    @ViewBuilder let icon: Icon
 
     public var body: some View {
         variantContent
@@ -37,9 +35,9 @@ public struct Alert<Content: View>: View {
     }
 
     @ViewBuilder var variantContent: some View {
-        switch variant {
-            case .default:  defaultContent
-            case .inline:   inlineContent
+        switch buttons {
+            case .inline(let button):   inlineContent(button)
+            default:                    defaultContent
         }
     }
 
@@ -58,7 +56,7 @@ public struct Alert<Content: View>: View {
         .padding(.medium)
     }
 
-    @ViewBuilder var inlineContent: some View {
+    @ViewBuilder func inlineContent(_ button: ButtonContent?) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
             inlineHeader
 
@@ -66,7 +64,13 @@ public struct Alert<Content: View>: View {
                 Spacer(minLength: 0)
             }
 
-            inlineButton
+            if let button {
+                Button(button.label, type: primaryButtonType, size: .small, action: button.action)
+                    .fixedSize(horizontal: true, vertical: false)
+                    .padding(.xSmall)
+                    .padding(.top, 3)
+                    .accessibility(.alertButtonPrimary)
+            }
         }
     }
 
@@ -94,7 +98,9 @@ public struct Alert<Content: View>: View {
     }
 
     @ViewBuilder var iconContent: some View {
-        Icon(icon)
+        icon
+            .font(.system(size: Orbit.Icon.Size.normal.value))
+            .foregroundColor(iconColor ?? outlineColor)
             .iconColor(iconColor ?? outlineColor)
             .accessibility(.alertIcon)
     }
@@ -113,36 +119,22 @@ public struct Alert<Content: View>: View {
                     switch buttons {
                         case .primary(let primaryButton),
                              .primaryAndSecondary(let primaryButton, _):
-                            Button(primaryButton.label, style: primaryButtonStyle, size: .small, action: primaryButton.action)
+                            Button(primaryButton.label, type: primaryButtonType, size: .small, action: primaryButton.action)
                                 .accessibility(.alertButtonPrimary)
-                        case .none, .secondary:
+                        case .none, .secondary, .inline:
                             EmptyView()
                     }
 
                     switch buttons {
                         case .secondary(let secondaryButton),
                              .primaryAndSecondary(_, let secondaryButton):
-                            Button(secondaryButton.label, style: secondaryButtonStyle, size: .small, action: secondaryButton.action)
+                            Button(secondaryButton.label, type: secondaryButtonType, size: .small, action: secondaryButton.action)
                                 .accessibility(.alertButtonSecondary)
-                        case .none, .primary:
+                        case .none, .primary, .inline:
                             EmptyView()
                     }
                 }
-            case .none:
-                EmptyView()
-        }
-    }
-
-    @ViewBuilder var inlineButton: some View {
-        switch buttons {
-            case .primary(let button),
-                 .primaryAndSecondary(let button, _):
-                Button(button.label, style: primaryButtonStyle, size: .small, action: button.action)
-                    .fixedSize(horizontal: true, vertical: false)
-                    .padding(.xSmall)
-                    .padding(.top, 3)
-                    .accessibility(.alertButtonPrimary)
-            case .none, .secondary:
+            case .none, .inline:
                 EmptyView()
         }
     }
@@ -180,14 +172,14 @@ public struct Alert<Content: View>: View {
         }
     }
 
-    var primaryButtonStyle: Orbit.Button.Style {
+    var primaryButtonType: ButtonType {
         switch style {
             case .status(let status, _):
                 return .status(status ?? defaultStatus, isSubtle: false)
         }
     }
 
-    var secondaryButtonStyle: Orbit.Button.Style {
+    var secondaryButtonType: ButtonType {
         switch style {
             case .status(_, true):
                 return .secondary
@@ -201,17 +193,33 @@ public struct Alert<Content: View>: View {
     }
 
     var isInlineHeaderEmpty: Bool {
-        isIconEmpty && title.isEmpty
-    }
-
-    private var isIconEmpty: Bool {
-        icon?.isEmpty ?? true
+        icon.isEmpty && title.isEmpty
     }
 }
 
 // MARK: - Inits
 public extension Alert {
-    
+
+    /// Creates Orbit Alert component with custom content and icon.
+    ///
+    /// - Parameters:
+    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    init(
+        _ title: String = "",
+        description: String = "",
+        buttons: AlertButtons? = nil,
+        style: AlertStyle = .status(nil, isSubtle: false),
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder icon: () -> Icon = { EmptyView() }
+    ) {
+        self.title = title
+        self.description = description
+        self.icon = icon()
+        self.buttons = buttons
+        self.style = style
+        self.content = content()
+    }
+
     /// Creates Orbit Alert component.
     ///
     /// - Parameters:
@@ -219,37 +227,20 @@ public extension Alert {
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content? = nil,
-        buttons: AlertButtons = .none,
-        style: AlertStyle = .status(nil, isSubtle: false),
-        @ViewBuilder content: () -> Content = { EmptyView() }
-    ) {
-        self.title = title
-        self.description = description
-        self.icon = icon
-        self.buttons = buttons
-        self.style = style
-        self.variant = .default
-        self.content = content()
-    }
-
-    /// Creates Orbit Alert (inline) component.
-    ///
-    /// - Parameters:
-    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
-    init(
-        _ title: String = "",
-        icon: Icon.Content? = nil,
-        button: Button.Content? = nil,
+        icon: Icon.Symbol? = nil,
+        buttons: AlertButtons? = nil,
         style: AlertStyle = .status(nil, isSubtle: false)
-    ) where Content == EmptyView {
-        self.title = title
-        self.description = ""
-        self.icon = icon
-        self.buttons = button.map { .primary($0) } ?? .none
-        self.style = style
-        self.variant = .inline
-        self.content = EmptyView()
+    ) where Icon == Orbit.Icon, Content == EmptyView {
+        self.init(
+            title: title,
+            description: description,
+            buttons: buttons,
+            style: style
+        ) {
+            EmptyView()
+        } icon: {
+            Icon(icon)
+        }
     }
 }
 
@@ -271,17 +262,10 @@ enum AlertVariant {
 }
 
 public enum AlertButtons {
-    case none
-    case primary(Button.Content)
-    case secondary(Button.Content)
-    case primaryAndSecondary(Button.Content, Button.Content)
-
-    public var isVisible: Bool {
-        switch self {
-            case .primary, .secondary, .primaryAndSecondary:    return true
-            case .none:                                         return false
-        }
-    }
+    case primary(ButtonContent)
+    case secondary(ButtonContent)
+    case primaryAndSecondary(ButtonContent, ButtonContent)
+    case inline(ButtonContent)
 }
 
 /// A style of Orbit Alert component.
@@ -352,11 +336,12 @@ struct AlertPreviews: PreviewProvider {
         Alert(
             title,
             description: description,
-            icon: .informationCircle,
             buttons: primaryAndSecondaryConfiguration,
             style: .status(.info, isSubtle: false)
         ) {
             contentPlaceholder
+        } icon: {
+            Icon(.informationCircle)
         }
         .previewDisplayName()
     }
@@ -366,12 +351,13 @@ struct AlertPreviews: PreviewProvider {
             Alert(
                 "Alert with\n<u>multiline</u> title",
                 description: "Alert <strong>multiline</strong> description\nwith <applink1>link</applink1>",
-                icon: .grid,
                 buttons: primaryAndSecondaryConfiguration
             ) {
                 contentPlaceholder
                     .frame(height: 30)
                     .clipped()
+            } icon: {
+                Icon(.grid)
             }
 
             Group {
@@ -382,23 +368,23 @@ struct AlertPreviews: PreviewProvider {
             }
 
             Group {
-                Alert("Inline alert", icon: .grid, button: "Primary")
-                Alert("Inline alert", button: "Primary")
+                Alert("Inline alert", icon: .grid, buttons: .inline("Primary"))
+                Alert("Inline alert", buttons: .inline("Primary"))
             }
             .status(.warning)
 
             Group {
-                Alert("Inline alert with no button", icon: .informationCircle)
-                Alert("Inline alert with no button")
+                Alert("Alert with no button", icon: .informationCircle)
+                Alert("Alert with no button")
                     .idealSize()
             }
             .status(.success)
 
-            Alert(button: .init(stringLiteral: "Primary"))
+            Alert(buttons: .inline("Primary"))
                 .idealSize()
                 .status(.critical)
 
-            Alert("Inline alert with very very very very very very very very very very very long and <u>multiline</u> title", icon: .grid, button: "Primary")
+            Alert("Inline alert with very very very very very very very very very very very long and <u>multiline</u> title", icon: .grid, buttons: .inline("Primary"))
                 .status(.warning)
         }
         .previewDisplayName()
@@ -448,7 +434,7 @@ struct AlertPreviews: PreviewProvider {
         Alert(
             title,
             description: description,
-            icon: icon.map { Icon.Content.symbol($0) },
+            icon: icon,
             buttons: primaryAndSecondaryConfiguration,
             style: .status(nil, isSubtle: isSuppressed)
         )
@@ -466,10 +452,10 @@ struct AlertPreviews: PreviewProvider {
 
     static func inlineAlerts(showIcon: Bool, isSuppressed: Bool) -> some View {
         VStack(spacing: .medium) {
-            Alert("Informational message", icon: showIcon ? .informationCircle : .none, button: "Primary", style: .status(nil, isSubtle: isSuppressed))
-            Alert("Success message", icon: showIcon ? .checkCircle : .none, button: "Primary", style: .status(.success, isSubtle: isSuppressed))
-            Alert("Warning message", icon: showIcon ? .alertCircle : .none, button: "Primary", style: .status(.warning, isSubtle: isSuppressed))
-            Alert("Critical message", icon: showIcon ? .alertCircle : .none, button: "Primary", style: .status(.critical, isSubtle: isSuppressed))
+            Alert("Informational message", icon: showIcon ? .informationCircle : .none, buttons: .inline("Primary"), style: .status(nil, isSubtle: isSuppressed))
+            Alert("Success message", icon: showIcon ? .checkCircle : .none, buttons: .inline("Primary"), style: .status(.success, isSubtle: isSuppressed))
+            Alert("Warning message", icon: showIcon ? .alertCircle : .none, buttons: .inline("Primary"), style: .status(.warning, isSubtle: isSuppressed))
+            Alert("Critical message", icon: showIcon ? .alertCircle : .none, buttons: .inline("Primary"), style: .status(.critical, isSubtle: isSuppressed))
         }
     }
 

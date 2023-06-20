@@ -12,7 +12,6 @@ public struct Card<Content: View>: View {
 
     let title: String
     let description: String
-    let icon: Icon.Content?
     let action: CardAction
     let headerSpacing: CGFloat
     let contentLayout: CardContentLayout
@@ -46,10 +45,6 @@ public struct Card<Content: View>: View {
     @ViewBuilder var header: some View {
         if isHeaderEmpty == false {
             HStack(alignment: .top, spacing: 0) {
-                Icon(icon, size: titleStyle.iconSize)
-                    .padding(.trailing, .xSmall)
-                    .accessibility(.cardIcon)
-                
                 VStack(alignment: .leading, spacing: .xxSmall) {
                     Heading(title, style: titleStyle)
                         .accessibility(.cardTitle)
@@ -64,9 +59,9 @@ public struct Card<Content: View>: View {
                 }
 
                 switch action {
-                    case .buttonLink(let label, let style, let action):
+                    case .buttonLink(let label, let type, let action):
                         if label.isEmpty == false {
-                            ButtonLink(label, style: style, action: action)
+                            ButtonLink(label, type: type, action: action)
                                 .textColor(nil)
                                 .padding(.leading, .xxxSmall)
                                 .accessibility(.cardActionButtonLink)
@@ -81,7 +76,7 @@ public struct Card<Content: View>: View {
     }
 
     var isHeaderEmpty: Bool {
-        if case .none = action, isIconEmpty, title.isEmpty, description.isEmpty {
+        if case .none = action, title.isEmpty, description.isEmpty {
             return true
         } else {
             return false
@@ -90,10 +85,6 @@ public struct Card<Content: View>: View {
 
     var isContentEmpty: Bool {
         content is EmptyView
-    }
-
-    var isIconEmpty: Bool {
-        icon?.isEmpty ?? true
     }
     
     var contentPadding: CGFloat {
@@ -115,12 +106,11 @@ public struct Card<Content: View>: View {
 
 // MARK: - Inits
 public extension Card {
-    
-    /// Creates Orbit Card wrapper component.
+
+    /// Creates Orbit Card component.
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content? = nil,
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
         showBorder: Bool = true,
@@ -132,7 +122,6 @@ public extension Card {
     ) {
         self.title = title
         self.description = description
-        self.icon = icon
         self.action = action
         self.headerSpacing = headerSpacing
         self.showBorder = showBorder
@@ -148,7 +137,6 @@ public extension Card {
 public extension AccessibilityID {
 
     static let cardTitle                = Self(rawValue: "orbit.card.title")
-    static let cardIcon                 = Self(rawValue: "orbit.card.icon")
     static let cardDescription          = Self(rawValue: "orbit.card.description")
     static let cardActionButtonLink     = Self(rawValue: "orbit.card.action.buttonLink")
 }
@@ -158,7 +146,7 @@ public extension AccessibilityID {
 /// Specifies the trailing action of Card component.
 public enum CardAction {
     case none
-    case buttonLink(_ label: String, style: ButtonLink.Style = .primary, action: () -> Void)
+    case buttonLink(_ label: String, type: ButtonLinkType = .primary, action: () -> Void)
 }
 
 /// Specifies the padding and spacing behavior of Card content.
@@ -184,6 +172,8 @@ struct CardPreviews: PreviewProvider {
 
             standaloneIdealSize
                 .padding(.medium)
+
+            snapshot
         }
         .background(Color.screen)
         .previewLayout(.sizeThatFits)
@@ -200,7 +190,7 @@ struct CardPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Card("Card title", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink", action: {})) {
+        Card("Card title", description: "Card description", action: .buttonLink("ButtonLink", action: {})) {
             contentPlaceholder
             contentPlaceholder
         }
@@ -208,29 +198,28 @@ struct CardPreviews: PreviewProvider {
     }
     
     static var standaloneIdealSize: some View {
-        HStack(spacing: .medium) {
-            Card("Card", description: "Intrinsic", icon: .grid) {
+        HStack(spacing: .xxLarge) {
+            Card("Card", description: "Intrinsic") {
                 intrinsicContentPlaceholder
             }
-            .idealSize(horizontal: true, vertical: false)
 
-            Card("Card with SF Symbol", description: "Intrinsic", icon: .sfSymbol("info.circle.fill", color: .greenNormal)) {
+            Card("Card with SF Symbol", description: "Intrinsic") {
                 intrinsicContentPlaceholder
             }
-            .idealSize(horizontal: true, vertical: false)
 
             Spacer()
         }
+        .idealSize(horizontal: true, vertical: false)
         .previewDisplayName()
     }
 
     static var cardWithoutContent: some View {
-        Card("Card with no content", action: .buttonLink("Edit", style: .critical, action: {}))
+        Card("Card with no content", action: .buttonLink("Edit", type: .critical, action: {}))
             .previewDisplayName()
     }
 
     static var cardWithFillLayoutContent: some View {
-        Card("Card with fill layout content", action: .buttonLink("Edit", style: .status(.info), action: {}), contentLayout: .fill) {
+        Card("Card with fill layout content", action: .buttonLink("Edit", type: .status(.info), action: {}), contentLayout: .fill) {
             contentPlaceholder
             Separator()
             contentPlaceholder
@@ -256,7 +245,7 @@ struct CardPreviews: PreviewProvider {
     }
 
     static var cardWithTiles: some View {
-        Card("Card with mixed content", description: "Card description", icon: .grid, action: .buttonLink("ButtonLink", action: {})) {
+        Card("Card with mixed content", description: "Card description", action: .buttonLink("ButtonLink", action: {})) {
             contentPlaceholder
                 .frame(height: 30).clipped()
             Tile("Tile", action: {})
@@ -304,7 +293,7 @@ struct CardPreviews: PreviewProvider {
         ) {
             VStack(spacing: 0) {
                 ListChoice("ListChoice", action: {})
-                ListChoice("ListChoice", icon: .countryFlag("us"), action: {})
+                ListChoice("ListChoice", icon: .map, action: {})
                 ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false, action: {})
             }
             .padding(.top, .xSmall)

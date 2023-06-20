@@ -39,32 +39,36 @@ struct StorybookBadge {
             HStack(spacing: .small) {
                 Badge(
                     "Custom",
-                    icon: .symbol(.airplane, color: .pink),
+                    icon: .airplane,
                     style: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
                         backgroundColor: .whiteNormal
                     )
                 )
+                .iconColor(.pink)
 
-                Badge("Flag", icon: .countryFlag("us"))
-                Badge("Flag", icon: .countryFlag("us"), style: .status(.critical, inverted: true))
+                Badge("Flag") {
+                    CountryFlag("us")
+                }
+                Badge("Flag", style: .status(.critical, inverted: true)) {
+                    CountryFlag("us")
+                }
             }
 
             HStack(spacing: .small) {
-                Badge("Image", icon: .image(.orbit(.facebook)))
-                Badge("Image", icon: .image(.orbit(.facebook)), style: .status(.success, inverted: true))
-            }
-
-            HStack(spacing: .small) {
-                Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
-                Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
+                Badge("SF Symbol") {
+                    Icon("info.circle.fill")
+                }
+                Badge("SF Symbol", style: .status(.warning, inverted: true)) {
+                    Icon("info.circle.fill")
+                }
             }
         }
         .previewDisplayName()
     }
 
-    static func badges(_ style: Badge.Style) -> some View {
+    static func badges(_ style: BadgeStyle) -> some View {
         HStack(spacing: .small) {
             Badge("label", style: style)
             Badge("label", icon: .grid, style: style)

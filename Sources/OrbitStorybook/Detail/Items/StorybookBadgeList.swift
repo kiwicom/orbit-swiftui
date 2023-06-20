@@ -28,9 +28,12 @@ struct StorybookBadgeList {
 
     static var mix: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>SF Symbol</strong>", icon: .sfSymbol("info.circle.fill"), style: .status(.info))
-            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", icon: .countryFlag("cz"), style: .status(.critical))
-            BadgeList("This is simple <ref>BadgeList</ref> item with custom image", icon: .image(.orbit(.facebook)), style: .status(.success))
+            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>SF Symbol</strong>", style: .status(.info)) {
+                Icon("info.circle.fill")
+            }
+            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", style: .status(.critical)) {
+                CountryFlag("us")
+            }
             BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color", labelColor: .custom(.blueDark))
         }
         .previewDisplayName()

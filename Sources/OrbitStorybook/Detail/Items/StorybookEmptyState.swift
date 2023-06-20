@@ -23,7 +23,7 @@ struct StorybookEmptyState {
     }
 
     static var subtle: some View {
-        EmptyState(title, description: description, illustration: .error404, action: .button(button, style: .primarySubtle, action: {}))
+        EmptyState(title, description: description, illustration: .error404, action: .button(button, type: .primarySubtle, action: {}))
     }
 
     static var noAction: some View {

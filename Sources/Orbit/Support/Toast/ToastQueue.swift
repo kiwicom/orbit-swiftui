@@ -22,17 +22,17 @@ public final class ToastQueue: ObservableObject {
     public struct Toast: Identifiable {
         public let id: UUID
         let description: String
-        let icon: Icon.Content?
+        let icon: Icon.Symbol?
         let progress: Double
 
-        init(id: UUID = UUID(), description: String, icon: Icon.Content?, progress: Double) {
+        init(id: UUID = UUID(), description: String, icon: Icon.Symbol?, progress: Double) {
             self.id = id
             self.description = description
             self.icon = icon
             self.progress = progress
         }
 
-        public init(_ description: String, icon: Icon.Content? = nil) {
+        public init(_ description: String, icon: Icon.Symbol? = nil) {
             self.init(description: description, icon: icon, progress: 0)
         }
 
@@ -61,7 +61,7 @@ public final class ToastQueue: ObservableObject {
     }
 
     /// Add a new Toast to be displayed as soon as there is no active Toast displayed.
-    public func add(_ desctription: String, icon: Icon.Content? = nil) {
+    public func add(_ desctription: String, icon: Icon.Symbol? = nil) {
         add(Toast(desctription, icon: icon))
     }
 

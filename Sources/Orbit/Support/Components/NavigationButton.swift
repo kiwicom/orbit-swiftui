@@ -96,12 +96,15 @@ struct NavigationButtonPreviews: PreviewProvider {
                     leading: HStack(spacing: 0) {
                         Group {
                             NavigationButton(.close, action: {})
-                            if #available(iOS 16.0, *) {
-                                BarButton(.sfSymbol("xmark", color: .inkDark), action: {})
-                                    .fontWeight(.bold)
-                            } else {
-                                BarButton(.sfSymbol("xmark", color: .inkDark), action: {})
+
+                            BarButton {
+                                // No action
+                            } icon: {
+                                Icon("xmark")
                             }
+                            .iconColor(.inkDark)
+                            .textFontWeight(.bold)
+
                             BarButton(.close, action: {})
                         }
                         .border(.cloudNormal.opacity(0.3))
@@ -120,12 +123,15 @@ struct NavigationButtonPreviews: PreviewProvider {
                     leading: HStack(spacing: 0) {
                         Group {
                             NavigationButton(.back, action: {})
-                            if #available(iOS 16.0, *) {
-                                BarButton(.sfSymbol("arrow.backward", color: .inkDark), action: {})
-                                    .fontWeight(.bold)
-                            } else {
-                                BarButton(.sfSymbol("arrow.backward", color: .inkDark), action: {})
+
+                            BarButton {
+                                // No action
+                            } icon: {
+                                Icon("arrow.backward")
                             }
+                            .iconColor(.inkDark)
+                            .textFontWeight(.bold)
+
                             BarButton(.chevronBackward, action: {})
                         }
                         .border(.cloudNormal.opacity(0.3))

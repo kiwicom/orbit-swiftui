@@ -11,7 +11,8 @@ struct TutorialScreen: View {
         VStack(spacing: .large) {
             Card("Card Title", action: .buttonLink("Edit", action: {})) {
                 List {
-                    ListItem("List Item 1", icon: .check, style: .custom(color: .greenNormal))
+                    ListItem("List Item 1", icon: .check)
+                        .iconColor(.greenNormal)
                     ListItem("List Item 2 with a <a href=\"...\">TextLink</a>", icon: .check)
                     ListItem("List Item 3")
                 }
@@ -23,8 +24,8 @@ struct TutorialScreen: View {
                 )
                 
                 HStack(spacing: .medium) {
-                    Button("Secondary Button", style: .secondary, action: secondaryAction)
-                    Button(.creditCard, style: .status(.warning), action: {})
+                    Button("Secondary Button", type: .secondary, action: secondaryAction)
+                    Button(icon: .creditCard, type: .status(.warning), action: {})
                 }
             }
             

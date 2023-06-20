@@ -36,7 +36,11 @@ struct StorybookSelect {
                 Select("Label (Empty Value)", prefix: .airplane, value: "", action: {})
                 Select("Label (No Value)", prefix: .airplane, value: nil, prompt: "Please select", action: {})
                 Select("Label", prefix: .phone, value: "Value", action: {})
-                Select("Label", prefix: .countryFlag("us"), value: "Value", action: {})
+                Select("Label", value: "Value") {
+                    // No action
+                } prefix: {
+                    CountryFlag("us")
+                }
             }
 
             Group {
@@ -71,7 +75,7 @@ struct StorybookSelect {
 
                 Select(
                     fieldLongLabel,
-                    prefix: .image(.orbit(.google)),
+                    prefix: .grid,
                     value: "Bad Value with a very long text that should overflow",
                     message: .error("Error message, but also very long and multi-line to test that it works."),
                     action: {}

@@ -17,7 +17,7 @@ struct StorybookCollapse {
             }
             Collapse {
                 contentPlaceholder
-            } headerContent: {
+            } header: {
                 headerPlaceholder
             }
         }

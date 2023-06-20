@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/button/)
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
-public struct Button: View {
+public struct Button<LeadingIcon: View, TrailingIcon: View>: View {
 
     @Environment(\.status) private var status
     @Environment(\.iconColor) private var iconColor
@@ -13,12 +13,12 @@ public struct Button: View {
     @Environment(\.textLinkColor) private var textLinkColor
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    let label: String
-    let icon: Icon.Content?
-    let disclosureIcon: Icon.Content?
-    let style: Style
-    let size: Size
-    let action: () -> Void
+    private let label: String
+    private let type: ButtonType
+    private let size: ButtonSize
+    private let action: () -> Void
+    @ViewBuilder private let icon: LeadingIcon
+    @ViewBuilder private let disclosureIcon: TrailingIcon
 
     public var body: some View {
         SwiftUI.Button(
@@ -33,13 +33,16 @@ public struct Button: View {
                 HStack(spacing: 0) {
                     TextStrut(size.textSize)
 
-                    if isDisclosureIconEmpty, idealSize.horizontal == nil {
+                    if disclosureIcon.isEmpty, idealSize.horizontal == nil {
                         Spacer(minLength: 0)
                     }
 
                     HStack(spacing: .xSmall) {
-                        Icon(icon, size: size.textSize.iconSize)
+                        icon
+                            .font(.system(size: size.textSize.value))
                             .iconColor(iconColor)
+                            .foregroundColor(iconColor)
+
                         textWrapper
                     }
 
@@ -47,7 +50,10 @@ public struct Button: View {
                         Spacer(minLength: 0)
                     }
 
-                    Icon(disclosureIcon, size: size.textSize.iconSize)
+                    disclosureIcon
+                        .font(.system(size: size.textSize.value))
+                        .iconColor(iconColor)
+                        .foregroundColor(iconColor)
                 }
                 .textColor(resolvedTextColor)
                 .padding(.vertical, size.verticalPadding)
@@ -55,7 +61,7 @@ public struct Button: View {
                 .padding(.trailing, trailingPadding)
             }
         )
-        .buttonStyle(ButtonStyle(style: style, status: status, size: size))
+        .buttonStyle(OrbitButtonStyle(type: type, status: status, size: size))
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
     }
 
@@ -80,7 +86,7 @@ public struct Button: View {
     }
 
     var styleTextColor: Color {
-        switch style {
+        switch type {
             case .primary:                      return .whiteNormal
             case .primarySubtle:                return .productDark
             case .secondary:                    return .inkDark
@@ -93,27 +99,19 @@ public struct Button: View {
     }
 
     var isIconOnly: Bool {
-        isIconEmpty == false && label.isEmpty
+        icon.isEmpty == false && label.isEmpty
     }
 
     var leadingPadding: CGFloat {
-        label.isEmpty == false && isIconEmpty
+        label.isEmpty == false && icon.isEmpty
             ? size.horizontalPadding
             : size.horizontalIconPadding
     }
 
     var trailingPadding: CGFloat {
-        label.isEmpty == false && isDisclosureIconEmpty
+        label.isEmpty == false && disclosureIcon.isEmpty
             ? size.horizontalPadding
             : size.horizontalIconPadding
-    }
-
-    private var isIconEmpty: Bool {
-        icon?.isEmpty ?? true
-    }
-
-    private var isDisclosureIconEmpty: Bool {
-        disclosureIcon?.isEmpty ?? true
     }
 
     var defaultStatus: Status {
@@ -121,14 +119,14 @@ public struct Button: View {
     }
 
     var resolvedStatus: Status {
-        switch style {
+        switch type {
             case .status(let status, _):    return status ?? defaultStatus
             default:                        return .info
         }
     }
 
     var hapticFeedback: HapticsProvider.HapticFeedbackType {
-        switch style {
+        switch type {
             case .primary:                                  return .light(1)
             case .primarySubtle, .secondary, .gradient:     return .light(0.5)
             case .critical, .criticalSubtle:                return .notification(.error)
@@ -150,153 +148,162 @@ public extension Button {
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
-        _ label: String,
-        icon: Icon.Content? = nil,
-        disclosureIcon: Icon.Content? = nil,
-        style: Style = .primary,
-        size: Size = .default,
+        _ label: String = "",
+        icon: Icon.Symbol? = nil,
+        disclosureIcon: Icon.Symbol? = nil,
+        type: ButtonType = .primary,
+        size: ButtonSize = .default,
         action: @escaping () -> Void
-    ) {
-        self.label = label
-        self.icon = icon
-        self.disclosureIcon = disclosureIcon
-        self.style = style
-        self.size = size
-        self.action = action
+    ) where LeadingIcon == Icon, TrailingIcon == Icon {
+        self.init(
+            label,
+            type: type,
+            size: size,
+            action: action
+        ) {
+            Icon(icon, size: size.textSize.iconSize)
+        } disclosureIcon: {
+            Icon(disclosureIcon, size: size.textSize.iconSize)
+        }
     }
 
-    /// Creates Orbit Button component with icon only.
+    /// Creates Orbit Button component with custom icons.
     ///
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
-        _ icon: Icon.Content,
-        style: Style = .primary,
-        size: Size = .default,
-        action: @escaping () -> Void
+        _ label: String = "",
+        type: ButtonType = .primary,
+        size: ButtonSize = .default,
+        action: @escaping () -> Void,
+        @ViewBuilder icon: () -> LeadingIcon,
+        @ViewBuilder disclosureIcon: () -> TrailingIcon = { EmptyView() }
     ) {
-        self.init(
-            "",
-            icon: icon,
-            disclosureIcon: .none,
-            style: style,
-            size: size,
-            action: action
-        )
+        self.label = label
+        self.type = type
+        self.size = size
+        self.action = action
+        self.icon = icon()
+        self.disclosureIcon = disclosureIcon()
     }
 }
 
 // MARK: - Types
-extension Button {
 
-    public enum Style {
-        case primary
-        case primarySubtle
-        case secondary
-        case critical
-        case criticalSubtle
-        case status(Status?, isSubtle: Bool = false)
-        case gradient(Gradient)
-    }
-    
-    public enum Size {
+public enum ButtonType {
+    case primary
+    case primarySubtle
+    case secondary
+    case critical
+    case criticalSubtle
+    case status(Status?, isSubtle: Bool = false)
+    case gradient(Gradient)
+}
 
-        case `default`
-        case small
+public enum ButtonSize {
 
-        public var textSize: Text.Size {
-            switch self {
-                case .default:      return .normal
-                case .small:        return .small
-            }
-        }
-        
-        public var horizontalPadding: CGFloat {
-            switch self {
-                case .default:      return .medium
-                case .small:        return .small
-            }
-        }
+    case `default`
+    case small
 
-        public var horizontalIconPadding: CGFloat {
-            switch self {
-                case .default:      return .small
-                case .small:        return verticalPadding
-            }
-        }
-
-        public var verticalPadding: CGFloat {
-            switch self {
-                case .default:      return .small   // = 44 height @ normal size
-                case .small:        return .xSmall  // = 32 height @ normal size
-            }
+    public var textSize: Text.Size {
+        switch self {
+            case .default:      return .normal
+            case .small:        return .small
         }
     }
 
-    public struct ButtonStyle: SwiftUI.ButtonStyle {
-
-        var style: Style
-        var status: Status?
-        var size: Size
-
-        public func makeBody(configuration: Configuration) -> some View {
-            configuration.label
-                .contentShape(Rectangle())
-                .background(background(for: configuration))
-                .cornerRadius(BorderRadius.default)
-        }
-        
-        @ViewBuilder func background(for configuration: Configuration) -> some View {
-            if configuration.isPressed {
-                backgroundActive
-            } else {
-                background
-            }
-        }
-
-        @ViewBuilder var background: some View {
-            switch style {
-                case .primary:                      Color.productNormal
-                case .primarySubtle:                Color.productLight
-                case .secondary:                    Color.cloudNormal
-                case .critical:                     Color.redNormal
-                case .criticalSubtle:               Color.redLight
-                case .status(let status, false):    (status ?? defaultStatus).color
-                case .status(let status, true):     (status ?? defaultStatus).lightHoverColor
-                case .gradient(let gradient):       gradient.background
-            }
-        }
-
-        @ViewBuilder var backgroundActive: some View {
-            switch style {
-                case .primary:                      Color.productNormalActive
-                case .primarySubtle:                Color.productLightActive
-                case .secondary:                    Color.cloudNormalActive
-                case .critical:                     Color.redNormalActive
-                case .criticalSubtle:               Color.redLightActive
-                case .status(let status, false):    (status ?? defaultStatus).activeColor
-                case .status(let status, true):     (status ?? defaultStatus).lightActiveColor
-                case .gradient(let gradient):       gradient.textColor
-            }
-        }
-
-        var defaultStatus: Status {
-            status ?? .info
+    public var horizontalPadding: CGFloat {
+        switch self {
+            case .default:      return .medium
+            case .small:        return .small
         }
     }
 
-    public struct Content: ExpressibleByStringLiteral {
-        public let label: String
-        public let action: () -> Void
-
-        public init(_ label: String, action: @escaping () -> Void) {
-            self.label = label
-            self.action = action
+    public var horizontalIconPadding: CGFloat {
+        switch self {
+            case .default:      return .small
+            case .small:        return verticalPadding
         }
+    }
 
-        public init(stringLiteral value: String) {
-            self.init(value, action: {})
+    public var verticalPadding: CGFloat {
+        switch self {
+            case .default:      return .small   // = 44 height @ normal size
+            case .small:        return .xSmall  // = 32 height @ normal size
         }
+    }
+}
+
+public struct OrbitButtonStyle: ButtonStyle {
+
+    var type: ButtonType
+    var status: Status?
+    var size: ButtonSize
+
+    public init(type: ButtonType, status: Status? = nil, size: ButtonSize) {
+        self.type = type
+        self.status = status
+        self.size = size
+    }
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .contentShape(Rectangle())
+            .background(background(for: configuration))
+            .cornerRadius(BorderRadius.default)
+    }
+
+    @ViewBuilder func background(for configuration: Configuration) -> some View {
+        if configuration.isPressed {
+            backgroundActive
+        } else {
+            background
+        }
+    }
+
+    @ViewBuilder var background: some View {
+        switch type {
+            case .primary:                      Color.productNormal
+            case .primarySubtle:                Color.productLight
+            case .secondary:                    Color.cloudNormal
+            case .critical:                     Color.redNormal
+            case .criticalSubtle:               Color.redLight
+            case .status(let status, false):    (status ?? defaultStatus).color
+            case .status(let status, true):     (status ?? defaultStatus).lightHoverColor
+            case .gradient(let gradient):       gradient.background
+        }
+    }
+
+    @ViewBuilder var backgroundActive: some View {
+        switch type {
+            case .primary:                      Color.productNormalActive
+            case .primarySubtle:                Color.productLightActive
+            case .secondary:                    Color.cloudNormalActive
+            case .critical:                     Color.redNormalActive
+            case .criticalSubtle:               Color.redLightActive
+            case .status(let status, false):    (status ?? defaultStatus).activeColor
+            case .status(let status, true):     (status ?? defaultStatus).lightActiveColor
+            case .gradient(let gradient):       gradient.textColor
+        }
+    }
+
+    var defaultStatus: Status {
+        status ?? .info
+    }
+}
+
+public struct ButtonContent: ExpressibleByStringLiteral {
+
+    public let label: String
+    public let action: () -> Void
+
+    public init(_ label: String, action: @escaping () -> Void) {
+        self.label = label
+        self.action = action
+    }
+
+    public init(stringLiteral value: String) {
+        self.init(value, action: {})
     }
 }
 
@@ -328,10 +335,10 @@ struct ButtonPreviews: PreviewProvider {
             Button("Button", icon: .grid, action: {})
             Button("Button", icon: .grid, disclosureIcon: .grid, action: {})
             Button("Button", action: {})
-            Button(.grid, action: {})
-            Button(.grid, action: {})
+            Button(icon: .grid, action: {})
+            Button(icon: .grid, action: {})
                 .idealSize()
-            Button(.arrowUp, action: {})
+            Button(icon: .arrowUp, action: {})
                 .idealSize()
         }
         .padding(.medium)
@@ -341,14 +348,14 @@ struct ButtonPreviews: PreviewProvider {
     static var sizing: some View {
         VStack(spacing: .medium) {
             Group {
-                Button("", action: {})
+                Button(action: {})
                 Button("Button", action: {})
                 Button("Button", icon: .grid, action: {})
                 Button("Button\nmultiline", icon: .grid, action: {})
-                Button(.grid, action: {})
+                Button(icon: .grid, action: {})
                 Button("Button small", size: .small, action: {})
                 Button("Button small", icon: .grid, size: .small, action: {})
-                Button(.grid, size: .small, action: {})
+                Button(icon: .grid, size: .small, action: {})
                 Button("Button\nmultiline", size: .small, action: {})
             }
             .measured()
@@ -392,9 +399,16 @@ struct ButtonPreviews: PreviewProvider {
 
     @ViewBuilder static var mix: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
-            Button("Button with SF Symbol", icon: .sfSymbol("info.circle.fill"), action: {})
-            Button("Button with Flag", icon: .countryFlag("cz"), action: {})
-            Button("Button with Image", icon: .image(.orbit(.facebook)), action: {})
+            Button("Button with SF Symbol") {
+                // No action
+            } icon: {
+                Icon("info.circle.fill")
+            }
+            Button("Button with Flag", type: .secondary) {
+                // No action
+            } icon: {
+                CountryFlag("us", size: .normal)
+            }
         }
         .padding(.medium)
         .previewDisplayName()
@@ -411,26 +425,26 @@ struct ButtonPreviews: PreviewProvider {
         .padding(.medium)
     }
 
-    @ViewBuilder static func buttons(_ style: Button.Style) -> some View {
+    @ViewBuilder static func buttons(_ type: ButtonType) -> some View {
         VStack(spacing: .small) {
             HStack(spacing: .small) {
-                Button("Label", style: style, action: {})
-                Button("Label", icon: .grid, style: style, action: {})
+                Button("Label", type: type, action: {})
+                Button("Label", icon: .grid, type: type, action: {})
             }
             HStack(spacing: .small) {
-                Button("Label", disclosureIcon: .chevronForward, style: style, action: {})
-                Button("Label", icon: .grid, disclosureIcon: .chevronForward, style: style, action: {})
+                Button("Label", disclosureIcon: .chevronForward, type: type, action: {})
+                Button("Label", icon: .grid, disclosureIcon: .chevronForward, type: type, action: {})
             }
             HStack(spacing: .small) {
-                Button("Label", style: style, action: {})
+                Button("Label", type: type, action: {})
                     .idealSize()
-                Button(.grid, style: style, action: {})
+                Button(icon: .grid, type: type, action: {})
                 Spacer()
             }
             HStack(spacing: .small) {
-                Button("Label", style: style, size: .small, action: {})
+                Button("Label", type: type, size: .small, action: {})
                     .idealSize()
-                Button(.grid, style: style, size: .small, action: {})
+                Button(icon: .grid, type: type, size: .small, action: {})
                 Spacer()
             }
         }
@@ -443,13 +457,13 @@ struct ButtonPreviews: PreviewProvider {
         }
     }
 
-    @ViewBuilder static func statusButtons(_ style: Button.Style) -> some View {
+    @ViewBuilder static func statusButtons(_ type: ButtonType) -> some View {
         HStack(spacing: .xSmall) {
             Group {
-                Button("Label", style: style, size: .small, action: {})
-                Button("Label", icon: .grid, disclosureIcon: .chevronForward, style: style, size: .small, action: {})
-                Button("Label", disclosureIcon: .chevronForward, style: style, size: .small, action: {})
-                Button(.grid, style: style, size: .small, action: {})
+                Button("Label", type: type, size: .small, action: {})
+                Button("Label", icon: .grid, disclosureIcon: .chevronForward, type: type, size: .small, action: {})
+                Button("Label", disclosureIcon: .chevronForward, type: type, size: .small, action: {})
+                Button(icon: .grid, type: type, size: .small, action: {})
             }
             .idealSize()
 

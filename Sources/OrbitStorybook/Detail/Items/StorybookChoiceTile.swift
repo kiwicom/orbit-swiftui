@@ -25,7 +25,7 @@ struct StorybookChoiceTile {
             StateWrapper(false) { isSelected in
                 ChoiceTile(
                     "Checkbox indictor with long and multiline title",
-                    icon: .symbol(.grid, color: .greenNormal),
+                    icon: .grid,
                     indicator: .checkbox,
                     isSelected: isSelected.wrappedValue,
                     message: .help("Info multiline and very very very very long message")
@@ -34,17 +34,19 @@ struct StorybookChoiceTile {
                 } content: {
                     contentPlaceholder
                 }
+                .iconColor(.greenNormal)
             }
             StateWrapper(false) { isSelected in
                 ChoiceTile(
                     description: "Long and multiline description with no title",
-                    icon: .countryFlag("cz"),
                     isSelected: isSelected.wrappedValue,
                     message: .warning("Warning multiline and very very very very long message")
                 ) {
                     isSelected.wrappedValue.toggle()
                 } content: {
                     contentPlaceholder
+                } icon: {
+                    CountryFlag("cz")
                 }
             }
             StateWrapper(false) { isSelected in

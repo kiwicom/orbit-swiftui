@@ -2,10 +2,10 @@ import SwiftUI
 
 public enum Message: Equatable, Hashable, CustomStringConvertible {
 
-    case normal(String, icon: Icon.Content? = nil)
-    case help(String, icon: Icon.Content? = .informationCircle)
-    case warning(String, icon: Icon.Content? = .alert)
-    case error(String, icon: Icon.Content? = .alertCircle)
+    case normal(String, icon: Icon.Symbol? = nil)
+    case help(String, icon: Icon.Symbol? = .informationCircle)
+    case warning(String, icon: Icon.Symbol? = .alert)
+    case error(String, icon: Icon.Symbol? = .alertCircle)
 
     public var description: String {
         switch self {
@@ -51,7 +51,7 @@ public enum Message: Equatable, Hashable, CustomStringConvertible {
         status?.lightColor ?? .cloudLight
     }
 
-    public var icon: Icon.Content? {
+    public var icon: Icon.Symbol? {
         switch self {
             case .error(_, let icon),
                  .warning(_, let icon),

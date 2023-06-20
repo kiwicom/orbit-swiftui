@@ -112,13 +112,13 @@ struct PasswordStrengthIndicatorPreviews: PreviewProvider {
                 PasswordStrengthIndicator(passwordStrength: strength.wrappedValue)
 
                 HStack {
-                    Button("weak", style: .critical) {
+                    Button("weak", type: .critical) {
                         strength.wrappedValue = .weak(title: "Weak")
                     }
-                    Button("medium", style: .status(.warning)) {
+                    Button("medium", type: .status(.warning)) {
                         strength.wrappedValue = .medium(title: "Medium")
                     }
-                    Button("strong", style: .status(.success)) {
+                    Button("strong", type: .status(.success)) {
                         strength.wrappedValue = .strong(title: "Strong")
                     }
                 }

@@ -1,4 +1,4 @@
-# ``Orbit/List``
+# ``Orbit/Tag``
 
 @Metadata {
     @DocumentationExtension(mergeBehavior: append)
@@ -6,10 +6,7 @@
 
 ## Topics
 
-### Adding Content
-
-- ``ListItem``
-
 ### Customizing Appearance
 
-- ``ListItemType``
+- ``TagButtonStyle``
+- ``TagStyle``

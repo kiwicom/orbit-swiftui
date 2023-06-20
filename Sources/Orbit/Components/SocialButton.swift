@@ -36,7 +36,7 @@ public struct SocialButton: View {
 
                     Text(label, size: .normal)
                         .fontWeight(.medium)
-                        .padding(.vertical, Button.Size.default.verticalPadding)
+                        .padding(.vertical, ButtonSize.default.verticalPadding)
 
                     if idealSize.horizontal == nil {
                         Spacer(minLength: 0)

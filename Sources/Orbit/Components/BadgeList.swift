@@ -5,23 +5,25 @@ import SwiftUI
 /// The items in the list should all be static information, *not* actionable.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/badgelist/)
-public struct BadgeList: View {
+public struct BadgeList<Icon: View>: View {
 
     @Environment(\.status) private var status
     @Environment(\.textAccentColor) private var textAccentColor
     @Environment(\.textColor) private var textColor
 
     let label: String
-    let icon: Icon.Content?
     let style: Style
     let labelColor: LabelColor
     let size: Size
+    @ViewBuilder let icon: Icon
 
     public var body: some View {
         if isEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-                Icon(icon, size: .small)
-                    .textColor(iconColor)
+                badge
+                    .font(.system(size: Orbit.Icon.Size.small.value))
+                    .foregroundColor(iconColor)
+                    .iconColor(iconColor)
                     .padding(.xxSmall)
                     .background(badgeBackground)
 
@@ -33,8 +35,17 @@ public struct BadgeList: View {
         }
     }
 
+    @ViewBuilder var badge: some View {
+        if icon.isEmpty {
+            Orbit.Icon(.grid, size: .small)
+                .opacity(0)
+        } else {
+            icon
+        }
+    }
+
     @ViewBuilder var badgeBackground: some View {
-        if isIconEmpty == false, icon != .transparent {
+        if icon.isEmpty == false {
             backgroundColor
                 .clipShape(Circle())
         }
@@ -61,11 +72,7 @@ public struct BadgeList: View {
     }
 
     var isEmpty: Bool {
-        label.isEmpty && isIconEmpty
-    }
-
-    var isIconEmpty: Bool {
-        icon?.isEmpty ?? true
+        label.isEmpty && icon.isEmpty
     }
 }
 
@@ -78,16 +85,37 @@ public extension BadgeList {
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ label: String = "",
-        icon: Icon.Content? = nil,
+        icon: Icon.Symbol? = nil,
         style: Style = .neutral,
         labelColor: LabelColor = .primary,
         size: Size = .normal
+    ) where Icon == Orbit.Icon {
+        self.init(
+            label,
+            style: style,
+            labelColor: labelColor,
+            size: size
+        ) {
+            Icon(icon, size: .small)
+        }
+    }
+
+    /// Creates Orbit BadgeList component with custom icon.
+    ///
+    /// - Parameters:
+    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    init(
+        _ label: String = "",
+        style: Style = .neutral,
+        labelColor: LabelColor = .primary,
+        size: Size = .normal,
+        @ViewBuilder icon: () -> Icon
     ) {
         self.label = label
-        self.icon = icon
         self.style = style
         self.labelColor = labelColor
         self.size = size
+        self.icon = icon()
     }
 }
 
@@ -185,12 +213,16 @@ struct BadgeListPreviews: PreviewProvider {
 
     static var mix: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>SF Symbol</strong>", icon: .sfSymbol("info.circle.fill"), style: .status(.info))
-            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", icon: .countryFlag("cz"), style: .status(.critical))
-            BadgeList("This is simple <ref>BadgeList</ref> item with custom image", icon: .image(.orbit(.facebook)), style: .status(.success))
+            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>SF Symbol</strong>", style: .status(.info)) {
+                Icon("info.circle.fill", size: .small)
+            }
+            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", style: .status(.critical)) {
+                CountryFlag("us", size: .small)
+            }
             BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color", labelColor: .custom(.blueDark))
-            BadgeList("This is <ref>BadgeList</ref> item with transparent icon and custom color", icon: .transparent, labelColor: .custom(.blueDark))
-            BadgeList("This is a <ref>BadgeList</ref> with <strong>status</strong> override", icon: .sfSymbol("info.circle.fill"), style: .status(nil))
+            BadgeList("This is a <ref>BadgeList</ref> with <strong>status</strong> override", style: .status(nil)) {
+                Icon("info.circle.fill", size: .small)
+            }
         }
         .status(.success)
         .padding(.medium)

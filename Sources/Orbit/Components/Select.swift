@@ -4,23 +4,23 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/select/)
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
-public struct Select: View {
+public struct Select<Prefix: View, Suffix: View>: View {
 
     let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
 
     @Environment(\.isEnabled) private var isEnabled: Bool
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    @Binding var messageHeight: CGFloat
+    @Binding private var messageHeight: CGFloat
     
-    let label: String
-    let prefix: Icon.Content?
-    let value: String?
-    let prompt: String
-    let suffix: Icon.Content?
-    let state: InputState
-    let message: Message?
-    let action: () -> Void
+    private let label: String
+    private let value: String?
+    private let prompt: String
+    private let state: InputState
+    private let message: Message?
+    private let action: () -> Void
+    @ViewBuilder private let prefix: Prefix
+    @ViewBuilder private let suffix: Suffix
 
     public var body: some View {
         FieldWrapper(
@@ -48,14 +48,13 @@ public struct Select: View {
                 }
             )
             .buttonStyle(
-                InputStyle(
-                    prefix: prefix,
-                    suffix: suffix,
-                    prefixAccessibilityID: .selectPrefix,
-                    suffixAccessibilityID: .selectSuffix,
-                    state: state,
-                    message: message
-                )
+                InputButtonStyle(state: state, message: message) {
+                    prefix
+                        .accessibility(.selectPrefix)
+                } suffix: {
+                    suffix
+                        .accessibility(.selectSuffix)
+                }
             )
         }
         .accessibilityElement(children: .ignore)
@@ -90,19 +89,11 @@ public struct Select: View {
     }
 
     var leadingPadding: CGFloat {
-        isPrefixEmpty ? .small : 0
+        prefix.isEmpty ? .small : 0
     }
 
     var trailingPadding: CGFloat {
-        isSuffixEmpty ? .small : 0
-    }
-
-    var isPrefixEmpty: Bool {
-        prefix?.isEmpty ?? true
-    }
-
-    var isSuffixEmpty: Bool {
-        suffix?.isEmpty ?? true
+        suffix.isEmpty ? .small : 0
     }
 }
 
@@ -112,25 +103,54 @@ public extension Select {
     /// Creates Orbit Select component.
     init(
         _ label: String = "",
-        prefix: Icon.Content? = nil,
+        prefix: Icon.Symbol? = nil,
         value: String?,
         prompt: String = "",
-        suffix: Icon.Content? = .chevronDown,
+        suffix: Icon.Symbol? = .chevronDown,
         state: InputState = .default,
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         action: @escaping () -> Void
-    ) {
-        self.label = label
-        self.prefix = prefix
-        self.value = value
-        self.prompt = prompt
-        self.suffix = suffix
-        self.state = state
-        self.message = message
-        self._messageHeight = messageHeight
-        self.action = action
+    ) where Prefix == Icon, Suffix == Icon {
+        self.init(
+            label,
+            value: value,
+            prompt: prompt,
+            state: state,
+            message: message,
+            messageHeight: messageHeight
+        ) {
+            action()
+        } prefix: {
+            Icon(prefix)
+        } suffix: {
+            Icon(suffix)
+        }
     }
+
+
+   /// Creates Orbit Select component with custom prefix or suffix.
+   init(
+       _ label: String = "",
+       value: String?,
+       prompt: String = "",
+       state: InputState = .default,
+       message: Message? = nil,
+       messageHeight: Binding<CGFloat> = .constant(0),
+       action: @escaping () -> Void,
+       @ViewBuilder prefix: () -> Prefix,
+       @ViewBuilder suffix: () -> Suffix = { EmptyView() }
+   ) {
+       self.label = label
+       self.value = value
+       self.prompt = prompt
+       self.state = state
+       self.message = message
+       self._messageHeight = messageHeight
+       self.action = action
+       self.prefix = prefix()
+       self.suffix = suffix()
+   }
 }
 
 // MARK: - Identifiers
@@ -205,8 +225,8 @@ struct SelectPreviews: PreviewProvider {
         _ label: String = InputFieldPreviews.label,
         value: String?,
         prompt: String = InputFieldPreviews.prompt,
-        prefix: Icon.Content? = .grid,
-        suffix: Icon.Content? = .chevronDown,
+        prefix: Icon.Symbol? = .grid,
+        suffix: Icon.Symbol? = .chevronDown,
         message: Message? = nil
     ) -> some View {
         Select(label, prefix: prefix, value: value, prompt: prompt, suffix: suffix, message: message, action: {})
@@ -223,7 +243,7 @@ struct SelectPreviews: PreviewProvider {
                 Select("Label (Empty Value)", prefix: .airplane, value: "", action: {})
                 Select("Label (No Value)", prefix: .airplane, value: nil, prompt: "Please select", action: {})
                 Select("Label", prefix: .phone, value: "Value", action: {})
-                Select("Label", prefix: .countryFlag("us"), value: "Value", action: {})
+                Select("Label", prefix: .map, value: "Value", action: {})
             }
 
             Group {
@@ -258,7 +278,7 @@ struct SelectPreviews: PreviewProvider {
 
                 Select(
                     FieldLabelPreviews.longLabel,
-                    prefix: .image(.orbit(.google)),
+                    prefix: .grid,
                     value: "Bad Value with a very long text that should overflow",
                     message: .error("Error message, but also very long and multi-line to test that it works."),
                     action: {}
@@ -281,7 +301,7 @@ struct SelectPreviews: PreviewProvider {
 
                         Select(
                             "Label (Error) with a long multiline label to test that it works",
-                            prefix: .image(.orbit(.google)),
+                            prefix: .grid,
                             value: "Bad Value with a very long text that should overflow",
                             message: state.wrappedValue
                                 ? .error("Error message, but also very long and multi-line to test that it works.")

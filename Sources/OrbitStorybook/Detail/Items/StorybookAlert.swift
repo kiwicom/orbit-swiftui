@@ -11,7 +11,7 @@ struct StorybookAlert {
         Description message can be <strong>formatted</strong>, but if more <ref>customizaton</ref> is needed a custom \
         description content can be provided instead.
         """
-    static let primaryAndSecondaryConfiguration = AlertButtons.primaryAndSecondary("Primary", "Secondary")
+    static let primaryAndSecondaryConfiguration: AlertButtons? = AlertButtons.primaryAndSecondary("Primary", "Secondary")
     static let primaryConfiguration = AlertButtons.primary("Primary")
     static let secondaryConfiguration = AlertButtons.secondary("Secondary")
 
@@ -60,11 +60,12 @@ struct StorybookAlert {
                             case .primary:                  buttons.wrappedValue = secondaryConfiguration
                             case .secondary:                buttons.wrappedValue = primaryAndSecondaryConfiguration
                             case .primaryAndSecondary:      buttons.wrappedValue = .none
+                            case .inline:                   buttons.wrappedValue = .none
                         }
                     }
                 }
             }
-            .animation(.default, value: buttons.wrappedValue.isVisible)
+            .animation(.default, value: buttons.wrappedValue == nil)
         }
         .previewDisplayName()
     }
@@ -107,7 +108,7 @@ struct StorybookAlert {
         Alert(
             title,
             description: description,
-            icon: icon.map { Icon.Content.symbol($0) },
+            icon: icon,
             buttons: primaryAndSecondaryConfiguration,
             style: .status(status, isSubtle: isSuppressed)
         )
@@ -124,10 +125,10 @@ struct StorybookAlert {
 
     static func inlineAlerts(showIcon: Bool, isSuppressed: Bool) -> some View {
         VStack(spacing: .medium) {
-            Alert("Informational message", icon: showIcon ? .informationCircle : .none, button: "Primary", style: .status(nil, isSubtle: isSuppressed))
-            Alert("Success message", icon: showIcon ? .checkCircle : .none, button: "Primary", style: .status(.success, isSubtle: isSuppressed))
-            Alert("Warning message", icon: showIcon ? .alertCircle : .none, button: "Primary", style: .status(.warning, isSubtle: isSuppressed))
-            Alert("Critical message", icon: showIcon ? .alertCircle : .none, button: "Primary", style: .status(.critical, isSubtle: isSuppressed))
+            Alert("Informational message", icon: showIcon ? .informationCircle : .none, buttons: .inline("Primary"), style: .status(nil, isSubtle: isSuppressed))
+            Alert("Success message", icon: showIcon ? .checkCircle : .none, buttons: .inline("Primary"), style: .status(.success, isSubtle: isSuppressed))
+            Alert("Warning message", icon: showIcon ? .alertCircle : .none, buttons: .inline("Primary"), style: .status(.warning, isSubtle: isSuppressed))
+            Alert("Critical message", icon: showIcon ? .alertCircle : .none, buttons: .inline("Primary"), style: .status(.critical, isSubtle: isSuppressed))
         }
     }
 }

@@ -6,7 +6,7 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tile/)
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
-public struct Tile<Content: View>: View {
+public struct Tile<Content: View, Icon: View>: View {
 
     @Environment(\.idealSize) private var idealSize
     @Environment(\.isInsideTileGroup) private var isInsideTileGroup
@@ -14,18 +14,16 @@ public struct Tile<Content: View>: View {
     @Environment(\.status) private var status
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    public let verticalTextPadding: CGFloat = 14 // = 52 height @ normal size
-
-    let title: String
-    let description: String
-    let icon: Icon.Content?
-    let disclosure: TileDisclosure
-    let showBorder: Bool
-    let backgroundColor: BackgroundColor?
-    let titleStyle: Heading.Style
-    let descriptionColor: Color
-    let action: () -> Void
-    @ViewBuilder let content: Content
+    private let title: String
+    private let description: String
+    private let disclosure: TileDisclosure
+    private let showBorder: Bool
+    private let backgroundColor: BackgroundColor?
+    private let titleStyle: Heading.Style
+    private let descriptionColor: Color
+    private let action: () -> Void
+    @ViewBuilder private let content: Content
+    @ViewBuilder private let icon: Icon
 
     public var body: some View {
         SwiftUI.Button(
@@ -59,7 +57,7 @@ public struct Tile<Content: View>: View {
             }
 
             TextStrut(.large)
-                .padding(.vertical, verticalTextPadding)
+                .padding(.vertical, TileButtonStyle.verticalTextPadding)
 
             disclosureIcon
                 .padding(.trailing, .medium)
@@ -71,7 +69,9 @@ public struct Tile<Content: View>: View {
     @ViewBuilder var header: some View {
         if isHeaderEmpty == false {
             HStack(alignment: .top, spacing: 0) {
-                Icon(icon, size: titleStyle.iconSize)
+                icon
+                    .font(.system(size: titleStyle.iconSize.value))
+                    .foregroundColor(.inkNormal)
                     .padding(.trailing, .xSmall)
                     .accessibility(.tileIcon)
 
@@ -90,7 +90,7 @@ public struct Tile<Content: View>: View {
 
                 inactiveButtonLink
             }
-            .padding(.vertical, verticalTextPadding)
+            .padding(.vertical, TileButtonStyle.verticalTextPadding)
             .padding(.horizontal, .medium)
         }
     }
@@ -106,8 +106,8 @@ public struct Tile<Content: View>: View {
         switch disclosure {
             case .none, .icon:
                 EmptyView()
-            case .buttonLink(let label, let style):
-                ButtonLink(label, style: style, action: {})
+            case .buttonLink(let label, let type):
+                ButtonLink(label, type: type, action: {})
                     .textColor(nil)
                     .disabled(true)
                     .padding(.vertical, -.xxxSmall)
@@ -120,7 +120,7 @@ public struct Tile<Content: View>: View {
             case .none, .buttonLink:
                 EmptyView()
             case .icon(let icon, _):
-                Icon(icon)
+                Orbit.Icon(icon)
                     .iconColor(.inkNormal)
                     .padding(.leading, .xSmall)
                     .accessibility(.tileDisclosureIcon)
@@ -135,7 +135,7 @@ public struct Tile<Content: View>: View {
     }
 
     var separatorPadding: CGFloat {
-        isIconEmpty ? .medium : .xxxLarge
+        icon.isEmpty ? .medium : .xxxLarge
     }
     
     var tileBorderStyle: TileBorderStyle {
@@ -143,11 +143,7 @@ public struct Tile<Content: View>: View {
     }
     
     var isHeaderEmpty: Bool {
-        title.isEmpty && description.isEmpty && isIconEmpty
-    }
-
-    var isIconEmpty: Bool {
-        icon?.isEmpty ?? true
+        title.isEmpty && description.isEmpty && icon.isEmpty
     }
 }
 
@@ -158,7 +154,7 @@ public extension Tile {
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Content? = nil,
+        icon: Icon.Symbol? = nil,
         disclosure: TileDisclosure = .icon(.chevronForward),
         showBorder: Bool = true,
         backgroundColor: BackgroundColor? = nil,
@@ -166,10 +162,39 @@ public extension Tile {
         descriptionColor: Color = .inkNormal,
         action: @escaping () -> Void,
         @ViewBuilder content: () -> Content = { EmptyView() }
+    ) where Icon == Orbit.Icon {
+        self.init(
+            title,
+            description: description,
+            disclosure: disclosure,
+            showBorder: showBorder,
+            backgroundColor: backgroundColor,
+            titleStyle: titleStyle,
+            descriptionColor: descriptionColor
+        ) {
+            action()
+        } content: {
+            content()
+        } icon: {
+            Icon(icon, size: titleStyle.iconSize)
+        }
+    }
+
+    /// Creates Orbit Tile component with custom icon.
+    init(
+        _ title: String = "",
+        description: String = "",
+        disclosure: TileDisclosure = .icon(.chevronForward),
+        showBorder: Bool = true,
+        backgroundColor: BackgroundColor? = nil,
+        titleStyle: Heading.Style = .title4,
+        descriptionColor: Color = .inkNormal,
+        action: @escaping () -> Void,
+        @ViewBuilder content: () -> Content = { EmptyView() },
+        @ViewBuilder icon: () -> Icon
     ) {
         self.title = title
         self.description = description
-        self.icon = icon
         self.disclosure = disclosure
         self.showBorder = showBorder
         self.backgroundColor = backgroundColor
@@ -177,6 +202,7 @@ public extension Tile {
         self.descriptionColor = descriptionColor
         self.action = action
         self.content = content()
+        self.icon = icon()
     }
 }
 
@@ -204,12 +230,14 @@ public extension Tile {
 /// Button style wrapper for Tile-like components.
 ///
 /// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
-public struct TileButtonStyle: SwiftUI.ButtonStyle {
+public struct TileButtonStyle: ButtonStyle {
 
-    let style: TileBorderStyle
-    let isSelected: Bool
-    let status: Status?
-    let backgroundColor: Tile.BackgroundColor?
+    public static let verticalTextPadding: CGFloat = 14 // = 52 height @ normal size
+
+    private let style: TileBorderStyle
+    private let isSelected: Bool
+    private let status: Status?
+    private let backgroundColor: Tile.BackgroundColor?
 
     /// Creates button style wrapper for Tile-like components.
     public init(style: TileBorderStyle = .default, isSelected: Bool = false, status: Status? = nil, backgroundColor: Tile.BackgroundColor? = nil) {
@@ -242,9 +270,9 @@ public struct TileButtonStyle: SwiftUI.ButtonStyle {
 public enum TileDisclosure: Equatable {
     case none
     /// Icon with optional color override.
-    case icon(Icon.Content, alignment: VerticalAlignment = .center)
+    case icon(Icon.Symbol, alignment: VerticalAlignment = .center)
     /// ButtonLink indicator.
-    case buttonLink(_ label: String, style: ButtonLink.Style = .primary)
+    case buttonLink(_ label: String, type: ButtonLinkType = .primary)
 }
 
 // MARK: - Identifiers
@@ -319,7 +347,9 @@ struct TilePreviews: PreviewProvider {
             Tile(title, icon: .airplane, action: {})
             Tile(title, description: description, action: {})
             Tile(title, description: description, icon: .airplane, action: {})
-            Tile(action: {}) {
+            Tile {
+                // No action
+            } content: {
                 contentPlaceholder
             }
         }
@@ -332,12 +362,22 @@ struct TilePreviews: PreviewProvider {
             Tile("Title with very very very very very long multiline text", description: descriptionMultiline, icon: .airplane, action: {}) {
                 contentPlaceholder
             }
-            Tile(title, description: description, icon: .symbol(.airplane, color: .blueNormal), action: {})
-                .status(.info)
-            Tile("SF Symbol", description: description, icon: .sfSymbol("info.circle.fill"), action: {})
-                .status(.critical)
-            Tile("Country Flag", description: description, icon: .countryFlag("cz"), disclosure: .buttonLink("Action", style: .primary), action: {})
-            Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", style: .critical), action: {})
+
+            Tile(title, description: description, icon: .airplane) {
+                // No action
+            }
+            .iconColor(.blueNormal)
+            .status(.info)
+
+            Tile("SF Symbol", description: description) {
+                // No action
+            } icon: {
+                Icon("info.circle.fill")
+            }
+            .status(.critical)
+
+            Tile("Country Flag", description: description, icon: .grid, disclosure: .buttonLink("Action", type: .primary), action: {})
+            Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", type: .critical), action: {})
             Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid), action: {})
         }
         .padding(.medium)
@@ -346,16 +386,24 @@ struct TilePreviews: PreviewProvider {
 
     @ViewBuilder static var customContentMix: some View {
         VStack(spacing: .large) {
-            Tile(disclosure: .none, action: {}) {
+            Tile(disclosure: .none) {
+                // No action
+            } content: {
                 contentPlaceholder
             }
-            Tile(disclosure: .buttonLink("Action", style: .critical), action: {}) {
+            Tile(disclosure: .buttonLink("Action", type: .critical)) {
+                // No action
+            } content: {
                 contentPlaceholder
             }
-            Tile(action: {}) {
+            Tile {
+                // No action
+            } content: {
                 contentPlaceholder
             }
-            Tile("Tile with custom content", disclosure: .buttonLink("Action", style: .critical), action: {}) {
+            Tile("Tile with custom content", disclosure: .buttonLink("Action", type: .critical)) {
+                // No action
+            } content: {
                 contentPlaceholder
             }
             Tile(

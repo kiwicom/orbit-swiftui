@@ -88,7 +88,7 @@ extension Skeleton {
         }
 
         case atomic(Atomic)
-        case button(_ size: Button.Size = .default)
+        case button(_ size: ButtonSize = .default)
         case card(height: CGFloat? = nil)
         case image(height: CGFloat? = nil)
         case list(rows: Int, rowHeight: CGFloat = 20, spacing: CGFloat = .xSmall)

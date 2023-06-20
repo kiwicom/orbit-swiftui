@@ -20,13 +20,13 @@ struct StorybookList {
             Separator()
 
             List {
-                ListItem(listItemText, style: .secondary)
-                ListItem(listItemText, style: .secondary)
+                ListItem(listItemText, type: .secondary)
+                ListItem(listItemText, type: .secondary)
             }
 
             List {
-                ListItem(listItemText, size: .large, style: .secondary)
-                ListItem(listItemText, size: .large, style: .secondary)
+                ListItem(listItemText, size: .large, type: .secondary)
+                ListItem(listItemText, size: .large, type: .secondary)
             }
         }
         .previewDisplayName()
@@ -37,9 +37,11 @@ struct StorybookList {
             List {
                 ListItem(listItemText)
                 ListItem(listItemText, icon: .grid)
-                ListItem(listItemText, icon: .symbol(.check, color: .greenNormal))
+                ListItem(listItemText, icon: .check)
+                    .iconColor(.greenNormal)
                 ListItem(listItemText, icon: .none)
-                ListItem(listItemText, icon: .symbol(.accountCircle, color: .orangeNormal))
+                ListItem(listItemText, icon: .accountCircle)
+                    .iconColor(.orangeNormal)
             }
 
             Separator()
@@ -55,10 +57,10 @@ struct StorybookList {
             Separator()
 
             List(spacing: .large) {
-                ListItem(listItemText, spacing: 0)
-                ListItem(listItemText, spacing: 0)
-                ListItem(listItemText, spacing: .small)
-                ListItem(listItemText, spacing: .small)
+                ListItem(listItemText)
+                ListItem(listItemText)
+                ListItem(listItemText)
+                ListItem(listItemText)
             }
         }
         .previewDisplayName()

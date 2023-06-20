@@ -6,20 +6,22 @@ import SwiftUI
 /// They can be updated when a status changes, but they should not be actionable.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/badge/)
-public struct Badge: View {
+public struct Badge<LeadingIcon: View, TrailingIcon: View>: View {
 
     @Environment(\.status) private var status
     @Environment(\.sizeCategory) private var sizeCategory
 
-    let label: String
-    let icon: Icon.Content?
-    var style: Style
+    private let label: String
+    private let leadingIcon: LeadingIcon
+    private let trailingIcon: TrailingIcon
+    private let style: BadgeStyle
 
     public var body: some View {
         if isEmpty == false {
             HStack(spacing: .xxSmall) {
-                Icon(icon, size: .small)
-                    .fontWeight(.medium)
+                leadingIcon
+                    .font(.system(size: Icon.Size.small.value))
+                    .foregroundColor(labelColor)
 
                 Text(
                     label,
@@ -28,6 +30,10 @@ public struct Badge: View {
                 .fontWeight(.medium)
                 .textLinkColor(.custom(labelColor))
                 .frame(minWidth: minTextWidth)
+
+                trailingIcon
+                    .font(.system(size: Icon.Size.small.value))
+                    .foregroundColor(labelColor)
             }
             .textColor(labelColor)
             .padding(.vertical, .xxSmall) // = 24 height @ normal size
@@ -60,11 +66,7 @@ public struct Badge: View {
     }
 
     var isEmpty: Bool {
-        isIconEmpty && label.isEmpty
-    }
-
-    var isIconEmpty: Bool {
-        icon?.isEmpty ?? true
+        leadingIcon.isEmpty && label.isEmpty && trailingIcon.isEmpty
     }
 
     var labelColor: Color {
@@ -91,28 +93,48 @@ public extension Badge {
     ///
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
-    init(_ label: String = "", icon: Icon.Content? = nil, style: Style = .neutral) {
+    init(
+        _ label: String = "",
+        icon: Icon.Symbol? = nil,
+        trailingIcon: Icon.Symbol? = nil,
+        style: BadgeStyle = .neutral
+    ) where LeadingIcon == Icon, TrailingIcon == Icon {
+        self.init(label, style: style) {
+            Icon(icon, size: .small)
+        } trailingIcon: {
+            Icon(trailingIcon, size: .small)
+        }
+    }
+
+    /// Creates Orbit Badge component with custom icons.
+    ///
+    /// - Parameters:
+    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    init(
+        _ label: String = "",
+        style: BadgeStyle = .neutral,
+        @ViewBuilder icon: () -> LeadingIcon,
+        @ViewBuilder trailingIcon: () -> TrailingIcon = { EmptyView() }
+    ) {
         self.label = label
-        self.icon = icon
+        self.leadingIcon = icon()
+        self.trailingIcon = trailingIcon()
         self.style = style
     }
 }
 
 // MARK: - Types
-public extension Badge {
+public enum BadgeStyle {
 
-    enum Style {
+    case light
+    case lightInverted
+    case neutral
+    case status(_ status: Status? = nil, inverted: Bool = false)
+    case custom(labelColor: Color, outlineColor: Color, backgroundColor: Color)
+    case gradient(Gradient)
 
-        case light
-        case lightInverted
-        case neutral
-        case status(_ status: Status? = nil, inverted: Bool = false)
-        case custom(labelColor: Color, outlineColor: Color, backgroundColor: Color)
-        case gradient(Gradient)
-
-        public static var status: Self {
-            .status(nil)
-        }
+    public static var status: Self {
+        .status(nil)
     }
 }
 
@@ -145,6 +167,7 @@ struct BadgePreviews: PreviewProvider {
             Group {
                 Badge("Badge")
                 Badge("Badge", icon: .grid)
+                Badge("Badge", icon: .grid, trailingIcon: .grid)
                 Badge(icon: .grid)
                 Badge("Multiline\nBadge", icon: .grid)
             }
@@ -192,41 +215,44 @@ struct BadgePreviews: PreviewProvider {
             HStack(spacing: .small) {
                 Badge(
                     "Custom",
-                    icon: .symbol(.airplane, color: .pink),
+                    icon: .airplane,
                     style: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
-                        backgroundColor: .whiteNormal
+                        backgroundColor: .whiteHover
                     )
                 )
+                .iconColor(.pink)
 
-                Badge("Flag", icon: .countryFlag("us"))
-                Badge("Flag", icon: .countryFlag("us"), style: .status(.critical, inverted: true))
-            }
-
-            HStack(spacing: .small) {
-                Badge("Image", icon: .image(.orbit(.facebook)))
-                Badge("Image", icon: .image(.orbit(.facebook)), style: .status(.success, inverted: true))
-            }
-
-            HStack(spacing: .small) {
-                Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
-                if #available(iOS 16.0, *) {
-                    Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"))
-                        .fontWeight(.black)
+                Badge("Flag") {
+                    CountryFlag("us", size: .small)
                 }
-                Badge("SF Symbol", icon: .sfSymbol("info.circle.fill"), style: .status(.warning, inverted: true))
+
+                Badge("Flag", style: .status(.critical, inverted: true)) {
+                    CountryFlag("cz", size: .small)
+                }
+            }
+
+            HStack(spacing: .small) {
+                Badge("SF Symbol", style: .status(.success)) {
+                    Icon("info.circle.fill")
+                }
+
+                Badge("SF Symbol", style: .status(.warning, inverted: true)) {
+                    Image(systemName: "info.circle.fill")
+                }
             }
         }
         .padding(.medium)
         .previewDisplayName()
     }
 
-    static func badges(_ style: Badge.Style) -> some View {
+    static func badges(_ style: BadgeStyle) -> some View {
         HStack(spacing: .small) {
             Badge("label", style: style)
             Badge("label", icon: .grid, style: style)
             Badge(icon: .grid, style: style)
+            Badge("label", trailingIcon: .grid, style: style)
             Badge("1", style: style)
         }
     }
