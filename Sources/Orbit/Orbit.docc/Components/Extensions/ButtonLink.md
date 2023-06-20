@@ -1,4 +1,4 @@
-# ``Orbit/List``
+# ``Orbit/ButtonLink``
 
 @Metadata {
     @DocumentationExtension(mergeBehavior: append)
@@ -6,10 +6,8 @@
 
 ## Topics
 
-### Adding Content
-
-- ``ListItem``
-
 ### Customizing Appearance
 
-- ``ListItemType``
+- ``ButtonLinkButtonStyle``
+- ``ButtonLinkSize``
+- ``ButtonLinkType``

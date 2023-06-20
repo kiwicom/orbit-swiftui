@@ -42,6 +42,8 @@ Supporting types and components under development.
 - ``FieldLabel``
 - ``FieldMessage``
 - ``FieldWrapper``
+- ``IconButton``
+- ``IconButtonStyle``
 - ``InputState``
 - ``KeyValueField``
 - ``LazyVStack``
