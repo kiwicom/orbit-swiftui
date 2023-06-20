@@ -32,6 +32,11 @@ Supporting types and components under development.
 - ``IsTileSeparatorVisibleKey``
 - ``ScreenLayoutPaddingKey``
 
+### Button Styles
+
+- ``IconButtonStyle``
+- ``InputContentButtonStyle``
+
 ### Other
 
 - ``BarButton``
@@ -43,7 +48,6 @@ Supporting types and components under development.
 - ``FieldMessage``
 - ``FieldWrapper``
 - ``IconButton``
-- ``IconButtonStyle``
 - ``InputState``
 - ``KeyValueField``
 - ``LazyVStack``
