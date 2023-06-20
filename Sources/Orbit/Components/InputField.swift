@@ -21,13 +21,13 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
     @Binding private var value: String
     private var prompt: String
     private var state: InputState
-    private var style: InputFieldStyle
     @ViewBuilder private let prefix: Prefix
     @ViewBuilder private let suffix: Suffix
 
     private var isSecure: Bool
     private var passwordStrength: PasswordStrengthIndicator.PasswordStrength?
     private var message: Message?
+    private let labelStyle: InputLabelStyle
     @Binding private var messageHeight: CGFloat
 
     // Builder properties (keyboard related)
@@ -116,7 +116,7 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
     }
 
     private var fieldLabel: String {
-        switch style {
+        switch labelStyle {
             case .default:          return label
             case .compact:          return ""
         }
@@ -131,7 +131,7 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
     }
 
     private var leadingPadding: CGFloat {
-        prefix.isEmpty && style == .default
+        prefix.isEmpty && labelStyle == .default
             ? .small
             : 0
     }
@@ -166,7 +166,7 @@ public extension InputField {
         suffix: Icon.Symbol? = nil,
         prompt: String = "",
         state: InputState = .default,
-        style: InputFieldStyle = .default,
+        style: InputLabelStyle = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
@@ -206,7 +206,7 @@ public extension InputField {
         value: Binding<String>,
         prompt: String = "",
         state: InputState = .default,
-        style: InputFieldStyle = .default,
+        style: InputLabelStyle = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
@@ -218,7 +218,7 @@ public extension InputField {
         self._value = value
         self.prompt = prompt
         self.state = state
-        self.style = style
+        self.labelStyle = style
         self.isSecure = isSecure
         self.passwordStrength = passwordStrength
         self.message = message
@@ -226,17 +226,6 @@ public extension InputField {
         self.prefix = prefix()
         self.suffix = suffix()
     }
-}
-
-// MARK: - Types
-
-/// Style variant for Orbit InputField component.
-public enum InputFieldStyle {
-
-    /// Style with label positioned above the InputField.
-    case `default`
-    /// Style with compact label positioned inside the InputField.
-    case compact
 }
 
 // MARK: - Identifiers
@@ -437,7 +426,7 @@ struct InputFieldPreviews: PreviewProvider {
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
-        style: InputFieldStyle = .default
+        style: InputLabelStyle = .default
     ) -> some View {
         StateWrapper(value) { value in
             InputField(

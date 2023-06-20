@@ -25,4 +25,4 @@
 
 ### Customizing Appearance 
 
-- ``InputFieldStyle``
+- ``InputLabelStyle``
