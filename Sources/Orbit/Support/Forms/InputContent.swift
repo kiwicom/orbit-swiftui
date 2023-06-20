@@ -9,10 +9,12 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
 
     public let verticalPadding: CGFloat = .small // = 44 @ normal text size
 
+    private let label: String
     private let state: InputState
     private let message: Message?
     private let isPressed: Bool
     private let isEditing: Bool
+    private let isPlaceholder: Bool
     @ViewBuilder private let content: Content
     @ViewBuilder private let prefix: Prefix
     @ViewBuilder private let suffix: Suffix
@@ -24,7 +26,10 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
                 .padding(.trailing, .xSmall)
                 .padding(.vertical, verticalPadding)
 
-            content
+            HStack(alignment: .firstTextBaseline, spacing: .small) {
+                compactLabel
+                content
+            }
 
             if idealSize.horizontal == nil {
                 Spacer(minLength: 0)
@@ -46,7 +51,13 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
         .overlay(border)
     }
 
-    @ViewBuilder var border: some View {
+     @ViewBuilder private var compactLabel: some View {
+         FieldLabel(label)
+             .textColor(isPlaceholder ? .inkDark : .inkLight)
+             .padding(.leading, prefix.isEmpty ? .small : 0)
+     }
+
+    @ViewBuilder private var border: some View {
         RoundedRectangle(cornerRadius: BorderRadius.default)
             .strokeBorder(outlineColor(isPressed: isPressed), lineWidth: BorderWidth.active)
     }
@@ -82,18 +93,22 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
     }
 
     public init(
+        label: String = "",
         state: InputState = .default,
         message: Message? = nil,
         isPressed: Bool = false,
         isEditing: Bool = false,
+        isPlaceholder: Bool = false,
         @ViewBuilder content: () -> Content,
         @ViewBuilder prefix: () -> Prefix = { EmptyView() },
         @ViewBuilder suffix: () -> Suffix = { EmptyView() }
     ) {
+        self.label = label
         self.state = state
         self.message = message
         self.isPressed = isPressed
         self.isEditing = isEditing
+        self.isPlaceholder = isPlaceholder
         self.content = content()
         self.prefix = prefix()
         self.suffix = suffix()
