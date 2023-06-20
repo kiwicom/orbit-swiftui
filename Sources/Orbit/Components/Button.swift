@@ -148,7 +148,7 @@ public extension Button {
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
-        _ label: String,
+        _ label: String = "",
         icon: Icon.Symbol? = nil,
         disclosureIcon: Icon.Symbol? = nil,
         type: ButtonType = .primary,
@@ -167,34 +167,12 @@ public extension Button {
         }
     }
 
-    /// Creates Orbit Button component with icon only.
-    ///
-    /// - Parameters:
-    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
-    init(
-        _ icon: Icon.Symbol,
-        type: ButtonType = .primary,
-        size: ButtonSize = .default,
-        action: @escaping () -> Void
-    ) where LeadingIcon == Icon, TrailingIcon == EmptyView {
-        self.init(
-            "",
-            type: type,
-            size: size,
-            action: action
-        ) {
-            Icon(icon, size: size.textSize.iconSize)
-        } disclosureIcon: {
-            EmptyView()
-        }
-    }
-
     /// Creates Orbit Button component with custom icons.
     ///
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
-        _ label: String,
+        _ label: String = "",
         type: ButtonType = .primary,
         size: ButtonSize = .default,
         action: @escaping () -> Void,
@@ -357,10 +335,10 @@ struct ButtonPreviews: PreviewProvider {
             Button("Button", icon: .grid, action: {})
             Button("Button", icon: .grid, disclosureIcon: .grid, action: {})
             Button("Button", action: {})
-            Button(.grid, action: {})
-            Button(.grid, action: {})
+            Button(icon: .grid, action: {})
+            Button(icon: .grid, action: {})
                 .idealSize()
-            Button(.arrowUp, action: {})
+            Button(icon: .arrowUp, action: {})
                 .idealSize()
         }
         .padding(.medium)
@@ -370,14 +348,14 @@ struct ButtonPreviews: PreviewProvider {
     static var sizing: some View {
         VStack(spacing: .medium) {
             Group {
-                Button("", action: {})
+                Button(action: {})
                 Button("Button", action: {})
                 Button("Button", icon: .grid, action: {})
                 Button("Button\nmultiline", icon: .grid, action: {})
-                Button(.grid, action: {})
+                Button(icon: .grid, action: {})
                 Button("Button small", size: .small, action: {})
                 Button("Button small", icon: .grid, size: .small, action: {})
-                Button(.grid, size: .small, action: {})
+                Button(icon: .grid, size: .small, action: {})
                 Button("Button\nmultiline", size: .small, action: {})
             }
             .measured()
@@ -460,13 +438,13 @@ struct ButtonPreviews: PreviewProvider {
             HStack(spacing: .small) {
                 Button("Label", type: type, action: {})
                     .idealSize()
-                Button(.grid, type: type, action: {})
+                Button(icon: .grid, type: type, action: {})
                 Spacer()
             }
             HStack(spacing: .small) {
                 Button("Label", type: type, size: .small, action: {})
                     .idealSize()
-                Button(.grid, type: type, size: .small, action: {})
+                Button(icon: .grid, type: type, size: .small, action: {})
                 Spacer()
             }
         }
@@ -485,7 +463,7 @@ struct ButtonPreviews: PreviewProvider {
                 Button("Label", type: type, size: .small, action: {})
                 Button("Label", icon: .grid, disclosureIcon: .chevronForward, type: type, size: .small, action: {})
                 Button("Label", disclosureIcon: .chevronForward, type: type, size: .small, action: {})
-                Button(.grid, type: type, size: .small, action: {})
+                Button(icon: .grid, type: type, size: .small, action: {})
             }
             .idealSize()
 

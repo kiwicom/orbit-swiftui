@@ -62,13 +62,13 @@ struct StorybookButton {
             HStack(spacing: .small) {
                 Button("Label", type: type, action: {})
                     .idealSize()
-                Button(.grid, type: type, action: {})
+                Button(icon: .grid, type: type, action: {})
                 Spacer()
             }
             HStack(spacing: .small) {
                 Button("Label", type: type, size: .small, action: {})
                     .idealSize()
-                Button(.grid, type: type, size: .small, action: {})
+                Button(icon: .grid, type: type, size: .small, action: {})
                 Spacer()
             }
         }
@@ -87,7 +87,7 @@ struct StorybookButton {
                 Button("Label", type: type, size: .small, action: {})
                 Button("Label", icon: .grid, disclosureIcon: .chevronForward, type: type, size: .small, action: {})
                 Button("Label", disclosureIcon: .chevronForward, type: type, size: .small, action: {})
-                Button(.grid, type: type, size: .small, action: {})
+                Button(icon: .grid, type: type, size: .small, action: {})
             }
             .idealSize()
 

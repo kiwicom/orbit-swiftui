@@ -125,8 +125,8 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View {
     
     @ViewBuilder func disclosureButton(type: ListChoiceDisclosure.ButtonType) -> some View {
         switch type {
-            case .add:      Button(.plus, type: .primarySubtle, size: .small, action: {}).fixedSize()
-            case .remove:   Button(.close, type: .criticalSubtle, size: .small, action: {}).fixedSize()
+            case .add:      Button(icon: .plus, type: .primarySubtle, size: .small, action: {}).fixedSize()
+            case .remove:   Button(icon: .close, type: .criticalSubtle, size: .small, action: {}).fixedSize()
         }
     }
 

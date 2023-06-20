@@ -25,7 +25,7 @@ struct TutorialScreen: View {
                 
                 HStack(spacing: .medium) {
                     Button("Secondary Button", type: .secondary, action: secondaryAction)
-                    Button(.creditCard, type: .status(.warning), action: {})
+                    Button(icon: .creditCard, type: .status(.warning), action: {})
                 }
             }
             
