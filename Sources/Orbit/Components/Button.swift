@@ -6,137 +6,35 @@ import SwiftUI
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Button<LeadingIcon: View, TrailingIcon: View>: View {
 
-    @Environment(\.status) private var status
-    @Environment(\.iconColor) private var iconColor
-    @Environment(\.idealSize) private var idealSize
-    @Environment(\.textColor) private var textColor
-    @Environment(\.textLinkColor) private var textLinkColor
-    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
-
     private let label: String
     private let type: ButtonType
     private let size: ButtonSize
     private let action: () -> Void
-    @ViewBuilder private let icon: LeadingIcon
-    @ViewBuilder private let disclosureIcon: TrailingIcon
+    @ViewBuilder private let leadingIcon: LeadingIcon
+    @ViewBuilder private let trailingIcon: TrailingIcon
 
     public var body: some View {
-        SwiftUI.Button(
-            action: {
-                if isHapticsEnabled {
-                    HapticsProvider.sendHapticFeedback(hapticFeedback)
-                }
-                
-                action()
-            },
-            label: {
-                HStack(spacing: 0) {
-                    TextStrut(size.textSize)
-
-                    if disclosureIcon.isEmpty, idealSize.horizontal == nil {
-                        Spacer(minLength: 0)
-                    }
-
-                    HStack(spacing: .xSmall) {
-                        icon
-                            .font(.system(size: size.textSize.value))
-                            .iconColor(iconColor)
-                            .foregroundColor(iconColor)
-
-                        textWrapper
-                    }
-
-                    if idealSize.horizontal == nil {
-                        Spacer(minLength: 0)
-                    }
-
-                    disclosureIcon
-                        .font(.system(size: size.textSize.value))
-                        .iconColor(iconColor)
-                        .foregroundColor(iconColor)
-                }
-                .textColor(resolvedTextColor)
-                .padding(.vertical, size.verticalPadding)
-                .padding(.leading, leadingPadding)
-                .padding(.trailing, trailingPadding)
+        SwiftUI.Button(action: action) {
+            if #available(iOS 14, *) {
+                text
+            } else {
+                text
+                // Prevents text value animation issue due to different iOS13 behavior
+                    .animation(nil)
+            }
+        }
+        .buttonStyle(
+            OrbitButtonStyle(type: type, size: size) {
+                leadingIcon
+            } trailingIcon: {
+                trailingIcon
             }
         )
-        .buttonStyle(OrbitButtonStyle(type: type, status: status, size: size))
-        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
-    }
-
-    @ViewBuilder var textWrapper: some View {
-        if #available(iOS 14.0, *) {
-            text
-        } else {
-            text
-                // Prevents text value animation issue due to different iOS13 behavior
-                .animation(nil)
-        }
     }
 
     @ViewBuilder var text: some View {
         Text(label, size: size.textSize)
             .fontWeight(.medium)
-            .textLinkColor(textLinkColor ?? .custom(resolvedTextColor))
-    }
-
-    var resolvedTextColor: Color {
-        textColor ?? styleTextColor
-    }
-
-    var styleTextColor: Color {
-        switch type {
-            case .primary:                      return .whiteNormal
-            case .primarySubtle:                return .productDark
-            case .secondary:                    return .inkDark
-            case .critical:                     return .whiteNormal
-            case .criticalSubtle:               return .redDark
-            case .status(_, false):             return .whiteNormal
-            case .status(let status, true):     return (status ?? defaultStatus).darkHoverColor
-            case .gradient:                     return .whiteNormal
-        }
-    }
-
-    var isIconOnly: Bool {
-        icon.isEmpty == false && label.isEmpty
-    }
-
-    var leadingPadding: CGFloat {
-        label.isEmpty == false && icon.isEmpty
-            ? size.horizontalPadding
-            : size.horizontalIconPadding
-    }
-
-    var trailingPadding: CGFloat {
-        label.isEmpty == false && disclosureIcon.isEmpty
-            ? size.horizontalPadding
-            : size.horizontalIconPadding
-    }
-
-    var defaultStatus: Status {
-        status ?? .info
-    }
-
-    var resolvedStatus: Status {
-        switch type {
-            case .status(let status, _):    return status ?? defaultStatus
-            default:                        return .info
-        }
-    }
-
-    var hapticFeedback: HapticsProvider.HapticFeedbackType {
-        switch type {
-            case .primary:                                  return .light(1)
-            case .primarySubtle, .secondary, .gradient:     return .light(0.5)
-            case .critical, .criticalSubtle:                return .notification(.error)
-            case .status:
-                switch resolvedStatus {
-                    case .info, .success:                   return .light(0.5)
-                    case .warning:                          return .notification(.warning)
-                    case .critical:                         return .notification(.error)
-                }
-        }
     }
 }
 
@@ -183,8 +81,8 @@ public extension Button {
         self.type = type
         self.size = size
         self.action = action
-        self.icon = icon()
-        self.disclosureIcon = disclosureIcon()
+        self.leadingIcon = icon()
+        self.trailingIcon = disclosureIcon()
     }
 }
 
@@ -234,27 +132,89 @@ public enum ButtonSize {
     }
 }
 
-public struct OrbitButtonStyle: ButtonStyle {
+public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: PrimitiveButtonStyle {
+
+    @Environment(\.iconColor) private var iconColor
+    @Environment(\.idealSize) private var idealSize
+    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
+    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.status) private var status
+    @Environment(\.textColor) private var textColor
+    @Environment(\.textLinkColor) private var textLinkColor
+    @State private var isPressed = false
 
     var type: ButtonType
-    var status: Status?
     var size: ButtonSize
+    var cornerRadius: CGFloat
+    let icon: LeadingIcon
+    let disclosureIcon: TrailingIcon
 
-    public init(type: ButtonType, status: Status? = nil, size: ButtonSize) {
+    public init(
+        type: ButtonType,
+        size: ButtonSize,
+        cornerRadius: CGFloat = BorderRadius.default,
+        @ViewBuilder icon: () -> LeadingIcon = { EmptyView() },
+        @ViewBuilder trailingIcon: () -> TrailingIcon = { EmptyView() }
+    ) {
         self.type = type
-        self.status = status
         self.size = size
+        self.cornerRadius = cornerRadius
+        self.icon = icon()
+        self.disclosureIcon = trailingIcon()
     }
 
     public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .contentShape(Rectangle())
-            .background(background(for: configuration))
-            .cornerRadius(BorderRadius.default)
+        content(configuration.label)
+            ._onButtonGesture { isPressed in
+                self.isPressed = isPressed
+            } perform: {
+                if isHapticsEnabled {
+                    HapticsProvider.sendHapticFeedback(hapticFeedback)
+                }
+
+                configuration.trigger()
+            }
     }
 
-    @ViewBuilder func background(for configuration: Configuration) -> some View {
-        if configuration.isPressed {
+    @ViewBuilder func content(_ label: some View) -> some View {
+        HStack(spacing: 0) {
+            TextStrut(size.textSize)
+
+            if disclosureIcon.isEmpty, idealSize.horizontal == nil {
+                Spacer(minLength: 0)
+            }
+
+            HStack(spacing: .xSmall) {
+                icon
+                    .font(.system(size: size.textSize.value))
+                    .iconColor(iconColor)
+                    .foregroundColor(iconColor)
+
+                label
+                    .textLinkColor(textLinkColor ?? .custom(resolvedTextColor))
+            }
+
+            if idealSize.horizontal == nil {
+                Spacer(minLength: 0)
+            }
+
+            disclosureIcon
+                .font(.system(size: size.textSize.value))
+                .iconColor(iconColor)
+                .foregroundColor(iconColor)
+        }
+        .textColor(resolvedTextColor)
+        .padding(.leading, leadingPadding)
+        .padding(.trailing, trailingPadding)
+        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
+        .padding(.vertical, size.verticalPadding)
+        .contentShape(Rectangle())
+        .background(background(forPressedState: isPressed))
+        .cornerRadius(cornerRadius)
+    }
+
+    @ViewBuilder func background(forPressedState isPressed: Bool) -> some View {
+        if isPressed {
             backgroundActive
         } else {
             background
@@ -289,6 +249,56 @@ public struct OrbitButtonStyle: ButtonStyle {
 
     var defaultStatus: Status {
         status ?? .info
+    }
+
+    var resolvedTextColor: Color {
+        textColor ?? styleTextColor
+    }
+
+    var styleTextColor: Color {
+        switch type {
+            case .primary:                      return .whiteNormal
+            case .primarySubtle:                return .productDark
+            case .secondary:                    return .inkDark
+            case .critical:                     return .whiteNormal
+            case .criticalSubtle:               return .redDark
+            case .status(_, false):             return .whiteNormal
+            case .status(let status, true):     return (status ?? defaultStatus).darkHoverColor
+            case .gradient:                     return .whiteNormal
+        }
+    }
+
+    var resolvedStatus: Status {
+        switch type {
+            case .status(let status, _):    return status ?? self.status ?? .info
+            default:                        return .info
+        }
+    }
+
+    var hapticFeedback: HapticsProvider.HapticFeedbackType {
+        switch type {
+            case .primary:                                  return .light(1)
+            case .primarySubtle, .secondary, .gradient:     return .light(0.5)
+            case .critical, .criticalSubtle:                return .notification(.error)
+            case .status:
+                switch resolvedStatus {
+                    case .info, .success:                   return .light(0.5)
+                    case .warning:                          return .notification(.warning)
+                    case .critical:                         return .notification(.error)
+                }
+        }
+    }
+
+    var leadingPadding: CGFloat {
+        icon.isEmpty && disclosureIcon.isEmpty
+            ? size.horizontalPadding
+            : size.horizontalIconPadding
+    }
+
+    var trailingPadding: CGFloat {
+        icon.isEmpty && disclosureIcon.isEmpty
+            ? size.horizontalPadding
+            : size.horizontalIconPadding
     }
 }
 

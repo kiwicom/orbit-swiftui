@@ -32,6 +32,10 @@ public struct Text: View, FormattedTextBuildable {
     var isUnderline: Bool?
     var isMonospacedDigit: Bool?
 
+    var isEmpty: Bool {
+        content.isEmpty
+    }
+
     // The Orbit Text consists of up to 3 layers:
     //
     // 1) SwiftUI.Text base layer, either:
@@ -41,7 +45,7 @@ public struct Text: View, FormattedTextBuildable {
     // 3) Long-tap-to-copy gesture overlay      (when isSelectable == true)
 
     public var body: some View {
-        if content.isEmpty == false {
+        if isEmpty == false {
             text(textRepresentableEnvironment: textRepresentableEnvironment)
                 .lineSpacing(lineSpacingAdjusted(sizeCategory: sizeCategory))
                 .overlay(selectableLabelWrapper)
@@ -358,7 +362,7 @@ extension TextAlignment {
 extension Text: TextRepresentable {
 
     public func swiftUIText(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
-        if content.isEmpty { return nil }
+        if isEmpty { return nil }
 
         return text(textRepresentableEnvironment: textRepresentableEnvironment, isConcatenated: true)
     }
