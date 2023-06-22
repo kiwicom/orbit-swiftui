@@ -24,7 +24,7 @@ public struct Button<LeadingIcon: View, TrailingIcon: View>: View {
             }
         }
         .buttonStyle(
-            OrbitButtonStyle(type: type, size: size) {
+            .orbit(type: type, size: size) {
                 leadingIcon
             } trailingIcon: {
                 trailingIcon
@@ -153,8 +153,8 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
         type: ButtonType,
         size: ButtonSize,
         cornerRadius: CGFloat = BorderRadius.default,
-        @ViewBuilder icon: () -> LeadingIcon = { EmptyView() },
-        @ViewBuilder trailingIcon: () -> TrailingIcon = { EmptyView() }
+        @ViewBuilder icon: () -> LeadingIcon,
+        @ViewBuilder trailingIcon: () -> TrailingIcon
     ) {
         self.type = type
         self.size = size
@@ -299,6 +299,45 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
         icon.isEmpty && disclosureIcon.isEmpty
             ? size.horizontalPadding
             : size.horizontalIconPadding
+    }
+}
+
+public extension PrimitiveButtonStyle {
+
+    static func orbit<LeadingIcon: View, TrailingIcon: View>(
+        type: ButtonType,
+        size: ButtonSize,
+        cornerRadius: CGFloat = BorderRadius.default,
+        @ViewBuilder leadingIcon: () -> LeadingIcon,
+        @ViewBuilder trailingIcon: () -> TrailingIcon
+    ) -> Self where Self == OrbitButtonStyle<LeadingIcon, TrailingIcon> {
+        Self(type: type, size: size, cornerRadius: cornerRadius, icon: leadingIcon, trailingIcon: trailingIcon)
+    }
+
+    static func orbit<LeadingIcon: View>(
+        type: ButtonType,
+        size: ButtonSize,
+        cornerRadius: CGFloat = BorderRadius.default,
+        @ViewBuilder leadingIcon: () -> LeadingIcon
+    ) -> Self where Self == OrbitButtonStyle<LeadingIcon, EmptyView> {
+        Self(type: type, size: size, cornerRadius: cornerRadius, icon: leadingIcon, trailingIcon: { EmptyView() })
+    }
+
+    static func orbit<TrailingIcon: View>(
+        type: ButtonType,
+        size: ButtonSize,
+        cornerRadius: CGFloat = BorderRadius.default,
+        @ViewBuilder trailingIcon: () -> TrailingIcon
+    ) -> Self where Self == OrbitButtonStyle<EmptyView, TrailingIcon> {
+        Self(type: type, size: size, cornerRadius: cornerRadius, icon: { EmptyView() }, trailingIcon: trailingIcon)
+    }
+
+    static func orbit(
+        type: ButtonType,
+        size: ButtonSize,
+        cornerRadius: CGFloat = BorderRadius.default
+    ) -> Self where Self == OrbitButtonStyle<EmptyView, EmptyView> {
+        Self(type: type, size: size, cornerRadius: cornerRadius, icon: { EmptyView() }, trailingIcon: { EmptyView() })
     }
 }
 
