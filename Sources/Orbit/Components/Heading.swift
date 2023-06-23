@@ -12,16 +12,18 @@ public struct Heading: View, FormattedTextBuildable {
     let isSelectable: Bool
 
     // Builder properties
-    var baselineOffset: CGFloat?
-    var fontWeight: Font.Weight?
-    var color: Color?
-    var strikethrough: Bool?
-    var kerning: CGFloat?
     var accentColor: Color?
+    var baselineOffset: CGFloat?
+    var color: Color?
+    var fontWeight: Font.Weight?
     var isBold: Bool?
     var isItalic: Bool?
     var isMonospacedDigit: Bool?
     var isUnderline: Bool?
+    var kerning: CGFloat?
+    var lineHeight: CGFloat?
+    var size: CGFloat?
+    var strikethrough: Bool?
 
     public var body: some View {
         textContent
@@ -29,21 +31,19 @@ public struct Heading: View, FormattedTextBuildable {
     }
 
     @ViewBuilder var textContent: Text {
-        Text(
-            content,
-            size: .custom(style.size, lineHeight: style.lineHeight),
-            isSelectable: isSelectable
-        )
-        .fontWeight(fontWeight)
-        .textAccentColor(accentColor)
-        .baselineOffset(baselineOffset)
-        .bold(isBold)
-        .italic(isItalic)
-        .kerning(kerning)
-        .monospacedDigit(isMonospacedDigit)
-        .strikethrough(strikethrough)
-        .underline(isUnderline)
-        .textColor(color)
+        Text(content)
+            .textColor(color)
+            .textSize(custom: style.size)
+            .fontWeight(fontWeight)
+            .baselineOffset(baselineOffset)
+            .bold(isBold)
+            .italic(isItalic)
+            .kerning(kerning)
+            .monospacedDigit(isMonospacedDigit)
+            .strikethrough(strikethrough)
+            .underline(isUnderline)
+            .textAccentColor(accentColor)
+            .textLineHeight(style.lineHeight)
     }
 
     func text(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text {
@@ -82,7 +82,8 @@ public extension Heading {
 // MARK: - Types
 public extension Heading {
 
-    enum Style {
+    /// Orbit heading style.
+    enum Style: Equatable {
         /// 28 pts.
         case title1
         /// 22 pts.
@@ -96,7 +97,7 @@ public extension Heading {
         /// 13 pts.
         case title6
 
-        /// Font size.
+        /// Text font size value.
         public var size: CGFloat {
             switch self {
                 case .title1:           return 28
@@ -108,6 +109,7 @@ public extension Heading {
             }
         }
 
+        /// Designated line height.
         public var lineHeight: CGFloat {
             switch self {
                 case .title1:           return 32
@@ -119,20 +121,11 @@ public extension Heading {
             }
         }
 
-        /// Icon size matching heading line height.
-        public var iconSize: Icon.Size {
-            .custom(lineHeight)
-        }
-
         public var weight: Font.Weight {
             switch self {
                 case .title1, .title4, .title5, .title6:    return .bold
                 case .title2, .title3:                      return .medium
             }
-        }
-
-        public var textSize: Text.Size {
-            .custom(size, lineHeight: lineHeight)
         }
     }
 }
@@ -315,7 +308,8 @@ struct HeadingPreviews: PreviewProvider {
                 .fixedSize()
                 .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerLastTextBaseline)
 
-                Text("\(style.size.formatted) / \(style.lineHeight.formatted)", size: .custom(6))
+                Text("\(style.size.formatted) / \(style.lineHeight.formatted)")
+                    .textSize(custom: 6)
                     .environment(\.sizeCategory, .large)
             }
             .padding(.trailing, .xxSmall)
