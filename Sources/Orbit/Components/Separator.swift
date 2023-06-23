@@ -18,7 +18,8 @@ public struct Separator: View {
             HStack(spacing: .xxxSmall) {
                 leadingLine
 
-                Text(label, size: .small)
+                Text(label)
+                    .textSize(.small)
                     .textColor(textColor ?? .inkNormal)
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)

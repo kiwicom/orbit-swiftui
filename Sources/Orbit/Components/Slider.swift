@@ -367,7 +367,9 @@ struct SliderPreviews: PreviewProvider {
         VStack(spacing: .small) {
             StateWrapper(30.0) { value in
                 VStack(alignment: .leading, spacing: .medium) {
-                    Text("Slider", size: .xLarge)
+                    Text("Slider")
+                        .textSize(.xLarge)
+
                     Slider(
                         value: value,
                         valueLabel: value.wrappedValue.description,
@@ -380,7 +382,9 @@ struct SliderPreviews: PreviewProvider {
 
             StateWrapper(5.0) { value in
                 VStack(alignment: .leading, spacing: .medium) {
-                    Text("Stepped Slider", size: .xLarge)
+                    Text("Stepped Slider")
+                        .textSize(.xLarge)
+
                     Slider(
                         value: value,
                         valueLabel: value.wrappedValue.description,
@@ -394,7 +398,9 @@ struct SliderPreviews: PreviewProvider {
 
             StateWrapper(30.0...70.0) { selectedRange in
                 VStack(alignment: .leading, spacing: .medium) {
-                    Text("Range Slider", size: .xLarge)
+                    Text("Range Slider")
+                        .textSize(.xLarge)
+
                     Slider(
                         valueRange: selectedRange,
                         valueLabel: "\(selectedRange.wrappedValue.lowerBound.formatted) - \(selectedRange.wrappedValue.upperBound.formatted)",
@@ -407,7 +413,9 @@ struct SliderPreviews: PreviewProvider {
 
             StateWrapper(30.0...70.0) { selectedRange in
                 VStack(alignment: .leading, spacing: .medium) {
-                    Text("Stepped Range Slider", size: .xLarge)
+                    Text("Stepped Range Slider")
+                        .textSize(.xLarge)
+
                     Slider(
                         valueRange: selectedRange,
                         valueLabel: "\(selectedRange.wrappedValue.lowerBound.formatted) - \(selectedRange.wrappedValue.upperBound.formatted)",
@@ -421,7 +429,8 @@ struct SliderPreviews: PreviewProvider {
 
             StateWrapper(30.0) { value in
                 VStack(alignment: .leading, spacing: .small) {
-                    Text("SwiftUI.Slider", size: .xLarge)
+                    Text("SwiftUI.Slider")
+                        .textSize(.xLarge)
 
                     SwiftUI.Slider(value: value, in: 0.0...100.0)
 

@@ -5,7 +5,6 @@ public struct IconButton<Icon: View>: View {
 
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    private let size: Orbit.Icon.Size
     private let action: () -> Void
     @ViewBuilder private let icon: Icon
 
@@ -18,7 +17,7 @@ public struct IconButton<Icon: View>: View {
             action()
         } label: {
             icon
-                .font(.system(size: size.value))
+                .font(.system(size: Orbit.Icon.Size.normal.value))
                 .foregroundColor(.inkDark)
                 .contentShape(Rectangle())
         }
@@ -27,11 +26,9 @@ public struct IconButton<Icon: View>: View {
 
     /// Creates Orbit IconButton component with custom icon.
     public init(
-        size: Orbit.Icon.Size = .normal,
         action: @escaping () -> Void,
         @ViewBuilder icon: () -> Icon
     ) {
-        self.size = size
         self.action = action
         self.icon = icon()
     }
@@ -39,15 +36,12 @@ public struct IconButton<Icon: View>: View {
     /// Creates Orbit IconButton component.
     init(
         _ icon: Orbit.Icon.Symbol,
-        size: Orbit.Icon.Size = .normal,
         action: @escaping () -> Void
     ) where Icon == Orbit.Icon {
-        self.init(
-            size: size
-        ) {
+        self.init() {
             action()
         } icon: {
-            Icon(icon, size: size)
+            Icon(icon)
         }
     }
 }

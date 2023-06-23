@@ -35,7 +35,7 @@ public struct Tag<Icon: View>: View {
 
                         HStack(spacing: 6) {
                             icon
-                                .font(.system(size: Text.Size.normal.iconSize.value))
+                                .font(.system(size: Text.Size.normal.value))
                                 .foregroundColor(textColor ?? labelColor)
                             
                             Text(label)
@@ -111,7 +111,8 @@ public extension Tag {
             isActive: isActive,
             isSelected: isSelected
         ) {
-            Icon(icon, size: Text.Size.normal.iconSize)
+            Icon(icon)
+                .iconSize(textSize: .normal)
         }
     }
 }
@@ -148,7 +149,8 @@ public struct TagButtonStyle: ButtonStyle {
                 .lineLimit(1)
 
             if case .removable(let removeAction) = style {
-                Orbit.Icon(.closeCircle, size: .small)
+                Icon(.closeCircle)
+                    .iconSize(.small)
                     .iconColor(iconColor(isPressed: configuration.isPressed))
                     .onTapGesture(perform: removeAction)
                     .accessibility(addTraits: .isButton)

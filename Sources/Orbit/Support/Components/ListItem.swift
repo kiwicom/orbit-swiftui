@@ -12,20 +12,19 @@ public struct ListItem<Icon: View>: View {
     @Environment(\.textColor) private var textColor
 
     private let text: String
-    private let size: Text.Size
     private let type: ListItemType
     @ViewBuilder private let icon: Icon
 
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
             if icon.isEmpty {
-                Orbit.Icon(.placeholder, size: size.iconSize)
+                Orbit.Icon(.placeholder)
                     .opacity(0)
             } else {
                 icon
             }
 
-            Text(text, size: size)
+            Text(text)
         }
         .textColor(textColor ?? type.textColor)
     }
@@ -38,27 +37,23 @@ public extension ListItem {
     init(
         _ text: String = "",
         icon: Icon.Symbol? = .circleSmall,
-        size: Text.Size = .normal,
         type: ListItemType = .primary
     ) where Icon == Orbit.Icon {
         self.init(
             text,
-            size: size,
             type: type
         ) {
-            Icon(icon, size: size.iconSize)
+            Icon(icon)
         }
     }
 
     /// Creates Orbit ListItem component.
     init(
         _ text: String = "",
-        size: Text.Size = .normal,
         type: ListItemType = .primary,
         @ViewBuilder icon: () -> Icon
     ) {
         self.text = text
-        self.size = size
         self.type = type
         self.icon = icon()
     }
@@ -106,12 +101,16 @@ struct ListItemPreviews: PreviewProvider {
 
     static var sizes: some View {
         List(spacing: .medium) {
-            ListItem("ListItem - small", size: .small, type: .primary)
-            ListItem("ListItem - small, secondary", size: .small, type: .secondary)
+            ListItem("ListItem - small", type: .primary)
+                .textSize(.small)
+            ListItem("ListItem - small, secondary", type: .secondary)
+                .textSize(.small)
             ListItem("ListItem - normal")
-            ListItem("ListItem - normal, secondary", size: .normal, type: .secondary)
-            ListItem("ListItem - large", size: .large, type: .primary)
-            ListItem("ListItem - large, secondary", size: .large, type: .secondary)
+            ListItem("ListItem - normal, secondary", type: .secondary)
+            ListItem("ListItem - large", type: .primary)
+                .textSize(.large)
+            ListItem("ListItem - large, secondary", type: .secondary)
+                .textSize(.large)
         }
         .padding(.medium)
         .previewDisplayName()
@@ -119,7 +118,8 @@ struct ListItemPreviews: PreviewProvider {
     
     static var links: some View {
         List {
-            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, size: .small, type: .secondary)
+            ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#, type: .secondary)
+                .textSize(.small)
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#)
             ListItem(#"ListItem containing <a href="link">TextLink</a> or <a href="link">Two</a>"#)
                 .textColor(.greenNormal)
@@ -134,8 +134,10 @@ struct ListItemPreviews: PreviewProvider {
     
     static var mix: some View {
         List {
-            ListItem("ListItem", size: .xLarge)
-            ListItem("ListItem with custom icon", icon: .check, size: .xLarge)
+            ListItem("ListItem")
+                .textSize(.xLarge)
+            ListItem("ListItem with custom icon", icon: .check)
+                .textSize(.xLarge)
                 .textColor(.greenNormal)
             ListItem("ListItem")
             ListItem("ListItem with custom icon", icon: .check)

@@ -6,12 +6,12 @@ import SwiftUI
 public struct Coupon: View {
 
     let label: String
-    let size: Text.Size
 
     public var body: some View {
-        Text(label, size: size, isSelectable: true)
+        Text(label)
             .fontWeight(.medium)
             .kerning(0.75)
+            .textIsCopyable()
             .padding(.horizontal, .xxSmall)
             .padding(.vertical, .xxxSmall)
             .overlay(
@@ -26,9 +26,8 @@ public struct Coupon: View {
 public extension Coupon {
     
     /// Creates Orbit Coupon component.
-    init(_ label: String = "", size: Text.Size = .normal) {
+    init(_ label: String = "") {
         self.label = label
-        self.size = size
     }
 }
 
@@ -55,12 +54,13 @@ struct CouponPreviews: PreviewProvider {
 
     static var mix: some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
-            Coupon("HXT3B81F", size: .small)
+            Coupon("HXT3B81F")
                 .textColor(.blueDark)
                 .previewDisplayName()
 
-            Text("PROMOCODE", size: .small)
+            Text("PROMOCODE")
         }
+        .textSize(.small)
         .padding(.medium)
     }
 }

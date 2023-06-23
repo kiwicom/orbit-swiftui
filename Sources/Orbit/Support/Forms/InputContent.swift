@@ -130,7 +130,7 @@ struct InputContentPreviews: PreviewProvider {
             } prefix: {
                 Icon(.visa)
             } suffix: {
-                IconButton(.checkCircle, size: .normal) {
+                IconButton(.checkCircle) {
                     // No action
                 }
             }

@@ -5,10 +5,11 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/countryflag/)
 public struct CountryFlag: View {
 
+    @Environment(\.textSize) var textSize
+    @Environment(\.iconSize) var iconSize
     @Environment(\.sizeCategory) var sizeCategory
 
     let countryCode: CountryCode
-    let size: Size
     let border: Border
 
     public var body: some View {
@@ -20,10 +21,9 @@ public struct CountryFlag: View {
                 clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
                     .blendMode(.darken)
             )
-            .alignmentGuide(.firstTextBaseline) { $0[.bottom] }
-            .alignmentGuide(.lastTextBaseline) { $0[.bottom] }
-            .frame(width: width, height: height)
-            .fixedSize()
+            .frame(width: size, height: size)
+            .alignmentGuide(.firstTextBaseline) { $0.height * Icon.symbolBaseline }
+            .alignmentGuide(.lastTextBaseline) { $0.height * Icon.symbolBaseline }
             .accessibility(label: SwiftUI.Text(countryCode.rawValue))
     }
 
@@ -35,22 +35,12 @@ public struct CountryFlag: View {
         switch border {
             case .none:                             return 0
             case .default(let cornerRadius?):       return cornerRadius
-            case .default:                          return width / 10
+            case .default:                          return size / 10
         }
     }
 
-    var width: CGFloat {
-        switch size {
-            case .width(let width):     return width * sizeCategory.ratio
-            case .icon(let size):       return size.value * sizeCategory.ratio
-        }
-    }
-
-    var height: CGFloat? {
-        switch size {
-            case .width:                return nil
-            case .icon(let size):       return size.value * sizeCategory.ratio
-        }
+    var size: CGFloat {
+        (iconSize ?? textSize.map(Icon.Size.fromTextSize(size:)) ?? Icon.Size.normal.value) * sizeCategory.ratio
     }
 }
 
@@ -58,21 +48,16 @@ public struct CountryFlag: View {
 public extension CountryFlag {
 
     /// Creates Orbit CountryFlag component.
-    init(_ countryCode: CountryCode, size: Size = .normal, border: Border = .default()) {
+    init(_ countryCode: CountryCode, border: Border = .default()) {
         self.countryCode = countryCode
-        self.size = size
         self.border = border
     }
 
     /// Creates Orbit CountryFlag component with a string country code.
     ///
     /// If a corresponding image is not found, the flag for unknown codes is used.
-    init(_ countryCode: String, size: Size = .normal, border: Border = .default()) {
-        self.init(
-            .init(countryCode),
-            size: size,
-            border: border
-        )
+    init(_ countryCode: String, border: Border = .default()) {
+        self.init(.init(countryCode), border: border)
     }
 }
 
@@ -134,38 +119,43 @@ struct CountryFlagPreviews: PreviewProvider {
     static var unknown: some View {
         VStack {
             CountryFlag("")
-            CountryFlag("some invalid identifier")
+            CountryFlag("invalid")
         }
         .previewDisplayName()
     }
     
     static var mix: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
-            flags(size: .small)
-            flags(size: .normal)
-            flags(size: .large)
-            flags(size: .custom(40))
+            flags(.small)
+            flags(.normal)
+            flags(.large)
+            flags(size: 40)
 
             HStack(alignment: .firstTextBaseline, spacing: .small) {
                 Text("Borders")
-                CountryFlag("CZ", size: .icon(.xLarge), border: .default(cornerRadius: 8))
-                CountryFlag("cZ", size: .icon(.xLarge), border: .default(cornerRadius: 0))
-                CountryFlag("Cz", size: .icon(.xLarge), border: .none)
+                CountryFlag("CZ", border: .default(cornerRadius: 8))
+                CountryFlag("cZ", border: .default(cornerRadius: 0))
+                CountryFlag("Cz", border: .none)
             }
+            .textSize(.xLarge)
         }
         .previewDisplayName()
     }
 
-    static func flags(size: Icon.Size) -> some View {
+    static func flags(_ size: Icon.Size) -> some View {
+        flags(size: size.value, label: String(describing: size).titleCased)
+    }
+
+    static func flags(size: CGFloat, label: String? = nil) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
-            Text("\(size)".capitalized)
-            CountryFlag("cz", size: .icon(size))
-            CountryFlag("sg", size: .icon(size))
-            CountryFlag("jp", size: .icon(size))
-            CountryFlag("de", size: .icon(size))
-            CountryFlag("unknown", size: .icon(size))
+            Text("\(label ?? String(describing: Int(size)))".capitalized)
+            CountryFlag("cz")
+            CountryFlag("sg")
+            CountryFlag("jp")
+            CountryFlag("unknown")
         }
-        .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerFirstTextBaseline)
+        .textSize(custom: size)
+        .background(Separator(color: .redNormal, thickness: .hairline), alignment: .centerFirstTextBaseline)
     }
 
     static var snapshot: some View {

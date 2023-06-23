@@ -34,4 +34,31 @@ public extension Icon {
     func iconColor(_ color: Color?) -> Self {
         set(\.color, to: color)
     }
+
+    /// Returns a modified Orbit icon with provided size.
+    ///
+    /// - Parameters:
+    ///   - size: The size to use when displaying this icon.
+    ///   When the value is `nil`,  the environment values `iconSize`, `textSize` or the default `.normal` size will be used in this order.
+    func iconSize(_ size: Icon.Size?) -> Self {
+        set(\.size, to: size?.value)
+    }
+
+    /// Returns a modified Orbit icon with provided custom size.
+    ///
+    /// - Parameters:
+    ///   - size: The size to use when displaying this icon.
+    ///   When the value is `nil`,  the environment values `iconSize`, `textSize` or the default `.normal` size will be used in this order.
+    func iconSize(custom size: CGFloat?) -> Self {
+        set(\.size, to: size)
+    }
+
+    /// Returns a modified Orbit icon with size matching line height of a provided text size.
+    ///
+    /// - Parameters:
+    ///   - size: The text size to use when displaying this icon.
+    ///   When the value is `nil`,  the environment values `iconSize`, `textSize` or the default `.normal` size will be used in this order.
+    func iconSize(textSize: Text.Size?) -> Self {
+        set(\.size, to: textSize?.lineHeight)
+    }
 }

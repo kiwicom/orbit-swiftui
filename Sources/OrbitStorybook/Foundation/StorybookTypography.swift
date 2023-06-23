@@ -79,7 +79,8 @@ struct StorybookTypography {
 
     @ViewBuilder static func text(_ content: String, size: Orbit.Text.Size, weight: Font.Weight) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
-            Text(content, size: size)
+            Text(content)
+                .textSize(size)
                 .fontWeight(weight)
             Spacer()
             Text("\(Int(size.value))/\(Int(size.lineHeight))")

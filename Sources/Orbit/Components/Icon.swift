@@ -35,17 +35,19 @@ public struct Icon: View, TextBuildable {
     public static let sfSymbolDefaultWeight: Font.Weight = .medium
 
     @Environment(\.iconColor) private var iconColor
-    @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.iconSize) private var iconSize
     @Environment(\.textColor) private var textColor
     @Environment(\.textFontWeight) private var textFontWeight
+    @Environment(\.textSize) private var textSize
+    @Environment(\.sizeCategory) private var sizeCategory
 
     private let content: Content?
-    private let size: Size
 
     // Builder properties
     var baselineOffset: CGFloat?
     var fontWeight: Font.Weight?
     var color: Color?
+    var size: CGFloat?
 
     public var body: some View {
         switch content {
@@ -53,46 +55,65 @@ public struct Icon: View, TextBuildable {
                 EmptyView()
             case .symbol(let symbol):
                 SwiftUI.Text(verbatim: symbol.value)
-                    .font(.orbitIcon(size: size.value))
-                    .foregroundColor(resolvedColor)
+                    .font(.orbitIcon(size: resolvedSize(textRepresentableEnvironment)))
+                    .foregroundColor(resolvedColor(textRepresentableEnvironment))
                     .flipsForRightToLeftLayoutDirection(symbol.flipsForRightToLeftLayoutDirection)
-                    .frame(height: dynamicSize)
-                    .frame(minWidth: dynamicSize)
+                    .frame(height: frameSize)
+                    .frame(minWidth: frameSize)
                     .alignmentGuide(.firstTextBaseline, computeValue: baseline)
                     .alignmentGuide(.lastTextBaseline, computeValue: baseline)
                     .accessibility(label: .init(String(describing: symbol).titleCased))
             case .sfSymbol(let systemName):
                 Image(systemName: systemName)
-                    .font(sfSymbolFont(sizeCategory: sizeCategory, textFontWeight: textFontWeight))
-                    .foregroundColor(resolvedColor)
-                    .frame(height: dynamicSize)
-                    .frame(minWidth: dynamicSize)
+                    .font(sfSymbolFont(textRepresentableEnvironment))
+                    .foregroundColor(resolvedColor(textRepresentableEnvironment))
+                    .frame(height: frameSize)
+                    .frame(minWidth: frameSize)
                     .alignmentGuide(.firstTextBaseline) { $0[.firstTextBaseline] + resolvedBaselineOffset }
                     .alignmentGuide(.lastTextBaseline) { $0[.lastTextBaseline] + resolvedBaselineOffset }
         }
+    }
+
+    private var textRepresentableEnvironment: TextRepresentableEnvironment {
+        .init(
+            iconColor: iconColor,
+            iconSize: iconSize,
+            textAccentColor: nil,
+            textColor: textColor,
+            textFontWeight: textFontWeight,
+            textSize: textSize,
+            sizeCategory: sizeCategory
+        )
     }
 
     public var isEmpty: Bool {
         content?.isEmpty ?? true
     }
 
-    private func sfSymbolFont(sizeCategory: ContentSizeCategory, textFontWeight: Font.Weight?) -> Font {
+    private func sfSymbolFont(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> Font {
         .system(
-            size: sfSymbolSize * sizeCategory.ratio,
-            weight: fontWeight ?? textFontWeight ?? Self.sfSymbolDefaultWeight
+            size: sfSymbolSize(textRepresentableEnvironment) * textRepresentableEnvironment.sizeCategory.ratio,
+            weight: fontWeight ?? textRepresentableEnvironment.textFontWeight ?? Self.sfSymbolDefaultWeight
         )
     }
 
-    private var resolvedColor: Color {
-        color ?? iconColor ?? textColor ?? .inkDark
+    private func resolvedColor(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> Color {
+        color ?? textRepresentableEnvironment.iconColor ?? textRepresentableEnvironment.textColor ?? .inkDark
     }
 
-    private var dynamicSize: CGFloat {
-        round(size.value * sizeCategory.ratio)
+    private var frameSize: CGFloat {
+        round(resolvedSize(textRepresentableEnvironment) * sizeCategory.ratio)
     }
 
-    private var sfSymbolSize: CGFloat {
-        round(size.value * Self.sfSymbolToOrbitSymbolSizeRatio)
+    private func sfSymbolSize(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
+        round(resolvedSize(textRepresentableEnvironment) * Self.sfSymbolToOrbitSymbolSizeRatio)
+    }
+
+    private func resolvedSize(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
+        size
+        ?? textRepresentableEnvironment.iconSize
+        ?? textRepresentableEnvironment.textSize.map(Icon.Size.fromTextSize(size:))
+        ?? Icon.Size.normal.value
     }
 
     private var resolvedBaselineOffset: CGFloat {
@@ -103,9 +124,8 @@ public struct Icon: View, TextBuildable {
         dimensions.height * Self.symbolBaseline + resolvedBaselineOffset
     }
 
-    private init(_ content: Content?, size: Size = .normal) {
+    private init(_ content: Content?) {
         self.content = content
-        self.size = size
     }
 }
 
@@ -113,19 +133,13 @@ public struct Icon: View, TextBuildable {
 public extension Icon {
 
     /// Creates Orbit Icon component for provided Orbit symbol.
-    init(_ symbol: Icon.Symbol?, size: Size = .normal) {
-        self.init(
-            symbol.map { Icon.Content.symbol($0) },
-            size: size
-        )
+    init(_ symbol: Icon.Symbol?) {
+        self.init(symbol.map { Icon.Content.symbol($0) })
     }
 
     /// Creates Orbit Icon component for provided SF Symbol that matches the Orbit symbol sizing, reflecting the Dynamic Type settings.
-    init(_ systemName: String, size: Size = .normal) {
-        self.init(
-            .sfSymbol(systemName),
-            size: size
-        )
+    init(_ systemName: String) {
+        self.init(.sfSymbol(systemName))
     }
 }
 
@@ -142,8 +156,6 @@ public extension Icon {
         case large
         /// Size 28.
         case xLarge
-        /// Custom size.
-        case custom(CGFloat)
 
         public var value: CGFloat {
             switch self {
@@ -151,8 +163,12 @@ public extension Icon {
                 case .normal:                           return 20
                 case .large:                            return 24
                 case .xLarge:                           return 28
-                case .custom(let size):                 return size
             }
+        }
+
+        /// Icon size matching text line height.
+        public static func fromTextSize(size: CGFloat) -> CGFloat {
+            Text.Size.lineHeight(forTextSize: size)
         }
     }
 }
@@ -190,20 +206,17 @@ extension Icon: TextRepresentable {
             case .none:
                 return nil
             case .symbol(let symbol):
-                return symbolWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory) {
-                    colorWrapper(textRepresentableEnvironment: textRepresentableEnvironment) {
+                return symbolWrapper(textRepresentableEnvironment) {
+                    colorWrapper(textRepresentableEnvironment) {
                         SwiftUI.Text(verbatim: symbol.value)
                     }
                 }
             case .sfSymbol(let systemName):
                 return baselineWrapper {
-                    colorWrapper(textRepresentableEnvironment: textRepresentableEnvironment) {
+                    colorWrapper(textRepresentableEnvironment) {
                         SwiftUI.Text(Image(systemName: systemName))
                             .font(
-                                sfSymbolFont(
-                                    sizeCategory: textRepresentableEnvironment.sizeCategory,
-                                    textFontWeight: textRepresentableEnvironment.textFontWeight
-                                )
+                                sfSymbolFont(textRepresentableEnvironment)
                             )
                     }
                 }
@@ -215,9 +228,9 @@ extension Icon: TextRepresentable {
             case .none:
                 return nil
             case .symbol(let symbol):
-                return symbolWrapper(sizeCategory: textRepresentableEnvironment.sizeCategory) {
+                return symbolWrapper(textRepresentableEnvironment) {
                     baselineWrapper {
-                        colorWrapper(textRepresentableEnvironment: textRepresentableEnvironment) {
+                        colorWrapper(textRepresentableEnvironment) {
                             SwiftUI.Text(verbatim: symbol.value)
                         }
                     }
@@ -228,16 +241,15 @@ extension Icon: TextRepresentable {
         }
     }
 
-    private func colorWrapper(textRepresentableEnvironment: TextRepresentableEnvironment, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+    private func colorWrapper(_ textRepresentableEnvironment: TextRepresentableEnvironment, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
         text()
-            .foregroundColor(resolvedColor(textRepresentableEnvironment: textRepresentableEnvironment))
+            .foregroundColor(resolvedColor(textRepresentableEnvironment))
     }
 
-    private func symbolWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
-        imageBaselineWrapper(sizeCategory: sizeCategory) {
-            text()
-                .font(.orbitIcon(size: size.value))
-        }
+    private func symbolWrapper(_ textRepresentableEnvironment: TextRepresentableEnvironment, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
+        text()
+            .font(.orbitIcon(size: resolvedSize(textRepresentableEnvironment)))
+            .baselineOffset(textBaselineOffset(textRepresentableEnvironment))
     }
 
     private func baselineWrapper(@ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
@@ -249,17 +261,10 @@ extension Icon: TextRepresentable {
         }
     }
 
-    private func resolvedColor(textRepresentableEnvironment: TextRepresentableEnvironment) -> Color {
-        color ?? textRepresentableEnvironment.iconColor ?? textRepresentableEnvironment.textColor ?? .inkDark
-    }
-
-    private func imageBaselineWrapper(sizeCategory: ContentSizeCategory, @ViewBuilder text: () -> SwiftUI.Text) -> SwiftUI.Text {
-        text()
-            .baselineOffset(textBaselineOffset(baselineOffset, sizeCategory: sizeCategory))
-    }
-
-    private func textBaselineOffset(_ baselineOffset: CGFloat?, sizeCategory: ContentSizeCategory) -> CGFloat {
-        (-size.value * sizeCategory.ratio) * (1 - Self.symbolBaseline) + resolvedBaselineOffset
+    private func textBaselineOffset(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
+        (-resolvedSize(textRepresentableEnvironment) * sizeCategory.ratio)
+        * (1 - Self.symbolBaseline)
+        + resolvedBaselineOffset
     }
 }
 
@@ -343,7 +348,6 @@ struct IconPreviews: PreviewProvider {
                 textStack(.normal, alignment: .firstTextBaseline)
                 textStack(.large, alignment: .firstTextBaseline)
                 textStack(.xLarge, alignment: .firstTextBaseline)
-                textStack(.custom(30), alignment: .firstTextBaseline)
             }
 
             VStack(alignment: .leading, spacing: .small) {
@@ -351,7 +355,6 @@ struct IconPreviews: PreviewProvider {
                 textStack(.normal, alignment: .top)
                 textStack(.large, alignment: .top)
                 textStack(.xLarge, alignment: .top)
-                textStack(.custom(30), alignment: .top)
             }
         }
         .padding(.medium)
@@ -388,19 +391,20 @@ struct IconPreviews: PreviewProvider {
 
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
-                    Text("Text", size: .small)
-                    Icon(sfSymbol, size: .small)
+                    Text("Text")
+                    Icon(sfSymbol)
                         .iconColor(.blueNormal)
-                    Icon(sfSymbol, size: .small)
+                    Icon(sfSymbol)
                         .baselineOffset(.xxxSmall)
 
-                    Icon(.informationCircle, size: .small)
+                    Icon(.informationCircle)
                         .iconColor(.blueNormal)
-                    Icon(.informationCircle, size: .small)
+                    Icon(.informationCircle)
                         .baselineOffset(.xxxSmall)
                 }
                 .border(.cloudLightActive, width: .hairline)
             }
+            .textSize(.small)
             .textColor(.greenDark)
             .overlay(
                 Separator(color: .redNormal, thickness: .hairline),
@@ -411,17 +415,18 @@ struct IconPreviews: PreviewProvider {
                 .padding(.top, .xLarge)
 
             (
-                Text("Text", size: .small)
-                + Icon(sfSymbol, size: .small)
+                Text("Text")
+                + Icon(sfSymbol)
                     .iconColor(.blueNormal)
-                + Icon(sfSymbol, size: .small)
+                + Icon(sfSymbol)
                     .baselineOffset(.xxxSmall)
 
-                + Icon(.informationCircle, size: .small)
+                + Icon(.informationCircle)
                     .iconColor(.blueNormal)
-                + Icon(.informationCircle, size: .small)
+                + Icon(.informationCircle)
                     .baselineOffset(.xxxSmall)
             )
+            .textSize(.small)
             .textColor(.greenDark)
             .overlay(
                 Separator(color: .redNormal, thickness: .hairline),
@@ -463,7 +468,8 @@ struct IconPreviews: PreviewProvider {
         VStack(alignment: .trailing) {
             ForEach(flippableSymbols, id: \.value) { symbol in
                 HStack {
-                    Text(String(describing: symbol), size: .small)
+                    Text(String(describing: symbol))
+                        .textSize(.small)
                     Icon(symbol)
                     Icon(symbol)
                         .environment(\.layoutDirection, .rightToLeft)
@@ -481,8 +487,10 @@ struct IconPreviews: PreviewProvider {
                 .bold()
 
             HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
-                Icon(.passengers, size: iconSize)
-                Text("XLarge text and icon size", size: textSize)
+                Icon(.passengers)
+                    .iconSize(iconSize)
+                Text("\(String(describing: textSize).titleCased) text and icon size")
+                    .textSize(textSize)
             }
             .overlay(Separator(thickness: .hairline), alignment: .top)
             .overlay(Separator(thickness: .hairline), alignment: .bottom)
@@ -490,23 +498,25 @@ struct IconPreviews: PreviewProvider {
     }
 
     static func headingStack(_ style: Heading.Style, alignment: VerticalAlignment) -> some View {
-        alignmentStack(style.iconSize, alignment: alignment) {
+        alignmentStack(alignment: alignment) {
             Heading("\(style)".capitalized, style: style)
         }
+        .iconSize(custom: style.lineHeight)
     }
 
     static func textStack(_ size: Text.Size, alignment: VerticalAlignment) -> some View {
-        alignmentStack(size.iconSize, alignment: alignment) {
-            Text("Text \(Int(size.value))", size: size)
+        alignmentStack(alignment: alignment) {
+            Text("\(String(describing: size).titleCased)")
         }
+        .textSize(size)
     }
 
-    static func alignmentStack<V: View>(_ size: Icon.Size, alignment: VerticalAlignment, @ViewBuilder content: () -> V) -> some View {
+    static func alignmentStack<V: View>(alignment: VerticalAlignment, @ViewBuilder content: () -> V) -> some View {
         HStack(spacing: .xSmall) {
             HStack(alignment: alignment, spacing: .xxSmall) {
                 Group {
-                    Icon(sfSymbol, size: size)
-                    Icon(.informationCircle, size: size)
+                    Icon(sfSymbol)
+                    Icon(.informationCircle)
                     content()
                 }
                 .background(Color.redLightHover)

@@ -13,8 +13,6 @@ public struct BadgeList<Icon: View>: View {
 
     let label: String
     let style: Style
-    let labelColor: LabelColor
-    let size: Size
     @ViewBuilder let icon: Icon
 
     public var body: some View {
@@ -27,17 +25,17 @@ public struct BadgeList<Icon: View>: View {
                     .padding(.xxSmall)
                     .background(badgeBackground)
 
-                Text(label, size: size.textSize)
-                    .textColor(textColor ?? labelColor.color)
+                Text(label)
                     .textAccentColor(textAccentColor ?? iconColor)
-                    .textLinkColor(.custom(labelColor.color))
+                    .textLinkColor(.custom(textColor ?? .inkDark))
             }
         }
     }
 
     @ViewBuilder var badge: some View {
         if icon.isEmpty {
-            Orbit.Icon(.grid, size: .small)
+            Orbit.Icon(.grid)
+                .iconSize(.small)
                 .opacity(0)
         } else {
             icon
@@ -86,17 +84,14 @@ public extension BadgeList {
     init(
         _ label: String = "",
         icon: Icon.Symbol? = nil,
-        style: Style = .neutral,
-        labelColor: LabelColor = .primary,
-        size: Size = .normal
+        style: Style = .neutral
     ) where Icon == Orbit.Icon {
         self.init(
             label,
-            style: style,
-            labelColor: labelColor,
-            size: size
+            style: style
         ) {
-            Icon(icon, size: .small)
+            Icon(icon)
+                .iconSize(.small)
         }
     }
 
@@ -107,14 +102,10 @@ public extension BadgeList {
     init(
         _ label: String = "",
         style: Style = .neutral,
-        labelColor: LabelColor = .primary,
-        size: Size = .normal,
         @ViewBuilder icon: () -> Icon
     ) {
         self.label = label
         self.style = style
-        self.labelColor = labelColor
-        self.size = size
         self.icon = icon()
     }
 }
@@ -123,38 +114,9 @@ public extension BadgeList {
 public extension BadgeList {
 
     enum Style: Equatable, Hashable {
-
         case neutral
         case status(_ status: Status?)
         case custom(iconColor: Color, backgroundColor: Color)
-    }
-
-    enum LabelColor {
-        case primary
-        case secondary
-        case custom(_ color: Color)
-
-        var color: Color {
-            switch self {
-                case .primary:              return .inkDark
-                case .secondary:            return .inkNormal
-                case .custom(let color):    return color
-            }
-        }
-    }
-
-    enum Size: Equatable {
-        case small
-        case normal
-        case custom(_ size: Text.Size)
-
-        var textSize: Text.Size {
-            switch self {
-                case .small:              	return .small
-                case .normal:               return .normal
-                case .custom(let size):     return size
-            }
-        }
     }
 }
 
@@ -185,7 +147,9 @@ struct BadgeListPreviews: PreviewProvider {
     }
 
     static var smallSecondary: some View {
-        BadgeList("Neutral BadgeList", icon: .grid, labelColor: .secondary, size: .small)
+        BadgeList("Neutral BadgeList", icon: .grid)
+            .textSize(.small)
+            .textColor(.inkLight)
             .padding(.medium)
             .previewDisplayName()
     }
@@ -200,12 +164,14 @@ struct BadgeListPreviews: PreviewProvider {
                 BadgeList(label, icon: .alertCircle, style: .status(.critical))
             }
             VStack(alignment: .leading, spacing: .medium) {
-                BadgeList(longLabel, icon: .grid, labelColor: .secondary, size: .small)
-                BadgeList(label, icon: .informationCircle, style: .status(.info), labelColor: .secondary, size: .small)
-                BadgeList(label, icon: .checkCircle, style: .status(.success), labelColor: .secondary, size: .small)
-                BadgeList(label, icon: .alertCircle, style: .status(.warning), labelColor: .secondary, size: .small)
-                BadgeList(label, icon: .alertCircle, style: .status(.critical), labelColor: .secondary, size: .small)
+                BadgeList(longLabel, icon: .grid)
+                BadgeList(label, icon: .informationCircle, style: .status(.info))
+                BadgeList(label, icon: .checkCircle, style: .status(.success))
+                BadgeList(label, icon: .alertCircle, style: .status(.warning))
+                BadgeList(label, icon: .alertCircle, style: .status(.critical))
             }
+            .textColor(.inkNormal)
+            .textSize(.small)
         }
         .padding(.medium)
         .previewDisplayName()
@@ -214,16 +180,18 @@ struct BadgeListPreviews: PreviewProvider {
     static var mix: some View {
         VStack(alignment: .leading, spacing: .medium) {
             BadgeList("This is simple <ref>BadgeList</ref> item with <strong>SF Symbol</strong>", style: .status(.info)) {
-                Icon("info.circle.fill", size: .small)
+                Icon("info.circle.fill")
             }
             BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", style: .status(.critical)) {
-                CountryFlag("us", size: .small)
+                CountryFlag("us")
             }
-            BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color", labelColor: .custom(.blueDark))
+            BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color")
+                .textColor(.blueDark)
             BadgeList("This is a <ref>BadgeList</ref> with <strong>status</strong> override", style: .status(nil)) {
-                Icon("info.circle.fill", size: .small)
+                Icon("info.circle.fill")
             }
         }
+        .iconSize(.small)
         .status(.success)
         .padding(.medium)
         .previewDisplayName()

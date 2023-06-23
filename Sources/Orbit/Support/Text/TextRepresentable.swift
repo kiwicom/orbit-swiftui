@@ -11,8 +11,10 @@ public protocol TextRepresentable {
 /// Environment values required for proper formatting of concatenated Orbit text components.
 public struct TextRepresentableEnvironment {
     let iconColor: Color?
-    let sizeCategory: ContentSizeCategory
+    let iconSize: CGFloat?
     let textAccentColor: Color?
     let textColor: Color?
     let textFontWeight: Font.Weight?
+    let textSize: CGFloat?
+    let sizeCategory: ContentSizeCategory
 }

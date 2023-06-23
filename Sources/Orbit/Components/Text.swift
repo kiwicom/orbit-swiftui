@@ -14,13 +14,15 @@ public struct Text: View, FormattedTextBuildable {
     @Environment(\.textAccentColor) private var textAccentColor
     @Environment(\.textColor) private var textColor
     @Environment(\.textFontWeight) private var textFontWeight
+    @Environment(\.textIsCopyable) private var textIsCopyable
+    @Environment(\.textLineHeight) private var textLineHeight
+    @Environment(\.textSize) private var textSize
     @Environment(\.sizeCategory) private var sizeCategory
 
     private let content: String
-    private let size: Size
-    private let isSelectable: Bool
 
     // Builder properties
+    var size: CGFloat?
     var baselineOffset: CGFloat?
     var fontWeight: Font.Weight?
     var color: Color?
@@ -31,6 +33,7 @@ public struct Text: View, FormattedTextBuildable {
     var isItalic: Bool?
     var isUnderline: Bool?
     var isMonospacedDigit: Bool?
+    var lineHeight: CGFloat?
 
     var isEmpty: Bool {
         content.isEmpty
@@ -48,11 +51,11 @@ public struct Text: View, FormattedTextBuildable {
         if isEmpty == false {
             text(textRepresentableEnvironment: textRepresentableEnvironment)
                 .lineSpacing(lineSpacingAdjusted(sizeCategory: sizeCategory))
-                .overlay(selectableLabelWrapper)
+                .overlay(copyableText)
                 // If the text contains links, the TextLink overlay takes accessibility priority
                 .accessibility(hidden: content.containsTextLinks)
                 .overlay(textLinks)
-                .padding(.vertical, lineHeightPadding)
+                .padding(.vertical, lineHeightPadding(textRepresentableEnvironment))
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -63,9 +66,9 @@ public struct Text: View, FormattedTextBuildable {
         }
     }
 
-    @ViewBuilder private var selectableLabelWrapper: some View {
-        if isSelectable {
-            SelectableLabelWrapper(
+    @ViewBuilder private var copyableText: some View {
+        if textIsCopyable {
+            CopyableText(
                 attributedString(textRepresentableEnvironment: textRepresentableEnvironment).string
             )
         }
@@ -91,7 +94,7 @@ public struct Text: View, FormattedTextBuildable {
                 )
             )
             .orbitFont(
-                size: size.value,
+                size: resolvedSize(textRepresentableEnvironment),
                 weight: resolvedFontWeight(textRepresentableEnvironment) ?? .regular,
                 sizeCategory: textRepresentableEnvironment.sizeCategory
             )
@@ -101,10 +104,12 @@ public struct Text: View, FormattedTextBuildable {
     private var textRepresentableEnvironment: TextRepresentableEnvironment {
         .init(
             iconColor: nil,
-            sizeCategory: sizeCategory,
+            iconSize: nil,
             textAccentColor: textAccentColor,
             textColor: textColor,
-            textFontWeight: textFontWeight
+            textFontWeight: textFontWeight,
+            textSize: textSize,
+            sizeCategory: sizeCategory
         )
     }
 
@@ -212,7 +217,7 @@ public struct Text: View, FormattedTextBuildable {
         TagAttributedStringBuilder.all.attributedString(
             content,
             alignment: multilineTextAlignment,
-            fontSize: scaledSize,
+            fontSize: scaledSize(textRepresentableEnvironment),
             fontWeight: resolvedFontWeight(textRepresentableEnvironment),
             lineSpacing: lineSpacingAdjusted(sizeCategory: sizeCategory),
             kerning: kerning,
@@ -229,7 +234,7 @@ public struct Text: View, FormattedTextBuildable {
         TagAttributedStringBuilder.all.attributedString(
             content,
             alignment: multilineTextAlignment,
-            fontSize: size.value * textRepresentableEnvironment.sizeCategory.ratio,
+            fontSize: resolvedSize(textRepresentableEnvironment) * textRepresentableEnvironment.sizeCategory.ratio,
             fontWeight: resolvedFontWeight(textRepresentableEnvironment),
             lineSpacing: lineSpacingAdjusted(sizeCategory: textRepresentableEnvironment.sizeCategory),
             kerning: kerning,
@@ -249,28 +254,35 @@ public struct Text: View, FormattedTextBuildable {
         color ?? textRepresentableEnvironment.textColor ?? .inkDark
     }
 
+    private func resolvedSize(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
+        (size ?? textRepresentableEnvironment.textSize ?? Size.normal.value)
+    }
+
     private func resolvedFontWeight(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> Font.Weight? {
         isBold == true ? .bold : fontWeight ?? textRepresentableEnvironment.textFontWeight
     }
 
-    private func designatedLineHeight(sizeCategory: ContentSizeCategory) -> CGFloat {
-        size.lineHeight * sizeCategory.ratio
+    private func designatedLineHeight(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
+        (lineHeight ?? textLineHeight ?? (Text.Size.lineHeight(forTextSize: resolvedSize(textRepresentableEnvironment))))
+            * textRepresentableEnvironment.sizeCategory.ratio
     }
 
-    private var lineHeightPadding: CGFloat {
-        (designatedLineHeight(sizeCategory: sizeCategory) - originalLineHeight) / 2
+    private func lineHeightPadding(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
+        (designatedLineHeight(textRepresentableEnvironment) - originalLineHeight(textRepresentableEnvironment)) / 2
     }
 
     private func lineSpacingAdjusted(sizeCategory: ContentSizeCategory) -> CGFloat {
-        (designatedLineHeight(sizeCategory: sizeCategory) - originalLineHeight) + lineSpacing
+        designatedLineHeight(textRepresentableEnvironment)
+        - originalLineHeight(textRepresentableEnvironment)
+        + lineSpacing
     }
 
-    private var originalLineHeight: CGFloat {
-        UIFont.lineHeight(size: scaledSize)
+    private func originalLineHeight(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
+        UIFont.lineHeight(size: scaledSize(textRepresentableEnvironment))
     }
 
-    private var scaledSize: CGFloat {
-        size.value * sizeCategory.ratio
+    private func scaledSize(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
+        resolvedSize(textRepresentableEnvironment) * textRepresentableEnvironment.sizeCategory.ratio
     }
 }
 
@@ -279,32 +291,26 @@ public extension Text {
     
     /// Creates Orbit Text component that displays a string literal.
     ///
-    /// Modifiers like `textAccentColor()` or `fontWeight()` can be used to further adjust the formatting.
+    /// Modifiers like `textAccentColor()`, `textSize()` or `fontWeight()` can be used to further adjust the formatting.
     /// To specify the formatting and behaviour for `TextLink`s found in the text, use `textLinkAction()` and
     /// `textLinkColor()` modifiers.
     ///
+    /// Use `textIsCopyable()` to allow text to react on long tap.
+    ///
     /// - Parameters:
     ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
-    ///   - size: Font size.
-    ///   - isSelectable: Determines if text is copyable using long tap gesture.
     ///
     /// - Important: The text concatenation does not support interactive TextLinks. It also does not fully support some global SwiftUI native text formatting view modifiers.
     /// For proper rendering of TextLinks, any required text formatting modifiers must be also called on the Text directly.
-    init(
-        _ content: String,
-        size: Size = .normal,
-        isSelectable: Bool = false
-    ) {
+    init(_ content: String) {
         self.content = content
-        self.size = size
-        self.isSelectable = isSelectable
     }
 }
 
 // MARK: - Types
 public extension Text {
 
-    /// Orbit text size.
+    /// Orbit text font size.
     enum Size: Equatable {
         /// 13 pts.
         case small
@@ -314,34 +320,35 @@ public extension Text {
         case large
         /// 18 pts.
         case xLarge
-        /// Custom text size.
-        case custom(CGFloat, lineHeight: CGFloat? = nil)
 
-        /// Font size.
+        public static func lineHeight(forTextSize size: CGFloat) -> CGFloat {
+            switch size {
+                case 13:    return 16
+                case 15:    return 20
+                case 16:    return 24
+                case 18:    return 24
+                default:    return size * Font.fontSizeToLineHeightRatio
+            }
+        }
+
+        /// Text font size value.
         public var value: CGFloat {
             switch self {
                 case .small:                        return 13
                 case .normal:                       return 15
                 case .large:                        return 16
                 case .xLarge:                       return 18
-                case .custom(let size, _):          return size
             }
         }
-        
+
+        /// Designated line height.
         public var lineHeight: CGFloat {
             switch self {
                 case .small:                        return 16
                 case .normal:                       return 20
                 case .large:                        return 24
                 case .xLarge:                       return 24
-                case .custom(_, let lineHeight?):   return lineHeight
-                case .custom(let size, nil):        return size * Font.fontSizeToLineHeightRatio
             }
-        }
-
-        /// Icon size matching text line height.
-        public var iconSize: Icon.Size {
-            .custom(lineHeight)
         }
     }
 }
@@ -404,7 +411,8 @@ struct TextPreviews: PreviewProvider {
     @ViewBuilder static var standalone: some View {
         VStack(alignment: .trailing, spacing: .medium) {
             Text("Multiline text\nplain with with no formatting")
-            Text("Multiline text\n<strong>selectable</strong> (with long tap gesture)", isSelectable: true)
+            Text("Multiline text\n<strong>selectable</strong> (with long tap gesture)")
+                .textIsCopyable()
 
             Text(
 """
@@ -463,7 +471,8 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
     static var multilineFormatting: some View {
         VStack(alignment: .leading, spacing: .medium) {
             Group {
-                Text("Selectable text (on long tap)", isSelectable: true)
+                Text("Selectable text (on long tap)")
+                    .textIsCopyable()
                 Text("Text with no formatting")
                 Text("Text <u>formatted</u> <strong>and</strong> <ref>accented</ref>")
                     .textAccentColor(.orangeNormal)
@@ -505,9 +514,9 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
 
             // This text may reveal issues between iOS TextLink word wrapping
             Text(
-                "By continuing, you accept the <applink1>Terms Of Use</applink1> and <applink2>Privacy Policy</applink2>.",
-                size: .small
+                "By continuing, you accept the <applink1>Terms Of Use</applink1> and <applink2>Privacy Policy</applink2>."
             )
+            .textSize(.small)
             .textColor(.inkNormal)
             .textLinkColor(.secondary)
             .multilineTextAlignment(.leading)
@@ -542,14 +551,12 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
     static var lineHeight: some View {
         VStack(alignment: .trailing, spacing: .medium) {
             VStack(alignment: .trailing, spacing: .xxxSmall) {
-                LineHeight(size: .custom(8), formatted: false)
                 LineHeight(size: .small, formatted: false)
                 LineHeight(size: .normal, formatted: false)
                 LineHeight(size: .large, formatted: false)
                 LineHeight(size: .xLarge, formatted: false)
             }
             VStack(alignment: .trailing, spacing: .xxxSmall) {
-                LineHeight(size: .custom(8), formatted: true)
                 LineHeight(size: .small, formatted: true)
                 LineHeight(size: .normal, formatted: true)
                 LineHeight(size: .large, formatted: true)
@@ -564,25 +571,26 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
         HStack(alignment: .top, spacing: .xxxSmall) {
             VStack(alignment: .trailing, spacing: .xxxSmall) {
                 Group {
-                    Text("Text single line", size: .large)
+                    Text("Text single line")
                         .background(Color.redLightHover)
-                    Text("Text <applink1>single</applink1> line", size: .large)
+                    Text("Text <applink1>single</applink1> line")
                         .background(Color.redLightHover.opacity(0.7))
-                    Text("Text <strong>single</strong> line", size: .large)
+                    Text("Text <strong>single</strong> line")
                         .background(Color.redLightHover.opacity(0.4))
                 }
                 .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerFirstTextBaseline)
             }
 
             Group {
-                Text("Multliline\nwith\n<strong>formatting</strong>", size: .large)
-                Text("Multliline\nwith\n<applink1>links</applink1>", size: .large)
+                Text("Multliline\nwith\n<strong>formatting</strong>")
+                Text("Multliline\nwith\n<applink1>links</applink1>")
             }
             .lineSpacing(.xxxSmall)
             .background(Color.redLightHover.opacity(0.7))
             .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerFirstTextBaseline)
             .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerLastTextBaseline)
         }
+        .textSize(.large)
         .padding(.medium)
         .previewDisplayName()
     }
@@ -612,9 +620,9 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                         An <ref>attributed text</ref> that can contain <a href="https://kiwi.com">multiple</a> \
                         HTML <a href="https://www.apple.com">links</a> with \
                         <u>underline</u> and <strong>strong</strong> support.
-                        """,
-                        size: .custom(12)
+                        """
                     )
+                    .textSize(custom: 12)
                     .textColor(.blueLightActive)
                     .bold()
                     .textAccentColor(.blueNormal)
@@ -645,9 +653,9 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
                         An <ref>attributed text</ref> that can contain <a href="https://kiwi.com">multiple</a> \
                         HTML <a href="https://www.apple.com">links</a> with \
                         <u>underline</u> and <strong>strong</strong> support.
-                        """,
-                        size: .custom(22)
+                        """
                     )
+                    .textSize(custom: 22)
                     .textColor(.inkNormal)
                     .bold()
                     .lineLimit(2)
@@ -667,15 +675,14 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
 
         var body: some View {
             HStack(spacing: .xxSmall) {
-                Text(
-                    "\(sizeText) \(formatted ? "<applink1>" : "")\(size)\(formatted ? "</applink1>" : "")",
-                    size: size
-                )
-                .textAccentColor(Status.info.darkColor)
-                .fixedSize()
-                .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerLastTextBaseline)
+                Text("\(sizeText) \(formatted ? "<applink1>" : "")\(size)\(formatted ? "</applink1>" : "")")
+                    .textSize(size)
+                    .textAccentColor(Status.info.darkColor)
+                    .fixedSize()
+                    .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerLastTextBaseline)
 
-                Text("\(size.value.formatted) / \(size.lineHeight.formatted)", size: .custom(6))
+                Text("\(size.value.formatted) / \(size.lineHeight.formatted)")
+                    .textSize(custom: 6)
                     .environment(\.sizeCategory, .large)
             }
             .padding(.trailing, .xxSmall)
@@ -701,7 +708,8 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
 
     static func text(_ content: String, size: Text.Size, weight: Font.Weight) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
-            Text(content, size: size)
+            Text(content)
+                .textSize(size)
                 .fontWeight(weight)
             Spacer()
             Text("\(Int(size.value))/\(Int(size.lineHeight))")

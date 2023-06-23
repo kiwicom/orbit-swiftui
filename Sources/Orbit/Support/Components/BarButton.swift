@@ -3,9 +3,9 @@ import SwiftUI
 /// An icon-based bar button for suitable for actions inside toolbar or navigation bar.
 public struct BarButton<Icon: View>: View {
 
+    @Environment(\.iconSize) private var iconSize
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    private let size: Orbit.Icon.Size
     private let alignment: HorizontalAlignment
     private let action: () -> Void
     @ViewBuilder private let icon: Icon
@@ -19,11 +19,18 @@ public struct BarButton<Icon: View>: View {
             action()
         } label: {
             icon
+                .iconSize(custom: resolvedIconSize)
+                .font(.system(size: resolvedIconSize))
+                .foregroundColor(.inkDark)
                 .padding(.vertical, .xSmall)
                 .padding(horizontalEdges, .xSmall)
                 .contentShape(Rectangle())
         }
         .buttonStyle(IconButtonStyle())
+    }
+
+    var resolvedIconSize: CGFloat {
+        iconSize ?? Orbit.Icon.Size.large.value
     }
 
     var horizontalEdges: Edge.Set {
@@ -37,28 +44,22 @@ public struct BarButton<Icon: View>: View {
     /// Creates Orbit BarButton component.
     public init(
         _ icon: Icon.Symbol,
-        size: Icon.Size = .large,
         alignment: HorizontalAlignment = .center,
         action: @escaping () -> Void
     ) where Icon == Orbit.Icon {
-        self.init(
-            size: size,
-            alignment: alignment
-        ) {
+        self.init(alignment: alignment) {
             action()
         } icon: {
-            Icon(icon, size: size)
+            Icon(icon)
         }
     }
 
     /// Creates Orbit BarButton component with custom icon.
     public init(
-        size: Orbit.Icon.Size = .large,
         alignment: HorizontalAlignment = .center,
         action: @escaping () -> Void,
         @ViewBuilder icon: () -> Icon
     ) {
-        self.size = size
         self.alignment = alignment
         self.action = action
         self.icon = icon()
@@ -71,6 +72,7 @@ struct BarButtonPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            sizing
             navigationView
         }
         .previewLayout(.sizeThatFits)
@@ -79,6 +81,37 @@ struct BarButtonPreviews: PreviewProvider {
     static var standalone: some View {
         VStack{
             BarButton(.grid, action: {})
+        }
+        .previewDisplayName()
+    }
+
+    static var sizing: some View {
+        VStack(alignment: .leading, spacing: .xSmall) {
+            Group {
+                BarButton(.grid, action: {})
+
+                BarButton(.grid, action: {})
+                    .iconSize(.small)
+                BarButton(action: {}) {
+                    Icon(.grid)
+                        .iconSize(.small)
+                }
+
+                BarButton(action: {}) {
+                    Icon("questionmark.circle.fill")
+                }
+                BarButton(action: {}) {
+                    Icon("questionmark.circle.fill")
+                        .iconSize(.small)
+                }
+                BarButton(action: {}) {
+                    Icon("questionmark.circle.fill")
+                }
+                .iconSize(.small)
+            }
+            .background(Color.redLight)
+            .measured()
+
         }
         .previewDisplayName()
     }
@@ -97,12 +130,13 @@ struct BarButtonPreviews: PreviewProvider {
                                 // No action
                             } icon: {
                                 Icon("questionmark.circle.fill")
+                                    .iconSize(.normal)
                                     .iconColor(.greenDark)
                             }
                             BarButton {
                                 // No action
                             } icon: {
-                                CountryFlag("cz", size: .large)
+                                CountryFlag("cz")
                             }
                         }
                         .border(.cloudNormal.opacity(0.4))
@@ -115,6 +149,7 @@ struct BarButtonPreviews: PreviewProvider {
                                 // No action
                             } icon: {
                                 Icon("square.and.arrow.up")
+                                    .iconSize(.normal)
                                     .fontWeight(.medium)
                             }
 

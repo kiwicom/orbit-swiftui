@@ -56,7 +56,8 @@ public struct Tile<Content: View, Icon: View>: View {
                 Spacer(minLength: 0)
             }
 
-            TextStrut(.large)
+            TextStrut()
+                .textSize(.large)
                 .padding(.vertical, TileButtonStyle.verticalTextPadding)
 
             disclosureIcon
@@ -70,7 +71,7 @@ public struct Tile<Content: View, Icon: View>: View {
         if isHeaderEmpty == false {
             HStack(alignment: .top, spacing: 0) {
                 icon
-                    .font(.system(size: titleStyle.iconSize.value))
+                    .font(.system(size: Orbit.Icon.Size.fromTextSize(size: titleStyle.size)))
                     .foregroundColor(.inkNormal)
                     .padding(.trailing, .xSmall)
                     .accessibility(.tileIcon)
@@ -176,7 +177,7 @@ public extension Tile {
         } content: {
             content()
         } icon: {
-            Icon(icon, size: titleStyle.iconSize)
+            Icon(icon)
         }
     }
 

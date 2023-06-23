@@ -16,12 +16,14 @@ struct StorybookBadgeList {
                 BadgeList(label, icon: .alertCircle, style: .status(.critical))
             }
             VStack(alignment: .leading, spacing: .medium) {
-                BadgeList(longLabel, icon: .grid, labelColor: .secondary, size: .small)
-                BadgeList(label, icon: .informationCircle, style: .status(.info), labelColor: .secondary, size: .small)
-                BadgeList(label, icon: .checkCircle, style: .status(.success), labelColor: .secondary, size: .small)
-                BadgeList(label, icon: .alertCircle, style: .status(.warning), labelColor: .secondary, size: .small)
-                BadgeList(label, icon: .alertCircle, style: .status(.critical), labelColor: .secondary, size: .small)
+                BadgeList(longLabel, icon: .grid)
+                BadgeList(label, icon: .informationCircle, style: .status(.info))
+                BadgeList(label, icon: .checkCircle, style: .status(.success))
+                BadgeList(label, icon: .alertCircle, style: .status(.warning))
+                BadgeList(label, icon: .alertCircle, style: .status(.critical))
             }
+            .textColor(.inkNormal)
+            .textSize(.small)
         }
         .previewDisplayName()
     }
@@ -34,7 +36,8 @@ struct StorybookBadgeList {
             BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", style: .status(.critical)) {
                 CountryFlag("us")
             }
-            BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color", labelColor: .custom(.blueDark))
+            BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color")
+                .textColor(.blueDark)
         }
         .previewDisplayName()
     }

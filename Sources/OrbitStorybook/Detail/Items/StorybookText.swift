@@ -10,7 +10,8 @@ struct StorybookText {
         VStack(alignment: .leading, spacing: .medium) {
             Group {
                 Text("Plain text with no formatting")
-                Text("Selectable text (on long tap)", isSelectable: true)
+                Text("Selectable text (on long tap)")
+                    .textIsCopyable()
                 Text("Text <u>formatted</u> <strong>and</strong> <ref>accented</ref>")
                     .textAccentColor(.orangeNormal)
                 Text("Text with strikethrough and kerning")

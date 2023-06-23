@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct TextLinkActionKey: EnvironmentKey {
-    static var defaultValue: TextLink.Action? = nil
+    static let defaultValue: TextLink.Action? = nil
 }
 
 public extension EnvironmentValues {

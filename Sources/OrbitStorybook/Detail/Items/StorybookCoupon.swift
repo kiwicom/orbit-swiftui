@@ -8,12 +8,13 @@ struct StorybookCoupon {
             Coupon("COUPONCODE")
 
             HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-                Coupon("HXT3B81F", size: .small)
+                Coupon("HXT3B81F")
                     .textColor(.blueDark)
                     .previewDisplayName()
 
-                Text("PROMOCODE", size: .small)
+                Text("PROMOCODE")
             }
+            .textSize(.small)
         }
         .previewDisplayName()
     }

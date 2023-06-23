@@ -11,7 +11,8 @@ public struct PasswordStrengthIndicator: View {
                 indicator
                     .animation(.easeOut, value: passwordStrength)
 
-                Text(text, size: .small)
+                Text(text)
+                    .textSize(.small)
                     .textColor(color)
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }

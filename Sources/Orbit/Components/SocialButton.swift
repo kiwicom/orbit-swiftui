@@ -34,7 +34,7 @@ public struct SocialButton: View {
                         .scaledToFit()
                         .frame(width: .large * sizeCategory.ratio)
 
-                    Text(label, size: .normal)
+                    Text(label)
                         .fontWeight(.medium)
                         .padding(.vertical, ButtonSize.default.verticalPadding)
 
@@ -42,7 +42,8 @@ public struct SocialButton: View {
                         Spacer(minLength: 0)
                     }
 
-                    Icon(.chevronForward, size: .large)
+                    Icon(.chevronForward)
+                        .iconSize(.large)
                         .iconColor(labelColor)
                 }
                 .textColor(textColor ?? labelColor)
@@ -56,7 +57,7 @@ public struct SocialButton: View {
             case .apple:        Self.appleLogo.foregroundColor(.whiteNormal).padding(1)
             case .google:       Self.googleLogo
             case .facebook:     Self.facebookLogo
-            case .email:        Icon(.email, size: .large)
+            case .email:        Icon(.email).iconSize(.large)
         }
     }
 
