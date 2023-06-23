@@ -6,7 +6,7 @@ import SwiftUI
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Select<Prefix: View, Suffix: View>: View {
 
-    let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
+    public let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
 
     @Environment(\.isEnabled) private var isEnabled: Bool
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
@@ -17,6 +17,7 @@ public struct Select<Prefix: View, Suffix: View>: View {
     private let value: String?
     private let prompt: String
     private let state: InputState
+    private let labelStyle: InputLabelStyle
     private let message: Message?
     private let action: () -> Void
     @ViewBuilder private let prefix: Prefix
@@ -24,7 +25,7 @@ public struct Select<Prefix: View, Suffix: View>: View {
 
     public var body: some View {
         FieldWrapper(
-            label,
+            fieldLabel,
             message: message,
             messageHeight: $messageHeight
         ) {
@@ -37,18 +38,25 @@ public struct Select<Prefix: View, Suffix: View>: View {
                     action()
                 },
                 label: {
-                    HStack(spacing: 0) {
-                        buttonLabel
-                            .padding(.leading, leadingPadding)
-                            .padding(.trailing, trailingPadding)
-                            .padding(.vertical, verticalTextPadding)
+                    HStack(alignment: .firstTextBaseline, spacing: .small) {
+                        FieldLabel(compactFieldLabel)
+                            .textColor(value == nil ? .inkDark : .inkLight)
 
-                        TextStrut()
+                        Text(inputLabel)
+                            .textColor(textColor)
+                            .accessibility(.selectValue)
                     }
+                    .padding(.vertical, verticalTextPadding)
+                    .padding(.leading, leadingPadding)
+                    .padding(.trailing, trailingPadding)
                 }
             )
             .buttonStyle(
-                InputButtonStyle(state: state, message: message) {
+                InputContentButtonStyle(
+                    state: state,
+                    message: message,
+                    isPlaceholder: value == nil
+                ) {
                     prefix
                         .accessibility(.selectPrefix)
                 } suffix: {
@@ -64,17 +72,25 @@ public struct Select<Prefix: View, Suffix: View>: View {
         .accessibility(addTraits: .isButton)
     }
 
-    @ViewBuilder var buttonLabel: some View {
-        Text(inputLabel)
-            .textColor(textColor)
-            .accessibility(.selectValue)
+    private var fieldLabel: String {
+        switch labelStyle {
+            case .default:          return label
+            case .compact:          return ""
+        }
     }
 
-    var inputLabel: String {
+    private var compactFieldLabel: String {
+        switch labelStyle {
+            case .default:          return ""
+            case .compact:          return label
+        }
+    }
+
+    private var inputLabel: String {
         value ?? prompt
     }
 
-    var textColor: Color {
+    private var textColor: Color {
         if isEnabled {
             return value == nil
                 ? state.placeholderColor
@@ -84,15 +100,15 @@ public struct Select<Prefix: View, Suffix: View>: View {
         }
     }
 
-    var messageDescription: String {
+    private var messageDescription: String {
         message?.description ?? ""
     }
 
-    var leadingPadding: CGFloat {
+    private var leadingPadding: CGFloat {
         prefix.isEmpty ? .small : 0
     }
 
-    var trailingPadding: CGFloat {
+    private var trailingPadding: CGFloat {
         suffix.isEmpty ? .small : 0
     }
 }
@@ -108,6 +124,7 @@ public extension Select {
         prompt: String = "",
         suffix: Icon.Symbol? = .chevronDown,
         state: InputState = .default,
+        labelStyle: InputLabelStyle = .default,
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         action: @escaping () -> Void
@@ -117,6 +134,7 @@ public extension Select {
             value: value,
             prompt: prompt,
             state: state,
+            labelStyle: labelStyle,
             message: message,
             messageHeight: messageHeight
         ) {
@@ -135,6 +153,7 @@ public extension Select {
        value: String?,
        prompt: String = "",
        state: InputState = .default,
+       labelStyle: InputLabelStyle = .default,
        message: Message? = nil,
        messageHeight: Binding<CGFloat> = .constant(0),
        action: @escaping () -> Void,
@@ -145,6 +164,7 @@ public extension Select {
        self.value = value
        self.prompt = prompt
        self.state = state
+       self.labelStyle = labelStyle
        self.message = message
        self._messageHeight = messageHeight
        self.action = action
@@ -176,9 +196,22 @@ struct SelectPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Select(InputFieldPreviews.label, prefix: .grid, value: InputFieldPreviews.value, action: {})
-            .padding(.medium)
-            .previewDisplayName()
+        VStack(spacing: .medium) {
+            Select(InputFieldPreviews.label, prefix: .grid, value: InputFieldPreviews.value) {
+                // No action
+            }
+            Select(InputFieldPreviews.label, prefix: .grid, value: InputFieldPreviews.value, labelStyle: .compact) {
+                // No action
+            }
+            Select(InputFieldPreviews.label, prefix: .grid, value: nil, prompt: "Prompt", labelStyle: .compact) {
+                // No action
+            }
+            Select(InputFieldPreviews.label, value: nil, prompt: "Prompt", labelStyle: .compact) {
+                // No action
+            }
+        }
+        .padding(.medium)
+        .previewDisplayName()
     }
 
     static var idealSize: some View {
@@ -209,13 +242,21 @@ struct SelectPreviews: PreviewProvider {
 
     static var styles: some View {
         VStack(spacing: .medium) {
-            select(value: "")
-            select(value: "", message: .help(InputFieldPreviews.helpMessage))
-            select(value: "", message: .error(InputFieldPreviews.errorMessage))
+            Select(prefix: .grid, value: "", prompt: InputFieldPreviews.prompt, action: {})
+            Select(prefix: .grid, value: "", prompt: InputFieldPreviews.prompt, message: .help(InputFieldPreviews.helpMessage), action: {})
+            Select(prefix: .grid, value: "", prompt: InputFieldPreviews.prompt, message: .error(InputFieldPreviews.errorMessage), action: {})
+
             Separator()
-            select(value: InputFieldPreviews.value)
-            select(value: InputFieldPreviews.value, message: .help(InputFieldPreviews.helpMessage))
-            select(value: InputFieldPreviews.value, message: .error(InputFieldPreviews.errorMessage))
+
+            Group {
+                Select(prefix: .grid, value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, action: {})
+                Select(prefix: .grid, value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, message: .help(InputFieldPreviews.helpMessage), action: {})
+                Select(prefix: .grid, value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, message: .error(InputFieldPreviews.errorMessage), action: {})
+                Select(prefix: .grid, value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, labelStyle: .compact, action: {})
+                Select("Inline", prefix: .grid, value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, labelStyle: .compact, action: {})
+                Select("Inline", value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, labelStyle: .compact, action: {})
+                Select("Inline", value: nil, prompt: InputFieldPreviews.prompt, labelStyle: .compact, action: {})
+            }
         }
         .padding(.medium)
         .previewDisplayName()

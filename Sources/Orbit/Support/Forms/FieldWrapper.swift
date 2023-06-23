@@ -5,10 +5,10 @@ public struct FieldWrapper<Label: View, Content: View, Footer: View>: View {
 
     @Binding private var messageHeight: CGFloat
 
-    @ViewBuilder let label: Label
-    @ViewBuilder let content: Content
-    @ViewBuilder let footer: Footer
-    let message: Message?
+    private let message: Message?
+    @ViewBuilder private let content: Content
+    @ViewBuilder private let label: Label
+    @ViewBuilder private let footer: Footer
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {

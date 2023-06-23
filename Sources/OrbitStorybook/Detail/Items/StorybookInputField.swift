@@ -108,7 +108,7 @@ struct StorybookInputField {
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
-        style: InputFieldStyle = .default
+        style: InputLabelStyle = .default
     ) -> some View {
         StateWrapper(value) { value in
             InputField(
@@ -118,7 +118,7 @@ struct StorybookInputField {
                 suffix: suffix,
                 prompt: prompt,
                 state: state,
-                style: style,
+                labelStyle: style,
                 isSecure: isSecure,
                 passwordStrength: passwordStrength,
                 message: message

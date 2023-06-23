@@ -12,6 +12,8 @@ public struct TextStrut: View {
     public var body: some View {
         Color.clear
             .frame(width: 0, height: textSize.lineHeight * sizeCategory.ratio)
+            .alignmentGuide(.firstTextBaseline) { _ in textSize.value }
+            .alignmentGuide(.lastTextBaseline) { _ in textSize.value }
     }
 
     /// Creates invisible strut with height based on provided text size.
@@ -26,6 +28,7 @@ struct TextStrutPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             select
+            alignment
             tile
         }
         .previewLayout(.sizeThatFits)
@@ -37,6 +40,28 @@ struct TextStrutPreviews: PreviewProvider {
                 strut(padding: .small)
             )
             .measured()
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
+    static var alignment: some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Text")
+                TextStrut()
+                    .frame(width: .xxxSmall)
+                    .overlay(Color.greenNormal)
+            }
+            .background(Color.redLight)
+
+            HStack(alignment: .firstTextBaseline) {
+                Text("Text", size: .xLarge)
+                TextStrut(.xLarge)
+                    .frame(width: .xxxSmall)
+                    .overlay(Color.greenNormal)
+            }
+            .background(Color.redLight)
+        }
         .padding(.medium)
         .previewDisplayName()
     }
