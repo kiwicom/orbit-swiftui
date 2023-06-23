@@ -5,21 +5,29 @@ import SwiftUI
 /// Can be used to force minimal height of elements that contain variable combination of icons and texts.
 public struct TextStrut: View {
 
-    @Environment(\.sizeCategory) var sizeCategory
-
-    let textSize: Text.Size
+    @Environment(\.textSize) private var textSize
+    @Environment(\.textLineHeight) private var textLineHeight
+    @Environment(\.sizeCategory) private var sizeCategory
     
     public var body: some View {
         Color.clear
-            .frame(width: 0, height: textSize.lineHeight * sizeCategory.ratio)
-            .alignmentGuide(.firstTextBaseline) { _ in textSize.value }
-            .alignmentGuide(.lastTextBaseline) { _ in textSize.value }
+            .frame(width: 0, height: lineHeight * sizeCategory.ratio)
+            .alignmentGuide(.firstTextBaseline) { _ in size }
+            .alignmentGuide(.lastTextBaseline) { _ in size }
+    }
+
+    private var lineHeight: CGFloat {
+        textLineHeight ?? Text.Size.lineHeight(forTextSize: size)
+    }
+
+    private var size: CGFloat {
+        textSize ?? Text.Size.normal.value
     }
 
     /// Creates invisible strut with height based on provided text size.
-    public init(_ textSize: Text.Size = .normal) {
-        self.textSize = textSize
-    }
+    ///
+    /// Provide the text size and optional line height using `textSize()` and `textLineHeight()` modifiers.
+    public init() {}
 }
 
 // MARK: - Previews
@@ -38,6 +46,7 @@ struct TextStrutPreviews: PreviewProvider {
         Select("", value: "Select", action: {})
             .overlay(
                 strut(padding: .small)
+                    .textSize(.small)
             )
             .measured()
         .padding(.medium)
@@ -55,11 +64,12 @@ struct TextStrutPreviews: PreviewProvider {
             .background(Color.redLight)
 
             HStack(alignment: .firstTextBaseline) {
-                Text("Text", size: .xLarge)
-                TextStrut(.xLarge)
+                Text("Text")
+                TextStrut()
                     .frame(width: .xxxSmall)
                     .overlay(Color.greenNormal)
             }
+            .textSize(.xLarge)
             .background(Color.redLight)
         }
         .padding(.medium)
@@ -69,15 +79,16 @@ struct TextStrutPreviews: PreviewProvider {
     static var tile: some View {
         Tile(action: {})
             .overlay(
-                strut(.large, padding: 14)
+                strut(padding: 14)
+                    .textSize(.large)
             )
             .measured()
         .padding(.medium)
         .previewDisplayName()
     }
 
-    static func strut(_ size: Text.Size = .normal, padding: CGFloat) -> some View {
-        TextStrut(size)
+    static func strut(padding: CGFloat) -> some View {
+        TextStrut()
             .frame(width: .xxxSmall)
             .overlay(Color.greenNormal)
             .padding(.vertical, padding)
