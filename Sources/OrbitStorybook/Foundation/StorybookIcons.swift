@@ -26,10 +26,12 @@ struct StorybookIcons {
             VStack(spacing: .xxSmall) {
                 Icon(icon)
                 
-                Text(String(describing: icon).titleCased, size: .custom(10), isSelectable: true)
+                Text(String(describing: icon).titleCased)
                     .textColor(.inkNormal)
+                    .textSize(custom: 10)
 
-                Text(String(icon.value.unicodeCodePoint), size: .custom(10), isSelectable: true)
+                Text(String(icon.value.unicodeCodePoint))
+                    .textSize(custom: 10)
                     .padding(.horizontal, .xxSmall)
                     .padding(.vertical, 1)
                     .overlay(
@@ -38,6 +40,7 @@ struct StorybookIcons {
                             .textColor(.inkLight)
                     )
             }
+            .textIsCopyable()
             .padding(.horizontal, .xxSmall)
             .padding(.vertical, .xSmall)
             .frame(maxWidth: .infinity)

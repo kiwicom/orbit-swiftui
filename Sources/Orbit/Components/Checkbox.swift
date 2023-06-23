@@ -33,7 +33,8 @@ public struct Checkbox: View {
                             .fontWeight(.medium)
                             .accessibility(.checkboxTitle)
                         
-                        Text(description, size: .small)
+                        Text(description)
+                            .textSize(.small)
                             .textColor(descriptionColor)
                             .accessibility(.checkboxDescription)
                     }
@@ -114,7 +115,8 @@ public extension Checkbox {
                         .fill(indicatorBackgroundColor(isPressed: isPressed))
                 )
                 .overlay(
-                    Icon(.check, size: .small)
+                    Icon(.check)
+                        .iconSize(.small)
                         .textColor(isEnabled ? .whiteNormal : .cloudNormal)
                         .opacity(isChecked ? 1 : 0)
                 )

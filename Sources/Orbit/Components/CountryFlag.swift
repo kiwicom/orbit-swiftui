@@ -137,25 +137,25 @@ struct CountryFlagPreviews: PreviewProvider {
                 CountryFlag("cZ", border: .default(cornerRadius: 0))
                 CountryFlag("Cz", border: .none)
             }
-            .iconSize(.xLarge)
+            .textSize(.xLarge)
         }
         .previewDisplayName()
     }
 
     static func flags(_ size: Icon.Size) -> some View {
-        flags(size: size.value)
+        flags(size: size.value, label: String(describing: size).titleCased)
     }
 
-    static func flags(size: CGFloat) -> some View {
+    static func flags(size: CGFloat, label: String? = nil) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: .small) {
-            Text("\(size)".capitalized)
+            Text("\(label ?? String(describing: Int(size)))".capitalized)
             CountryFlag("cz")
             CountryFlag("sg")
             CountryFlag("jp")
             CountryFlag("unknown")
         }
         .textSize(custom: size)
-        .overlay(Separator(color: .redNormal, thickness: .hairline), alignment: .centerFirstTextBaseline)
+        .background(Separator(color: .redNormal, thickness: .hairline), alignment: .centerFirstTextBaseline)
     }
 
     static var snapshot: some View {

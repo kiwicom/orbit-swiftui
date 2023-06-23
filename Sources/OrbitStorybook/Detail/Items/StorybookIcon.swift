@@ -29,7 +29,6 @@ struct StorybookIcon {
             textStack(.small, alignment: .firstTextBaseline)
             textStack(.normal, alignment: .firstTextBaseline)
             textStack(.large, alignment: .firstTextBaseline)
-            textStack(.custom(30), alignment: .firstTextBaseline)
         }
     }
 
@@ -50,17 +49,19 @@ struct StorybookIcon {
 
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Group {
-                    Text("Text", size: .small)
-                    Icon(sfSymbol, size: .small)
-                    Icon(sfSymbol, size: .small)
+                    Text("Text")
+                    Icon(sfSymbol)
+                    Icon(sfSymbol)
                         .baselineOffset(.xxxSmall)
 
-                    Icon(.informationCircle, size: .small)
-                    Icon(.informationCircle, size: .small)
+                    Icon(.informationCircle)
+                    Icon(.informationCircle)
                         .baselineOffset(.xxxSmall)
                 }
                 .border(.cloudLightActive, width: .hairline)
             }
+            .textSize(.small)
+            .iconSize(.small)
             .textColor(.greenDark)
             .overlay(
                 Separator(color: .redNormal, thickness: .hairline),
@@ -71,15 +72,17 @@ struct StorybookIcon {
                 .padding(.top, .xLarge)
 
             (
-                Text("Text", size: .small)
-                + Icon(sfSymbol, size: .small)
-                + Icon(sfSymbol, size: .small)
+                Text("Text")
+                + Icon(sfSymbol)
+                + Icon(sfSymbol)
                     .baselineOffset(.xxxSmall)
 
-                + Icon(.informationCircle, size: .small)
-                + Icon(.informationCircle, size: .small)
+                + Icon(.informationCircle)
+                + Icon(.informationCircle)
                     .baselineOffset(.xxxSmall)
             )
+            .textSize(.small)
+            .iconSize(.small)
             .textColor(.greenDark)
             .overlay(
                 Separator(color: .redNormal, thickness: .hairline),
@@ -114,8 +117,10 @@ struct StorybookIcon {
                 .bold()
 
             HStack(alignment: .firstTextBaseline, spacing: .xxSmall) {
-                Icon(.passengers, size: iconSize)
-                Text("XLarge text and icon size", size: textSize)
+                Icon(.passengers)
+                    .iconSize(iconSize)
+                Text("\(String(describing: textSize).titleCased) text and icon size")
+                    .textSize(textSize)
             }
             .overlay(Separator(thickness: .hairline), alignment: .top)
             .overlay(Separator(thickness: .hairline), alignment: .bottom)
@@ -123,25 +128,27 @@ struct StorybookIcon {
     }
 
     static func headingStack(_ style: Heading.Style, alignment: VerticalAlignment) -> some View {
-        alignmentStack(style.iconSize, alignment: alignment) {
+        alignmentStack(style.lineHeight, alignment: alignment) {
             Heading("\(style)".capitalized, style: style)
         }
     }
 
     static func textStack(_ size: Orbit.Text.Size, alignment: VerticalAlignment) -> some View {
-        alignmentStack(size.iconSize, alignment: alignment) {
-            Text("Text \(Int(size.value))", size: size)
+        alignmentStack(Icon.Size.fromTextSize(size: size.value), alignment: alignment) {
+            Text("Text \(Int(size.value))")
+                .textSize(size)
         }
     }
 
-    static func alignmentStack<V: View>(_ size: Icon.Size, alignment: VerticalAlignment, @ViewBuilder content: () -> V) -> some View {
+    static func alignmentStack<V: View>(_ size: CGFloat, alignment: VerticalAlignment, @ViewBuilder content: () -> V) -> some View {
         HStack(spacing: .xSmall) {
             HStack(alignment: alignment, spacing: .xxSmall) {
                 Group {
-                    Icon(sfSymbol, size: size)
-                    Icon(.informationCircle, size: size)
+                    Icon(sfSymbol)
+                    Icon(.informationCircle)
                     content()
                 }
+                .iconSize(custom: size)
                 .background(Color.redLightHover)
             }
             .overlay(

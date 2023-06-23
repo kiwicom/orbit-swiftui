@@ -45,7 +45,7 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View>: View {
                         centerIndicator
                     }
 
-                    TextStrut(.normal)
+                    TextStrut()
                         .padding(.vertical, .xxSmall)   // Minimum 52pt @ normal size
                 }
                 .frame(maxWidth: idealSize.horizontal == true ? nil: .infinity, alignment: .leading)
@@ -124,7 +124,8 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View>: View {
 
     @ViewBuilder var iconView: some View {
         icon
-            .font(.system(size: titleStyle.iconSize.value))
+            .iconSize(custom: titleStyle.lineHeight)
+            .font(.system(size: Orbit.Icon.Size.fromTextSize(size: titleStyle.size)))
             .foregroundColor(.inkNormal)
             .accessibility(.choiceTileIcon)
     }
@@ -267,7 +268,7 @@ public extension ChoiceTile {
         } content: {
             content()
         } icon: {
-            Icon(icon, size: titleStyle.iconSize)
+            Icon(icon)
         } header: {
             header()
         }

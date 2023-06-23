@@ -88,7 +88,8 @@ public extension NotificationBadge {
         style: BadgeStyle = .status(nil)
     ) where Content == Text {
         self.init(style: style) {
-            Text(label, size: .small)
+            Text(label)
+                .textSize(.small)
                 .fontWeight(.medium)
         }
     }
@@ -102,7 +103,8 @@ public extension NotificationBadge {
         style: BadgeStyle = .status(nil)
     ) where Content == Icon {
         self.init(style: style) {
-            Icon(icon, size: .small)
+            Icon(icon)
+                .iconSize(.small)
         }
     }
 }

@@ -149,25 +149,25 @@ struct IllustrationPreviews: PreviewProvider {
 
             Card("MaxHeight = 80", showBorder: false) {
                 VStack {
-                    Text("Frame - Center (default)", size: .small)
+                    Text("Frame - Center (default)")
                     Illustration(.womanWithPhone, layout: .frame(maxHeight: 80))
                         .border(.cloudNormal)
                 }
 
                 VStack {
-                    Text("Frame - Leading", size: .small)
+                    Text("Frame - Leading")
                     Illustration(.womanWithPhone, layout: .frame(maxHeight: 80, alignment: .leading))
                         .border(.cloudNormal)
                 }
 
                 VStack {
-                    Text("Frame - Trailing", size: .small)
+                    Text("Frame - Trailing")
                     Illustration(.womanWithPhone, layout: .frame(maxHeight: 80, alignment: .trailing))
                         .border(.cloudNormal)
                 }
 
                 VStack {
-                    Text("Resizeable", size: .small)
+                    Text("Resizeable")
                     Illustration(.womanWithPhone, layout: .resizeable)
                         .frame(height: 80)
                         .border(.cloudNormal)
@@ -177,26 +177,26 @@ struct IllustrationPreviews: PreviewProvider {
             Card("MaxHeight = 30", showBorder: false) {
                 HStack {
                     VStack(alignment: .leading) {
-                        Text("Leading", size: .small)
+                        Text("Leading")
                         Illustration(.womanWithPhone, layout: .frame(maxHeight: 30, alignment: .leading))
                             .border(.cloudNormal)
                     }
 
                     VStack(alignment: .leading) {
-                        Text("Center", size: .small)
+                        Text("Center")
                         Illustration(.womanWithPhone, layout: .frame(maxHeight: 30))
                             .border(.cloudNormal)
                     }
 
                     VStack(alignment: .leading) {
-                        Text("Resizeable", size: .small)
+                        Text("Resizeable")
                         Illustration(.womanWithPhone, layout: .resizeable)
                             .frame(height: 30)
                             .border(.cloudNormal)
                     }
 
                     VStack(alignment: .leading) {
-                        Text("Trailing", size: .small)
+                        Text("Trailing")
                         Illustration(.womanWithPhone, layout: .frame(maxHeight: 30, alignment: .trailing))
                             .border(.cloudNormal)
                     }
@@ -206,14 +206,14 @@ struct IllustrationPreviews: PreviewProvider {
             Card("Resizeable", showBorder: false) {
                 HStack(alignment: .top, spacing: .medium) {
                     VStack(alignment: .leading) {
-                        Text("Width = 80", size: .small)
+                        Text("Width = 80")
                         Illustration(.womanWithPhone, layout: .resizeable)
                             .frame(width: 80)
                             .border(.cloudNormal)
                     }
 
                     VStack(alignment: .leading) {
-                        Text("Height = 80", size: .small)
+                        Text("Height = 80")
                         Illustration(.womanWithPhone, layout: .resizeable)
                             .frame(height: 80)
                             .border(.cloudNormal)
@@ -221,13 +221,14 @@ struct IllustrationPreviews: PreviewProvider {
                 }
 
                 VStack(alignment: .leading) {
-                    Text("Width = 80, Height = 80", size: .small)
+                    Text("Width = 80, Height = 80")
                     Illustration(.womanWithPhone, layout: .resizeable)
                         .frame(width: 80, height: 80)
                         .border(.cloudNormal)
                 }
             }
         }
+        .textSize(.small)
         .previewDisplayName()
     }
 }

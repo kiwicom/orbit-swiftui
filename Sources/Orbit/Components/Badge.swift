@@ -20,18 +20,18 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View {
         if isEmpty == false {
             HStack(spacing: .xxSmall) {
                 leadingIcon
+                    .iconSize(.small)
                     .font(.system(size: Icon.Size.small.value))
                     .foregroundColor(labelColor)
 
-                Text(
-                    label,
-                    size: .small
-                )
-                .fontWeight(.medium)
-                .textLinkColor(.custom(labelColor))
-                .frame(minWidth: minTextWidth)
+                Text(label)
+                    .textSize(.small)
+                    .fontWeight(.medium)
+                    .textLinkColor(.custom(labelColor))
+                    .frame(minWidth: minTextWidth)
 
                 trailingIcon
+                    .iconSize(.small)
                     .font(.system(size: Icon.Size.small.value))
                     .foregroundColor(labelColor)
             }
@@ -100,9 +100,9 @@ public extension Badge {
         style: BadgeStyle = .neutral
     ) where LeadingIcon == Icon, TrailingIcon == Icon {
         self.init(label, style: style) {
-            Icon(icon, size: .small)
+            Icon(icon)
         } trailingIcon: {
-            Icon(trailingIcon, size: .small)
+            Icon(trailingIcon)
         }
     }
 
@@ -225,11 +225,11 @@ struct BadgePreviews: PreviewProvider {
                 .iconColor(.pink)
 
                 Badge("Flag") {
-                    CountryFlag("us", size: .small)
+                    CountryFlag("us")
                 }
 
                 Badge("Flag", style: .status(.critical, inverted: true)) {
-                    CountryFlag("cz", size: .small)
+                    CountryFlag("cz")
                 }
             }
 

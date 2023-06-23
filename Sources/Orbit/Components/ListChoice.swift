@@ -49,7 +49,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View {
                 content
             }
 
-            TextStrut(.normal)
+            TextStrut()
                 .padding(.vertical, verticalPadding)
 
             disclosureView
@@ -91,7 +91,8 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View {
                             .fontWeight(.medium)
                             .accessibility(.listChoiceTitle)
                         
-                        Text(description, size: .small)
+                        Text(description)
+                            .textSize(.small)
                             .textColor(.inkNormal)
                             .accessibility(.listChoiceDescription)
                     }

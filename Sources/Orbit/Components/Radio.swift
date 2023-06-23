@@ -33,7 +33,8 @@ public struct Radio: View {
                             .fontWeight(.medium)
                             .accessibility(.radioTitle)
                         
-                        Text(description, size: .small)
+                        Text(description)
+                            .textSize(.small)
                             .textColor(descriptionColor)
                             .accessibility(.radioDescription)
                     }

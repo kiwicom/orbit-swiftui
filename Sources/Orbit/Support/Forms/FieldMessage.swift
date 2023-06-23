@@ -12,9 +12,10 @@ public struct FieldMessage: View {
         if let message = message, message.isEmpty == false {
             HStack(alignment: .firstTextBaseline, spacing: spacing) {
                 if let icon = message.icon {
-                    Icon(icon, size: .small)
+                    Icon(icon)
+                        .iconSize(.small)
                         .accessibility(hidden: true)
-                    // A workaround for current Orbit non-matching icon size
+                        // A workaround for current Orbit non-matching icon size
                         .alignmentGuide(.firstTextBaseline) { $0.height * 0.82 }
                 }
 

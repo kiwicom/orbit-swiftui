@@ -60,12 +60,10 @@ public struct Switch: View {
 
     @ViewBuilder var indicatorSymbol: some View {
         if hasIcon {
-            Icon(
-                isOn ? .lock : .lockOpen,
-                size: .custom(Icon.Size.small.value * sizeCategory.controlRatio)
-            )
-            .iconColor(iconTint)
-            .environment(\.sizeCategory, .large)
+            Icon(isOn ? .lock : .lockOpen)
+                .iconSize(.small)
+                .iconColor(iconTint)
+                .environment(\.sizeCategory, .large)
         } else {
             Circle()
                 .foregroundColor(tint)

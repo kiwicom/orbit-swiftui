@@ -25,7 +25,7 @@ public struct TimelineItem<Footer: View>: View {
                 header
                     .textColor(type.textColor)
 
-                Text(description, size: .normal)
+                Text(description)
                     .textColor(type.textColor)
 
                 footer
@@ -50,7 +50,8 @@ public struct TimelineItem<Footer: View>: View {
 
     @ViewBuilder var headerContent: some View {
         Heading(label, style: .title5)
-        Text(sublabel, size: .small)
+        Text(sublabel)
+            .textSize(.small)
     }
 
     var alignment: VerticalAlignment {
@@ -254,13 +255,11 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
             ) {
 
                 VStack {
-                    Text(
-                        "1 Passenger must check in with the airline for a possible fee",
-                        size: .custom(50)
-                    )
-                    .textColor(TimelineItemType.present(.warning).color)
-                    .bold()
-                    .padding(.leading, .xSmall)
+                    Text("1 Passenger must check in with the airline for a possible fee")
+                        .textSize(custom: 50)
+                        .textColor(TimelineItemType.present(.warning).color)
+                        .bold()
+                        .padding(.leading, .xSmall)
                 }
             }
             TimelineItem(

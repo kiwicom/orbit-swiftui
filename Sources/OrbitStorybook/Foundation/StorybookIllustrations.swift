@@ -28,7 +28,9 @@ struct StorybookIllustrations {
                 Illustration(illustration, layout: .resizeable)
                     .frame(height: 150)
                 
-                Text(String(describing: illustration).titleCased, size: .small, isSelectable: true)
+                Text(String(describing: illustration).titleCased)
+                    .textSize(.small)
+                    .textIsCopyable()
                     .textColor(.inkNormal)
             }
             .padding(.horizontal, .xxSmall)

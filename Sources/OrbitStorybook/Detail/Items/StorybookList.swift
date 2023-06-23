@@ -13,9 +13,10 @@ struct StorybookList {
             }
 
             List {
-                ListItem(listItemText, size: .large)
-                ListItem(listItemText, size: .large)
+                ListItem(listItemText)
+                ListItem(listItemText)
             }
+            .textSize(.large)
 
             Separator()
 
@@ -25,9 +26,10 @@ struct StorybookList {
             }
 
             List {
-                ListItem(listItemText, size: .large, type: .secondary)
-                ListItem(listItemText, size: .large, type: .secondary)
+                ListItem(listItemText, type: .secondary)
+                ListItem(listItemText, type: .secondary)
             }
+            .textSize(.large)
         }
         .previewDisplayName()
     }
@@ -47,11 +49,16 @@ struct StorybookList {
             Separator()
 
             List {
-                ListItem(listItemText, size: .small)
-                ListItem(listItemText, size: .normal)
-                ListItem(listItemText, size: .large)
-                ListItem(listItemText, size: .xLarge)
-                ListItem(listItemText, size: .custom(30))
+                ListItem(listItemText)
+                    .textSize(.small)
+                ListItem(listItemText)
+                    .textSize(.normal)
+                ListItem(listItemText)
+                    .textSize(.large)
+                ListItem(listItemText)
+                    .textSize(.xLarge)
+                ListItem(listItemText)
+                    .textSize(custom: 30)
             }
 
             Separator()

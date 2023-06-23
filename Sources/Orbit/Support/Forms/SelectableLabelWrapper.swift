@@ -1,19 +1,19 @@
 import SwiftUI
 import UIKit
 
-struct SelectableLabelWrapper: UIViewRepresentable {
+struct CopyableText: UIViewRepresentable {
 
-    let text: String
-    private let selectableLabel = SelectableLabel()
+    private let text: String
+    private let label = CopyableLabel()
 
     init(_ text: String) {
         self.text = text
     }
 
     func makeUIView(context _: Context) -> UILabel {
-        selectableLabel.text = text
-        selectableLabel.textColor = .clear
-        return selectableLabel
+        label.text = text
+        label.textColor = .clear
+        return label
     }
 
     func updateUIView(_ uiView: UILabel, context _: Context) {
@@ -21,12 +21,12 @@ struct SelectableLabelWrapper: UIViewRepresentable {
     }
 }
 
-private final class SelectableLabel: UILabel {
+private final class CopyableLabel: UILabel {
 
     /// Allows override default behaviour (copying whole text) by for example copying only part of it
-    public var textToBeCopied: String?
+    var textToBeCopied: String?
 
-    override public init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
 
         isUserInteractionEnabled = true
@@ -44,21 +44,21 @@ private final class SelectableLabel: UILabel {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override public var canBecomeFirstResponder: Bool {
+    override var canBecomeFirstResponder: Bool {
         true
     }
 
-    override public func canPerformAction(_ action: Selector, withSender _: Any?) -> Bool {
+    override func canPerformAction(_ action: Selector, withSender _: Any?) -> Bool {
         action == #selector(copy(_:))
     }
 
     // MARK: - UIResponderStandardEditActions
-    override public func copy(_: Any?) {
+    override func copy(_: Any?) {
         UIPasteboard.general.string = textToBeCopied ?? text
     }
 
     // MARK: - Long-press Handler
-    @objc private func handleLongPress(_ recognizer: UIGestureRecognizer) {
+    @objc func handleLongPress(_ recognizer: UIGestureRecognizer) {
         if recognizer.state == .began {
             self.becomeFirstResponder()
             UIMenuController.shared.showMenu(from: self, rect: self.bounds)

@@ -33,7 +33,7 @@ public struct Button<LeadingIcon: View, TrailingIcon: View>: View {
     }
 
     @ViewBuilder var text: some View {
-        Text(label, size: size.textSize)
+        Text(label)
             .fontWeight(.medium)
     }
 }
@@ -59,9 +59,9 @@ public extension Button {
             size: size,
             action: action
         ) {
-            Icon(icon, size: size.textSize.iconSize)
+            Icon(icon)
         } disclosureIcon: {
-            Icon(disclosureIcon, size: size.textSize.iconSize)
+            Icon(disclosureIcon)
         }
     }
 
@@ -178,7 +178,8 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
 
     @ViewBuilder func content(_ label: some View) -> some View {
         HStack(spacing: 0) {
-            TextStrut(size.textSize)
+            TextStrut()
+                .textSize(size.textSize)
 
             if disclosureIcon.isEmpty, idealSize.horizontal == nil {
                 Spacer(minLength: 0)
@@ -203,6 +204,7 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
                 .iconColor(iconColor)
                 .foregroundColor(iconColor)
         }
+        .textSize(size.textSize)
         .textColor(resolvedTextColor)
         .padding(.leading, leadingPadding)
         .padding(.trailing, trailingPadding)
@@ -456,7 +458,7 @@ struct ButtonPreviews: PreviewProvider {
             Button("Button with Flag", type: .secondary) {
                 // No action
             } icon: {
-                CountryFlag("us", size: .normal)
+                CountryFlag("us")
             }
         }
         .padding(.medium)
