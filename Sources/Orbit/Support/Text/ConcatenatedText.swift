@@ -3,10 +3,12 @@ import SwiftUI
 struct ConcatenatedText: View {
 
     @Environment(\.iconColor) var iconColor
+    @Environment(\.iconSize) var iconSize
     @Environment(\.sizeCategory) var sizeCategory
     @Environment(\.textAccentColor) var textAccentColor
     @Environment(\.textColor) var textColor
     @Environment(\.textFontWeight) var textFontWeight
+    @Environment(\.textSize) var textSize
 
     let content: (TextRepresentableEnvironment) -> SwiftUI.Text?
 
@@ -19,10 +21,12 @@ struct ConcatenatedText: View {
     var textRepresentableEnvironment: TextRepresentableEnvironment {
         .init(
             iconColor: iconColor,
-            sizeCategory: sizeCategory,
+            iconSize: iconSize,
             textAccentColor: textAccentColor,
             textColor: textColor,
-            textFontWeight: textFontWeight
+            textFontWeight: textFontWeight,
+            textSize: textSize,
+            sizeCategory: sizeCategory
         )
     }
 }

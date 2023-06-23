@@ -8,18 +8,20 @@ protocol TextBuildable {
     var baselineOffset: CGFloat? { get set }
     var fontWeight: Font.Weight? { get set }
     var color: Color? { get set }
+    var size: CGFloat? { get set }
 }
 
 protocol FormattedTextBuildable: TextBuildable {
 
     var accentColor: Color? { get set }
-    var baselineOffset: CGFloat? { get set }
     var isBold: Bool? { get set }
     var isItalic: Bool? { get set }
+    var isMonospacedDigit: Bool? { get set }
     var isUnderline: Bool? { get set }
     var kerning: CGFloat? { get set }
+    var lineHeight: CGFloat? { get set }
+    var size: CGFloat? { get set }
     var strikethrough: Bool? { get set }
-    var isMonospacedDigit: Bool? { get set }
 }
 
 extension TextBuildable {

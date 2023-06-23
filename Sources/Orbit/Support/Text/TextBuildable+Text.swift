@@ -19,6 +19,33 @@ public extension Text {
         set(\.color, to: color)
     }
 
+    /// Returns a modified Orbit text with provided line height.
+    ///
+    /// - Parameters:
+    ///   - height: The line height to use when displaying this text.
+    ///   When the value is `nil`,  the environment value `textLineHeight` or the default calcualted size will be used in this order.
+    func textLineHeight(_ height: CGFloat?) -> Self {
+        set(\.lineHeight, to: height)
+    }
+
+    /// Returns a modified Orbit text with provided size.
+    ///
+    /// - Parameters:
+    ///   - size: The size to use when displaying this text.
+    ///   When the value is `nil`,  the environment value `textSize` or the default `.normal` size will be used in this order.
+    func textSize(_ size: Text.Size?) -> Self {
+        set(\.size, to: size?.value)
+    }
+
+    /// Returns a modified Orbit text with provided custom size.
+    ///
+    /// - Parameters:
+    ///   - size: The custom size to use when displaying this text.
+    ///   When the value is `nil`,  the environment value `textSize` or the default `.normal` size will be used in this order.
+    func textSize(custom size: CGFloat?) -> Self {
+        set(\.size, to: size)
+    }
+
     /// Returns a modified Orbit text with provided accent color.
     ///
     /// - Parameters:
