@@ -8,33 +8,27 @@ public struct Button<LeadingIcon: View, TrailingIcon: View>: View {
 
     private let label: String
     private let type: ButtonType
-    private let size: ButtonSize
+    private let isTrailingIconSeparated: Bool
     private let action: () -> Void
     @ViewBuilder private let leadingIcon: LeadingIcon
     @ViewBuilder private let trailingIcon: TrailingIcon
 
     public var body: some View {
-        SwiftUI.Button(action: action) {
-            if #available(iOS 14, *) {
-                text
-            } else {
-                text
-                // Prevents text value animation issue due to different iOS13 behavior
-                    .animation(nil)
-            }
+        SwiftUI.Button() {
+            action()
+        } label: {
+            Text(label)
         }
         .buttonStyle(
-            .orbit(type: type, size: size) {
+            OrbitButtonStyle(
+                type: type,
+                isTrailingIconSeparated: isTrailingIconSeparated
+            ) {
                 leadingIcon
             } trailingIcon: {
                 trailingIcon
             }
         )
-    }
-
-    @ViewBuilder var text: some View {
-        Text(label)
-            .fontWeight(.medium)
     }
 }
 
@@ -43,22 +37,25 @@ public extension Button {
 
     /// Creates Orbit Button component.
     ///
+    /// Button size can be specified using `.buttonSize()` modifier.
+    ///
     /// - Parameters:
-    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    ///   - type: A visual style of component. A style can be optionally modified using `status()` modifier when `nil` status value is provided.
     init(
         _ label: String = "",
         icon: Icon.Symbol? = nil,
         disclosureIcon: Icon.Symbol? = nil,
         type: ButtonType = .primary,
-        size: ButtonSize = .default,
+        isTrailingIconSeparated: Bool = false,
         action: @escaping () -> Void
     ) where LeadingIcon == Icon, TrailingIcon == Icon {
         self.init(
             label,
             type: type,
-            size: size,
-            action: action
+            isTrailingIconSeparated: isTrailingIconSeparated
         ) {
+            action()
+        } icon: {
             Icon(icon)
         } disclosureIcon: {
             Icon(disclosureIcon)
@@ -67,19 +64,21 @@ public extension Button {
 
     /// Creates Orbit Button component with custom icons.
     ///
+    /// Button size can be specified using `.buttonSize()` modifier.
+    ///
     /// - Parameters:
-    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    ///   - type: A visual style of component. A style can be optionally modified using `status()` modifier when `nil` status value is provided.
     init(
         _ label: String = "",
         type: ButtonType = .primary,
-        size: ButtonSize = .default,
+        isTrailingIconSeparated: Bool = false,
         action: @escaping () -> Void,
         @ViewBuilder icon: () -> LeadingIcon,
         @ViewBuilder disclosureIcon: () -> TrailingIcon = { EmptyView() }
     ) {
         self.label = label
         self.type = type
-        self.size = size
+        self.isTrailingIconSeparated = isTrailingIconSeparated
         self.action = action
         self.leadingIcon = icon()
         self.trailingIcon = disclosureIcon()
@@ -98,129 +97,48 @@ public enum ButtonType {
     case gradient(Gradient)
 }
 
-public enum ButtonSize {
-
-    case `default`
-    case small
-
-    public var textSize: Text.Size {
-        switch self {
-            case .default:      return .normal
-            case .small:        return .small
-        }
-    }
-
-    public var horizontalPadding: CGFloat {
-        switch self {
-            case .default:      return .medium
-            case .small:        return .small
-        }
-    }
-
-    public var horizontalIconPadding: CGFloat {
-        switch self {
-            case .default:      return .small
-            case .small:        return verticalPadding
-        }
-    }
-
-    public var verticalPadding: CGFloat {
-        switch self {
-            case .default:      return .small   // = 44 height @ normal size
-            case .small:        return .xSmall  // = 32 height @ normal size
-        }
-    }
-}
-
+/// Button style matching Orbit Button component.
 public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: PrimitiveButtonStyle {
 
-    @Environment(\.iconColor) private var iconColor
-    @Environment(\.idealSize) private var idealSize
-    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.buttonSize) private var buttonSize
     @Environment(\.status) private var status
-    @Environment(\.textColor) private var textColor
-    @Environment(\.textLinkColor) private var textLinkColor
-    @State private var isPressed = false
 
-    var type: ButtonType
-    var size: ButtonSize
-    var cornerRadius: CGFloat
-    let icon: LeadingIcon
-    let disclosureIcon: TrailingIcon
+    private var type: ButtonType
+    private var isTrailingIconSeparated: Bool
+    @ViewBuilder private let icon: LeadingIcon
+    @ViewBuilder private let disclosureIcon: TrailingIcon
 
     public init(
         type: ButtonType,
-        size: ButtonSize,
-        cornerRadius: CGFloat = BorderRadius.default,
+        isTrailingIconSeparated: Bool = false,
         @ViewBuilder icon: () -> LeadingIcon,
         @ViewBuilder trailingIcon: () -> TrailingIcon
     ) {
         self.type = type
-        self.size = size
-        self.cornerRadius = cornerRadius
+        self.isTrailingIconSeparated = isTrailingIconSeparated
         self.icon = icon()
         self.disclosureIcon = trailingIcon()
     }
 
     public func makeBody(configuration: Configuration) -> some View {
-        content(configuration.label)
-            ._onButtonGesture { isPressed in
-                self.isPressed = isPressed
-            } perform: {
-                if isHapticsEnabled {
-                    HapticsProvider.sendHapticFeedback(hapticFeedback)
-                }
-
-                configuration.trigger()
-            }
-    }
-
-    @ViewBuilder func content(_ label: some View) -> some View {
-        HStack(spacing: 0) {
-            TextStrut()
-                .textSize(size.textSize)
-
-            if disclosureIcon.isEmpty, idealSize.horizontal == nil {
-                Spacer(minLength: 0)
-            }
-
-            HStack(spacing: .xSmall) {
-                icon
-                    .font(.system(size: size.textSize.value))
-                    .iconColor(iconColor)
-                    .foregroundColor(iconColor)
-
-                label
-                    .textLinkColor(textLinkColor ?? .custom(resolvedTextColor))
-            }
-
-            if idealSize.horizontal == nil {
-                Spacer(minLength: 0)
-            }
-
+        OrbitCustomButtonContent(
+            configuration: configuration,
+            textColor: textColor,
+            horizontalPadding: horizontalPadding,
+            verticalPadding: verticalPadding,
+            isTrailingIconSeparated: isTrailingIconSeparated,
+            hapticFeedback: hapticFeedback
+        ) {
+            icon
+        } disclosureIcon: {
             disclosureIcon
-                .font(.system(size: size.textSize.value))
-                .iconColor(iconColor)
-                .foregroundColor(iconColor)
-        }
-        .textSize(size.textSize)
-        .textColor(resolvedTextColor)
-        .padding(.leading, leadingPadding)
-        .padding(.trailing, trailingPadding)
-        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
-        .padding(.vertical, size.verticalPadding)
-        .contentShape(Rectangle())
-        .background(background(forPressedState: isPressed))
-        .cornerRadius(cornerRadius)
-    }
-
-    @ViewBuilder func background(forPressedState isPressed: Bool) -> some View {
-        if isPressed {
-            backgroundActive
-        } else {
+        } background: {
             background
+        } backgroundActive: {
+            backgroundActive
         }
+        .textFontWeight(.medium)
+        .textSize(textSize)
     }
 
     @ViewBuilder var background: some View {
@@ -253,11 +171,7 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
         status ?? .info
     }
 
-    var resolvedTextColor: Color {
-        textColor ?? styleTextColor
-    }
-
-    var styleTextColor: Color {
+    var textColor: Color {
         switch type {
             case .primary:                      return .whiteNormal
             case .primarySubtle:                return .productDark
@@ -291,55 +205,25 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
         }
     }
 
-    var leadingPadding: CGFloat {
-        icon.isEmpty && disclosureIcon.isEmpty
-            ? size.horizontalPadding
-            : size.horizontalIconPadding
+    var textSize: Text.Size {
+        switch buttonSize {
+            case .default:      return .normal
+            case .compact:      return .small
+        }
     }
 
-    var trailingPadding: CGFloat {
-        icon.isEmpty && disclosureIcon.isEmpty
-            ? size.horizontalPadding
-            : size.horizontalIconPadding
-    }
-}
-
-public extension PrimitiveButtonStyle {
-
-    static func orbit<LeadingIcon: View, TrailingIcon: View>(
-        type: ButtonType,
-        size: ButtonSize,
-        cornerRadius: CGFloat = BorderRadius.default,
-        @ViewBuilder leadingIcon: () -> LeadingIcon,
-        @ViewBuilder trailingIcon: () -> TrailingIcon
-    ) -> Self where Self == OrbitButtonStyle<LeadingIcon, TrailingIcon> {
-        Self(type: type, size: size, cornerRadius: cornerRadius, icon: leadingIcon, trailingIcon: trailingIcon)
+    var horizontalPadding: CGFloat {
+        switch buttonSize {
+            case .default:      return .medium
+            case .compact:      return .small
+        }
     }
 
-    static func orbit<LeadingIcon: View>(
-        type: ButtonType,
-        size: ButtonSize,
-        cornerRadius: CGFloat = BorderRadius.default,
-        @ViewBuilder leadingIcon: () -> LeadingIcon
-    ) -> Self where Self == OrbitButtonStyle<LeadingIcon, EmptyView> {
-        Self(type: type, size: size, cornerRadius: cornerRadius, icon: leadingIcon, trailingIcon: { EmptyView() })
-    }
-
-    static func orbit<TrailingIcon: View>(
-        type: ButtonType,
-        size: ButtonSize,
-        cornerRadius: CGFloat = BorderRadius.default,
-        @ViewBuilder trailingIcon: () -> TrailingIcon
-    ) -> Self where Self == OrbitButtonStyle<EmptyView, TrailingIcon> {
-        Self(type: type, size: size, cornerRadius: cornerRadius, icon: { EmptyView() }, trailingIcon: trailingIcon)
-    }
-
-    static func orbit(
-        type: ButtonType,
-        size: ButtonSize,
-        cornerRadius: CGFloat = BorderRadius.default
-    ) -> Self where Self == OrbitButtonStyle<EmptyView, EmptyView> {
-        Self(type: type, size: size, cornerRadius: cornerRadius, icon: { EmptyView() }, trailingIcon: { EmptyView() })
+    var verticalPadding: CGFloat {
+        switch buttonSize {
+            case .default:      return .small   // = 44 height @ normal size
+            case .compact:      return .xSmall  // = 32 height @ normal size
+        }
     }
 }
 
@@ -404,10 +288,13 @@ struct ButtonPreviews: PreviewProvider {
                 Button("Button", icon: .grid, action: {})
                 Button("Button\nmultiline", icon: .grid, action: {})
                 Button(icon: .grid, action: {})
-                Button("Button small", size: .small, action: {})
-                Button("Button small", icon: .grid, size: .small, action: {})
-                Button(icon: .grid, size: .small, action: {})
-                Button("Button\nmultiline", size: .small, action: {})
+                Group {
+                    Button("Button small", action: {})
+                    Button("Button small", icon: .grid, action: {})
+                    Button(icon: .grid, action: {})
+                    Button("Button\nmultiline", action: {})
+                }
+                .buttonSize(.compact)
             }
             .measured()
         }
@@ -493,11 +380,12 @@ struct ButtonPreviews: PreviewProvider {
                 Spacer()
             }
             HStack(spacing: .small) {
-                Button("Label", type: type, size: .small, action: {})
+                Button("Label", type: type, action: {})
                     .idealSize()
-                Button(icon: .grid, type: type, size: .small, action: {})
+                Button(icon: .grid, type: type, action: {})
                 Spacer()
             }
+            .buttonSize(.compact)
         }
     }
 
@@ -511,12 +399,12 @@ struct ButtonPreviews: PreviewProvider {
     @ViewBuilder static func statusButtons(_ type: ButtonType) -> some View {
         HStack(spacing: .xSmall) {
             Group {
-                Button("Label", type: type, size: .small, action: {})
-                Button("Label", icon: .grid, disclosureIcon: .chevronForward, type: type, size: .small, action: {})
-                Button("Label", disclosureIcon: .chevronForward, type: type, size: .small, action: {})
-                Button(icon: .grid, type: type, size: .small, action: {})
+                Button("Label", type: type, action: {})
+                Button("Label", icon: .grid, disclosureIcon: .chevronForward, type: type, action: {})
+                Button("Label", disclosureIcon: .chevronForward, type: type, action: {})
+                Button(icon: .grid, type: type, action: {})
             }
-            .idealSize()
+            .buttonSize(.compact)
 
             Spacer(minLength: 0)
         }

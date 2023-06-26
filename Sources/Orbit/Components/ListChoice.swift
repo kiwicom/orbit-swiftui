@@ -125,10 +125,15 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View {
     }
     
     @ViewBuilder func disclosureButton(type: ListChoiceDisclosure.ButtonType) -> some View {
-        switch type {
-            case .add:      Button(icon: .plus, type: .primarySubtle, size: .small, action: {}).fixedSize()
-            case .remove:   Button(icon: .close, type: .criticalSubtle, size: .small, action: {}).fixedSize()
+        Button(type: type == .add ? .primarySubtle : .criticalSubtle) {
+            // No action
+        } icon: {
+            Orbit.Icon(.plus)
+                .rotationEffect(.degrees(type == .add ? 0 : 45))
+                .animation(.easeOut(duration: 0.2), value: type)
         }
+        .buttonSize(.compact)
+        .idealSize()
     }
 
     @ViewBuilder var separator: some View {
@@ -424,7 +429,15 @@ struct ListChoicePreviews: PreviewProvider {
     
     static var buttons: some View {
         Card(contentLayout: .fill) {
-            ListChoice(title, disclosure: addButton, action: {})
+            StateWrapper(ListChoiceDisclosure.button(type: .add)) { button in
+                ListChoice(title, disclosure: button.wrappedValue) {
+                    if .button(type: .add) ~= button.wrappedValue {
+                        button.wrappedValue = .button(type: .remove)
+                    } else {
+                        button.wrappedValue = .button(type: .add)
+                    }
+                }
+            }
             ListChoice(title, disclosure: removeButton, action: {})
             ListChoice(title, description: description, disclosure: addButton, action: {})
             ListChoice(title, description: description, disclosure: removeButton, action: {})

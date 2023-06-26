@@ -10,46 +10,35 @@ import SwiftUI
 public struct SocialButton: View {
 
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.idealSize) private var idealSize
     @Environment(\.sizeCategory) private var sizeCategory
-    @Environment(\.textColor) private var textColor
-    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     private let label: String
     private let service: Service
     private let action: () -> Void
 
     public var body: some View {
-        SwiftUI.Button(
-            action: {
-                if isHapticsEnabled {
-                    HapticsProvider.sendHapticFeedback(.light(0.5))
-                }
-                
-                action()
-            },
-            label: {
-                HStack(spacing: .xSmall) {
-                    logo
-                        .scaledToFit()
-                        .frame(width: .large * sizeCategory.ratio)
-
-                    Text(label)
-                        .fontWeight(.medium)
-                        .padding(.vertical, ButtonSize.default.verticalPadding)
-
-                    if idealSize.horizontal == nil {
-                        Spacer(minLength: 0)
-                    }
-
-                    Icon(.chevronForward)
-                        .iconSize(.large)
-                        .iconColor(labelColor)
-                }
-                .textColor(textColor ?? labelColor)
+        SwiftUI.Button {
+            action()
+        } label: {
+            Text(label)
+                .fontWeight(.medium)
+        }
+        .buttonStyle(
+            OrbitCustomButtonStyle(textColor: textColor, isTrailingIconSeparated: true) {
+                logo
+                    .scaledToFit()
+                    .frame(width: .large * sizeCategory.ratio)
+                    .padding([.leading, .vertical], -.xxSmall)
+            } disclosureIcon: {
+                Icon(.chevronForward)
+                    .iconSize(.large)
+                    .padding([.trailing, .vertical], -.xxSmall)
+            } background: {
+                background
+            } backgroundActive: {
+                backgroundActive
             }
         )
-        .buttonStyle(OrbitStyle(backgroundColor: backgroundColor, idealSize: idealSize))
     }
 
     @ViewBuilder var logo: some View {
@@ -61,7 +50,7 @@ public struct SocialButton: View {
         }
     }
 
-    var labelColor: Color {
+    var textColor: Color {
         switch service {
             case .apple:        return .whiteNormal
             case .google:       return .inkDark
@@ -70,15 +59,21 @@ public struct SocialButton: View {
         }
     }
 
-    var backgroundColor: OrbitStyle.BackgroundColor {
+    @ViewBuilder var background: some View {
         switch service {
-            case .apple:        return (
-                colorScheme == .light ? .black : .white,
-                colorScheme == .light ? .inkNormalActive : .inkNormalActive
-            )
-            case .google:       return (.cloudNormal, .cloudNormalActive)
-            case .facebook:     return (.cloudNormal, .cloudNormalActive)
-            case .email:        return (.cloudNormal, .cloudNormalActive)
+            case .apple:        colorScheme == .light ? Color.black : Color.white
+            case .google:       Color.cloudNormal
+            case .facebook:     Color.cloudNormal
+            case .email:        Color.cloudNormal
+        }
+    }
+
+    @ViewBuilder var backgroundActive: some View {
+        switch service {
+            case .apple:        colorScheme == .light ? Color.inkNormalActive : Color.inkNormalActive
+            case .google:       Color.cloudNormalActive
+            case .facebook:     Color.cloudNormalActive
+            case .email:        Color.cloudNormalActive
         }
     }
 }
@@ -107,24 +102,6 @@ extension SocialButton {
         case facebook
         case email
     }
-
-    struct OrbitStyle: ButtonStyle {
-
-        typealias BackgroundColor = (normal: Color, active: Color)
-
-        let backgroundColor: BackgroundColor
-        let idealSize: IdealSizeValue
-
-        func makeBody(configuration: Configuration) -> some View {
-            configuration.label
-                .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
-                .padding(.horizontal, .small)
-                .background(
-                    configuration.isPressed ? backgroundColor.active : backgroundColor.normal
-                )
-                .cornerRadius(BorderRadius.default)
-        }
-    }
 }
 
 // MARK: - Previews
@@ -134,6 +111,7 @@ struct SocialButtonPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             idealSize
+            sizing
             all
         }
         .padding(.medium)
@@ -149,6 +127,21 @@ struct SocialButtonPreviews: PreviewProvider {
         content
             .idealSize()
             .previewDisplayName()
+    }
+
+    static var sizing: some View {
+        VStack(spacing: .medium) {
+            Group {
+                SocialButton("Sign in with Apple", service: .apple, action: {})
+                SocialButton("Sign in with Facebook", service: .facebook, action: {})
+                SocialButton("Sign in with Facebook", service: .facebook, action: {})
+                    .idealSize()
+                    .buttonSize(.compact)
+            }
+            .measured()
+        }
+        .padding(.medium)
+        .previewDisplayName()
     }
 
     static var all: some View {
@@ -169,6 +162,7 @@ struct SocialButtonPreviews: PreviewProvider {
         VStack(spacing: .medium) {
             all
             idealSize
+            sizing
         }
         .padding(.medium)
     }

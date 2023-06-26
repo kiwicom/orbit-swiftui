@@ -8,6 +8,5 @@
 
 ### Customizing Appearance
 
-- ``ButtonLinkButtonStyle``
-- ``ButtonLinkSize``
+- ``OrbitButtonLinkButtonStyle``
 - ``ButtonLinkType``

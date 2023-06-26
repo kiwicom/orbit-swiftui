@@ -62,8 +62,9 @@ public struct Card<Content: View>: View {
                     case .buttonLink(let label, let type, let action):
                         if label.isEmpty == false {
                             ButtonLink(label, type: type, action: action)
-                                .textColor(nil)
+                                .buttonSize(.compact)
                                 .padding(.leading, .xxxSmall)
+                                .padding(.top, -6)
                                 .accessibility(.cardActionButtonLink)
                         }
                     case .none:

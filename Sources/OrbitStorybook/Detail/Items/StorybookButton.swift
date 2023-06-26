@@ -66,11 +66,12 @@ struct StorybookButton {
                 Spacer()
             }
             HStack(spacing: .small) {
-                Button("Label", type: type, size: .small, action: {})
+                Button("Label", type: type, action: {})
                     .idealSize()
-                Button(icon: .grid, type: type, size: .small, action: {})
+                Button(icon: .grid, type: type, action: {})
                 Spacer()
             }
+            .buttonSize(.compact)
         }
     }
 
@@ -84,11 +85,12 @@ struct StorybookButton {
     @ViewBuilder static func statusButtons(_ type: ButtonType) -> some View {
         HStack(spacing: .xSmall) {
             Group {
-                Button("Label", type: type, size: .small, action: {})
-                Button("Label", icon: .grid, disclosureIcon: .chevronForward, type: type, size: .small, action: {})
-                Button("Label", disclosureIcon: .chevronForward, type: type, size: .small, action: {})
-                Button(icon: .grid, type: type, size: .small, action: {})
+                Button("Label", type: type, action: {})
+                Button("Label", icon: .grid, disclosureIcon: .chevronForward, type: type, action: {})
+                Button("Label", disclosureIcon: .chevronForward, type: type, action: {})
+                Button(icon: .grid, type: type, action: {})
             }
+            .buttonSize(.compact)
             .idealSize()
 
             Spacer(minLength: 0)
