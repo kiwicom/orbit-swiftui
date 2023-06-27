@@ -22,6 +22,7 @@ Our components are a collection of interface elements that can be reused across 
 ### Information
 
 - ``Alert``
+- ``AlertInline``
 - ``Badge``
 - ``BadgeList``
 - ``KeyValue``

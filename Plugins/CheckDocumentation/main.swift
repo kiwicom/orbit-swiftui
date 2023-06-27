@@ -32,6 +32,8 @@ import PackagePlugin
                 .map(\.path)
                 .map(publicTypeNames(in:))
                 .joined()
+                // Discard types starting with an underscore
+                .filter { $0.starts(with: "_") == false }
         )
 
         let typesWithoutReference = publicTypeNames.subtracting(referencedSymbols)
