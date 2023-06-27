@@ -103,7 +103,7 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
     @Environment(\.buttonSize) private var buttonSize
     @Environment(\.status) private var status
 
-    private var type: ButtonLinkType
+    private let type: ButtonLinkType
     @ViewBuilder private let icon: LeadingIcon
     @ViewBuilder private let disclosureIcon: TrailingIcon
 
@@ -168,7 +168,6 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
         status ?? .info
     }
 
-
     var resolvedStatus: Status {
         switch type {
             case .status(let status):   return status ?? self.status ?? .info
@@ -178,14 +177,9 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
 
     var hapticFeedback: HapticsProvider.HapticFeedbackType {
         switch type {
-            case .primary:                      return .light(1)
-            case .critical:                 	return .notification(.error)
-            case .status:
-                switch resolvedStatus {
-                    case .info, .success:       return .light(0.5)
-                    case .warning:              return .notification(.warning)
-                    case .critical:             return .notification(.error)
-                }
+            case .primary:  return .light(1)
+            case .critical: return .notification(.error)
+            case .status:   return resolvedStatus.defaultHapticFeedback
         }
     }
 

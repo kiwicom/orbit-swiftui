@@ -203,12 +203,7 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
             case .primary:                                  return .light(1)
             case .primarySubtle, .secondary, .gradient:     return .light(0.5)
             case .critical, .criticalSubtle:                return .notification(.error)
-            case .status:
-                switch resolvedStatus {
-                    case .info, .success:                   return .light(0.5)
-                    case .warning:                          return .notification(.warning)
-                    case .critical:                         return .notification(.error)
-                }
+            case .status:                                   return resolvedStatus.defaultHapticFeedback
         }
     }
 

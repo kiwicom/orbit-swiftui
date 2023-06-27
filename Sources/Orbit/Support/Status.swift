@@ -99,4 +99,13 @@ public extension Status {
             case .critical:     return .redLightActive
         }
     }
+
+    /// The default haptic feedback associated with status.
+    var defaultHapticFeedback: HapticsProvider.HapticFeedbackType {
+        switch self {
+            case .info, .success:       return .light(0.5)
+            case .warning:              return .notification(.warning)
+            case .critical:             return .notification(.error)
+        }
+    }
 }
