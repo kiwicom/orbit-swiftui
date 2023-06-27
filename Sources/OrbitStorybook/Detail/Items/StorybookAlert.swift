@@ -11,9 +11,11 @@ struct StorybookAlert {
         Description message can be <strong>formatted</strong>, but if more <ref>customizaton</ref> is needed a custom \
         description content can be provided instead.
         """
-    static let primaryAndSecondaryConfiguration: AlertButtons? = AlertButtons.primaryAndSecondary("Primary", "Secondary")
-    static let primaryConfiguration = AlertButtons.primary("Primary")
-    static let secondaryConfiguration = AlertButtons.secondary("Secondary")
+
+    enum LiveButtonConfiguration {
+        case primary
+        case primaryAndSecondary
+    }
 
     static var basic: some View {
         LazyVStack(alignment: .leading, spacing: .large) {
@@ -44,23 +46,26 @@ struct StorybookAlert {
     }
 
     static var live: some View {
-        StateWrapper(primaryAndSecondaryConfiguration) { buttons in
+        StateWrapper(LiveButtonConfiguration?.some(.primaryAndSecondary)) { buttons in
             VStack(spacing: .large) {
-                Alert(
-                    title,
-                    description: description,
-                    icon: .informationCircle,
-                    buttons: buttons.wrappedValue
-                )
+                Alert(title, description: description, icon: .informationCircle) {
+                    switch buttons.wrappedValue {
+                        case nil:
+                            EmptyView()
+                        case .primary:
+                            Button("Primary") {}
+                        case .primaryAndSecondary:
+                            Button("Primary") {}
+                            Button("Secondary") {}
+                    }
+                }
 
                 Button("Toggle buttons") {
                     withAnimation(.spring()) {
                         switch buttons.wrappedValue {
-                            case .none:                     buttons.wrappedValue = primaryConfiguration
-                            case .primary:                  buttons.wrappedValue = secondaryConfiguration
-                            case .secondary:                buttons.wrappedValue = primaryAndSecondaryConfiguration
-                            case .primaryAndSecondary:      buttons.wrappedValue = .none
-                            case .inline:                   buttons.wrappedValue = .none
+                            case nil:                       buttons.wrappedValue = .primary
+                            case .primary:                  buttons.wrappedValue = .primaryAndSecondary
+                            case .primaryAndSecondary:      buttons.wrappedValue = nil
                         }
                     }
                 }
@@ -72,16 +77,34 @@ struct StorybookAlert {
 
     static var alertPrimaryButtonOnly: some View {
         VStack(spacing: .medium) {
-            Alert(title, description: description, icon: .informationCircle, buttons: Self.primaryConfiguration)
-            Alert(description: description, icon: .informationCircle, buttons: Self.primaryConfiguration)
-            Alert(title, description: description, buttons: Self.primaryConfiguration)
-            Alert(description: description, buttons: Self.primaryConfiguration)
-            Alert( title, icon: .informationCircle, buttons: Self.primaryConfiguration)
-            Alert(title, buttons: Self.primaryConfiguration)
-            Alert(icon: .informationCircle, buttons: Self.primaryConfiguration)
-            Alert(buttons: Self.primaryConfiguration)
-            Alert("Intrinsic width", buttons: Self.primaryConfiguration)
-                .idealSize(horizontal: true, vertical: false)
+            Alert(title, description: description, icon: .informationCircle) {
+                Button("Primary") {}
+            }
+            Alert(description: description, icon: .informationCircle) {
+                Button("Primary") {}
+            }
+            Alert(title, description: description) {
+                Button("Primary") {}
+            }
+            Alert(description: description) {
+                Button("Primary") {}
+            }
+            Alert(title, icon: .informationCircle) {
+                Button("Primary") {}
+            }
+            Alert(title) {
+                Button("Primary") {}
+            }
+            Alert(icon: .informationCircle) {
+                Button("Primary") {}
+            }
+            Alert {
+                Button("Primary") {}
+            }
+            Alert("Intrinsic width") {
+                Button("Primary") {}
+            }
+            .idealSize(horizontal: true, vertical: false)
         }
     }
 
@@ -105,30 +128,42 @@ struct StorybookAlert {
     }
 
     static func alert(_ title: String, status: Status, icon: Icon.Symbol?, isSuppressed: Bool) -> some View {
-        Alert(
-            title,
-            description: description,
-            icon: icon,
-            buttons: primaryAndSecondaryConfiguration,
-            style: .status(status, isSubtle: isSuppressed)
-        )
+        Alert(title, description: description, icon: icon, isSubtle: isSuppressed) {
+            Button("Primary") {}
+            Button("Secondary") {}
+        }
+        .status(status)
     }
 
     static func alerts(showIcons: Bool, isSuppressed: Bool) -> some View {
         VStack(spacing: .medium) {
             alert("Informational message", status: .info, icon: showIcons ? .informationCircle : nil, isSuppressed: isSuppressed)
-            alert("Success message", status: .success, icon: showIcons ? .checkCircle : nil, isSuppressed: isSuppressed)
-            alert("Warning message", status: .warning, icon: showIcons ? .alertCircle : nil, isSuppressed: isSuppressed)
-            alert("Critical message", status: .critical, icon: showIcons ? .alertCircle : nil, isSuppressed: isSuppressed)
+            alert("Success message", status: .success, icon: showIcons ? .checkCircle : .none, isSuppressed: isSuppressed)
+            alert("Warning message", status: .warning, icon: showIcons ? .alertCircle : .none, isSuppressed: isSuppressed)
+            alert("Critical message", status: .critical, icon: showIcons ? .alertCircle : .none, isSuppressed: isSuppressed)
         }
     }
 
     static func inlineAlerts(showIcon: Bool, isSuppressed: Bool) -> some View {
         VStack(spacing: .medium) {
-            Alert("Informational message", icon: showIcon ? .informationCircle : .none, buttons: .inline("Primary"), style: .status(nil, isSubtle: isSuppressed))
-            Alert("Success message", icon: showIcon ? .checkCircle : .none, buttons: .inline("Primary"), style: .status(.success, isSubtle: isSuppressed))
-            Alert("Warning message", icon: showIcon ? .alertCircle : .none, buttons: .inline("Primary"), style: .status(.warning, isSubtle: isSuppressed))
-            Alert("Critical message", icon: showIcon ? .alertCircle : .none, buttons: .inline("Primary"), style: .status(.critical, isSubtle: isSuppressed))
+            AlertInline("Informational message", icon: showIcon ? .informationCircle : .none, isSubtle: isSuppressed) {
+                Button("Primary") {}
+            }
+
+            AlertInline("Success message", icon: showIcon ? .checkCircle : .none, isSubtle: isSuppressed) {
+                Button("Primary") {}
+            }
+            .status(.success)
+
+            AlertInline("Warning message", icon: showIcon ? .alertCircle : .none, isSubtle: isSuppressed) {
+                Button("Primary") {}
+            }
+            .status(.warning)
+
+            AlertInline("Critical message", icon: showIcon ? .alertCircle : .none, isSubtle: isSuppressed) {
+                Button("Primary") {}
+            }
+            .status(.critical)
         }
     }
 }
