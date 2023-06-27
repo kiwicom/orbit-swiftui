@@ -124,17 +124,20 @@ struct StorybookHorizontalScroll: View {
                     // FIXME: Binding does not work correctly?
                     .id(animatedScroll ? 1 : 0)
 
-                Button("Scroll to First", size: .small) {
-                    scrollProxy.scrollTo(0, animated: animatedScroll)
-                }
+                Group {
+                    Button("Scroll to First") {
+                        scrollProxy.scrollTo(0, animated: animatedScroll)
+                    }
 
-                Button("Scroll to 2", size: .small) {
-                    scrollProxy.scrollTo(2, animated: animatedScroll)
-                }
+                    Button("Scroll to 2") {
+                        scrollProxy.scrollTo(2, animated: animatedScroll)
+                    }
 
-                Button("Scroll to Last", size: .small) {
-                    scrollProxy.scrollTo(6, animated: animatedScroll)
+                    Button("Scroll to Last") {
+                        scrollProxy.scrollTo(6, animated: animatedScroll)
+                    }
                 }
+                .buttonSize(.compact)
             }
         }
         .previewDisplayName()

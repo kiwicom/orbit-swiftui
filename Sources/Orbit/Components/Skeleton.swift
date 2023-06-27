@@ -36,7 +36,7 @@ public struct Skeleton: View {
             case .button(let size):
                 switch size {
                     case .default:      roundedRectangle.fill(color).frame(height: .xxLarge)
-                    case .small:        roundedRectangle.fill(color).frame(height: .xLarge)
+                    case .compact:      roundedRectangle.fill(color).frame(height: .xLarge)
                 }
             case .card(let height), .image(let height):
                 roundedRectangle.fill(color).frame(height: height)

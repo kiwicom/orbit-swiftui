@@ -65,8 +65,9 @@ public struct Alert<Content: View, Icon: View>: View {
             }
 
             if let button {
-                Button(button.label, type: primaryButtonType, size: .small, action: button.action)
-                    .fixedSize(horizontal: true, vertical: false)
+                Button(button.label, type: primaryButtonType, action: button.action)
+                    .buttonSize(.compact)
+                    .idealSize()
                     .padding(.xSmall)
                     .padding(.top, 3)
                     .accessibility(.alertButtonPrimary)
@@ -119,7 +120,7 @@ public struct Alert<Content: View, Icon: View>: View {
                     switch buttons {
                         case .primary(let primaryButton),
                              .primaryAndSecondary(let primaryButton, _):
-                            Button(primaryButton.label, type: primaryButtonType, size: .small, action: primaryButton.action)
+                            Button(primaryButton.label, type: primaryButtonType, action: primaryButton.action)
                                 .accessibility(.alertButtonPrimary)
                         case .none, .secondary, .inline:
                             EmptyView()
@@ -128,12 +129,13 @@ public struct Alert<Content: View, Icon: View>: View {
                     switch buttons {
                         case .secondary(let secondaryButton),
                              .primaryAndSecondary(_, let secondaryButton):
-                            Button(secondaryButton.label, type: secondaryButtonType, size: .small, action: secondaryButton.action)
+                            Button(secondaryButton.label, type: secondaryButtonType, action: secondaryButton.action)
                                 .accessibility(.alertButtonSecondary)
                         case .none, .primary, .inline:
                             EmptyView()
                     }
                 }
+                .buttonSize(.compact)
             case .none, .inline:
                 EmptyView()
         }

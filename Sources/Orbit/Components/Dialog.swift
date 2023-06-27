@@ -58,7 +58,7 @@ public struct Dialog<Content: View>: View {
                 EmptyView()
             case .primaryAndSecondary(_, let secondaryButton),
                  .primarySecondaryAndTertiary(_, let secondaryButton, _):
-                ButtonLink(secondaryButton.label, type: style.buttonLinkType, size: .button, action: secondaryButton.action)
+                ButtonLink(secondaryButton.label, type: style.buttonLinkType, action: secondaryButton.action)
                     .accessibility(.dialogButtonSecondary)
         }
 
@@ -66,7 +66,7 @@ public struct Dialog<Content: View>: View {
             case .primary, .primaryAndSecondary:
                 EmptyView()
             case .primarySecondaryAndTertiary(_, _, let tertiaryButton):
-                ButtonLink(tertiaryButton.label, type: style.buttonLinkType, size: .button, action: tertiaryButton.action)
+                ButtonLink(tertiaryButton.label, type: style.buttonLinkType, action: tertiaryButton.action)
                     .accessibility(.dialogButtonTertiary)
         }
     }

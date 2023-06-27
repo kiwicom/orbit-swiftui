@@ -3,75 +3,33 @@ import SwiftUI
 /// Displays a single, less important action a user can take.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/buttonlink/)
-public struct ButtonLink<Icon: View>: View {
+public struct ButtonLink<LeadingIcon: View, TrailingIcon: View>: View {
 
-    @Environment(\.iconColor) private var iconColor
-    @Environment(\.status) private var status
-    @Environment(\.textColor) private var textColor
-    @Environment(\.isHapticsEnabled) private var isHapticsEnabled
-
-    let label: String
-    let type: ButtonLinkType
-    let size: ButtonLinkSize
-    let action: () -> Void
-    @ViewBuilder let icon: Icon
+    private let label: String
+    private let type: ButtonLinkType
+    private let action: () -> Void
+    @ViewBuilder private let leadingIcon: LeadingIcon
+    @ViewBuilder private let trailingIcon: TrailingIcon
 
     public var body: some View {
         if isEmpty == false {
-            SwiftUI.Button(
-                action: {
-                    if isHapticsEnabled {
-                        HapticsProvider.sendHapticFeedback(.light(0.5))
-                    }
-                    
-                    action()
-                },
-                label: {
-                    HStack(spacing: .xSmall) {
-                        icon
-                            .textFontWeight(.medium)
-                            .font(.system(size: Orbit.Icon.Size.normal.value))
-
-                        Text(label)
-                            .fontWeight(.medium)
-                            // Ignore any potential `TextLinks`
-                            .allowsHitTesting(false)
-                            .textLinkColor(.custom(colors.normal))
-                    }
-                    .padding(.vertical, verticalPadding)
+            SwiftUI.Button() {
+                action()
+            } label: {
+                Text(label)
+            }
+            .buttonStyle(
+                OrbitButtonLinkButtonStyle(type: type) {
+                    leadingIcon
+                } trailingIcon: {
+                    trailingIcon
                 }
             )
-            .buttonStyle(ButtonLinkButtonStyle(colors: textColors ?? colors, size: size))
-        }
-    }
-
-    public var colors: (normal: Color, active: Color) {
-        switch type {
-            case .primary:              return (.productNormal, .productLightActive)
-            case .secondary:            return (.inkDark, .cloudDark)
-            case .critical:             return (.redNormal, .redLightActive)
-            case .status(let status):   return (status ?? defaultStatus).colors
-        }
-    }
-
-    public var textColors: (normal: Color, active: Color)? {
-        textColor.map { (normal: $0, active: $0.opacity(0.5)) }
-    }
-
-    var defaultStatus: Status {
-        status ?? .info
-    }
-
-    var verticalPadding: CGFloat {
-        switch size {
-            case .default:              return 0
-            case .button:               return .small   // = 44 height @ normal size
-            case .buttonSmall:          return 6        // = 32 height @ normal size
         }
     }
 
     var isEmpty: Bool {
-        label.isEmpty && icon.isEmpty
+        label.isEmpty && leadingIcon.isEmpty && trailingIcon.isEmpty
     }
 }
 
@@ -80,90 +38,173 @@ public extension ButtonLink {
 
     /// Creates Orbit ButtonLink component.
     ///
+    /// Button size can be specified using `.buttonSize()` modifier.
+    ///
     /// - Parameters:
-    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    ///   - type: A visual style of component. A style can be optionally modified using `status()` modifier when `nil` status value is provided.
     init(
         _ label: String = "",
         type: ButtonLinkType = .primary,
         icon: Icon.Symbol? = nil,
-        size: ButtonLinkSize = .default,
+        disclosureIcon: Icon.Symbol? = nil,
         action: @escaping () -> Void
-    ) where Icon == Orbit.Icon {
-        self.init(
-            label,
-            type: type,
-            size: size
-        ) {
+    ) where LeadingIcon == Orbit.Icon, TrailingIcon == Orbit.Icon  {
+        self.init(label, type: type) {
             action()
         } icon: {
             Icon(icon)
+        } disclosureIcon: {
+            Icon(disclosureIcon)
         }
     }
 
-    /// Creates Orbit ButtonLink component with custom icon.
+    /// Creates Orbit ButtonLink component with custom icons.
+    ///
+    /// Button size can be specified using `.buttonSize()` modifier.
     ///
     /// - Parameters:
-    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    ///   - type: A visual style of component. A style can be optionally modified using `status()` modifier when `nil` status value is provided.
     init(
         _ label: String = "",
         type: ButtonLinkType = .primary,
-        size: ButtonLinkSize = .default,
         action: @escaping () -> Void,
-        @ViewBuilder icon: () -> Icon
+        @ViewBuilder icon: () -> LeadingIcon,
+        @ViewBuilder disclosureIcon: () -> TrailingIcon = { EmptyView() }
     ) {
         self.label = label
         self.type = type
-        self.size = size
         self.action = action
-        self.icon = icon()
+        self.leadingIcon = icon()
+        self.trailingIcon = disclosureIcon()
     }
 }
 
 // MARK: - Types
 
 public enum ButtonLinkType: Equatable {
-
     case primary
-    case secondary
     case critical
     case status(_ status: Status?)
 }
 
-public enum ButtonLinkSize: Equatable {
-    case `default`
-    case button
-    case buttonSmall
+/// Button style matching Orbit ButtonLink component.
+public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>: PrimitiveButtonStyle {
 
-    public var maxWidth: CGFloat? {
-        switch self {
-            case .default:                  return nil
-            case .button, .buttonSmall:     return .infinity
-        }
-    }
-}
+    @Environment(\.buttonSize) private var buttonSize
+    @Environment(\.status) private var status
 
-public struct ButtonLinkButtonStyle: ButtonStyle {
+    private var type: ButtonLinkType
+    @ViewBuilder private let icon: LeadingIcon
+    @ViewBuilder private let disclosureIcon: TrailingIcon
 
-    let colors: (normal: Color, active: Color)
-    let size: ButtonLinkSize
-
-    public init(colors: (normal: Color, active: Color), size: ButtonLinkSize) {
-        self.colors = colors
-        self.size = size
+    public init(
+        type: ButtonLinkType,
+        @ViewBuilder icon: () -> LeadingIcon,
+        @ViewBuilder trailingIcon: () -> TrailingIcon
+    ) {
+        self.type = type
+        self.icon = icon()
+        self.disclosureIcon = trailingIcon()
     }
 
     public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .textColor(configuration.isPressed ? colors.active : colors.normal)
-            .frame(maxWidth: size.maxWidth)
-            .contentShape(Rectangle())
+        OrbitCustomButtonContent(
+            configuration: configuration,
+            textColor: textColor,
+            textActiveColor: textActiveColor,
+            horizontalPadding: horizontalPadding,
+            verticalPadding: verticalPadding,
+            horizontalBackgroundPadding: horizontalBackgroundPadding,
+            verticalBackgroundPadding: verticalBackgroundPadding,
+            hapticFeedback: hapticFeedback
+        ) {
+            icon
+        } disclosureIcon: {
+            disclosureIcon
+        } background: {
+            Color.clear
+        } backgroundActive: {
+            backgroundActive
+        }
+        .textFontWeight(.medium)
+        .idealSize(horizontal: buttonSize == .compact)
     }
-}
 
-private extension Status {
+    @ViewBuilder var backgroundActive: some View {
+        switch type {
+            case .primary:                      Color.productLightActive
+            case .critical:                     Color.redLightActive
+            case .status(let status):           (status ?? defaultStatus).lightActiveColor
+        }
+    }
 
-    var colors: (normal: Color, active: Color) {
-        (color, lightActiveColor)
+    var textColor: Color {
+        switch type {
+            case .primary:                      return .productNormal
+            case .critical:                     return .redNormal
+            case .status(let status):           return (status ?? defaultStatus).color
+        }
+    }
+
+    var textActiveColor: Color {
+        switch type {
+            case .primary:                      return .productDarkActive
+            case .critical:                     return .redDarkActive
+            case .status(let status):           return (status ?? defaultStatus).darkHoverColor
+        }
+    }
+
+    var defaultStatus: Status {
+        status ?? .info
+    }
+
+
+    var resolvedStatus: Status {
+        switch type {
+            case .status(let status):   return status ?? self.status ?? .info
+            default:                    return .info
+        }
+    }
+
+    var hapticFeedback: HapticsProvider.HapticFeedbackType {
+        switch type {
+            case .primary:                      return .light(1)
+            case .critical:                 	return .notification(.error)
+            case .status:
+                switch resolvedStatus {
+                    case .info, .success:       return .light(0.5)
+                    case .warning:              return .notification(.warning)
+                    case .critical:             return .notification(.error)
+                }
+        }
+    }
+
+    var horizontalPadding: CGFloat {
+        switch buttonSize {
+            case .default:  return .medium
+            case .compact:  return 0
+        }
+    }
+
+    var verticalPadding: CGFloat {
+        switch buttonSize {
+            case .default:  return .small   // = 44 height @ normal size
+            case .compact:  return 6        // = 32 height @ normal size
+        }
+    }
+
+    var horizontalBackgroundPadding: CGFloat {
+        switch buttonSize {
+            case .default:  return 0
+            case .compact:  return .xSmall
+        }
+    }
+
+    var verticalBackgroundPadding: CGFloat {
+        switch buttonSize {
+            case .default:  return 0
+            case .compact:  return .xxxSmall
+        }
     }
 }
 
@@ -185,6 +226,9 @@ struct ButtonLinkPreviews: PreviewProvider {
     static var standalone: some View {
         VStack(spacing: 0) {
             ButtonLink("ButtonLink", action: {})
+            ButtonLink("ButtonLink", type: .critical, action: {})
+            ButtonLink("ButtonLink", action: {})
+                .buttonSize(.compact)
             ButtonLink("", action: {}) // EmptyView
             ButtonLink(action: {})   // EmptyView
         }
@@ -195,12 +239,12 @@ struct ButtonLinkPreviews: PreviewProvider {
     static var sizing: some View {
         VStack(alignment: .leading, spacing: .xSmall) {
             Group {
-                ButtonLink("ButtonLink intrinsic", action: {})
-                ButtonLink("ButtonLink intrinsic", icon: .grid, action: {})
-                ButtonLink("ButtonLink button", size: .button, action: {})
-                ButtonLink("ButtonLink button", icon: .grid, size: .button, action: {})
-                ButtonLink("ButtonLink small button", size: .buttonSmall, action: {})
-                ButtonLink("ButtonLink small button", icon: .grid, size: .buttonSmall, action: {})
+                ButtonLink("ButtonLink", action: {})
+                ButtonLink("ButtonLink", icon: .grid, action: {})
+                ButtonLink("ButtonLink Compact", action: {})
+                    .buttonSize(.compact)
+                ButtonLink("ButtonLink Compact", icon: .grid, action: {})
+                    .buttonSize(.compact)
             }
             .border(.cloudNormal)
             .measured()
@@ -213,15 +257,14 @@ struct ButtonLinkPreviews: PreviewProvider {
         HStack(spacing: .xxLarge) {
             VStack(alignment: .leading, spacing: .large) {
                 ButtonLink("ButtonLink Primary", type: .primary, action: {})
-                ButtonLink("ButtonLink Secondary", type: .secondary, action: {})
                 ButtonLink("ButtonLink Critical", type: .critical, action: {})
             }
             VStack(alignment: .leading, spacing: .large) {
                 ButtonLink("ButtonLink Primary", type: .primary, icon: .accommodation, action: {})
-                ButtonLink("ButtonLink Secondary", type: .secondary, icon: .airplaneDown, action: {})
                 ButtonLink("ButtonLink Critical", type: .critical, icon: .alertCircle, action: {})
             }
         }
+        .buttonSize(.compact)
         .padding(.medium)
         .previewDisplayName()
     }
@@ -233,6 +276,7 @@ struct ButtonLinkPreviews: PreviewProvider {
             ButtonLink("ButtonLink Warning", type: .status(.warning), icon: .alert, action: {})
             ButtonLink("ButtonLink Critical", type: .status(.critical), icon: .alertCircle, action: {})
         }
+        .buttonSize(.compact)
         .padding(.medium)
         .previewDisplayName()
     }

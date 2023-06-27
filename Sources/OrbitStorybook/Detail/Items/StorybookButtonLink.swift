@@ -7,15 +7,14 @@ struct StorybookButtonLink {
         HStack(spacing: .xxLarge) {
             VStack(alignment: .leading, spacing: .large) {
                 ButtonLink("ButtonLink Primary", type: .primary, action: {})
-                ButtonLink("ButtonLink Secondary", type: .secondary, action: {})
                 ButtonLink("ButtonLink Critical", type: .critical, action: {})
             }
             VStack(alignment: .leading, spacing: .large) {
                 ButtonLink("ButtonLink Primary", type: .primary, icon: .accommodation, action: {})
-                ButtonLink("ButtonLink Secondary", type: .secondary, icon: .airplaneDown, action: {})
                 ButtonLink("ButtonLink Critical", type: .critical, icon: .alertCircle, action: {})
             }
         }
+        .buttonSize(.compact)
         .previewDisplayName()
     }
 
@@ -26,16 +25,16 @@ struct StorybookButtonLink {
             ButtonLink("ButtonLink Warning", type: .status(.warning), icon: .alert, action: {})
             ButtonLink("ButtonLink Critical", type: .status(.critical), icon: .alertCircle, action: {})
         }
+        .buttonSize(.compact)
         .previewDisplayName()
     }
 
     static var sizes: some View {
         VStack(alignment: .leading, spacing: .small) {
             ButtonLink("ButtonLink intrinsic size", icon: .baggageSet, action: {})
+                .buttonSize(.compact)
                 .border(.cloudNormal)
-            ButtonLink("ButtonLink small button size", icon: .baggageSet, size: .buttonSmall, action: {})
-                .border(.cloudNormal)
-            ButtonLink("ButtonLink button size", icon: .baggageSet, size: .button, action: {})
+            ButtonLink("ButtonLink button size", icon: .baggageSet, action: {})
                 .border(.cloudNormal)
         }
         .previewDisplayName()

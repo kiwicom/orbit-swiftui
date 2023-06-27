@@ -80,6 +80,16 @@ public extension Status {
         }
     }
 
+    /// Dark active color associated with status.
+    var darkActiveColor: Color {
+        switch self {
+            case .info:         return .blueDarkActive
+            case .success:      return .greenDarkActive
+            case .warning:      return .orangeDarkActive
+            case .critical:     return .redDarkActive
+        }
+    }
+
     /// Light active color associated with status.
     var lightActiveColor: Color {
         switch self {
