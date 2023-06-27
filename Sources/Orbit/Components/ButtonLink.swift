@@ -5,6 +5,8 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/buttonlink/)
 public struct ButtonLink<LeadingIcon: View, TrailingIcon: View>: View {
 
+    @Environment(\.suppressButtonStyle) var suppressButtonStyle
+
     private let label: String
     private let type: ButtonLinkType
     private let action: () -> Void
@@ -13,18 +15,26 @@ public struct ButtonLink<LeadingIcon: View, TrailingIcon: View>: View {
 
     public var body: some View {
         if isEmpty == false {
-            SwiftUI.Button() {
-                action()
-            } label: {
-                Text(label)
+            if suppressButtonStyle {
+                button
+            } else {
+                button
+                    .buttonStyle(
+                        OrbitButtonLinkButtonStyle(type: type) {
+                            leadingIcon
+                        } trailingIcon: {
+                            trailingIcon
+                        }
+                    )
             }
-            .buttonStyle(
-                OrbitButtonLinkButtonStyle(type: type) {
-                    leadingIcon
-                } trailingIcon: {
-                    trailingIcon
-                }
-            )
+        }
+    }
+
+    @ViewBuilder var button: some View {
+        SwiftUI.Button() {
+            action()
+        } label: {
+            Text(label)
         }
     }
 

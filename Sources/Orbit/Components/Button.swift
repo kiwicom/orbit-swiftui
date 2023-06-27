@@ -6,6 +6,8 @@ import SwiftUI
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Button<LeadingIcon: View, TrailingIcon: View>: View {
 
+    @Environment(\.suppressButtonStyle) private var suppressButtonStyle
+
     private let label: String
     private let type: ButtonType
     private let isTrailingIconSeparated: Bool
@@ -14,21 +16,26 @@ public struct Button<LeadingIcon: View, TrailingIcon: View>: View {
     @ViewBuilder private let trailingIcon: TrailingIcon
 
     public var body: some View {
+        if suppressButtonStyle {
+            button
+        } else {
+            button
+                .buttonStyle(
+                    OrbitButtonStyle(type: type, isTrailingIconSeparated: isTrailingIconSeparated) {
+                        leadingIcon
+                    } trailingIcon: {
+                        trailingIcon
+                    }
+                )
+        }
+    }
+
+    @ViewBuilder var button: some View {
         SwiftUI.Button() {
             action()
         } label: {
             Text(label)
         }
-        .buttonStyle(
-            OrbitButtonStyle(
-                type: type,
-                isTrailingIconSeparated: isTrailingIconSeparated
-            ) {
-                leadingIcon
-            } trailingIcon: {
-                trailingIcon
-            }
-        )
     }
 }
 
