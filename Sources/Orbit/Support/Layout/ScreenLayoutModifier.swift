@@ -155,7 +155,10 @@ struct ScreenLayoutModifierPreviews: PreviewProvider {
 
     static var snapshot: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            Alert(AlertPreviews.title, description: AlertPreviews.description, buttons: AlertPreviews.primaryAndSecondaryConfiguration) {
+            Alert(AlertPreviews.title, description: AlertPreviews.description) {
+                Button("Primary") {}
+                Button("Secondary") {}
+            } content: {
                 Illustration(.accommodation)
                     .padding(.horizontal, .xxLarge)
             } icon: {
