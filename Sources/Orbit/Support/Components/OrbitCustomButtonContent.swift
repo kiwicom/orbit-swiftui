@@ -7,11 +7,11 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View, Backgroun
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.status) private var status
+    @Environment(\.textColor) private var textColor
     @Environment(\.textLinkColor) private var textLinkColor
     @State private var isPressed = false
     
     let configuration: PrimitiveButtonStyleConfiguration
-    let textColor: Color
     var textActiveColor: Color? = nil
     var horizontalPadding: CGFloat = .medium
     var verticalPadding: CGFloat = .small
@@ -95,7 +95,6 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View, Backgroun
 
 struct OrbitCustomButtonStyle<LeadingIcon: View, TrailingIcon: View, Background: View, BackgroundActive: View>: PrimitiveButtonStyle {
 
-    let textColor: Color
     var textActiveColor: Color? = nil
     var horizontalPadding: CGFloat = .medium
     var verticalPadding: CGFloat = .small
@@ -112,7 +111,6 @@ struct OrbitCustomButtonStyle<LeadingIcon: View, TrailingIcon: View, Background:
     public func makeBody(configuration: Configuration) -> some View {
         OrbitCustomButtonContent(
             configuration: configuration,
-            textColor: textColor,
             textActiveColor: textActiveColor,
             horizontalPadding: horizontalPadding,
             verticalPadding: verticalPadding,
@@ -159,7 +157,6 @@ struct OrbitCustomButtonContentPreviews: PreviewProvider {
         public func makeBody(configuration: Configuration) -> some View {
             OrbitCustomButtonContent(
                 configuration: configuration,
-                textColor: .blueDark,
                 textActiveColor: .redDark,
                 horizontalPadding: 4,
                 verticalPadding: 4,
@@ -176,6 +173,7 @@ struct OrbitCustomButtonContentPreviews: PreviewProvider {
             } backgroundActive: {
                 Color.greenLight
             }
+            .textColor(.blueDark)
         }
     }
 }

@@ -130,7 +130,6 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
     public func makeBody(configuration: Configuration) -> some View {
         OrbitCustomButtonContent(
             configuration: configuration,
-            textColor: textColor,
             horizontalPadding: horizontalPadding,
             verticalPadding: verticalPadding,
             isTrailingIconSeparated: isTrailingIconSeparated,
@@ -145,6 +144,7 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
             backgroundActive
         }
         .textFontWeight(.medium)
+        .textColor(textColor)
         .textSize(textSize)
     }
 

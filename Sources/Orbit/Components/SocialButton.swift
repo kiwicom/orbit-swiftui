@@ -24,7 +24,7 @@ public struct SocialButton: View {
                 .fontWeight(.medium)
         }
         .buttonStyle(
-            OrbitCustomButtonStyle(textColor: textColor, isTrailingIconSeparated: true) {
+            OrbitCustomButtonStyle(isTrailingIconSeparated: true) {
                 logo
                     .scaledToFit()
                     .frame(width: .large * sizeCategory.ratio)
@@ -39,6 +39,7 @@ public struct SocialButton: View {
                 backgroundActive
             }
         )
+        .textColor(textColor)
     }
 
     @ViewBuilder var logo: some View {
