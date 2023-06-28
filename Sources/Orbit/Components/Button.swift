@@ -6,6 +6,8 @@ import SwiftUI
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Button<LeadingIcon: View, TrailingIcon: View>: View {
 
+    @Environment(\.suppressButtonStyle) private var suppressButtonStyle
+
     private let label: String
     private let type: ButtonType
     private let isTrailingIconSeparated: Bool
@@ -14,21 +16,26 @@ public struct Button<LeadingIcon: View, TrailingIcon: View>: View {
     @ViewBuilder private let trailingIcon: TrailingIcon
 
     public var body: some View {
+        if suppressButtonStyle {
+            button
+        } else {
+            button
+                .buttonStyle(
+                    OrbitButtonStyle(type: type, isTrailingIconSeparated: isTrailingIconSeparated) {
+                        leadingIcon
+                    } trailingIcon: {
+                        trailingIcon
+                    }
+                )
+        }
+    }
+
+    @ViewBuilder var button: some View {
         SwiftUI.Button() {
             action()
         } label: {
             Text(label)
         }
-        .buttonStyle(
-            OrbitButtonStyle(
-                type: type,
-                isTrailingIconSeparated: isTrailingIconSeparated
-            ) {
-                leadingIcon
-            } trailingIcon: {
-                trailingIcon
-            }
-        )
     }
 }
 
@@ -123,7 +130,6 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
     public func makeBody(configuration: Configuration) -> some View {
         OrbitCustomButtonContent(
             configuration: configuration,
-            textColor: textColor,
             horizontalPadding: horizontalPadding,
             verticalPadding: verticalPadding,
             isTrailingIconSeparated: isTrailingIconSeparated,
@@ -138,6 +144,7 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
             backgroundActive
         }
         .textFontWeight(.medium)
+        .textColor(textColor)
         .textSize(textSize)
     }
 
@@ -196,12 +203,7 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
             case .primary:                                  return .light(1)
             case .primarySubtle, .secondary, .gradient:     return .light(0.5)
             case .critical, .criticalSubtle:                return .notification(.error)
-            case .status:
-                switch resolvedStatus {
-                    case .info, .success:                   return .light(0.5)
-                    case .warning:                          return .notification(.warning)
-                    case .critical:                         return .notification(.error)
-                }
+            case .status:                                   return resolvedStatus.defaultHapticFeedback
         }
     }
 

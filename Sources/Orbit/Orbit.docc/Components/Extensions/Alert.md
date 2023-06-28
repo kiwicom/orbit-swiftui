@@ -6,10 +6,6 @@
 
 ## Topics
 
-### Customizing Appearance
-
-- ``AlertStyle``
-
 ### Interaction
 
-- ``AlertButtons``
+- ``AlertButtonsBuilder``

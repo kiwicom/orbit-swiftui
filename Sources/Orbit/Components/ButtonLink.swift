@@ -5,6 +5,8 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/buttonlink/)
 public struct ButtonLink<LeadingIcon: View, TrailingIcon: View>: View {
 
+    @Environment(\.suppressButtonStyle) var suppressButtonStyle
+
     private let label: String
     private let type: ButtonLinkType
     private let action: () -> Void
@@ -13,18 +15,26 @@ public struct ButtonLink<LeadingIcon: View, TrailingIcon: View>: View {
 
     public var body: some View {
         if isEmpty == false {
-            SwiftUI.Button() {
-                action()
-            } label: {
-                Text(label)
+            if suppressButtonStyle {
+                button
+            } else {
+                button
+                    .buttonStyle(
+                        OrbitButtonLinkButtonStyle(type: type) {
+                            leadingIcon
+                        } trailingIcon: {
+                            trailingIcon
+                        }
+                    )
             }
-            .buttonStyle(
-                OrbitButtonLinkButtonStyle(type: type) {
-                    leadingIcon
-                } trailingIcon: {
-                    trailingIcon
-                }
-            )
+        }
+    }
+
+    @ViewBuilder var button: some View {
+        SwiftUI.Button() {
+            action()
+        } label: {
+            Text(label)
         }
     }
 
@@ -93,7 +103,7 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
     @Environment(\.buttonSize) private var buttonSize
     @Environment(\.status) private var status
 
-    private var type: ButtonLinkType
+    private let type: ButtonLinkType
     @ViewBuilder private let icon: LeadingIcon
     @ViewBuilder private let disclosureIcon: TrailingIcon
 
@@ -110,7 +120,6 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
     public func makeBody(configuration: Configuration) -> some View {
         OrbitCustomButtonContent(
             configuration: configuration,
-            textColor: textColor,
             textActiveColor: textActiveColor,
             horizontalPadding: horizontalPadding,
             verticalPadding: verticalPadding,
@@ -127,6 +136,7 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
             backgroundActive
         }
         .textFontWeight(.medium)
+        .textColor(textColor)
         .idealSize(horizontal: buttonSize == .compact)
     }
 
@@ -158,7 +168,6 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
         status ?? .info
     }
 
-
     var resolvedStatus: Status {
         switch type {
             case .status(let status):   return status ?? self.status ?? .info
@@ -168,14 +177,9 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
 
     var hapticFeedback: HapticsProvider.HapticFeedbackType {
         switch type {
-            case .primary:                      return .light(1)
-            case .critical:                 	return .notification(.error)
-            case .status:
-                switch resolvedStatus {
-                    case .info, .success:       return .light(0.5)
-                    case .warning:              return .notification(.warning)
-                    case .critical:             return .notification(.error)
-                }
+            case .primary:  return .light(1)
+            case .critical: return .notification(.error)
+            case .status:   return resolvedStatus.defaultHapticFeedback
         }
     }
 

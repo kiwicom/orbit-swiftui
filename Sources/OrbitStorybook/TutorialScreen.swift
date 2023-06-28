@@ -17,11 +17,11 @@ struct TutorialScreen: View {
                     ListItem("List Item 3")
                 }
                 
-                Alert(
-                    "Alert",
-                    description: "Alert Desctiption with a <a href=\"...\">TextLink</a>",
-                    buttons: .primary(.init("Action", action: alertAction))
-                )
+                Alert("Alert", description: "Alert Desctiption with a <a href=\"...\">TextLink</a>") {
+                    Button("Action") {
+                        alertAction()
+                    }
+                }
                 
                 HStack(spacing: .medium) {
                     Button("Secondary Button", type: .secondary, action: secondaryAction)
