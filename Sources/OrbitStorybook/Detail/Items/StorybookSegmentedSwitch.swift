@@ -5,15 +5,19 @@ struct StorybookSegmentedSwitch {
 
     static var basic: some View {
         VStack(spacing: .large) {
-            segmentedSwitch()
-            segmentedSwitch(selection: 0)
-            segmentedSwitch(message: .help("Help message"))
-            segmentedSwitch(message: .error("Error message"))
+            binarySegmentedSwitch()
+            threeOptionsSegmentedSwitch()
+            binarySegmentedSwitch(selection: 0)
+            threeOptionsSegmentedSwitch(selection: 0)
+            binarySegmentedSwitch(message: .help("Help message"))
+            threeOptionsSegmentedSwitch(message: .help("Help message"))
+            binarySegmentedSwitch(message: .error("Error message"))
+            threeOptionsSegmentedSwitch(message: .error("Error message"))
         }
         .previewDisplayName()
     }
 
-    static func segmentedSwitch(
+    static func binarySegmentedSwitch(
         selection: Int? = nil,
         firstOption: String = "Male",
         secondOption: String = "Female",
@@ -31,6 +35,32 @@ struct StorybookSegmentedSwitch {
 
                 Text(secondOption)
                     .identifier(1)
+            }
+        }
+    }
+
+    static func threeOptionsSegmentedSwitch(
+        selection: Int? = nil,
+        firstOption: String = "Male",
+        secondOption: String = "Female",
+        thirdOption: String = "Non-binary",
+        label: String = "Gender",
+        message: Message? = nil
+    ) -> some View {
+        StateWrapper(selection) { value in
+            SegmentedSwitch(
+                label,
+                selection: value,
+                message: message
+            ) {
+                Text(firstOption)
+                    .identifier(0)
+
+                Text(secondOption)
+                    .identifier(1)
+
+                Text(thirdOption)
+                    .identifier(2)
             }
         }
     }
