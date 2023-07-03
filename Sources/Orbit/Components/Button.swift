@@ -198,6 +198,10 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
         }
     }
 
+    var resolvedButtonSize: ButtonSize {
+        buttonSize ?? .default
+    }
+
     var hapticFeedback: HapticsProvider.HapticFeedbackType {
         switch type {
             case .primary:                                  return .light(1)
@@ -208,21 +212,21 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
     }
 
     var textSize: Text.Size {
-        switch buttonSize {
+        switch resolvedButtonSize {
             case .default:      return .normal
             case .compact:      return .small
         }
     }
 
     var horizontalPadding: CGFloat {
-        switch buttonSize {
+        switch resolvedButtonSize {
             case .default:      return .medium
             case .compact:      return .small
         }
     }
 
     var verticalPadding: CGFloat {
-        switch buttonSize {
+        switch resolvedButtonSize {
             case .default:      return .small   // = 44 height @ normal size
             case .compact:      return .xSmall  // = 32 height @ normal size
         }

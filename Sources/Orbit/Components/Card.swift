@@ -54,7 +54,7 @@ public struct Card<Content: View>: View {
                         .accessibility(.cardDescription)
                 }
 
-                if idealSize.horizontal == nil {
+                if idealSize.horizontal != true {
                     Spacer(minLength: 0)
                 }
 
@@ -199,18 +199,14 @@ struct CardPreviews: PreviewProvider {
     }
     
     static var standaloneIdealSize: some View {
-        HStack(spacing: .xxLarge) {
+        HStack(spacing: .large) {
             Card("Card", description: "Intrinsic") {
                 intrinsicContentPlaceholder
             }
 
-            Card("Card with SF Symbol", description: "Intrinsic") {
-                intrinsicContentPlaceholder
-            }
-
-            Spacer()
+            Spacer(minLength: 0)
         }
-        .idealSize(horizontal: true, vertical: false)
+        .idealSize()
         .previewDisplayName()
     }
 

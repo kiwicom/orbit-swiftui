@@ -136,20 +136,44 @@ struct OrbitCustomButtonContentPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            StateWrapper(false) { isPressed in
-                VStack(spacing: .medium) {
-                    SwiftUI.Button {
-                        // No action
-                    } label: {
-                        Text("Label")
-                    }
-                    .buttonStyle(PreviewButtonStyle())
-                    .border(Color.redNormal, width: .hairline)
-                }
-            }
-            .padding(.medium)
-            .previewLayout(.sizeThatFits)
+            standalone
+            idealSize
         }
+        .padding(.medium)
+        .previewLayout(.sizeThatFits)
+    }
+
+    static var standalone: some View {
+        StateWrapper(false) { isPressed in
+            VStack(spacing: .medium) {
+                SwiftUI.Button {
+                    // No action
+                } label: {
+                    Text("Label")
+                }
+                .buttonStyle(PreviewButtonStyle())
+                .border(Color.redNormal, width: .hairline)
+            }
+        }
+        .measured()
+        .previewDisplayName()
+    }
+
+    static var idealSize: some View {
+        StateWrapper(false) { isPressed in
+            VStack(spacing: .medium) {
+                SwiftUI.Button {
+                    // No action
+                } label: {
+                    Text("Label")
+                }
+                .buttonStyle(PreviewButtonStyle())
+                .border(Color.redNormal, width: .hairline)
+            }
+        }
+        .idealSize()
+        .measured()
+        .previewDisplayName()
     }
 
     private struct PreviewButtonStyle: PrimitiveButtonStyle {
