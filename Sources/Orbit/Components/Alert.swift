@@ -73,8 +73,8 @@ public extension Alert {
         _ title: String = "",
         description: String = "",
         isSubtle: Bool = false,
-        @AlertButtonsBuilder buttons: () -> Buttons,
         @ViewBuilder content: () -> Content = { EmptyView() },
+        @AlertButtonsBuilder buttons: () -> Buttons,
         @ViewBuilder icon: () -> Icon = { EmptyView() }
     ) {
         self.init(title: title, description: description, isSubtle: isSubtle) {
@@ -247,10 +247,10 @@ struct AlertPreviews: PreviewProvider {
 
     static var standalone: some View {
         Alert(title, description: description) {
+            contentPlaceholder
+        } buttons: {
             Button("Primary") {}
             Button("Secondary") {}
-        } content: {
-            contentPlaceholder
         } icon: {
             Icon(.informationCircle)
         }
@@ -264,12 +264,12 @@ struct AlertPreviews: PreviewProvider {
                 "Alert with\n<u>multiline</u> title",
                 description: "Alert <strong>multiline</strong> description\nwith <applink1>link</applink1>"
             ) {
-                Button("Primary") {}
-                Button("Secondary") {}
-            } content: {
                 contentPlaceholder
                     .frame(height: 30)
                     .clipped()
+            } buttons: {
+                Button("Primary") {}
+                Button("Secondary") {}
             } icon: {
                 Icon(.grid)
             }
