@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// Showing two choices from which only one can be selected.
+/// Showing choices from which only one can be selected.
 ///
-/// Specify exactly two views in the content closure,
+/// Specify two, or at most, three views in the content closure,
 /// giving each an `.identifier` that matches a value
 /// of the selection binding:
 ///
@@ -119,17 +119,19 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
             GeometryReader { geometry in
                 segmentBackground
                     .overlay(
-                        separator
-                            .offset(
-                                x: measurements(
-                                    index: 1,
-                                    preferences: preferences,
-                                    idealSize: isIdealSize,
-                                    horizontalPadding: horizontalPadding,
-                                    separatorWidth: borderWidth,
-                                    in: geometry
-                                ).minX
-                            ),
+                        ForEach(1..<preferences.count, id: \.self) { index in
+                            separator
+                                .offset(
+                                    x: measurements(
+                                        index: index,
+                                        preferences: preferences,
+                                        idealSize: isIdealSize,
+                                        horizontalPadding: horizontalPadding,
+                                        separatorWidth: borderWidth,
+                                        in: geometry
+                                    ).minX
+                                )
+                        },
                         alignment: .leading
                     )
                     .allowsHitTesting(false)
@@ -212,7 +214,7 @@ private func measurements(
 
         return (width, minX)
     } else {
-        let width = geometry.size.width / 2
+        let width = geometry.size.width / CGFloat(preferences.count)
         let minX = (geometry[preferences[index].bounds].minX / width).rounded(.down) * width
 
         return (width, minX)
@@ -225,6 +227,7 @@ struct SegmentedSwitchPreviews: PreviewProvider {
     enum Gender {
         case male
         case female
+        case nonBinary
     }
 
     static var previews: some View {
@@ -235,43 +238,62 @@ struct SegmentedSwitchPreviews: PreviewProvider {
             help
             error
             interactive
+            threeOptions
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
 
     static var unselected: some View {
-        segmentedSwitch()
+        binarySegmentedSwitch()
             .previewDisplayName()
     }
 
     static var sizing: some View {
         VStack(spacing: .medium) {
-            segmentedSwitch(selection: nil, label: "")
+            binarySegmentedSwitch(selection: nil, label: "")
                 .measured()
-            segmentedSwitch(selection: .female, label: "")
+            binarySegmentedSwitch(selection: .female, label: "")
                 .measured()
-            segmentedSwitch(selection: .female, label: "")
+            binarySegmentedSwitch(selection: .female, secondOption: "Multiline\nOption", label: "")
+                .measured()
+            binarySegmentedSwitch(selection: .female, label: "")
                 .idealSize()
                 .measured()
-            segmentedSwitch(selection: .female, secondOption: "Multiline\nOption", label: "")
+            threeOptionsSegmentedSwitch(selection: nil, label: "")
+                .measured()
+            threeOptionsSegmentedSwitch(selection: .female, label: "")
+                .measured()
+            threeOptionsSegmentedSwitch(selection: nil, label: "")
+                .idealSize()
+                .measured()
+            threeOptionsSegmentedSwitch(selection: .female, label: "")
+                .idealSize()
+                .measured()
+            threeOptionsSegmentedSwitch(selection: .female, thirdOption: "Non\nbinary", label: "")
+                .idealSize()
                 .measured()
         }
         .previewDisplayName()
     }
 
     static var selected: some View {
-        segmentedSwitch(selection: .male)
+        binarySegmentedSwitch(selection: .male)
             .previewDisplayName()
     }
 
     static var help: some View {
-        segmentedSwitch(message: .help("Help message"))
+        binarySegmentedSwitch(message: .help("Help message"))
             .previewDisplayName()
     }
 
     static var error: some View {
-        segmentedSwitch(message: .error("Error message"))
+        binarySegmentedSwitch(message: .error("Error message"))
+            .previewDisplayName()
+    }
+
+    static var threeOptions: some View {
+        threeOptionsSegmentedSwitch()
             .previewDisplayName()
     }
 
@@ -301,7 +323,7 @@ struct SegmentedSwitchPreviews: PreviewProvider {
         .padding(.medium)
     }
 
-    static func segmentedSwitch(
+    static func binarySegmentedSwitch(
         selection: Gender? = nil,
         firstOption: String = "Male",
         secondOption: String = "Female",
@@ -315,6 +337,28 @@ struct SegmentedSwitchPreviews: PreviewProvider {
 
                 Text(secondOption)
                     .identifier(Gender.female)
+            }
+        }
+    }
+
+    static func threeOptionsSegmentedSwitch(
+        selection: Gender? = nil,
+        firstOption: String = "Male",
+        secondOption: String = "Female",
+        thirdOption: String = "Non binary",
+        label: String = "Gender",
+        message: Message? = nil
+    ) -> some View {
+        StateWrapper(selection) { value in
+            SegmentedSwitch(label, selection: value, message: message) {
+                Text(firstOption)
+                    .identifier(Gender.male)
+
+                Text(secondOption)
+                    .identifier(Gender.female)
+
+                Text(thirdOption)
+                    .identifier(Gender.nonBinary)
             }
         }
     }
