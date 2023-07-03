@@ -17,14 +17,26 @@ public extension Illustration {
         case boardingPass
         case businessTravel
         case cabinBaggage
+        case cancelled
         case chatbot
+        case compassCollectPoints
+        case compassDemoted
+        case compassEmailAdventurer
+        case compassEmailCaptain
+        case compassEmailPromoted
+        case compassEmailPromotedCaptain
+        case compassEmailScout
+        case compassPoints
+        case compassSaveOnBooking
+        case compassTravelPlan
         case desktopSearch
+        case eVisa
         case enjoyApp
         case error
         case error404
-        case eVisa
         case fareLock
         case fareLockSuccess
+        case fastBooking
         case fastTrack
         case fastTrackMan
         case feedback
@@ -38,15 +50,17 @@ public extension Illustration {
         case mailbox
         case meal
         case mobileApp
+        case mobileApp2
         case money
         case musicalInstruments
         case netVerify
         case noBookings
         case noFavoriteFlights
-        case nomad
-        case nomadNeutral
+        case noFlightChange
         case noNotification
         case noResults
+        case nomad
+        case nomadNeutral
         case offline
         case onlineCheckIn
         case openSearch
