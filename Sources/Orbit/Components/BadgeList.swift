@@ -5,15 +5,15 @@ import SwiftUI
 /// The items in the list should all be static information, *not* actionable.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/badgelist/)
-public struct BadgeList<Icon: View>: View {
+public struct BadgeList<Icon: View, Content: View>: View {
 
     @Environment(\.status) private var status
     @Environment(\.textAccentColor) private var textAccentColor
     @Environment(\.textColor) private var textColor
 
-    let label: String
     let type: BadgeListType
     @ViewBuilder let icon: Icon
+    @ViewBuilder let content: Content
 
     public var body: some View {
         if isEmpty == false {
@@ -25,7 +25,7 @@ public struct BadgeList<Icon: View>: View {
                     .padding(.xxSmall)
                     .background(badgeBackground)
 
-                Text(label)
+                content
                     .textAccentColor(textAccentColor ?? iconColor)
                     .textLinkColor(.custom(textColor ?? .inkDark))
             }
@@ -70,7 +70,7 @@ public struct BadgeList<Icon: View>: View {
     }
 
     var isEmpty: Bool {
-        label.isEmpty && icon.isEmpty
+        content.isEmpty && icon.isEmpty
     }
 }
 
@@ -85,11 +85,8 @@ public extension BadgeList {
         _ label: String = "",
         icon: Icon.Symbol? = nil,
         type: BadgeListType = .neutral
-    ) where Icon == Orbit.Icon {
-        self.init(
-            label,
-            type: type
-        ) {
+    ) where Icon == Orbit.Icon, Content == Text {
+        self.init(label, type: type) {
             Icon(icon)
                 .iconSize(.small)
         }
@@ -103,10 +100,26 @@ public extension BadgeList {
         _ label: String = "",
         type: BadgeListType = .neutral,
         @ViewBuilder icon: () -> Icon
+    ) where Content == Text {
+        self.init(type: type) {
+            Text(label)
+        } icon: {
+            icon()
+        }
+    }
+
+    /// Creates Orbit BadgeList component with custom icon and content.
+    ///
+    /// - Parameters:
+    ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    init(
+        type: BadgeListType = .neutral,
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder icon: () -> Icon
     ) {
-        self.label = label
         self.type = type
         self.icon = icon()
+        self.content = content()
     }
 }
 
