@@ -42,11 +42,27 @@ content_template = '''{{
 }}
 '''
 
+illustration_source_template = '''import Foundation
+
+public extension Illustration {{
+
+    enum Image: String, CaseIterable, AssetNameProviding {{
+        case none
+        
+{cases}
+
+        var assetName: String {{
+            self == .none ? "" : defaultAssetName
+        }}
+    }}
+}}
+'''
+
 illustration_heights = [200, 400, 600]
 illustration_url_template = 'https://images.kiwi.com/illustrations/originals/{illustrationName}.png'
 source_filename = 'Illustrations.swift'
 
-def get_illustration_names(codePath):
+def get_illustration_names():
   url = 'https://raw.githubusercontent.com/kiwicom/orbit/master/packages/orbit-components/src/Illustration/consts.mts'
   response = requests.get(url, stream=True)
 
@@ -103,11 +119,11 @@ def illustrationsFolderPath():
 if __name__ == "__main__":
 
   folder = illustrationsFolderPath()
-  codePath = folder.joinpath(source_filename)
   assetDownloadedPath = folder.joinpath('../Illustrations/Illustrations.xcassets/')
   assetDownloadedPath.mkdir(exist_ok = True)
+  illustration_names = []
 
-  for illustration in get_illustration_names(codePath):
+  for illustration in get_illustration_names():
 
     folderPath = assetDownloadedPath.joinpath("{illustration}.imageset/".format(illustration = illustration))
     folderPath.mkdir(exist_ok = True)
@@ -117,3 +133,12 @@ if __name__ == "__main__":
       contentFile.write(content_template.format(name = illustration))
 
     download_and_resize_illustration(illustration, folderPath)
+
+    illustration_names.append('        case ' + illustration[0].lower() + illustration[1:])
+
+  codePath = folder.joinpath(source_filename)
+  illustration_names.sort()
+
+  # Recreate illustrations source file
+  with open(codePath, "w") as sourceFile:
+    sourceFile.write(illustration_source_template.format(cases = '\n'.join(illustration_names)))
