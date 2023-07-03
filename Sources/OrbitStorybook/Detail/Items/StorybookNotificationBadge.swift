@@ -34,7 +34,7 @@ struct StorybookNotificationBadge {
             HStack(spacing: .small) {
                 NotificationBadge(
                     .airplane,
-                    style: .custom(
+                    type: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
                         backgroundColor: .whiteNormal
@@ -53,10 +53,10 @@ struct StorybookNotificationBadge {
         .previewDisplayName()
     }
 
-    static func badges(_ style: BadgeStyle) -> some View {
+    static func badges(_ type: BadgeType) -> some View {
         HStack(spacing: .medium) {
-            NotificationBadge(.grid, style: style)
-            NotificationBadge("1", style: style)
+            NotificationBadge(.grid, type: type)
+            NotificationBadge("1", type: type)
         }
     }
 

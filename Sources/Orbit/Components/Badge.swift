@@ -14,7 +14,7 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View {
     private let label: String
     private let leadingIcon: LeadingIcon
     private let trailingIcon: TrailingIcon
-    private let style: BadgeStyle
+    private let type: BadgeType
 
     public var body: some View {
         if isEmpty == false {
@@ -46,7 +46,7 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View {
     }
 
     @ViewBuilder var background: some View {
-        switch style {
+        switch type {
             case .light:                                Color.whiteDarker
             case .lightInverted:                        Color.inkDark
             case .neutral:                              Color.cloudLight
@@ -70,7 +70,7 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View {
     }
 
     var labelColor: Color {
-        switch style {
+        switch type {
             case .light:                                return .inkDark
             case .lightInverted:                        return .whiteNormal
             case .neutral:                              return .inkDark
@@ -92,14 +92,14 @@ public extension Badge {
     /// Creates Orbit Badge component.
     ///
     /// - Parameters:
-    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ label: String = "",
         icon: Icon.Symbol? = nil,
         trailingIcon: Icon.Symbol? = nil,
-        style: BadgeStyle = .neutral
+        type: BadgeType = .neutral
     ) where LeadingIcon == Icon, TrailingIcon == Icon {
-        self.init(label, style: style) {
+        self.init(label, type: type) {
             Icon(icon)
         } trailingIcon: {
             Icon(trailingIcon)
@@ -112,19 +112,19 @@ public extension Badge {
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ label: String = "",
-        style: BadgeStyle = .neutral,
+        type: BadgeType = .neutral,
         @ViewBuilder icon: () -> LeadingIcon,
         @ViewBuilder trailingIcon: () -> TrailingIcon = { EmptyView() }
     ) {
         self.label = label
         self.leadingIcon = icon()
         self.trailingIcon = trailingIcon()
-        self.style = style
+        self.type = type
     }
 }
 
 // MARK: - Types
-public enum BadgeStyle {
+public enum BadgeType {
 
     case light
     case lightInverted
@@ -216,7 +216,7 @@ struct BadgePreviews: PreviewProvider {
                 Badge(
                     "Custom",
                     icon: .airplane,
-                    style: .custom(
+                    type: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
                         backgroundColor: .whiteHover
@@ -228,17 +228,17 @@ struct BadgePreviews: PreviewProvider {
                     CountryFlag("us")
                 }
 
-                Badge("Flag", style: .status(.critical, inverted: true)) {
+                Badge("Flag", type: .status(.critical, inverted: true)) {
                     CountryFlag("cz")
                 }
             }
 
             HStack(spacing: .small) {
-                Badge("SF Symbol", style: .status(.success)) {
+                Badge("SF Symbol", type: .status(.success)) {
                     Icon("info.circle.fill")
                 }
 
-                Badge("SF Symbol", style: .status(.warning, inverted: true)) {
+                Badge("SF Symbol", type: .status(.warning, inverted: true)) {
                     Image(systemName: "info.circle.fill")
                 }
             }
@@ -247,13 +247,13 @@ struct BadgePreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static func badges(_ style: BadgeStyle) -> some View {
+    static func badges(_ type: BadgeType) -> some View {
         HStack(spacing: .small) {
-            Badge("label", style: style)
-            Badge("label", icon: .grid, style: style)
-            Badge(icon: .grid, style: style)
-            Badge("label", trailingIcon: .grid, style: style)
-            Badge("1", style: style)
+            Badge("label", type: type)
+            Badge("label", icon: .grid, type: type)
+            Badge(icon: .grid, type: type)
+            Badge("label", trailingIcon: .grid, type: type)
+            Badge("1", type: type)
         }
     }
 

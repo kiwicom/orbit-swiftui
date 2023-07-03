@@ -40,7 +40,7 @@ struct StorybookBadge {
                 Badge(
                     "Custom",
                     icon: .airplane,
-                    style: .custom(
+                    type: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
                         backgroundColor: .whiteNormal
@@ -51,7 +51,7 @@ struct StorybookBadge {
                 Badge("Flag") {
                     CountryFlag("us")
                 }
-                Badge("Flag", style: .status(.critical, inverted: true)) {
+                Badge("Flag", type: .status(.critical, inverted: true)) {
                     CountryFlag("us")
                 }
             }
@@ -60,7 +60,7 @@ struct StorybookBadge {
                 Badge("SF Symbol") {
                     Icon("info.circle.fill")
                 }
-                Badge("SF Symbol", style: .status(.warning, inverted: true)) {
+                Badge("SF Symbol", type: .status(.warning, inverted: true)) {
                     Icon("info.circle.fill")
                 }
             }
@@ -68,12 +68,12 @@ struct StorybookBadge {
         .previewDisplayName()
     }
 
-    static func badges(_ style: BadgeStyle) -> some View {
+    static func badges(_ type: BadgeType) -> some View {
         HStack(spacing: .small) {
-            Badge("label", style: style)
-            Badge("label", icon: .grid, style: style)
-            Badge(icon: .grid, style: style)
-            Badge("1", style: style)
+            Badge("label", type: type)
+            Badge("label", icon: .grid, type: type)
+            Badge(icon: .grid, type: type)
+            Badge("1", type: type)
         }
     }
 

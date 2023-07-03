@@ -10,17 +10,17 @@ struct StorybookBadgeList {
         VStack(alignment: .leading, spacing: .xxLarge) {
             VStack(alignment: .leading, spacing: .medium) {
                 BadgeList(longLabel, icon: .grid)
-                BadgeList(label, icon: .informationCircle, style: .status(.info))
-                BadgeList(label, icon: .checkCircle, style: .status(.success))
-                BadgeList(label, icon: .alertCircle, style: .status(.warning))
-                BadgeList(label, icon: .alertCircle, style: .status(.critical))
+                BadgeList(label, icon: .informationCircle, type: .status(.info))
+                BadgeList(label, icon: .checkCircle, type: .status(.success))
+                BadgeList(label, icon: .alertCircle, type: .status(.warning))
+                BadgeList(label, icon: .alertCircle, type: .status(.critical))
             }
             VStack(alignment: .leading, spacing: .medium) {
                 BadgeList(longLabel, icon: .grid)
-                BadgeList(label, icon: .informationCircle, style: .status(.info))
-                BadgeList(label, icon: .checkCircle, style: .status(.success))
-                BadgeList(label, icon: .alertCircle, style: .status(.warning))
-                BadgeList(label, icon: .alertCircle, style: .status(.critical))
+                BadgeList(label, icon: .informationCircle, type: .status(.info))
+                BadgeList(label, icon: .checkCircle, type: .status(.success))
+                BadgeList(label, icon: .alertCircle, type: .status(.warning))
+                BadgeList(label, icon: .alertCircle, type: .status(.critical))
             }
             .textColor(.inkNormal)
             .textSize(.small)
@@ -30,10 +30,10 @@ struct StorybookBadgeList {
 
     static var mix: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>SF Symbol</strong>", style: .status(.info)) {
+            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>SF Symbol</strong>", type: .status(.info)) {
                 Icon("info.circle.fill")
             }
-            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", style: .status(.critical)) {
+            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", type: .status(.critical)) {
                 CountryFlag("us")
             }
             BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color")
