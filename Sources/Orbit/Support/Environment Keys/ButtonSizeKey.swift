@@ -7,13 +7,13 @@ public enum ButtonSize {
 }
 
 struct ButtonSizeKey: EnvironmentKey {
-    static let defaultValue = ButtonSize.default
+    static let defaultValue: ButtonSize? = .default
 }
 
 public extension EnvironmentValues {
 
     /// An Orbit `ButtonSize` value stored in a view’s environment.
-    var buttonSize: ButtonSize {
+    var buttonSize: ButtonSize? {
         get { self[ButtonSizeKey.self] }
         set { self[ButtonSizeKey.self] = newValue }
     }
@@ -25,7 +25,8 @@ public extension View {
     ///
     /// - Parameters:
     ///   - size: A button size that will be used by all components in the view hierarchy.
-    func buttonSize(_ size: ButtonSize) -> some View {
+    ///    Pass `nil` to ignore environment button size and to allow the system or the container to provide its own size.
+    func buttonSize(_ size: ButtonSize?) -> some View {
         environment(\.buttonSize, size)
     }
 }

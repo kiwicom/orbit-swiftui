@@ -101,6 +101,7 @@ public enum ButtonLinkType: Equatable {
 public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>: PrimitiveButtonStyle {
 
     @Environment(\.buttonSize) private var buttonSize
+    @Environment(\.idealSize) private var idealSize
     @Environment(\.status) private var status
 
     private let type: ButtonLinkType
@@ -137,7 +138,8 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
         }
         .textFontWeight(.medium)
         .textColor(textColor)
-        .idealSize(horizontal: buttonSize == .compact)
+        .buttonSize(resolvedButtonSize)
+        .idealSize(horizontal: idealSizeHorizontal, vertical: idealSize.vertical)
     }
 
     @ViewBuilder var backgroundActive: some View {
@@ -146,6 +148,16 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
             case .critical:                     Color.redLightActive
             case .status(let status):           (status ?? defaultStatus).lightActiveColor
         }
+    }
+
+    var resolvedButtonSize: ButtonSize {
+        buttonSize ?? .compact
+    }
+
+    var idealSizeHorizontal: Bool? {
+        idealSize.horizontal == false
+            ? idealSize.horizontal
+            : (buttonSize == .compact || idealSize.horizontal == true)
     }
 
     var textColor: Color {
@@ -184,28 +196,28 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
     }
 
     var horizontalPadding: CGFloat {
-        switch buttonSize {
+        switch resolvedButtonSize {
             case .default:  return .medium
             case .compact:  return 0
         }
     }
 
     var verticalPadding: CGFloat {
-        switch buttonSize {
+        switch resolvedButtonSize {
             case .default:  return .small   // = 44 height @ normal size
             case .compact:  return 6        // = 32 height @ normal size
         }
     }
 
     var horizontalBackgroundPadding: CGFloat {
-        switch buttonSize {
+        switch resolvedButtonSize {
             case .default:  return 0
             case .compact:  return .xSmall
         }
     }
 
     var verticalBackgroundPadding: CGFloat {
-        switch buttonSize {
+        switch resolvedButtonSize {
             case .default:  return 0
             case .compact:  return .xxxSmall
         }

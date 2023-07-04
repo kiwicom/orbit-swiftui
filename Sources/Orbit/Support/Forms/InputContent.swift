@@ -27,7 +27,7 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
 
             content
 
-            if idealSize.horizontal == nil {
+            if idealSize.horizontal != true {
                 Spacer(minLength: 0)
             }
 
@@ -149,6 +149,15 @@ struct InputContentPreviews: PreviewProvider {
                 } suffix: {
                     Icon(.checkCircle)
                 }
+
+                InputContent {
+                    Text("InputContent")
+                } prefix: {
+                    Icon(.visa)
+                } suffix: {
+                    Icon(.checkCircle)
+                }
+                .idealSize()
 
                 InputContent(state: .modified) {
                     Text("InputContent with a\nvery long value")

@@ -67,7 +67,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View {
                 headerTexts
                     .padding(.trailing, .xSmall)
 
-                if isHeaderEmpty == false, idealSize.horizontal == nil {
+                if isHeaderEmpty == false, idealSize.horizontal != true {
                     Spacer(minLength: 0)
                 }
 
