@@ -148,7 +148,7 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View>: View {
     }
 
     @ViewBuilder var badgeOverlayView: some View {
-        Badge(badgeOverlay, style: .status(isError && isSelected ? .critical : .info, inverted: true))
+        Badge(badgeOverlay, type: .status(isError && isSelected ? .critical : .info, inverted: true))
             .alignmentGuide(.top) { dimensions in
                 dimensions.height / 2
             }

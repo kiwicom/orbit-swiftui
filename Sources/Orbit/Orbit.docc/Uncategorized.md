@@ -48,6 +48,7 @@ Supporting types and components under development.
 
 ### Other
 
+- ``BadgeListType``
 - ``BarButton``
 - ``BorderWidth``
 - ``ChoiceTileAlignment``

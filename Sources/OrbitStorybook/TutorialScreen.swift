@@ -36,7 +36,7 @@ struct TutorialScreen: View {
                     """
                 )
                 
-                Badge("Badge", style: .status(.info, inverted: true))
+                Badge("Badge", type: .status(.info, inverted: true))
                 
                 Button("Primary Button", action: primaryAction)
             }

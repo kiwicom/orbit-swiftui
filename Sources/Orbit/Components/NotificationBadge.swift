@@ -9,7 +9,7 @@ public struct NotificationBadge<Content: View>: View {
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.textColor) private var textColor
 
-    private let style: BadgeStyle
+    private let type: BadgeType
     @ViewBuilder private let content: Content
 
     public var body: some View {
@@ -28,7 +28,7 @@ public struct NotificationBadge<Content: View>: View {
     }
 
     @ViewBuilder var background: some View {
-        switch style {
+        switch type {
             case .light:                                Color.whiteDarker
             case .lightInverted:                        Color.inkDark
             case .neutral:                              Color.cloudLight
@@ -44,7 +44,7 @@ public struct NotificationBadge<Content: View>: View {
     }
 
     var labelColor: Color {
-        switch style {
+        switch type {
             case .light:                                return .inkDark
             case .lightInverted:                        return .whiteNormal
             case .neutral:                              return .inkDark
@@ -66,12 +66,12 @@ public struct NotificationBadge<Content: View>: View {
     /// Creates Orbit NotificationBadge component with custom content.
     ///
     /// - Parameters:
-    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     public init(
-        style: BadgeStyle = .status(nil),
+        type: BadgeType = .status(nil),
         @ViewBuilder content: () -> Content
     ) {
-        self.style = style
+        self.type = type
         self.content = content()
     }
 }
@@ -85,9 +85,9 @@ public extension NotificationBadge {
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ label: String,
-        style: BadgeStyle = .status(nil)
+        type: BadgeType = .status(nil)
     ) where Content == Text {
-        self.init(style: style) {
+        self.init(type: type) {
             Text(label)
                 .textSize(.small)
                 .fontWeight(.medium)
@@ -100,9 +100,9 @@ public extension NotificationBadge {
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ icon: Icon.Symbol,
-        style: BadgeStyle = .status(nil)
+        type: BadgeType = .status(nil)
     ) where Content == Icon {
-        self.init(style: style) {
+        self.init(type: type) {
             Icon(icon)
                 .iconSize(.small)
         }
@@ -142,7 +142,7 @@ struct NotificationBadgePreviews: PreviewProvider {
     }
 
     static var sizing: some View {
-        NotificationBadge("88", style: .neutral)
+        NotificationBadge("88", type: .neutral)
             .measured()
             .padding(.medium)
             .previewDisplayName()
@@ -181,7 +181,7 @@ struct NotificationBadgePreviews: PreviewProvider {
             HStack(spacing: .small) {
                 NotificationBadge(
                     .airplane,
-                    style: .custom(
+                    type: .custom(
                         labelColor: .blueDark,
                         outlineColor: .blueDark,
                         backgroundColor: .whiteNormal
@@ -201,10 +201,10 @@ struct NotificationBadgePreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static func badges(_ style: BadgeStyle) -> some View {
+    static func badges(_ type: BadgeType) -> some View {
         HStack(spacing: .medium) {
-            NotificationBadge(.grid, style: style)
-            NotificationBadge("1", style: style)
+            NotificationBadge(.grid, type: type)
+            NotificationBadge("1", type: type)
         }
     }
 

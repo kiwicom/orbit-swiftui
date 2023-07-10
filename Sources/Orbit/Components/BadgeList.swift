@@ -5,15 +5,15 @@ import SwiftUI
 /// The items in the list should all be static information, *not* actionable.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/badgelist/)
-public struct BadgeList<Icon: View>: View {
+public struct BadgeList<Icon: View, Content: View>: View {
 
     @Environment(\.status) private var status
     @Environment(\.textAccentColor) private var textAccentColor
     @Environment(\.textColor) private var textColor
 
-    let label: String
-    let style: Style
+    let type: BadgeListType
     @ViewBuilder let icon: Icon
+    @ViewBuilder let content: Content
 
     public var body: some View {
         if isEmpty == false {
@@ -25,7 +25,7 @@ public struct BadgeList<Icon: View>: View {
                     .padding(.xxSmall)
                     .background(badgeBackground)
 
-                Text(label)
+                content
                     .textAccentColor(textAccentColor ?? iconColor)
                     .textLinkColor(.custom(textColor ?? .inkDark))
             }
@@ -50,7 +50,7 @@ public struct BadgeList<Icon: View>: View {
     }
 
     public var iconColor: Color {
-        switch style {
+        switch type {
             case .neutral:                              return .inkNormal
             case .status(let status):                   return (status ?? defaultStatus).color
             case .custom(let iconColor, _):             return iconColor
@@ -58,7 +58,7 @@ public struct BadgeList<Icon: View>: View {
     }
 
     public var backgroundColor: Color {
-        switch style {
+        switch type {
             case .neutral:                              return .cloudLight
             case .status(let status):                   return (status ?? defaultStatus).lightColor
             case .custom(_, let backgroundColor):       return backgroundColor
@@ -70,7 +70,7 @@ public struct BadgeList<Icon: View>: View {
     }
 
     var isEmpty: Bool {
-        label.isEmpty && icon.isEmpty
+        content.isEmpty && icon.isEmpty
     }
 }
 
@@ -80,16 +80,13 @@ public extension BadgeList {
     /// Creates Orbit BadgeList component.
     ///
     /// - Parameters:
-    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ label: String = "",
         icon: Icon.Symbol? = nil,
-        style: Style = .neutral
-    ) where Icon == Orbit.Icon {
-        self.init(
-            label,
-            style: style
-        ) {
+        type: BadgeListType = .neutral
+    ) where Icon == Orbit.Icon, Content == Text {
+        self.init(label, type: type) {
             Icon(icon)
                 .iconSize(.small)
         }
@@ -98,26 +95,40 @@ public extension BadgeList {
     /// Creates Orbit BadgeList component with custom icon.
     ///
     /// - Parameters:
-    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
         _ label: String = "",
-        style: Style = .neutral,
+        type: BadgeListType = .neutral,
+        @ViewBuilder icon: () -> Icon
+    ) where Content == Text {
+        self.init(type: type) {
+            Text(label)
+        } icon: {
+            icon()
+        }
+    }
+
+    /// Creates Orbit BadgeList component with custom icon and content.
+    ///
+    /// - Parameters:
+    ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    init(
+        type: BadgeListType = .neutral,
+        @ViewBuilder content: () -> Content,
         @ViewBuilder icon: () -> Icon
     ) {
-        self.label = label
-        self.style = style
+        self.type = type
         self.icon = icon()
+        self.content = content()
     }
 }
 
 // MARK: - Types
-public extension BadgeList {
 
-    enum Style: Equatable, Hashable {
-        case neutral
-        case status(_ status: Status?)
-        case custom(iconColor: Color, backgroundColor: Color)
-    }
+public enum BadgeListType: Equatable, Hashable {
+    case neutral
+    case status(_ status: Status?)
+    case custom(iconColor: Color, backgroundColor: Color)
 }
 
 // MARK: - Previews
@@ -158,17 +169,17 @@ struct BadgeListPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .xxLarge) {
             VStack(alignment: .leading, spacing: .medium) {
                 BadgeList(longLabel, icon: .grid)
-                BadgeList(label, icon: .informationCircle, style: .status(.info))
-                BadgeList(label, icon: .checkCircle, style: .status(.success))
-                BadgeList(label, icon: .alertCircle, style: .status(.warning))
-                BadgeList(label, icon: .alertCircle, style: .status(.critical))
+                BadgeList(label, icon: .informationCircle, type: .status(.info))
+                BadgeList(label, icon: .checkCircle, type: .status(.success))
+                BadgeList(label, icon: .alertCircle, type: .status(.warning))
+                BadgeList(label, icon: .alertCircle, type: .status(.critical))
             }
             VStack(alignment: .leading, spacing: .medium) {
                 BadgeList(longLabel, icon: .grid)
-                BadgeList(label, icon: .informationCircle, style: .status(.info))
-                BadgeList(label, icon: .checkCircle, style: .status(.success))
-                BadgeList(label, icon: .alertCircle, style: .status(.warning))
-                BadgeList(label, icon: .alertCircle, style: .status(.critical))
+                BadgeList(label, icon: .informationCircle, type: .status(.info))
+                BadgeList(label, icon: .checkCircle, type: .status(.success))
+                BadgeList(label, icon: .alertCircle, type: .status(.warning))
+                BadgeList(label, icon: .alertCircle, type: .status(.critical))
             }
             .textColor(.inkNormal)
             .textSize(.small)
@@ -179,15 +190,15 @@ struct BadgeListPreviews: PreviewProvider {
 
     static var mix: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>SF Symbol</strong>", style: .status(.info)) {
+            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>SF Symbol</strong>", type: .status(.info)) {
                 Icon("info.circle.fill")
             }
-            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", style: .status(.critical)) {
+            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", type: .status(.critical)) {
                 CountryFlag("us")
             }
             BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color")
                 .textColor(.blueDark)
-            BadgeList("This is a <ref>BadgeList</ref> with <strong>status</strong> override", style: .status(nil)) {
+            BadgeList("This is a <ref>BadgeList</ref> with <strong>status</strong> override", type: .status(nil)) {
                 Icon("info.circle.fill")
             }
         }

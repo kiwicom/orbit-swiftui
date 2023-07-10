@@ -6,7 +6,7 @@ struct StorybookListChoice {
     static let title = "ListChoice tile"
     static let description = "Further description"
     static let value = "Value"
-    static let badge = Badge("3", style: .status(.info, inverted: false))
+    static let badge = Badge("3", type: .status(.info, inverted: false))
     static let addButton = ListChoiceDisclosure.button(type: .add)
     static let removeButton = ListChoiceDisclosure.button(type: .remove)
     static let uncheckedCheckbox = ListChoiceDisclosure.checkbox(isChecked: false)
