@@ -34,7 +34,6 @@ struct AlertContent<Content: View, Icon: View, Buttons: View>: View {
     @ViewBuilder var defaultContent: some View {
         HStack(alignment: .top, spacing: .xSmall) {
             iconContent
-                .padding(.leading, -.xxSmall)
 
             VStack(alignment: .leading, spacing: .medium) {
                 defaultHeader
@@ -43,7 +42,7 @@ struct AlertContent<Content: View, Icon: View, Buttons: View>: View {
             }
         }
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
-        .padding(.medium)
+        .padding(.small)
     }
 
     @ViewBuilder var inlineContent: some View {
@@ -77,7 +76,6 @@ struct AlertContent<Content: View, Icon: View, Buttons: View>: View {
             }
             .padding(.vertical, 14)
             .padding(.horizontal, .small)
-            .padding(.top, 3)
         }
     }
 
@@ -159,9 +157,16 @@ struct AlertContentPreviews: PreviewProvider {
         } icon: {
             Icon(.informationCircle)
         } buttons: {
-            Button("Primary") {}
-                .suppressButtonStyle()
-                .buttonStyle(AlertButtonStyle(isPrimary: true))
+            HStack(spacing: .xSmall) {
+                Button("Primary") {}
+                    .suppressButtonStyle()
+                    .buttonStyle(AlertButtonStyle())
+
+                Button("Secondary") {}
+                    .suppressButtonStyle()
+                    .buttonStyle(AlertButtonStyle())
+                    .buttonPriority(.secondary)
+            }
         }
         .previewDisplayName()
     }
