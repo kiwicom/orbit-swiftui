@@ -6,7 +6,7 @@ import SwiftUI
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct ListChoice<Header: View, Icon: View, Content: View>: View {
 
-    public let verticalPadding: CGFloat = .small + 0.5 // = 45 height @ normal size
+    public let verticalPadding: CGFloat = .small // = 45 height @ normal size
 
     @Environment(\.idealSize) private var idealSize
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
@@ -31,6 +31,9 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View {
                 action()
             } label: {
                 buttonContent
+                    .padding(.bottom, 1)
+                    .overlay(separator, alignment: .init(horizontal: .listRowSeparatorLeading, vertical: .bottom))
+                    .clipped()
             }
             .buttonStyle(ListChoiceButtonStyle())
             .accessibilityElement(children: .ignore)
@@ -58,7 +61,6 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View {
                 .allowsHitTesting(false)
         }
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
-        .overlay(separator, alignment: .bottom)
     }
     
     @ViewBuilder var headerRow: some View {
@@ -96,6 +98,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View {
                             .textColor(.inkNormal)
                             .accessibility(.listChoiceDescription)
                     }
+                    .alignmentGuide(.listRowSeparatorLeading) { $0[.leading] }
                 }
             }
             .padding(.leading, .medium)
@@ -139,20 +142,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View {
     @ViewBuilder var separator: some View {
         if showSeparator {
             Separator()
-                .padding(.leading, separatorPadding)
         }
-    }
-
-    var separatorPadding: CGFloat {
-        if header is EmptyView {
-            return 0
-        }
-        
-        if icon.isEmpty {
-            return .medium
-        }
-        
-        return .xxLarge
     }
 
     var isEmpty: Bool {
@@ -287,6 +277,17 @@ public enum ListChoiceDisclosure: Equatable {
     case icon(Icon.Symbol)
 }
 
+extension HorizontalAlignment {
+
+    struct ListRowSeparatorLeading: AlignmentID {
+        static func defaultValue(in d: ViewDimensions) -> CGFloat {
+            d[.leading]
+        }
+    }
+
+    static let listRowSeparatorLeading = Self(ListRowSeparatorLeading.self)
+}
+
 /// ButtonStyle for Orbit ListChoice component.
 ///
 /// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
@@ -376,7 +377,7 @@ struct ListChoicePreviews: PreviewProvider {
                 ListChoice(description: "ListChoice", disclosure: .none, action: {})
                 ListChoice("ListChoice", action: {})
             }
-            .border(.cloudLight)
+            .border(.cloudNormal, width: .hairline)
             .measured()
         }
         .fixedSize(horizontal: false, vertical: true)
@@ -511,7 +512,11 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, icon: .airplane, disclosure: .none, action: {})
             ListChoice(title, icon: .airplane, disclosure: .none, action: {})
                 .iconColor(.blueNormal)
-            ListChoice(title, description: description, icon: .map, disclosure: .none, action: {})
+            ListChoice(title, description: description, disclosure: .none) {
+                // No action
+            } icon: {
+                CountryFlag("us")
+            }
             ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none, action: {})
             ListChoice(title, description: description, disclosure: .none, action: {}) {
                 EmptyView()

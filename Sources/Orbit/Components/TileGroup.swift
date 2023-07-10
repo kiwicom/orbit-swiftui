@@ -70,13 +70,22 @@ struct TileGroupPreviews: PreviewProvider {
         TileGroup {
             tiles(intrinsic: true)
         }
-        .idealSize()
+        .fixedSize(horizontal: true, vertical: false)
         .previewDisplayName()
     }
 
     @ViewBuilder static func tiles(intrinsic: Bool) -> some View {
         Tile("Title", action: {})
         Tile("Custom content", icon: .grid, action: {}) {
+            if intrinsic {
+                intrinsicContentPlaceholder
+            } else {
+                contentPlaceholder
+            }
+        }
+        Tile {
+            // No action
+        } content: {
             if intrinsic {
                 intrinsicContentPlaceholder
             } else {
