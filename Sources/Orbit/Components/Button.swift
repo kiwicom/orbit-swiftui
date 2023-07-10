@@ -31,11 +31,17 @@ public struct Button<LeadingIcon: View, TrailingIcon: View>: View {
     }
 
     @ViewBuilder var button: some View {
-        SwiftUI.Button() {
-            action()
-        } label: {
-            Text(label)
+        if isEmpty == false {
+            SwiftUI.Button() {
+                action()
+            } label: {
+                Text(label)
+            }
         }
+    }
+
+    var isEmpty: Bool {
+        label.isEmpty && leadingIcon.isEmpty && trailingIcon.isEmpty
     }
 }
 
@@ -259,9 +265,12 @@ struct ButtonPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Button("Button", icon: .grid, action: {})
-            .padding(.medium)
-            .previewDisplayName()
+        VStack {
+            Button("Button", icon: .grid, action: {})
+            Button(action: {}) // Results in EmptyView
+        }
+        .padding(.medium)
+        .previewDisplayName()
     }
 
     static var combinations: some View {
@@ -282,7 +291,7 @@ struct ButtonPreviews: PreviewProvider {
     static var sizing: some View {
         VStack(spacing: .medium) {
             Group {
-                Button(action: {})
+                Button(" ", action: {})
                 Button("Button", action: {})
                 Button("Button", icon: .grid, action: {})
                 Button("Button\nmultiline", icon: .grid, action: {})
