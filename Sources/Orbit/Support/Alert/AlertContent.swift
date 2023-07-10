@@ -77,7 +77,6 @@ struct AlertContent<Content: View, Icon: View, Buttons: View>: View {
             }
             .padding(.vertical, 14)
             .padding(.horizontal, .small)
-            .padding(.top, 3)
         }
     }
 
