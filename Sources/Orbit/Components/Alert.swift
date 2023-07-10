@@ -10,6 +10,27 @@ import SwiftUI
 ///
 /// Use at most two actions in each Alert: one primary and one subtle.
 ///
+/// ```swift
+/// Alert("Alert", description: "Description") {
+///     customContent
+/// } buttons: {
+///     Button("Primary") { /* */ }
+///     Button("Secondary") { /* */ }
+/// }
+/// .status(.warning)
+/// ```
+///
+/// The button priority can be overridden by using `buttonPriority()` modifier.
+///
+/// ```swift
+/// Alert("Alert") {
+///     customContent
+/// } buttons: {
+///     Button("Secondary Only") { /* */ }
+///       .buttonPriority(.secondary)
+/// }
+/// ```
+///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/alert/)
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Alert<Content: View, Icon: View, Buttons: View>: View {
@@ -92,14 +113,11 @@ public extension Alert {
 /// Button style matching Orbit ``Alert`` component.
 public struct AlertButtonStyle: PrimitiveButtonStyle {
 
-    @Environment(\.status) private var status
+    @Environment(\.buttonPriority) private var buttonPriority
     @Environment(\.isSubtle) private var isSubtle
+    @Environment(\.status) private var status
 
-    private let isPrimary: Bool
-
-    public init(isPrimary: Bool) {
-        self.isPrimary = isPrimary
-    }
+    public init() {}
 
     public func makeBody(configuration: Configuration) -> some View {
         OrbitCustomButtonContent(
@@ -124,35 +142,39 @@ public struct AlertButtonStyle: PrimitiveButtonStyle {
     }
 
     var textColor: Color {
-        switch (isPrimary, isSubtle) {
-            case (true, _):      return .whiteNormal
-            case (false, true):  return .inkDark
-            case (false, false): return resolvedStatus.darkColor
+        switch (resolvedPriority, isSubtle) {
+            case (.primary, _):         return .whiteNormal
+            case (.secondary, true):    return .inkDark
+            case (.secondary, false):   return resolvedStatus.darkColor
         }
     }
 
     var textActiveColor: Color {
-        switch (isPrimary, isSubtle) {
-            case (true, _):      return .whiteNormal
-            case (false, true):  return .inkDarkActive
-            case (false, false): return resolvedStatus.darkActiveColor
+        switch (resolvedPriority, isSubtle) {
+            case (.primary, _):         return .whiteNormal
+            case (.secondary, true):    return .inkDarkActive
+            case (.secondary, false):   return resolvedStatus.darkActiveColor
         }
     }
 
     @ViewBuilder var background: some View {
-        switch (isPrimary, isSubtle) {
-            case (true, _):      resolvedStatus.color
-            case (false, true):  Color.inkDark.opacity(0.1)
-            case (false, false): resolvedStatus.darkColor.opacity(0.12)
+        switch (resolvedPriority, isSubtle) {
+            case (.primary, _):         resolvedStatus.color
+            case (.secondary, true):    Color.inkDark.opacity(0.1)
+            case (.secondary, false):   resolvedStatus.darkColor.opacity(0.12)
         }
     }
 
     @ViewBuilder var backgroundActive: some View {
-        switch (isPrimary, isSubtle) {
-            case (true, _):      resolvedStatus.activeColor
-            case (false, true):  Color.inkDark.opacity(0.2)
-            case (false, false): resolvedStatus.darkColor.opacity(0.24)
+        switch (resolvedPriority, isSubtle) {
+            case (.primary, _):         resolvedStatus.activeColor
+            case (.secondary, true):    Color.inkDark.opacity(0.2)
+            case (.secondary, false):   resolvedStatus.darkColor.opacity(0.24)
         }
+    }
+
+    var resolvedPriority: ButtonPriority {
+        buttonPriority ?? .primary
     }
 
     var resolvedStatus: Status {
@@ -182,7 +204,7 @@ public enum AlertButtonsBuilder {
     public static func buildBlock(_ primary: some View) -> some View {
         primary
             .suppressButtonStyle()
-            .buttonStyle(AlertButtonStyle(isPrimary: true))
+            .buttonStyle(AlertButtonStyle())
             .buttonSize(.compact)
             .accessibility(.alertButtonPrimary)
     }
@@ -190,15 +212,14 @@ public enum AlertButtonsBuilder {
     public static func buildBlock(_ primary: some View, _ secondary: some View) -> some View {
         HStack(alignment: .top, spacing: .xSmall) {
             primary
-                .suppressButtonStyle()
-                .buttonStyle(AlertButtonStyle(isPrimary: true))
                 .accessibility(.alertButtonPrimary)
 
             secondary
-                .suppressButtonStyle()
-                .buttonStyle(AlertButtonStyle(isPrimary: false))
                 .accessibility(.alertButtonSecondary)
+                .buttonPriority(.secondary)
         }
+        .suppressButtonStyle()
+        .buttonStyle(AlertButtonStyle())
     }
 
     public static func buildOptional<V: View>(_ component: V?) -> V? {
@@ -239,6 +260,7 @@ struct AlertPreviews: PreviewProvider {
             }
 
             primaryButtonOnly
+            secondaryButtonOnly
             noButtons
         }
         .padding(.medium)
@@ -363,6 +385,42 @@ struct AlertPreviews: PreviewProvider {
             }
             .idealSize(horizontal: true, vertical: false)
         }
+        .previewDisplayName()
+    }
+
+    static var secondaryButtonOnly: some View {
+        VStack(spacing: .medium) {
+            Alert(title, description: description, icon: .informationCircle) {
+                Button("Primary") {}
+            }
+            Alert(description: description, icon: .informationCircle) {
+                Button("Primary") {}
+            }
+            Alert(title, description: description) {
+                Button("Primary") {}
+            }
+            Alert(description: description) {
+                Button("Primary") {}
+            }
+            Alert( title, icon: .informationCircle) {
+                Button("Primary") {}
+            }
+            Alert(title) {
+                Button("Primary") {}
+            }
+            Alert(icon: .informationCircle) {
+                Button("Primary") {}
+            }
+            Alert {
+                Button("Primary") {}
+            }
+            Alert("Intrinsic width") {
+                Button("Primary") {}
+            }
+            .idealSize(horizontal: true, vertical: false)
+        }
+        .status(.warning)
+        .buttonPriority(.secondary)
         .previewDisplayName()
     }
     

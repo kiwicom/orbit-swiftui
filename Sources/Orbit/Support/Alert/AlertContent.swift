@@ -157,9 +157,16 @@ struct AlertContentPreviews: PreviewProvider {
         } icon: {
             Icon(.informationCircle)
         } buttons: {
-            Button("Primary") {}
-                .suppressButtonStyle()
-                .buttonStyle(AlertButtonStyle(isPrimary: true))
+            HStack(spacing: .xSmall) {
+                Button("Primary") {}
+                    .suppressButtonStyle()
+                    .buttonStyle(AlertButtonStyle())
+
+                Button("Secondary") {}
+                    .suppressButtonStyle()
+                    .buttonStyle(AlertButtonStyle())
+                    .buttonPriority(.secondary)
+            }
         }
         .previewDisplayName()
     }

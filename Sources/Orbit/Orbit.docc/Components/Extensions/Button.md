@@ -9,6 +9,7 @@
 ### Customizing Appearance
 
 - ``ButtonContent``
+- ``ButtonPriority``
 - ``ButtonSize``
 - ``ButtonType``
 - ``OrbitButtonStyle``
