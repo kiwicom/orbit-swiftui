@@ -30,6 +30,7 @@ public struct Dialog<Content: View>: View {
 
             VStack(spacing: .xSmall) {
                 buttons
+                    .buttonSize(.default)
                     .textColor(nil)
             }
         }

@@ -64,7 +64,7 @@ public struct Card<Content: View>: View {
                             ButtonLink(label, type: type, action: action)
                                 .buttonSize(.compact)
                                 .padding(.leading, .xxxSmall)
-                                .padding(.top, -6)
+                                .padding(.vertical, -6)
                                 .accessibility(.cardActionButtonLink)
                         }
                     case .none:

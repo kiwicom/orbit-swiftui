@@ -52,7 +52,7 @@ public struct Tile<Content: View, Icon: View>: View {
                 content
             }
 
-            if idealSize.horizontal == nil {
+            if idealSize.horizontal != true {
                 Spacer(minLength: 0)
             }
 
@@ -61,7 +61,6 @@ public struct Tile<Content: View, Icon: View>: View {
                 .padding(.vertical, TileButtonStyle.verticalTextPadding)
 
             disclosureIcon
-                .padding(.trailing, .medium)
         }
         .overlay(customContentButtonLinkOverlay, alignment: .topTrailing)
         .overlay(separator, alignment: .bottom)
@@ -69,11 +68,10 @@ public struct Tile<Content: View, Icon: View>: View {
     
     @ViewBuilder var header: some View {
         if isHeaderEmpty == false {
-            HStack(alignment: .top, spacing: 0) {
+            HStack(alignment: .top, spacing: .xSmall) {
                 icon
                     .font(.system(size: Orbit.Icon.Size.fromTextSize(size: titleStyle.size)))
                     .foregroundColor(.inkNormal)
-                    .padding(.trailing, .xSmall)
                     .accessibility(.tileIcon)
 
                 VStack(alignment: .leading, spacing: .xxSmall) {
@@ -84,10 +82,7 @@ public struct Tile<Content: View, Icon: View>: View {
                         .textColor(descriptionColor)
                         .accessibility(.tileDescription)
                 }
-
-                if idealSize.horizontal == nil {
-                    Spacer(minLength: 0)
-                }
+                .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
 
                 inactiveButtonLink
             }
@@ -111,7 +106,7 @@ public struct Tile<Content: View, Icon: View>: View {
                 ButtonLink(label, type: type, action: {})
                     .textColor(nil)
                     .disabled(true)
-                    .padding(.vertical, -.xxxSmall)
+                    .padding(.vertical, -.xxSmall)
                     .accessibility(.tileDisclosureButtonLink)
         }
     }
@@ -124,6 +119,7 @@ public struct Tile<Content: View, Icon: View>: View {
                 Orbit.Icon(icon)
                     .iconColor(.inkNormal)
                     .padding(.leading, .xSmall)
+                    .padding(.trailing, .medium)
                     .accessibility(.tileDisclosureIcon)
         }
     }
