@@ -64,9 +64,11 @@ struct AlertInlineButtonStyle: PrimitiveButtonStyle {
             configuration: configuration,
             textActiveColor: resolvedStatus.darkHoverColor,
             horizontalPadding: 0,
+            horizontalLabelPadding: 0,
             verticalPadding: 6, // = 32 height @ normal size
             horizontalBackgroundPadding: .xSmall,
             verticalBackgroundPadding: .xxxSmall,
+            spacing: .xSmall,
             hapticFeedback: resolvedStatus.defaultHapticFeedback
         ) {
             EmptyView()

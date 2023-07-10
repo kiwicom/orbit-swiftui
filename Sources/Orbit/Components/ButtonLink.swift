@@ -123,9 +123,11 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
             configuration: configuration,
             textActiveColor: textActiveColor,
             horizontalPadding: horizontalPadding,
+            horizontalLabelPadding: 0,
             verticalPadding: verticalPadding,
             horizontalBackgroundPadding: horizontalBackgroundPadding,
             verticalBackgroundPadding: verticalBackgroundPadding,
+            spacing: .xSmall,
             hapticFeedback: hapticFeedback
         ) {
             icon

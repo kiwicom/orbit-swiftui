@@ -13,11 +13,13 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View, Backgroun
     
     let configuration: PrimitiveButtonStyleConfiguration
     var textActiveColor: Color? = nil
-    var horizontalPadding: CGFloat = .medium
+    var horizontalPadding: CGFloat = .small
+    var horizontalLabelPadding: CGFloat = .xxSmall
     var verticalPadding: CGFloat = .small
     var horizontalBackgroundPadding: CGFloat = 0
     var verticalBackgroundPadding: CGFloat = 0
     var cornerRadius: CGFloat = BorderRadius.default
+    var spacing: CGFloat = .xxSmall
     var isTrailingIconSeparated = false
     var hapticFeedback: HapticsProvider.HapticFeedbackType = .light()
     @ViewBuilder let icon: LeadingIcon
@@ -27,25 +29,23 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View, Backgroun
 
     var body: some View {
         HStack(spacing: 0) {
+            // Maintain height to allow button with no content
             TextStrut()
 
-            if (disclosureIcon.isEmpty || isTrailingIconSeparated == false), idealSize.horizontal == nil {
+            if shouldExpand {
                 Spacer(minLength: 0)
             }
 
-            HStack(spacing: .xSmall) {
+            HStack(spacing: spacing) {
                 icon
                 label
+                    .padding(.horizontal, horizontalLabelPadding)
+                    .layoutPriority(1)
+                disclosureIcon
+                    .frame(maxWidth: disclosureIconMaxWidth, alignment: .trailing)
             }
 
-            if idealSize.horizontal == nil, isTrailingIconSeparated {
-                Spacer(minLength: 0)
-            }
-
-            disclosureIcon
-                .padding(.leading, .xSmall)
-
-            if idealSize.horizontal == nil, isTrailingIconSeparated == false {
+            if shouldExpand {
                 Spacer(minLength: 0)
             }
         }
@@ -92,6 +92,16 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View, Backgroun
             background
         }
     }
+
+    var shouldExpand: Bool {
+        idealSize.horizontal != true && isTrailingIconSeparated == false
+    }
+
+    var disclosureIconMaxWidth: CGFloat? {
+        idealSize.horizontal != true && isTrailingIconSeparated
+            ? .infinity
+            : nil
+    }
 }
 
 // MARK: ButtonStyle
@@ -100,10 +110,12 @@ struct OrbitCustomButtonStyle<LeadingIcon: View, TrailingIcon: View, Background:
 
     var textActiveColor: Color? = nil
     var horizontalPadding: CGFloat = .medium
+    var horizontalLabelPadding: CGFloat = .xxSmall
     var verticalPadding: CGFloat = .small
     var horizontalBackgroundPadding: CGFloat = 0
     var verticalBackgroundPadding: CGFloat = 0
     var cornerRadius: CGFloat = BorderRadius.default
+    var spacing: CGFloat = .xxSmall
     var isTrailingIconSeparated = false
     var hapticFeedback: HapticsProvider.HapticFeedbackType = .light()
     @ViewBuilder let icon: LeadingIcon
@@ -116,10 +128,12 @@ struct OrbitCustomButtonStyle<LeadingIcon: View, TrailingIcon: View, Background:
             configuration: configuration,
             textActiveColor: textActiveColor,
             horizontalPadding: horizontalPadding,
+            horizontalLabelPadding: horizontalLabelPadding,
             verticalPadding: verticalPadding,
             horizontalBackgroundPadding: horizontalBackgroundPadding,
             verticalBackgroundPadding: verticalBackgroundPadding,
             cornerRadius: cornerRadius,
+            spacing: spacing,
             isTrailingIconSeparated: isTrailingIconSeparated,
             hapticFeedback: hapticFeedback
         ) {
@@ -190,6 +204,7 @@ struct OrbitCustomButtonContentPreviews: PreviewProvider {
                 horizontalBackgroundPadding: .small,
                 verticalBackgroundPadding: .xSmall,
                 cornerRadius: BorderRadius.default,
+                spacing: .medium,
                 isTrailingIconSeparated: true
             ) {
                 Icon(.grid)
