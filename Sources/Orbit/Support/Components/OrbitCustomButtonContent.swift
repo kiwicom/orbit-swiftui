@@ -53,12 +53,15 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View, Backgroun
         .padding(.vertical, verticalPadding)
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
         .contentShape(Rectangle())
+        .padding(.horizontal, horizontalBackgroundPadding)
+        .padding(.vertical, verticalBackgroundPadding)
         .background(
             backgroundView
-                .cornerRadius(cornerRadius)
-                .padding(.horizontal, -horizontalBackgroundPadding)
-                .padding(.vertical, -verticalBackgroundPadding)
         )
+        .cornerRadius(cornerRadius)
+        // This workaround can be replaced with `containerRelativeFrame` in iOS17
+        .padding(.horizontal, -horizontalBackgroundPadding)
+        .padding(.vertical, -verticalBackgroundPadding)
         .textColor(isPressed ? textActiveColor ?? textColor : textColor)
         .foregroundColor(isPressed ? textActiveColor ?? textColor : textColor)
         ._onButtonGesture { isPressed in
@@ -182,11 +185,11 @@ struct OrbitCustomButtonContentPreviews: PreviewProvider {
             OrbitCustomButtonContent(
                 configuration: configuration,
                 textActiveColor: .redDark,
-                horizontalPadding: 4,
-                verticalPadding: 4,
-                horizontalBackgroundPadding: 4,
-                verticalBackgroundPadding: 4,
-                cornerRadius: 4,
+                horizontalPadding: .xSmall,
+                verticalPadding: .xxSmall,
+                horizontalBackgroundPadding: .small,
+                verticalBackgroundPadding: .xSmall,
+                cornerRadius: BorderRadius.default,
                 isTrailingIconSeparated: true
             ) {
                 Icon(.grid)
