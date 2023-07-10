@@ -7,7 +7,7 @@ public enum ButtonSize {
 }
 
 struct ButtonSizeKey: EnvironmentKey {
-    static let defaultValue: ButtonSize? = .default
+    static let defaultValue: ButtonSize? = nil
 }
 
 public extension EnvironmentValues {

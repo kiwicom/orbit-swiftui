@@ -157,7 +157,7 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
     var idealSizeHorizontal: Bool? {
         idealSize.horizontal == false
             ? idealSize.horizontal
-            : (buttonSize == .compact || idealSize.horizontal == true)
+            : (resolvedButtonSize == .compact || idealSize.horizontal == true)
     }
 
     var textColor: Color {
@@ -197,7 +197,7 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
 
     var horizontalPadding: CGFloat {
         switch resolvedButtonSize {
-            case .default:  return .medium
+            case .default:  return .small
             case .compact:  return 0
         }
     }
@@ -242,9 +242,10 @@ struct ButtonLinkPreviews: PreviewProvider {
     static var standalone: some View {
         VStack(spacing: 0) {
             ButtonLink("ButtonLink", action: {})
+                .buttonSize(.default)
             ButtonLink("ButtonLink", type: .critical, action: {})
+                .buttonSize(.default)
             ButtonLink("ButtonLink", action: {})
-                .buttonSize(.compact)
             ButtonLink("", action: {}) // EmptyView
             ButtonLink(action: {})   // EmptyView
         }
@@ -256,7 +257,9 @@ struct ButtonLinkPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .xSmall) {
             Group {
                 ButtonLink("ButtonLink", action: {})
+                    .buttonSize(.default)
                 ButtonLink("ButtonLink", icon: .grid, action: {})
+                    .buttonSize(.default)
                 ButtonLink("ButtonLink Compact", action: {})
                     .buttonSize(.compact)
                 ButtonLink("ButtonLink Compact", icon: .grid, action: {})

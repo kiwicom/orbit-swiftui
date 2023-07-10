@@ -49,10 +49,9 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View, Backgroun
                 Spacer(minLength: 0)
             }
         }
+        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
         .padding(.horizontal, horizontalPadding)
         .padding(.vertical, verticalPadding)
-        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
-        .contentShape(Rectangle())
         .padding(.horizontal, horizontalBackgroundPadding)
         .padding(.vertical, verticalBackgroundPadding)
         .background(
@@ -64,6 +63,7 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View, Backgroun
         .padding(.vertical, -verticalBackgroundPadding)
         .textColor(isPressed ? textActiveColor ?? textColor : textColor)
         .foregroundColor(isPressed ? textActiveColor ?? textColor : textColor)
+        .contentShape(Rectangle())
         ._onButtonGesture { isPressed in
             self.isPressed = isPressed
         } perform: {
