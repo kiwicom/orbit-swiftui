@@ -15,7 +15,7 @@ public struct List<Content: View>: View {
     }
 
     /// Creates Orbit List component, wrapping ListItem content.
-    public init(spacing: CGFloat = .xxSmall, @ViewBuilder content: () -> Content) {
+    public init(spacing: CGFloat = .xSmall, @ViewBuilder content: () -> Content) {
         self.spacing = spacing
         self.content = content()
     }
