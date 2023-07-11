@@ -2,6 +2,13 @@ import SwiftUI
 
 /// Displays flags of countries from around the world.
 ///
+/// The component is sized in a similar way as `Icon`, using `iconSize()` modifier.
+///
+/// ```swift
+/// CountryFlag(.us)
+///   .iconSize(.large)
+/// ```
+///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/countryflag/)
 public struct CountryFlag: View {
 
@@ -9,22 +16,24 @@ public struct CountryFlag: View {
     @Environment(\.iconSize) var iconSize
     @Environment(\.sizeCategory) var sizeCategory
 
-    let countryCode: CountryCode
+    let countryCode: CountryCode?
     let border: Border
 
     public var body: some View {
-        SwiftUI.Image(countryCode.rawValue, bundle: .orbit)
-            .resizable()
-            .scaledToFit()
-            .clipShape(clipShape)
-            .overlay(
-                clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
-                    .blendMode(.darken)
-            )
-            .frame(width: size, height: size)
-            .alignmentGuide(.firstTextBaseline) { $0.height * Icon.symbolBaseline }
-            .alignmentGuide(.lastTextBaseline) { $0.height * Icon.symbolBaseline }
-            .accessibility(label: SwiftUI.Text(countryCode.rawValue))
+        if let countryCode {
+            SwiftUI.Image(countryCode.rawValue, bundle: .orbit)
+                .resizable()
+                .scaledToFit()
+                .clipShape(clipShape)
+                .overlay(
+                    clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
+                        .blendMode(.darken)
+                )
+                .frame(width: size, height: size)
+                .alignmentGuide(.firstTextBaseline) { $0.height * Icon.symbolBaseline }
+                .alignmentGuide(.lastTextBaseline) { $0.height * Icon.symbolBaseline }
+                .accessibility(label: SwiftUI.Text(countryCode.rawValue))
+        }
     }
 
     var clipShape: some InsettableShape {
@@ -49,15 +58,20 @@ public extension CountryFlag {
 
     /// Creates Orbit CountryFlag component.
     init(_ countryCode: CountryCode, border: Border = .default()) {
-        self.countryCode = countryCode
-        self.border = border
+        self.init(
+            countryCode: countryCode,
+            border: border
+        )
     }
 
     /// Creates Orbit CountryFlag component with a string country code.
     ///
     /// If a corresponding image is not found, the flag for unknown codes is used.
     init(_ countryCode: String, border: Border = .default()) {
-        self.init(.init(countryCode), border: border)
+        self.init(
+            countryCode: countryCode.isEmpty ? nil : .init(countryCode),
+            border: border
+        )
     }
 }
 
@@ -106,6 +120,7 @@ struct CountryFlagPreviews: PreviewProvider {
             standalone
             unknown
             mix
+            sizing
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -118,7 +133,7 @@ struct CountryFlagPreviews: PreviewProvider {
 
     static var unknown: some View {
         VStack {
-            CountryFlag("")
+            CountryFlag("")  // EmptyView
             CountryFlag("invalid")
         }
         .previewDisplayName()
@@ -138,6 +153,20 @@ struct CountryFlagPreviews: PreviewProvider {
                 CountryFlag("Cz", border: .none)
             }
             .textSize(.xLarge)
+        }
+        .previewDisplayName()
+    }
+
+    static var sizing: some View {
+        VStack(alignment: .leading, spacing: .xLarge) {
+            Group {
+                CountryFlag("cz")
+                CountryFlag("sk")
+                CountryFlag("us")
+                CountryFlag(.us)
+                    .iconSize(.large)
+            }
+            .measured()
         }
         .previewDisplayName()
     }
