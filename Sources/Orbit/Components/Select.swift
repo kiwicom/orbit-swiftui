@@ -158,7 +158,7 @@ public extension Select {
        messageHeight: Binding<CGFloat> = .constant(0),
        action: @escaping () -> Void,
        @ViewBuilder prefix: () -> Prefix,
-       @ViewBuilder suffix: () -> Suffix = { EmptyView() }
+       @ViewBuilder suffix: () -> Suffix = { Icon(.chevronDown) }
    ) {
        self.label = label
        self.value = value
