@@ -5,17 +5,19 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/visuals/coupon/)
 public struct Coupon: View {
 
-    let label: String
+    @Environment(\.textSize) private var textSize
+
+    private let label: String
 
     public var body: some View {
         Text(label)
-            .fontWeight(.medium)
-            .kerning(0.75)
+            .textSize(custom: textSize ?? Text.Size.small.value)
+            .bold()
             .textIsCopyable()
             .padding(.horizontal, .xxSmall)
             .padding(.vertical, .xxxSmall)
             .overlay(
-                RoundedRectangle(cornerRadius: BorderRadius.desktop)
+                RoundedRectangle(cornerRadius: BorderRadius.default)
                     .stroke(style: StrokeStyle(lineWidth: 1, dash: [2]))
                     .foregroundColor(.cloudDark)
             )
