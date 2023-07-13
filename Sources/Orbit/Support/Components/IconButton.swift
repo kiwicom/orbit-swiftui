@@ -5,8 +5,8 @@ public struct IconButton<Icon: View>: View {
 
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    private let action: () -> Void
     @ViewBuilder private let icon: Icon
+    private let action: () -> Void
 
     public var body: some View {
         SwiftUI.Button {
@@ -23,9 +23,13 @@ public struct IconButton<Icon: View>: View {
         }
         .buttonStyle(IconButtonStyle())
     }
+}
+
+// MARK: - Icons
+public extension IconButton {
 
     /// Creates Orbit IconButton component with custom icon.
-    public init(
+    init(
         action: @escaping () -> Void,
         @ViewBuilder icon: () -> Icon
     ) {

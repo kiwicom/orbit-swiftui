@@ -31,11 +31,17 @@ public struct Button<LeadingIcon: View, TrailingIcon: View>: View {
     }
 
     @ViewBuilder var button: some View {
-        SwiftUI.Button() {
-            action()
-        } label: {
-            Text(label)
+        if isEmpty == false {
+            SwiftUI.Button() {
+                action()
+            } label: {
+                Text(label)
+            }
         }
+    }
+
+    var isEmpty: Bool {
+        label.isEmpty && leadingIcon.isEmpty && trailingIcon.isEmpty
     }
 }
 
@@ -130,8 +136,8 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
     public func makeBody(configuration: Configuration) -> some View {
         OrbitCustomButtonContent(
             configuration: configuration,
-            horizontalPadding: horizontalPadding,
-            verticalPadding: verticalPadding,
+            horizontalPadding: padding,
+            verticalPadding: padding,
             isTrailingIconSeparated: isTrailingIconSeparated,
             hapticFeedback: hapticFeedback
         ) {
@@ -218,14 +224,7 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
         }
     }
 
-    var horizontalPadding: CGFloat {
-        switch resolvedButtonSize {
-            case .default:      return .medium
-            case .compact:      return .small
-        }
-    }
-
-    var verticalPadding: CGFloat {
+    var padding: CGFloat {
         switch resolvedButtonSize {
             case .default:      return .small   // = 44 height @ normal size
             case .compact:      return .xSmall  // = 32 height @ normal size
@@ -266,9 +265,12 @@ struct ButtonPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Button("Button", icon: .grid, action: {})
-            .padding(.medium)
-            .previewDisplayName()
+        VStack {
+            Button("Button", icon: .grid, action: {})
+            Button(action: {}) // Results in EmptyView
+        }
+        .padding(.medium)
+        .previewDisplayName()
     }
 
     static var combinations: some View {
@@ -289,7 +291,7 @@ struct ButtonPreviews: PreviewProvider {
     static var sizing: some View {
         VStack(spacing: .medium) {
             Group {
-                Button(action: {})
+                Button(" ", action: {})
                 Button("Button", action: {})
                 Button("Button", icon: .grid, action: {})
                 Button("Button\nmultiline", icon: .grid, action: {})
@@ -404,15 +406,13 @@ struct ButtonPreviews: PreviewProvider {
 
     @ViewBuilder static func statusButtons(_ type: ButtonType) -> some View {
         HStack(spacing: .xSmall) {
-            Group {
-                Button("Label", type: type, action: {})
-                Button("Label", icon: .grid, disclosureIcon: .chevronForward, type: type, action: {})
-                Button("Label", disclosureIcon: .chevronForward, type: type, action: {})
-                Button(icon: .grid, type: type, action: {})
-            }
-            .buttonSize(.compact)
+            Button("Label", type: type, action: {})
+            Button("Label", icon: .grid, disclosureIcon: .chevronForward, type: type, action: {})
+            Button("Label", disclosureIcon: .chevronForward, type: type, action: {})
+            Button(icon: .grid, type: type, action: {})
 
             Spacer(minLength: 0)
         }
+        .buttonSize(.compact)
     }
 }
