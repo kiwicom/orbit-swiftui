@@ -47,7 +47,7 @@ public struct Tile<Content: View, Icon: View>: View {
 
     @ViewBuilder var buttonContent: some View {
         HStack(spacing: 0) {
-            VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
                 header
                 content
             }
@@ -63,7 +63,7 @@ public struct Tile<Content: View, Icon: View>: View {
             disclosureIcon
         }
         .overlay(customContentButtonLinkOverlay, alignment: .topTrailing)
-        .overlay(separator, alignment: .bottom)
+        .overlay(separator, alignment: .init(horizontal: .listRowSeparatorLeading, vertical: .bottom))
     }
     
     @ViewBuilder var header: some View {
@@ -82,6 +82,7 @@ public struct Tile<Content: View, Icon: View>: View {
                         .textColor(descriptionColor)
                         .accessibility(.tileDescription)
                 }
+                .alignmentGuide(.listRowSeparatorLeading) { $0[.leading] }
                 .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
 
                 inactiveButtonLink
@@ -127,12 +128,7 @@ public struct Tile<Content: View, Icon: View>: View {
     @ViewBuilder var separator: some View {
         if isInsideTileGroup, isTileSeparatorVisible {
             Separator()
-                .padding(.leading, .medium)
         }
-    }
-
-    var separatorPadding: CGFloat {
-        icon.isEmpty ? .medium : .xxxLarge
     }
     
     var tileBorderStyle: TileBorderStyle {
