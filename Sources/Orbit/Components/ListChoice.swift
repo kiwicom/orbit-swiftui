@@ -56,6 +56,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View {
                 .padding(.vertical, verticalPadding)
 
             disclosureView
+                .accessibility(.listChoiceDisclosure)
                 .padding(.horizontal, .medium)
                 .padding(.vertical, .small)
                 .allowsHitTesting(false)
@@ -135,6 +136,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View {
                 .rotationEffect(.degrees(type == .add ? 0 : 45))
                 .animation(.easeOut(duration: 0.2), value: type)
         }
+        .accessibility(addTraits: type == .add ? [] : .isSelected)
         .buttonSize(.compact)
         .idealSize()
     }
@@ -313,6 +315,7 @@ public extension AccessibilityID {
     static let listChoiceIcon           = Self(rawValue: "orbit.listchoice.icon")
     static let listChoiceDescription    = Self(rawValue: "orbit.listchoice.description")
     static let listChoiceValue          = Self(rawValue: "orbit.listchoice.value")
+    static let listChoiceDisclosure     = Self(rawValue: "orbit.listchoice.disclosure")
 }
 
 // MARK: - Previews
