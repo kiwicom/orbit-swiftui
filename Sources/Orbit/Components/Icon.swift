@@ -262,7 +262,7 @@ extension Icon: TextRepresentable {
     }
 
     private func textBaselineOffset(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
-        (-resolvedSize(textRepresentableEnvironment) * sizeCategory.ratio)
+        (-resolvedSize(textRepresentableEnvironment) * textRepresentableEnvironment.sizeCategory.ratio)
         * (1 - Self.symbolBaseline)
         + resolvedBaselineOffset
     }

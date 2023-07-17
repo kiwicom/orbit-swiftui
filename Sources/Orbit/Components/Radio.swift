@@ -102,6 +102,7 @@ extension Radio {
                 indicator(isPressed: configuration.isPressed)
                 configuration.label
             }
+            .accessibility(addTraits: isChecked ? .isSelected : [])
         }
 
         func indicator(isPressed: Bool) -> some View {
