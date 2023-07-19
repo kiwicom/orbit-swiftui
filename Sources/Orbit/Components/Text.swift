@@ -7,7 +7,7 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/text/)
 /// - Important: Component has fixed vertical size. When the content is empty, the component results in `EmptyView`.
-public struct Text: View, FormattedTextBuildable {
+public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
 
     @Environment(\.multilineTextAlignment) private var multilineTextAlignment
     @Environment(\.lineSpacing) private var lineSpacing

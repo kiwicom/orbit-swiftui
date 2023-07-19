@@ -187,6 +187,7 @@ struct SelectPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            customContent
             idealSize
             sizing
             styles
@@ -197,6 +198,9 @@ struct SelectPreviews: PreviewProvider {
 
     static var standalone: some View {
         VStack(spacing: .medium) {
+            Select(InputFieldPreviews.label, value: InputFieldPreviews.value) {
+                // No action
+            }
             Select(InputFieldPreviews.label, prefix: .grid, value: InputFieldPreviews.value) {
                 // No action
             }
@@ -208,6 +212,43 @@ struct SelectPreviews: PreviewProvider {
             }
             Select(InputFieldPreviews.label, value: nil, prompt: "Prompt", labelStyle: .compact) {
                 // No action
+            }
+        }
+        .padding(.medium)
+        .previewDisplayName()
+    }
+
+    static var customContent: some View {
+        VStack(spacing: .medium) {
+            Select(value: "Value with a very very very very very long value..") {
+                // No action
+            } prefix: {
+                EmptyView()
+            } suffix: {
+                EmptyView()
+            }
+
+            Select(value: "Value with a very very very very very long value..") {
+                // No action
+            } prefix: {
+                CountryFlag("")
+            } suffix: {
+                CountryFlag("")
+            }
+
+            // FIXME: conditional content EmptyView
+            StateWrapper(false) { state in
+                Select(value: "Value with a very very very very very long value..") {
+                    state.wrappedValue.toggle()
+                } prefix: {
+                    if state.wrappedValue {
+                        CountryFlag("us")
+                    }
+                } suffix: {
+                    if state.wrappedValue {
+                        CountryFlag("us")
+                    }
+                }
             }
         }
         .padding(.medium)

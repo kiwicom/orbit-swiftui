@@ -10,7 +10,7 @@ import SwiftUI
 /// ```
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/countryflag/)
-public struct CountryFlag: View {
+public struct CountryFlag: View, PotentiallyEmptyView {
 
     @Environment(\.textSize) var textSize
     @Environment(\.iconSize) var iconSize
@@ -50,6 +50,10 @@ public struct CountryFlag: View {
 
     var size: CGFloat {
         (iconSize ?? textSize.map(Icon.Size.fromTextSize(size:)) ?? Icon.Size.normal.value) * sizeCategory.ratio
+    }
+
+    var isEmpty: Bool {
+        countryCode == nil
     }
 }
 

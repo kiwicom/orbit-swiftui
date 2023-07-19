@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tag/)
 /// - Important: Component can expand horizontally by using `idealSize` modifier.
-public struct Tag<Icon: View>: View {
+public struct Tag<Icon: View>: View, PotentiallyEmptyView {
 
     @Environment(\.idealSize) private var idealSize
     @Environment(\.textColor) private var textColor

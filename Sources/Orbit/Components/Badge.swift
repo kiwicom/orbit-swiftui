@@ -6,7 +6,7 @@ import SwiftUI
 /// They can be updated when a status changes, but they should not be actionable.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/badge/)
-public struct Badge<LeadingIcon: View, TrailingIcon: View>: View {
+public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmptyView {
 
     @Environment(\.status) private var status
     @Environment(\.sizeCategory) private var sizeCategory

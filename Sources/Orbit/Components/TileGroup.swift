@@ -19,7 +19,7 @@ import SwiftUI
 /// ```
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/tilegroup/)
-public struct TileGroup<Content: View>: View {
+public struct TileGroup<Content: View>: View, PotentiallyEmptyView {
 
     @ViewBuilder let content: Content
 
@@ -38,7 +38,7 @@ public struct TileGroup<Content: View>: View {
     }
 
     var isEmpty: Bool {
-        content is EmptyView
+        content.isEmpty
     }
 
     /// Creates Orbit TileGroup component as a wrapper for Tile content.

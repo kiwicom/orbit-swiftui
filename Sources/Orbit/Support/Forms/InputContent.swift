@@ -134,6 +134,14 @@ struct InputContentPreviews: PreviewProvider {
                     // No action
                 }
             }
+
+            InputContent(state: .default) {
+                headerPlaceholder
+            } prefix: {
+                CountryFlag("")
+            } suffix: {
+                EmptyView()
+            }
         }
         .padding(.medium)
         .previewDisplayName()

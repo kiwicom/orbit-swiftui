@@ -5,7 +5,7 @@ import SwiftUI
 /// The items in the list should all be static information, *not* actionable.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/badgelist/)
-public struct BadgeList<Icon: View, Content: View>: View {
+public struct BadgeList<Icon: View, Content: View>: View, PotentiallyEmptyView {
 
     @Environment(\.status) private var status
     @Environment(\.textAccentColor) private var textAccentColor

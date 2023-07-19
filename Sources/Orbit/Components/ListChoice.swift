@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/listchoice/)
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
-public struct ListChoice<Header: View, Icon: View, Content: View>: View {
+public struct ListChoice<Header: View, Icon: View, Content: View>: View, PotentiallyEmptyView {
 
     public let verticalPadding: CGFloat = .small // = 45 height @ normal size
 
@@ -148,7 +148,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View {
     }
 
     var isEmpty: Bool {
-        isHeaderEmpty && header is EmptyView && content is EmptyView && disclosure == .none
+        isHeaderEmpty && header.isEmpty && content.isEmpty && disclosure == .none
     }
 
     var isHeaderEmpty: Bool {
