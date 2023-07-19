@@ -3,7 +3,7 @@ import SwiftUI
 /// Displays a single, less important action a user can take.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/buttonlink/)
-public struct ButtonLink<LeadingIcon: View, TrailingIcon: View>: View {
+public struct ButtonLink<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmptyView {
 
     @Environment(\.suppressButtonStyle) var suppressButtonStyle
 

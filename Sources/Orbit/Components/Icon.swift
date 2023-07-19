@@ -25,7 +25,7 @@ import SwiftUI
 /// ```
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/icon/)
-public struct Icon: View, TextBuildable {
+public struct Icon: View, TextBuildable, PotentiallyEmptyView {
 
     /// Approximate size ratio between SF Symbol and Orbit icon symbol.
     public static let sfSymbolToOrbitSymbolSizeRatio: CGFloat = 0.75

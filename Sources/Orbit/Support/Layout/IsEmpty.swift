@@ -3,6 +3,10 @@ import SwiftUI
 extension View {
 
     var isEmpty: Bool {
-        self is EmptyView || (self as? Orbit.Icon)?.isEmpty == true || (self as? Orbit.Text)?.isEmpty == true
+        switch self {
+            case let view as PotentiallyEmptyView:     return view.isEmpty
+            case is EmptyView:                      return true
+            default:                                return false
+        }
     }
 }

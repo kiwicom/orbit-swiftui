@@ -6,7 +6,7 @@ import SwiftUI
 ///   - ``TimelineItem``
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/timeline/)
-public struct Timeline<Content: View>: View {
+public struct Timeline<Content: View>: View, PotentiallyEmptyView {
 
     @Environment(\.sizeCategory) var sizeCategory
     @ViewBuilder let content: Content
@@ -35,7 +35,7 @@ public struct Timeline<Content: View>: View {
     }
 
     var isEmpty: Bool {
-        content is EmptyView
+        content.isEmpty
     }
 
     func progressLineHeight(

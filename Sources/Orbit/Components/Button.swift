@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/button/)
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
-public struct Button<LeadingIcon: View, TrailingIcon: View>: View {
+public struct Button<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmptyView {
 
     @Environment(\.suppressButtonStyle) private var suppressButtonStyle
 
