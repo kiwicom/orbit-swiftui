@@ -2,15 +2,25 @@ import SwiftUI
 
 /// Prompts users to take or complete an action.
 ///
+/// Use at most three actions in a Dialog. A Dialog expands both horizontally and vertically and is meant to be used as a modal fullscreen overlay.
+///
+/// ```swift
+/// Dialog("Title") {
+///     Button("Primary") { /* */ }
+///     Button("Secondary") { /* */ }
+///     Button("Tertiary") { /* */ }
+/// }
+/// .status(.critical)
+/// ```
+///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/overlay/dialog/)
-public struct Dialog<Content: View>: View {
+public struct Dialog<Content: View, Buttons: View>: View {
 
-    let illustration: Illustration.Image
-    let title: String
-    let description: String
-    let style: Style
-    let buttonConfiguration: Buttons
-    @ViewBuilder let content: Content
+    private let title: String
+    private let description: String
+    private let illustration: Illustration.Image
+    @ViewBuilder private let content: Content
+    @ViewBuilder private let buttons: Buttons
 
     public var body: some View {
         VStack(alignment: .leading, spacing: .medium) {
@@ -30,8 +40,6 @@ public struct Dialog<Content: View>: View {
 
             VStack(spacing: .xSmall) {
                 buttons
-                    .buttonSize(.default)
-                    .textColor(nil)
             }
         }
         .frame(maxWidth: Layout.readableMaxWidth / 2)
@@ -45,33 +53,6 @@ public struct Dialog<Content: View>: View {
         .accessibilityElement(children: .contain)
     }
 
-    @ViewBuilder var buttons: some View {
-        switch buttonConfiguration {
-            case .primary(let primaryButton),
-                 .primaryAndSecondary(let primaryButton, _),
-                 .primarySecondaryAndTertiary(let primaryButton, _, _):
-                Button(primaryButton.label, type: style.buttonType, action: primaryButton.action)
-                    .accessibility(.dialogButtonPrimary)
-        }
-
-        switch buttonConfiguration {
-            case .primary:
-                EmptyView()
-            case .primaryAndSecondary(_, let secondaryButton),
-                 .primarySecondaryAndTertiary(_, let secondaryButton, _):
-                ButtonLink(secondaryButton.label, type: style.buttonLinkType, action: secondaryButton.action)
-                    .accessibility(.dialogButtonSecondary)
-        }
-
-        switch buttonConfiguration {
-            case .primary, .primaryAndSecondary:
-                EmptyView()
-            case .primarySecondaryAndTertiary(_, _, let tertiaryButton):
-                ButtonLink(tertiaryButton.label, type: style.buttonLinkType, action: tertiaryButton.action)
-                    .accessibility(.dialogButtonTertiary)
-        }
-    }
-
     var shape: some InsettableShape {
         RoundedRectangle(cornerRadius: .small)
     }
@@ -82,48 +63,83 @@ extension Dialog {
 
     /// Creates Orbit Dialog component.
     public init(
-        illustration: Illustration.Image = .none,
-        title: String = "",
+        _ title: String = "",
         description: String = "",
-        style: Style = .primary,
-        buttons: Buttons,
-        @ViewBuilder content: () -> Content = { EmptyView() }
+        illustration: Illustration.Image = .none,
+        @ViewBuilder content: () -> Content = { EmptyView() },
+        @DialogButtonsBuilder buttons: () -> Buttons
     ) {
-        self.illustration = illustration
-        self.title = title
-        self.description = description
-        self.style = style
-        self.buttonConfiguration = buttons
-        self.content = content()
+        self.init(
+            title: title,
+            description: description,
+            illustration: illustration
+        ) {
+            content()
+        } buttons: {
+            buttons()
+        }
     }
 }
 
 // MARK: - Types
-extension Dialog {
 
-    public enum Buttons {
-        case primary(ButtonContent)
-        case primaryAndSecondary(ButtonContent, ButtonContent)
-        case primarySecondaryAndTertiary(ButtonContent, ButtonContent, ButtonContent)
+/// A builder that constructs buttons for the ``Dialog`` component.
+@resultBuilder
+public enum DialogButtonsBuilder {
+
+    public static func buildBlock(_ empty: EmptyView) -> EmptyView {
+        empty
     }
 
-    public enum Style {
-        case primary
-        case critical
+    public static func buildBlock(_ primary: some View) -> some View {
+        primary
+            .suppressButtonStyle()
+            .buttonStyle(OrbitButtonStyle(type: .status(nil)))
+            .accessibility(.dialogButtonPrimary)
+    }
 
-        public var buttonType: ButtonType {
-            switch self {
-                case .primary:              return .primary
-                case .critical:             return .critical
-            }
-        }
+    @ViewBuilder
+    public static func buildBlock(_ primary: some View, _ secondary: some View) -> some View {
+        primary
+            .suppressButtonStyle()
+            .buttonStyle(OrbitButtonStyle(type: .status(nil)))
+            .accessibility(.dialogButtonPrimary)
 
-        public var buttonLinkType: ButtonLinkType {
-            switch self {
-                case .primary:              return .primary
-                case .critical:             return .critical
-            }
+        secondary
+            .suppressButtonStyle()
+            .buttonStyle(OrbitButtonLinkButtonStyle(type: .status(nil)))
+            .buttonSize(.default)
+    }
+
+    @ViewBuilder
+    public static func buildBlock(_ primary: some View, _ secondary: some View, _ tertiary: some View) -> some View {
+        primary
+            .suppressButtonStyle()
+            .buttonStyle(OrbitButtonStyle(type: .status(nil)))
+            .accessibility(.dialogButtonPrimary)
+
+        Group {
+            secondary
+                .accessibility(.dialogButtonSecondary)
+
+            tertiary
+                .accessibility(.dialogButtonTertiary)
         }
+        .suppressButtonStyle()
+        .buttonStyle(OrbitButtonLinkButtonStyle(type: .status(nil)))
+        .buttonSize(.default)
+    }
+
+    public static func buildOptional<V: View>(_ component: V?) -> V? {
+        component
+    }
+
+    public static func buildEither<T: View, F: View>(first view: T) -> _ConditionalContent<T, F> {
+        .init(content: .trueView(view))
+    }
+
+    public static func buildEither<T: View, F: View>(second view: F) -> _ConditionalContent<T, F> {
+        .init(content: .falseView(view))
     }
 }
 
@@ -164,40 +180,45 @@ struct DialogPreviews: PreviewProvider {
 
     static var standalone: some View {
         Dialog(
-            illustration: .noNotification,
-            title: title1,
+            title1,
             description: description1,
-            buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
+            illustration: .noNotification
         ) {
             contentPlaceholder
+        } buttons: {
+            Button("Main CTA") {}
+            Button("Secondary") {}
+            Button("Tertiary") {}
         }
         .previewDisplayName()
     }
 
     static var critical: some View {
         Dialog(
-            illustration: .noNotification,
-            title: title2,
+            title2,
             description: description2,
-            style: .critical,
-            buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
-        )
+            illustration: .noNotification
+        ) {
+            Button("Main CTA") {}
+            Button("Secondary") {}
+            Button("Tertiary") {}
+        }
+        .status(.critical)
         .previewDisplayName()
     }
 
     static var titleOnly: some View {
-        Dialog(
-            title: title1,
-            buttons: .primaryAndSecondary("Main CTA", "Secondary")
-        )
+        Dialog(title1) {
+            Button("Main CTA") {}
+            Button("Secondary") {}
+        }
         .previewDisplayName()
     }
 
     static var descriptionOnly: some View {
-        Dialog(
-            description: description1,
-            buttons: .primary("Main CTA")
-        )
+        Dialog(description: description1) {
+            Button("Main CTA") {}
+        }
         .previewDisplayName()
     }
 
