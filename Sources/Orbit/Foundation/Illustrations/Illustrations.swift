@@ -10,6 +10,7 @@ public extension Illustration {
         case airportShuttle
         case airportTransport
         case airportTransportTaxi
+        case ambulance
         case appKiwi
         case appQRCode
         case baggageDrop
@@ -40,6 +41,7 @@ public extension Illustration {
         case fastTrack
         case fastTrackMan
         case feedback
+        case flexibleDates
         case groundTransport404
         case help
         case improve
