@@ -228,21 +228,6 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
     }
 }
 
-public struct ButtonContent: ExpressibleByStringLiteral {
-
-    public let label: String
-    public let action: () -> Void
-
-    public init(_ label: String, action: @escaping () -> Void) {
-        self.label = label
-        self.action = action
-    }
-
-    public init(stringLiteral value: String) {
-        self.init(value, action: {})
-    }
-}
-
 // MARK: - Previews
 struct ButtonPreviews: PreviewProvider {
 
