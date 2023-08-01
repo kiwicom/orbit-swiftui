@@ -99,9 +99,9 @@ public struct Slider<Value>: View where Value: SliderValue, Value.Stride: Binary
             .background(strokedPath(from: firstThumbPosition, to: secondThumbPosition))
         } else {
             firstThumb(atPosition: firstThumbPosition, width: thumbTrackWidth)
+                .accessibility(.sliderFirstThumb)
                 .padding(.leading, thumbRadius)
                 .background(strokedPath(from: 0, to: firstThumbPosition))
-                .accessibility(.sliderFirstThumb)
         }
     }
 
