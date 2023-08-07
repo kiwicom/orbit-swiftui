@@ -805,7 +805,7 @@ public extension Icon {
                 case .pin: return "\u{3914}"
                 case .pinOutline: return "\u{9270}"
                 case .placeholder: return "\u{1255}"
-                case .play: return "\u{4956}"
+                case .play: return "\u{6189}"
                 case .playground: return "\u{6111}"
                 case .plus: return "\u{3586}"
                 case .plusCircle: return "\u{2383}"
