@@ -109,9 +109,9 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
     @ViewBuilder private let disclosureIcon: TrailingIcon
 
     public init(
-        type: ButtonLinkType,
-        @ViewBuilder icon: () -> LeadingIcon,
-        @ViewBuilder trailingIcon: () -> TrailingIcon
+        type: ButtonLinkType = .primary,
+        @ViewBuilder icon: () -> LeadingIcon = { EmptyView() },
+        @ViewBuilder trailingIcon: () -> TrailingIcon = { EmptyView() }
     ) {
         self.type = type
         self.icon = icon()
@@ -148,7 +148,7 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
         switch type {
             case .primary:                      Color.productLightActive
             case .critical:                     Color.redLightActive
-            case .status(let status):           (status ?? defaultStatus).lightActiveColor
+            case .status(let status):           (status ?? self.status)?.lightActiveColor ?? Color.productLightActive
         }
     }
 
@@ -166,7 +166,7 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
         switch type {
             case .primary:                      return .productNormal
             case .critical:                     return .redNormal
-            case .status(let status):           return (status ?? defaultStatus).color
+            case .status(let status):           return (status ?? self.status)?.color ?? .productNormal
         }
     }
 
@@ -174,12 +174,8 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
         switch type {
             case .primary:                      return .productDarkActive
             case .critical:                     return .redDarkActive
-            case .status(let status):           return (status ?? defaultStatus).darkHoverColor
+            case .status(let status):           return (status ?? self.status)?.darkHoverColor ?? .productDarkActive
         }
-    }
-
-    var defaultStatus: Status {
-        status ?? .info
     }
 
     var resolvedStatus: Status {

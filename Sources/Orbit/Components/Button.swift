@@ -124,8 +124,8 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
     public init(
         type: ButtonType,
         isTrailingIconSeparated: Bool = false,
-        @ViewBuilder icon: () -> LeadingIcon,
-        @ViewBuilder trailingIcon: () -> TrailingIcon
+        @ViewBuilder icon: () -> LeadingIcon = { EmptyView() },
+        @ViewBuilder trailingIcon: () -> TrailingIcon = { EmptyView() }
     ) {
         self.type = type
         self.isTrailingIconSeparated = isTrailingIconSeparated
@@ -161,8 +161,8 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
             case .secondary:                    Color.cloudNormal
             case .critical:                     Color.redNormal
             case .criticalSubtle:               Color.redLight
-            case .status(let status, false):    (status ?? defaultStatus).color
-            case .status(let status, true):     (status ?? defaultStatus).lightHoverColor
+            case .status(let status, false):    (status ?? self.status)?.color ?? Color.productNormal
+            case .status(let status, true):     (status ?? self.status)?.lightHoverColor ?? Color.productLight
             case .gradient(let gradient):       gradient.background
         }
     }
@@ -174,14 +174,10 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
             case .secondary:                    Color.cloudNormalActive
             case .critical:                     Color.redNormalActive
             case .criticalSubtle:               Color.redLightActive
-            case .status(let status, false):    (status ?? defaultStatus).activeColor
-            case .status(let status, true):     (status ?? defaultStatus).lightActiveColor
+            case .status(let status, false):    (status ?? self.status)?.activeColor ?? Color.productNormalActive
+            case .status(let status, true):     (status ?? self.status)?.lightActiveColor ?? Color.productLightActive
             case .gradient(let gradient):       gradient.textColor
         }
-    }
-
-    var defaultStatus: Status {
-        status ?? .info
     }
 
     var textColor: Color {
@@ -192,7 +188,7 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
             case .critical:                     return .whiteNormal
             case .criticalSubtle:               return .redDark
             case .status(_, false):             return .whiteNormal
-            case .status(let status, true):     return (status ?? defaultStatus).darkHoverColor
+            case .status(let status, true):     return (status ?? self.status)?.darkHoverColor ?? .whiteNormal
             case .gradient:                     return .whiteNormal
         }
     }
@@ -229,21 +225,6 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
             case .default:      return .small   // = 44 height @ normal size
             case .compact:      return .xSmall  // = 32 height @ normal size
         }
-    }
-}
-
-public struct ButtonContent: ExpressibleByStringLiteral {
-
-    public let label: String
-    public let action: () -> Void
-
-    public init(_ label: String, action: @escaping () -> Void) {
-        self.label = label
-        self.action = action
-    }
-
-    public init(stringLiteral value: String) {
-        self.init(value, action: {})
     }
 }
 

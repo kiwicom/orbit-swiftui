@@ -1,4 +1,4 @@
-# ``Orbit/Button``
+# ``Orbit/Dialog``
 
 @Metadata {
     @DocumentationExtension(mergeBehavior: append)
@@ -6,9 +6,10 @@
 
 ## Topics
 
+### Interaction
+
+- ``DialogButtonsBuilder``
+
 ### Customizing Appearance
 
-- ``ButtonPriority``
-- ``ButtonSize``
-- ``ButtonType``
-- ``OrbitButtonStyle``
+- ``status(_:)``

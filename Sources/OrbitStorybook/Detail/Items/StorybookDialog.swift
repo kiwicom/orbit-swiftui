@@ -23,37 +23,42 @@ struct StorybookDialog {
 
     static var normal: some View {
         Dialog(
-            illustration: .noNotification,
-            title: title1,
+            title1,
             description: description1,
-            buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
+            illustration: .noNotification
         ) {
             contentPlaceholder
+        } buttons: {
+            Button("Main CTA") {}
+            Button("Secondary") {}
+            Button("Tertiary") {}
         }
     }
 
     static var critical: some View {
         Dialog(
-            illustration: .noNotification,
-            title: title2,
+            title2,
             description: description2,
-            style: .critical,
-            buttons: .primarySecondaryAndTertiary("Main CTA", "Secondary", "Tertiary")
-        )
+            illustration: .noNotification
+        ) {
+            Button("Main CTA") {}
+            Button("Secondary") {}
+            Button("Tertiary") {}
+        }
+        .status(.critical)
     }
 
     static var titleOnly: some View {
-        Dialog(
-            title: title1,
-            buttons: .primaryAndSecondary("Main CTA", "Secondary")
-        )
+        Dialog(title1) {
+            Button("Main CTA") {}
+            Button("Secondary") {}
+        }
     }
 
     static var descriptionOnly: some View {
-        Dialog(
-            description: description1,
-            buttons: .primary("Main CTA")
-        )
+        Dialog(description: description1) {
+            Button("Main CTA") {}
+        }
     }
 }
 
