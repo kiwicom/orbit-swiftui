@@ -55,7 +55,9 @@ struct ScreenLayoutModifier: ViewModifier {
             .padding(.leading, edges.contains(.leading) ? padding.horizontal(horizontalSizeClass: horizontalSizeClass) : 0)
             .padding(.trailing, edges.contains(.trailing) ? padding.horizontal(horizontalSizeClass: horizontalSizeClass) : 0)
             .padding(.bottom, edges.contains(.bottom) ? padding.bottom(horizontalSizeClass: horizontalSizeClass) : 0)
-            .frame(maxWidth: maxContentWidth)
+            // Fill the width using default leading alignment
+            .frame(maxWidth: maxContentWidth, alignment: .leading)
+            // Fill the rest of available width, aligning the content to center
             .frame(maxWidth: .infinity)
     }
 }
