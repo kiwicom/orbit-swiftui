@@ -6,7 +6,7 @@ public struct InputContentButtonStyle<Prefix: View, Suffix: View>: ButtonStyle {
 
     private let state: InputState
     private let message: Message?
-    private let isEditing: Bool
+    private let isFocused: Bool
     private let isPlaceholder: Bool
     @ViewBuilder private let prefix: Prefix
     @ViewBuilder private let suffix: Suffix
@@ -16,7 +16,7 @@ public struct InputContentButtonStyle<Prefix: View, Suffix: View>: ButtonStyle {
             state: state,
             message: message,
             isPressed: configuration.isPressed,
-            isEditing: isEditing,
+            isFocused: isFocused,
             isPlaceholder: isPlaceholder
         ) {
             configuration.label
@@ -30,14 +30,14 @@ public struct InputContentButtonStyle<Prefix: View, Suffix: View>: ButtonStyle {
     public init(
         state: InputState = .default,
         message: Message? = nil,
-        isEditing: Bool = false,
+        isFocused: Bool = false,
         isPlaceholder: Bool = false,
         @ViewBuilder prefix: () -> Prefix = { EmptyView() },
         @ViewBuilder suffix: () -> Suffix = { EmptyView() }
     ) {
         self.state = state
         self.message = message
-        self.isEditing = isEditing
+        self.isFocused = isFocused
         self.isPlaceholder = isPlaceholder
         self.prefix = prefix()
         self.suffix = suffix()
