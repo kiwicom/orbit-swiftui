@@ -87,7 +87,6 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
             value: $value,
             prompt: prompt,
             isSecureTextEntry: isSecure && isSecureTextRedacted,
-            font: .orbit(size: Text.Size.normal.value * sizeCategory.ratio, weight: .regular),
             state: state,
             leadingPadding: textFieldLeadingPadding,
             trailingPadding: textFieldTrailingPadding
