@@ -8,8 +8,10 @@ public struct Select<Prefix: View, Suffix: View>: View {
 
     public let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
 
-    @Environment(\.isEnabled) private var isEnabled: Bool
+    @Environment(\.iconColor) private var iconColor
+    @Environment(\.isEnabled) private var isEnabled
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
+    @Environment(\.textColor) private var textColor
 
     @Binding private var messageHeight: CGFloat
     
@@ -38,12 +40,12 @@ public struct Select<Prefix: View, Suffix: View>: View {
                     action()
                 },
                 label: {
-                    HStack(alignment: .firstTextBaseline, spacing: .small) {
-                        FieldLabel(compactFieldLabel)
-                            .textColor(value == nil ? .inkDark : .inkLight)
+                    HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+                        Text(compactLabel)
+                            .textColor(compactLabelColor)
 
-                        Text(inputLabel)
-                            .textColor(textColor)
+                        Text(value ?? prompt)
+                            .textColor(valueColor)
                             .accessibility(.selectValue)
                     }
                     .padding(.vertical, verticalTextPadding)
@@ -58,6 +60,8 @@ public struct Select<Prefix: View, Suffix: View>: View {
                     isPlaceholder: value == nil
                 ) {
                     prefix
+                        .iconColor(prefixIconColor)
+                        .textColor(compactLabelColor)
                         .accessibility(.selectPrefix)
                 } suffix: {
                     suffix
@@ -79,18 +83,18 @@ public struct Select<Prefix: View, Suffix: View>: View {
         }
     }
 
-    private var compactFieldLabel: String {
+    private var compactLabel: String {
         switch labelStyle {
             case .default:          return ""
             case .compact:          return label
         }
     }
 
-    private var inputLabel: String {
-        value ?? prompt
+    private var compactLabelColor: Color {
+        textColor ?? .inkNormal
     }
 
-    private var textColor: Color {
+    private var valueColor: Color {
         if isEnabled {
             return value == nil
                 ? state.placeholderColor
@@ -98,6 +102,10 @@ public struct Select<Prefix: View, Suffix: View>: View {
         } else {
             return .cloudDarkActive
         }
+    }
+
+    private var prefixIconColor: Color? {
+        iconColor ?? (compactLabel.isEmpty ? .inkDark : nil)
     }
 
     private var messageDescription: String {
@@ -143,6 +151,7 @@ public extension Select {
             Icon(prefix)
         } suffix: {
             Icon(suffix)
+                .iconColor(.inkNormal)
         }
     }
 

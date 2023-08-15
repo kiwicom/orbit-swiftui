@@ -9,10 +9,12 @@ import UIKit
 /// - Important: Component expands horizontally unless prevented by `fixedSize` modifier.
 public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
 
-    @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.iconColor) private var iconColor
     @Environment(\.inputFieldBeginEditingAction) private var inputFieldBeginEditingAction
     @Environment(\.inputFieldEndEditingAction) private var inputFieldEndEditingAction
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.textColor) private var textColor
 
     @State private var isFocused: Bool = false
     @State private var isSecureTextRedacted: Bool = true
@@ -50,12 +52,17 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
                 isFocused: isFocused,
                 isPlaceholder: value.isEmpty
             ) {
-                HStack(alignment: .firstTextBaseline, spacing: .small) {
-                    compactLabel
+                HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
+                    Text(compactLabel)
+                        .textColor(compactLabelColor)
+                        .padding(.leading, prefix.isEmpty ? .small : 0)
+
                     textField
                 }
             } prefix: {
                 prefix
+                    .iconColor(prefixIconColor)
+                    .textColor(compactLabelColor)
                     .accessibility(.inputFieldPrefix)
                     .accessibility(hidden: true)
             } suffix: {
@@ -74,12 +81,6 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
                     .padding(.top, .xxSmall)
             }
         }
-    }
-
-    @ViewBuilder private var compactLabel: some View {
-        FieldLabel(compactFieldLabel)
-            .textColor(value.isEmpty ? .inkDark : .inkLight)
-            .padding(.leading, prefix.isEmpty ? .small : 0)
     }
 
     @ViewBuilder private var textField: some View {
@@ -123,11 +124,19 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
         }
     }
 
-    private var compactFieldLabel: String {
+    private var compactLabel: String {
         switch labelStyle {
             case .default:          return ""
             case .compact:          return label
         }
+    }
+
+    private var compactLabelColor: Color {
+        textColor ?? .inkNormal
+    }
+
+    private var prefixIconColor: Color? {
+        iconColor ?? (compactLabel.isEmpty ? .inkDark : nil)
     }
 
     private var textFieldLeadingPadding: CGFloat {
