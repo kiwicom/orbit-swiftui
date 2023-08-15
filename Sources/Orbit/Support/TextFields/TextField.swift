@@ -15,11 +15,14 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
     @Environment(\.inputFieldShouldReturnIdentifiableAction) private var inputFieldShouldReturnIdentifiableAction
     @Environment(\.inputFieldShouldChangeCharactersAction) private var inputFieldShouldChangeCharactersAction
     @Environment(\.inputFieldShouldChangeCharactersIdentifiableAction) private var inputFieldShouldChangeCharactersIdentifiableAction
+    @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.textFontWeight) private var textFontWeight
+    @Environment(\.textColor) private var textColor
+    @Environment(\.textSize) private var textSize
 
     @Binding private var value: String
     private var prompt: String
     private var isSecureTextEntry: Bool
-    private var font: UIFont
     private var state: InputState
     private var leadingPadding: CGFloat
     private var trailingPadding: CGFloat
@@ -77,8 +80,13 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         uiView.autocapitalizationType = autocapitalizationType
         uiView.shouldDeleteBackwardAction = shouldDeleteBackwardAction
 
-        uiView.font = font
-        uiView.textColor = isEnabled ? state.textColor.uiColor : .cloudDarkActive
+        if resolvedTextSize != context.coordinator.fontSize || resolvedTextWeight != context.coordinator.fontWeight {
+            uiView.font = .orbit(size: resolvedTextSize, weight: resolvedTextWeight)
+            context.coordinator.fontSize = resolvedTextSize
+            context.coordinator.fontWeight = resolvedTextWeight
+        }
+
+        uiView.textColor = isEnabled ? (textColor ?? state.textColor).uiColor : .cloudDarkActive
         uiView.isEnabled = isEnabled
 
         uiView.attributedPlaceholder = .init(
@@ -129,10 +137,22 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         )
     }
 
+    private var resolvedTextSize: CGFloat {
+        (textSize ?? Text.Size.normal.value) * sizeCategory.ratio
+    }
+
+    private var resolvedTextWeight: UIFont.Weight {
+        (textFontWeight ?? .regular).uiKit
+    }
+
     public final class Coordinator: NSObject, UITextFieldDelegate, ObservableObject {
 
         let identifier: AnyHashable?
         @Binding var value: String
+
+        var fontSize: CGFloat = 0
+        var fontWeight: UIFont.Weight = .regular
+
         let inputFieldFocus: InputFieldFocus?
         let inputFieldBeginEditingAction: () -> Void
         let inputFieldBeginEditingIdentifiableAction: (AnyHashable) -> Void
@@ -273,7 +293,6 @@ public extension TextField {
         value: Binding<String>,
         prompt: String = "",
         isSecureTextEntry: Bool = false,
-        font: UIFont = .orbit,
         state: InputState = .default,
         leadingPadding: CGFloat = 0,
         trailingPadding: CGFloat = 0
@@ -281,7 +300,6 @@ public extension TextField {
         self._value = value
         self.prompt = prompt
         self.isSecureTextEntry = isSecureTextEntry
-        self.font = font
         self.state = state
         self.leadingPadding = leadingPadding
         self.trailingPadding = trailingPadding
@@ -305,6 +323,15 @@ struct TextFieldPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
+            standalone
+            alignment
+        }
+        .padding(.medium)
+        .previewLayout(.sizeThatFits)
+    }
+
+    static var standalone: some View {
+        VStack(spacing: .medium) {
             Group {
                 StateWrapper("") { value in
                     TextField(value: value, prompt: "Enter value", isSecureTextEntry: true)
@@ -318,7 +345,32 @@ struct TextFieldPreviews: PreviewProvider {
             }
             .border(.black, width: .hairline)
         }
-        .padding(.medium)
-        .previewLayout(.sizeThatFits)
+        .previewDisplayName()
+    }
+
+    static var alignment: some View {
+        VStack(spacing: .medium) {
+            Group {
+                HStack(alignment: .firstTextBaseline) {
+                    Text("Label")
+                    TextField(value: .constant("Value"))
+                }
+
+                HStack(alignment: .firstTextBaseline) {
+                    Text("Label")
+                    TextField(value: .constant("Value"))
+                }
+                .textSize(custom: 40)
+                .textColor(.blueDark)
+                .textFontWeight(.black)
+            }
+            .overlay(
+                Color.redNormal
+                    .frame(height: .hairline)
+                ,
+                alignment: .centerFirstTextBaseline
+            )
+        }
+        .previewDisplayName()
     }
 }

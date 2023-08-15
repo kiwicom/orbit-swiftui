@@ -8,7 +8,7 @@ public struct Select<Prefix: View, Suffix: View>: View {
 
     public let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
 
-    @Environment(\.isEnabled) private var isEnabled: Bool
+    @Environment(\.isEnabled) private var isEnabled
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     @Binding private var messageHeight: CGFloat
@@ -25,7 +25,7 @@ public struct Select<Prefix: View, Suffix: View>: View {
 
     public var body: some View {
         FieldWrapper(
-            fieldLabel,
+            defaultLabel,
             message: message,
             messageHeight: $messageHeight
         ) {
@@ -38,22 +38,17 @@ public struct Select<Prefix: View, Suffix: View>: View {
                     action()
                 },
                 label: {
-                    HStack(alignment: .firstTextBaseline, spacing: .small) {
-                        FieldLabel(compactFieldLabel)
-                            .textColor(value == nil ? .inkDark : .inkLight)
-
-                        Text(inputLabel)
-                            .textColor(textColor)
-                            .accessibility(.selectValue)
-                    }
-                    .padding(.vertical, verticalTextPadding)
-                    .padding(.leading, leadingPadding)
-                    .padding(.trailing, trailingPadding)
+                    Text(value ?? prompt)
+                        .textColor(valueColor)
+                        .accessibility(.selectValue)
+                        .padding(.horizontal, .small)
+                        .padding(.vertical, verticalTextPadding)
                 }
             )
             .buttonStyle(
                 InputContentButtonStyle(
                     state: state,
+                    label: compactLabel,
                     message: message,
                     isPlaceholder: value == nil
                 ) {
@@ -72,25 +67,21 @@ public struct Select<Prefix: View, Suffix: View>: View {
         .accessibility(addTraits: .isButton)
     }
 
-    private var fieldLabel: String {
+    private var defaultLabel: String {
         switch labelStyle {
             case .default:          return label
             case .compact:          return ""
         }
     }
 
-    private var compactFieldLabel: String {
+    private var compactLabel: String {
         switch labelStyle {
             case .default:          return ""
             case .compact:          return label
         }
     }
 
-    private var inputLabel: String {
-        value ?? prompt
-    }
-
-    private var textColor: Color {
+    private var valueColor: Color {
         if isEnabled {
             return value == nil
                 ? state.placeholderColor
@@ -102,14 +93,6 @@ public struct Select<Prefix: View, Suffix: View>: View {
 
     private var messageDescription: String {
         message?.description ?? ""
-    }
-
-    private var leadingPadding: CGFloat {
-        prefix.isEmpty ? .small : 0
-    }
-
-    private var trailingPadding: CGFloat {
-        suffix.isEmpty ? .small : 0
     }
 }
 
@@ -143,6 +126,7 @@ public extension Select {
             Icon(prefix)
         } suffix: {
             Icon(suffix)
+                .iconColor(.inkDark)
         }
     }
 

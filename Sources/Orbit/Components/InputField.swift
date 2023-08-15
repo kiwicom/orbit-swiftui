@@ -9,10 +9,10 @@ import UIKit
 /// - Important: Component expands horizontally unless prevented by `fixedSize` modifier.
 public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
 
-    @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.inputFieldBeginEditingAction) private var inputFieldBeginEditingAction
     @Environment(\.inputFieldEndEditingAction) private var inputFieldEndEditingAction
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.sizeCategory) private var sizeCategory
 
     @State private var isFocused: Bool = false
     @State private var isSecureTextRedacted: Bool = true
@@ -40,20 +40,18 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
 
     public var body: some View {
         FieldWrapper(
-            fieldLabel,
+            defaultLabel,
             message: message,
             messageHeight: $messageHeight
         ) {
             InputContent(
                 state: state,
+                label: compactLabel,
                 message: message,
                 isFocused: isFocused,
                 isPlaceholder: value.isEmpty
             ) {
-                HStack(alignment: .firstTextBaseline, spacing: .small) {
-                    compactLabel
-                    textField
-                }
+                textField
             } prefix: {
                 prefix
                     .accessibility(.inputFieldPrefix)
@@ -76,21 +74,14 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
         }
     }
 
-    @ViewBuilder private var compactLabel: some View {
-        FieldLabel(compactFieldLabel)
-            .textColor(value.isEmpty ? .inkDark : .inkLight)
-            .padding(.leading, prefix.isEmpty ? .small : 0)
-    }
-
     @ViewBuilder private var textField: some View {
         TextField(
             value: $value,
             prompt: prompt,
             isSecureTextEntry: isSecure && isSecureTextRedacted,
-            font: .orbit(size: Text.Size.normal.value * sizeCategory.ratio, weight: .regular),
             state: state,
-            leadingPadding: textFieldLeadingPadding,
-            trailingPadding: textFieldTrailingPadding
+            leadingPadding: .small,
+            trailingPadding: .small
         )
         .returnKeyType(returnKeyType)
         .autocorrectionDisabled(isAutocorrectionDisabled)
@@ -117,28 +108,18 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
         }
     }
 
-    private var fieldLabel: String {
+    private var defaultLabel: String {
         switch labelStyle {
             case .default:          return label
             case .compact:          return ""
         }
     }
 
-    private var compactFieldLabel: String {
+    private var compactLabel: String {
         switch labelStyle {
             case .default:          return ""
             case .compact:          return label
         }
-    }
-
-    private var textFieldLeadingPadding: CGFloat {
-        prefix.isEmpty && labelStyle == .default
-            ? .small
-            : 0
-    }
-
-    private var textFieldTrailingPadding: CGFloat {
-        suffix.isEmpty ? .small : 0
     }
 
     private var showSecureTextRedactedButton: Bool {
