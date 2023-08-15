@@ -12,6 +12,8 @@
 - ``inputFieldBeginEditingAction(_:)-63rdh``
 - ``inputFieldEndEditingAction(_:)-1p8ux``
 - ``inputFieldEndEditingAction(_:)-3vtzf``
+- ``inputFieldReturnAction(_:)-4p3ne``
+- ``inputFieldReturnAction(_:)-8ukhl``
 - ``inputFieldShouldReturnAction(_:)-82nse``
 - ``inputFieldShouldReturnAction(_:)-2crnq``
 - ``inputFieldShouldChangeCharactersAction(_:)-81vme``
