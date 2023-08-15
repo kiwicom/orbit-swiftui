@@ -3,6 +3,7 @@ import SwiftUI
 /// Content for inputs that share common layout with a prefix and suffix.
 public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
 
+    @Environment(\.iconColor) private var iconColor
     @Environment(\.idealSize) private var idealSize
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.textColor) private var textColor
@@ -10,6 +11,7 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
     public let verticalPadding: CGFloat = .small // = 44 @ normal text size
 
     private let state: InputState
+    private let label: String
     private let message: Message?
     private let isPressed: Bool
     private let isFocused: Bool
@@ -21,18 +23,27 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
     public var body: some View {
         HStack(spacing: 0) {
             prefix
+                .iconColor(prefixIconColor)
+                .textColor(labelColor)
                 .padding(.leading, .small)
-                .padding(.trailing, .xSmall)
+                .padding(.trailing, -.xxSmall)
                 .padding(.vertical, verticalPadding)
 
-            content
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+                Text(label)
+                    .padding(.leading, .small)
+                    .padding(.trailing, -.xxSmall)
+                    .textColor(labelColor)
+
+                content
+            }
 
             if idealSize.horizontal != true {
                 Spacer(minLength: 0)
             }
 
             suffix
-                .padding(.leading, .xSmall)
+                .padding(.leading, -.xxSmall)
                 .padding(.trailing, .small)
                 .padding(.vertical, verticalPadding)
 
@@ -62,6 +73,18 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
     private var resolvedTextColor: Color {
         isEnabled
             ? textColor ?? state.textColor
+            : .cloudDarkActive
+    }
+
+    private var labelColor: Color {
+        isEnabled
+            ? (textColor ?? .inkNormal)
+            : .cloudDarkActive
+    }
+
+    private var prefixIconColor: Color? {
+        isEnabled
+            ? iconColor ?? textColor ?? (label.isEmpty ? .inkDark : .inkNormal)
             : .cloudDarkActive
     }
     
@@ -101,6 +124,7 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
 
     public init(
         state: InputState = .default,
+        label: String = "",
         message: Message? = nil,
         isPressed: Bool = false,
         isFocused: Bool = false,
@@ -110,6 +134,7 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
         @ViewBuilder suffix: () -> Suffix = { EmptyView() }
     ) {
         self.state = state
+        self.label = label
         self.message = message
         self.isPressed = isPressed
         self.isFocused = isFocused
@@ -134,6 +159,39 @@ struct InputContentPreviews: PreviewProvider {
 
     static var standalone: some View {
         VStack(spacing: .medium) {
+            InputContent(label: "Label") {
+                TextField(value: .constant("Value"))
+                    .padding(.horizontal, .small)
+            } prefix: {
+                Icon(.visa)
+            } suffix: {
+                Icon(.checkCircle)
+            }
+
+            InputContent(isPressed: true) {
+                EmptyView()
+            } prefix: {
+                Icon(.visa)
+            } suffix: {
+                Icon(.checkCircle)
+            }
+
+            InputContent(label: "Label") {
+                Text("Value")
+                    .padding(.horizontal, .small)
+            } suffix: {
+                Icon(.checkCircle)
+            }
+
+            InputContent(label: "Label") {
+                EmptyView()
+            } prefix: {
+                Icon(.visa)
+            } suffix: {
+                Icon(.checkCircle)
+            }
+            .disabled(true)
+
             InputContent(isPressed: true) {
                 EmptyView()
             } prefix: {
@@ -189,10 +247,11 @@ struct InputContentPreviews: PreviewProvider {
     }
 
     static var sizing: some View {
-        VStack {
+        VStack(spacing: .medium) {
             Group {
                 InputContent {
                     Text("InputContent")
+                        .padding(.horizontal, .small)
                 } prefix: {
                     Icon(.visa)
                 } suffix: {
@@ -201,6 +260,7 @@ struct InputContentPreviews: PreviewProvider {
 
                 InputContent {
                     Text("InputContent")
+                        .padding(.horizontal, .small)
                 } prefix: {
                     Icon(.visa)
                 } suffix: {
@@ -241,6 +301,7 @@ struct InputContentPreviews: PreviewProvider {
     static var custom: some View {
         InputContent(message: .error("", icon: .alertCircle)) {
             contentPlaceholder
+                .padding(.horizontal, .small)
         } prefix: {
             Icon(.visa)
         } suffix: {

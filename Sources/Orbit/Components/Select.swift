@@ -8,10 +8,8 @@ public struct Select<Prefix: View, Suffix: View>: View {
 
     public let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
 
-    @Environment(\.iconColor) private var iconColor
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
-    @Environment(\.textColor) private var textColor
 
     @Binding private var messageHeight: CGFloat
     
@@ -27,7 +25,7 @@ public struct Select<Prefix: View, Suffix: View>: View {
 
     public var body: some View {
         FieldWrapper(
-            fieldLabel,
+            defaultLabel,
             message: message,
             messageHeight: $messageHeight
         ) {
@@ -40,28 +38,21 @@ public struct Select<Prefix: View, Suffix: View>: View {
                     action()
                 },
                 label: {
-                    HStack(alignment: .firstTextBaseline, spacing: .xSmall) {
-                        Text(compactLabel)
-                            .textColor(compactLabelColor)
-
-                        Text(value ?? prompt)
-                            .textColor(valueColor)
-                            .accessibility(.selectValue)
-                    }
-                    .padding(.vertical, verticalTextPadding)
-                    .padding(.leading, leadingPadding)
-                    .padding(.trailing, trailingPadding)
+                    Text(value ?? prompt)
+                        .textColor(valueColor)
+                        .accessibility(.selectValue)
+                        .padding(.horizontal, .small)
+                        .padding(.vertical, verticalTextPadding)
                 }
             )
             .buttonStyle(
                 InputContentButtonStyle(
                     state: state,
+                    label: compactLabel,
                     message: message,
                     isPlaceholder: value == nil
                 ) {
                     prefix
-                        .iconColor(prefixIconColor)
-                        .textColor(compactLabelColor)
                         .accessibility(.selectPrefix)
                 } suffix: {
                     suffix
@@ -76,7 +67,7 @@ public struct Select<Prefix: View, Suffix: View>: View {
         .accessibility(addTraits: .isButton)
     }
 
-    private var fieldLabel: String {
+    private var defaultLabel: String {
         switch labelStyle {
             case .default:          return label
             case .compact:          return ""
@@ -90,10 +81,6 @@ public struct Select<Prefix: View, Suffix: View>: View {
         }
     }
 
-    private var compactLabelColor: Color {
-        textColor ?? .inkNormal
-    }
-
     private var valueColor: Color {
         if isEnabled {
             return value == nil
@@ -104,20 +91,8 @@ public struct Select<Prefix: View, Suffix: View>: View {
         }
     }
 
-    private var prefixIconColor: Color? {
-        iconColor ?? (compactLabel.isEmpty ? .inkDark : nil)
-    }
-
     private var messageDescription: String {
         message?.description ?? ""
-    }
-
-    private var leadingPadding: CGFloat {
-        prefix.isEmpty ? .small : 0
-    }
-
-    private var trailingPadding: CGFloat {
-        suffix.isEmpty ? .small : 0
     }
 }
 
@@ -151,7 +126,7 @@ public extension Select {
             Icon(prefix)
         } suffix: {
             Icon(suffix)
-                .iconColor(.inkNormal)
+                .iconColor(.inkDark)
         }
     }
 

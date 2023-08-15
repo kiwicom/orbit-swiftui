@@ -1,10 +1,11 @@
 import SwiftUI
 
-/// Button-like appearance for inputs that share common layout with a prefix and suffix.
+/// Orbit Button-like appearance for inputs that share common layout with a prefix and suffix.
 /// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
 public struct InputContentButtonStyle<Prefix: View, Suffix: View>: ButtonStyle {
 
     private let state: InputState
+    private let label: String
     private let message: Message?
     private let isFocused: Bool
     private let isPlaceholder: Bool
@@ -14,6 +15,7 @@ public struct InputContentButtonStyle<Prefix: View, Suffix: View>: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         InputContent(
             state: state,
+            label: label,
             message: message,
             isPressed: configuration.isPressed,
             isFocused: isFocused,
@@ -27,8 +29,10 @@ public struct InputContentButtonStyle<Prefix: View, Suffix: View>: ButtonStyle {
         }
     }
 
+    /// Creates Orbit Button-like appearance for inputs that share common layout with a prefix and suffix.
     public init(
         state: InputState = .default,
+        label: String = "",
         message: Message? = nil,
         isFocused: Bool = false,
         isPlaceholder: Bool = false,
@@ -36,6 +40,7 @@ public struct InputContentButtonStyle<Prefix: View, Suffix: View>: ButtonStyle {
         @ViewBuilder suffix: () -> Suffix = { EmptyView() }
     ) {
         self.state = state
+        self.label = label
         self.message = message
         self.isFocused = isFocused
         self.isPlaceholder = isPlaceholder
