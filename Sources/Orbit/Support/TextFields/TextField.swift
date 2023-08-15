@@ -10,6 +10,7 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
     @Environment(\.inputFieldBeginEditingIdentifiableAction) private var inputFieldBeginEditingIdentifiableAction
     @Environment(\.inputFieldEndEditingAction) private var inputFieldEndEditingAction
     @Environment(\.inputFieldEndEditingIdentifiableAction) private var inputFieldEndEditingIdentifiableAction
+    @Environment(\.inputFieldFocus) private var inputFieldFocus
     @Environment(\.inputFieldShouldReturnAction) private var inputFieldShouldReturnAction
     @Environment(\.inputFieldShouldReturnIdentifiableAction) private var inputFieldShouldReturnIdentifiableAction
     @Environment(\.inputFieldShouldChangeCharactersAction) private var inputFieldShouldChangeCharactersAction
@@ -49,6 +50,7 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
     }
 
     public func updateUIView(_ uiView: InsetableTextField, context: Context) {
+        // Prevent unwanted delegate calls when updating values from bindings
         context.coordinator.isBeingUpdated = true
 
         uiView.insets.left = leadingPadding
@@ -86,9 +88,26 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
             ]
         )
 
-        // Check if the binding value is updated to replace the text content
+        // Check if the binding value is different to replace the text content
         if value != uiView.text {
             uiView.replace(withText: value)
+        }
+
+        // Become/Resign first responder if needed
+        if let inputFieldFocus, let value = identifier {
+            switch (uiView.isFirstResponder, inputFieldFocus.binding.wrappedValue == value) {
+                case (false, true):
+                    // Needs to be dispatched
+                    Task { @MainActor in
+                        _ = uiView.becomeFirstResponder()
+                        context.coordinator.isBeingUpdated = false
+                    }
+                    return
+                case (true, false):
+                    _ = uiView.resignFirstResponder()
+                default:
+                    break
+            }
         }
 
         context.coordinator.isBeingUpdated = false
@@ -98,6 +117,7 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         Coordinator(
             identifier: identifier,
             value: $value,
+            inputFieldFocus: inputFieldFocus,
             inputFieldBeginEditingAction: inputFieldBeginEditingAction,
             inputFieldBeginEditingIdentifiableAction: inputFieldBeginEditingIdentifiableAction,
             inputFieldEndEditingAction: inputFieldEndEditingAction,
@@ -113,6 +133,7 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
 
         let identifier: AnyHashable?
         @Binding var value: String
+        let inputFieldFocus: InputFieldFocus?
         let inputFieldBeginEditingAction: () -> Void
         let inputFieldBeginEditingIdentifiableAction: (AnyHashable) -> Void
         let inputFieldEndEditingAction: () -> Void
@@ -122,12 +143,13 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         let inputFieldShouldChangeCharactersAction: ((NSString, NSRange, String) -> InputFieldShouldChangeResult)?
         let inputFieldShouldChangeCharactersIdentifiableAction: ((AnyHashable, NSString, NSRange, String) -> InputFieldShouldChangeResult)?
 
-        // Required for differentiating between actual value and binding value.
+        // Required to distinguish SwiftUI (`updateUIView`) from UIKit change
         fileprivate var isBeingUpdated = false
 
         init(
             identifier: AnyHashable?,
             value: Binding<String>,
+            inputFieldFocus: InputFieldFocus?,
             inputFieldBeginEditingAction: @escaping () -> Void,
             inputFieldBeginEditingIdentifiableAction: @escaping (AnyHashable) -> Void,
             inputFieldEndEditingAction: @escaping () -> Void,
@@ -139,6 +161,7 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         ) {
             self.identifier = identifier
             self._value = value
+            self.inputFieldFocus = inputFieldFocus
             self.inputFieldBeginEditingAction = inputFieldBeginEditingAction
             self.inputFieldBeginEditingIdentifiableAction = inputFieldBeginEditingIdentifiableAction
             self.inputFieldEndEditingAction = inputFieldEndEditingAction
@@ -150,7 +173,13 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         }
 
         public func textFieldDidBeginEditing(_ textField: UITextField) {
+            if isBeingUpdated { return }
+
             Task { @MainActor in
+                if let inputFieldFocus {
+                    inputFieldFocus.binding.wrappedValue = identifier
+                }
+
                 inputFieldBeginEditingAction()
 
                 if let identifier {
@@ -160,7 +189,13 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         }
 
         public func textFieldDidEndEditing(_ textField: UITextField) {
+            if isBeingUpdated { return }
+
             Task { @MainActor in
+                if let inputFieldFocus {
+                    inputFieldFocus.binding.wrappedValue = nil
+                }
+
                 inputFieldEndEditingAction()
 
                 if let identifier {
@@ -170,6 +205,8 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         }
 
         public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            if isBeingUpdated { return true }
+
             let shouldReturn: Bool
 
             if let inputFieldShouldReturnIdentifiableAction, let identifier {
@@ -188,6 +225,8 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         }
 
         public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+            if isBeingUpdated { return true }
+
             let text = ((textField.text ?? "") as NSString)
             let result: InputFieldShouldChangeResult
 
@@ -212,9 +251,7 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         }
 
         public func textFieldDidChangeSelection(_ textField: UITextField) {
-            guard isBeingUpdated == false else {
-                return
-            }
+            if isBeingUpdated { return }
 
             let newValue = textField.text ?? ""
 

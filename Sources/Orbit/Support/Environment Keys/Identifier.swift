@@ -18,6 +18,7 @@ public extension View {
     /// Binds a view’s identity to the given proxy value.
     ///
     /// This Orbit override adds the custom `IDPreferenceKey` preference and `identifier` environment value on top of native identity.
+    /// This `identifier` is a necessary property of components that are used in some Orbit components or modifiers.
     func identifier<ID: Hashable>(_ id: ID) -> some View {
         self
             .environment(\.identifier, id)
