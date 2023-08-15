@@ -5,7 +5,7 @@ struct InputFieldFocus {
 }
 
 struct InputFieldFocusKey: EnvironmentKey {
-    static var defaultValue: InputFieldFocus?
+    static let defaultValue: InputFieldFocus? = nil
 }
 
 extension EnvironmentValues {

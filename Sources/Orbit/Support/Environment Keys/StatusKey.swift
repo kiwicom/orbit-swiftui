@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct StatusKey: EnvironmentKey {
-    static var defaultValue: Status?
+    static let defaultValue: Status? = nil
 }
 
 public extension EnvironmentValues {

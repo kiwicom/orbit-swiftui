@@ -1,9 +1,7 @@
 import SwiftUI
 
-/// Environment key for setting the context for the `screenLayout` modifier.
-public struct ScreenLayoutPaddingKey: EnvironmentKey {
-
-    public static var defaultValue: ScreenLayoutPadding?
+struct ScreenLayoutPaddingKey: EnvironmentKey {
+    static let defaultValue: ScreenLayoutPadding? = nil
 }
 
 public extension EnvironmentValues {

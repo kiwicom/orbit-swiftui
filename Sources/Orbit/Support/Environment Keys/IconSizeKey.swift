@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct IconSizeKey: EnvironmentKey {
-    static var defaultValue: CGFloat? = nil
+    static let defaultValue: CGFloat? = nil
 }
 
 public extension EnvironmentValues {
