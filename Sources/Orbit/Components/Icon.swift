@@ -81,6 +81,7 @@ public struct Icon: View, TextBuildable, PotentiallyEmptyView {
             textAccentColor: nil,
             textColor: textColor,
             textFontWeight: textFontWeight,
+            textLineHeight: nil,
             textSize: textSize,
             sizeCategory: sizeCategory
         )
