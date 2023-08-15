@@ -14,7 +14,7 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
     @Environment(\.inputFieldEndEditingAction) private var inputFieldEndEditingAction
     @Environment(\.isEnabled) private var isEnabled
 
-    @State private var isEditing: Bool = false
+    @State private var isFocused: Bool = false
     @State private var isSecureTextRedacted: Bool = true
 
     private let label: String
@@ -47,7 +47,7 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
             InputContent(
                 state: state,
                 message: message,
-                isEditing: isEditing,
+                isFocused: isFocused,
                 isPlaceholder: value.isEmpty
             ) {
                 HStack(alignment: .firstTextBaseline, spacing: .small) {
@@ -100,11 +100,11 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
         .shouldDeleteBackwardAction(shouldDeleteBackwardAction)
         .accessibility(label: .init(label))
         .inputFieldBeginEditingAction {
-            isEditing = true
+            isFocused = true
             inputFieldBeginEditingAction()
         }
         .inputFieldEndEditingAction {
-            isEditing = false
+            isFocused = false
             inputFieldEndEditingAction()
         }
     }

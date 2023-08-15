@@ -12,7 +12,7 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
     private let state: InputState
     private let message: Message?
     private let isPressed: Bool
-    private let isEditing: Bool
+    private let isFocused: Bool
     private let isPlaceholder: Bool
     @ViewBuilder private let content: Content
     @ViewBuilder private let prefix: Prefix
@@ -44,12 +44,19 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
             backgroundColor(isPressed: isPressed).animation(.default, value: message)
         )
         .cornerRadius(BorderRadius.default)
+        .overlay(focusBorder)
         .overlay(border)
     }
 
     @ViewBuilder private var border: some View {
         RoundedRectangle(cornerRadius: BorderRadius.default)
             .strokeBorder(outlineColor(isPressed: isPressed), lineWidth: BorderWidth.active)
+    }
+
+    @ViewBuilder private var focusBorder: some View {
+        RoundedRectangle(cornerRadius: 5.5)
+            .inset(by: -2)
+            .strokeBorder(focusOutlineColor.opacity(0.1), lineWidth: BorderWidth.active)
     }
 
     private var resolvedTextColor: Color {
@@ -72,7 +79,7 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
     }
 
     private func outlineColor(isPressed: Bool) -> Color {
-        switch (message, state, isEditing) {
+        switch (message, state, isFocused) {
             case (.error, _, _):        return .redNormal
             case (.warning, _, _):      return .orangeNormal
             case (.help, _, _):         return .blueNormal
@@ -82,11 +89,21 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
         }
     }
 
+    private var focusOutlineColor: Color {
+        switch (message, isFocused) {
+            case (.error, true):        return .redNormal
+            case (.warning, true):      return .orangeNormal
+            case (.help, true):         return .blueNormal
+            case (_, true):             return .blueNormal
+            case (_, false):            return .clear
+        }
+    }
+
     public init(
         state: InputState = .default,
         message: Message? = nil,
         isPressed: Bool = false,
-        isEditing: Bool = false,
+        isFocused: Bool = false,
         isPlaceholder: Bool = false,
         @ViewBuilder content: () -> Content,
         @ViewBuilder prefix: () -> Prefix = { EmptyView() },
@@ -95,7 +112,7 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
         self.state = state
         self.message = message
         self.isPressed = isPressed
-        self.isEditing = isEditing
+        self.isFocused = isFocused
         self.isPlaceholder = isPlaceholder
         self.content = content()
         self.prefix = prefix()
@@ -117,6 +134,30 @@ struct InputContentPreviews: PreviewProvider {
 
     static var standalone: some View {
         VStack(spacing: .medium) {
+            InputContent(isPressed: true) {
+                EmptyView()
+            } prefix: {
+                Icon(.visa)
+            } suffix: {
+                Icon(.checkCircle)
+            }
+
+            InputContent(isFocused: true) {
+                EmptyView()
+            } prefix: {
+                Icon(.visa)
+            } suffix: {
+                Icon(.checkCircle)
+            }
+
+            InputContent(message: .error("Error"), isFocused: true) {
+                EmptyView()
+            } prefix: {
+                Icon(.visa)
+            } suffix: {
+                Icon(.checkCircle)
+            }
+
             InputContent(state: .modified) {
                 EmptyView()
             } prefix: {
