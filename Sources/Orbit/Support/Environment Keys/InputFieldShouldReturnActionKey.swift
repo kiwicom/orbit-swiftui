@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct InputFieldShouldReturnActionKey: EnvironmentKey {
-    static var defaultValue: (() -> Bool)?
+    static let defaultValue: (() -> Bool)? = nil
 }
 
 struct InputFieldShouldReturnIdentifiableActionKey: EnvironmentKey {
-    static var defaultValue: ((AnyHashable) -> Bool)?
+    static let defaultValue: ((AnyHashable) -> Bool)? = nil
 }
 
 public extension EnvironmentValues {

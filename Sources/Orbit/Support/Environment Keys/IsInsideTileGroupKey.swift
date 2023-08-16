@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct IsInsideTileGroupKey: EnvironmentKey {
-    static var defaultValue: Bool = false
+    static let defaultValue: Bool = false
 }
 
 extension EnvironmentValues {

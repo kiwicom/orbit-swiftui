@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct InputFieldShouldChangeCharactersActionKey: EnvironmentKey {
-    static var defaultValue: ((NSString, NSRange, String) -> InputFieldShouldChangeResult)?
+    static let defaultValue: ((NSString, NSRange, String) -> InputFieldShouldChangeResult)? = nil
 }
 
 struct InputFieldShouldChangeCharactersIdentifiableActionKey: EnvironmentKey {
-    static var defaultValue: ((AnyHashable, NSString, NSRange, String) -> InputFieldShouldChangeResult)?
+    static let defaultValue: ((AnyHashable, NSString, NSRange, String) -> InputFieldShouldChangeResult)? = nil
 }
 
 public extension EnvironmentValues {

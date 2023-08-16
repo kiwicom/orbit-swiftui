@@ -1,8 +1,7 @@
 import SwiftUI
 
-/// Environment key for driving fade in animation.
-public struct IsFadeInEnabledKey: EnvironmentKey {
-    public static var defaultValue: Bool = true
+struct IsFadeInEnabledKey: EnvironmentKey {
+    static let defaultValue: Bool = true
 }
 
 public extension EnvironmentValues {

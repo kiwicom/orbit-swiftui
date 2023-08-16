@@ -6,7 +6,7 @@ struct IdealSizeValue {
 }
 
 struct IdealSizeKey: EnvironmentKey {
-    static var defaultValue = IdealSizeValue()
+    static let defaultValue = IdealSizeValue()
 }
 
 extension EnvironmentValues {

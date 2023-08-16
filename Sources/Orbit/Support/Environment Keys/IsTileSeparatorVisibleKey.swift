@@ -1,8 +1,7 @@
 import SwiftUI
 
-/// Environment key for setting the visibility of separators in ``Tile``.
-public struct IsTileSeparatorVisibleKey: EnvironmentKey {
-    public static var defaultValue: Bool = true
+struct IsTileSeparatorVisibleKey: EnvironmentKey {
+    static let defaultValue: Bool = true
 }
 
 public extension EnvironmentValues {

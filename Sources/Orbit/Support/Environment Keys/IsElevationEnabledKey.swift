@@ -1,8 +1,7 @@
 import SwiftUI
 
-/// Environment key for disabling built-in elevation in Orbit components.
-public struct IsElevationEnabledKey: EnvironmentKey {
-    public static var defaultValue: Bool = true
+struct IsElevationEnabledKey: EnvironmentKey {
+    static let defaultValue: Bool = true
 }
 
 public extension EnvironmentValues {

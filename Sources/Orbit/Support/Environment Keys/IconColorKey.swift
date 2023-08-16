@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct IconColorKey: EnvironmentKey {
-    static var defaultValue: Color? = nil
+    static let defaultValue: Color? = nil
 }
 
 public extension EnvironmentValues {

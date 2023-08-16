@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct IdentifierKey: EnvironmentKey {
-    static var defaultValue: AnyHashable? = nil
+    static let defaultValue: AnyHashable? = nil
 }
 
 public extension EnvironmentValues {

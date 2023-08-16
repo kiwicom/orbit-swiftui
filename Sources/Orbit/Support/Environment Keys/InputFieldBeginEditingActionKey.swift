@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct InputFieldBeginEditingActionKey: EnvironmentKey {
-    static var defaultValue: () -> Void = {}
+    static let defaultValue: () -> Void = {}
 }
 
 struct InputFieldBeginEditingIdentifiableActionKey: EnvironmentKey {
-    static var defaultValue: (AnyHashable) -> Void = { _ in }
+    static let defaultValue: (AnyHashable) -> Void = { _ in }
 }
 
 public extension EnvironmentValues {

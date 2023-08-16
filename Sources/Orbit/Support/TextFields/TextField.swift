@@ -11,6 +11,8 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
     @Environment(\.inputFieldEndEditingAction) private var inputFieldEndEditingAction
     @Environment(\.inputFieldEndEditingIdentifiableAction) private var inputFieldEndEditingIdentifiableAction
     @Environment(\.inputFieldFocus) private var inputFieldFocus
+    @Environment(\.inputFieldReturnAction) private var inputFieldReturnAction
+    @Environment(\.inputFieldReturnIdentifiableAction) private var inputFieldReturnIdentifiableAction
     @Environment(\.inputFieldShouldReturnAction) private var inputFieldShouldReturnAction
     @Environment(\.inputFieldShouldReturnIdentifiableAction) private var inputFieldShouldReturnIdentifiableAction
     @Environment(\.inputFieldShouldChangeCharactersAction) private var inputFieldShouldChangeCharactersAction
@@ -130,6 +132,8 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
             inputFieldBeginEditingIdentifiableAction: inputFieldBeginEditingIdentifiableAction,
             inputFieldEndEditingAction: inputFieldEndEditingAction,
             inputFieldEndEditingIdentifiableAction: inputFieldEndEditingIdentifiableAction,
+            inputFieldReturnAction: inputFieldReturnAction,
+            inputFieldReturnIdentifiableAction: inputFieldReturnIdentifiableAction,
             inputFieldShouldReturnAction: inputFieldShouldReturnAction,
             inputFieldShouldReturnIdentifiableAction: inputFieldShouldReturnIdentifiableAction,
             inputFieldShouldChangeCharactersAction: inputFieldShouldChangeCharactersAction,
@@ -158,6 +162,8 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         let inputFieldBeginEditingIdentifiableAction: (AnyHashable) -> Void
         let inputFieldEndEditingAction: () -> Void
         let inputFieldEndEditingIdentifiableAction: (AnyHashable) -> Void
+        let inputFieldReturnAction: (() -> Void)?
+        let inputFieldReturnIdentifiableAction: ((AnyHashable) -> Void)?
         let inputFieldShouldReturnAction: (() -> Bool)?
         let inputFieldShouldReturnIdentifiableAction: ((AnyHashable) -> Bool)?
         let inputFieldShouldChangeCharactersAction: ((NSString, NSRange, String) -> InputFieldShouldChangeResult)?
@@ -174,6 +180,8 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
             inputFieldBeginEditingIdentifiableAction: @escaping (AnyHashable) -> Void,
             inputFieldEndEditingAction: @escaping () -> Void,
             inputFieldEndEditingIdentifiableAction: @escaping (AnyHashable) -> Void,
+            inputFieldReturnAction: (() -> Void)?,
+            inputFieldReturnIdentifiableAction: ((AnyHashable) -> Void)?,
             inputFieldShouldReturnAction: (() -> Bool)?,
             inputFieldShouldReturnIdentifiableAction: ((AnyHashable) -> Bool)?,
             inputFieldShouldChangeCharactersAction: ((NSString, NSRange, String) -> InputFieldShouldChangeResult)?,
@@ -186,6 +194,8 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
             self.inputFieldBeginEditingIdentifiableAction = inputFieldBeginEditingIdentifiableAction
             self.inputFieldEndEditingAction = inputFieldEndEditingAction
             self.inputFieldEndEditingIdentifiableAction = inputFieldEndEditingIdentifiableAction
+            self.inputFieldReturnAction = inputFieldReturnAction
+            self.inputFieldReturnIdentifiableAction = inputFieldReturnIdentifiableAction
             self.inputFieldShouldReturnAction = inputFieldShouldReturnAction
             self.inputFieldShouldReturnIdentifiableAction = inputFieldShouldReturnIdentifiableAction
             self.inputFieldShouldChangeCharactersAction = inputFieldShouldChangeCharactersAction
@@ -239,6 +249,14 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
 
             if shouldReturn {
                 textField.resignFirstResponder()
+
+                Task { @MainActor in
+                    if let inputFieldReturnIdentifiableAction, let identifier {
+                        inputFieldReturnIdentifiableAction(identifier)
+                    } else if let inputFieldReturnAction {
+                        inputFieldReturnAction()
+                    }
+                }
             }
 
             return shouldReturn
