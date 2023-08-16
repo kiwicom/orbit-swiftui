@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
     - uses: actions/checkout@v3
     - name: Build
@@ -31,7 +31,7 @@ jobs:
       matrix:
         device: ["iPhone SE (3rd generation)", "iPad (9th generation)"]
         os_version: ["16.2"]
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
     - uses: actions/checkout@v3
     - name: Test
