@@ -4,10 +4,12 @@ struct ConcatenatedText: View {
 
     @Environment(\.iconColor) var iconColor
     @Environment(\.iconSize) var iconSize
+    @Environment(\.lineSpacing) var lineSpacing
     @Environment(\.sizeCategory) var sizeCategory
     @Environment(\.textAccentColor) var textAccentColor
     @Environment(\.textColor) var textColor
     @Environment(\.textFontWeight) var textFontWeight
+    @Environment(\.textLineHeight) var textLineHeight
     @Environment(\.textSize) var textSize
 
     let content: (TextRepresentableEnvironment) -> SwiftUI.Text?
@@ -15,6 +17,14 @@ struct ConcatenatedText: View {
     var body: some View {
         if let content = content(textRepresentableEnvironment) {
             content
+                .lineSpacing(
+                    textRepresentableEnvironment.lineSpacingAdjusted(lineSpacing, lineHeight: textLineHeight, size: textSize)
+                )
+                .padding(
+                    .vertical,
+                    textRepresentableEnvironment.lineHeightPadding(lineHeight: textLineHeight, size: textSize)
+                )
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -25,6 +35,7 @@ struct ConcatenatedText: View {
             textAccentColor: textAccentColor,
             textColor: textColor,
             textFontWeight: textFontWeight,
+            textLineHeight: textLineHeight,
             textSize: textSize,
             sizeCategory: sizeCategory
         )

@@ -50,12 +50,12 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
     public var body: some View {
         if isEmpty == false {
             text(textRepresentableEnvironment: textRepresentableEnvironment)
-                .lineSpacing(lineSpacingAdjusted(sizeCategory: sizeCategory))
+                .lineSpacing(lineSpacingAdjusted)
                 .overlay(copyableText)
                 // If the text contains links, the TextLink overlay takes accessibility priority
                 .accessibility(hidden: content.containsTextLinks)
                 .overlay(textLinks)
-                .padding(.vertical, lineHeightPadding(textRepresentableEnvironment))
+                .padding(.vertical, textRepresentableEnvironment.lineHeightPadding(lineHeight: lineHeight, size: size))
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -89,15 +89,11 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
                 fontWeightWrapper(
                     boldWrapper(
                         SwiftUI.Text(verbatim: content)
-                            .foregroundColor(resolvedColor(textRepresentableEnvironment))
+                            .foregroundColor(textRepresentableEnvironment.resolvedColor(color))
                     )
                 )
             )
-            .orbitFont(
-                size: resolvedSize(textRepresentableEnvironment),
-                weight: resolvedFontWeight(textRepresentableEnvironment) ?? .regular,
-                sizeCategory: textRepresentableEnvironment.sizeCategory
-            )
+            .font(textRepresentableEnvironment.font(size: size, weight: fontWeight, isBold: isBold))
         }
     }
 
@@ -108,6 +104,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
             textAccentColor: textAccentColor,
             textColor: textColor,
             textFontWeight: textFontWeight,
+            textLineHeight: lineHeight,
             textSize: textSize,
             sizeCategory: sizeCategory
         )
@@ -217,9 +214,9 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
         TagAttributedStringBuilder.all.attributedString(
             content,
             alignment: multilineTextAlignment,
-            fontSize: scaledSize(textRepresentableEnvironment),
-            fontWeight: resolvedFontWeight(textRepresentableEnvironment),
-            lineSpacing: lineSpacingAdjusted(sizeCategory: sizeCategory),
+            fontSize: textRepresentableEnvironment.scaledSize(size),
+            fontWeight: textRepresentableEnvironment.resolvedFontWeight(fontWeight, isBold: isBold),
+            lineSpacing: lineSpacingAdjusted,
             kerning: kerning,
             strikethrough: strikethrough ?? false,
             color: .clear,
@@ -234,55 +231,18 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
         TagAttributedStringBuilder.all.attributedString(
             content,
             alignment: multilineTextAlignment,
-            fontSize: resolvedSize(textRepresentableEnvironment) * textRepresentableEnvironment.sizeCategory.ratio,
-            fontWeight: resolvedFontWeight(textRepresentableEnvironment),
-            lineSpacing: lineSpacingAdjusted(sizeCategory: textRepresentableEnvironment.sizeCategory),
+            fontSize: textRepresentableEnvironment.scaledSize(size),
+            fontWeight: textRepresentableEnvironment.resolvedFontWeight(fontWeight, isBold: isBold),
+            lineSpacing: lineSpacingAdjusted,
             kerning: kerning,
-            color: resolvedColor(textRepresentableEnvironment).uiColor,
+            color: textRepresentableEnvironment.resolvedColor(color).uiColor,
             linkColor: isConcatenated ? nil : .clear,
-            accentColor: resolvedAccentColor(textRepresentableEnvironment).uiColor
+            accentColor: textRepresentableEnvironment.resolvedAccentColor(accentColor, color: color).uiColor
         )
     }
 
-    private func resolvedAccentColor(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> Color {
-        accentColor
-            ?? textRepresentableEnvironment.textAccentColor
-            ?? resolvedColor(textRepresentableEnvironment)
-    }
-
-    private func resolvedColor(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> Color {
-        color ?? textRepresentableEnvironment.textColor ?? .inkDark
-    }
-
-    private func resolvedSize(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
-        (size ?? textRepresentableEnvironment.textSize ?? Size.normal.value)
-    }
-
-    private func resolvedFontWeight(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> Font.Weight? {
-        isBold == true ? .bold : fontWeight ?? textRepresentableEnvironment.textFontWeight
-    }
-
-    private func designatedLineHeight(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
-        (lineHeight ?? textLineHeight ?? (Text.Size.lineHeight(forTextSize: resolvedSize(textRepresentableEnvironment))))
-            * textRepresentableEnvironment.sizeCategory.ratio
-    }
-
-    private func lineHeightPadding(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
-        (designatedLineHeight(textRepresentableEnvironment) - originalLineHeight(textRepresentableEnvironment)) / 2
-    }
-
-    private func lineSpacingAdjusted(sizeCategory: ContentSizeCategory) -> CGFloat {
-        designatedLineHeight(textRepresentableEnvironment)
-        - originalLineHeight(textRepresentableEnvironment)
-        + lineSpacing
-    }
-
-    private func originalLineHeight(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
-        UIFont.lineHeight(size: scaledSize(textRepresentableEnvironment))
-    }
-
-    private func scaledSize(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
-        resolvedSize(textRepresentableEnvironment) * textRepresentableEnvironment.sizeCategory.ratio
+    private var lineSpacingAdjusted: CGFloat {
+        textRepresentableEnvironment.lineSpacingAdjusted(lineSpacing, lineHeight: lineHeight, size: size)
     }
 }
 
