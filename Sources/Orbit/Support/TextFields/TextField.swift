@@ -64,47 +64,53 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
     }
 
     public func updateUIView(_ uiView: InsetableTextField, context: Context) {
-        // Prevent unwanted delegate calls when updating values from bindings
+        // Prevent delegate call cycle when updating values from SwiftUI
         context.coordinator.isBeingUpdated = true
 
-        uiView.insets.left = leadingPadding
-        uiView.insets.right = trailingPadding
-        uiView.isSecureTextEntry = isSecureTextEntry
+        uiView.updateIfNeeded(\.insets.left, to: leadingPadding)
+        uiView.updateIfNeeded(\.insets.right, to: trailingPadding)
+        uiView.updateIfNeeded(\.isSecureTextEntry, to: isSecureTextEntry)
 
         // Keyboard related
-        uiView.returnKeyType = returnKeyType
-        uiView.keyboardType = keyboardType
-        uiView.textContentType = textContentType
+        uiView.updateIfNeeded(\.returnKeyType, to: returnKeyType)
+        uiView.updateIfNeeded(\.keyboardType, to: keyboardType)
+        uiView.updateIfNeeded(\.textContentType, to: textContentType)
+
+        let autocorrectionType: UITextAutocorrectionType
 
         if let isAutocorrectionDisabled {
-            uiView.autocorrectionType = isAutocorrectionDisabled ? .no : .yes
+            autocorrectionType = isAutocorrectionDisabled ? .no : .yes
         } else {
             switch textContentType {
                 case UITextContentType.emailAddress, UITextContentType.password, UITextContentType.newPassword:
                     // If not specified, disable autocomplete for these content types
-                    uiView.autocorrectionType = .no
+                    autocorrectionType = .no
                 default:
-                    uiView.autocorrectionType = .default
+                    autocorrectionType = .default
             }
         }
 
-        uiView.autocapitalizationType = autocapitalizationType
+        uiView.updateIfNeeded(\.autocorrectionType, to: autocorrectionType)
+        uiView.updateIfNeeded(\.autocapitalizationType, to: autocapitalizationType)
         uiView.shouldDeleteBackwardAction = shouldDeleteBackwardAction
 
         if resolvedTextSize != context.coordinator.fontSize || resolvedTextWeight != context.coordinator.fontWeight {
-            uiView.font = .orbit(size: resolvedTextSize, weight: resolvedTextWeight)
+            uiView.font = UIFont.orbit(size: resolvedTextSize, weight: resolvedTextWeight)
             context.coordinator.fontSize = resolvedTextSize
             context.coordinator.fontWeight = resolvedTextWeight
         }
 
-        uiView.textColor = isEnabled ? (textColor ?? state.textColor).uiColor : .cloudDarkActive
-        uiView.isEnabled = isEnabled
+        uiView.updateIfNeeded(\.textColor, to: isEnabled ? (textColor ?? state.textColor).uiColor : .cloudDarkActive)
+        uiView.updateIfNeeded(\.isEnabled, to: isEnabled)
 
-        uiView.attributedPlaceholder = .init(
-            string: prompt,
-            attributes: [
-                .foregroundColor: isEnabled ? state.placeholderColor.uiColor : .cloudDarkActive
-            ]
+        uiView.updateIfNeeded(
+            \.attributedPlaceholder,
+             to: .init(
+                string: prompt,
+                attributes: [
+                    .foregroundColor: isEnabled ? state.placeholderColor.uiColor : .cloudDarkActive
+                ]
+             )
         )
 
         // Check if the binding value is different to replace the text content
@@ -112,28 +118,31 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
             uiView.replace(withText: value)
         }
 
-        // Become/Resign first responder if needed
-        if let inputFieldFocus, let value = identifier {
-            switch (uiView.isFirstResponder, inputFieldFocus.binding.wrappedValue == value) {
-                case (false, true):
-                    // Needs to be dispatched
-                    Task { @MainActor in
-                        _ = uiView.becomeFirstResponder()
-                        context.coordinator.isBeingUpdated = false
-                    }
-                    return
-                case (true, false):
-                    _ = uiView.resignFirstResponder()
-                default:
-                    break
+        // Become/Resign first responder if needed.
+        // Only relevant to fields with identifier and Orbit focus modifier applied.
+        // Not relevant for fields driven by iOS15+ @FocusState
+        if let inputFieldFocus, let identifier {
+
+            if let valueToUpdate = context.coordinator.valueToUpdate.first, valueToUpdate != inputFieldFocus.binding.wrappedValue {
+                // Updated binding value from UIKit was not yet updated, ignoring
+                context.coordinator.isBeingUpdated = false
+                return
+            }
+
+            if uiView.isFirstResponder == false && inputFieldFocus.binding.wrappedValue == identifier {
+                uiView.toggleKeyboardFocus(true, coordinator: context.coordinator)
+                return
+            } else if uiView.isFirstResponder && inputFieldFocus.binding.wrappedValue != identifier {
+                uiView.toggleKeyboardFocus(false, coordinator: context.coordinator)
+                return
             }
         }
 
         context.coordinator.isBeingUpdated = false
     }
 
-    public func makeCoordinator() -> Coordinator {
-        Coordinator(
+    public func makeCoordinator() -> TextFieldCoordinator {
+        TextFieldCoordinator(
             identifier: identifier,
             value: $value,
             inputFieldFocus: inputFieldFocus,
@@ -156,159 +165,6 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
 
     private var resolvedTextWeight: UIFont.Weight {
         (textFontWeight ?? .regular).uiKit
-    }
-
-    public final class Coordinator: NSObject, UITextFieldDelegate, ObservableObject {
-
-        let identifier: AnyHashable?
-        @Binding var value: String
-
-        var fontSize: CGFloat = 0
-        var fontWeight: UIFont.Weight = .regular
-
-        let inputFieldFocus: InputFieldFocus?
-        let inputFieldBeginEditingAction: () -> Void
-        let inputFieldBeginEditingIdentifiableAction: (AnyHashable) -> Void
-        let inputFieldEndEditingAction: () -> Void
-        let inputFieldEndEditingIdentifiableAction: (AnyHashable) -> Void
-        let inputFieldReturnAction: (() -> Void)?
-        let inputFieldReturnIdentifiableAction: ((AnyHashable) -> Void)?
-        let inputFieldShouldReturnAction: (() -> Bool)?
-        let inputFieldShouldReturnIdentifiableAction: ((AnyHashable) -> Bool)?
-        let inputFieldShouldChangeCharactersAction: ((NSString, NSRange, String) -> InputFieldShouldChangeResult)?
-        let inputFieldShouldChangeCharactersIdentifiableAction: ((AnyHashable, NSString, NSRange, String) -> InputFieldShouldChangeResult)?
-
-        // Required to distinguish SwiftUI (`updateUIView`) from UIKit change
-        fileprivate var isBeingUpdated = false
-
-        init(
-            identifier: AnyHashable?,
-            value: Binding<String>,
-            inputFieldFocus: InputFieldFocus?,
-            inputFieldBeginEditingAction: @escaping () -> Void,
-            inputFieldBeginEditingIdentifiableAction: @escaping (AnyHashable) -> Void,
-            inputFieldEndEditingAction: @escaping () -> Void,
-            inputFieldEndEditingIdentifiableAction: @escaping (AnyHashable) -> Void,
-            inputFieldReturnAction: (() -> Void)?,
-            inputFieldReturnIdentifiableAction: ((AnyHashable) -> Void)?,
-            inputFieldShouldReturnAction: (() -> Bool)?,
-            inputFieldShouldReturnIdentifiableAction: ((AnyHashable) -> Bool)?,
-            inputFieldShouldChangeCharactersAction: ((NSString, NSRange, String) -> InputFieldShouldChangeResult)?,
-            inputFieldShouldChangeCharactersIdentifiableAction: ((AnyHashable, NSString, NSRange, String) -> InputFieldShouldChangeResult)?
-        ) {
-            self.identifier = identifier
-            self._value = value
-            self.inputFieldFocus = inputFieldFocus
-            self.inputFieldBeginEditingAction = inputFieldBeginEditingAction
-            self.inputFieldBeginEditingIdentifiableAction = inputFieldBeginEditingIdentifiableAction
-            self.inputFieldEndEditingAction = inputFieldEndEditingAction
-            self.inputFieldEndEditingIdentifiableAction = inputFieldEndEditingIdentifiableAction
-            self.inputFieldReturnAction = inputFieldReturnAction
-            self.inputFieldReturnIdentifiableAction = inputFieldReturnIdentifiableAction
-            self.inputFieldShouldReturnAction = inputFieldShouldReturnAction
-            self.inputFieldShouldReturnIdentifiableAction = inputFieldShouldReturnIdentifiableAction
-            self.inputFieldShouldChangeCharactersAction = inputFieldShouldChangeCharactersAction
-            self.inputFieldShouldChangeCharactersIdentifiableAction = inputFieldShouldChangeCharactersIdentifiableAction
-        }
-
-        public func textFieldDidBeginEditing(_ textField: UITextField) {
-            if isBeingUpdated { return }
-
-            Task { @MainActor in
-                if let inputFieldFocus {
-                    inputFieldFocus.binding.wrappedValue = identifier
-                }
-
-                inputFieldBeginEditingAction()
-
-                if let identifier {
-                    inputFieldBeginEditingIdentifiableAction(identifier)
-                }
-            }
-        }
-
-        public func textFieldDidEndEditing(_ textField: UITextField) {
-            if isBeingUpdated { return }
-
-            Task { @MainActor in
-                if let inputFieldFocus {
-                    inputFieldFocus.binding.wrappedValue = nil
-                }
-
-                inputFieldEndEditingAction()
-
-                if let identifier {
-                    inputFieldEndEditingIdentifiableAction(identifier)
-                }
-            }
-        }
-
-        public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-            if isBeingUpdated { return true }
-
-            let shouldReturn: Bool
-
-            if let inputFieldShouldReturnIdentifiableAction, let identifier {
-                shouldReturn = inputFieldShouldReturnIdentifiableAction(identifier)
-            } else if let inputFieldShouldReturnAction {
-                shouldReturn = inputFieldShouldReturnAction()
-            } else {
-                shouldReturn = true
-            }
-
-            if shouldReturn {
-                textField.resignFirstResponder()
-
-                Task { @MainActor in
-                    if let inputFieldReturnIdentifiableAction, let identifier {
-                        inputFieldReturnIdentifiableAction(identifier)
-                    } else if let inputFieldReturnAction {
-                        inputFieldReturnAction()
-                    }
-                }
-            }
-
-            return shouldReturn
-        }
-
-        public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-            if isBeingUpdated { return true }
-
-            let text = ((textField.text ?? "") as NSString)
-            let result: InputFieldShouldChangeResult
-
-            if let inputFieldShouldChangeCharactersIdentifiableAction, let identifier {
-                result = inputFieldShouldChangeCharactersIdentifiableAction(identifier, text, range, string)
-            } else if let inputFieldShouldChangeCharactersAction {
-                result = inputFieldShouldChangeCharactersAction(text, range, string)
-            } else {
-                result = .accept
-            }
-
-            switch result {
-                case .accept:
-                    return true
-                case .replace(let modifiedValue):
-                    // Refuse the proposed change, replace the text with modified value
-                    textField.text = modifiedValue
-                    return false
-                case .reject:
-                    return false
-            }
-        }
-
-        public func textFieldDidChangeSelection(_ textField: UITextField) {
-            if isBeingUpdated { return }
-
-            let newValue = textField.text ?? ""
-
-            if value != newValue {
-                // This is a safer place to report the actual value, as it can be modified by system silently.
-                // Example: `emailAddress` type being hijacked by system when using autocomplete
-                // https://github.com/lionheart/openradar-mirror/issues/18086
-                value = newValue
-            }
-        }
     }
 }
 
@@ -343,6 +199,17 @@ public enum InputFieldShouldChangeResult {
     case reject
     /// Specifies that proposed changes should not be accepted and the current value of `InputField` should be replaced with proposed `replacementValue` instead.
     case replace(_ replacementValue: String)
+}
+
+private extension InsetableTextField {
+
+    @discardableResult
+    func updateIfNeeded<Value: Equatable>(_ path: ReferenceWritableKeyPath<InsetableTextField, Value>, to value: Value) -> Self {
+        if value != self[keyPath: path] {
+            self[keyPath: path] = value
+        }
+        return self
+    }
 }
 
 // MARK: - Previews
