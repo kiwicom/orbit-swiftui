@@ -1,7 +1,16 @@
 import SwiftUI
 import UIKit
 
-/// Orbit wrapper over `UITextField` with larger touch area and action handling.
+/// Orbit control that displays an editable text interface, a replacement for native `TextField` component.
+///
+/// The component uses UIKit implementation to support these feature for older iOS versions:
+/// - focus changes
+/// - UITextField event handling
+/// - full UITextField configuration
+/// - font and text override
+/// - larger and configurable touch area
+///
+/// The component is compatible with native `@FocusState` modifier to support focus changes in later iOS versions.
 public struct TextField: UIViewRepresentable, TextFieldBuildable {
 
     @Environment(\.identifier) private var identifier

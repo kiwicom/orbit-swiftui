@@ -5,6 +5,8 @@ import UIKit
 ///
 /// When you have additional information or helpful examples, include prompt text to help users along.
 ///
+/// The custom Orbit version of ``TextField`` component is used internally.
+///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/inputfield/)
 /// - Important: Component expands horizontally unless prevented by `fixedSize` modifier.
 public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
