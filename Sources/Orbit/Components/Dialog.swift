@@ -92,42 +92,20 @@ public enum DialogButtonsBuilder {
     }
 
     public static func buildBlock(_ primary: some View) -> some View {
-        primary
-            .suppressButtonStyle()
-            .buttonStyle(OrbitButtonStyle(type: .status(nil)))
-            .accessibility(.dialogButtonPrimary)
+        primaryButton(primary)
     }
 
     @ViewBuilder
     public static func buildBlock(_ primary: some View, _ secondary: some View) -> some View {
-        primary
-            .suppressButtonStyle()
-            .buttonStyle(OrbitButtonStyle(type: .status(nil)))
-            .accessibility(.dialogButtonPrimary)
-
-        secondary
-            .suppressButtonStyle()
-            .buttonStyle(OrbitButtonLinkButtonStyle(type: .status(nil)))
-            .buttonSize(.default)
+        primaryButton(primary)
+        secondaryButton(secondary)
     }
 
     @ViewBuilder
     public static func buildBlock(_ primary: some View, _ secondary: some View, _ tertiary: some View) -> some View {
-        primary
-            .suppressButtonStyle()
-            .buttonStyle(OrbitButtonStyle(type: .status(nil)))
-            .accessibility(.dialogButtonPrimary)
-
-        Group {
-            secondary
-                .accessibility(.dialogButtonSecondary)
-
-            tertiary
-                .accessibility(.dialogButtonTertiary)
-        }
-        .suppressButtonStyle()
-        .buttonStyle(OrbitButtonLinkButtonStyle(type: .status(nil)))
-        .buttonSize(.default)
+        primaryButton(primary)
+        secondaryButton(secondary)
+        tertiaryButton(tertiary)
     }
 
     public static func buildOptional<V: View>(_ component: V?) -> V? {
@@ -140,6 +118,30 @@ public enum DialogButtonsBuilder {
 
     public static func buildEither<T: View, F: View>(second view: F) -> _ConditionalContent<T, F> {
         .init(content: .falseView(view))
+    }
+
+    static func primaryButton(_ content: some View) -> some View {
+        content
+            .suppressButtonStyle()
+            .buttonStyle(OrbitButtonStyle(type: .status(nil)))
+            .accessibility(.dialogButtonPrimary)
+    }
+
+    static func nonPrimaryButton(_ content: some View) -> some View {
+        content
+            .suppressButtonStyle()
+            .buttonStyle(OrbitButtonLinkButtonStyle(type: .status(nil)))
+            .buttonSize(.default)
+    }
+
+    static func secondaryButton(_ content: some View) -> some View {
+        nonPrimaryButton(content)
+            .accessibility(.dialogButtonSecondary)
+    }
+
+    static func tertiaryButton(_ content: some View) -> some View {
+        nonPrimaryButton(content)
+            .accessibility(.dialogButtonTertiary)
     }
 }
 
