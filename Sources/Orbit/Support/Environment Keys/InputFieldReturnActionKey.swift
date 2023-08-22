@@ -1,23 +1,23 @@
 import SwiftUI
 
 struct InputFieldReturnActionKey: EnvironmentKey {
-    static let defaultValue: (() -> Void)? = nil
+    static let defaultValue: () -> Void = {}
 }
 
 struct InputFieldReturnIdentifiableActionKey: EnvironmentKey {
-    static let defaultValue: ((AnyHashable) -> Void)? = nil
+    static let defaultValue: (AnyHashable) -> Void = { _ in }
 }
 
 public extension EnvironmentValues {
 
     /// An Orbit `inputFieldReturnAction` action for `InputField` stored in a view’s environment.
-    var inputFieldReturnAction: (() -> Void)? {
+    var inputFieldReturnAction: () -> Void {
         get { self[InputFieldReturnActionKey.self] }
         set { self[InputFieldReturnActionKey.self] = newValue }
     }
 
     /// An Orbit `inputFieldReturnIdentifiableAction` action for identifiable `InputField` stored in a view’s environment.
-    var inputFieldReturnIdentifiableAction: ((AnyHashable) -> Void)? {
+    var inputFieldReturnIdentifiableAction: (AnyHashable) -> Void {
         get { self[InputFieldReturnIdentifiableActionKey.self] }
         set { self[InputFieldReturnIdentifiableActionKey.self] = newValue }
     }
