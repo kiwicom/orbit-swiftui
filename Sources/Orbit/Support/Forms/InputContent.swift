@@ -34,6 +34,9 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
                     .padding(.leading, .small)
                     .padding(.trailing, -.xxSmall)
                     .textColor(labelColor)
+                    // Component should expose label as part of content
+                    .accessibility(hidden: true)
+                    .accessibility(removeTraits: .isStaticText)
 
                 content
             }
