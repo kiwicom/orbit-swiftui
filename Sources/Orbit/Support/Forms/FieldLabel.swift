@@ -8,19 +8,12 @@ public struct FieldLabel: View {
     public var body: some View {
         Text(label)
             .fontWeight(.medium)
-            .accessibility(.fieldLabel)
     }
 
     /// Create Orbit form field label.
     public init(_ label: String) {
         self.label = label
     }
-}
-
-// MARK: - Identifiers
-public extension AccessibilityID {
-
-    static let fieldLabel = Self(rawValue: "orbit.field.label")
 }
 
 // MARK: - Previews
