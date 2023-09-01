@@ -105,6 +105,7 @@ public struct Tile<Content: View, Icon: View>: View {
                 EmptyView()
             case .buttonLink(let label, let type):
                 ButtonLink(label, type: type, action: {})
+                    .buttonSize(.compact)
                     .textColor(nil)
                     .disabled(true)
                     .padding(.vertical, -.xxSmall)

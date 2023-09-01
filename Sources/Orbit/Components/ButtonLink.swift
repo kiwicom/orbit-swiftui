@@ -153,7 +153,7 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
     }
 
     var resolvedButtonSize: ButtonSize {
-        buttonSize ?? .compact
+        buttonSize ?? .regular
     }
 
     var idealSizeHorizontal: Bool? {
@@ -195,28 +195,28 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
 
     var horizontalPadding: CGFloat {
         switch resolvedButtonSize {
-            case .default:  return .small
+            case .regular:  return .small
             case .compact:  return 0
         }
     }
 
     var verticalPadding: CGFloat {
         switch resolvedButtonSize {
-            case .default:  return .small   // = 44 height @ normal size
+            case .regular:  return .small   // = 44 height @ normal size
             case .compact:  return 6        // = 32 height @ normal size
         }
     }
 
     var horizontalBackgroundPadding: CGFloat {
         switch resolvedButtonSize {
-            case .default:  return 0
+            case .regular:  return 0
             case .compact:  return .xSmall
         }
     }
 
     var verticalBackgroundPadding: CGFloat {
         switch resolvedButtonSize {
-            case .default:  return 0
+            case .regular:  return 0
             case .compact:  return .xxxSmall
         }
     }
@@ -240,13 +240,14 @@ struct ButtonLinkPreviews: PreviewProvider {
     static var standalone: some View {
         VStack(spacing: 0) {
             ButtonLink("ButtonLink", action: {})
-                .buttonSize(.default)
+                .buttonSize(.regular)
             ButtonLink("ButtonLink", type: .critical, action: {})
-                .buttonSize(.default)
+                .buttonSize(.regular)
             ButtonLink("ButtonLink", action: {})
             ButtonLink("", action: {}) // EmptyView
             ButtonLink(action: {})   // EmptyView
         }
+        .buttonSize(.compact)
         .padding(.medium)
         .previewDisplayName()
     }
@@ -255,9 +256,9 @@ struct ButtonLinkPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .xSmall) {
             Group {
                 ButtonLink("ButtonLink", action: {})
-                    .buttonSize(.default)
+                    .buttonSize(.regular)
                 ButtonLink("ButtonLink", icon: .grid, action: {})
-                    .buttonSize(.default)
+                    .buttonSize(.regular)
                 ButtonLink("ButtonLink Compact", action: {})
                     .buttonSize(.compact)
                 ButtonLink("ButtonLink Compact", icon: .grid, action: {})
@@ -304,6 +305,7 @@ struct ButtonLinkPreviews: PreviewProvider {
             icon: .kiwicom,
             action: {}
         )
+        .buttonSize(.compact)
         .textAccentColor(Status.success.darkColor)
         .textLinkColor(.status(.critical))
         .padding(.medium)
@@ -312,6 +314,7 @@ struct ButtonLinkPreviews: PreviewProvider {
 
     static var iconOnly: some View {
         ButtonLink(icon: .kiwicom, action: {})
+            .buttonSize(.compact)
             .padding(.medium)
             .previewDisplayName()
     }
