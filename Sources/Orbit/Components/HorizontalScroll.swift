@@ -59,14 +59,19 @@ public struct HorizontalScroll<Content: View>: View {
                 content
                     // Adjust item sizes if required
                     .frame(width: resolvedItemWidth, alignment: .leading)
+                    .highPriorityGesture(
+                        // Required to cancel tap gesture during scrolling
+                        DragGesture()
+                    )
             }
             .onPreferenceChange(ChildCountPreferenceKey.self) {
                 itemCount = $0
             }
             .padding(clippingPadding)
-            // Cap height to tallest item and prevent spacing resizing
+            // Vertically cap height to tallest item
+            // and prevent horizontal spacing resizing
             .fixedSize()
-            .disabled(scrollingInProgress || isAnimating)
+            .allowsHitTesting(isIdle)
             .background(contentHeightReader)
             .offset(x: scrollOffset)
             .background(
@@ -110,6 +115,10 @@ public struct HorizontalScroll<Content: View>: View {
         SingleAxisGeometryReader(axis: .horizontal) { width in
             Color.clear.preference(key: ScrollViewWidthPreferenceKey.self, value: width)
         }
+    }
+
+    var isIdle: Bool {
+        (scrollingInProgress || isAnimating) == false
     }
 
     var screenLayoutHorizontalPadding: CGFloat {
@@ -376,13 +385,13 @@ struct HorizontalScrollPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .medium) {
             Heading("Snapping", style: .title4)
 
-            HorizontalScroll {
+            HorizontalScroll(spacing: .medium) {
                 tileVariants
             }
 
             Heading("No snapping", style: .title4)
 
-            HorizontalScroll(isSnapping: false, spacing: .large) {
+            HorizontalScroll(isSnapping: false, spacing: .medium) {
                 tileVariants
             }
         }
@@ -393,7 +402,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .medium) {
             Heading("Snapping", style: .title4)
 
-            HorizontalScroll(isSnapping: true, itemWidth: .fixed(180)) {
+            HorizontalScroll(isSnapping: true, spacing: .medium, itemWidth: .fixed(180)) {
                 tileVariants
             }
 
@@ -457,15 +466,17 @@ struct HorizontalScrollPreviews: PreviewProvider {
     }
 
     static var largerTile: some View {
-        Tile("Intrinsic Larger") {
-            // No Action
-        } content: {
-            VStack(spacing: .xSmall) {
-                intrinsicContentPlaceholder
-                intrinsicContentPlaceholder
+        StateWrapper(true) { isSelected in
+            ChoiceTile("Intrinsic Larger", isSelected: isSelected.wrappedValue) {
+                isSelected.wrappedValue.toggle()
+            } content: {
+                VStack(spacing: .xSmall) {
+                    intrinsicContentPlaceholder
+                    intrinsicContentPlaceholder
+                }
+                .padding(.xSmall)
+                .background(Color.greenLight)
             }
-            .padding(.xSmall)
-            .background(Color.greenLight)
         }
     }
 
