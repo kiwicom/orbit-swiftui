@@ -3,9 +3,10 @@ import Orbit
 
 struct StorybookEmptyState {
 
-    static let title = "Sorry, we couldn't find that connection."
-    static let description = "Try changing up your search a bit. We'll try harder next time."
-    static let button = "Adjust search"
+    static let title = "No results"
+    static let description = "Try a quick search to explore hundreds of affordable options."
+    static let primaryButton = "Primary action"
+    static let secondaryButton = "Secondary action"
 
     static var basic: some View {
         VStack(spacing: .xxLarge) {
@@ -19,15 +20,26 @@ struct StorybookEmptyState {
     }
 
     static var standalone: some View {
-        EmptyState(title, description: description, illustration: .noResults, action: .button(button, action: {}))
+        EmptyState(title, description: description, illustration: .noResults) {
+            contentPlaceholder
+        } buttons: {
+            Button(primaryButton) {}
+            Button(secondaryButton) {}
+        }
+        .previewDisplayName()
     }
 
     static var subtle: some View {
-        EmptyState(title, description: description, illustration: .error404, action: .button(button, type: .primarySubtle, action: {}))
+        EmptyState(title, description: description, illustration: .error404) {
+            Button(primaryButton) {}
+        }
+        .status(.critical)
+        .previewDisplayName()
     }
 
     static var noAction: some View {
         EmptyState(title, description: description, illustration: .offline)
+            .previewDisplayName()
     }
 }
 

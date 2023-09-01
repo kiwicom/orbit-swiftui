@@ -8,7 +8,7 @@
 
 ### Interaction
 
-- ``DialogButtonsBuilder``
+- ``ButtonStackBuilder``
 
 ### Customizing Appearance
 
