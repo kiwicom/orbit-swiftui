@@ -24,22 +24,19 @@ public struct Dialog<Content: View, Buttons: View>: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            Illustration(illustration, layout: .resizeable)
-                .frame(height: 120)
+            Illustration(illustration, layout: .frame(maxHeight: 120, alignment: .leading))
+                .padding(.top, .xSmall)
 
-            VStack(alignment: .leading, spacing: .xSmall) {
-                Heading(title, style: .title3)
-                    .accessibility(.dialogTitle)
+            texts
 
-                Text(description)
-                    .textColor(.inkNormal)
-                    .accessibility(.dialogDescription)
+            if content.isEmpty == false {
+                content
             }
 
-            content
-
-            VStack(spacing: .xSmall) {
-                buttons
+            if buttons.isEmpty == false {
+                VStack(spacing: .xSmall) {
+                    buttons
+                }
             }
         }
         .frame(maxWidth: Layout.readableMaxWidth / 2)
@@ -51,6 +48,19 @@ public struct Dialog<Content: View, Buttons: View>: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.overlay.edgesIgnoringSafeArea(.all))
         .accessibilityElement(children: .contain)
+    }
+
+    @ViewBuilder var texts: some View {
+        if title.isEmpty == false || description.isEmpty == false {
+            VStack(alignment: .leading, spacing: .xSmall) {
+                Heading(title, style: .title4)
+                    .accessibility(.dialogTitle)
+
+                Text(description)
+                    .textColor(.inkNormal)
+                    .accessibility(.dialogDescription)
+            }
+        }
     }
 
     var shape: some InsettableShape {
@@ -67,7 +77,7 @@ extension Dialog {
         description: String = "",
         illustration: Illustration.Image = .none,
         @ViewBuilder content: () -> Content = { EmptyView() },
-        @DialogButtonsBuilder buttons: () -> Buttons
+        @ButtonStackBuilder buttons: () -> Buttons
     ) {
         self.init(
             title: title,
@@ -81,78 +91,10 @@ extension Dialog {
     }
 }
 
-// MARK: - Types
-
-/// A builder that constructs buttons for the ``Dialog`` component.
-@resultBuilder
-public enum DialogButtonsBuilder {
-
-    public static func buildBlock(_ empty: EmptyView) -> EmptyView {
-        empty
-    }
-
-    public static func buildBlock(_ primary: some View) -> some View {
-        primaryButton(primary)
-    }
-
-    @ViewBuilder
-    public static func buildBlock(_ primary: some View, _ secondary: some View) -> some View {
-        primaryButton(primary)
-        secondaryButton(secondary)
-    }
-
-    @ViewBuilder
-    public static func buildBlock(_ primary: some View, _ secondary: some View, _ tertiary: some View) -> some View {
-        primaryButton(primary)
-        secondaryButton(secondary)
-        tertiaryButton(tertiary)
-    }
-
-    public static func buildOptional<V: View>(_ component: V?) -> V? {
-        component
-    }
-
-    public static func buildEither<T: View, F: View>(first view: T) -> _ConditionalContent<T, F> {
-        .init(content: .trueView(view))
-    }
-
-    public static func buildEither<T: View, F: View>(second view: F) -> _ConditionalContent<T, F> {
-        .init(content: .falseView(view))
-    }
-
-    static func primaryButton(_ content: some View) -> some View {
-        content
-            .suppressButtonStyle()
-            .buttonStyle(OrbitButtonStyle(type: .status(nil)))
-            .accessibility(.dialogButtonPrimary)
-    }
-
-    static func nonPrimaryButton(_ content: some View) -> some View {
-        content
-            .suppressButtonStyle()
-            .buttonStyle(OrbitButtonLinkButtonStyle(type: .status(nil)))
-            .buttonSize(.default)
-    }
-
-    static func secondaryButton(_ content: some View) -> some View {
-        nonPrimaryButton(content)
-            .accessibility(.dialogButtonSecondary)
-    }
-
-    static func tertiaryButton(_ content: some View) -> some View {
-        nonPrimaryButton(content)
-            .accessibility(.dialogButtonTertiary)
-    }
-}
-
 // MARK: - Identifiers
 public extension AccessibilityID {
-
     static let dialogTitle              = Self(rawValue: "orbit.dialog.title")
     static let dialogDescription        = Self(rawValue: "orbit.dialog.description")
-    static let dialogButtonPrimary      = Self(rawValue: "orbit.dialog.button.primary")
-    static let dialogButtonSecondary    = Self(rawValue: "orbit.dialog.button.secondary")
-    static let dialogButtonTertiary     = Self(rawValue: "orbit.dialog.button.tertiary")
 }
 
 // MARK: - Previews
