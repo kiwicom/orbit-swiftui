@@ -169,8 +169,6 @@ public extension Color {
     static var socialFacebookHover = Color("Social Facebook Hover", bundle: .orbit)
 
     // MARK: - White
-    /// Orbit White color.
-    static var whiteNormal = Color("White", bundle: .orbit)
     /// Orbit White Active color.
     static var whiteActive = Color("White Active", bundle: .orbit)
     /// Orbit White Darker color.
@@ -179,4 +177,6 @@ public extension Color {
     static var whiteHover = Color("White Hover", bundle: .orbit)
     /// Orbit White Lighter color.
     static var whiteLighter = Color("White Lighter", bundle: .orbit)
+    /// Orbit White Normal color.
+    static var whiteNormal = Color("White Normal", bundle: .orbit)
 }

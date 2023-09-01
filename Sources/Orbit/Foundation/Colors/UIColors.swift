@@ -169,8 +169,6 @@ public extension UIColor {
     static var socialFacebookHover = fromResource(named: "Social Facebook Hover")
 
     // MARK: - White
-    /// Orbit White color.
-    static var whiteNormal = fromResource(named: "White")
     /// Orbit White Active color.
     static var whiteActive = fromResource(named: "White Active")
     /// Orbit White Darker color.
@@ -179,4 +177,6 @@ public extension UIColor {
     static var whiteHover = fromResource(named: "White Hover")
     /// Orbit White Lighter color.
     static var whiteLighter = fromResource(named: "White Lighter")
+    /// Orbit White Normal color.
+    static var whiteNormal = fromResource(named: "White Normal")
 }
