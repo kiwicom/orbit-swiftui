@@ -46,6 +46,7 @@ struct ScreenLayoutModifier: ViewModifier {
 
     let edges: Edge.Set
     let padding: ScreenLayoutPadding
+    let alignment: HorizontalAlignment
     let maxContentWidth: CGFloat
 
     func body(content: Content) -> some View {
@@ -55,8 +56,8 @@ struct ScreenLayoutModifier: ViewModifier {
             .padding(.leading, edges.contains(.leading) ? padding.horizontal(horizontalSizeClass: horizontalSizeClass) : 0)
             .padding(.trailing, edges.contains(.trailing) ? padding.horizontal(horizontalSizeClass: horizontalSizeClass) : 0)
             .padding(.bottom, edges.contains(.bottom) ? padding.bottom(horizontalSizeClass: horizontalSizeClass) : 0)
-            // Fill the width using default leading alignment
-            .frame(maxWidth: maxContentWidth, alignment: .leading)
+            // Fill the width based on alignment
+            .frame(maxWidth: maxContentWidth, alignment: .init(horizontal: alignment, vertical: .center))
             // Fill the rest of available width, aligning the content to center
             .frame(maxWidth: .infinity)
     }
@@ -74,17 +75,20 @@ public extension View {
     /// - Parameters:
     ///   - edges: The set of edges to pad for this view. The default is `Edge.Set.all`.
     ///   - padding: The padding to apply for specified edges.
+    ///   - alignment: The alignment of the screen content. The default is `.leading`.
     ///   - maxContentWidth: Maximum width of content, horizontally aligned to center. The default value of this
     ///     parameter is ``Layout/readableMaxWidth``.
     func screenLayout(
         _ edges: Edge.Set = .all,
         padding: ScreenLayoutPadding = .default,
+        alignment: HorizontalAlignment = .leading,
         maxContentWidth: CGFloat = Layout.readableMaxWidth
     ) -> some View {
         modifier(
             ScreenLayoutModifier(
                 edges: edges,
                 padding: padding,
+                alignment: alignment,
                 maxContentWidth: maxContentWidth
             )
         )
