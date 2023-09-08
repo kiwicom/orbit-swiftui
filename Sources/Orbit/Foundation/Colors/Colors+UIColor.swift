@@ -81,11 +81,11 @@ public extension Color {
             case .socialFacebook: return.socialFacebook
             case .socialFacebookActive: return.socialFacebookActive
             case .socialFacebookHover: return.socialFacebookHover
-            case .whiteNormal: return.whiteNormal
             case .whiteActive: return.whiteActive
             case .whiteDarker: return.whiteDarker
             case .whiteHover: return.whiteHover
             case .whiteLighter: return.whiteLighter
+            case .whiteNormal: return.whiteNormal
 
             case .bundleBasicStart: return .bundleBasicStart
             case .bundleBasicEnd: return .bundleBasicEnd

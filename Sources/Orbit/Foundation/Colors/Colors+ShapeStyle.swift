@@ -169,8 +169,6 @@ public extension ShapeStyle where Self == Color {
     static var socialFacebookHover: Self { .socialFacebookHover }
 
     // MARK: - White
-    /// Orbit White shape style.
-    static var whiteNormal: Self { .whiteNormal }
     /// Orbit White Active shape style.
     static var whiteActive: Self { .whiteActive }
     /// Orbit White Darker shape style.
@@ -179,4 +177,6 @@ public extension ShapeStyle where Self == Color {
     static var whiteHover: Self { .whiteHover }
     /// Orbit White Lighter shape style.
     static var whiteLighter: Self { .whiteLighter }
+    /// Orbit White Normal shape style.
+    static var whiteNormal: Self { .whiteNormal }
 }

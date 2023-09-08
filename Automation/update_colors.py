@@ -20,7 +20,7 @@ import shutil
 import colorsys
 from urllib.request import urlopen
 
-ORBIT_URL = 'https://unpkg.com/@kiwicom/orbit-design-tokens/output/theo-spec.json'
+ORBIT_URL = 'https://raw.githubusercontent.com/kiwicom/orbit/master/packages/orbit-design-tokens/output/docs-tokens.json'
 ORBIT_COLOR_PREFIX = 'palette'
 
 contents_filename = 'Contents.json'
@@ -267,9 +267,9 @@ if __name__ == "__main__":
   colors = get_updated_colors()
 
   # Add lighter (elevated) version of white
-  colors['paletteWhiteLighter'] = 'rgb(255, 255, 255)'
+  colors['paletteWhiteLighter'] = { 'scss': { 'value' : 'rgb(255, 255, 255)' }}
   # Add darker (background) version of white
-  colors['paletteWhiteDarker'] = 'rgb(255, 255, 255)'
+  colors['paletteWhiteDarker'] = { 'scss': { 'value' : 'rgb(255, 255, 255)' }}
 
   colorsFolder = colorsFolderPath()
 
@@ -295,7 +295,7 @@ if __name__ == "__main__":
   sourceColorUIExtLines = []
   lastColorGroup = ''
 
-  for key, value in sorted(colors.items()):
+  for key, color in sorted(colors.items()):
       
       # Parse key and value into tokens and hex colors
       key_tokens = camel_case_split(key)
@@ -303,12 +303,13 @@ if __name__ == "__main__":
       name = lowercase_first_letter("".join(key_tokens[0:]))
 
       if name == "white":
-        # Workaround for system white color name clash
-        name = "whiteNormal"
+        # Workaround for system `white` color name clash, duplicated
+        continue
 
       description = " ".join(key_tokens[0:])
+      value = color['scss']['value']
+      colors = re.findall(r'\d{1,3}', value)
 
-      colors = re.findall(r'\d+', value)
       assert len(colors) == 3, "Expected 3 decimal RGB values from JSON"
       colors_inverse = get_inversed_colors(name, colors)
       rgb_hex_colors = list(map(lambda c: str_to_hexa(c), colors))
