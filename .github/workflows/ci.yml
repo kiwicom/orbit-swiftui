@@ -30,7 +30,7 @@ jobs:
     strategy:
       matrix:
         device: ["iPhone SE (3rd generation)", "iPad (9th generation)"]
-        os_version: ["16.2"]
+        os_version: ["16.4"]
     runs-on: macos-13
     steps:
     - uses: actions/checkout@v4
