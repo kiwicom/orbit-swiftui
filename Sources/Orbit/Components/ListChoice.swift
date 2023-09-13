@@ -119,6 +119,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
                 disclosureButton(type: type)
             case .buttonLink(let label, let type):
                 ButtonLink(label, type: type, action: {})
+                    .buttonSize(.compact)
             case .checkbox(let isChecked, let state):
                 Checkbox(state: state, isChecked: .constant(isChecked))
             case .radio(let isChecked, let state):

@@ -50,7 +50,6 @@ import SwiftUI
         content
             .suppressButtonStyle()
             .buttonStyle(OrbitButtonLinkButtonStyle(type: .status(nil)))
-            .buttonSize(.default)
     }
 
     static func secondaryButton(_ content: some View) -> some View {

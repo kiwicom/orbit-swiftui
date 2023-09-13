@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// Orbit Button size.
+/// Orbit size used for various button components.
 public enum ButtonSize {
-    case `default`
+    case regular
     case compact
 }
 

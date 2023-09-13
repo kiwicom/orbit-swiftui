@@ -35,7 +35,7 @@ public struct Skeleton: View {
                 }
             case .button(let size):
                 switch size {
-                    case .default:      roundedRectangle.fill(color).frame(height: .xxLarge)
+                    case .regular:      roundedRectangle.fill(color).frame(height: .xxLarge)
                     case .compact:      roundedRectangle.fill(color).frame(height: .xLarge)
                 }
             case .card(let height), .image(let height):
@@ -88,7 +88,7 @@ extension Skeleton {
         }
 
         case atomic(Atomic)
-        case button(_ size: ButtonSize = .default)
+        case button(_ size: ButtonSize = .regular)
         case card(height: CGFloat? = nil)
         case image(height: CGFloat? = nil)
         case list(rows: Int, rowHeight: CGFloat = 20, spacing: CGFloat = .xSmall)
