@@ -30,6 +30,7 @@ public extension Illustration {
         case compassPoints
         case compassSaveOnBooking
         case compassTravelPlan
+        case damage
         case desktopSearch
         case eVisa
         case enjoyApp
@@ -92,6 +93,7 @@ public extension Illustration {
         case train
         case transportBus
         case transportTaxi
+        case wheelchair
         case womanWithPhone
 
         var assetName: String {
