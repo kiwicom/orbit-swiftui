@@ -18,23 +18,3 @@ struct LazyVStack<Content: View>: View {
         }
     }
 }
-
-// MARK: - Previews
-struct LazyVStackIfAvailablePreviews: PreviewProvider {
-
-    static var previews: some View {
-        PreviewWrapper {
-            standalone
-        }
-        .padding()
-        .previewLayout(PreviewLayout.sizeThatFits)
-    }
-
-    static var standalone: some View {
-        LazyVStack {
-            Text("Text 1")
-            Text("Text 2")
-        }
-        .previewDisplayName()
-    }
-}
