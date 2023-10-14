@@ -9,6 +9,7 @@ let package = Package(
     platforms: [.iOS(.v13)],
     products: [
         .library(name: "Orbit", targets: ["Orbit"]),
+        .library(name: "OrbitIllustrations", targets: ["OrbitIllustrations"]),
         .library(name: "OrbitStorybook", targets: ["OrbitStorybook"]),
         .plugin(name: "CheckDocumentation", targets: ["CheckDocumentation"]),
     ],
@@ -33,13 +34,18 @@ let package = Package(
                     : [.copy("Foundation/Icons/Icons.ttf")]
         ),
         .target(
-            name: "OrbitStorybook",
+            name: "OrbitIllustrations",
             dependencies: ["Orbit"]
+        ),
+        .target(
+            name: "OrbitStorybook",
+            dependencies: ["Orbit", "OrbitIllustrations"]
         ),
         .testTarget(
             name: "SnapshotTests",
             dependencies: [
                 "Orbit",
+                "OrbitIllustrations",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
             ]
         ),
