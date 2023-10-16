@@ -33,13 +33,10 @@ public struct SocialButton: View {
                 Icon(.chevronForward)
                     .iconSize(.large)
                     .padding([.trailing, .vertical], -.xxSmall)
-            } background: {
-                background
-            } backgroundActive: {
-                backgroundActive
             }
         )
         .textColor(textColor)
+        .backgroundColor(background, active: backgroundActive)
     }
 
     @ViewBuilder var logo: some View {
@@ -60,21 +57,21 @@ public struct SocialButton: View {
         }
     }
 
-    @ViewBuilder var background: some View {
+    var background: Color {
         switch service {
-            case .apple:        colorScheme == .light ? Color.black : Color.white
-            case .google:       Color.cloudNormal
-            case .facebook:     Color.cloudNormal
-            case .email:        Color.cloudNormal
+            case .apple:        return colorScheme == .light ? .black : .white
+            case .google:       return .cloudNormal
+            case .facebook:     return .cloudNormal
+            case .email:        return .cloudNormal
         }
     }
 
-    @ViewBuilder var backgroundActive: some View {
+    var backgroundActive: Color {
         switch service {
-            case .apple:        colorScheme == .light ? Color.inkNormalActive : Color.inkNormalActive
-            case .google:       Color.cloudNormalActive
-            case .facebook:     Color.cloudNormalActive
-            case .email:        Color.cloudNormalActive
+            case .apple:        return colorScheme == .light ? .inkNormalActive : .inkNormalActive
+            case .google:       return .cloudNormalActive
+            case .facebook:     return .cloudNormalActive
+            case .email:        return .cloudNormalActive
         }
     }
 }

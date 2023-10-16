@@ -6,6 +6,7 @@ import SwiftUI
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct ChoiceTile<Content: View, Icon: View, Header: View>: View {
 
+    @Environment(\.backgroundColor) private var backgroundColor
     @Environment(\.idealSize) private var idealSize
     @Environment(\.status) private var status
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
@@ -54,11 +55,9 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View>: View {
             }
         )
         .buttonStyle(
-            TileButtonStyle(
-                isSelected: isSelected,
-                status: errorShouldHighlightBorder ? .critical : status
-            )
+            TileButtonStyle(isSelected: isSelected)
         )
+        .status(errorShouldHighlightBorder ? .critical : status)
         .overlay(badgeOverlayView, alignment: .top)
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(title))
@@ -202,8 +201,8 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View>: View {
     var indicatorSize: CGFloat {
         switch indicator {
             case .none:             return 0
-            case .radio:            return Radio.ButtonStyle.size
-            case .checkbox:         return Checkbox.ButtonStyle.size
+            case .radio:            return RadioButtonStyle.size
+            case .checkbox:         return CheckboxButtonStyle.size
         }
     }
     
@@ -232,6 +231,8 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View>: View {
 public extension ChoiceTile {
 
     /// Creates Orbit ChoiceTile component.
+    ///
+    /// Custom background color be specified using `.backgroundColor()` modifier.
     ///
     /// - Parameters:
     ///   - content: The content shown below the header.
@@ -275,6 +276,8 @@ public extension ChoiceTile {
     }
 
     /// Creates Orbit ChoiceTile component.
+    ///
+    /// Custom background color be specified using `.backgroundColor()` modifier.
     ///
     /// - Parameters:
     ///   - content: The content shown below the header.
@@ -520,6 +523,7 @@ struct ChoiceTilePreviews: PreviewProvider {
 
     @ViewBuilder static var content: some View {
         choiceTile(titleStyle: .title4, showHeader: true, isError: false, isSelected: false)
+            .backgroundColor(.redLight)
         choiceTile(titleStyle: .title4, showHeader: true, isError: false, isSelected: true)
         choiceTile(titleStyle: .title3, showHeader: true, isError: false, isSelected: false)
         choiceTile(titleStyle: .title4, showHeader: false, isError: false, isSelected: true)

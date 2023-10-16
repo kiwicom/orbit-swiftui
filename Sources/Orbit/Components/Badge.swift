@@ -8,8 +8,10 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/badge/)
 public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmptyView {
 
-    @Environment(\.status) private var status
+    @Environment(\.backgroundColor) private var backgroundColor
     @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.status) private var status
+    @Environment(\.textColor) private var textColor
 
     private let label: String
     private let leadingIcon: LeadingIcon
@@ -22,53 +24,41 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmp
                 leadingIcon
                     .iconSize(.small)
                     .font(.system(size: Icon.Size.small.value))
-                    .foregroundColor(labelColor)
+                    .foregroundColor(resolvedLabelColor)
 
                 Text(label)
                     .textSize(.small)
                     .fontWeight(.medium)
-                    .textLinkColor(.custom(labelColor))
+                    .textLinkColor(.custom(resolvedLabelColor))
                     .frame(minWidth: minTextWidth)
 
                 trailingIcon
                     .iconSize(.small)
                     .font(.system(size: Icon.Size.small.value))
-                    .foregroundColor(labelColor)
+                    .foregroundColor(resolvedLabelColor)
             }
-            .textColor(labelColor)
+            .textColor(resolvedLabelColor)
             .padding(.vertical, .xxSmall) // = 24 height @ normal size
             .padding(.horizontal, .xSmall)
             .background(
-                background
-                    .clipShape(shape)
+                resolvedBackground
+                    .clipShape(Capsule())
             )
         }
     }
 
-    @ViewBuilder var background: some View {
-        switch type {
-            case .light:                                Color.whiteDarker
-            case .lightInverted:                        Color.inkDark
-            case .neutral:                              Color.cloudLight
-            case .status(let status, true):             (status ?? defaultStatus).color
-            case .status(let status, false):            (status ?? defaultStatus).lightColor
-            case .custom(_, _, let backgroundColor):    backgroundColor
-            case .gradient(let gradient):               gradient.background
+    @ViewBuilder var resolvedBackground: some View {
+        if let backgroundColor {
+            backgroundColor.inactiveView
+        } else {
+            defaultBackgroundColor
         }
     }
-
-    var minTextWidth: CGFloat {
-        Text.Size.small.lineHeight * sizeCategory.ratio - .xSmall
+    
+    var resolvedLabelColor: Color {
+        textColor ?? labelColor
     }
-
-    var shape: some InsettableShape {
-        Capsule()
-    }
-
-    var isEmpty: Bool {
-        leadingIcon.isEmpty && label.isEmpty && trailingIcon.isEmpty
-    }
-
+    
     var labelColor: Color {
         switch type {
             case .light:                                return .inkDark
@@ -76,9 +66,25 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmp
             case .neutral:                              return .inkDark
             case .status(let status, false):            return (status ?? defaultStatus).darkColor
             case .status(_, true):                      return .whiteNormal
-            case .custom(let labelColor, _, _):         return labelColor
-            case .gradient:                             return .whiteNormal
         }
+    }
+    
+    var defaultBackgroundColor: Color {
+        switch type {
+            case .light:                                return .whiteDarker
+            case .lightInverted:                        return .inkDark
+            case .neutral:                              return .cloudLight
+            case .status(let status, true):             return (status ?? defaultStatus).color
+            case .status(let status, false):            return (status ?? defaultStatus).lightColor
+        }
+    }
+
+    var minTextWidth: CGFloat {
+        Text.Size.small.lineHeight * sizeCategory.ratio - .xSmall
+    }
+
+    var isEmpty: Bool {
+        leadingIcon.isEmpty && label.isEmpty && trailingIcon.isEmpty
     }
 
     var defaultStatus: Status {
@@ -90,6 +96,8 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmp
 public extension Badge {
     
     /// Creates Orbit Badge component.
+    ///
+    /// Custom background color be specified using `.backgroundColor()` modifier.
     ///
     /// - Parameters:
     ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
@@ -107,6 +115,8 @@ public extension Badge {
     }
 
     /// Creates Orbit Badge component with custom icons.
+    ///
+    /// Custom background color be specified using `.backgroundColor()` modifier.
     ///
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
@@ -130,8 +140,6 @@ public enum BadgeType {
     case lightInverted
     case neutral
     case status(_ status: Status? = nil, inverted: Bool = false)
-    case custom(labelColor: Color, outlineColor: Color, backgroundColor: Color)
-    case gradient(Gradient)
 
     public static var status: Self {
         .status(nil)
@@ -213,16 +221,10 @@ struct BadgePreviews: PreviewProvider {
     static var mix: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
             HStack(spacing: .small) {
-                Badge(
-                    "Custom",
-                    icon: .airplane,
-                    type: .custom(
-                        labelColor: .blueDark,
-                        outlineColor: .blueDark,
-                        backgroundColor: .whiteHover
-                    )
-                )
-                .iconColor(.pink)
+                Badge("Custom", icon: .airplane)
+                    .iconColor(.pink)
+                    .textColor(.blueDark)
+                    .backgroundColor(.whiteHover)
 
                 Badge("Flag") {
                     CountryFlag("us")
@@ -266,7 +268,9 @@ struct BadgePreviews: PreviewProvider {
     }
 
     static func gradientBadge(_ gradient: Gradient) -> some View {
-        badges(.gradient(gradient))
+        badges(.neutral)
+            .textColor(.whiteNormal)
+            .backgroundColor(gradient.background)
             .previewDisplayName("\(String(describing: gradient).titleCased)")
     }
 }

@@ -8,6 +8,7 @@ import SwiftUI
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Card<Content: View>: View {
 
+    @Environment(\.backgroundColor) private var backgroundColor
     @Environment(\.idealSize) private var idealSize
 
     let title: String
@@ -18,7 +19,6 @@ public struct Card<Content: View>: View {
     let contentAlignment: HorizontalAlignment
     let showBorder: Bool
     let titleStyle: Heading.Style
-    let backgroundColor: Color?
     @ViewBuilder let content: Content
 
     public var body: some View {
@@ -28,13 +28,14 @@ public struct Card<Content: View>: View {
             if isContentEmpty == false {
                 VStack(alignment: contentAlignment, spacing: contentSpacing) {
                     content
+                        .backgroundColor(nil)
                 }
                 .padding(.top, isHeaderEmpty ? contentPadding : 0)
                 .padding([.horizontal, .bottom], contentPadding)
             }
         }
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
-        .background(backgroundColor)
+        .background(resolvedBackground)
         .tileBorder(
             showBorder ? .iOS : .none
         )
@@ -75,6 +76,14 @@ public struct Card<Content: View>: View {
             .padding(.bottom, isContentEmpty ? .medium : 0)
         }
     }
+    
+    @ViewBuilder var resolvedBackground: some View {
+        if let backgroundColor {
+            backgroundColor.inactiveView
+        } else {
+            Color.whiteDarker
+        }
+    }
 
     var isHeaderEmpty: Bool {
         if case .none = action, title.isEmpty, description.isEmpty {
@@ -109,6 +118,8 @@ public struct Card<Content: View>: View {
 public extension Card {
 
     /// Creates Orbit Card component.
+    ///
+    /// Custom background color be specified using `.backgroundColor()` modifier.
     init(
         _ title: String = "",
         description: String = "",
@@ -116,7 +127,6 @@ public extension Card {
         headerSpacing: CGFloat = .medium,
         showBorder: Bool = true,
         titleStyle: Heading.Style = .title4,
-        backgroundColor: Color? = .whiteDarker,
         contentLayout: CardContentLayout = .default(),
         contentAlignment: HorizontalAlignment = .leading,
         @ViewBuilder content: () -> Content = { EmptyView() }
@@ -127,7 +137,6 @@ public extension Card {
         self.headerSpacing = headerSpacing
         self.showBorder = showBorder
         self.titleStyle = titleStyle
-        self.backgroundColor = backgroundColor
         self.contentLayout = contentLayout
         self.contentAlignment = contentAlignment
         self.content = content()
@@ -285,16 +294,17 @@ struct CardPreviews: PreviewProvider {
             "Card without borders and background",
             headerSpacing: .xSmall,
             showBorder: false,
-            backgroundColor: .clear,
             contentLayout: .fill
         ) {
             VStack(spacing: 0) {
                 ListChoice("ListChoice", action: {})
+                    .backgroundColor(.blueLight, active: .greenLight)
                 ListChoice("ListChoice", icon: .map, action: {})
                 ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false, action: {})
             }
             .padding(.top, .xSmall)
         }
+        .backgroundColor(.clear)
         .previewDisplayName()
     }
 

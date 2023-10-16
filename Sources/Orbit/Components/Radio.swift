@@ -42,7 +42,7 @@ public struct Radio: View {
             }
         )
         .buttonStyle(
-            ButtonStyle(state: state, isChecked: isChecked)
+            RadioButtonStyle(state: state, isChecked: isChecked)
         )
     }
 

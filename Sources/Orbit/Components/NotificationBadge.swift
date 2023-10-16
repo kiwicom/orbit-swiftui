@@ -5,6 +5,7 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/notificationbadge/)
 public struct NotificationBadge<Content: View>: View {
 
+    @Environment(\.backgroundColor) private var backgroundColor
     @Environment(\.status) private var status
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.textColor) private var textColor
@@ -20,13 +21,32 @@ public struct NotificationBadge<Content: View>: View {
                 .padding(.xxSmall) // = 24 height @ normal size
                 .textColor(resolvedTextColor)
                 .background(
-                    background
+                    resolvedBackground
                         .clipShape(Circle())
                 )
                 .fixedSize()
         }
     }
 
+
+    @ViewBuilder var resolvedBackground: some View {
+        if let backgroundColor {
+            backgroundColor.inactiveView
+        } else {
+            defaultBackgroundColor
+        }
+    }
+    
+    var defaultBackgroundColor: Color {
+        switch type {
+            case .light:                                return .whiteDarker
+            case .lightInverted:                        return .inkDark
+            case .neutral:                              return .cloudLight
+            case .status(let status, true):             return (status ?? defaultStatus).color
+            case .status(let status, false):            return (status ?? defaultStatus).lightColor
+        }
+    }
+    
     @ViewBuilder var background: some View {
         switch type {
             case .light:                                Color.whiteDarker
@@ -34,8 +54,6 @@ public struct NotificationBadge<Content: View>: View {
             case .neutral:                              Color.cloudLight
             case .status(let status, true):             (status ?? defaultStatus).color
             case .status(let status, false):            (status ?? defaultStatus).lightColor
-            case .custom(_, _, let backgroundColor):    backgroundColor
-            case .gradient(let gradient):               gradient.background
         }
     }
 
@@ -50,8 +68,6 @@ public struct NotificationBadge<Content: View>: View {
             case .neutral:                              return .inkDark
             case .status(let status, false):            return (status ?? defaultStatus).darkColor
             case .status(_, true):                      return .whiteNormal
-            case .custom(let labelColor, _, _):         return labelColor
-            case .gradient:                             return .whiteNormal
         }
     }
 
@@ -64,6 +80,8 @@ public struct NotificationBadge<Content: View>: View {
     }
 
     /// Creates Orbit NotificationBadge component with custom content.
+    ///
+    /// Custom background color be specified using `.backgroundColor()` modifier.
     ///
     /// - Parameters:
     ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
@@ -80,6 +98,8 @@ public struct NotificationBadge<Content: View>: View {
 public extension NotificationBadge {
 
     /// Creates Orbit NotificationBadge component containing text.
+    ///
+    /// Custom background color be specified using `.backgroundColor()` modifier.
     ///
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
@@ -179,15 +199,10 @@ struct NotificationBadgePreviews: PreviewProvider {
     static var mix: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
             HStack(spacing: .small) {
-                NotificationBadge(
-                    .airplane,
-                    type: .custom(
-                        labelColor: .blueDark,
-                        outlineColor: .blueDark,
-                        backgroundColor: .whiteNormal
-                    )
-                )
-                .iconColor(.pink)
+                NotificationBadge(.airplane)
+                    .iconColor(.pink)
+                    .textColor(.blueDark)
+                    .backgroundColor(.whiteNormal)
 
                 NotificationBadge {
                     CountryFlag("us")
@@ -217,7 +232,9 @@ struct NotificationBadgePreviews: PreviewProvider {
     }
 
     static func gradientBadge(_ gradient: Gradient) -> some View {
-        badges(.gradient(gradient))
+        badges(.neutral)
+            .backgroundColor(gradient.background)
+            .textColor(.whiteNormal)
             .previewDisplayName("\(String(describing: gradient).titleCased)")
     }
 }
