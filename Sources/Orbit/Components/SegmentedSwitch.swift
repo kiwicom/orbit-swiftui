@@ -106,7 +106,7 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
             } label: {
                 label()
             }
-            .buttonStyle(.backgroundHighlight(isActive: isSelected, borderWidth: borderWidth, pressedOpacity: 0.4))
+            .buttonStyle(TransparentButtonStyle(isActive: isSelected, borderWidth: borderWidth, pressedOpacity: 0.4))
             .frame(width: width)
             .offset(x: minX)
             .accessibility(value: .init((selection(from: preference)).map(String.init(describing:)) ?? ""))

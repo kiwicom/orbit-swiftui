@@ -113,7 +113,7 @@ public struct Tabs<Selection: Hashable, Content: View>: View {
                 label(geometry)
                     .padding(.xxxSmall)
             }
-            .buttonStyle(.backgroundHighlight(isActive: isSelected, borderWidth: borderWidth, pressedOpacity: 0.7))
+            .buttonStyle(TransparentButtonStyle(isActive: isSelected, borderWidth: borderWidth, pressedOpacity: 0.7))
             .frame(width: width)
             .offset(x: minX)
             .accessibility(value: .init((selection(from: preference)).map(String.init(describing:)) ?? ""))

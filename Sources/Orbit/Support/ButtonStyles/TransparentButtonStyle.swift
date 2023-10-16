@@ -1,7 +1,7 @@
 import SwiftUI
 
 // Used to highlight a button, possibly invisible one (adding contentShape to fix interaction)
-struct BackgroundHighlightButtonStyle: ButtonStyle {
+struct TransparentButtonStyle: ButtonStyle {
 
     let isActive: Bool
     let borderWidth: CGFloat
@@ -24,12 +24,5 @@ struct BackgroundHighlightButtonStyle: ButtonStyle {
                     .animation(.easeInOut(duration: 0.2), value: configuration.isPressed)
             }
         }
-    }
-}
-
-extension ButtonStyle where Self == BackgroundHighlightButtonStyle {
-
-    static func backgroundHighlight(isActive: Bool, borderWidth: CGFloat, pressedOpacity: Double) -> Self {
-        Self(isActive: isActive, borderWidth: borderWidth, pressedOpacity: pressedOpacity)
     }
 }
