@@ -128,8 +128,6 @@ public extension AccessibilityID {
     static let alertTitle           = Self(rawValue: "orbit.alert.title")
     static let alertIcon            = Self(rawValue: "orbit.alert.icon")
     static let alertDescription     = Self(rawValue: "orbit.alert.description")
-    static let alertButtonPrimary   = Self(rawValue: "orbit.alert.button.primary")
-    static let alertButtonSecondary = Self(rawValue: "orbit.alert.button.secondary")
 }
 
 struct AlertContentPreviews: PreviewProvider {
