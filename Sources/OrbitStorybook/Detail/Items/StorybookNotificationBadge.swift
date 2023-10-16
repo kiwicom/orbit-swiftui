@@ -32,15 +32,10 @@ struct StorybookNotificationBadge {
     static var mix: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
             HStack(spacing: .small) {
-                NotificationBadge(
-                    .airplane,
-                    type: .custom(
-                        labelColor: .blueDark,
-                        outlineColor: .blueDark,
-                        backgroundColor: .whiteNormal
-                    )
-                )
-                .iconColor(.pink)
+                NotificationBadge(.airplane)
+                    .iconColor(.pink)
+                    .textColor(.blueDark)
+                    .backgroundColor(.whiteNormal)
 
                 NotificationBadge {
                     CountryFlag("us")
@@ -69,7 +64,9 @@ struct StorybookNotificationBadge {
     }
 
     static func gradientBadge(_ gradient: Orbit.Gradient) -> some View {
-        badges(.gradient(gradient))
+        badges(.neutral)
+            .backgroundColor(gradient.background)
+            .textColor(.whiteNormal)
             .previewDisplayName("\(String(describing: gradient).titleCased)")
     }
 }
