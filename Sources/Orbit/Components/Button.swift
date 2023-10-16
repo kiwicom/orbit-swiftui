@@ -107,125 +107,6 @@ public enum ButtonType {
     case critical
     case criticalSubtle
     case status(Status?, isSubtle: Bool = false)
-    case gradient(Gradient)
-}
-
-/// Button style matching Orbit Button component.
-public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: PrimitiveButtonStyle {
-
-    @Environment(\.buttonSize) private var buttonSize
-    @Environment(\.status) private var status
-
-    private var type: ButtonType
-    private var isTrailingIconSeparated: Bool
-    @ViewBuilder private let icon: LeadingIcon
-    @ViewBuilder private let disclosureIcon: TrailingIcon
-
-    public init(
-        type: ButtonType,
-        isTrailingIconSeparated: Bool = false,
-        @ViewBuilder icon: () -> LeadingIcon = { EmptyView() },
-        @ViewBuilder trailingIcon: () -> TrailingIcon = { EmptyView() }
-    ) {
-        self.type = type
-        self.isTrailingIconSeparated = isTrailingIconSeparated
-        self.icon = icon()
-        self.disclosureIcon = trailingIcon()
-    }
-
-    public func makeBody(configuration: Configuration) -> some View {
-        OrbitCustomButtonContent(
-            configuration: configuration,
-            horizontalPadding: padding,
-            verticalPadding: padding,
-            isTrailingIconSeparated: isTrailingIconSeparated,
-            hapticFeedback: hapticFeedback
-        ) {
-            icon
-        } disclosureIcon: {
-            disclosureIcon
-        } background: {
-            background
-        } backgroundActive: {
-            backgroundActive
-        }
-        .textFontWeight(.medium)
-        .textColor(textColor)
-        .textSize(textSize)
-    }
-
-    @ViewBuilder var background: some View {
-        switch type {
-            case .primary:                      Color.productNormal
-            case .primarySubtle:                Color.productLight
-            case .secondary:                    Color.cloudNormal
-            case .critical:                     Color.redNormal
-            case .criticalSubtle:               Color.redLight
-            case .status(let status, false):    (status ?? self.status)?.color ?? Color.productNormal
-            case .status(let status, true):     (status ?? self.status)?.lightHoverColor ?? Color.productLight
-            case .gradient(let gradient):       gradient.background
-        }
-    }
-
-    @ViewBuilder var backgroundActive: some View {
-        switch type {
-            case .primary:                      Color.productNormalActive
-            case .primarySubtle:                Color.productLightActive
-            case .secondary:                    Color.cloudNormalActive
-            case .critical:                     Color.redNormalActive
-            case .criticalSubtle:               Color.redLightActive
-            case .status(let status, false):    (status ?? self.status)?.activeColor ?? Color.productNormalActive
-            case .status(let status, true):     (status ?? self.status)?.lightActiveColor ?? Color.productLightActive
-            case .gradient(let gradient):       gradient.textColor
-        }
-    }
-
-    var textColor: Color {
-        switch type {
-            case .primary:                      return .whiteNormal
-            case .primarySubtle:                return .productDark
-            case .secondary:                    return .inkDark
-            case .critical:                     return .whiteNormal
-            case .criticalSubtle:               return .redDark
-            case .status(_, false):             return .whiteNormal
-            case .status(let status, true):     return (status ?? self.status)?.darkHoverColor ?? .whiteNormal
-            case .gradient:                     return .whiteNormal
-        }
-    }
-
-    var resolvedStatus: Status {
-        switch type {
-            case .status(let status, _):    return status ?? self.status ?? .info
-            default:                        return .info
-        }
-    }
-
-    var resolvedButtonSize: ButtonSize {
-        buttonSize ?? .regular
-    }
-
-    var hapticFeedback: HapticsProvider.HapticFeedbackType {
-        switch type {
-            case .primary:                                  return .light(1)
-            case .primarySubtle, .secondary, .gradient:     return .light(0.5)
-            case .critical, .criticalSubtle:                return .notification(.error)
-            case .status:                                   return resolvedStatus.defaultHapticFeedback
-        }
-    }
-
-    var textSize: Text.Size {
-        switch resolvedButtonSize {
-            case .regular:      return .normal
-            case .compact:      return .small
-        }
-    }
-
-    var padding: CGFloat {
-        switch resolvedButtonSize {
-            case .regular:      return .small   // = 44 height @ normal size
-            case .compact:      return .xSmall  // = 32 height @ normal size
-        }
-    }
 }
 
 // MARK: - Previews
@@ -316,9 +197,15 @@ struct ButtonPreviews: PreviewProvider {
 
     @ViewBuilder static var gradients: some View {
         LazyVStack(alignment: .leading, spacing: .xLarge) {
-            buttons(.gradient(.bundleBasic)).previewDisplayName("Bundle Basic")
-            buttons(.gradient(.bundleMedium)).previewDisplayName("Bundle Medium")
-            buttons(.gradient(.bundleTop)).previewDisplayName("Bundle Top")
+            buttons(.primary)
+                .backgroundColor(Gradient.bundleBasic.background, active: Gradient.bundleBasic.startColor)
+                .previewDisplayName("Bundle Basic")
+            buttons(.primary)
+                .backgroundColor(Gradient.bundleMedium.background, active: Gradient.bundleMedium.startColor)
+                .previewDisplayName("Bundle Medium")
+            buttons(.primary)
+                .backgroundColor(Gradient.bundleTop.background, active: Gradient.bundleTop.startColor)
+                .previewDisplayName("Bundle Top")
         }
         .padding(.medium)
         .previewDisplayName()

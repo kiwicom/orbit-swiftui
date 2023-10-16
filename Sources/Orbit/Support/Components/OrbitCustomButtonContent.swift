@@ -1,7 +1,8 @@
 import SwiftUI
 
-struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View, Background: View, BackgroundActive: View>: View {
+struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View>: View {
 
+    @Environment(\.backgroundColor) private var backgroundColor
     @Environment(\.iconColor) private var iconColor
     @Environment(\.idealSize) private var idealSize
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
@@ -24,8 +25,6 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View, Backgroun
     var hapticFeedback: HapticsProvider.HapticFeedbackType = .light()
     @ViewBuilder let icon: LeadingIcon
     @ViewBuilder let disclosureIcon: TrailingIcon
-    @ViewBuilder let background: Background
-    @ViewBuilder let backgroundActive: BackgroundActive
 
     var body: some View {
         HStack(spacing: 0) {
@@ -87,9 +86,9 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View, Backgroun
 
     @ViewBuilder var backgroundView: some View {
         if isPressed {
-            backgroundActive
+            backgroundColor?.activeView
         } else {
-            background
+            backgroundColor?.inactiveView
         }
     }
 
@@ -101,50 +100,6 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View, Backgroun
         idealSize.horizontal != true && isTrailingIconSeparated
             ? .infinity
             : nil
-    }
-}
-
-// MARK: ButtonStyle
-
-struct OrbitCustomButtonStyle<LeadingIcon: View, TrailingIcon: View, Background: View, BackgroundActive: View>: PrimitiveButtonStyle {
-
-    var textActiveColor: Color? = nil
-    var horizontalPadding: CGFloat = .medium
-    var horizontalLabelPadding: CGFloat = .xxSmall
-    var verticalPadding: CGFloat = .small
-    var horizontalBackgroundPadding: CGFloat = 0
-    var verticalBackgroundPadding: CGFloat = 0
-    var cornerRadius: CGFloat = BorderRadius.default
-    var spacing: CGFloat = .xxSmall
-    var isTrailingIconSeparated = false
-    var hapticFeedback: HapticsProvider.HapticFeedbackType = .light()
-    @ViewBuilder let icon: LeadingIcon
-    @ViewBuilder let disclosureIcon: TrailingIcon
-    @ViewBuilder let background: Background
-    @ViewBuilder let backgroundActive: BackgroundActive
-
-    public func makeBody(configuration: Configuration) -> some View {
-        OrbitCustomButtonContent(
-            configuration: configuration,
-            textActiveColor: textActiveColor,
-            horizontalPadding: horizontalPadding,
-            horizontalLabelPadding: horizontalLabelPadding,
-            verticalPadding: verticalPadding,
-            horizontalBackgroundPadding: horizontalBackgroundPadding,
-            verticalBackgroundPadding: verticalBackgroundPadding,
-            cornerRadius: cornerRadius,
-            spacing: spacing,
-            isTrailingIconSeparated: isTrailingIconSeparated,
-            hapticFeedback: hapticFeedback
-        ) {
-            icon
-        } disclosureIcon: {
-            disclosureIcon
-        } background: {
-            background
-        } backgroundActive: {
-            backgroundActive
-        }
     }
 }
 
@@ -210,12 +165,9 @@ struct OrbitCustomButtonContentPreviews: PreviewProvider {
                 Icon(.grid)
             } disclosureIcon: {
                 Icon(.chevronForward)
-            } background: {
-                Color.orangeLight
-            } backgroundActive: {
-                Color.greenLight
             }
             .textColor(.blueDark)
+            .backgroundColor(.orangeLight, active: .greenLight)
         }
     }
 }

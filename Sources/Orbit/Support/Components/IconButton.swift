@@ -19,7 +19,6 @@ public struct IconButton<Icon: View>: View {
             icon
                 .font(.system(size: Orbit.Icon.Size.normal.value))
                 .foregroundColor(.inkDark)
-                .contentShape(Rectangle())
         }
         .buttonStyle(IconButtonStyle())
     }
@@ -47,17 +46,6 @@ public extension IconButton {
         } icon: {
             Icon(icon)
         }
-    }
-}
-
-// MARK: - Button Style
-public struct IconButtonStyle: ButtonStyle {
-
-    public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .opacity(configuration.isPressed ? 0.5 : 1)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1)
-            .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
     }
 }
 

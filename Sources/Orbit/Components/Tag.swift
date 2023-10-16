@@ -7,7 +7,6 @@ import SwiftUI
 public struct Tag<Icon: View>: View, PotentiallyEmptyView {
 
     @Environment(\.idealSize) private var idealSize
-    @Environment(\.textColor) private var textColor
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     private let label: String
@@ -36,18 +35,15 @@ public struct Tag<Icon: View>: View, PotentiallyEmptyView {
                         HStack(spacing: 6) {
                             icon
                                 .font(.system(size: Text.Size.normal.value))
-                                .foregroundColor(textColor ?? labelColor)
                             
                             Text(label)
                         }
-                        .textFontWeight(.medium)
                         .fixedSize(horizontal: true, vertical: false)
 
                         if idealSize.horizontal == false {
                             Spacer(minLength: 0)
                         }
                     }
-                    .textColor(textColor ?? labelColor)
                 }
             )
             .buttonStyle(
@@ -59,14 +55,6 @@ public struct Tag<Icon: View>: View, PotentiallyEmptyView {
                 )
             )
             .accessibility(addTraits: isSelected ? .isSelected : [])
-        }
-    }
-
-    var labelColor: Color {
-        switch (isFocused, isSelected) {
-            case (_, true):                 return .whiteNormal
-            case (true, false):             return .blueDarker
-            case (false, false):            return .inkDark
         }
     }
 
@@ -129,77 +117,6 @@ public enum TagStyle: Equatable {
             case (.default, .default):      return true
             case (.removable, .removable):  return true
             default:                        return false
-        }
-    }
-}
-
-public struct TagButtonStyle: ButtonStyle {
-
-    public static let horizontalPadding: CGFloat = .xSmall
-    public static let verticalPadding: CGFloat = 6 // = 32 height @ normal size text size
-
-    let style: TagStyle
-    let isFocused: Bool
-    let isSelected: Bool
-    let isActive: Bool
-
-    public func makeBody(configuration: Configuration) -> some View {
-        HStack(spacing: .xSmall) {
-            configuration.label
-                .lineLimit(1)
-
-            if case .removable(let removeAction) = style {
-                Icon(.closeCircle)
-                    .iconSize(.small)
-                    .iconColor(iconColor(isPressed: configuration.isPressed))
-                    .onTapGesture(perform: removeAction)
-                    .accessibility(addTraits: .isButton)
-            }
-        }
-        .padding(.horizontal, Self.horizontalPadding)
-        .padding(.vertical, Self.verticalPadding)
-        .background(
-            backgroundColor(isPressed: configuration.isPressed)
-                .animation(nil)
-        )
-        .cornerRadius(BorderRadius.default)
-    }
-
-    /// Creates ButtonStyle matching Orbit Tag component.
-    public init(
-        style: TagStyle,
-        isFocused: Bool,
-        isSelected: Bool,
-        isActive: Bool = false
-    ) {
-        self.style = style
-        self.isFocused = isFocused
-        self.isSelected = isSelected
-        self.isActive = isActive
-    }
-
-    func backgroundColor(isPressed: Bool) -> Color {
-        switch (isFocused, isSelected, isPressed || isActive) {
-            case (true, false, false):      return .blueLight
-            case (true, true, false):       return .blueNormal
-            case (false, false, false):     return .cloudNormal
-            case (false, true, false):      return .inkLightHover
-            // Pressed
-            case (true, false, true):       return .blueLightActive
-            case (true, true, true):        return .blueNormalActive
-            case (false, false, true):      return .cloudNormalActive
-            case (false, true, true):       return .inkNormalHover
-        }
-    }
-
-    func iconColor(isPressed: Bool) -> Color {
-        switch (isSelected, isFocused, isPressed || isActive) {
-            case (true, _, _):              return .whiteNormal
-            case (false, true, false):      return .blueDarker.opacity(0.3)
-            case (false, false, false):     return .inkDark.opacity(0.3)
-            // Pressed
-            case (false, true, true):       return .blueDarker
-            case (false, false, true):      return .inkDark
         }
     }
 }

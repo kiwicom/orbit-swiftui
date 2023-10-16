@@ -291,24 +291,6 @@ extension HorizontalAlignment {
     static let listRowSeparatorLeading = Self(ListRowSeparatorLeading.self)
 }
 
-/// ButtonStyle for Orbit ListChoice component.
-///
-/// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
-public struct ListChoiceButtonStyle: SwiftUI.ButtonStyle {
-
-    public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .background(
-                backgroundColor(isPressed: configuration.isPressed)
-                    .contentShape(Rectangle())
-            )
-    }
-
-    func backgroundColor(isPressed: Bool) -> Color {
-        isPressed ? .inkNormal.opacity(0.06) : .clear
-    }
-}
-
 // MARK: - Identifiers
 public extension AccessibilityID {
 

@@ -1,7 +1,6 @@
 import SwiftUI
 
-/// Orbit Button-like appearance for inputs that share common layout with a prefix and suffix.
-/// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
+/// Button style for Orbit ``InputField`` and similar input components that share common layout with a prefix and suffix.
 public struct InputContentButtonStyle<Prefix: View, Suffix: View>: ButtonStyle {
 
     private let state: InputState
@@ -29,7 +28,7 @@ public struct InputContentButtonStyle<Prefix: View, Suffix: View>: ButtonStyle {
         }
     }
 
-    /// Creates Orbit Button-like appearance for inputs that share common layout with a prefix and suffix.
+    /// Create button style for Orbit ``InputField`` and similar input components.
     public init(
         state: InputState = .default,
         label: String = "",

@@ -54,41 +54,6 @@ public extension AlertInline {
     }
 }
 
-// MARK: - Types
-struct AlertInlineButtonStyle: PrimitiveButtonStyle {
-
-    @Environment(\.status) private var status
-
-    func makeBody(configuration: Configuration) -> some View {
-        OrbitCustomButtonContent(
-            configuration: configuration,
-            textActiveColor: resolvedStatus.darkHoverColor,
-            horizontalPadding: 0,
-            horizontalLabelPadding: 0,
-            verticalPadding: 6, // = 32 height @ normal size
-            horizontalBackgroundPadding: .xSmall,
-            verticalBackgroundPadding: .xxxSmall,
-            spacing: .xSmall,
-            hapticFeedback: resolvedStatus.defaultHapticFeedback
-        ) {
-            EmptyView()
-        } disclosureIcon: {
-            EmptyView()
-        } background: {
-            Color.clear
-        } backgroundActive: {
-            resolvedStatus.color.opacity(0.24)
-        }
-        .textFontWeight(.medium)
-        .textColor(resolvedStatus.darkColor)
-        .idealSize()
-    }
-
-    var resolvedStatus: Status {
-        status ?? .info
-    }
-}
-
 /// A builder that constructs buttons for the ``AlertInline`` component.
 @resultBuilder
 public enum AlertInlineButtonsBuilder {

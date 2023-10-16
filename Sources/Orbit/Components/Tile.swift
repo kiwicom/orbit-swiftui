@@ -11,14 +11,12 @@ public struct Tile<Content: View, Icon: View>: View {
     @Environment(\.idealSize) private var idealSize
     @Environment(\.isInsideTileGroup) private var isInsideTileGroup
     @Environment(\.isTileSeparatorVisible) private var isTileSeparatorVisible
-    @Environment(\.status) private var status
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     private let title: String
     private let description: String
     private let disclosure: TileDisclosure
     private let showBorder: Bool
-    private let backgroundColor: BackgroundColor?
     private let titleStyle: Heading.Style
     private let descriptionColor: Color
     private let action: () -> Void
@@ -38,7 +36,7 @@ public struct Tile<Content: View, Icon: View>: View {
                 buttonContent
             }
         )
-        .buttonStyle(TileButtonStyle(style: tileBorderStyle, status: status, backgroundColor: backgroundColor))
+        .buttonStyle(TileButtonStyle(style: tileBorderStyle))
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(title))
         .accessibility(hint: .init(description))
@@ -151,7 +149,6 @@ public extension Tile {
         icon: Icon.Symbol? = nil,
         disclosure: TileDisclosure = .icon(.chevronForward),
         showBorder: Bool = true,
-        backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title4,
         descriptionColor: Color = .inkNormal,
         action: @escaping () -> Void,
@@ -162,7 +159,6 @@ public extension Tile {
             description: description,
             disclosure: disclosure,
             showBorder: showBorder,
-            backgroundColor: backgroundColor,
             titleStyle: titleStyle,
             descriptionColor: descriptionColor
         ) {
@@ -180,7 +176,6 @@ public extension Tile {
         description: String = "",
         disclosure: TileDisclosure = .icon(.chevronForward),
         showBorder: Bool = true,
-        backgroundColor: BackgroundColor? = nil,
         titleStyle: Heading.Style = .title4,
         descriptionColor: Color = .inkNormal,
         action: @escaping () -> Void,
@@ -191,7 +186,6 @@ public extension Tile {
         self.description = description
         self.disclosure = disclosure
         self.showBorder = showBorder
-        self.backgroundColor = backgroundColor
         self.titleStyle = titleStyle
         self.descriptionColor = descriptionColor
         self.action = action
@@ -215,51 +209,6 @@ public extension Tile {
 }
 
 // MARK: - Types
-
-public extension Tile {
-
-    typealias BackgroundColor = (normal: Color, active: Color)
-}
-
-/// Button style wrapper for Tile-like components.
-///
-/// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
-public struct TileButtonStyle: ButtonStyle {
-
-    public static let verticalTextPadding: CGFloat = 14 // = 52 height @ normal size
-
-    private let style: TileBorderStyle
-    private let isSelected: Bool
-    private let status: Status?
-    private let backgroundColor: Tile.BackgroundColor?
-
-    /// Creates button style wrapper for Tile-like components.
-    public init(style: TileBorderStyle = .default, isSelected: Bool = false, status: Status? = nil, backgroundColor: Tile.BackgroundColor? = nil) {
-        self.style = style
-        self.isSelected = isSelected
-        self.status = status
-        self.backgroundColor = backgroundColor
-    }
-
-    public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .background(backgroundColor(isPressed: configuration.isPressed))
-            .tileBorder(
-                style,
-                isSelected: isSelected
-            )
-            .status(status)
-    }
-
-    func backgroundColor(isPressed: Bool) -> Color {
-        switch (backgroundColor, isPressed) {
-            case (let backgroundColor?, true):          return backgroundColor.active
-            case (let backgroundColor?, false):         return backgroundColor.normal
-            case (.none, true):                         return .whiteHover
-            case (.none, false):                        return .whiteDarker
-        }
-    }
-}
 
 public enum TileDisclosure: Equatable {
     case none

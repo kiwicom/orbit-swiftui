@@ -19,11 +19,9 @@ public struct NavigationButton: View {
             },
             label: {
                 Image.orbit(state.imageSymbol)
-                    .padding([.vertical, .trailing], .small)
-                    .contentShape(Rectangle())
             }
         )
-        .buttonStyle(.navigationButton)
+        .buttonStyle(NavigationButtonStyle())
     }
 
     public init(_ state: State, action: @escaping () -> Void) {
@@ -45,22 +43,6 @@ extension NavigationButton {
                 case .close:    return .navigateClose
             }
         }
-    }
-
-
-    struct ButtonStyle: SwiftUI.ButtonStyle {
-
-        func makeBody(configuration: Configuration) -> some View {
-            configuration.label
-                .textColor(configuration.isPressed ? .inkLight : .inkDark)
-        }
-    }
-}
-
-extension ButtonStyle where Self == NavigationButton.ButtonStyle {
-
-    static var navigationButton: Self {
-        Self()
     }
 }
 

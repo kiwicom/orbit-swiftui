@@ -30,7 +30,7 @@ public struct Collapse<Header: View, Content: View>: View {
                     }
                     .padding(.vertical, headerVerticalPadding)
                 }
-                .buttonStyle(CollapseButtonStyle())
+                .buttonStyle(ListChoiceButtonStyle())
 
                 if isExpanded {
                     content
@@ -92,24 +92,6 @@ public extension Collapse where Header == Text {
         self.content = content()
         self.showSeparator = showSeparator
         self.isExpanded = nil
-    }
-}
-
-extension Collapse {
-
-    struct CollapseButtonStyle: SwiftUI.ButtonStyle {
-
-        func makeBody(configuration: Configuration) -> some View {
-            configuration.label
-                .background(
-                    backgroundColor(isPressed: configuration.isPressed)
-                        .contentShape(Rectangle())
-                )
-        }
-
-        func backgroundColor(isPressed: Bool) -> Color {
-            isPressed ? .inkNormal.opacity(0.06) : .clear
-        }
     }
 }
 
