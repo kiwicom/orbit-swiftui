@@ -9,3 +9,4 @@
 ### Customizing Appearance
 
 - ``BadgeType``
+- ``BackgroundColor``

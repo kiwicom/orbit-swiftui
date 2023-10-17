@@ -13,3 +13,4 @@
 ### Customizing Appearance
 
 - ``CardContentLayout``
+- ``BackgroundColor``
