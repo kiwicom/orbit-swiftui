@@ -13,7 +13,6 @@ public struct TagButtonStyle: ButtonStyle {
     private let style: TagStyle
     private let isFocused: Bool
     private let isSelected: Bool
-    private let isActive: Bool
 
     public func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: .xSmall) {
@@ -99,7 +98,7 @@ public struct TagButtonStyle: ButtonStyle {
     }
     
     func iconColor(isPressed: Bool) -> Color {
-        switch (isSelected, isFocused, isPressed || isActive) {
+        switch (isSelected, isFocused, isPressed) {
             case (true, _, _):              return .whiteNormal
             case (false, true, false):      return .blueDarker.opacity(0.3)
             case (false, false, false):     return .inkDark.opacity(0.3)
@@ -113,15 +112,12 @@ public struct TagButtonStyle: ButtonStyle {
     public init(
         style: TagStyle,
         isFocused: Bool,
-        isSelected: Bool,
-        isActive: Bool = false
+        isSelected: Bool
     ) {
         self.style = style
         self.isFocused = isFocused
         self.isSelected = isSelected
-        self.isActive = isActive
     }
-
 }
 
 // MARK: - Previews
@@ -137,9 +133,6 @@ struct TagButtonStylePreviews: PreviewProvider {
     
     static var styles: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            button
-                .buttonStyle(TagButtonStyle(style: .default, isFocused: false, isSelected: false))
-            
             button
                 .buttonStyle(TagButtonStyle(style: .default, isFocused: false, isSelected: false))
             

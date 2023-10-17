@@ -30,28 +30,21 @@ struct StorybookTag {
     @ViewBuilder static func stack(style: TagStyle, isFocused: Bool, idealWidth: Bool? = nil) -> some View {
         HStack(spacing: .medium) {
             VStack(spacing: .small) {
-                tag(style: style, isFocused: isFocused, isSelected: false, isActive: false)
-                tag(style: style, isFocused: isFocused, isSelected: true, isActive: false)
-            }
-
-            VStack(spacing: .small) {
-                tag(style: style, isFocused: isFocused, isSelected: false, isActive: true)
-                tag(style: style, isFocused: isFocused, isSelected: true, isActive: true)
+                tag(style: style, isFocused: isFocused, isSelected: false)
+                tag(style: style, isFocused: isFocused, isSelected: true)
             }
         }
         .idealSize(horizontal: idealWidth)
     }
 
-    @ViewBuilder static func tag(style: TagStyle, isFocused: Bool, isSelected: Bool, isActive: Bool) -> some View {
+    @ViewBuilder static func tag(style: TagStyle, isFocused: Bool, isSelected: Bool) -> some View {
         StateWrapper((style, isSelected, true)) { state in
             Tag(
                 label,
                 style: style == .default ? .default : .removable(action: { state.wrappedValue.2 = false }),
                 isFocused: isFocused,
-                isActive: isActive,
                 isSelected: state.1
             )
-            .disabled(isActive)
             .opacity(state.wrappedValue.2 ? 1 : 0)
         }
     }
