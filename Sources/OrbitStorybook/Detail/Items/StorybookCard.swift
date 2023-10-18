@@ -111,7 +111,7 @@ struct StorybookCard {
             }
             .padding(.top, .xSmall)
         }
-        .backgroundColor(.clear)
+        .backgroundStyle(.clear)
     }
 }
 

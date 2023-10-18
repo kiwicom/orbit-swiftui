@@ -29,7 +29,7 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
         }
         .textFontWeight(.medium)
         .textColor(textColor)
-        .backgroundColor(.clear, active: backgroundActive)
+        .backgroundStyle(.clear, active: backgroundActive)
         .buttonSize(resolvedButtonSize)
         .idealSize(horizontal: idealSizeHorizontal, vertical: idealSize.vertical)
     }

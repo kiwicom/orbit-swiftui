@@ -8,7 +8,7 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/badge/)
 public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmptyView {
 
-    @Environment(\.backgroundColor) private var backgroundColor
+    @Environment(\.backgroundShape) private var backgroundShape
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.status) private var status
     @Environment(\.textColor) private var textColor
@@ -48,8 +48,8 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmp
     }
 
     @ViewBuilder var resolvedBackground: some View {
-        if let backgroundColor {
-            backgroundColor.inactiveView
+        if let backgroundShape {
+            backgroundShape.inactiveView
         } else {
             defaultBackgroundColor
         }
@@ -97,8 +97,6 @@ public extension Badge {
     
     /// Creates Orbit Badge component.
     ///
-    /// Custom background color be specified using `.backgroundColor()` modifier.
-    ///
     /// - Parameters:
     ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
@@ -115,8 +113,6 @@ public extension Badge {
     }
 
     /// Creates Orbit Badge component with custom icons.
-    ///
-    /// Custom background color be specified using `.backgroundColor()` modifier.
     ///
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
@@ -224,7 +220,7 @@ struct BadgePreviews: PreviewProvider {
                 Badge("Custom", icon: .airplane)
                     .iconColor(.pink)
                     .textColor(.blueDark)
-                    .backgroundColor(.whiteHover)
+                    .backgroundStyle(.whiteHover)
 
                 Badge("Flag") {
                     CountryFlag("us")
@@ -270,7 +266,7 @@ struct BadgePreviews: PreviewProvider {
     static func gradientBadge(_ gradient: Gradient) -> some View {
         badges(.neutral)
             .textColor(.whiteNormal)
-            .backgroundColor(gradient.background)
+            .backgroundStyle(gradient.background)
             .previewDisplayName("\(String(describing: gradient).titleCased)")
     }
 }

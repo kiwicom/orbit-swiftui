@@ -3,7 +3,7 @@ import SwiftUI
 /// Button style for Orbit ``ListChoice`` component.
 public struct ListChoiceButtonStyle: ButtonStyle {
 
-    @Environment(\.backgroundColor) private var backgroundColor
+    @Environment(\.backgroundShape) private var backgroundShape
     
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -22,16 +22,16 @@ public struct ListChoiceButtonStyle: ButtonStyle {
     }
     
     @ViewBuilder var resolvedInactiveBackground: some View {
-        if let backgroundColor {
-            backgroundColor.inactiveView
+        if let backgroundShape {
+            backgroundShape.inactiveView
         } else {
             Color.clear
         }
     }
     
     @ViewBuilder var resolvedActiveBackground: some View {
-        if let backgroundColor {
-            backgroundColor.activeView
+        if let backgroundShape {
+            backgroundShape.activeView
         } else {
             Color.inkNormal.opacity(0.06)
         }
@@ -63,13 +63,13 @@ struct ListChoiceButtonStylePreviews: PreviewProvider {
     static var colors: some View {
         VStack(alignment: .leading, spacing: .medium) {
             button
-                .backgroundColor(.orangeLight)
+                .backgroundStyle(.orangeLight)
             
             button
-                .backgroundColor(.orangeLight, active: .greenLight)
+                .backgroundStyle(.orangeLight, active: .greenLight)
             
             button
-                .backgroundColor(Gradient.bundleBasic.background, active: .redLight)
+                .backgroundStyle(Gradient.bundleBasic.background, active: .redLight)
         }
         .buttonStyle(ListChoiceButtonStyle())
         .previewDisplayName()

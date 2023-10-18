@@ -22,7 +22,7 @@ struct AlertInlineButtonStyle: PrimitiveButtonStyle {
         }
         .textFontWeight(.medium)
         .textColor(resolvedStatus.darkColor)
-        .backgroundColor(.clear, active: resolvedStatus.color.opacity(0.24))
+        .backgroundStyle(.clear, active: resolvedStatus.color.opacity(0.24))
         .idealSize()
     }
 

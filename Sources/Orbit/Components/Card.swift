@@ -8,7 +8,7 @@ import SwiftUI
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct Card<Content: View>: View {
 
-    @Environment(\.backgroundColor) private var backgroundColor
+    @Environment(\.backgroundShape) private var backgroundShape
     @Environment(\.idealSize) private var idealSize
 
     let title: String
@@ -28,7 +28,7 @@ public struct Card<Content: View>: View {
             if isContentEmpty == false {
                 VStack(alignment: contentAlignment, spacing: contentSpacing) {
                     content
-                        .backgroundColor(nil)
+                        .backgroundStyle(nil)
                 }
                 .padding(.top, isHeaderEmpty ? contentPadding : 0)
                 .padding([.horizontal, .bottom], contentPadding)
@@ -78,8 +78,8 @@ public struct Card<Content: View>: View {
     }
     
     @ViewBuilder var resolvedBackground: some View {
-        if let backgroundColor {
-            backgroundColor.inactiveView
+        if let backgroundShape {
+            backgroundShape.inactiveView
         } else {
             Color.whiteDarker
         }
@@ -118,8 +118,6 @@ public struct Card<Content: View>: View {
 public extension Card {
 
     /// Creates Orbit Card component.
-    ///
-    /// Custom background color be specified using `.backgroundColor()` modifier.
     init(
         _ title: String = "",
         description: String = "",
@@ -298,13 +296,13 @@ struct CardPreviews: PreviewProvider {
         ) {
             VStack(spacing: 0) {
                 ListChoice("ListChoice", action: {})
-                    .backgroundColor(.blueLight, active: .greenLight)
+                    .backgroundStyle(.blueLight, active: .greenLight)
                 ListChoice("ListChoice", icon: .map, action: {})
                 ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false, action: {})
             }
             .padding(.top, .xSmall)
         }
-        .backgroundColor(.clear)
+        .backgroundStyle(.clear)
         .previewDisplayName()
     }
 

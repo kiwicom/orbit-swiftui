@@ -5,7 +5,7 @@ public struct TileButtonStyle: ButtonStyle {
 
     public static let verticalTextPadding: CGFloat = 14 // = 52 height @ normal size
 
-    @Environment(\.backgroundColor) private var backgroundColor
+    @Environment(\.backgroundShape) private var backgroundShape
     
     private let style: TileBorderStyle
     private let isSelected: Bool
@@ -25,16 +25,16 @@ public struct TileButtonStyle: ButtonStyle {
     }
     
     @ViewBuilder var resolvedInactiveBackground: some View {
-        if let backgroundColor {
-            backgroundColor.inactiveView
+        if let backgroundShape {
+            backgroundShape.inactiveView
         } else {
             Color.whiteDarker
         }
     }
     
     @ViewBuilder var resolvedActiveBackground: some View {
-        if let backgroundColor {
-            backgroundColor.activeView
+        if let backgroundShape {
+            backgroundShape.activeView
         } else {
             Color.whiteHover
         }
@@ -78,13 +78,13 @@ struct TileButtonStylePreviews: PreviewProvider {
     static var colors: some View {
         VStack(alignment: .leading, spacing: .medium) {
             button
-                .backgroundColor(.orangeLight)
+                .backgroundStyle(.orangeLight)
             
             button
-                .backgroundColor(.orangeLight, active: .greenLight)
+                .backgroundStyle(.orangeLight, active: .greenLight)
             
             button
-                .backgroundColor(Gradient.bundleBasic.background, active: .redLight)
+                .backgroundStyle(Gradient.bundleBasic.background, active: .redLight)
         }
         .buttonStyle(TileButtonStyle())
         .previewDisplayName()

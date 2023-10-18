@@ -260,7 +260,7 @@ private struct ColorCard<Content: View>: View {
             .compositingGroup()
             .elevation(.level2)
         }
-        .backgroundColor(.clear)
+        .backgroundStyle(.clear)
     }
 }
 

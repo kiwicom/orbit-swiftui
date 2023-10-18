@@ -59,7 +59,7 @@ Supporting types and components under development.
 ### Other
 
 - ``AssetNameProviding``
-- ``BackgroundColor``
+- ``BackgroundShape``
 - ``BadgeListType``
 - ``BarButton``
 - ``BorderWidth``

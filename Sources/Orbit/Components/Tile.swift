@@ -143,8 +143,6 @@ public struct Tile<Content: View, Icon: View>: View {
 public extension Tile {
     
     /// Creates Orbit Tile component.
-    ///
-    /// Custom background color be specified using `.backgroundColor()` modifier.
     init(
         _ title: String = "",
         description: String = "",
@@ -173,8 +171,6 @@ public extension Tile {
     }
 
     /// Creates Orbit Tile component with custom icon.
-    ///
-    /// Custom background color be specified using `.backgroundColor()` modifier.
     init(
         _ title: String = "",
         description: String = "",

@@ -6,7 +6,7 @@ import SwiftUI
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
 public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: View>: View {
 
-    @Environment(\.backgroundColor) private var backgroundColor
+    @Environment(\.backgroundShape) private var backgroundShape
     @Environment(\.idealSize) private var idealSize
     @Environment(\.status) private var status
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
@@ -232,8 +232,6 @@ public extension ChoiceTile {
 
     /// Creates Orbit ChoiceTile component.
     ///
-    /// Custom background color be specified using `.backgroundColor()` modifier.
-    ///
     /// - Parameters:
     ///   - content: The content shown below the header.
     ///   - header: A trailing view placed inside the tile header.
@@ -270,8 +268,6 @@ public extension ChoiceTile {
     }
 
     /// Creates Orbit ChoiceTile component.
-    ///
-    /// Custom background color be specified using `.backgroundColor()` modifier.
     ///
     /// - Parameters:
     ///   - content: The content shown below the header.
@@ -525,7 +521,7 @@ struct ChoiceTilePreviews: PreviewProvider {
 
     @ViewBuilder static var content: some View {
         choiceTile(titleStyle: .title4, showHeader: true, isError: false, isSelected: false)
-            .backgroundColor(.redLight)
+            .backgroundStyle(.redLight)
         choiceTile(titleStyle: .title4, showHeader: true, isError: false, isSelected: true)
         choiceTile(titleStyle: .title3, showHeader: true, isError: false, isSelected: false)
         choiceTile(titleStyle: .title4, showHeader: false, isError: false, isSelected: true)

@@ -3,7 +3,7 @@ import SwiftUI
 /// Button style for Orbit ``Button`` component.
 public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: PrimitiveButtonStyle {
     
-    @Environment(\.backgroundColor) private var backgroundColor
+    @Environment(\.backgroundShape) private var backgroundShape
     @Environment(\.buttonSize) private var buttonSize
     @Environment(\.status) private var status
     @Environment(\.textColor) private var textColor
@@ -28,7 +28,7 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
         .textFontWeight(.medium)
         .textColor(textColor ?? labelColor)
         .textSize(textSize)
-        .backgroundColor(backgroundColor?.inactive ?? background, active: backgroundColor?.active ?? backgroundActive)
+        .backgroundStyle(backgroundShape?.inactive ?? background, active: backgroundShape?.active ?? backgroundActive)
     }
     
     var background: Color {

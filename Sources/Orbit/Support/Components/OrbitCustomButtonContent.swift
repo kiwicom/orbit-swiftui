@@ -2,7 +2,7 @@ import SwiftUI
 
 struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View>: View {
 
-    @Environment(\.backgroundColor) private var backgroundColor
+    @Environment(\.backgroundShape) private var backgroundShape
     @Environment(\.iconColor) private var iconColor
     @Environment(\.idealSize) private var idealSize
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
@@ -86,9 +86,9 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View>: View {
 
     @ViewBuilder var backgroundView: some View {
         if isPressed {
-            backgroundColor?.activeView
+            backgroundShape?.activeView
         } else {
-            backgroundColor?.inactiveView
+            backgroundShape?.inactiveView
         }
     }
 
@@ -167,7 +167,7 @@ struct OrbitCustomButtonContentPreviews: PreviewProvider {
                 Icon(.chevronForward)
             }
             .textColor(.blueDark)
-            .backgroundColor(.orangeLight, active: .greenLight)
+            .backgroundStyle(.orangeLight, active: .greenLight)
         }
     }
 }

@@ -35,7 +35,7 @@ struct StorybookNotificationBadge {
                 NotificationBadge(.airplane)
                     .iconColor(.pink)
                     .textColor(.blueDark)
-                    .backgroundColor(.whiteNormal)
+                    .backgroundStyle(.whiteNormal)
 
                 NotificationBadge {
                     CountryFlag("us")
@@ -65,7 +65,7 @@ struct StorybookNotificationBadge {
 
     static func gradientBadge(_ gradient: Orbit.Gradient) -> some View {
         badges(.neutral)
-            .backgroundColor(gradient.background)
+            .backgroundStyle(gradient.background)
             .textColor(.whiteNormal)
             .previewDisplayName("\(String(describing: gradient).titleCased)")
     }
