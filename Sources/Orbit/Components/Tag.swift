@@ -65,8 +65,6 @@ public struct Tag<Icon: View>: View, PotentiallyEmptyView {
 public extension Tag {
 
     /// Creates Orbit Tag component with custom icon.
-    ///
-    /// Custom background color be specified using `.backgroundStyle()` modifier.
     init(
         _ label: String = "",
         style: TagStyle = .default,
@@ -82,8 +80,6 @@ public extension Tag {
     }
 
     /// Creates Orbit Tag component.
-    ///
-    /// Custom background color be specified using `.backgroundStyle()` modifier.
     init(
         _ label: String = "",
         icon: Icon.Symbol? = nil,

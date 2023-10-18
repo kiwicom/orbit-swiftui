@@ -170,8 +170,6 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
     }
 
     /// Creates Orbit ListChoice component with custom content.
-    ///
-    /// Custom background color be specified using `.backgroundStyle()` modifier.
     public init(
         _ title: String = "",
         description: String = "",
@@ -199,8 +197,6 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
 public extension ListChoice {
 
     /// Creates Orbit ListChoice component.
-    ///
-    /// Custom background color be specified using `.backgroundStyle()` modifier.
     init(
         _ title: String = "",
         description: String = "",
@@ -231,8 +227,6 @@ public extension ListChoice {
 public extension ListChoice where Header == Text {
 
     /// Creates Orbit ListChoice component with text header value.
-    ///
-    /// Custom background color be specified using `.backgroundStyle()` modifier.
     init(
         _ title: String = "",
         description: String = "",

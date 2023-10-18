@@ -232,8 +232,6 @@ public extension ChoiceTile {
 
     /// Creates Orbit ChoiceTile component.
     ///
-    /// Custom background color be specified using `.backgroundStyle()` modifier.
-    ///
     /// - Parameters:
     ///   - content: The content shown below the header.
     ///   - header: A trailing view placed inside the tile header.
@@ -270,8 +268,6 @@ public extension ChoiceTile {
     }
 
     /// Creates Orbit ChoiceTile component.
-    ///
-    /// Custom background color be specified using `.backgroundStyle()` modifier.
     ///
     /// - Parameters:
     ///   - content: The content shown below the header.

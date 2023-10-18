@@ -97,8 +97,6 @@ public extension Badge {
     
     /// Creates Orbit Badge component.
     ///
-    /// Custom background color be specified using `.backgroundStyle()` modifier.
-    ///
     /// - Parameters:
     ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     init(
@@ -115,8 +113,6 @@ public extension Badge {
     }
 
     /// Creates Orbit Badge component with custom icons.
-    ///
-    /// Custom background color be specified using `.backgroundStyle()` modifier.
     ///
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.

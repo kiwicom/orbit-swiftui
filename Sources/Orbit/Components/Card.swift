@@ -118,8 +118,6 @@ public struct Card<Content: View>: View {
 public extension Card {
 
     /// Creates Orbit Card component.
-    ///
-    /// Custom background color be specified using `.backgroundStyle()` modifier.
     init(
         _ title: String = "",
         description: String = "",

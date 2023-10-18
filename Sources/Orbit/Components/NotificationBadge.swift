@@ -81,8 +81,6 @@ public struct NotificationBadge<Content: View>: View {
 
     /// Creates Orbit NotificationBadge component with custom content.
     ///
-    /// Custom background color be specified using `.backgroundStyle()` modifier.
-    ///
     /// - Parameters:
     ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
     public init(
@@ -98,8 +96,6 @@ public struct NotificationBadge<Content: View>: View {
 public extension NotificationBadge {
 
     /// Creates Orbit NotificationBadge component containing text.
-    ///
-    /// Custom background color be specified using `.backgroundStyle()` modifier.
     ///
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
