@@ -1,4 +1,5 @@
 import SwiftUI
+import Orbit
 
 /// An illustration matching Orbit name.
 ///
@@ -53,7 +54,7 @@ public extension Illustration {
         layout: Layout = .frame()
     ) {
         self.name = image.assetName
-        self.bundle = .orbit
+        self.bundle = .module
         self.layout = layout
     }
     
@@ -100,7 +101,7 @@ public extension Illustration {
 struct IllustrationPreviews: PreviewProvider {
 
     public static var previews: some View {
-        PreviewWrapper {
+        OrbitPreviewWrapper {
             standalone
             intrinsic
             customResource

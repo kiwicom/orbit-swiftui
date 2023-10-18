@@ -1,10 +1,10 @@
 
-protocol AssetNameProviding: RawRepresentable {
+public protocol AssetNameProviding: RawRepresentable {
 
     var assetName: String { get }
 }
 
-extension AssetNameProviding {
+public extension AssetNameProviding {
 
     var assetName: String {
         defaultAssetName

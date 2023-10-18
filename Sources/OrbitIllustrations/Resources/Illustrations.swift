@@ -1,4 +1,5 @@
 import Foundation
+import Orbit
 
 public extension Illustration {
 
@@ -96,7 +97,7 @@ public extension Illustration {
         case wheelchair
         case womanWithPhone
 
-        var assetName: String {
+        public var assetName: String {
             self == .none ? "" : defaultAssetName
         }
     }
