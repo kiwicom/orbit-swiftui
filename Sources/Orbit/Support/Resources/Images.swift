@@ -39,8 +39,4 @@ public extension UIImage {
     static func orbit(image: Image.Symbol) -> UIImage {
         Self.image(image.assetName)
     }
-
-    static func orbit(illustration: Illustration.Image) -> UIImage {
-        image(illustration.assetName)
-    }
 }

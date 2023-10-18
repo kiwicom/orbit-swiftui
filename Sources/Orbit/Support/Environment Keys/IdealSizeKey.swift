@@ -1,15 +1,15 @@
 import SwiftUI
 
-struct IdealSizeValue {
-    var horizontal: Bool?
-    var vertical: Bool?
+public struct IdealSizeValue {
+    public var horizontal: Bool?
+    public var vertical: Bool?
 }
 
 struct IdealSizeKey: EnvironmentKey {
     static let defaultValue = IdealSizeValue()
 }
 
-extension EnvironmentValues {
+public extension EnvironmentValues {
 
     var idealSize: IdealSizeValue {
         get { self[IdealSizeKey.self] }

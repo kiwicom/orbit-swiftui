@@ -1,8 +1,9 @@
 import Foundation
+import Orbit
 
 public extension Illustration {
 
-    enum Image: String, CaseIterable, AssetNameProviding {
+    enum Asset: String, CaseIterable, AssetNameProviding {
         case none
         
         case accommodation
@@ -96,7 +97,7 @@ public extension Illustration {
         case wheelchair
         case womanWithPhone
 
-        var assetName: String {
+        public var assetName: String {
             self == .none ? "" : defaultAssetName
         }
     }

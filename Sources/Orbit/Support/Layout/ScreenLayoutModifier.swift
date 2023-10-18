@@ -162,7 +162,7 @@ struct ScreenLayoutModifierPreviews: PreviewProvider {
     static var snapshot: some View {
         VStack(alignment: .leading, spacing: .medium) {
             Alert(AlertPreviews.title, description: AlertPreviews.description) {
-                Illustration(.accommodation)
+                illustrationPlaceholder
                     .padding(.horizontal, .xxLarge)
             } buttons: {
                 Button("Primary") {}
@@ -173,7 +173,7 @@ struct ScreenLayoutModifierPreviews: PreviewProvider {
 
             Text(TextPreviews.multilineFormattedText)
 
-            Illustration(.accommodation)
+            illustrationPlaceholder
                 .padding(.horizontal, .xxLarge)
 
             Button("Button", icon: .grid, action: {})

@@ -43,15 +43,16 @@ content_template = '''{{
 '''
 
 illustration_source_template = '''import Foundation
+import Orbit
 
 public extension Illustration {{
 
-    enum Image: String, CaseIterable, AssetNameProviding {{
+    enum Asset: String, CaseIterable, AssetNameProviding {{
         case none
         
 {cases}
 
-        var assetName: String {{
+        public var assetName: String {{
             self == .none ? "" : defaultAssetName
         }}
     }}
@@ -119,7 +120,7 @@ def illustrationsFolderPath():
 if __name__ == "__main__":
 
   folder = illustrationsFolderPath()
-  assetDownloadedPath = folder.joinpath('../Illustrations/Illustrations.xcassets/')
+  assetDownloadedPath = folder.joinpath('./Illustrations.xcassets/')
   assetDownloadedPath.mkdir(exist_ok = True)
   illustration_names = []
 

@@ -58,6 +58,7 @@ Supporting types and components under development.
 
 ### Other
 
+- ``AssetNameProviding``
 - ``BackgroundColor``
 - ``BadgeListType``
 - ``BarButton``
@@ -66,6 +67,7 @@ Supporting types and components under development.
 - ``ChoiceTileIndicator``
 - ``ElevationShape``
 - ``IconButton``
+- ``IdealSizeValue``
 - ``KeyValueField``
 - ``LazyVStack``
 - ``NavigationButton``

@@ -10,18 +10,20 @@ import SwiftUI
 /// ```
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/emptystate/)
-public struct EmptyState<Content: View, Buttons: View>: View {
+public struct EmptyState<Content: View, Buttons: View, Illustration: View>: View {
 
     private let title: String
     private let description: String
-    private let illustration: Illustration.Image
     @ViewBuilder private let content: Content
     @ViewBuilder private let buttons: Buttons
+    @ViewBuilder private let illustration: Illustration
 
     public var body: some View {
         VStack(spacing: .medium) {
-            Illustration(illustration, layout: .frame(maxHeight: 160))
-                .padding(.top, .large)
+            if illustration.isEmpty == false {
+                illustration
+                    .padding(.top, .large)
+            }
         
             texts
 
@@ -58,23 +60,21 @@ public struct EmptyState<Content: View, Buttons: View>: View {
 
 // MARK: - Inits
 public extension EmptyState {
- 
+
     /// Creates Orbit EmptyState component.
     init(
         _ title: String = "",
         description: String = "",
-        illustration: Illustration.Image = .none,
         @ViewBuilder content: () -> Content = { EmptyView() },
-        @ButtonStackBuilder buttons: () -> Buttons
+        @ButtonStackBuilder buttons: () -> Buttons,
+        @ViewBuilder illustration: () -> Illustration = { EmptyView() }
     ) {
-        self.init(
-            title: title,
-            description: description,
-            illustration: illustration
-        ) {
+        self.init(title: title, description: description) {
             content()
         } buttons: {
             buttons()
+        } illustration: {
+            illustration()
         }
     }
 
@@ -82,17 +82,9 @@ public extension EmptyState {
     init(
         _ title: String = "",
         description: String = "",
-        illustration: Illustration.Image = .none
+        @ViewBuilder illustration: () -> Illustration = { EmptyView() }
     ) where Content == EmptyView, Buttons == EmptyView {
-        self.init(
-            title: title,
-            description: description,
-            illustration: illustration
-        ) {
-            EmptyView()
-        } buttons: {
-            EmptyView()
-        }
+        self.init(title, description: description, buttons: { EmptyView() }, illustration: illustration)
     }
 }
 
@@ -120,26 +112,34 @@ struct EmptyStatePreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        EmptyState(title, description: description, illustration: .noResults) {
+        EmptyState(title, description: description) {
             contentPlaceholder
         } buttons: {
             Button(primaryButton) {}
             Button(secondaryButton) {}
+        } illustration: {
+            illustrationPlaceholder
         }
         .previewDisplayName()
     }
     
     static var subtle: some View {
-        EmptyState(title, description: description, illustration: .error404) {
+        EmptyState(title, description: description) {
+
+        } buttons: {
             Button(primaryButton) {}
+        } illustration: {
+            illustrationPlaceholder
         }
         .status(.critical)
         .previewDisplayName()
     }
     
     static var noAction: some View {
-        EmptyState(title, description: description, illustration: .offline)
-            .previewDisplayName()
+        EmptyState(title, description: description) {
+            illustrationPlaceholder
+        }
+        .previewDisplayName()
     }
 
     static var snapshot: some View {
