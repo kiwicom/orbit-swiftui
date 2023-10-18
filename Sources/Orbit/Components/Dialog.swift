@@ -2,7 +2,8 @@ import SwiftUI
 
 /// Prompts users to take or complete an action.
 ///
-/// Use at most three actions in a Dialog. A Dialog expands both horizontally and vertically and is meant to be used as a modal fullscreen overlay.
+/// Use at most three actions in a Dialog. A Dialog expands both horizontally 
+/// and vertically and is meant to be used as a modal fullscreen overlay.
 ///
 /// ```swift
 /// Dialog("Title") {
@@ -14,17 +15,17 @@ import SwiftUI
 /// ```
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/overlay/dialog/)
-public struct Dialog<Content: View, Buttons: View>: View {
+public struct Dialog<Content: View, Buttons: View, Illustration: View>: View {
 
     private let title: String
     private let description: String
-    private let illustration: Illustration.Image
     @ViewBuilder private let content: Content
     @ViewBuilder private let buttons: Buttons
+    @ViewBuilder private let illustration: Illustration
 
     public var body: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            Illustration(illustration, layout: .frame(maxHeight: 120, alignment: .leading))
+            illustration
                 .padding(.top, .xSmall)
 
             texts
@@ -75,18 +76,16 @@ extension Dialog {
     public init(
         _ title: String = "",
         description: String = "",
-        illustration: Illustration.Image = .none,
         @ViewBuilder content: () -> Content = { EmptyView() },
-        @ButtonStackBuilder buttons: () -> Buttons
+        @ButtonStackBuilder buttons: () -> Buttons,
+        @ViewBuilder illustration: () -> Illustration = { EmptyView() }
     ) {
-        self.init(
-            title: title,
-            description: description,
-            illustration: illustration
-        ) {
+        self.init(title: title, description: description) {
             content()
         } buttons: {
             buttons()
+        } illustration: {
+            illustration()
         }
     }
 }
@@ -123,29 +122,25 @@ struct DialogPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Dialog(
-            title1,
-            description: description1,
-            illustration: .noNotification
-        ) {
+        Dialog(title1, description: description1) {
             contentPlaceholder
         } buttons: {
             Button("Main CTA") {}
             Button("Secondary") {}
             Button("Tertiary") {}
+        } illustration: {
+            illustrationPlaceholder
         }
         .previewDisplayName()
     }
 
     static var critical: some View {
-        Dialog(
-            title2,
-            description: description2,
-            illustration: .noNotification
-        ) {
+        Dialog(title2, description: description2) {
             Button("Main CTA") {}
             Button("Secondary") {}
             Button("Tertiary") {}
+        } illustration: {
+            illustrationPlaceholder
         }
         .status(.critical)
         .previewDisplayName()

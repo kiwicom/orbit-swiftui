@@ -8,7 +8,14 @@ extension PreviewProvider {
             .frame(maxWidth: .infinity)
             .background(Color.blueLightActive)
     }
-    
+
+    @ViewBuilder static var illustrationPlaceholder: some View {
+        Text("Illustration\ncontent")
+            .padding(.vertical, .medium)
+            .frame(minWidth: 100, maxWidth: 300, maxHeight: 200)
+            .background(Color.pink)
+    }
+
     @ViewBuilder static var contentPlaceholder: some View {
         Color.productLightActive.opacity(0.3)
             .frame(height: 80)

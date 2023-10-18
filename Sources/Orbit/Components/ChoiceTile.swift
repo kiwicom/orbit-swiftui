@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/choice-tile/)
 /// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
-public struct ChoiceTile<Content: View, Icon: View, Header: View>: View {
+public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: View>: View {
 
     @Environment(\.backgroundColor) private var backgroundColor
     @Environment(\.idealSize) private var idealSize
@@ -16,7 +16,6 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View>: View {
     let title: String
     let description: String
     let badgeOverlay: String
-    let illustration: Illustration.Image
     let indicator: ChoiceTileIndicator
     let titleStyle: Heading.Style
     let isSelected: Bool
@@ -27,6 +26,7 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View>: View {
     @ViewBuilder let content: Content
     @ViewBuilder let icon: Icon
     @ViewBuilder let header: Header
+    @ViewBuilder let illustration: Illustration
 
     public var body: some View {
         SwiftUI.Button(
@@ -96,11 +96,11 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View>: View {
                     .padding(.trailing, indicatorTrailingPadding)
                 case .center:
                     VStack(spacing: .xxSmall) {
-                        if illustration == .none {
+                        if illustration.isEmpty {
                             iconView
                                 .padding(.bottom, .xxSmall)
                         } else {
-                            Illustration(illustration, layout: .resizeable)
+                            illustration
                                 .frame(height: 68)
                                 .padding(.bottom, .xxSmall)
                         }
@@ -240,8 +240,6 @@ public extension ChoiceTile {
     init(
         _ title: String = "",
         description: String = "",
-        icon: Icon.Symbol? = nil,
-        illustration: Illustration.Image = .none,
         badgeOverlay: String = "",
         indicator: ChoiceTileIndicator = .radio,
         titleStyle: Heading.Style = .title3,
@@ -251,12 +249,52 @@ public extension ChoiceTile {
         alignment: ChoiceTileAlignment = .default,
         action: @escaping () -> Void,
         @ViewBuilder content: () -> Content = { EmptyView() },
-        @ViewBuilder header: () -> Header = { EmptyView() }
+        @ViewBuilder icon: () -> Icon,
+        @ViewBuilder header: () -> Header = { EmptyView() },
+        @ViewBuilder illustration: () -> Illustration = { EmptyView() }
+    ) {
+        self.title = title
+        self.description = description
+        self.badgeOverlay = badgeOverlay
+        self.indicator = indicator
+        self.titleStyle = titleStyle
+        self.isSelected = isSelected
+        self.isError = isError
+        self.message = message
+        self.alignment = alignment
+        self.action = action
+        self.content = content()
+        self.icon = icon()
+        self.header = header()
+        self.illustration = illustration()
+    }
+
+    /// Creates Orbit ChoiceTile component.
+    ///
+    /// Custom background color be specified using `.backgroundColor()` modifier.
+    ///
+    /// - Parameters:
+    ///   - content: The content shown below the header.
+    ///   - header: A trailing view placed inside the tile header.
+    init(
+        _ title: String = "",
+        description: String = "",
+        icon: Icon.Symbol? = nil,
+        badgeOverlay: String = "",
+        indicator: ChoiceTileIndicator = .radio,
+        titleStyle: Heading.Style = .title3,
+        isSelected: Bool = false,
+        isError: Bool = false,
+        message: Message? = nil,
+        alignment: ChoiceTileAlignment = .default,
+        action: @escaping () -> Void,
+        @ViewBuilder content: () -> Content = { EmptyView() },
+        @ViewBuilder header: () -> Header = { EmptyView() },
+        @ViewBuilder illustration: () -> Illustration = { EmptyView() }
     ) where Icon == Orbit.Icon {
         self.init(
             title,
             description: description,
-            illustration: illustration,
             badgeOverlay: badgeOverlay,
             indicator: indicator,
             titleStyle: titleStyle,
@@ -272,46 +310,9 @@ public extension ChoiceTile {
             Icon(icon)
         } header: {
             header()
+        } illustration: {
+            illustration()
         }
-    }
-
-    /// Creates Orbit ChoiceTile component.
-    ///
-    /// Custom background color be specified using `.backgroundColor()` modifier.
-    ///
-    /// - Parameters:
-    ///   - content: The content shown below the header.
-    ///   - header: A trailing view placed inside the tile header.
-    init(
-        _ title: String = "",
-        description: String = "",
-        illustration: Illustration.Image = .none,
-        badgeOverlay: String = "",
-        indicator: ChoiceTileIndicator = .radio,
-        titleStyle: Heading.Style = .title3,
-        isSelected: Bool = false,
-        isError: Bool = false,
-        message: Message? = nil,
-        alignment: ChoiceTileAlignment = .default,
-        action: @escaping () -> Void,
-        @ViewBuilder content: () -> Content = { EmptyView() },
-        @ViewBuilder icon: () -> Icon,
-        @ViewBuilder header: () -> Header = { EmptyView() }
-    ) {
-        self.title = title
-        self.description = description
-        self.illustration = illustration
-        self.badgeOverlay = badgeOverlay
-        self.indicator = indicator
-        self.titleStyle = titleStyle
-        self.isSelected = isSelected
-        self.isError = isError
-        self.message = message
-        self.alignment = alignment
-        self.action = action
-        self.content = content()
-        self.icon = icon()
-        self.header = header()
     }
 }
 
@@ -417,7 +418,6 @@ struct ChoiceTilePreviews: PreviewProvider {
         ChoiceTile(
             title,
             description: description,
-            illustration: .priorityBoarding,
             badgeOverlay: "Recommended",
             message: .help("Message"),
             alignment: .center
@@ -427,6 +427,8 @@ struct ChoiceTilePreviews: PreviewProvider {
             contentPlaceholder
         } header: {
             headerPlaceholder
+        } illustration: {
+            illustrationPlaceholder
         }
         .padding(.medium)
         .previewDisplayName()
@@ -561,7 +563,6 @@ struct ChoiceTilePreviews: PreviewProvider {
                 title,
                 description: description,
                 icon: showIllustration ? .none : .grid,
-                illustration: showIllustration ? .priorityBoarding : .none,
                 badgeOverlay: "Recommended",
                 titleStyle: titleStyle,
                 isSelected: state.wrappedValue,
@@ -571,6 +572,10 @@ struct ChoiceTilePreviews: PreviewProvider {
                 state.wrappedValue.toggle()
             } content: {
                 contentPlaceholder
+            } illustration: {
+                if showIllustration {
+                    illustrationPlaceholder
+                }
             }
         }
     }
