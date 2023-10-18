@@ -7,7 +7,7 @@ public extension Dialog {
     init(
         _ title: String = "",
         description: String = "",
-        illustration: OrbitIllustrations.Illustration.Image,
+        illustration: OrbitIllustrations.Illustration.Asset,
         @ViewBuilder content: () -> Content = { EmptyView() },
         @ButtonStackBuilder buttons: () -> Buttons
     ) where Illustration == OrbitIllustrations.Illustration {

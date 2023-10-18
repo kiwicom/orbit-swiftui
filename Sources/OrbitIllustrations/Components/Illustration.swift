@@ -46,14 +46,14 @@ public extension Illustration {
     /// Creates Orbit Illustration component using Orbit illustration asset.
     ///
     /// - Parameters:
-    ///     - image: Orbit Illustration asset.
+    ///     - asset: Orbit Illustration asset.
     ///     - layout: Layout behavior of illustration content.
     ///     By default, a `frame` layout is used to automatically resize the illustration and center it horizontally.
     init(
-        _ image: Image,
+        _ asset: Asset,
         layout: Layout = .frame()
     ) {
-        self.name = image.assetName
+        self.name = asset.assetName
         self.bundle = .module
         self.layout = layout
     }

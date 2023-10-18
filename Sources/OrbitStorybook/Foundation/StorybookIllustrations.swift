@@ -4,8 +4,8 @@ import OrbitIllustrations
 
 struct StorybookIllustrations {
 
-    static var illustrations: [Illustration.Image] {
-        Array(Illustration.Image.allCases.dropFirst())
+    static var illustrations: [Illustration.Asset] {
+        Array(Illustration.Asset.allCases.dropFirst())
     }
 
     @ViewBuilder static func storybook(filter: String = "") -> some View {
@@ -49,11 +49,11 @@ struct StorybookIllustrations {
         }
     }
 
-    static func illustrations(filter: String) -> [Illustration.Image] {
+    static func illustrations(filter: String) -> [Illustration.Asset] {
         illustrations.filter { filter.isEmpty || "\($0)".localizedCaseInsensitiveContains(filter) }
     }
 
-    static func illustrationImage(index: Int, filter: String) -> Illustration.Image? {
+    static func illustrationImage(index: Int, filter: String) -> Illustration.Asset? {
         let filteredImages = illustrations(filter: filter)
         guard filteredImages.indices.contains(index) else {
             return nil

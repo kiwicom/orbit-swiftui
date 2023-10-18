@@ -11,7 +11,7 @@ public extension ChoiceTile {
     init(
         _ title: String = "",
         description: String = "",
-        illustration: OrbitIllustrations.Illustration.Image,
+        illustration: OrbitIllustrations.Illustration.Asset,
         badgeOverlay: String = "",
         indicator: ChoiceTileIndicator = .radio,
         titleStyle: Heading.Style = .title3,
@@ -52,7 +52,7 @@ public extension ChoiceTile {
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol? = nil,
-        illustration: OrbitIllustrations.Illustration.Image,
+        illustration: OrbitIllustrations.Illustration.Asset,
         badgeOverlay: String = "",
         indicator: ChoiceTileIndicator = .radio,
         titleStyle: Heading.Style = .title3,

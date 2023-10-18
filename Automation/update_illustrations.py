@@ -47,7 +47,7 @@ import Orbit
 
 public extension Illustration {{
 
-    enum Image: String, CaseIterable, AssetNameProviding {{
+    enum Asset: String, CaseIterable, AssetNameProviding {{
         case none
         
 {cases}

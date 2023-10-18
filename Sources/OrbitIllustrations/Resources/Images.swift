@@ -3,7 +3,7 @@ import Orbit
 
 public extension UIImage {
 
-    static func orbit(illustration: Illustration.Image) -> UIImage {
+    static func orbit(illustration: Illustration.Asset) -> UIImage {
         image(illustration.assetName)
     }
 }
