@@ -10,4 +10,4 @@
 
 - ``TagButtonStyle``
 - ``TagStyle``
-- ``BackgroundColor``
+- ``BackgroundShape``

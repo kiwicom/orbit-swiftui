@@ -12,4 +12,4 @@
 - ``TileBorderStyle``
 - ``TileButtonStyle``
 - ``TileDisclosure``
-- ``BackgroundColor``
+- ``BackgroundShape``
