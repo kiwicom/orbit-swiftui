@@ -128,26 +128,28 @@ struct TileBorderModifierPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            content
-                .tileBorder()
+            VStack(spacing: .medium) {
+                content
+                    .tileBorder()
+                
+                content
+                    .tileBorder(.plain)
+                
+                content
+                    .tileBorder(.iOS)
+                
+                content
+                    .tileBorder(.iOS, isSelected: true)
+                
+                content
+                    .background(Color.blueLight)
+                    .tileBorder()
 
-            content
-                .tileBorder(.plain)
-
-            content
-                .tileBorder(.iOS)
-
-            content
-                .tileBorder(.iOS, isSelected: true)
-
-            content
-                .background(Color.blueLight)
-                .tileBorder()
-
-            content
-                .background(Color.blueLight)
-                .tileBorder(isSelected: true)
-
+                content
+                    .background(Color.blueLight)
+                    .tileBorder(isSelected: true)
+            }
+                
             Group {
                 content
                     .background(Color.blueLight)

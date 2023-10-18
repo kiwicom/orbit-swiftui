@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Content for inputs that share common layout with a prefix and suffix.
+/// Content for Orbit inputs that share common layout with a prefix and suffix.
 public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
 
     @Environment(\.iconColor) private var iconColor
@@ -125,6 +125,7 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
         }
     }
 
+    /// Create content for Orbit inputs that share common layout with a prefix and suffix.
     public init(
         state: InputState = .default,
         label: String = "",

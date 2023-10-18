@@ -26,10 +26,17 @@ struct StorybookButton {
 
     @ViewBuilder static var gradient: some View {
         LazyVStack(alignment: .leading, spacing: .xLarge) {
-            buttons(.gradient(.bundleBasic))
-            buttons(.gradient(.bundleMedium))
-            buttons(.gradient(.bundleTop))
+            buttons(.primary)
+                .backgroundColor(Gradient.bundleBasic.background, active: Gradient.bundleBasic.startColor)
+                .previewDisplayName("Bundle Basic")
+            buttons(.primary)
+                .backgroundColor(Gradient.bundleMedium.background, active: Gradient.bundleMedium.startColor)
+                .previewDisplayName("Bundle Medium")
+            buttons(.primary)
+                .backgroundColor(Gradient.bundleTop.background, active: Gradient.bundleTop.startColor)
+                .previewDisplayName("Bundle Top")
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 

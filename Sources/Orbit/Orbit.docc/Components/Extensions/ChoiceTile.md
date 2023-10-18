@@ -1,4 +1,4 @@
-# ``Orbit/Tag``
+# ``Orbit/ChoiceTile``
 
 @Metadata {
     @DocumentationExtension(mergeBehavior: append)
@@ -8,6 +8,4 @@
 
 ### Customizing Appearance
 
-- ``TagButtonStyle``
-- ``TagStyle``
 - ``BackgroundColor``

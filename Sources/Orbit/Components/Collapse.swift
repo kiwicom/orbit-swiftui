@@ -30,7 +30,7 @@ public struct Collapse<Header: View, Content: View>: View {
                     }
                     .padding(.vertical, headerVerticalPadding)
                 }
-                .buttonStyle(CollapseButtonStyle())
+                .buttonStyle(ListChoiceButtonStyle())
 
                 if isExpanded {
                     content
@@ -51,6 +51,8 @@ public struct Collapse<Header: View, Content: View>: View {
 public extension Collapse {
 
     /// Creates Orbit Collapse component with a binding to the expansion state.
+    ///
+    /// Custom background color be specified using `.backgroundColor()` modifier.
     init(
         isExpanded: Binding<Bool>,
         showSeparator: Bool = true,
@@ -65,6 +67,8 @@ public extension Collapse {
     }
 
     /// Creates Orbit Collapse component.
+    ///
+    /// Custom background color be specified using `.backgroundColor()` modifier.
     init(@ViewBuilder content: () -> Content, showSeparator: Bool = true, @ViewBuilder header: () -> Header) {
         self.header = header()
         self.headerVerticalPadding = 0
@@ -92,24 +96,6 @@ public extension Collapse where Header == Text {
         self.content = content()
         self.showSeparator = showSeparator
         self.isExpanded = nil
-    }
-}
-
-extension Collapse {
-
-    struct CollapseButtonStyle: SwiftUI.ButtonStyle {
-
-        func makeBody(configuration: Configuration) -> some View {
-            configuration.label
-                .background(
-                    backgroundColor(isPressed: configuration.isPressed)
-                        .contentShape(Rectangle())
-                )
-        }
-
-        func backgroundColor(isPressed: Bool) -> Color {
-            isPressed ? .inkNormal.opacity(0.06) : .clear
-        }
     }
 }
 

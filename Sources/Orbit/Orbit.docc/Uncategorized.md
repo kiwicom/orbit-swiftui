@@ -43,11 +43,22 @@ Supporting types and components under development.
 
 ### Button Styles
 
+- ``AlertButtonStyle``
+- ``CheckboxButtonStyle``
 - ``IconButtonStyle``
 - ``InputContentButtonStyle``
+- ``ListChoiceButtonStyle``
+- ``NavigationButtonStyle``
+- ``OrbitButtonLinkButtonStyle``
+- ``OrbitButtonStyle``
+- ``OrbitCustomButtonStyle``
+- ``RadioButtonStyle``
+- ``TagButtonStyle``
+- ``TileButtonStyle``
 
 ### Other
 
+- ``BackgroundColor``
 - ``BadgeListType``
 - ``BarButton``
 - ``BorderWidth``

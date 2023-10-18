@@ -170,6 +170,8 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
     }
 
     /// Creates Orbit ListChoice component with custom content.
+    ///
+    /// Custom background color be specified using `.backgroundColor()` modifier.
     public init(
         _ title: String = "",
         description: String = "",
@@ -197,6 +199,8 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
 public extension ListChoice {
 
     /// Creates Orbit ListChoice component.
+    ///
+    /// Custom background color be specified using `.backgroundColor()` modifier.
     init(
         _ title: String = "",
         description: String = "",
@@ -227,6 +231,8 @@ public extension ListChoice {
 public extension ListChoice where Header == Text {
 
     /// Creates Orbit ListChoice component with text header value.
+    ///
+    /// Custom background color be specified using `.backgroundColor()` modifier.
     init(
         _ title: String = "",
         description: String = "",
@@ -289,24 +295,6 @@ extension HorizontalAlignment {
     }
 
     static let listRowSeparatorLeading = Self(ListRowSeparatorLeading.self)
-}
-
-/// ButtonStyle for Orbit ListChoice component.
-///
-/// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
-public struct ListChoiceButtonStyle: SwiftUI.ButtonStyle {
-
-    public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .background(
-                backgroundColor(isPressed: configuration.isPressed)
-                    .contentShape(Rectangle())
-            )
-    }
-
-    func backgroundColor(isPressed: Bool) -> Color {
-        isPressed ? .inkNormal.opacity(0.06) : .clear
-    }
 }
 
 // MARK: - Identifiers

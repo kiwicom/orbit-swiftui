@@ -251,7 +251,6 @@ private struct ColorCard<Content: View>: View {
             title,
             showBorder: false,
             titleStyle: .title6,
-            backgroundColor: .clear,
             contentLayout: .custom(padding: .xSmall, spacing: 0)
         ) {
             VStack(spacing: .xxxSmall) {
@@ -261,6 +260,7 @@ private struct ColorCard<Content: View>: View {
             .compositingGroup()
             .elevation(.level2)
         }
+        .backgroundColor(.clear)
     }
 }
 

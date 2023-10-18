@@ -98,7 +98,6 @@ struct StorybookCard {
             "Card without borders and background",
             headerSpacing: .xSmall,
             showBorder: false,
-            backgroundColor: .clear,
             contentLayout: .fill
         ) {
             VStack(spacing: 0) {
@@ -112,6 +111,7 @@ struct StorybookCard {
             }
             .padding(.top, .xSmall)
         }
+        .backgroundColor(.clear)
     }
 }
 

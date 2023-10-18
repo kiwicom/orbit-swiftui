@@ -42,7 +42,7 @@ public struct Radio: View {
             }
         )
         .buttonStyle(
-            ButtonStyle(state: state, isChecked: isChecked)
+            RadioButtonStyle(state: state, isChecked: isChecked)
         )
     }
 
@@ -79,99 +79,6 @@ public extension Radio {
     enum State {
         case normal
         case error
-    }
-}
-
-// MARK: - ButtonStyle
-extension Radio {
-
-    /// Button style wrapper for radio input.
-    /// Solves the touch-down, touch-up animations that would otherwise need gesture avoidance logic.
-    struct ButtonStyle: SwiftUI.ButtonStyle {
-
-        public static let size: CGFloat = 20
-
-        @Environment(\.sizeCategory) var sizeCategory
-        @Environment(\.isEnabled) var isEnabled
-
-        let state: Radio.State
-        let isChecked: Bool
-
-        func makeBody(configuration: Configuration) -> some View {
-            HStack(alignment: .firstTextBaseline, spacing: 10) {
-                indicator(isPressed: configuration.isPressed)
-                configuration.label
-            }
-            .accessibility(addTraits: isChecked ? .isSelected : [])
-        }
-
-        func indicator(isPressed: Bool) -> some View {
-            indicatorShape
-                .strokeBorder(indicatorStrokeColor(isPressed: isPressed), lineWidth: strokeWidth)
-                .background(
-                    indicatorShape
-                        .fill(indicatorBackgroundColor)
-                )
-                .overlay(
-                    indicatorShape
-                        .inset(by: -0.5)
-                        .stroke(state == .error ? Color.redLight : Color.clear, lineWidth: errorStrokeWidth)
-                )
-                .overlay(
-                    indicatorShape
-                        .strokeBorder(indicatorOverlayStrokeColor(isPressed: isPressed), lineWidth: indicatorStrokeWidth)
-                )
-                .frame(width: size, height: size)
-                .animation(.easeOut(duration: 0.2), value: state)
-                .animation(.easeOut(duration: 0.15), value: isChecked)
-                .alignmentGuide(.firstTextBaseline) { _ in
-                    size * 0.75 + 3 * (sizeCategory.controlRatio - 1)
-                }
-        }
-
-        var indicatorShape: some InsettableShape {
-            Circle()
-        }
-
-        func indicatorStrokeColor(isPressed: Bool) -> some ShapeStyle {
-            switch (isEnabled, isChecked, isPressed) {
-                case (true, true, false):       return .blueNormal
-                case (true, true, true):        return .blueLightActive
-                case (_, _, _):                 return .cloudDark
-            }
-        }
-
-        var indicatorBackgroundColor: some ShapeStyle {
-            switch (isEnabled, isChecked) {
-                case (false, false):            return .cloudNormal
-                case (_, _):                    return .clear
-            }
-        }
-
-        func indicatorOverlayStrokeColor(isPressed: Bool) -> some ShapeStyle {
-            switch (state, isPressed) {
-                case (.normal, true):           return .blueNormal
-                case (.error, true):            return .redLightActive
-                case (.error, false):           return .redNormal
-                case (_, _):                    return .clear
-            }
-        }
-
-        var size: CGFloat {
-            Self.size * sizeCategory.controlRatio
-        }
-
-        var strokeWidth: CGFloat {
-            (isChecked ? 6 : 2) * sizeCategory.controlRatio
-        }
-
-        var errorStrokeWidth: CGFloat {
-            3 * sizeCategory.controlRatio
-        }
-
-        var indicatorStrokeWidth: CGFloat {
-            2 * sizeCategory.controlRatio
-        }
     }
 }
 
