@@ -36,7 +36,7 @@ public struct SocialButton: View {
             }
         )
         .textColor(textColor)
-        .backgroundColor(background, active: backgroundActive)
+        .backgroundStyle(background, active: backgroundActive)
     }
 
     @ViewBuilder var logo: some View {

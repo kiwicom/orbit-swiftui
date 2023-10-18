@@ -23,7 +23,7 @@ public struct AlertButtonStyle: PrimitiveButtonStyle {
         .textFontWeight(.medium)
         .textSize(.small)
         .textColor(textColor)
-        .backgroundColor(background, active: backgroundActive)
+        .backgroundStyle(background, active: backgroundActive)
     }
 
     var textColor: Color {

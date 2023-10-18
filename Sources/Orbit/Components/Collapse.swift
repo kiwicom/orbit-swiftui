@@ -52,7 +52,7 @@ public extension Collapse {
 
     /// Creates Orbit Collapse component with a binding to the expansion state.
     ///
-    /// Custom background color be specified using `.backgroundColor()` modifier.
+    /// Custom background color be specified using `.backgroundStyle()` modifier.
     init(
         isExpanded: Binding<Bool>,
         showSeparator: Bool = true,
@@ -68,7 +68,7 @@ public extension Collapse {
 
     /// Creates Orbit Collapse component.
     ///
-    /// Custom background color be specified using `.backgroundColor()` modifier.
+    /// Custom background color be specified using `.backgroundStyle()` modifier.
     init(@ViewBuilder content: () -> Content, showSeparator: Bool = true, @ViewBuilder header: () -> Header) {
         self.header = header()
         self.headerVerticalPadding = 0

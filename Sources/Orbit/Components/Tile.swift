@@ -144,7 +144,7 @@ public extension Tile {
     
     /// Creates Orbit Tile component.
     ///
-    /// Custom background color be specified using `.backgroundColor()` modifier.
+    /// Custom background color be specified using `.backgroundStyle()` modifier.
     init(
         _ title: String = "",
         description: String = "",
@@ -174,7 +174,7 @@ public extension Tile {
 
     /// Creates Orbit Tile component with custom icon.
     ///
-    /// Custom background color be specified using `.backgroundColor()` modifier.
+    /// Custom background color be specified using `.backgroundStyle()` modifier.
     init(
         _ title: String = "",
         description: String = "",

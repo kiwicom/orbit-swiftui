@@ -6,7 +6,7 @@ public struct TagButtonStyle: ButtonStyle {
     public static let horizontalPadding: CGFloat = .xSmall
     public static let verticalPadding: CGFloat = 6 // = 32 height @ normal size text size
 
-    @Environment(\.backgroundColor) private var backgroundColor
+    @Environment(\.backgroundShape) private var backgroundShape
     @Environment(\.iconColor) private var iconColor
     @Environment(\.textColor) private var textColor
     
@@ -48,16 +48,16 @@ public struct TagButtonStyle: ButtonStyle {
     }
     
     @ViewBuilder var resolvedInactiveBackground: some View {
-        if let backgroundColor {
-            backgroundColor.inactiveView
+        if let backgroundShape {
+            backgroundShape.inactiveView
         } else {
             inactiveBackgroundColor
         }
     }
     
     @ViewBuilder var resolvedActiveBackground: some View {
-        if let backgroundColor {
-            backgroundColor.activeView
+        if let backgroundShape {
+            backgroundShape.activeView
         } else {
             activeBackgroundColor
         }
@@ -160,15 +160,15 @@ struct TagButtonStylePreviews: PreviewProvider {
     static var colors: some View {
         VStack(alignment: .leading, spacing: .medium) {
             button
-                .backgroundColor(.orangeLight)
+                .backgroundStyle(.orangeLight)
                 .textColor(.orangeDark)
             
             button
-                .backgroundColor(.orangeLight, active: .greenLight)
+                .backgroundStyle(.orangeLight, active: .greenLight)
                 .textColor(.orangeDark)
             
             button
-                .backgroundColor(Gradient.bundleBasic.background, active: .redLight)
+                .backgroundStyle(Gradient.bundleBasic.background, active: .redLight)
             
             button
                 .buttonStyle(TagButtonStyle(style: .removable(action: {}), isFocused: true, isSelected: true))

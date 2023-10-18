@@ -5,7 +5,7 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/information/notificationbadge/)
 public struct NotificationBadge<Content: View>: View {
 
-    @Environment(\.backgroundColor) private var backgroundColor
+    @Environment(\.backgroundShape) private var backgroundShape
     @Environment(\.status) private var status
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.textColor) private var textColor
@@ -30,8 +30,8 @@ public struct NotificationBadge<Content: View>: View {
 
 
     @ViewBuilder var resolvedBackground: some View {
-        if let backgroundColor {
-            backgroundColor.inactiveView
+        if let backgroundShape {
+            backgroundShape.inactiveView
         } else {
             defaultBackgroundColor
         }
@@ -81,7 +81,7 @@ public struct NotificationBadge<Content: View>: View {
 
     /// Creates Orbit NotificationBadge component with custom content.
     ///
-    /// Custom background color be specified using `.backgroundColor()` modifier.
+    /// Custom background color be specified using `.backgroundStyle()` modifier.
     ///
     /// - Parameters:
     ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
@@ -99,7 +99,7 @@ public extension NotificationBadge {
 
     /// Creates Orbit NotificationBadge component containing text.
     ///
-    /// Custom background color be specified using `.backgroundColor()` modifier.
+    /// Custom background color be specified using `.backgroundStyle()` modifier.
     ///
     /// - Parameters:
     ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
@@ -202,7 +202,7 @@ struct NotificationBadgePreviews: PreviewProvider {
                 NotificationBadge(.airplane)
                     .iconColor(.pink)
                     .textColor(.blueDark)
-                    .backgroundColor(.whiteNormal)
+                    .backgroundStyle(.whiteNormal)
 
                 NotificationBadge {
                     CountryFlag("us")
@@ -233,7 +233,7 @@ struct NotificationBadgePreviews: PreviewProvider {
 
     static func gradientBadge(_ gradient: Gradient) -> some View {
         badges(.neutral)
-            .backgroundColor(gradient.background)
+            .backgroundStyle(gradient.background)
             .textColor(.whiteNormal)
             .previewDisplayName("\(String(describing: gradient).titleCased)")
     }

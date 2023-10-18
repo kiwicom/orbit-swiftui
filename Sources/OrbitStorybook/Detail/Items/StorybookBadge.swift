@@ -40,7 +40,7 @@ struct StorybookBadge {
                 Badge("Custom", icon: .airplane)
                     .iconColor(.pink)
                     .textColor(.blueDark)
-                    .backgroundColor(.whiteHover)
+                    .backgroundStyle(.whiteHover)
 
                 Badge("Flag") {
                     CountryFlag("us")
@@ -81,7 +81,7 @@ struct StorybookBadge {
     static func gradientBadge(_ gradient: Orbit.Gradient) -> some View {
         badges(.neutral)
             .textColor(.whiteNormal)
-            .backgroundColor(gradient.background)
+            .backgroundStyle(gradient.background)
             .previewDisplayName("\(String(describing: gradient).titleCased)")
     }
 }
