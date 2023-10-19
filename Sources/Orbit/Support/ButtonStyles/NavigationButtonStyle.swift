@@ -38,7 +38,7 @@ struct NavigationButtonStylePreviews: PreviewProvider {
         SwiftUI.Button {
             // No action
         } label: {
-            Image.orbit(.navigateClose)
+            Image(.navigateClose)
         }
     }
 }

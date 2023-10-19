@@ -1,5 +1,6 @@
 import Foundation
 import Orbit
+import SwiftUI
 
 public extension Illustration {
 
@@ -100,5 +101,13 @@ public extension Illustration {
         public var assetName: String {
             self == .none ? "" : defaultAssetName
         }
+    }
+}
+
+public extension Image {
+    
+    /// Creates an image for selected Orbit illustration asset.
+    static func orbit(illustration: Illustration.Asset) -> Self {
+        self.init(illustration.assetName, bundle: .module)
     }
 }
