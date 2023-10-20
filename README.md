@@ -27,7 +27,7 @@ This library allows you to integrate the Orbit design system into your iOS Swift
 ## Requirements
 
 - iOS 13
-- Xcode 13
+- Xcode 15
 - Swift Package Manager
 
 ## Installation
