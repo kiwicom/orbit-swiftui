@@ -9,6 +9,9 @@ on:
       REF:
         required: true
 
+env:
+  DEVELOPER_DIR: /Applications/Xcode_15.0.app/Contents/Developer
+
 jobs:
   generate_snapshots:
     runs-on: macos-13

@@ -90,9 +90,9 @@ public extension SocialButton {
 // MARK: - Types
 extension SocialButton {
 
-    private static let appleLogo = Image.orbit(.apple).renderingMode(.template).resizable()
-    private static let googleLogo = Image.orbit(.google).resizable()
-    private static let facebookLogo = Image.orbit(.facebook).resizable()
+    private static let appleLogo = Image(.apple).renderingMode(.template).resizable()
+    private static let googleLogo = Image(.google).resizable()
+    private static let facebookLogo = Image(.facebook).resizable()
 
     public enum Service {
         case apple

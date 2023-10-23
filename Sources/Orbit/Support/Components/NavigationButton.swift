@@ -18,7 +18,7 @@ public struct NavigationButton: View {
                 action()
             },
             label: {
-                Image.orbit(state.imageSymbol)
+                Image(state.imageSymbol)
             }
         )
         .buttonStyle(NavigationButtonStyle())
@@ -37,7 +37,7 @@ extension NavigationButton {
         case back
         case close
 
-        var imageSymbol: Image.Symbol {
+        var imageSymbol: ImageResource {
             switch self {
                 case .back:     return .navigateBack
                 case .close:    return .navigateClose
