@@ -44,23 +44,18 @@ public extension View {
 
     /// Set the inactive and active background shape styles for supported Orbit components within the view hierarchy.
     ///
-    /// - Parameters:
-    ///   - shape: An optional `Color` or a `LinearGradient` that will be used in supported touchable Orbit components such as `Tile` as inactive and active background style.
-    ///   Pass `nil` to ignore environment value and to allow the system or the container to provide its own background style.
-    func backgroundStyle(_ shape: BackgroundShape?) -> some View {
-        environment(\.backgroundShape, shape)
-    }
-    
-    /// Set the inactive and active background shape styles for supported Orbit components within the view hierarchy.
+    /// To restore the default background style, set the `backgroundShape` environment value to nil using the environment(_:_:) modifer.
     ///
     /// - Parameters:
     ///   - shape: A `Color` or a `LinearGradient` that will be used in supported Orbit components such as `Card` or `Badge` as a background style.
     ///   - shape: A `Color` or a `LinearGradient` that will be used in supported touchable Orbit components such as `Tile` as inactive and active background style.
     func backgroundStyle(_ shape: any ShapeStyle, active: any ShapeStyle) -> some View {
-        backgroundStyle(.init(inactive: shape, active: shape))
+        environment(\.backgroundShape, .init(inactive: shape, active: active))
     }
     
     /// Set the background shape style for supported Orbit components within the view hierarchy.
+    ///
+    /// To restore the default background style, set the `backgroundShape` environment value to nil using the environment(_:_:) modifer.
     ///
     /// - Parameters:
     ///   - shape: A `Color` or a `LinearGradient` that will be used in supported Orbit components such as `Card` or `Badge` as a background style.

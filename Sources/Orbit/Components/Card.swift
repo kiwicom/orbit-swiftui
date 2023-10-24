@@ -28,7 +28,7 @@ public struct Card<Content: View>: View {
             if isContentEmpty == false {
                 VStack(alignment: contentAlignment, spacing: contentSpacing) {
                     content
-                        .backgroundStyle(nil)
+                        .environment(\.backgroundShape, nil)
                 }
                 .padding(.top, isHeaderEmpty ? contentPadding : 0)
                 .padding([.horizontal, .bottom], contentPadding)
