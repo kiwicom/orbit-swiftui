@@ -125,7 +125,7 @@ struct IllustrationPreviews: PreviewProvider {
     }
 
     static var customResource: some View {
-        Illustration("WomanWithPhone", bundle: .orbit, layout: .intrinsic)
+        Illustration("WomanWithPhone", bundle: .orbitIllustrations, layout: .intrinsic)
             .previewDisplayName()
     }
     
