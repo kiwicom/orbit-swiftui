@@ -12,7 +12,7 @@ public extension EmptyState {
         @ButtonStackBuilder buttons: () -> Buttons
     ) where Illustration == OrbitIllustrations.Illustration {
         self.init(title, description: description, content: content, buttons: buttons) {
-            Illustration(illustration, layout: .frame(maxHeight: 160))
+            Illustration(illustration, layout: .frame(height: 160))
         }
     }
 
