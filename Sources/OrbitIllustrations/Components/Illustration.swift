@@ -16,9 +16,9 @@ public struct Illustration: View {
     public var body: some View {
         if name.isEmpty == false {
             switch layout {
-                case .frame(let maxHeight, let alignment):
+                case .frame(let height, let alignment):
                     resizeableImage
-                        .frame(maxHeight: maxHeight)
+                        .frame(height: height)
                         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .init(alignment))
                         .fixedSize(horizontal: false, vertical: true)
                 case .resizeable:
@@ -82,12 +82,12 @@ public extension Illustration {
     /// Illustration layout specifies how the illustration is resized and (optionally) horizontally aligned.
     enum Layout {
 
-        /// Default maximal illustration height using frame layout.
-        public static let maxHeight: CGFloat = 200
+        /// Default illustration height when using frame layout.
+        public static let height: CGFloat = 200
 
-        /// Positions illustration, first scaled to fit the optional maxHeight, in a horizontally expanding frame with specified alignment.
+        /// Positions illustration, first scaled to fit the height, in a horizontally expanding frame with specified alignment.
         case frame(
-            maxHeight: CGFloat = maxHeight,
+            height: CGFloat = height,
             alignment: HorizontalAlignment = .center
         )
         /// Applies `resizable` and `scaledToFit` modifiers to allow free resizing.
@@ -148,22 +148,22 @@ struct IllustrationPreviews: PreviewProvider {
                     .border(.cloudNormal)
             }
 
-            Card("MaxHeight = 80", showBorder: false) {
+            Card("Height = 80", showBorder: false) {
                 VStack {
                     Text("Frame - Center (default)")
-                    Illustration(.womanWithPhone, layout: .frame(maxHeight: 80))
+                    Illustration(.womanWithPhone, layout: .frame(height: 80))
                         .border(.cloudNormal)
                 }
 
                 VStack {
                     Text("Frame - Leading")
-                    Illustration(.womanWithPhone, layout: .frame(maxHeight: 80, alignment: .leading))
+                    Illustration(.womanWithPhone, layout: .frame(height: 80, alignment: .leading))
                         .border(.cloudNormal)
                 }
 
                 VStack {
                     Text("Frame - Trailing")
-                    Illustration(.womanWithPhone, layout: .frame(maxHeight: 80, alignment: .trailing))
+                    Illustration(.womanWithPhone, layout: .frame(height: 80, alignment: .trailing))
                         .border(.cloudNormal)
                 }
 
@@ -175,17 +175,17 @@ struct IllustrationPreviews: PreviewProvider {
                 }
             }
 
-            Card("MaxHeight = 30", showBorder: false) {
+            Card("Height = 30", showBorder: false) {
                 HStack {
                     VStack(alignment: .leading) {
                         Text("Leading")
-                        Illustration(.womanWithPhone, layout: .frame(maxHeight: 30, alignment: .leading))
+                        Illustration(.womanWithPhone, layout: .frame(height: 30, alignment: .leading))
                             .border(.cloudNormal)
                     }
 
                     VStack(alignment: .leading) {
                         Text("Center")
-                        Illustration(.womanWithPhone, layout: .frame(maxHeight: 30))
+                        Illustration(.womanWithPhone, layout: .frame(height: 30))
                             .border(.cloudNormal)
                     }
 
@@ -198,7 +198,7 @@ struct IllustrationPreviews: PreviewProvider {
 
                     VStack(alignment: .leading) {
                         Text("Trailing")
-                        Illustration(.womanWithPhone, layout: .frame(maxHeight: 30, alignment: .trailing))
+                        Illustration(.womanWithPhone, layout: .frame(height: 30, alignment: .trailing))
                             .border(.cloudNormal)
                     }
                 }

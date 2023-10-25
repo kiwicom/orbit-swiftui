@@ -12,7 +12,7 @@ public extension Dialog {
         @ButtonStackBuilder buttons: () -> Buttons
     ) where Illustration == OrbitIllustrations.Illustration {
         self.init(title, description: description, content: content, buttons: buttons) {
-            Illustration(illustration, layout: .frame(maxHeight: 120, alignment: .leading))
+            Illustration(illustration, layout: .frame(height: 120, alignment: .leading))
         }
     }
 }
