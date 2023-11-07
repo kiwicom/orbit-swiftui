@@ -6,177 +6,177 @@ public extension UIColor {
 
     // MARK: - Blue
     /// Orbit Blue Dark color.
-    static var blueDark = fromResource(named: "Blue Dark")
+    static let blueDark = fromResource(named: "Blue Dark")
     /// Orbit Blue Dark Active color.
-    static var blueDarkActive = fromResource(named: "Blue Dark Active")
+    static let blueDarkActive = fromResource(named: "Blue Dark Active")
     /// Orbit Blue Dark Hover color.
-    static var blueDarkHover = fromResource(named: "Blue Dark Hover")
+    static let blueDarkHover = fromResource(named: "Blue Dark Hover")
     /// Orbit Blue Darker color.
-    static var blueDarker = fromResource(named: "Blue Darker")
+    static let blueDarker = fromResource(named: "Blue Darker")
     /// Orbit Blue Light color.
-    static var blueLight = fromResource(named: "Blue Light")
+    static let blueLight = fromResource(named: "Blue Light")
     /// Orbit Blue Light Active color.
-    static var blueLightActive = fromResource(named: "Blue Light Active")
+    static let blueLightActive = fromResource(named: "Blue Light Active")
     /// Orbit Blue Light Hover color.
-    static var blueLightHover = fromResource(named: "Blue Light Hover")
+    static let blueLightHover = fromResource(named: "Blue Light Hover")
     /// Orbit Blue Normal color.
-    static var blueNormal = fromResource(named: "Blue Normal")
+    static let blueNormal = fromResource(named: "Blue Normal")
     /// Orbit Blue Normal Active color.
-    static var blueNormalActive = fromResource(named: "Blue Normal Active")
+    static let blueNormalActive = fromResource(named: "Blue Normal Active")
     /// Orbit Blue Normal Hover color.
-    static var blueNormalHover = fromResource(named: "Blue Normal Hover")
+    static let blueNormalHover = fromResource(named: "Blue Normal Hover")
 
     // MARK: - Bundle
     /// Orbit Bundle Basic color.
-    static var bundleBasic = fromResource(named: "Bundle Basic")
+    static let bundleBasic = fromResource(named: "Bundle Basic")
     /// Orbit Bundle Medium color.
-    static var bundleMedium = fromResource(named: "Bundle Medium")
+    static let bundleMedium = fromResource(named: "Bundle Medium")
 
     // MARK: - Cloud
     /// Orbit Cloud Dark color.
-    static var cloudDark = fromResource(named: "Cloud Dark")
+    static let cloudDark = fromResource(named: "Cloud Dark")
     /// Orbit Cloud Dark Active color.
-    static var cloudDarkActive = fromResource(named: "Cloud Dark Active")
+    static let cloudDarkActive = fromResource(named: "Cloud Dark Active")
     /// Orbit Cloud Dark Hover color.
-    static var cloudDarkHover = fromResource(named: "Cloud Dark Hover")
+    static let cloudDarkHover = fromResource(named: "Cloud Dark Hover")
     /// Orbit Cloud Light color.
-    static var cloudLight = fromResource(named: "Cloud Light")
+    static let cloudLight = fromResource(named: "Cloud Light")
     /// Orbit Cloud Light Active color.
-    static var cloudLightActive = fromResource(named: "Cloud Light Active")
+    static let cloudLightActive = fromResource(named: "Cloud Light Active")
     /// Orbit Cloud Light Hover color.
-    static var cloudLightHover = fromResource(named: "Cloud Light Hover")
+    static let cloudLightHover = fromResource(named: "Cloud Light Hover")
     /// Orbit Cloud Normal color.
-    static var cloudNormal = fromResource(named: "Cloud Normal")
+    static let cloudNormal = fromResource(named: "Cloud Normal")
     /// Orbit Cloud Normal Active color.
-    static var cloudNormalActive = fromResource(named: "Cloud Normal Active")
+    static let cloudNormalActive = fromResource(named: "Cloud Normal Active")
     /// Orbit Cloud Normal Hover color.
-    static var cloudNormalHover = fromResource(named: "Cloud Normal Hover")
+    static let cloudNormalHover = fromResource(named: "Cloud Normal Hover")
 
     // MARK: - Green
     /// Orbit Green Dark color.
-    static var greenDark = fromResource(named: "Green Dark")
+    static let greenDark = fromResource(named: "Green Dark")
     /// Orbit Green Dark Active color.
-    static var greenDarkActive = fromResource(named: "Green Dark Active")
+    static let greenDarkActive = fromResource(named: "Green Dark Active")
     /// Orbit Green Dark Hover color.
-    static var greenDarkHover = fromResource(named: "Green Dark Hover")
+    static let greenDarkHover = fromResource(named: "Green Dark Hover")
     /// Orbit Green Darker color.
-    static var greenDarker = fromResource(named: "Green Darker")
+    static let greenDarker = fromResource(named: "Green Darker")
     /// Orbit Green Light color.
-    static var greenLight = fromResource(named: "Green Light")
+    static let greenLight = fromResource(named: "Green Light")
     /// Orbit Green Light Active color.
-    static var greenLightActive = fromResource(named: "Green Light Active")
+    static let greenLightActive = fromResource(named: "Green Light Active")
     /// Orbit Green Light Hover color.
-    static var greenLightHover = fromResource(named: "Green Light Hover")
+    static let greenLightHover = fromResource(named: "Green Light Hover")
     /// Orbit Green Normal color.
-    static var greenNormal = fromResource(named: "Green Normal")
+    static let greenNormal = fromResource(named: "Green Normal")
     /// Orbit Green Normal Active color.
-    static var greenNormalActive = fromResource(named: "Green Normal Active")
+    static let greenNormalActive = fromResource(named: "Green Normal Active")
     /// Orbit Green Normal Hover color.
-    static var greenNormalHover = fromResource(named: "Green Normal Hover")
+    static let greenNormalHover = fromResource(named: "Green Normal Hover")
 
     // MARK: - Ink
     /// Orbit Ink Dark color.
-    static var inkDark = fromResource(named: "Ink Dark")
+    static let inkDark = fromResource(named: "Ink Dark")
     /// Orbit Ink Dark Active color.
-    static var inkDarkActive = fromResource(named: "Ink Dark Active")
+    static let inkDarkActive = fromResource(named: "Ink Dark Active")
     /// Orbit Ink Dark Hover color.
-    static var inkDarkHover = fromResource(named: "Ink Dark Hover")
+    static let inkDarkHover = fromResource(named: "Ink Dark Hover")
     /// Orbit Ink Light color.
-    static var inkLight = fromResource(named: "Ink Light")
+    static let inkLight = fromResource(named: "Ink Light")
     /// Orbit Ink Light Active color.
-    static var inkLightActive = fromResource(named: "Ink Light Active")
+    static let inkLightActive = fromResource(named: "Ink Light Active")
     /// Orbit Ink Light Hover color.
-    static var inkLightHover = fromResource(named: "Ink Light Hover")
+    static let inkLightHover = fromResource(named: "Ink Light Hover")
     /// Orbit Ink Normal color.
-    static var inkNormal = fromResource(named: "Ink Normal")
+    static let inkNormal = fromResource(named: "Ink Normal")
     /// Orbit Ink Normal Active color.
-    static var inkNormalActive = fromResource(named: "Ink Normal Active")
+    static let inkNormalActive = fromResource(named: "Ink Normal Active")
     /// Orbit Ink Normal Hover color.
-    static var inkNormalHover = fromResource(named: "Ink Normal Hover")
+    static let inkNormalHover = fromResource(named: "Ink Normal Hover")
 
     // MARK: - Orange
     /// Orbit Orange Dark color.
-    static var orangeDark = fromResource(named: "Orange Dark")
+    static let orangeDark = fromResource(named: "Orange Dark")
     /// Orbit Orange Dark Active color.
-    static var orangeDarkActive = fromResource(named: "Orange Dark Active")
+    static let orangeDarkActive = fromResource(named: "Orange Dark Active")
     /// Orbit Orange Dark Hover color.
-    static var orangeDarkHover = fromResource(named: "Orange Dark Hover")
+    static let orangeDarkHover = fromResource(named: "Orange Dark Hover")
     /// Orbit Orange Darker color.
-    static var orangeDarker = fromResource(named: "Orange Darker")
+    static let orangeDarker = fromResource(named: "Orange Darker")
     /// Orbit Orange Light color.
-    static var orangeLight = fromResource(named: "Orange Light")
+    static let orangeLight = fromResource(named: "Orange Light")
     /// Orbit Orange Light Active color.
-    static var orangeLightActive = fromResource(named: "Orange Light Active")
+    static let orangeLightActive = fromResource(named: "Orange Light Active")
     /// Orbit Orange Light Hover color.
-    static var orangeLightHover = fromResource(named: "Orange Light Hover")
+    static let orangeLightHover = fromResource(named: "Orange Light Hover")
     /// Orbit Orange Normal color.
-    static var orangeNormal = fromResource(named: "Orange Normal")
+    static let orangeNormal = fromResource(named: "Orange Normal")
     /// Orbit Orange Normal Active color.
-    static var orangeNormalActive = fromResource(named: "Orange Normal Active")
+    static let orangeNormalActive = fromResource(named: "Orange Normal Active")
     /// Orbit Orange Normal Hover color.
-    static var orangeNormalHover = fromResource(named: "Orange Normal Hover")
+    static let orangeNormalHover = fromResource(named: "Orange Normal Hover")
 
     // MARK: - Product
     /// Orbit Product Dark color.
-    static var productDark = fromResource(named: "Product Dark")
+    static let productDark = fromResource(named: "Product Dark")
     /// Orbit Product Dark Active color.
-    static var productDarkActive = fromResource(named: "Product Dark Active")
+    static let productDarkActive = fromResource(named: "Product Dark Active")
     /// Orbit Product Dark Hover color.
-    static var productDarkHover = fromResource(named: "Product Dark Hover")
+    static let productDarkHover = fromResource(named: "Product Dark Hover")
     /// Orbit Product Darker color.
-    static var productDarker = fromResource(named: "Product Darker")
+    static let productDarker = fromResource(named: "Product Darker")
     /// Orbit Product Light color.
-    static var productLight = fromResource(named: "Product Light")
+    static let productLight = fromResource(named: "Product Light")
     /// Orbit Product Light Active color.
-    static var productLightActive = fromResource(named: "Product Light Active")
+    static let productLightActive = fromResource(named: "Product Light Active")
     /// Orbit Product Light Hover color.
-    static var productLightHover = fromResource(named: "Product Light Hover")
+    static let productLightHover = fromResource(named: "Product Light Hover")
     /// Orbit Product Normal color.
-    static var productNormal = fromResource(named: "Product Normal")
+    static let productNormal = fromResource(named: "Product Normal")
     /// Orbit Product Normal Active color.
-    static var productNormalActive = fromResource(named: "Product Normal Active")
+    static let productNormalActive = fromResource(named: "Product Normal Active")
     /// Orbit Product Normal Hover color.
-    static var productNormalHover = fromResource(named: "Product Normal Hover")
+    static let productNormalHover = fromResource(named: "Product Normal Hover")
 
     // MARK: - Red
     /// Orbit Red Dark color.
-    static var redDark = fromResource(named: "Red Dark")
+    static let redDark = fromResource(named: "Red Dark")
     /// Orbit Red Dark Active color.
-    static var redDarkActive = fromResource(named: "Red Dark Active")
+    static let redDarkActive = fromResource(named: "Red Dark Active")
     /// Orbit Red Dark Hover color.
-    static var redDarkHover = fromResource(named: "Red Dark Hover")
+    static let redDarkHover = fromResource(named: "Red Dark Hover")
     /// Orbit Red Darker color.
-    static var redDarker = fromResource(named: "Red Darker")
+    static let redDarker = fromResource(named: "Red Darker")
     /// Orbit Red Light color.
-    static var redLight = fromResource(named: "Red Light")
+    static let redLight = fromResource(named: "Red Light")
     /// Orbit Red Light Active color.
-    static var redLightActive = fromResource(named: "Red Light Active")
+    static let redLightActive = fromResource(named: "Red Light Active")
     /// Orbit Red Light Hover color.
-    static var redLightHover = fromResource(named: "Red Light Hover")
+    static let redLightHover = fromResource(named: "Red Light Hover")
     /// Orbit Red Normal color.
-    static var redNormal = fromResource(named: "Red Normal")
+    static let redNormal = fromResource(named: "Red Normal")
     /// Orbit Red Normal Active color.
-    static var redNormalActive = fromResource(named: "Red Normal Active")
+    static let redNormalActive = fromResource(named: "Red Normal Active")
     /// Orbit Red Normal Hover color.
-    static var redNormalHover = fromResource(named: "Red Normal Hover")
+    static let redNormalHover = fromResource(named: "Red Normal Hover")
 
     // MARK: - Social
     /// Orbit Social Facebook color.
-    static var socialFacebook = fromResource(named: "Social Facebook")
+    static let socialFacebook = fromResource(named: "Social Facebook")
     /// Orbit Social Facebook Active color.
-    static var socialFacebookActive = fromResource(named: "Social Facebook Active")
+    static let socialFacebookActive = fromResource(named: "Social Facebook Active")
     /// Orbit Social Facebook Hover color.
-    static var socialFacebookHover = fromResource(named: "Social Facebook Hover")
+    static let socialFacebookHover = fromResource(named: "Social Facebook Hover")
 
     // MARK: - White
     /// Orbit White Active color.
-    static var whiteActive = fromResource(named: "White Active")
+    static let whiteActive = fromResource(named: "White Active")
     /// Orbit White Darker color.
-    static var whiteDarker = fromResource(named: "White Darker")
+    static let whiteDarker = fromResource(named: "White Darker")
     /// Orbit White Hover color.
-    static var whiteHover = fromResource(named: "White Hover")
+    static let whiteHover = fromResource(named: "White Hover")
     /// Orbit White Lighter color.
-    static var whiteLighter = fromResource(named: "White Lighter")
+    static let whiteLighter = fromResource(named: "White Lighter")
     /// Orbit White Normal color.
-    static var whiteNormal = fromResource(named: "White Normal")
+    static let whiteNormal = fromResource(named: "White Normal")
 }
