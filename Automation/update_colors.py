@@ -76,9 +76,9 @@ xcassets_color_template = '''{{
 source_filename_plural = f'Colors'
 source_group_template = '\n    // MARK: - {group}'
 
-source_line_template = '    /// Orbit {description} color.\n    static var {name} = Color("{description}", bundle: .orbit)'
+source_line_template = '    /// Orbit {description} color.\n    static let {name} = Color("{description}", bundle: .orbit)'
 source_line_template_shape = '    /// Orbit {description} shape style.\n    static var {name}: Self {{ .{name} }}'
-source_line_template_uicolor = '    /// Orbit {description} color.\n    static var {name} = fromResource(named: "{description}")'
+source_line_template_uicolor = '    /// Orbit {description} color.\n    static let {name} = fromResource(named: "{description}")'
 source_line_template_uiext = '            case .{name}: return.{name}'
 
 source_template = '''import SwiftUI
