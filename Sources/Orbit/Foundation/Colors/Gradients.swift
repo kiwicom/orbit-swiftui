@@ -69,12 +69,12 @@ public extension ShapeStyle where Self == LinearGradient {
 
 public extension Color {
 
-    static var bundleBasicStart: Color = .init(.bundleBasicStart)
-    static var bundleBasicEnd: Color = .init(.bundleBasicEnd)
-    static var bundleMediumStart: Color = .init(.bundleMediumStart)
-    static var bundleMediumEnd: Color = .init(.bundleMediumEnd)
-    static var bundleTopStart: Color = .init(.bundleTopStart)
-    static var bundleTopEnd: Color = .init(.bundleTopEnd)
+    static let bundleBasicStart: Color = .init(.bundleBasicStart)
+    static let bundleBasicEnd: Color = .init(.bundleBasicEnd)
+    static let bundleMediumStart: Color = .init(.bundleMediumStart)
+    static let bundleMediumEnd: Color = .init(.bundleMediumEnd)
+    static let bundleTopStart: Color = .init(.bundleTopStart)
+    static let bundleTopEnd: Color = .init(.bundleTopEnd)
 }
 
 public extension ShapeStyle where Self == Color {
@@ -89,10 +89,10 @@ public extension ShapeStyle where Self == Color {
 
 public extension UIColor {
     
-    static var bundleBasicStart = UIColor(red: 0.882, green: 0.243, blue: 0.231, alpha: 1)
-    static var bundleBasicEnd = UIColor(red: 0.91, green: 0.494, blue: 0.035, alpha: 1)
-    static var bundleMediumStart = UIColor(red: 0.216, green: 0.098, blue: 0.671, alpha: 1)
-    static var bundleMediumEnd = UIColor(red: 0.522, green: 0.224, blue: 0.859, alpha: 1)
-    static var bundleTopStart = UIColor(red: 0.176, green: 0.176, blue: 0.18, alpha: 1)
-    static var bundleTopEnd = UIColor(red: 0.412, green: 0.431, blue: 0.451, alpha: 1)
+    static let bundleBasicStart = UIColor(red: 0.882, green: 0.243, blue: 0.231, alpha: 1)
+    static let bundleBasicEnd = UIColor(red: 0.91, green: 0.494, blue: 0.035, alpha: 1)
+    static let bundleMediumStart = UIColor(red: 0.216, green: 0.098, blue: 0.671, alpha: 1)
+    static let bundleMediumEnd = UIColor(red: 0.522, green: 0.224, blue: 0.859, alpha: 1)
+    static let bundleTopStart = UIColor(red: 0.176, green: 0.176, blue: 0.18, alpha: 1)
+    static let bundleTopEnd = UIColor(red: 0.412, green: 0.431, blue: 0.451, alpha: 1)
 }
