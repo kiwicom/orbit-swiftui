@@ -6,62 +6,62 @@ struct StorybookBasicColors: View {
     var body: some View {
         VStack(spacing: 0) {
             ColorCard(title: "White") {
-                ColorContent(color: &.whiteLighter, uiColor: &.whiteLighter, label: "White", variant: "lighter (dark-mode)")
+                ColorContent(color: .whiteLighter, uiColor: .whiteLighter, label: "White", variant: "lighter (dark-mode)")
                     .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.whiteNormal, uiColor: &.whiteNormal, label: "White")
-                    ColorContent(color: &.whiteHover, uiColor: &.whiteHover, label: "White", variant: "hover")
-                    ColorContent(color: &.whiteActive, uiColor: &.whiteActive, label: "White", variant: "active")
+                    ColorContent(color: .whiteNormal, uiColor: .whiteNormal, label: "White")
+                    ColorContent(color: .whiteHover, uiColor: .whiteHover, label: "White", variant: "hover")
+                    ColorContent(color: .whiteActive, uiColor: .whiteActive, label: "White", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
-                ColorContent(color: &.whiteDarker, uiColor: &.whiteDarker, label: "White", variant: "darker (dark-mode)")
+                ColorContent(color: .whiteDarker, uiColor: .whiteDarker, label: "White", variant: "darker (dark-mode)")
                     .fixedSize(horizontal: false, vertical: true)
             }
 
             ColorCard(title: "Cloud") {
                 HStack(spacing: 0) {
-                    ColorContent(color: &.cloudLight, uiColor: &.cloudLight, label: "Cloud Light")
-                    ColorContent(color: &.cloudLightHover, uiColor: &.cloudLightHover, label: "Cloud Light", variant: "hover")
-                    ColorContent(color: &.cloudLightActive, uiColor: &.cloudLightActive, label: "Cloud Light", variant: "active")
+                    ColorContent(color: .cloudLight, uiColor: .cloudLight, label: "Cloud Light")
+                    ColorContent(color: .cloudLightHover, uiColor: .cloudLightHover, label: "Cloud Light", variant: "hover")
+                    ColorContent(color: .cloudLightActive, uiColor: .cloudLightActive, label: "Cloud Light", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.cloudNormal, uiColor: &.cloudNormal, label: "Cloud Normal")
-                    ColorContent(color: &.cloudNormalHover, uiColor: &.cloudNormalHover, label: "Cloud Normal", variant: "hover")
-                    ColorContent(color: &.cloudNormalActive, uiColor: &.cloudNormalActive, label: "Cloud Normal", variant: "active")
+                    ColorContent(color: .cloudNormal, uiColor: .cloudNormal, label: "Cloud Normal")
+                    ColorContent(color: .cloudNormalHover, uiColor: .cloudNormalHover, label: "Cloud Normal", variant: "hover")
+                    ColorContent(color: .cloudNormalActive, uiColor: .cloudNormalActive, label: "Cloud Normal", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.cloudDark, uiColor: &.cloudDark, label: "Cloud Dark")
-                    ColorContent(color: &.cloudDarkHover, uiColor: &.cloudDarkHover, label: "Cloud Dark", variant: "hover")
-                    ColorContent(color: &.cloudDarkActive, uiColor: &.cloudDarkActive, label: "Cloud Dark", variant: "active")
+                    ColorContent(color: .cloudDark, uiColor: .cloudDark, label: "Cloud Dark")
+                    ColorContent(color: .cloudDarkHover, uiColor: .cloudDarkHover, label: "Cloud Dark", variant: "hover")
+                    ColorContent(color: .cloudDarkActive, uiColor: .cloudDarkActive, label: "Cloud Dark", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
             }
 
             ColorCard(title: "Ink") {
                 HStack(spacing: 0) {
-                    ColorContent(color: &.inkLight, uiColor: &.inkLight, label: "Ink Light")
-                    ColorContent(color: &.inkLightHover, uiColor: &.inkLightHover, label: "Ink Light", variant: "hover")
-                    ColorContent(color: &.inkLightActive, uiColor: &.inkLightActive, label: "Ink Light", variant: "active")
+                    ColorContent(color: .inkLight, uiColor: .inkLight, label: "Ink Light")
+                    ColorContent(color: .inkLightHover, uiColor: .inkLightHover, label: "Ink Light", variant: "hover")
+                    ColorContent(color: .inkLightActive, uiColor: .inkLightActive, label: "Ink Light", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.inkNormal, uiColor: &.inkNormal, label: "Ink Normal")
-                    ColorContent(color: &.inkNormalHover, uiColor: &.inkNormalHover, label: "Ink Normal", variant: "hover")
-                    ColorContent(color: &.inkNormalActive, uiColor: &.inkNormalActive, label: "Ink Normal", variant: "active")
+                    ColorContent(color: .inkNormal, uiColor: .inkNormal, label: "Ink Normal")
+                    ColorContent(color: .inkNormalHover, uiColor: .inkNormalHover, label: "Ink Normal", variant: "hover")
+                    ColorContent(color: .inkNormalActive, uiColor: .inkNormalActive, label: "Ink Normal", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.inkDark, uiColor: &.inkDark, label: "Ink Dark")
-                    ColorContent(color: &.inkDarkHover, uiColor: &.inkDarkHover, label: "Ink Dark", variant: "hover")
-                    ColorContent(color: &.inkDarkActive, uiColor: &.inkDarkActive, label: "Ink Dark", variant: "active")
+                    ColorContent(color: .inkDark, uiColor: .inkDark, label: "Ink Dark")
+                    ColorContent(color: .inkDarkHover, uiColor: .inkDarkHover, label: "Ink Dark", variant: "hover")
+                    ColorContent(color: .inkDarkActive, uiColor: .inkDarkActive, label: "Ink Dark", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
             }
@@ -75,27 +75,27 @@ struct StorybookProductColors: View {
         VStack(spacing: 0) {
             ColorCard(title: "Product") {
                 HStack(spacing: 0) {
-                    ColorContent(color: &.productLight, uiColor: &.productLight, label: "Product Light")
-                    ColorContent(color: &.productLightHover, uiColor: &.productLightHover, label: "Product Light", variant: "hover")
-                    ColorContent(color: &.productLightActive, uiColor: &.productLightActive, label: "Product Light", variant: "active")
+                    ColorContent(color: .productLight, uiColor: .productLight, label: "Product Light")
+                    ColorContent(color: .productLightHover, uiColor: .productLightHover, label: "Product Light", variant: "hover")
+                    ColorContent(color: .productLightActive, uiColor: .productLightActive, label: "Product Light", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.productNormal, uiColor: &.productNormal, label: "Product Normal")
-                    ColorContent(color: &.productNormalHover, uiColor: &.productNormalHover, label: "Product Normal", variant: "hover")
-                    ColorContent(color: &.productNormalActive, uiColor: &.productNormalActive, label: "Product Normal", variant: "active")
+                    ColorContent(color: .productNormal, uiColor: .productNormal, label: "Product Normal")
+                    ColorContent(color: .productNormalHover, uiColor: .productNormalHover, label: "Product Normal", variant: "hover")
+                    ColorContent(color: .productNormalActive, uiColor: .productNormalActive, label: "Product Normal", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.productDark, uiColor: &.productDark, label: "Product Dark")
-                    ColorContent(color: &.productDarkHover, uiColor: &.productDarkHover, label: "Product Dark", variant: "hover")
-                    ColorContent(color: &.productDarkActive, uiColor: &.productDarkActive, label: "Product Dark", variant: "active")
+                    ColorContent(color: .productDark, uiColor: .productDark, label: "Product Dark")
+                    ColorContent(color: .productDarkHover, uiColor: .productDarkHover, label: "Product Dark", variant: "hover")
+                    ColorContent(color: .productDarkActive, uiColor: .productDarkActive, label: "Product Dark", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
-                ColorContent(color: &.productDarker, uiColor: &.productDarker, label: "Product Darker")
+                ColorContent(color: .productDarker, uiColor: .productDarker, label: "Product Darker")
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -108,105 +108,105 @@ struct StorybookStatusColors: View {
         VStack(spacing: 0) {
             ColorCard(title: "Blue") {
                 HStack(spacing: 0) {
-                    ColorContent(color: &.blueLight, uiColor: &.blueLight, label: "Blue Light")
-                    ColorContent(color: &.blueLightHover, uiColor: &.blueLightHover, label: "Blue Light", variant: "hover")
-                    ColorContent(color: &.blueLightActive, uiColor: &.blueLightActive, label: "Blue Light", variant: "active")
+                    ColorContent(color: .blueLight, uiColor: .blueLight, label: "Blue Light")
+                    ColorContent(color: .blueLightHover, uiColor: .blueLightHover, label: "Blue Light", variant: "hover")
+                    ColorContent(color: .blueLightActive, uiColor: .blueLightActive, label: "Blue Light", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.blueNormal, uiColor: &.blueNormal, label: "Blue Normal")
-                    ColorContent(color: &.blueNormalHover, uiColor: &.blueNormalHover, label: "Blue Normal", variant: "hover")
-                    ColorContent(color: &.blueNormalActive, uiColor: &.blueNormalActive, label: "Blue Normal", variant: "active")
+                    ColorContent(color: .blueNormal, uiColor: .blueNormal, label: "Blue Normal")
+                    ColorContent(color: .blueNormalHover, uiColor: .blueNormalHover, label: "Blue Normal", variant: "hover")
+                    ColorContent(color: .blueNormalActive, uiColor: .blueNormalActive, label: "Blue Normal", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.blueDark, uiColor: &.blueDark, label: "Blue Dark")
-                    ColorContent(color: &.blueDarkHover, uiColor: &.blueDarkHover, label: "Blue Dark", variant: "hover")
-                    ColorContent(color: &.blueDarkActive, uiColor: &.blueDarkActive, label: "Blue Dark", variant: "active")
+                    ColorContent(color: .blueDark, uiColor: .blueDark, label: "Blue Dark")
+                    ColorContent(color: .blueDarkHover, uiColor: .blueDarkHover, label: "Blue Dark", variant: "hover")
+                    ColorContent(color: .blueDarkActive, uiColor: .blueDarkActive, label: "Blue Dark", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
-                ColorContent(color: &.blueDarker, uiColor: &.blueDarker, label: "Blue Darker")
+                ColorContent(color: .blueDarker, uiColor: .blueDarker, label: "Blue Darker")
                     .fixedSize(horizontal: false, vertical: true)
             }
 
             ColorCard(title: "Red") {
                 HStack(spacing: 0) {
-                    ColorContent(color: &.redLight, uiColor: &.redLight, label: "Red Light")
-                    ColorContent(color: &.redLightHover, uiColor: &.redLightHover, label: "Red Light", variant: "hover")
-                    ColorContent(color: &.redLightActive, uiColor: &.redLightActive, label: "Red Light", variant: "active")
+                    ColorContent(color: .redLight, uiColor: .redLight, label: "Red Light")
+                    ColorContent(color: .redLightHover, uiColor: .redLightHover, label: "Red Light", variant: "hover")
+                    ColorContent(color: .redLightActive, uiColor: .redLightActive, label: "Red Light", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.redNormal, uiColor: &.redNormal, label: "Red Normal")
-                    ColorContent(color: &.redNormalHover, uiColor: &.redNormalHover, label: "Red Normal", variant: "hover")
-                    ColorContent(color: &.redNormalActive, uiColor: &.redNormalActive, label: "Red Normal", variant: "active")
+                    ColorContent(color: .redNormal, uiColor: .redNormal, label: "Red Normal")
+                    ColorContent(color: .redNormalHover, uiColor: .redNormalHover, label: "Red Normal", variant: "hover")
+                    ColorContent(color: .redNormalActive, uiColor: .redNormalActive, label: "Red Normal", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.redDark, uiColor: &.redDark, label: "Red Dark")
-                    ColorContent(color: &.redDarkHover, uiColor: &.redDarkHover, label: "Red Dark", variant: "hover")
-                    ColorContent(color: &.redDarkActive, uiColor: &.redDarkActive, label: "Red Dark", variant: "active")
+                    ColorContent(color: .redDark, uiColor: .redDark, label: "Red Dark")
+                    ColorContent(color: .redDarkHover, uiColor: .redDarkHover, label: "Red Dark", variant: "hover")
+                    ColorContent(color: .redDarkActive, uiColor: .redDarkActive, label: "Red Dark", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
-                ColorContent(color: &.redDarker, uiColor: &.redDarker, label: "Red Darker")
+                ColorContent(color: .redDarker, uiColor: .redDarker, label: "Red Darker")
                     .fixedSize(horizontal: false, vertical: true)
             }
 
             ColorCard(title: "Green") {
                 HStack(spacing: 0) {
-                    ColorContent(color: &.greenLight, uiColor: &.greenLight, label: "Green Light")
-                    ColorContent(color: &.greenLightHover, uiColor: &.greenLightHover, label: "Green Light", variant: "hover")
-                    ColorContent(color: &.greenLightActive, uiColor: &.greenLightActive, label: "Green Light", variant: "active")
+                    ColorContent(color: .greenLight, uiColor: .greenLight, label: "Green Light")
+                    ColorContent(color: .greenLightHover, uiColor: .greenLightHover, label: "Green Light", variant: "hover")
+                    ColorContent(color: .greenLightActive, uiColor: .greenLightActive, label: "Green Light", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.greenNormal, uiColor: &.greenNormal, label: "Green Normal")
-                    ColorContent(color: &.greenNormalHover, uiColor: &.greenNormalHover, label: "Green Normal", variant: "hover")
-                    ColorContent(color: &.greenNormalActive, uiColor: &.greenNormalActive, label: "Green Normal", variant: "active")
+                    ColorContent(color: .greenNormal, uiColor: .greenNormal, label: "Green Normal")
+                    ColorContent(color: .greenNormalHover, uiColor: .greenNormalHover, label: "Green Normal", variant: "hover")
+                    ColorContent(color: .greenNormalActive, uiColor: .greenNormalActive, label: "Green Normal", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.greenDark, uiColor: &.greenDark, label: "Green Dark")
-                    ColorContent(color: &.greenDarkHover, uiColor: &.greenDarkHover, label: "Green Dark", variant: "hover")
-                    ColorContent(color: &.greenDarkActive, uiColor: &.greenDarkActive, label: "Green Dark", variant: "active")
+                    ColorContent(color: .greenDark, uiColor: .greenDark, label: "Green Dark")
+                    ColorContent(color: .greenDarkHover, uiColor: .greenDarkHover, label: "Green Dark", variant: "hover")
+                    ColorContent(color: .greenDarkActive, uiColor: .greenDarkActive, label: "Green Dark", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
-                ColorContent(color: &.greenDarker, uiColor: &.greenDarker, label: "Green Darker")
+                ColorContent(color: .greenDarker, uiColor: .greenDarker, label: "Green Darker")
                     .fixedSize(horizontal: false, vertical: true)
             }
 
             ColorCard(title: "Orange") {
                 HStack(spacing: 0) {
-                    ColorContent(color: &.orangeLight, uiColor: &.orangeLight, label: "Orange Light")
-                    ColorContent(color: &.orangeLightHover, uiColor: &.orangeLightHover, label: "Orange Light", variant: "hover")
-                    ColorContent(color: &.orangeLightActive, uiColor: &.orangeLightActive, label: "Orange Light", variant: "active")
+                    ColorContent(color: .orangeLight, uiColor: .orangeLight, label: "Orange Light")
+                    ColorContent(color: .orangeLightHover, uiColor: .orangeLightHover, label: "Orange Light", variant: "hover")
+                    ColorContent(color: .orangeLightActive, uiColor: .orangeLightActive, label: "Orange Light", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.orangeNormal, uiColor: &.orangeNormal, label: "Orange Normal")
-                    ColorContent(color: &.orangeNormalHover, uiColor: &.orangeNormalHover, label: "Orange Normal", variant: "hover")
-                    ColorContent(color: &.orangeNormalActive, uiColor: &.orangeNormalActive, label: "Orange Normal", variant: "active")
+                    ColorContent(color: .orangeNormal, uiColor: .orangeNormal, label: "Orange Normal")
+                    ColorContent(color: .orangeNormalHover, uiColor: .orangeNormalHover, label: "Orange Normal", variant: "hover")
+                    ColorContent(color: .orangeNormalActive, uiColor: .orangeNormalActive, label: "Orange Normal", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 0) {
-                    ColorContent(color: &.orangeDark, uiColor: &.orangeDark, label: "Orange Dark")
-                    ColorContent(color: &.orangeDarkHover, uiColor: &.orangeDarkHover, label: "Orange Dark", variant: "hover")
-                    ColorContent(color: &.orangeDarkActive, uiColor: &.orangeDarkActive, label: "Orange Dark", variant: "active")
+                    ColorContent(color: .orangeDark, uiColor: .orangeDark, label: "Orange Dark")
+                    ColorContent(color: .orangeDarkHover, uiColor: .orangeDarkHover, label: "Orange Dark", variant: "hover")
+                    ColorContent(color: .orangeDarkActive, uiColor: .orangeDarkActive, label: "Orange Dark", variant: "active")
                 }
                 .fixedSize(horizontal: false, vertical: true)
 
-                ColorContent(color: &.orangeDarker, uiColor: &.orangeDarker, label: "Orange Darker")
+                ColorContent(color: .orangeDarker, uiColor: .orangeDarker, label: "Orange Darker")
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -219,22 +219,22 @@ struct StorybookBundleColors: View {
         ColorCard(title: "Bundle") {
             HStack(spacing: 0) {
                 ColorGradientContent(gradient: .bundleBasic, label: "Bundle Basic")
-                ColorContent(color: &.bundleBasicStart, uiColor: &.bundleBasicStart, label: "Bundle Basic", variant: "start")
-                ColorContent(color: &.bundleBasicEnd, uiColor: &.bundleBasicEnd, label: "Bundle Basic", variant: "end")
+                ColorContent(color: .bundleBasicStart, uiColor: .bundleBasicStart, label: "Bundle Basic", variant: "start")
+                ColorContent(color: .bundleBasicEnd, uiColor: .bundleBasicEnd, label: "Bundle Basic", variant: "end")
             }
             .fixedSize(horizontal: false, vertical: true)
 
             HStack(spacing: 0) {
                 ColorGradientContent(gradient: .bundleMedium, label: "Bundle Medium")
-                ColorContent(color: &.bundleMediumStart, uiColor: &.bundleMediumStart, label: "Bundle Medium", variant: "start")
-                ColorContent(color: &.bundleMediumEnd, uiColor: &.bundleMediumEnd, label: "Bundle Medium", variant: "end")
+                ColorContent(color: .bundleMediumStart, uiColor: .bundleMediumStart, label: "Bundle Medium", variant: "start")
+                ColorContent(color: .bundleMediumEnd, uiColor: .bundleMediumEnd, label: "Bundle Medium", variant: "end")
             }
             .fixedSize(horizontal: false, vertical: true)
 
             HStack(spacing: 0) {
                 ColorGradientContent(gradient: .bundleTop, label: "Bundle Top")
-                ColorContent(color: &.bundleTopStart, uiColor: &.bundleTopStart, label: "Bundle Top", variant: "start")
-                ColorContent(color: &.bundleTopEnd, uiColor: &.bundleTopEnd, label: "Bundle Top", variant: "end")
+                ColorContent(color: .bundleTopStart, uiColor: .bundleTopStart, label: "Bundle Top", variant: "start")
+                ColorContent(color: .bundleTopEnd, uiColor: .bundleTopEnd, label: "Bundle Top", variant: "end")
             }
             .fixedSize(horizontal: false, vertical: true)
         }
@@ -266,38 +266,24 @@ private struct ColorCard<Content: View>: View {
 
 private struct ColorContent: View {
 
-    let color: UnsafeMutablePointer<Color>
-    let uiColor: UnsafeMutablePointer<UIColor>
+    let color: Color
+    let uiColor: UIColor
     let label: String
     var variant: String = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            color.pointee
+            color
                 .frame(maxWidth: .infinity)
                 .frame(height: 88)
                 .overlay(
                     VStack(alignment: .trailing, spacing: 0) {
-                        SwiftUI.Text("\(hexStringFromColor(uiColor.pointee))")
+                        SwiftUI.Text("\(hexStringFromColor(uiColor))")
                             .font(.system(.caption, design: .monospaced).monospacedDigit())
                             .fontWeight(.medium)
-                            .textColor(uiColor.pointee.brightness > 0.6 ? .inkDark : .whiteNormal)
+                            .textColor(uiColor.brightness > 0.6 ? .inkDark : .whiteNormal)
 
                         Spacer(minLength: .medium)
-
-                        if #available(iOS 14.0, *) {
-                            ColorPicker(
-                                selection: Binding<Color>(
-                                    get: { color.pointee },
-                                    set: { newColor in
-                                        color.pointee = newColor
-                                        uiColor.pointee = UIColor(newColor)
-                                    }
-                                )
-                            ) {
-                                EmptyView()
-                            }
-                        }
                     }
                     .padding(.horizontal, .small)
                     .padding(.vertical, .xSmall)

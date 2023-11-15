@@ -6,177 +6,177 @@ public extension Color {
 
     // MARK: - Blue
     /// Orbit Blue Dark color.
-    static var blueDark = Color("Blue Dark", bundle: .orbit)
+    static let blueDark = Color("Blue Dark", bundle: .orbit)
     /// Orbit Blue Dark Active color.
-    static var blueDarkActive = Color("Blue Dark Active", bundle: .orbit)
+    static let blueDarkActive = Color("Blue Dark Active", bundle: .orbit)
     /// Orbit Blue Dark Hover color.
-    static var blueDarkHover = Color("Blue Dark Hover", bundle: .orbit)
+    static let blueDarkHover = Color("Blue Dark Hover", bundle: .orbit)
     /// Orbit Blue Darker color.
-    static var blueDarker = Color("Blue Darker", bundle: .orbit)
+    static let blueDarker = Color("Blue Darker", bundle: .orbit)
     /// Orbit Blue Light color.
-    static var blueLight = Color("Blue Light", bundle: .orbit)
+    static let blueLight = Color("Blue Light", bundle: .orbit)
     /// Orbit Blue Light Active color.
-    static var blueLightActive = Color("Blue Light Active", bundle: .orbit)
+    static let blueLightActive = Color("Blue Light Active", bundle: .orbit)
     /// Orbit Blue Light Hover color.
-    static var blueLightHover = Color("Blue Light Hover", bundle: .orbit)
+    static let blueLightHover = Color("Blue Light Hover", bundle: .orbit)
     /// Orbit Blue Normal color.
-    static var blueNormal = Color("Blue Normal", bundle: .orbit)
+    static let blueNormal = Color("Blue Normal", bundle: .orbit)
     /// Orbit Blue Normal Active color.
-    static var blueNormalActive = Color("Blue Normal Active", bundle: .orbit)
+    static let blueNormalActive = Color("Blue Normal Active", bundle: .orbit)
     /// Orbit Blue Normal Hover color.
-    static var blueNormalHover = Color("Blue Normal Hover", bundle: .orbit)
+    static let blueNormalHover = Color("Blue Normal Hover", bundle: .orbit)
 
     // MARK: - Bundle
     /// Orbit Bundle Basic color.
-    static var bundleBasic = Color("Bundle Basic", bundle: .orbit)
+    static let bundleBasic = Color("Bundle Basic", bundle: .orbit)
     /// Orbit Bundle Medium color.
-    static var bundleMedium = Color("Bundle Medium", bundle: .orbit)
+    static let bundleMedium = Color("Bundle Medium", bundle: .orbit)
 
     // MARK: - Cloud
     /// Orbit Cloud Dark color.
-    static var cloudDark = Color("Cloud Dark", bundle: .orbit)
+    static let cloudDark = Color("Cloud Dark", bundle: .orbit)
     /// Orbit Cloud Dark Active color.
-    static var cloudDarkActive = Color("Cloud Dark Active", bundle: .orbit)
+    static let cloudDarkActive = Color("Cloud Dark Active", bundle: .orbit)
     /// Orbit Cloud Dark Hover color.
-    static var cloudDarkHover = Color("Cloud Dark Hover", bundle: .orbit)
+    static let cloudDarkHover = Color("Cloud Dark Hover", bundle: .orbit)
     /// Orbit Cloud Light color.
-    static var cloudLight = Color("Cloud Light", bundle: .orbit)
+    static let cloudLight = Color("Cloud Light", bundle: .orbit)
     /// Orbit Cloud Light Active color.
-    static var cloudLightActive = Color("Cloud Light Active", bundle: .orbit)
+    static let cloudLightActive = Color("Cloud Light Active", bundle: .orbit)
     /// Orbit Cloud Light Hover color.
-    static var cloudLightHover = Color("Cloud Light Hover", bundle: .orbit)
+    static let cloudLightHover = Color("Cloud Light Hover", bundle: .orbit)
     /// Orbit Cloud Normal color.
-    static var cloudNormal = Color("Cloud Normal", bundle: .orbit)
+    static let cloudNormal = Color("Cloud Normal", bundle: .orbit)
     /// Orbit Cloud Normal Active color.
-    static var cloudNormalActive = Color("Cloud Normal Active", bundle: .orbit)
+    static let cloudNormalActive = Color("Cloud Normal Active", bundle: .orbit)
     /// Orbit Cloud Normal Hover color.
-    static var cloudNormalHover = Color("Cloud Normal Hover", bundle: .orbit)
+    static let cloudNormalHover = Color("Cloud Normal Hover", bundle: .orbit)
 
     // MARK: - Green
     /// Orbit Green Dark color.
-    static var greenDark = Color("Green Dark", bundle: .orbit)
+    static let greenDark = Color("Green Dark", bundle: .orbit)
     /// Orbit Green Dark Active color.
-    static var greenDarkActive = Color("Green Dark Active", bundle: .orbit)
+    static let greenDarkActive = Color("Green Dark Active", bundle: .orbit)
     /// Orbit Green Dark Hover color.
-    static var greenDarkHover = Color("Green Dark Hover", bundle: .orbit)
+    static let greenDarkHover = Color("Green Dark Hover", bundle: .orbit)
     /// Orbit Green Darker color.
-    static var greenDarker = Color("Green Darker", bundle: .orbit)
+    static let greenDarker = Color("Green Darker", bundle: .orbit)
     /// Orbit Green Light color.
-    static var greenLight = Color("Green Light", bundle: .orbit)
+    static let greenLight = Color("Green Light", bundle: .orbit)
     /// Orbit Green Light Active color.
-    static var greenLightActive = Color("Green Light Active", bundle: .orbit)
+    static let greenLightActive = Color("Green Light Active", bundle: .orbit)
     /// Orbit Green Light Hover color.
-    static var greenLightHover = Color("Green Light Hover", bundle: .orbit)
+    static let greenLightHover = Color("Green Light Hover", bundle: .orbit)
     /// Orbit Green Normal color.
-    static var greenNormal = Color("Green Normal", bundle: .orbit)
+    static let greenNormal = Color("Green Normal", bundle: .orbit)
     /// Orbit Green Normal Active color.
-    static var greenNormalActive = Color("Green Normal Active", bundle: .orbit)
+    static let greenNormalActive = Color("Green Normal Active", bundle: .orbit)
     /// Orbit Green Normal Hover color.
-    static var greenNormalHover = Color("Green Normal Hover", bundle: .orbit)
+    static let greenNormalHover = Color("Green Normal Hover", bundle: .orbit)
 
     // MARK: - Ink
     /// Orbit Ink Dark color.
-    static var inkDark = Color("Ink Dark", bundle: .orbit)
+    static let inkDark = Color("Ink Dark", bundle: .orbit)
     /// Orbit Ink Dark Active color.
-    static var inkDarkActive = Color("Ink Dark Active", bundle: .orbit)
+    static let inkDarkActive = Color("Ink Dark Active", bundle: .orbit)
     /// Orbit Ink Dark Hover color.
-    static var inkDarkHover = Color("Ink Dark Hover", bundle: .orbit)
+    static let inkDarkHover = Color("Ink Dark Hover", bundle: .orbit)
     /// Orbit Ink Light color.
-    static var inkLight = Color("Ink Light", bundle: .orbit)
+    static let inkLight = Color("Ink Light", bundle: .orbit)
     /// Orbit Ink Light Active color.
-    static var inkLightActive = Color("Ink Light Active", bundle: .orbit)
+    static let inkLightActive = Color("Ink Light Active", bundle: .orbit)
     /// Orbit Ink Light Hover color.
-    static var inkLightHover = Color("Ink Light Hover", bundle: .orbit)
+    static let inkLightHover = Color("Ink Light Hover", bundle: .orbit)
     /// Orbit Ink Normal color.
-    static var inkNormal = Color("Ink Normal", bundle: .orbit)
+    static let inkNormal = Color("Ink Normal", bundle: .orbit)
     /// Orbit Ink Normal Active color.
-    static var inkNormalActive = Color("Ink Normal Active", bundle: .orbit)
+    static let inkNormalActive = Color("Ink Normal Active", bundle: .orbit)
     /// Orbit Ink Normal Hover color.
-    static var inkNormalHover = Color("Ink Normal Hover", bundle: .orbit)
+    static let inkNormalHover = Color("Ink Normal Hover", bundle: .orbit)
 
     // MARK: - Orange
     /// Orbit Orange Dark color.
-    static var orangeDark = Color("Orange Dark", bundle: .orbit)
+    static let orangeDark = Color("Orange Dark", bundle: .orbit)
     /// Orbit Orange Dark Active color.
-    static var orangeDarkActive = Color("Orange Dark Active", bundle: .orbit)
+    static let orangeDarkActive = Color("Orange Dark Active", bundle: .orbit)
     /// Orbit Orange Dark Hover color.
-    static var orangeDarkHover = Color("Orange Dark Hover", bundle: .orbit)
+    static let orangeDarkHover = Color("Orange Dark Hover", bundle: .orbit)
     /// Orbit Orange Darker color.
-    static var orangeDarker = Color("Orange Darker", bundle: .orbit)
+    static let orangeDarker = Color("Orange Darker", bundle: .orbit)
     /// Orbit Orange Light color.
-    static var orangeLight = Color("Orange Light", bundle: .orbit)
+    static let orangeLight = Color("Orange Light", bundle: .orbit)
     /// Orbit Orange Light Active color.
-    static var orangeLightActive = Color("Orange Light Active", bundle: .orbit)
+    static let orangeLightActive = Color("Orange Light Active", bundle: .orbit)
     /// Orbit Orange Light Hover color.
-    static var orangeLightHover = Color("Orange Light Hover", bundle: .orbit)
+    static let orangeLightHover = Color("Orange Light Hover", bundle: .orbit)
     /// Orbit Orange Normal color.
-    static var orangeNormal = Color("Orange Normal", bundle: .orbit)
+    static let orangeNormal = Color("Orange Normal", bundle: .orbit)
     /// Orbit Orange Normal Active color.
-    static var orangeNormalActive = Color("Orange Normal Active", bundle: .orbit)
+    static let orangeNormalActive = Color("Orange Normal Active", bundle: .orbit)
     /// Orbit Orange Normal Hover color.
-    static var orangeNormalHover = Color("Orange Normal Hover", bundle: .orbit)
+    static let orangeNormalHover = Color("Orange Normal Hover", bundle: .orbit)
 
     // MARK: - Product
     /// Orbit Product Dark color.
-    static var productDark = Color("Product Dark", bundle: .orbit)
+    static let productDark = Color("Product Dark", bundle: .orbit)
     /// Orbit Product Dark Active color.
-    static var productDarkActive = Color("Product Dark Active", bundle: .orbit)
+    static let productDarkActive = Color("Product Dark Active", bundle: .orbit)
     /// Orbit Product Dark Hover color.
-    static var productDarkHover = Color("Product Dark Hover", bundle: .orbit)
+    static let productDarkHover = Color("Product Dark Hover", bundle: .orbit)
     /// Orbit Product Darker color.
-    static var productDarker = Color("Product Darker", bundle: .orbit)
+    static let productDarker = Color("Product Darker", bundle: .orbit)
     /// Orbit Product Light color.
-    static var productLight = Color("Product Light", bundle: .orbit)
+    static let productLight = Color("Product Light", bundle: .orbit)
     /// Orbit Product Light Active color.
-    static var productLightActive = Color("Product Light Active", bundle: .orbit)
+    static let productLightActive = Color("Product Light Active", bundle: .orbit)
     /// Orbit Product Light Hover color.
-    static var productLightHover = Color("Product Light Hover", bundle: .orbit)
+    static let productLightHover = Color("Product Light Hover", bundle: .orbit)
     /// Orbit Product Normal color.
-    static var productNormal = Color("Product Normal", bundle: .orbit)
+    static let productNormal = Color("Product Normal", bundle: .orbit)
     /// Orbit Product Normal Active color.
-    static var productNormalActive = Color("Product Normal Active", bundle: .orbit)
+    static let productNormalActive = Color("Product Normal Active", bundle: .orbit)
     /// Orbit Product Normal Hover color.
-    static var productNormalHover = Color("Product Normal Hover", bundle: .orbit)
+    static let productNormalHover = Color("Product Normal Hover", bundle: .orbit)
 
     // MARK: - Red
     /// Orbit Red Dark color.
-    static var redDark = Color("Red Dark", bundle: .orbit)
+    static let redDark = Color("Red Dark", bundle: .orbit)
     /// Orbit Red Dark Active color.
-    static var redDarkActive = Color("Red Dark Active", bundle: .orbit)
+    static let redDarkActive = Color("Red Dark Active", bundle: .orbit)
     /// Orbit Red Dark Hover color.
-    static var redDarkHover = Color("Red Dark Hover", bundle: .orbit)
+    static let redDarkHover = Color("Red Dark Hover", bundle: .orbit)
     /// Orbit Red Darker color.
-    static var redDarker = Color("Red Darker", bundle: .orbit)
+    static let redDarker = Color("Red Darker", bundle: .orbit)
     /// Orbit Red Light color.
-    static var redLight = Color("Red Light", bundle: .orbit)
+    static let redLight = Color("Red Light", bundle: .orbit)
     /// Orbit Red Light Active color.
-    static var redLightActive = Color("Red Light Active", bundle: .orbit)
+    static let redLightActive = Color("Red Light Active", bundle: .orbit)
     /// Orbit Red Light Hover color.
-    static var redLightHover = Color("Red Light Hover", bundle: .orbit)
+    static let redLightHover = Color("Red Light Hover", bundle: .orbit)
     /// Orbit Red Normal color.
-    static var redNormal = Color("Red Normal", bundle: .orbit)
+    static let redNormal = Color("Red Normal", bundle: .orbit)
     /// Orbit Red Normal Active color.
-    static var redNormalActive = Color("Red Normal Active", bundle: .orbit)
+    static let redNormalActive = Color("Red Normal Active", bundle: .orbit)
     /// Orbit Red Normal Hover color.
-    static var redNormalHover = Color("Red Normal Hover", bundle: .orbit)
+    static let redNormalHover = Color("Red Normal Hover", bundle: .orbit)
 
     // MARK: - Social
     /// Orbit Social Facebook color.
-    static var socialFacebook = Color("Social Facebook", bundle: .orbit)
+    static let socialFacebook = Color("Social Facebook", bundle: .orbit)
     /// Orbit Social Facebook Active color.
-    static var socialFacebookActive = Color("Social Facebook Active", bundle: .orbit)
+    static let socialFacebookActive = Color("Social Facebook Active", bundle: .orbit)
     /// Orbit Social Facebook Hover color.
-    static var socialFacebookHover = Color("Social Facebook Hover", bundle: .orbit)
+    static let socialFacebookHover = Color("Social Facebook Hover", bundle: .orbit)
 
     // MARK: - White
     /// Orbit White Active color.
-    static var whiteActive = Color("White Active", bundle: .orbit)
+    static let whiteActive = Color("White Active", bundle: .orbit)
     /// Orbit White Darker color.
-    static var whiteDarker = Color("White Darker", bundle: .orbit)
+    static let whiteDarker = Color("White Darker", bundle: .orbit)
     /// Orbit White Hover color.
-    static var whiteHover = Color("White Hover", bundle: .orbit)
+    static let whiteHover = Color("White Hover", bundle: .orbit)
     /// Orbit White Lighter color.
-    static var whiteLighter = Color("White Lighter", bundle: .orbit)
+    static let whiteLighter = Color("White Lighter", bundle: .orbit)
     /// Orbit White Normal color.
-    static var whiteNormal = Color("White Normal", bundle: .orbit)
+    static let whiteNormal = Color("White Normal", bundle: .orbit)
 }
