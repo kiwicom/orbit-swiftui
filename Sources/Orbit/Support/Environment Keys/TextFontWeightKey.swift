@@ -22,7 +22,7 @@ public extension View {
     ///                 Pass `nil` to ignore environment font weight and to allow the system
     ///                 or the container to provide its own font weight.
     ///                 If a container-specific override doesn’t exist, the `regular` will be used.
-    @available(iOS, introduced: 13, obsoleted: 16, renamed: "fontWeight")
+    @available(iOS, deprecated: 16, renamed: "fontWeight(_:)", message: "Use native modifier to set font weight.")
     func textFontWeight(_ fontWeight: Font.Weight?) -> some View {
         environment(\.textFontWeight, fontWeight)
     }
