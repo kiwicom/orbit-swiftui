@@ -21,7 +21,6 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View>: View {
     var verticalBackgroundPadding: CGFloat = 0
     var cornerRadius: CGFloat = BorderRadius.default
     var spacing: CGFloat = .xxSmall
-    var isTrailingIconSeparated = false
     var hapticFeedback: HapticsProvider.HapticFeedbackType = .light()
     @ViewBuilder let icon: LeadingIcon
     @ViewBuilder let disclosureIcon: TrailingIcon
@@ -31,24 +30,16 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View>: View {
             // Maintain height to allow button with no content
             TextStrut()
 
-            if shouldExpand {
-                Spacer(minLength: 0)
-            }
-
             HStack(spacing: spacing) {
                 icon
                 label
                     .padding(.horizontal, horizontalLabelPadding)
                     .layoutPriority(1)
                 disclosureIcon
-                    .frame(maxWidth: disclosureIconMaxWidth, alignment: .trailing)
+                    .fixedSize(horizontal: idealSize.horizontal == true, vertical: false)
             }
-
-            if shouldExpand {
-                Spacer(minLength: 0)
-            }
+            .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
         }
-        .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity)
         .padding(.horizontal, horizontalPadding)
         .padding(.vertical, verticalPadding)
         .padding(.horizontal, horizontalBackgroundPadding)
@@ -90,16 +81,6 @@ struct OrbitCustomButtonContent<LeadingIcon: View, TrailingIcon: View>: View {
         } else {
             backgroundShape?.inactiveView
         }
-    }
-
-    var shouldExpand: Bool {
-        idealSize.horizontal != true && isTrailingIconSeparated == false
-    }
-
-    var disclosureIconMaxWidth: CGFloat? {
-        idealSize.horizontal != true && isTrailingIconSeparated
-            ? .infinity
-            : nil
     }
 }
 
@@ -159,12 +140,12 @@ struct OrbitCustomButtonContentPreviews: PreviewProvider {
                 horizontalBackgroundPadding: .small,
                 verticalBackgroundPadding: .xSmall,
                 cornerRadius: BorderRadius.default,
-                spacing: .medium,
-                isTrailingIconSeparated: true
+                spacing: .xSmall
             ) {
                 Icon(.grid)
             } disclosureIcon: {
                 Icon(.chevronForward)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
             }
             .textColor(.blueDark)
             .backgroundStyle(.orangeLight, active: .greenLight)

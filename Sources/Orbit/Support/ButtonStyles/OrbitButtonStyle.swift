@@ -11,7 +11,6 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
     @Environment(\.textColor) private var textColor
 
     private var type: ButtonType
-    private var isTrailingIconSeparated: Bool
     @ViewBuilder private let icon: LeadingIcon
     @ViewBuilder private let disclosureIcon: TrailingIcon
 
@@ -20,7 +19,6 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
             configuration: configuration,
             horizontalPadding: padding,
             verticalPadding: padding,
-            isTrailingIconSeparated: isTrailingIconSeparated,
             hapticFeedback: hapticFeedback
         ) {
             icon
@@ -106,12 +104,10 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
     /// Create button style for Orbit ``Button`` component.
     public init(
         type: ButtonType = .primary,
-        isTrailingIconSeparated: Bool = false,
         @ViewBuilder icon: () -> LeadingIcon = { EmptyView() },
         @ViewBuilder trailingIcon: () -> TrailingIcon = { EmptyView() }
     ) {
         self.type = type
-        self.isTrailingIconSeparated = isTrailingIconSeparated
         self.icon = icon()
         self.disclosureIcon = trailingIcon()
     }
