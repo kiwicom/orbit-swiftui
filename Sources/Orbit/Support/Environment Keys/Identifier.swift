@@ -18,7 +18,7 @@ public extension View {
     /// Binds a view’s identity to the given proxy value.
     ///
     /// This Orbit override adds the custom `IDPreferenceKey` preference and `identifier` environment value on top of native identity.
-    /// This `identifier` is a necessary property of components that are used in some Orbit components or modifiers.
+    /// The `identifier` is a required property of components that are used in some Orbit components or modifiers.
     func identifier<ID: Hashable>(_ id: ID) -> some View {
         self
             .environment(\.identifier, id)
@@ -26,6 +26,16 @@ public extension View {
             .anchorPreference(key: IDPreferenceKey.self, value: .bounds) { bounds in
                 [IDPreference(id: id, bounds: bounds)]
             }
+    }
+
+    /// Binds a view’s identity to the given accessibility identifier, acting both as the `id` and `accessibilityIdentifier` at the same time.
+    ///
+    /// This Orbit override adds the custom `IDPreferenceKey` preference and `identifier` environment value on top of native identity.
+    /// The `identifier` is a required property of components that are used in some Orbit components or modifiers.
+    func identifier(_ accessibilityID: AccessibilityID) -> some View {
+        self
+            .identifier(accessibilityID as AnyHashable)
+            .accessibility(accessibilityID)
     }
 }
 
