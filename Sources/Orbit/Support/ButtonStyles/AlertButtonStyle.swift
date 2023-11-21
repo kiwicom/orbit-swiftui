@@ -77,6 +77,7 @@ struct AlertButtonStylePreviews: PreviewProvider {
         PreviewWrapper {
             standalone
         }
+        .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
     

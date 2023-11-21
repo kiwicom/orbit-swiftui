@@ -51,7 +51,6 @@ Supporting types and components under development.
 - ``NavigationButtonStyle``
 - ``OrbitButtonLinkButtonStyle``
 - ``OrbitButtonStyle``
-- ``OrbitCustomButtonStyle``
 - ``RadioButtonStyle``
 - ``TagButtonStyle``
 - ``TileButtonStyle``

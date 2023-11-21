@@ -1,6 +1,8 @@
 import SwiftUI
 
 /// Button style for Orbit ``Button`` component.
+/// 
+/// The style can be further customized by using Orbit environment modifiers.
 public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: PrimitiveButtonStyle {
     
     @Environment(\.backgroundShape) private var backgroundShape
@@ -103,7 +105,7 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
     
     /// Create button style for Orbit ``Button`` component.
     public init(
-        type: ButtonType,
+        type: ButtonType = .primary,
         isTrailingIconSeparated: Bool = false,
         @ViewBuilder icon: () -> LeadingIcon = { EmptyView() },
         @ViewBuilder trailingIcon: () -> TrailingIcon = { EmptyView() }
