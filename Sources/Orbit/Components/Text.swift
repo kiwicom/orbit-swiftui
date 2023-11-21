@@ -35,10 +35,6 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
     var isMonospacedDigit: Bool?
     var lineHeight: CGFloat?
 
-    var isEmpty: Bool {
-        content.isEmpty
-    }
-
     // The Orbit Text consists of up to 3 layers:
     //
     // 1) SwiftUI.Text base layer, either:
@@ -72,6 +68,10 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
                 attributedString(textRepresentableEnvironment: textRepresentableEnvironment).string
             )
         }
+    }
+    
+    var isEmpty: Bool {
+        content.isEmpty
     }
 
     func text(textRepresentableEnvironment: TextRepresentableEnvironment, isConcatenated: Bool = false) -> SwiftUI.Text {
@@ -332,14 +332,6 @@ extension Text: TextRepresentable {
         if isEmpty { return nil }
 
         return text(textRepresentableEnvironment: textRepresentableEnvironment, isConcatenated: true)
-    }
-}
-
-// MARK: - Equatable
-extension Text: Equatable {
-
-    public static func == (lhs: Text, rhs: Text) -> Bool {
-        lhs.content == rhs.content
     }
 }
 
