@@ -24,12 +24,13 @@ public struct SocialButton: View {
                 .fontWeight(.medium)
         }
         .buttonStyle(
-            OrbitCustomButtonStyle(isTrailingIconSeparated: true) {
+            OrbitButtonStyle {
                 logo
                     .scaledToFit()
                     .frame(width: .large * sizeCategory.ratio)
                     .padding([.leading, .vertical], -.xxSmall)
-            } disclosureIcon: {
+            } trailingIcon: {
+                Spacer(minLength: 0)
                 Icon(.chevronForward)
                     .iconSize(.large)
                     .padding([.trailing, .vertical], -.xxSmall)

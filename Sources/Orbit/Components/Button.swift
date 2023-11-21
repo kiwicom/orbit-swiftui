@@ -10,7 +10,6 @@ public struct Button<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEm
 
     private let label: String
     private let type: ButtonType
-    private let isTrailingIconSeparated: Bool
     private let action: () -> Void
     @ViewBuilder private let leadingIcon: LeadingIcon
     @ViewBuilder private let trailingIcon: TrailingIcon
@@ -21,7 +20,7 @@ public struct Button<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEm
         } else {
             button
                 .buttonStyle(
-                    OrbitButtonStyle(type: type, isTrailingIconSeparated: isTrailingIconSeparated) {
+                    OrbitButtonStyle(type: type) {
                         leadingIcon
                     } trailingIcon: {
                         trailingIcon
@@ -59,14 +58,9 @@ public extension Button {
         icon: Icon.Symbol? = nil,
         disclosureIcon: Icon.Symbol? = nil,
         type: ButtonType = .primary,
-        isTrailingIconSeparated: Bool = false,
         action: @escaping () -> Void
     ) where LeadingIcon == Icon, TrailingIcon == Icon {
-        self.init(
-            label,
-            type: type,
-            isTrailingIconSeparated: isTrailingIconSeparated
-        ) {
+        self.init(label, type: type) {
             action()
         } icon: {
             Icon(icon)
@@ -84,14 +78,12 @@ public extension Button {
     init(
         _ label: String = "",
         type: ButtonType = .primary,
-        isTrailingIconSeparated: Bool = false,
         action: @escaping () -> Void,
         @ViewBuilder icon: () -> LeadingIcon,
         @ViewBuilder disclosureIcon: () -> TrailingIcon = { EmptyView() }
     ) {
         self.label = label
         self.type = type
-        self.isTrailingIconSeparated = isTrailingIconSeparated
         self.action = action
         self.leadingIcon = icon()
         self.trailingIcon = disclosureIcon()
