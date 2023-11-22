@@ -1,10 +1,11 @@
 import SwiftUI
 
-public final class TextFieldCoordinator: NSObject, UITextFieldDelegate, ObservableObject {
+/// Coordinator that manages Orbit text input components `InputField` and `Textarea`.
+public final class TextFieldCoordinator: NSObject, ObservableObject {
 
-    static var textFieldToBecomeResponder: UITextField?
+    static var textFieldToBecomeResponder: UITextInput?
     static var coordinatorToBecomeResponder: TextFieldCoordinator?
-    static var textFieldToResignResponder: UITextField?
+    static var textFieldToResignResponder: UITextInput?
     static var coordinatorToResignResponder: TextFieldCoordinator?
 
     static func debounceBecomeResponder(coordinator: TextFieldCoordinator) {
@@ -31,9 +32,9 @@ public final class TextFieldCoordinator: NSObject, UITextFieldDelegate, Observab
 
     static func switchResponders() {
         // The inverted order is important for keyboard to stay fixed when switching responders
-        _ = textFieldToBecomeResponder?.becomeFirstResponder()
+        _ = textFieldToBecomeResponder?.textInputView?.superview?.becomeFirstResponder()
         textFieldToBecomeResponder = nil
-        _ = textFieldToResignResponder?.resignFirstResponder()
+        _ = textFieldToResignResponder?.textInputView?.superview?.resignFirstResponder()
         textFieldToResignResponder = nil
 
         coordinatorToResignResponder?.onEndEditing(updateBinding: false)
@@ -99,33 +100,48 @@ public final class TextFieldCoordinator: NSObject, UITextFieldDelegate, Observab
         self.inputFieldShouldChangeCharactersAction = inputFieldShouldChangeCharactersAction
         self.inputFieldShouldChangeCharactersIdentifiableAction = inputFieldShouldChangeCharactersIdentifiableAction
     }
-
-    public func textFieldDidBeginEditing(_ textField: UITextField) {
+    
+    fileprivate func didBeginEditing() {
         if isBeingUpdated { return }
         onBeginEditing(updateBinding: true)
     }
-
-    public func textFieldDidEndEditing(_ textField: UITextField) {
+    
+    fileprivate func didEndEditing() {
         if isBeingUpdated { return }
         onEndEditing(updateBinding: true)
     }
-
-    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    
+    fileprivate func shouldReturn(textInput: UITextInput) -> Bool {
         if isBeingUpdated { return true }
 
-        let shouldReturn = shouldReturn
-
+        let shouldReturn: Bool
+        
+        if let inputFieldShouldReturnIdentifiableAction, let identifier {
+            shouldReturn = inputFieldShouldReturnIdentifiableAction(identifier)
+        } else if let inputFieldShouldReturnAction {
+            shouldReturn = inputFieldShouldReturnAction()
+        } else {
+            shouldReturn = true
+        }
+        
         if shouldReturn {
-            onReturn(textField)
+            DispatchQueue.main.async {
+                textInput.textInputView?.superview?.resignFirstResponder()
+                self.inputFieldReturnAction()
+
+                if let identifier = self.identifier {
+                    self.inputFieldReturnIdentifiableAction(identifier)
+                }
+            }
         }
 
         return shouldReturn
     }
-
-    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    
+    fileprivate func shouldChange(textInput: UITextInput, charactersIn range: NSRange, replacementString string: String) -> Bool {
         if isBeingUpdated { return true }
 
-        let text = ((textField.text ?? "") as NSString)
+        let text = ((textInput.text) as NSString)
         let result: InputFieldShouldChangeResult
 
         if let inputFieldShouldChangeCharactersIdentifiableAction, let identifier {
@@ -141,17 +157,17 @@ public final class TextFieldCoordinator: NSObject, UITextFieldDelegate, Observab
                 return true
             case .replace(let modifiedValue):
                 // Refuse the proposed change, replace the text with modified value
-                textField.text = modifiedValue
+                textInput.text = modifiedValue
                 return false
             case .reject:
                 return false
         }
     }
-
-    public func textFieldDidChangeSelection(_ textField: UITextField) {
+    
+    fileprivate func didChange(textInput: UITextInput) {
         if isBeingUpdated { return }
 
-        let newValue = textField.text ?? ""
+        let newValue = textInput.text
 
         if value != newValue {
             // This is a safer place to report the actual value, as it can be modified by system silently.
@@ -185,27 +201,6 @@ public final class TextFieldCoordinator: NSObject, UITextFieldDelegate, Observab
         }
     }
 
-    fileprivate func onReturn(_ textField: UITextField) {
-        DispatchQueue.main.async {
-            textField.resignFirstResponder()
-            self.inputFieldReturnAction()
-
-            if let identifier = self.identifier {
-                self.inputFieldReturnIdentifiableAction(identifier)
-            }
-        }
-    }
-
-    private var shouldReturn: Bool {
-        if let inputFieldShouldReturnIdentifiableAction, let identifier {
-            return inputFieldShouldReturnIdentifiableAction(identifier)
-        } else if let inputFieldShouldReturnAction {
-            return inputFieldShouldReturnAction()
-        } else {
-            return true
-        }
-    }
-
     private func updateInputFieldFocusBindingIfNeeded(_ value: AnyHashable?) {
         valueToUpdate = [value]
 
@@ -223,10 +218,59 @@ public final class TextFieldCoordinator: NSObject, UITextFieldDelegate, Observab
     }
 }
 
-extension UITextField {
+// MARK: - UITextFieldDelegate
+extension TextFieldCoordinator: UITextFieldDelegate {
+    
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
+        didBeginEditing()
+    }
+
+    public func textFieldDidEndEditing(_ textField: UITextField) {
+        didEndEditing()
+    }
+
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        shouldReturn(textInput: textField)
+    }
+
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        shouldChange(textInput: textField, charactersIn: range, replacementString: string)
+    }
+
+    public func textFieldDidChangeSelection(_ textField: UITextField) {
+        didChange(textInput: textField)
+    }
+}
+
+// MARK: - UITextViewDelegate
+extension TextFieldCoordinator: UITextViewDelegate {
+    
+    public func textViewDidBeginEditing(_ textView: UITextView) {
+        didBeginEditing()
+    }
+
+    public func textViewDidEndEditing(_ textView: UITextView) {
+        didEndEditing()
+    }
+    
+    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        shouldChange(textInput: textView, charactersIn: range, replacementString: text)
+    }
+
+    public func textViewDidChange(_ textView: UITextView) {
+        (textView as? InsetableTextView)?.updatePromptVisibility()
+    }
+
+    public func textViewDidChangeSelection(_ textView: UITextView) {
+        didChange(textInput: textView)
+    }
+}
+
+// MARK: -
+extension UITextInput {
 
     func toggleKeyboardFocus(_ focus: Bool, coordinator: TextFieldCoordinator) {
-        guard self.window != nil else { return }
+        guard self.textInputView?.superview?.window != nil else { return }
 
         if focus {
             TextFieldCoordinator.textFieldToBecomeResponder = self
@@ -240,6 +284,19 @@ extension UITextField {
             DispatchQueue.main.async {
                 TextFieldCoordinator.debounceResignResponder(coordinator: coordinator)
             }
+        }
+    }
+    
+    var textRange: UITextRange {
+        textRange(from: beginningOfDocument, to: endOfDocument) ?? .init()
+    }
+    
+    var text: String {
+        get { 
+            text(in: textRange) ?? "" 
+        }
+        set {
+            replace(textRange, withText: newValue) 
         }
     }
 }

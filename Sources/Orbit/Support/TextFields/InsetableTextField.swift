@@ -43,7 +43,7 @@ public class InsetableTextField: UITextField {
         return success
     }
 
-    public func replace(withText text: String, keepingCapacity: Bool = false) {
+    func replace(withText text: String, keepingCapacity: Bool = false) {
         self.text?.removeAll(keepingCapacity: keepingCapacity)
         insertText(text)
     }

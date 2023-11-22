@@ -49,8 +49,7 @@ public struct Select<Prefix: View, Suffix: View>: View {
                 InputContentButtonStyle(
                     state: state,
                     label: compactLabel,
-                    message: message,
-                    isPlaceholder: value == nil
+                    message: message
                 ) {
                     prefix
                         .accessibility(.selectPrefix)

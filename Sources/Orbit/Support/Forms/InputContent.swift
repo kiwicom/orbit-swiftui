@@ -15,7 +15,6 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
     private let message: Message?
     private let isPressed: Bool
     private let isFocused: Bool
-    private let isPlaceholder: Bool
     @ViewBuilder private let content: Content
     @ViewBuilder private let prefix: Prefix
     @ViewBuilder private let suffix: Suffix
@@ -132,7 +131,6 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
         message: Message? = nil,
         isPressed: Bool = false,
         isFocused: Bool = false,
-        isPlaceholder: Bool = false,
         @ViewBuilder content: () -> Content,
         @ViewBuilder prefix: () -> Prefix = { EmptyView() },
         @ViewBuilder suffix: () -> Suffix = { EmptyView() }
@@ -142,7 +140,6 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
         self.message = message
         self.isPressed = isPressed
         self.isFocused = isFocused
-        self.isPlaceholder = isPlaceholder
         self.content = content()
         self.prefix = prefix()
         self.suffix = suffix()

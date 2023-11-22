@@ -72,6 +72,8 @@
   ios: Released
 - component: Text
   ios: Released
+- component: Textarea
+  ios: Released
 - component: TextLink
   ios: Released
 - component: Tile
