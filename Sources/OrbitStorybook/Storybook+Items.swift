@@ -112,6 +112,7 @@ extension Storybook {
                 case .tabs:                 return ["Basic", "Live"]
                 case .tag:                  return ["Basic"]
                 case .text:                 return ["Basic"]
+                case .textarea:             return ["Basic"]
                 case .textLink:             return ["Basic", "Live"]
                 case .tile:                 return ["Basic", "Mix"]
                 case .tileGroup:            return ["Basic"]
@@ -162,6 +163,7 @@ extension Storybook {
                 case .tabs:                 return "menubar.rectangle"
                 case .tag:                  return "123.rectangle.fill"
                 case .text:                 return "text.alignleft"
+                case .textarea:             return "square.and.pencil"
                 case .textLink:             return "text.redaction"
                 case .tile:                 return "rectangle"
                 case .tileGroup:            return "rectangle.grid.2x2"
