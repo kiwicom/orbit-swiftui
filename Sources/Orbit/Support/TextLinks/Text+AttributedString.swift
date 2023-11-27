@@ -2,6 +2,7 @@ import SwiftUI
 
 public extension SwiftUI.Text {
 
+    /// Multiplier for Orbit font kerning.
     static var kerningMultiplier: CGFloat {
         if #available(iOS 16.0, *) {
             return 1.0
@@ -10,8 +11,8 @@ public extension SwiftUI.Text {
         }
     }
     
-    /// Creates a native SwiftUI Text from attributed string.
-    @available(iOS, deprecated: 15.0, message: "Will be replaced with a native init")
+    /// Creates a native `SwiftUI.Text` from attributed string.
+    @available(iOS, deprecated: 15.0, message: "Use native initializer", renamed: "init(_:)")
     init(_ string: NSAttributedString) {
         self.init("")
 

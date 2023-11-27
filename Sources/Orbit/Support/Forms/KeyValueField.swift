@@ -1,15 +1,27 @@
 import SwiftUI
 
-/// A `KeyValue` container with generic content.
+/// Orbit support component that displays a pair of label and a content.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/keyvalue/)
+/// A ``KeyValueField`` consists of a label and a content.
+///
+/// ```swift
+/// KeyValueField("First Name") {
+///     Text("Pavel")
+/// }
+/// ```
+///
+/// ### Layout
+///
+/// The text alignment can be modified by ``multilineTextAlignment(_:)``.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/keyvalue/)
 public struct KeyValueField<Content: View>: View {
 
     @Environment(\.multilineTextAlignment) private var multilineTextAlignment
     
-    let key: String
-    let size: KeyValue.Size
-    @ViewBuilder let content: Content
+    private let key: String
+    private let size: KeyValue.Size
+    @ViewBuilder private let content: Content
 
     public var body: some View {
         VStack(alignment: .init(multilineTextAlignment), spacing: 0) {
@@ -25,10 +37,10 @@ public struct KeyValueField<Content: View>: View {
 }
 
 // MARK: - Inits
-extension KeyValueField {
+public extension KeyValueField {
 
-    /// Creates Orbit KeyValue component.
-    public init(
+    /// Creates Orbit ``KeyValueField`` support component.
+    init(
         _ key: String = "",
         size: KeyValue.Size = .normal,
         @ViewBuilder content: () -> Content
@@ -63,6 +75,7 @@ struct KeyValueFieldPreviews: PreviewProvider {
             KeyValueField("Multiline and very long key") {
                 Text("Multiline and very long value")
             }
+            .multilineTextAlignment(.trailing)
             .frame(width: 100)
             .multilineTextAlignment(.trailing)
         }

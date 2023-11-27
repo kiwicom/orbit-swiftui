@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A builder that constructs buttons for the ``Alert`` component.
+/// A builder that constructs buttons for the Orbit ``Alert`` component.
 @resultBuilder
 public enum AlertButtonsBuilder {
 

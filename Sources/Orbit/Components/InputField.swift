@@ -1,21 +1,22 @@
 import SwiftUI
 import UIKit
 
-/// Orbit component that offers a simple text input. The component is an equivalent of the native `TextField` component.
+/// Orbit input component that that displays a single-line text input control. 
+/// A counterpart of the native `SwiftUI.TextField`.
 ///
-/// The InputField is created with an optional label and a binding to a string value.
-/// 
+/// The ``InputField`` consists of a label, message and a binding to a string value:
+///
 /// ```swift
 /// InputField("Label", value: $email, prompt: "E-mail")
 ///     .keyboardType(.emailAddress)
 ///     .returnKeyType(.done)
 ///     .focused($isEmailFocused)
 ///     .inputFieldReturnAction {
-///         // Action after the value is submitted
+///         // Submit action
 ///     }
 /// ```
 /// 
-/// For secure version, the `passwordStrength` hint can be provided.
+/// For secure version, the `passwordStrength` hint can be provided:
 ///     
 /// ```swift    
 /// InputField(
@@ -27,13 +28,25 @@ import UIKit
 /// )
 /// ```
 ///
-/// The component uses a custom ``TextField`` component (implemented using `UITextField`) that represents the native `TextField`.
+/// In order to instantly switch focus between text fields on submit, 
+/// return `false` from the ``inputFieldShouldReturnAction(_:)-82nse`` after switching the focus.
 /// 
+/// ```swift
+/// InputField("Label", value: $email, prompt: "E-mail")
+///     .focused($focus, equals: .email)
+///     .inputFieldShouldReturnAction {
+///         focus = .name
+///         return false
+///     }
+/// ``` 
+///
+/// The component uses a custom ``TextField`` component (implemented using `UITextField`).
+///
 /// ### Layout
 ///
 /// The component expands horizontally.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/inputfield/)
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/inputfield/)
 public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
 
     @Environment(\.inputFieldBeginEditingAction) private var inputFieldBeginEditingAction

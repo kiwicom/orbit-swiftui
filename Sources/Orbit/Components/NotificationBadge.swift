@@ -1,8 +1,27 @@
 import SwiftUI
 
-/// Shows simple, non-interactive information in a circular badge.
+/// Orbit component that displays non-actionable, short and static information in a circular badge.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/information/notificationbadge/)
+/// A ``NotificationBadge`` consists of a short label or icon.
+///
+/// ```swift
+/// NotificationBadge("1", type: .lightInverted)
+/// ```
+///
+/// ### Customizing appearance
+///
+/// The label and icon colors can be modified by ``textColor(_:)`` and ``iconColor(_:)`` modifiers.
+///
+/// The icon size can be modified by ``iconSize(custom:)`` modifier.
+///
+/// When type is set to ``BadgeType/status(_:inverted:)`` with a `nil` value, the default ``Status/info`` status can be modified by ``status(_:)`` modifier:
+///
+/// ```swift
+/// NotificationBadge(.user, type: .status(nil))
+///     .status(.warning)
+/// ```
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/information/notificationbadge/)
 public struct NotificationBadge<Content: View>: View {
 
     @Environment(\.backgroundShape) private var backgroundShape
@@ -10,8 +29,8 @@ public struct NotificationBadge<Content: View>: View {
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.textColor) private var textColor
 
-    private let type: BadgeType
     @ViewBuilder private let content: Content
+    private let type: BadgeType
 
     public var body: some View {
         if isEmpty == false {
@@ -29,7 +48,7 @@ public struct NotificationBadge<Content: View>: View {
     }
 
 
-    @ViewBuilder var resolvedBackground: some View {
+    @ViewBuilder private var resolvedBackground: some View {
         if let backgroundShape {
             backgroundShape.inactiveView
         } else {
@@ -37,17 +56,7 @@ public struct NotificationBadge<Content: View>: View {
         }
     }
     
-    var defaultBackgroundColor: Color {
-        switch type {
-            case .light:                                return .whiteDarker
-            case .lightInverted:                        return .inkDark
-            case .neutral:                              return .cloudLight
-            case .status(let status, true):             return (status ?? defaultStatus).color
-            case .status(let status, false):            return (status ?? defaultStatus).lightColor
-        }
-    }
-    
-    @ViewBuilder var background: some View {
+    @ViewBuilder private var background: some View {
         switch type {
             case .light:                                Color.whiteDarker
             case .lightInverted:                        Color.inkDark
@@ -56,12 +65,22 @@ public struct NotificationBadge<Content: View>: View {
             case .status(let status, false):            (status ?? defaultStatus).lightColor
         }
     }
+    
+    private var defaultBackgroundColor: Color {
+        switch type {
+            case .light:                                return .whiteDarker
+            case .lightInverted:                        return .inkDark
+            case .neutral:                              return .cloudLight
+            case .status(let status, true):             return (status ?? defaultStatus).color
+            case .status(let status, false):            return (status ?? defaultStatus).lightColor
+        }
+    }
 
-    var resolvedTextColor: Color {
+    private var resolvedTextColor: Color {
         textColor ?? labelColor
     }
 
-    var labelColor: Color {
+    private var labelColor: Color {
         switch type {
             case .light:                                return .inkDark
             case .lightInverted:                        return .whiteNormal
@@ -71,34 +90,28 @@ public struct NotificationBadge<Content: View>: View {
         }
     }
 
-    var minWidth: CGFloat {
+    private var minWidth: CGFloat {
         Text.Size.small.lineHeight * sizeCategory.ratio
     }
 
-    var defaultStatus: Status {
+    private var defaultStatus: Status {
         status ?? .info
-    }
-
-    /// Creates Orbit NotificationBadge component with custom content.
-    ///
-    /// - Parameters:
-    ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
-    public init(
-        type: BadgeType = .status(nil),
-        @ViewBuilder content: () -> Content
-    ) {
-        self.type = type
-        self.content = content()
     }
 }
 
 // MARK: - Inits
 public extension NotificationBadge {
 
-    /// Creates Orbit NotificationBadge component containing text.
-    ///
-    /// - Parameters:
-    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    /// Creates Orbit ``NotificationBadge`` component with custom content.
+    init(
+        type: BadgeType = .status(nil),
+        @ViewBuilder content: () -> Content
+    ) {
+        self.type = type
+        self.content = content()
+    }
+    
+    /// Creates Orbit ``NotificationBadge`` component containing text.
     init(
         _ label: String,
         type: BadgeType = .status(nil)
@@ -110,10 +123,7 @@ public extension NotificationBadge {
         }
     }
 
-    /// Creates Orbit NotificationBadge component containing icon.
-    ///
-    /// - Parameters:
-    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    /// Creates Orbit ``NotificationBadge`` component containing icon.
     init(
         _ icon: Icon.Symbol,
         type: BadgeType = .status(nil)
@@ -126,7 +136,7 @@ public extension NotificationBadge {
 }
 
 // MARK: - Types
-public extension NotificationBadge {
+private extension NotificationBadge {
 
     enum Content {
         case icon(Icon.Symbol)

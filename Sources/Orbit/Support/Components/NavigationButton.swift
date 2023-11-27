@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A special case of ``BarButton`` suitable for main navigation actions inside toolbar or navigation bar.
+/// Orbit support component that is a special case of ``BarButton``, suitable for main navigation actions inside toolbar or navigation bar.
 public struct NavigationButton: View {
 
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
@@ -21,6 +21,7 @@ public struct NavigationButton: View {
         .buttonStyle(NavigationButtonStyle())
     }
 
+    /// Creates Orbit ``NavigationButton`` component.
     public init(_ state: State, action: @escaping () -> Void) {
         self.state = state
         self.action = action
@@ -30,6 +31,7 @@ public struct NavigationButton: View {
 // MARK: - Types
 extension NavigationButton {
 
+    /// Orbit ``NavigationButton`` state.
     public enum State {
         case back
         case close

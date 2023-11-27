@@ -1,30 +1,58 @@
 import SwiftUI
 
-/// An Orbit Icon component.
+/// Orbit component that displays an icon. 
+/// A counterpart of the native SF Symbols represented by the native `SwiftUI.Image` created using `systemName` parameter.
 ///
-/// Icon is concatenable with Text and Heading components, allowing the construction of multiline texts that include icons.
-/// Apart from Orbit symbol, an Icon can be constructed from SF Symbol with matching Orbit icon size.
+/// An ``Icon`` is created using predefined Orbit ``Icon/Symbol``.
 ///
 /// ```swift
-/// Text("2") + Icon("multiply") + Icon(.baggage)
+/// Icon(.accomodation)
 /// ```
 ///
-/// Icon can be further styled using either `Icon` modifiers or global modifiers `iconColor`, `textColor`, `textFontWeight`, `baselineOffset`.
+/// The ``Icon`` can also be created using SF Symbol `String` to make it possible to mix with Orbit components.
 ///
+/// ```swift
+/// Icon(systemName: "pencil.circle")
+/// ```
+///
+/// ### Customizing appearance
+///
+/// Icon properties can be modified in two ways:
+/// - Modifiers applied directly to `Icon` that return the same type, such as ``iconColor(_:)-1h3pr`` or ``iconSize(_:)-4p0n3``. 
+/// These can also be used for concatenation with other Orbit textual components like ``Heading`` or ``Text``. 
+/// See the `InstanceMethods` section below for full list.
+/// - Modifiers applied to view hierarchy, such as ``iconColor(_:)-e48e`` or ``iconSize(_:)-1pg82``. 
+/// See a full list of `View` extensions in documentation.
+/// 
 /// ```swift
 /// VStack {
-///   Icon(.grid)
-///     .iconColor(nil)
-///
-///   Icon("circle.fill")
-///     .fontWeight(.bold)
-///     .baselineOffset(-2)
+///     // Will result in `inkNormal` color
+///     Icon(.grid)
+///         .iconColor(.inkNormal)
+///         
+///     // Will result in `blueDark` color passed from environment
+///     Icon(.grid)
+///     
+///     // Will result in a default `inkDark` color, ignoring the environment value
+///     Icon(.grid)
+///         .iconColor(nil)
+///     
+///     // Will result in mixed `redNormal` and `blueDark` colors
+///     Icon(.accomodation)
+///         .iconColor(.redNormal) 
+///     + Icon(.grid)
+///         .baselineOffset(-2)
+///     + Text(" concatenated ")
+///         .bold()
 /// }
-/// .iconColor(.redNormal)
-/// .textFontWeight(.medium)
+/// .textColor(.blueDark)
 /// ```
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/icon/)
+/// ### Layout 
+/// 
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/icon/)
 public struct Icon: View, TextBuildable, PotentiallyEmptyView {
 
     /// Approximate size ratio between SF Symbol and Orbit icon symbol.
@@ -40,9 +68,9 @@ public struct Icon: View, TextBuildable, PotentiallyEmptyView {
     @Environment(\.textFontWeight) private var textFontWeight
     @Environment(\.textSize) private var textSize
     @Environment(\.sizeCategory) private var sizeCategory
-
+    
     private let content: Content?
-
+    
     // Builder properties
     var baselineOffset: CGFloat?
     var fontWeight: Font.Weight?
@@ -73,6 +101,10 @@ public struct Icon: View, TextBuildable, PotentiallyEmptyView {
                     .alignmentGuide(.lastTextBaseline) { $0[.lastTextBaseline] + resolvedBaselineOffset }
         }
     }
+    
+    var isEmpty: Bool {
+        content?.isEmpty ?? true
+    }
 
     private var textRepresentableEnvironment: TextRepresentableEnvironment {
         .init(
@@ -86,11 +118,7 @@ public struct Icon: View, TextBuildable, PotentiallyEmptyView {
             sizeCategory: sizeCategory
         )
     }
-
-    public var isEmpty: Bool {
-        content?.isEmpty ?? true
-    }
-
+    
     private func sfSymbolFont(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> Font {
         .system(
             size: sfSymbolSize(textRepresentableEnvironment) * textRepresentableEnvironment.sizeCategory.ratio,
@@ -133,12 +161,12 @@ public struct Icon: View, TextBuildable, PotentiallyEmptyView {
 // MARK: - Inits
 public extension Icon {
 
-    /// Creates Orbit Icon component for provided Orbit symbol.
+    /// Creates Orbit ``Icon`` component.
     init(_ symbol: Icon.Symbol?) {
         self.init(symbol.map { Icon.Content.symbol($0) })
     }
 
-    /// Creates Orbit Icon component for provided SF Symbol that matches the Orbit symbol sizing, reflecting the Dynamic Type settings.
+    /// Creates Orbit ``Icon`` component for provided SF Symbol that matches the Orbit symbol sizing, reflecting the Dynamic Type settings.
     init(_ systemName: String) {
         self.init(.sfSymbol(systemName))
     }
@@ -147,7 +175,7 @@ public extension Icon {
 // MARK: - Types
 public extension Icon {
 
-    /// Preferred icon size in both dimensions. Actual size may differ based on icon content.
+    /// Preferred Orbit ``Icon`` size in both dimensions. The actual size may differ based on icon content.
     enum Size: Equatable {
         /// Size 16.
         case small
@@ -158,6 +186,7 @@ public extension Icon {
         /// Size 28.
         case xLarge
 
+        /// Orbit `Icon` ``Icon/Size`` value.
         public var value: CGFloat {
             switch self {
                 case .small:                            return 16
@@ -167,7 +196,7 @@ public extension Icon {
             }
         }
 
-        /// Icon size matching text line height.
+        /// Orbit `Icon` ``Icon/Size`` matching the text size.
         public static func fromTextSize(size: CGFloat) -> CGFloat {
             Text.Size.lineHeight(forTextSize: size)
         }
@@ -202,7 +231,7 @@ extension Icon: TextRepresentable {
     }
 
     @available(iOS 14.0, *)
-    func text(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
+    private func text(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
         switch content {
             case .none:
                 return nil

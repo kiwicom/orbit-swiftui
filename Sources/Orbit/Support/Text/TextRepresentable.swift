@@ -1,10 +1,11 @@
 import SwiftUI
 
-/// A type that can be represented as `SwiftUI.Text`
+/// A type that can be represented as `SwiftUI.Text` and can serve as Orbit concatenable component.
 ///
-/// Use the `+` operator to concatenate two `TextRepresentable` elements.
+/// Use the `+` operator to concatenate ``TextRepresentable`` elements.
 public protocol TextRepresentable {
 
+    /// Extracts native `SwiftUI.Text` from type that represents textual content.
     func swiftUIText(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text?
 }
 

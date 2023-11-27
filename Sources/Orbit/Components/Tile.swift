@@ -1,11 +1,42 @@
 import SwiftUI
 
-/// Groups actionable content to make it easy to scan.
+/// Orbit component that displays an option to pick from a group.
 ///
-/// Can be used standalone or wrapped inside a ``TileGroup``.
+/// A ``Tile`` consists of a title, description, icon and content.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/tile/)
-/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
+/// ```swift
+/// Tile("Profile", icon: .account) {
+///     // Tap action
+/// } content: {
+///     // Content
+/// }
+/// ```
+///
+/// A `Tile` can be used standalone or wrapped in a ``TileGroup``. 
+///
+/// ### Customizing appearance
+///
+/// The title and icon colors can be modified by ``textColor(_:)`` and ``iconColor(_:)`` modifiers.
+/// The icon size can be modified by ``iconSize(custom:)`` modifier.
+/// 
+/// The default background can be overridden by ``backgroundStyle(_:)-9odue`` modifier.
+/// 
+/// A ``Status`` can be modified by ``status(_:)`` modifier:
+///
+/// ```swift
+/// Tile("Not available") {
+///     // Action
+/// }
+/// .status(.critical)
+/// ```
+///
+/// Before the action is triggered, a haptic feedback is fired via ``HapticsProvider/sendHapticFeedback(_:)``.
+///
+/// ### Layout
+///
+/// Component expands horizontally unless prevented by the native `fixedSize()` or ``idealSize()`` modifier.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/tile/)
 public struct Tile<Content: View, Icon: View>: View {
 
     @Environment(\.idealSize) private var idealSize
@@ -40,7 +71,7 @@ public struct Tile<Content: View, Icon: View>: View {
         .accessibility(addTraits: .isButton)
     }
 
-    @ViewBuilder var buttonContent: some View {
+    @ViewBuilder private var buttonContent: some View {
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
                 header
@@ -61,7 +92,7 @@ public struct Tile<Content: View, Icon: View>: View {
         .overlay(separator, alignment: .init(horizontal: .listRowSeparatorLeading, vertical: .bottom))
     }
     
-    @ViewBuilder var header: some View {
+    @ViewBuilder private var header: some View {
         if isHeaderEmpty == false {
             HStack(alignment: .top, spacing: .xSmall) {
                 icon
@@ -87,14 +118,14 @@ public struct Tile<Content: View, Icon: View>: View {
         }
     }
 
-    @ViewBuilder var customContentButtonLinkOverlay: some View {
+    @ViewBuilder private var customContentButtonLinkOverlay: some View {
         if isHeaderEmpty {
             inactiveButtonLink
                 .padding(.medium)
         }
     }
 
-    @ViewBuilder var inactiveButtonLink: some View {
+    @ViewBuilder private var inactiveButtonLink: some View {
         switch disclosure {
             case .none, .icon:
                 EmptyView()
@@ -108,7 +139,7 @@ public struct Tile<Content: View, Icon: View>: View {
         }
     }
 
-    @ViewBuilder var disclosureIcon: some View {
+    @ViewBuilder private var disclosureIcon: some View {
         switch disclosure {
             case .none, .buttonLink:
                 EmptyView()
@@ -121,17 +152,17 @@ public struct Tile<Content: View, Icon: View>: View {
         }
     }
 
-    @ViewBuilder var separator: some View {
+    @ViewBuilder private var separator: some View {
         if isInsideTileGroup, isTileSeparatorVisible {
             Separator()
         }
     }
     
-    var tileBorderStyle: TileBorderStyle {
+    private var tileBorderStyle: TileBorderStyle {
         showBorder && isInsideTileGroup == false ? .default : .none
     }
     
-    var isHeaderEmpty: Bool {
+    private var isHeaderEmpty: Bool {
         title.isEmpty && description.isEmpty && icon.isEmpty
     }
 }
@@ -139,7 +170,30 @@ public struct Tile<Content: View, Icon: View>: View {
 // MARK: - Inits
 public extension Tile {
     
-    /// Creates Orbit Tile component.
+    /// Creates Orbit ``Tile`` component with custom icon.
+    init(
+        _ title: String = "",
+        description: String = "",
+        disclosure: TileDisclosure = .icon(.chevronForward),
+        showBorder: Bool = true,
+        titleStyle: Heading.Style = .title4,
+        descriptionColor: Color = .inkNormal,
+        action: @escaping () -> Void,
+        @ViewBuilder content: () -> Content = { EmptyView() },
+        @ViewBuilder icon: () -> Icon
+    ) {
+        self.title = title
+        self.description = description
+        self.disclosure = disclosure
+        self.showBorder = showBorder
+        self.titleStyle = titleStyle
+        self.descriptionColor = descriptionColor
+        self.action = action
+        self.content = content()
+        self.icon = icon()
+    }
+    
+    /// Creates Orbit ``Tile`` component.
     init(
         _ title: String = "",
         description: String = "",
@@ -165,29 +219,6 @@ public extension Tile {
         } icon: {
             Icon(icon)
         }
-    }
-
-    /// Creates Orbit Tile component with custom icon.
-    init(
-        _ title: String = "",
-        description: String = "",
-        disclosure: TileDisclosure = .icon(.chevronForward),
-        showBorder: Bool = true,
-        titleStyle: Heading.Style = .title4,
-        descriptionColor: Color = .inkNormal,
-        action: @escaping () -> Void,
-        @ViewBuilder content: () -> Content = { EmptyView() },
-        @ViewBuilder icon: () -> Icon
-    ) {
-        self.title = title
-        self.description = description
-        self.disclosure = disclosure
-        self.showBorder = showBorder
-        self.titleStyle = titleStyle
-        self.descriptionColor = descriptionColor
-        self.action = action
-        self.content = content()
-        self.icon = icon()
     }
 }
 

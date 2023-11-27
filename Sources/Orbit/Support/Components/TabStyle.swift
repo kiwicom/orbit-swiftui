@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// Style applied to the active tab in ``Tabs``.
+/// Orbit ``Tabs`` style applied to the active tab.
 ///
-/// To apply a style, use the `.activeTabStyle` modifier.
+/// To apply a style, use the `activeTabStyle()` modifier.
 public enum TabStyle: Equatable {
     case `default`
     case underlined(Color)
@@ -30,7 +30,7 @@ public enum TabStyle: Equatable {
 
 public extension View {
 
-    /// Applies the given style to the active tab in ``Tabs``.
+    /// Applies the given style to the active tab in Orbit ``Tabs``.
     func activeTabStyle(_ style: TabStyle) -> some View {
         modifier(ActiveTabStyleModifier(style: style))
     }

@@ -1,25 +1,40 @@
 import SwiftUI
 
-/// Separates content into groups within a single context.
+/// Orbit input component that displays a control for switching between multiple contents in a group.
+/// A counterpart of the native `SwiftUI.Picker` with `segmented` style applied. A typical use case is switching between tabs in a native `SwiftUI.TabView`.
 ///
-/// The following example shows component with 3 tabs:
+/// A ``Tabs`` consists of labels that represent specific tabs.
+/// Each tab label must be given an Orbit  `identifier` that matches a value of the selection binding:
 ///
 /// ```swift
-/// var body: some View {
-///     Tabs(selection: tabIndex) {
-///         Text("one")
-///             .identifier(1)
-///         Text("two")
-///             .identifier(2)
-///             .activeTabStyle(.underlinedGradient(.ink))
-///         Text("three")
-///             .identifier(3)
-///             .activeTabStyle(.underlined(.blueNormal))
-///     }
+/// Tabs(selection: $selectedTab) {
+///     Text("One")
+///         .identifier(1)
+///     Text("Two")
+///         .identifier(2)
+///         .activeTabStyle(.underlinedGradient(.ink))
+///     Text("Three")
+///         .identifier(3)
+///         .activeTabStyle(.underlined(.blueNormal))
+/// }
+/// 
+/// TabView(selection: $selectedTab) {
+///     tabContentNumberOne
+///         .tag(1)
+///     tabContentNumberTwo
+///         .tag(2)
+///     tabContentNumberThree
+///         .tag(3)
 /// }
 /// ```
+/// 
+/// The component can be disabled by ``disabled(_:)`` modifier.
+/// 
+/// ### Layout
+/// 
+/// Component expands horizontally unless prevented by the native `fixedSize()` or ``idealSize()`` modifier.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/structure/tabs/)
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/structure/tabs/)
 public struct Tabs<Selection: Hashable, Content: View>: View {
 
     @Environment(\.colorScheme) private var colorScheme

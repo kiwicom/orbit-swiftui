@@ -1,6 +1,6 @@
 import UIKit
 
-/// Orbit UITextView wrapper with a larger touch area and a prompt.
+/// Orbit `UITextView` wrapper with a larger touch area and a prompt.
 public class InsetableTextView: UITextView {
 
     public var insets: UIEdgeInsets = .zero

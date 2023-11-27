@@ -3,7 +3,7 @@ import Orbit
 
 public extension Dialog {
 
-    /// Creates Orbit Dialog component with an illustration.
+    /// Creates Orbit ``Dialog`` component with an illustration.
     init(
         _ title: String = "",
         description: String = "",

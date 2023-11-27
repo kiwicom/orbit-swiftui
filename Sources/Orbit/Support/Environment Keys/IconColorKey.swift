@@ -6,7 +6,7 @@ struct IconColorKey: EnvironmentKey {
 
 public extension EnvironmentValues {
 
-    /// An icon color stored in a view’s environment, used for Orbit Icon component.
+    /// An icon color stored in a view’s environment, used for Orbit ``Icon`` component.
     ///
     /// This environment value serves as a replacement for non-public `foregroundColor` environment value.
     /// This value has a priority over a `textColor`.
@@ -18,7 +18,7 @@ public extension EnvironmentValues {
 
 public extension View {
 
-    /// Set the color for any Orbit `Icon` component within the view hierarchy.
+    /// Set the color for any Orbit ``Icon`` component within the view hierarchy.
     ///
     /// The `iconColor` value has a priority over the `textColor` environment value.
     ///

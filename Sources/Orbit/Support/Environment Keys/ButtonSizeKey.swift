@@ -12,7 +12,7 @@ struct ButtonSizeKey: EnvironmentKey {
 
 public extension EnvironmentValues {
 
-    /// An Orbit `ButtonSize` value stored in a view’s environment.
+    /// An Orbit ``ButtonSize`` value stored in a view’s environment.
     var buttonSize: ButtonSize? {
         get { self[ButtonSizeKey.self] }
         set { self[ButtonSizeKey.self] = newValue }
@@ -21,7 +21,7 @@ public extension EnvironmentValues {
 
 public extension View {
 
-    /// Set the button size for this view.
+    /// Set the Orbit ``ButtonSize`` for this view.
     ///
     /// - Parameters:
     ///   - size: A button size that will be used by all components in the view hierarchy.

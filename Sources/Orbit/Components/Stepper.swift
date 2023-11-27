@@ -1,17 +1,29 @@
 import SwiftUI
 
-/// Enables incremental changes of a counter without a direct input.
+/// Orbit input component that displays a value with and inputs to make incremental changes.
+/// A counterpart of the native `SwiftUI.Stepper`.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/interaction/stepper/)
+/// A ``Stepper`` consists of a value and increment and decrement buttons. 
+///
+/// ```swift
+/// Stepper(
+///     value: $value,
+///     minValue: -5,
+///     maxValue: 20
+/// )
+/// ```
+/// 
+/// The component can be disabled by ``disabled(_:)`` modifier.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/interaction/stepper/)
 public struct Stepper: View {
     
-    @Binding var value: Int
+    @Environment(\.isEnabled) private var isEnabled
     
-    let minValue: Int
-    let maxValue: Int
-    let style: Style
-    
-    @Environment(\.isEnabled) var isEnabled
+    @Binding private var value: Int
+    private let maxValue: Int
+    private let minValue: Int
+    private let style: Style
     
     public var body: some View {
         HStack(alignment: .center, spacing: 0) {
@@ -21,14 +33,14 @@ public struct Stepper: View {
         }
     }
     
-    @ViewBuilder var valueText: some View {
+    @ViewBuilder private var valueText: some View {
         Text("\(value)")
             .frame(minWidth: .xMedium)
             .accessibility(.stepperValue)
             .accessibility(value: .init(value.description))
     }
     
-    @ViewBuilder var decrementButton: some View {
+    @ViewBuilder private var decrementButton: some View {
         StepperButton(.minus, style: style) {
             value -= 1
         }
@@ -36,16 +48,20 @@ public struct Stepper: View {
         .accessibility(.stepperDecrement)
     }
     
-    @ViewBuilder var incrementButton: some View {
+    @ViewBuilder private var incrementButton: some View {
         StepperButton(.plus, style: style) {
             value += 1
         }
         .environment(\.isEnabled, isEnabled && value < maxValue)
         .accessibility(.stepperIncrement)
     }
+}
+
+// MARK: - Inits
+public extension Stepper {
     
-    /// Creates Orbit Stepper component.
-    public init(
+    /// Creates Orbit ``Stepper`` component.
+    init(
         value: Binding<Int>,
         minValue: Int,
         maxValue: Int,
@@ -61,6 +77,7 @@ public struct Stepper: View {
 // MARK: - Styles
 extension Stepper {
     
+    /// Orbit ``Stepper`` style.
     public enum Style {
         case primary
         case secondary

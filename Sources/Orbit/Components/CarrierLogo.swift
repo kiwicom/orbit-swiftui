@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Displays logos of transport carriers.
+/// Orbit component that displays one or more logos of transport carriers.
 ///
 /// Carrier logos can include up to four logos at once. With one logo, by default it occupies the entire space.
 /// With multiple logos, the logos are shrunk to the same size (no matter how many more there are).
@@ -9,16 +9,103 @@ import SwiftUI
 /// they’re in the top left and bottom right. With three, the second logo shifts to the bottom left
 /// and the third is present in the top right. With four, the logos take up all four corners.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/visuals/carrierlogo/)
-public struct CarrierLogo: View {
+/// ### Layout
+/// 
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/visuals/carrierlogo/)
+public struct CarrierLogo: View, PotentiallyEmptyView {
+    
+    private let images: [Image]
+    private let size: Icon.Size
+    
+    public var body: some View {
+        content
+            .frame(width: size.value, height: size.value)
+    }
+    
+    @ViewBuilder private var content: some View {
+        switch images.count {
+            case 0:  EmptyView()
+            case 1:  SingleCarrierImage(image: images[0])
+            case 2:  twoImages
+            case 3:  threeImages
+            default: fourImages
+        }
+    }
+    
+    @ViewBuilder private var twoImages: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                SingleCarrierImage(image: images[0])
+                Color.clear
+            }
+            HStack(spacing: 0) {
+                Color.clear
+                SingleCarrierImage(image: images[1])
+            }
+        }
+    }
+    
+    @ViewBuilder private var threeImages: some View {
+        VStack(spacing: .xxxSmall) {
+            HStack(spacing: .xxxSmall) {
+                SingleCarrierImage(image: images[0])
+                SingleCarrierImage(image: images[2])
+            }
+            HStack(spacing: .xxxSmall) {
+                SingleCarrierImage(image: images[1])
+                Color.clear
+            }
+        }
+    }
+    
+    @ViewBuilder private var fourImages: some View {
+        VStack(spacing: .xxxSmall) {
+            HStack(spacing: .xxxSmall) {
+                SingleCarrierImage(image: images[0])
+                SingleCarrierImage(image: images[2])
+            }
+            HStack(spacing: .xxxSmall) {
+                SingleCarrierImage(image: images[1])
+                SingleCarrierImage(image: images[3])
+            }
+        }
+    }
+    
+    var isEmpty: Bool {
+        images.isEmpty
+    }
+}
+
+// MARK: - Inits
+public extension CarrierLogo {
+        
+    /// Creates an Orbit ``CarrierLogo`` component with a single logo image.
+    /// 
+    /// - Parameters:
+    ///   - image: a logo image.
+    ///   - size: the size of the view. The image will occupy the whole view.
+    init(image: Image, size: Icon.Size) {
+        self.images = [image]
+        self.size = size
+    }
+        
+    /// Creates an Orbit ``CarrierLogo`` component with multiple images.
+    /// 
+    /// - Parameter images: logo images to show in the view.
+    init(images: [Image]) {
+        self.images = images
+        self.size = .large
+    }
+}
+
+// MARK: - Types
+private extension CarrierLogo {
     
     struct SingleCarrierImage: View {
         
         let image: Image
-        
-        init(_ image: Image) {
-            self.image = image
-        }
         
         var body: some View {
             image
@@ -26,81 +113,9 @@ public struct CarrierLogo: View {
                 .cornerRadius(BorderRadius.desktop)
         }
     }
-    
-    let images: [Image]
-    let size: Icon.Size
-    
-    public var body: some View {
-        content
-            .frame(width: size.value, height: size.value)
-    }
-    
-    @ViewBuilder var content: some View {
-        switch images.count {
-            case 0:  EmptyView()
-            case 1:  SingleCarrierImage(images[0])
-            case 2:  twoImages
-            case 3:  threeImages
-            default: fourImages
-        }
-    }
-    
-    var twoImages: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 0) {
-                SingleCarrierImage(images[0])
-                Color.clear
-            }
-            HStack(spacing: 0) {
-                Color.clear
-                SingleCarrierImage(images[1])
-            }
-        }
-    }
-    
-    var threeImages: some View {
-        VStack(spacing: 2) {
-            HStack(spacing: 2) {
-                SingleCarrierImage(images[0])
-                SingleCarrierImage(images[2])
-            }
-            HStack(spacing: 2) {
-                SingleCarrierImage(images[1])
-                Color.clear
-            }
-        }
-    }
-    
-    var fourImages: some View {
-        VStack(spacing: 2) {
-            HStack(spacing: 2) {
-                SingleCarrierImage(images[0])
-                SingleCarrierImage(images[2])
-            }
-            HStack(spacing: 2) {
-                SingleCarrierImage(images[1])
-                SingleCarrierImage(images[3])
-            }
-        }
-    }
-        
-    /// Creates an Orbit `CarrierLogo` component with a single logo image.
-    /// - Parameters:
-    ///   - image: a logo image.
-    ///   - size: the size of the view. The image will occupy the whole view.
-    public init(image: Image, size: Icon.Size) {
-        self.images = [image]
-        self.size = size
-    }
-        
-    /// Creates an Orbit `CarrierLogo` component with multiple images.
-    /// - Parameter images: logo images to show in the view.
-    public init(images: [Image]) {
-        self.images = images
-        self.size = .large
-    }
 }
 
+// MARK: - Previews
 struct CarrierLogoPreviews: PreviewProvider {
     
     static let square = Image(systemName: "square.fill")

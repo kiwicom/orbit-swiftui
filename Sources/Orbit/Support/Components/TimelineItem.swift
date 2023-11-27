@@ -1,21 +1,28 @@
 import SwiftUI
 
-/// One item of a Timeline.
+/// Orbit component that shows a single item in a ``Timeline``.
 ///
-/// - Related components
-///   - ``Timeline``
+/// A ``TimelineItem`` consists of a label, description and a type that determines its visual progress:
+/// 
+/// ```swift
+/// Timeline {
+///     TimelineItem("Booked", type: .past)
+///     TimelineItem("Checked in", type: .past)
+///     TimelineItem("Board", type: .present)
+/// }
+/// ```
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/timeline/)
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/progress-indicators/timeline/)
 public struct TimelineItem<Footer: View>: View {
 
-    @Environment(\.sizeCategory) var sizeCategory
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    let label: String
-    let sublabel: String
-    let description: String
-    let type: TimelineItemType
-    @ViewBuilder let footer: Footer
+    private let label: String
+    private let sublabel: String
+    private let description: String
+    private let type: TimelineItemType
+    @ViewBuilder private let footer: Footer
 
     public var body: some View {
         HStack(alignment: alignment, spacing: .small) {
@@ -36,7 +43,7 @@ public struct TimelineItem<Footer: View>: View {
         }
     }
 
-    @ViewBuilder var header: some View {
+    @ViewBuilder private var header: some View {
         if horizontalSizeClass == .compact && sizeCategory.isAccessibilitySize {
             VStack(alignment: .leading, spacing: .xSmall) {
                 headerContent
@@ -48,21 +55,21 @@ public struct TimelineItem<Footer: View>: View {
         }
     }
 
-    @ViewBuilder var headerContent: some View {
+    @ViewBuilder private var headerContent: some View {
         Heading(label, style: .title5)
         Text(sublabel)
             .textSize(.small)
     }
 
-    var alignment: VerticalAlignment {
+    private var alignment: VerticalAlignment {
         hasHeaderContent || hasDescription ? .firstTextBaseline : .top
     }
 
-    var hasHeaderContent: Bool {
+    private var hasHeaderContent: Bool {
         label.isEmpty == false || sublabel.isEmpty == false
     }
 
-    var hasDescription: Bool {
+    private var hasDescription: Bool {
         description.isEmpty == false
     }
 }
@@ -71,7 +78,7 @@ public struct TimelineItem<Footer: View>: View {
 
 public extension TimelineItem {
 
-    /// Creates Orbit TimelineItem component with text details and optional custom content at the bottom.
+    /// Creates Orbit ``TimelineItem`` component.
     init(
         _ label: String = "",
         sublabel: String = "",
@@ -79,7 +86,6 @@ public extension TimelineItem {
         description: String = "",
         @ViewBuilder footer: () -> Footer = { EmptyView() }
     ) {
-
         self.label = label
         self.sublabel = sublabel
         self.type = type
@@ -90,8 +96,10 @@ public extension TimelineItem {
 
 // MARK: - Types
 
+/// Orbit ``TimelineItem`` type.
 public enum TimelineItemType: Equatable {
 
+    /// Orbit ``TimelineItemType`` status.
     public enum Status {
         case success
         case warning
@@ -102,6 +110,8 @@ public enum TimelineItemType: Equatable {
     case present(Status? = nil)
     case future
 
+    public static var present: Self { present() }
+    
     public var icon: Icon.Symbol? {
         switch self {
             case .past:                  return .checkCircle

@@ -2,23 +2,42 @@ import SwiftUI
 
 public typealias SliderValue = BinaryFloatingPoint & Strideable & CustomStringConvertible
 
-/// Enables selection from a range of values.
+/// Orbit input component that displays a range of values.
+/// A counterpart of the native `SwiftUI.Slider`.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/interaction/slider/)
+/// A ``Slider`` consists of a label and two or three choices. 
+///
+/// ```swift
+/// Slider(
+///     value: $value,
+///     valueLabel: value.description,
+///     startLabel: "15",
+///     endLabel: "200",
+///     range: 15...200
+/// )
+/// ```
+/// 
+/// The component can be disabled by ``disabled(_:)`` modifier.
+/// 
+/// ### Layout
+/// 
+/// Component expands horizontally.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/interaction/slider/)
 public struct Slider<Value>: View where Value: SliderValue, Value.Stride: BinaryFloatingPoint {
 
-    enum SelectedValue {
+    private enum SelectedValue {
         case single(Binding<Value>?)
         case range(Binding<ClosedRange<Value>>?)
     }
 
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.sizeCategory) private var sizeCategory
 
-    let value: SelectedValue
-    let valueLabel: String
-    let startLabel: String
-    let endLabel: String
-    let range: ClosedRange<Value>
+    private let value: SelectedValue
+    private let valueLabel: String
+    private let startLabel: String
+    private let endLabel: String
+    private let range: ClosedRange<Value>
 
     @State private var isFirstThumbDrag = false
     @State private var isSecondThumbDrag = false
@@ -73,13 +92,13 @@ public struct Slider<Value>: View where Value: SliderValue, Value.Stride: Binary
         .accessibility(hint: .init(accessibilityHint))
     }
 
-    @ViewBuilder var track: some View {
+    @ViewBuilder private var track: some View {
         RoundedRectangle(cornerRadius: lineHeight)
             .fill(.cloudDark)
             .frame(minHeight: lineHeight, maxHeight: lineHeight)
     }
 
-    @ViewBuilder func controls(sliderWidth: CGFloat) -> some View {
+    @ViewBuilder private func controls(sliderWidth: CGFloat) -> some View {
         let thumbDiameter = SliderThumb.circleDiameter * sizeCategory.controlRatio
         let thumbRadius = thumbDiameter / 2
         let thumbTrackWidth = sliderWidth - thumbDiameter
@@ -105,7 +124,7 @@ public struct Slider<Value>: View where Value: SliderValue, Value.Stride: Binary
         }
     }
 
-    @ViewBuilder func firstThumb(atPosition horizontalPosition: CGFloat, width: CGFloat) -> some View {
+    @ViewBuilder private func firstThumb(atPosition horizontalPosition: CGFloat, width: CGFloat) -> some View {
         thumb(
             horizontalPosition: horizontalPosition,
             width: width,
@@ -116,7 +135,7 @@ public struct Slider<Value>: View where Value: SliderValue, Value.Stride: Binary
         .zIndex(isFirstThumbDrag ? 1 : 0)
     }
 
-    @ViewBuilder func secondThumb(atPosition horizontalPosition: CGFloat, width: CGFloat) -> some View {
+    @ViewBuilder private func secondThumb(atPosition horizontalPosition: CGFloat, width: CGFloat) -> some View {
         thumb(
             horizontalPosition: horizontalPosition,
             width: width,
@@ -127,7 +146,7 @@ public struct Slider<Value>: View where Value: SliderValue, Value.Stride: Binary
         .zIndex(isSecondThumbDrag ? 1 : 0)
     }
 
-    @ViewBuilder func thumb(
+    @ViewBuilder private func thumb(
         horizontalPosition: CGFloat,
         width: CGFloat,
         isDragging: Binding<Bool>,
@@ -171,7 +190,7 @@ public struct Slider<Value>: View where Value: SliderValue, Value.Stride: Binary
             )
     }
 
-    @ViewBuilder func strokedPath(from: CGFloat, to: CGFloat) -> some View {
+    @ViewBuilder private func strokedPath(from: CGFloat, to: CGFloat) -> some View {
         Path { path in
             path.move(to: .init(x: from, y: lineCenter))
             path.addLine(to: .init(x: to, y: lineCenter))
@@ -215,7 +234,7 @@ public struct Slider<Value>: View where Value: SliderValue, Value.Stride: Binary
 // MARK: - Inits
 public extension Slider {
 
-    /// Creates Orbit Slider component.
+    /// Creates Orbit ``Slider`` component.
     init(
         value: Binding<Value>,
         valueLabel: String = "",
@@ -239,7 +258,7 @@ public extension Slider {
         self.buckets = range.chunked(into: step ?? Value.Stride(range.upperBound - range.lowerBound))
     }
 
-    /// Creates Orbit ranged Slider component.
+    /// Creates Orbit ``Slider`` component with a binding to a closed range value.
     init(
         valueRange: Binding<ClosedRange<Value>>,
         valueLabel: String = "",

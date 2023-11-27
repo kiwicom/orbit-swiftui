@@ -1,9 +1,9 @@
 import Combine
 import SwiftUI
 
-/// Serial queue for Orbit Toast component.
+/// Serial queue for Orbit ``Toast`` component.
 ///
-/// Allows adding new Toasts and dismissing or pausing the currently displayed Toast.
+/// Allows adding new messages and dismissing or pausing the currently displayed message in a ``Toast``.
 public final class ToastQueue: ObservableObject {
 
     public static let toastsBufferSize = 5
@@ -18,7 +18,7 @@ public final class ToastQueue: ObservableObject {
         case dismiss
     }
     
-    /// View model for Orbit Toast component.
+    /// View model for Orbit ``Toast`` component.
     public struct Toast: Identifiable {
         public let id: UUID
         let description: String
@@ -48,6 +48,7 @@ public final class ToastQueue: ObservableObject {
     private var toastsSubject = PassthroughSubject<Toast, Never>()
     private var currentToastActionSubject: CurrentValueSubject<ToastAction, Never>?
 
+    /// Creates Orbit ``ToastQueue``.
     public init() {
         cancellable = toastsSubject
             .buffer(size: Self.toastsBufferSize, prefetch: .keepFull, whenFull: .dropOldest)

@@ -1,10 +1,8 @@
 import SwiftUI
 
-/// Consistent spacing makes an interface more clear and easy to scan.
+/// Predefined Orbit spacing to help making interface clear and easy to scan.
 ///
-/// Our spacing is based on a 4-pixel grid.
-///
-/// - Note: [Orbit definition](https://orbit.kiwi/foundation/spacing/)
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/foundation/spacing/)
 public enum Spacing: CGFloat {
     /// 2 pts.
     case xxxSmall = 2
@@ -29,24 +27,24 @@ public enum Spacing: CGFloat {
 }
 
 public extension CGFloat {
-    /// 2 pts
+    /// Orbit 2 pts spacing.
     static let xxxSmall = Spacing.xxxSmall.rawValue
-    /// 4 pts.
+    /// Orbit 4 pts spacing.
     static let xxSmall = Spacing.xxSmall.rawValue
-    /// 8 pts.
+    /// Orbit 8 pts spacing.
     static let xSmall = Spacing.xSmall.rawValue
-    /// 12 pts.
+    /// Orbit 12 pts spacing.
     static let small = Spacing.small.rawValue
-    /// 16 pts.
+    /// Orbit 16 pts spacing.
     static let medium = Spacing.medium.rawValue
-    /// 20 pts.
+    /// Orbit 20 pts spacing.
     static let xMedium = Spacing.xMedium.rawValue
-    /// 24 pts.
+    /// Orbit 24 pts spacing.
     static let large = Spacing.large.rawValue
-    /// 32 pts.
+    /// Orbit 32 pts spacing.
     static let xLarge = Spacing.xLarge.rawValue
-    /// 44 pts.
+    /// Orbit 44 pts spacing.
     static let xxLarge = Spacing.xxLarge.rawValue
-    /// 60 pts.
+    /// Orbit 60 pts spacing.
     static let xxxLarge = Spacing.xxxLarge.rawValue
 }

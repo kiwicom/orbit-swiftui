@@ -1,25 +1,78 @@
 import SwiftUI
 
-/// Shows one of a selectable list of items with similar structures.
+/// Orbit input component that displays a selectable row as a choice in a group of similar items.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/listchoice/)
-/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
+/// A ``ListChoice`` consists of a title, description, icon, disclosure and content.
+///
+/// ```swift
+/// ListChoice("Profile", icon: .user) {
+///     // Tap action
+/// } content: {
+///     // Content
+/// }
+/// ``` 
+/// 
+/// A secondary header content can be provided using `String` value:
+/// 
+/// ```swift
+/// ListChoice(title, description: description, value: value) {
+///     // Tap action
+/// }
+/// ```   
+/// 
+/// or using a custom content:
+/// 
+/// ```swift
+/// ListChoice(title, description: description, icon: .user) {
+///     // Tap action
+/// } content: {
+///     // Custom content
+/// } header: {
+///     // Header trailing content
+/// }
+/// ```  
+///
+/// ### Customizing appearance
+///
+/// The title and icon colors can be modified by ``textColor(_:)`` and ``iconColor(_:)`` modifiers.
+/// The icon size can be modified by ``iconSize(custom:)`` modifier.
+/// 
+/// The default background can be overridden by ``backgroundStyle(_:)-9odue`` modifier.
+/// 
+/// A ``Status`` can be modified by ``status(_:)`` modifier:
+///
+/// ```swift
+/// ListChoice("Not available") {
+///     // Action
+/// }
+/// .status(.critical)
+/// ```
+///
+/// Before the action is triggered, a haptic feedback is fired via ``HapticsProvider/sendHapticFeedback(_:)``.
+///
+/// ### Layout
+///
+/// Component expands horizontally unless prevented by the native `fixedSize()` or ``idealSize()`` modifier.
+///
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/listchoice/)
 public struct ListChoice<Header: View, Icon: View, Content: View>: View, PotentiallyEmptyView {
 
-    public let verticalPadding: CGFloat = .small // = 45 height @ normal size
+    private let verticalPadding: CGFloat = .small // = 45 height @ normal size
 
     @Environment(\.idealSize) private var idealSize
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    let title: String
-    let description: String
-    let value: String
-    let disclosure: ListChoiceDisclosure
-    let showSeparator: Bool
-    let action: () -> Void
-    @ViewBuilder let content: Content
-    @ViewBuilder let icon: Icon
-    @ViewBuilder let header: Header
+    private let title: String
+    private let description: String
+    private let value: String
+    private let disclosure: ListChoiceDisclosure
+    private let showSeparator: Bool
+    private let action: () -> Void
+    @ViewBuilder private let content: Content
+    @ViewBuilder private let icon: Icon
+    @ViewBuilder private let header: Header
 
     public var body: some View {
         if isEmpty == false {
@@ -45,7 +98,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
         }
     }
 
-    @ViewBuilder var buttonContent: some View {
+    @ViewBuilder private var buttonContent: some View {
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
                 headerRow
@@ -64,7 +117,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
     }
     
-    @ViewBuilder var headerRow: some View {
+    @ViewBuilder private var headerRow: some View {
         if isHeaderEmpty == false || (header is EmptyView) == false {
             HStack(spacing: 0) {
                 headerTexts
@@ -82,7 +135,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
         }
     }
     
-    @ViewBuilder var headerTexts: some View {
+    @ViewBuilder private var headerTexts: some View {
         if isHeaderEmpty == false {
             HStack(alignment: .top, spacing: .xSmall) {
                 icon
@@ -107,7 +160,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
         }
     }
 
-    @ViewBuilder var disclosureView: some View {
+    @ViewBuilder private var disclosureView: some View {
         switch disclosure {
             case .none:
                 EmptyView()
@@ -129,7 +182,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
         }
     }
     
-    @ViewBuilder func disclosureButton(type: ListChoiceDisclosure.ButtonType) -> some View {
+    @ViewBuilder private func disclosureButton(type: ListChoiceDisclosure.ButtonType) -> some View {
         Button(type: type == .add ? .primarySubtle : .criticalSubtle) {
             // No action
         } icon: {
@@ -142,7 +195,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
         .idealSize()
     }
 
-    @ViewBuilder var separator: some View {
+    @ViewBuilder private var separator: some View {
         if showSeparator {
             Separator()
         }
@@ -152,15 +205,15 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
         isHeaderEmpty && header.isEmpty && content.isEmpty && disclosure == .none
     }
 
-    var isHeaderEmpty: Bool {
+    private var isHeaderEmpty: Bool {
         icon.isEmpty && isHeaderTextEmpty
     }
 
-    var isHeaderTextEmpty: Bool {
+    private var isHeaderTextEmpty: Bool {
         title.isEmpty && description.isEmpty
     }
     
-    var accessibilityTraitsToAdd: AccessibilityTraits {
+    private var accessibilityTraitsToAdd: AccessibilityTraits {
         switch disclosure {
             case .none, .disclosure, .button(.add), .buttonLink, .checkbox(false, _), .radio(false, _), .icon:
                 return []
@@ -168,9 +221,13 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
                 return .isSelected
         }
     }
+}
 
-    /// Creates Orbit ListChoice component with custom content.
-    public init(
+// MARK: - Inits
+public extension ListChoice {
+
+    /// Creates Orbit ``ListChoice`` component with custom content.
+    init(
         _ title: String = "",
         description: String = "",
         value: String = "",
@@ -191,12 +248,8 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
         self.icon = icon()
         self.header = header()
     }
-}
-
-// MARK: - Inits
-public extension ListChoice {
-
-    /// Creates Orbit ListChoice component.
+    
+    /// Creates Orbit ``ListChoice`` component.
     init(
         _ title: String = "",
         description: String = "",
@@ -226,7 +279,7 @@ public extension ListChoice {
 
 public extension ListChoice where Header == Text {
 
-    /// Creates Orbit ListChoice component with text header value.
+    /// Creates Orbit ``ListChoice`` component with a text value as a header.
     init(
         _ title: String = "",
         description: String = "",
@@ -258,8 +311,10 @@ public extension ListChoice where Header == Text {
 
 // MARK: - Types
 
+/// Disclosure used in Orbit ``ListChoice``.
 public enum ListChoiceDisclosure: Equatable {
 
+    /// Orbit ``ListChoiceDisclosure`` button type.
     public enum ButtonType {
         case add
         case remove

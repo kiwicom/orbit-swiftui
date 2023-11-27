@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Button style for Orbit ``Button`` component.
+/// Button style for Orbit primary ``Button`` component.
 /// 
 /// The style can be further customized by using Orbit environment modifiers.
 public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: PrimitiveButtonStyle {
@@ -31,7 +31,7 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
         .backgroundStyle(backgroundShape?.inactive ?? background, active: backgroundShape?.active ?? backgroundActive)
     }
     
-    var background: Color {
+    private var background: Color {
         switch type {
             case .primary:                      return .productNormal
             case .primarySubtle:                return .productLight
@@ -43,7 +43,7 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
         }
     }
 
-    var backgroundActive: Color {
+    private var backgroundActive: Color {
         switch type {
             case .primary:                      return .productNormalActive
             case .primarySubtle:                return .productLightActive
@@ -55,7 +55,7 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
         }
     }
 
-    var labelColor: Color {
+    private var labelColor: Color {
         switch type {
             case .primary:                      return .whiteNormal
             case .primarySubtle:                return .productDark
@@ -67,18 +67,18 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
         }
     }
 
-    var resolvedStatus: Status {
+    private var resolvedStatus: Status {
         switch type {
             case .status(let status, _):    return status ?? self.status ?? .info
             default:                        return .info
         }
     }
 
-    var resolvedButtonSize: ButtonSize {
+    private var resolvedButtonSize: ButtonSize {
         buttonSize ?? .regular
     }
 
-    var hapticFeedback: HapticsProvider.HapticFeedbackType {
+    private var hapticFeedback: HapticsProvider.HapticFeedbackType {
         switch type {
             case .primary:                                  return .light(1)
             case .primarySubtle, .secondary:                return .light(0.5)
@@ -87,14 +87,14 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
         }
     }
 
-    var textSize: Text.Size {
+    private var textSize: Text.Size {
         switch resolvedButtonSize {
             case .regular:      return .normal
             case .compact:      return .small
         }
     }
 
-    var padding: CGFloat {
+    private var padding: CGFloat {
         switch resolvedButtonSize {
             case .regular:      return .small   // = 44 height @ normal size
             case .compact:      return .xSmall  // = 32 height @ normal size

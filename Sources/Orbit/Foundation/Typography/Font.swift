@@ -7,10 +7,10 @@ public extension Font {
 
     static let orbitIconFontName = "orbit-icons"
 
-    /// Default ratio between font size and desired line height, used for calculating custom text sizes.
+    /// Default ratio between Orbit font size and desired line height, used for calculating custom text sizes.
     static var fontSizeToLineHeightRatio: CGFloat = 1.3333
     
-    /// Fonts used for rendering text in Orbit.
+    /// Default Orbit fonts used for rendering text.
     static var orbitFonts: [Font.Weight: URL?] = [
         .ultraLight:    Bundle.orbit.url(forResource: "Circular20-Book", withExtension: "otf"),
         .thin:          Bundle.orbit.url(forResource: "Circular20-Book", withExtension: "otf"),
@@ -117,7 +117,7 @@ public extension ContentSizeCategory {
         }
     }
 
-    /// Effective size ratio for controls, based on font size ratio.
+    /// Effective size ratio for Orbit controls, based on font size ratio.
     /// The ratio is smaller than font size ratio and should be used for components or indicators that are already large enough.
     var controlRatio: CGFloat {
         1 + (ratio - 1) * 0.5

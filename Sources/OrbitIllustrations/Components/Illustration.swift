@@ -1,10 +1,21 @@
 import SwiftUI
 import Orbit
 
-/// An illustration matching Orbit name.
+/// Orbit component that displays an illustration.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/illustration/)
-/// - Important: The component expands horizontally to infinity in case of `frame` layout, unless prevented by `idealSize` modifier.
+/// An ``Illustration`` is created using Orbit or custom resource.
+///
+/// ```swift
+/// Illustration(.womanWithPhone)
+/// Illustration("my-illustration", layout: .resizeable)
+///     .frame(height: 50)
+/// ```
+///
+/// ### Layout
+/// 
+/// The component expands horizontally to infinity in case of the default `frame` layout, unless prevented by `idealSize` modifier. A `resizeable` layout makes the illustration size to fit to desired size.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/illustration/)
 public struct Illustration: View {
 
     @Environment(\.idealSize) var idealSize

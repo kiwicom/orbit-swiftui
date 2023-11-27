@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Orbit wrapper around form fields. Provides optional label and message.
+/// Orbit support component that orovides label and message around input field.
 public struct FieldWrapper<Label: View, Content: View, Footer: View>: View {
 
     @Binding private var messageHeight: CGFloat
@@ -35,9 +35,9 @@ public struct FieldWrapper<Label: View, Content: View, Footer: View>: View {
 // MARK: - Inits
 public extension FieldWrapper {
 
-    /// Creates Orbit wrapper around form field content with a custom label and an additional message content.
+    /// Creates Orbit ``FieldWrapper`` around form field content with a custom label and an additional message content.
     ///
-    /// `FieldLabel` is a default component for constructing custom label.
+    /// ``FieldLabel`` is a default component for constructing custom label.
     init(
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
@@ -55,7 +55,7 @@ public extension FieldWrapper {
 
 public extension FieldWrapper where Label == FieldLabel {
 
-    /// Creates Orbit wrapper around form field content with an additional message content.
+    /// Creates Orbit ``FieldWrapper`` around form field content with an additional message content.
     init(
         _ label: String,
         message: Message? = nil,

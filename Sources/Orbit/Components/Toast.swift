@@ -1,13 +1,33 @@
 import Combine
 import SwiftUI
 
-/// Toast shows a brief message that’s clear & understandable.
+/// Orbit component that shows a brief overlay message on top of the content.
+/// 
+/// Each displayed ``ToastWrapper`` (an interactive wrapper over ``ToastContent``) can be dismissed by a gesture.
+/// 
+/// A ``Toast`` queue is managed by a ``ToastQueue`` that resolves what message will be displayed at which time:
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/information/toast/)
-/// - Important: Component expands horizontally to infinity.
+/// ```swift
+/// @State var toastQueue = ToastQueue()
+/// 
+/// var body: some View {
+///     VStack {
+///         // content over which to display Toasts
+///     }
+///     .overlay(alignment: .top) {
+///         Toast(toastQueue: toastQueue)
+///     }
+/// }
+/// ```
+/// 
+/// ### Layout
+///
+/// Component expands horizontally unless prevented by the native `fixedSize()` modifier.
+/// 
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/information/toast/)
 public struct Toast: View {
     
-    @ObservedObject var toastQueue: ToastQueue
+    @ObservedObject private var toastQueue: ToastQueue
 
     public var body: some View {
         if let toast = toastQueue.toast {
@@ -25,40 +45,21 @@ public struct Toast: View {
         }
     }
     
-    /// Creates Orbit Toast component with queue management and gesture handling.
-    ///
-    /// Apply ``Toast`` as a `.top` overlay to an existing view.
-    /// Provide an instance of ``ToastQueue``, which manages a queue of toasts.
-    ///
-    /// The following example shows a ``Toast`` applied to a view:
-    ///
-    ///    ```swift
-    ///    let toastQueue = ToastQueue()
-    ///
-    ///    var body: some View {
-    ///        VStack {
-    ///            // content over which to display Toasts
-    ///        }
-    ///        .overlay(Toast(toastQueue: toastQueue), alignment: .top)
-    ///    }
-    ///    ```
-    /// Alternatively:
-    /// - ``ToastWrapper`` can be used when gesture handling is needed, but no queue management.
-    /// - ``ToastContent`` when neither gesture handling or queue management is needed.
+    /// Creates Orbit ``Toast`` component.
     public init(toastQueue: ToastQueue) {
         self.toastQueue = toastQueue
     }
 }
 
-/// Variant of Orbit `Toast` component with no gesture handling or queue management.
+/// Orbit ``Toast`` with no gesture handling or queue management.
 public struct ToastContent: View {
 
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.textColor) private var textColor
 
-    let description: String
-    let icon: Icon.Symbol?
-    let progress: CGFloat
+    private let description: String
+    private let icon: Icon.Symbol?
+    private let progress: CGFloat
     
     public var body: some View {
         HStack(alignment: .top, spacing: .xSmall) {
@@ -72,14 +73,14 @@ public struct ToastContent: View {
         .background(background)
     }
     
-    @ViewBuilder var background: some View {
+    @ViewBuilder private var background: some View {
         backgroundColor
             .overlay(progressIndicator, alignment: .leading)
             .clipShape(shape)
             .elevation(.level3, shape: .roundedRectangle())
     }
     
-    @ViewBuilder var progressIndicator: some View {
+    @ViewBuilder private var progressIndicator: some View {
         GeometryReader { geometry in
             progressColor
                 .opacity(max(0, progress * 2 - 0.5) * 0.3)
@@ -89,23 +90,23 @@ public struct ToastContent: View {
         }
     }
 
-    var foregroundColor: Color {
+    private var foregroundColor: Color {
         colorScheme == .light ? .whiteNormal : .inkDark
     }
 
-    var backgroundColor: Color {
+    private var backgroundColor: Color {
         colorScheme == .light ? .inkDark : .whiteDarker
     }
 
-    var progressColor: Color {
+    private var progressColor: Color {
         colorScheme == .light ? .inkNormal : .cloudNormal
     }
     
-    var shape: some Shape {
+    private var shape: some Shape {
         RoundedRectangle(cornerRadius: BorderRadius.default, style: .continuous)
     }
     
-    /// Creates Orbit `Toast` component variant with no gesture handling or queue management.
+    /// Creates Orbit ``ToastContent`` component with no gesture handling or queue management.
     public init(_ description: String, icon: Icon.Symbol? = nil, progress: CGFloat = 0) {
         self.description = description
         self.icon = icon
@@ -113,7 +114,7 @@ public struct ToastContent: View {
     }
 }
 
-/// Variant of Orbit `Toast` component with gesture handling, but no queue management.
+/// Orbit ``ToastWrapper`` component with gesture handling, but no queue management.
 public struct ToastWrapper: View {
     
     static let minOffsetY: CGFloat = -10
@@ -121,12 +122,12 @@ public struct ToastWrapper: View {
 
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
     
-    let description: String
-    let icon: Icon.Symbol?
-    let progress: CGFloat
-    let pauseAction: () -> Void
-    let resumeAction: () -> Void
-    let dismissAction: () -> Void
+    private let description: String
+    private let icon: Icon.Symbol?
+    private let progress: CGFloat
+    private let pauseAction: () -> Void
+    private let resumeAction: () -> Void
+    private let dismissAction: () -> Void
     
     @State private var offsetY: CGFloat = 0
     @State private var gaveFeedback: Bool = false
@@ -155,23 +156,37 @@ public struct ToastWrapper: View {
             )
     }
     
-    var isOffsetDismiss: Bool {
+    private var isOffsetDismiss: Bool {
         offsetY < Self.minOffsetY
     }
     
-    var dismissProgress: CGFloat {
+    private var dismissProgress: CGFloat {
         min(0, cappedOffsetY) / Self.minOffsetY
     }
     
-    var opacity: CGFloat {
+    private var opacity: CGFloat {
         return 1 - dismissProgress * 0.2
     }
     
-    var cappedOffsetY: CGFloat {
+    private var cappedOffsetY: CGFloat {
         min(Self.maxOffsetY, offsetY)
     }
-    
-    /// Creates Orbit `Toast` component variant with gesture handling.
+
+    private func processDragChanged() {
+        if dismissProgress >= 1, gaveFeedback == false {
+            if isHapticsEnabled {
+                HapticsProvider.sendHapticFeedback(.notification(.warning))
+            }
+            
+            gaveFeedback = true
+        }
+        
+        if dismissProgress == 0 {
+            gaveFeedback = false
+        }
+    }
+
+    /// Creates Orbit ``ToastWrapper`` component.
     public init(
         _ description: String,
         icon: Icon.Symbol? = nil,
@@ -188,19 +203,6 @@ public struct ToastWrapper: View {
         self.dismissAction = dismissAction
     }
     
-    private func processDragChanged() {
-        if dismissProgress >= 1, gaveFeedback == false {
-            if isHapticsEnabled {
-                HapticsProvider.sendHapticFeedback(.notification(.warning))
-            }
-            
-            gaveFeedback = true
-        }
-        
-        if dismissProgress == 0 {
-            gaveFeedback = false
-        }
-    }
 }
 
 // MARK: - Previews

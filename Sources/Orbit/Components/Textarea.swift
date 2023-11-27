@@ -1,9 +1,10 @@
 import SwiftUI
 import UIKit
 
-/// Orbit component that offers multiline text input. The component is an equivalent of the native `TextField` component with vertical axis specified.
+/// Orbit input component that offers multiline text input. 
+/// A counterpart of the native `SwiftUI.TextField` component with `vertical` axis specified.
 ///
-/// The Textarea is created with an optional label and a binding to a string value.
+/// The ``Textarea`` is created with an optional label and a binding to a string value.
 /// 
 /// ```swift
 /// Textarea("Label", value: $text, prompt: "Description")
@@ -18,7 +19,7 @@ import UIKit
 ///
 /// ### Layout
 ///
-/// The component expands horizontally and vertically, unless limited by a `frame` modifier.
+/// The component expands horizontally and vertically. It would be typically further constrained by a `frame` modifier in vertical axis.
 /// 
 /// - Note: [Orbit definition](https://orbit.kiwi/components/input/textarea/)
 public struct Textarea: View, TextFieldBuildable {
@@ -54,7 +55,7 @@ public struct Textarea: View, TextFieldBuildable {
         }
     }
     
-    @ViewBuilder var textView: some View {
+    @ViewBuilder private var textView: some View {
         TextView(
             value: $value, 
             prompt: prompt, 

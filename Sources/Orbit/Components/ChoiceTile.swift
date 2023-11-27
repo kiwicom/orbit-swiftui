@@ -1,9 +1,50 @@
 import SwiftUI
 
-/// Enables users to encapsulate radio or checkbox to pick exactly one option from a group.
+/// Orbit input component that displays a rich selectable option to pick from a single or multiple selection group.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/choice-tile/)
-/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
+/// A ``ChoiceTile`` consists of a title, description, icon, content and a selection indicator.
+///
+/// ```swift
+/// ChoiceTile("Full", isSelected: $isFull) {
+///     // Tap action
+/// } content: {
+///     // Content
+/// }
+/// ```
+///
+/// ### Customizing appearance
+///
+/// The title and icon colors can be modified by ``textColor(_:)`` and ``iconColor(_:)`` modifiers.
+/// The icon size can be modified by ``iconSize(custom:)`` modifier.
+/// 
+/// The default background can be overridden by ``backgroundStyle(_:)-9odue`` modifier.
+/// 
+/// ```swift
+/// ChoiceTile("Full", icon: .informationCircle, isSelected: $isFull) {
+///     // Tap action
+/// }
+/// .textColor(.blueDark)
+/// .iconColor(.inkNormal)
+/// .iconSize(.small)
+/// .backgroundStyle(.cloudLight)
+/// ```
+/// 
+/// A ``Status`` can be modified by ``status(_:)`` modifier:
+///
+/// ```swift
+/// ChoiceTile("Not available") {
+///     // Tap action
+/// }
+/// .status(.critical)
+/// ```
+///
+/// Before the action is triggered, a haptic feedback is fired via ``HapticsProvider/sendHapticFeedback(_:)``.
+///
+/// ### Layout
+///
+/// Component expands horizontally unless prevented by the native `fixedSize()` or ``idealSize()`` modifier.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/choice-tile/)
 public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: View>: View {
 
     @Environment(\.backgroundShape) private var backgroundShape
@@ -11,22 +52,20 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: 
     @Environment(\.status) private var status
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    public let padding: CGFloat = .small
-
-    let title: String
-    let description: String
-    let badgeOverlay: String
-    let indicator: ChoiceTileIndicator
-    let titleStyle: Heading.Style
-    let isSelected: Bool
-    let isError: Bool
-    let message: Message?
-    let alignment: ChoiceTileAlignment
-    let action: () -> Void
-    @ViewBuilder let content: Content
-    @ViewBuilder let icon: Icon
-    @ViewBuilder let header: Header
-    @ViewBuilder let illustration: Illustration
+    private let title: String
+    private let description: String
+    private let badgeOverlay: String
+    private let indicator: ChoiceTileIndicator
+    private let titleStyle: Heading.Style
+    private let isSelected: Bool
+    private let isError: Bool
+    private let message: Message?
+    private let alignment: ChoiceTileAlignment
+    private let action: () -> Void
+    @ViewBuilder private let content: Content
+    @ViewBuilder private let icon: Icon
+    @ViewBuilder private let header: Header
+    @ViewBuilder private let illustration: Illustration
 
     public var body: some View {
         SwiftUI.Button {
@@ -37,7 +76,7 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: 
             action()
         } label: {
             HStack(spacing: 0) {
-                VStack(alignment: contentAlignment, spacing: padding) {
+                VStack(alignment: contentAlignment, spacing: .small) {
                     headerRow
                     content
                     messageView
@@ -49,7 +88,7 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: 
             }
             .frame(maxWidth: idealSize.horizontal == true ? nil: .infinity, alignment: .leading)
             .overlay(indicatorOverlay, alignment: indicatorAlignment)
-            .padding(padding)
+            .padding(.small)
         }
         .buttonStyle(
             TileButtonStyle(isSelected: isSelected)
@@ -64,7 +103,7 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: 
         .accessibility(addTraits: isSelected ? .isSelected : [])
     }
     
-    @ViewBuilder var headerRow: some View {
+    @ViewBuilder private var headerRow: some View {
         if isHeaderContentEmpty == false {
             switch alignment {
                 case .default:
@@ -118,7 +157,7 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: 
         }
     }
 
-    @ViewBuilder var iconView: some View {
+    @ViewBuilder private var iconView: some View {
         icon
             .iconSize(custom: titleStyle.lineHeight)
             .font(.system(size: Orbit.Icon.Size.fromTextSize(size: titleStyle.size)))
@@ -126,38 +165,38 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: 
             .accessibility(.choiceTileIcon)
     }
     
-    @ViewBuilder var messageView: some View {
+    @ViewBuilder private var messageView: some View {
         FieldMessage(message, spacing: .xSmall)
             .padding(.trailing, indicatorTrailingPadding)
     }
 
-    @ViewBuilder var centerIndicator: some View {
+    @ViewBuilder private var centerIndicator: some View {
         if alignment == .center {
             indicatorContent
         }
     }
 
-    @ViewBuilder var indicatorOverlay: some View {
+    @ViewBuilder private var indicatorOverlay: some View {
         if alignment == .default {
             indicatorContent
         }
     }
 
-    @ViewBuilder var badgeOverlayView: some View {
+    @ViewBuilder private var badgeOverlayView: some View {
         Badge(badgeOverlay, type: .status(isError && isSelected ? .critical : .info, inverted: true))
             .alignmentGuide(.top) { dimensions in
                 dimensions.height / 2
             }
     }
 
-    @ViewBuilder var indicatorContent: some View {
+    @ViewBuilder private var indicatorContent: some View {
         indicatorElement
             .allowsHitTesting(false)
             .padding(.xxxSmall)
             .padding(.bottom, indicatorContentBottomPadding)
     }
 
-    @ViewBuilder var indicatorElement: some View {
+    @ViewBuilder private var indicatorElement: some View {
         switch indicator {
             case .none:         EmptyView()
             case .radio:        Radio(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: .constant(shouldSelectIndicator))
@@ -165,37 +204,37 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: 
         }
     }
 
-    var isHeaderContentEmpty: Bool {
+    private var isHeaderContentEmpty: Bool {
         title.isEmpty && description.isEmpty && icon.isEmpty && header is EmptyView
     }
 
-    var shouldSelectIndicator: Bool {
+    private var shouldSelectIndicator: Bool {
         isSelected && isError == false
     }
 
-    var errorShouldHighlightIndicator: Bool {
+    private var errorShouldHighlightIndicator: Bool {
         isError && isSelected == false
     }
 
-    var errorShouldHighlightBorder: Bool {
+    private var errorShouldHighlightBorder: Bool {
         isError && isSelected
     }
 
-    var contentAlignment: HorizontalAlignment {
+    private var contentAlignment: HorizontalAlignment {
         switch alignment {
             case .default:      return .leading
             case .center:       return .center
         }
     }
 
-    var indicatorAlignment: Alignment {
+    private var indicatorAlignment: Alignment {
         switch alignment {
             case .default:      return .bottomTrailing
             case .center:       return .bottom
         }
     }
     
-    var indicatorSize: CGFloat {
+    private var indicatorSize: CGFloat {
         switch indicator {
             case .none:             return 0
             case .radio:            return RadioButtonStyle.size
@@ -203,23 +242,23 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: 
         }
     }
     
-    var indicatorTrailingPadding: CGFloat {
+    private var indicatorTrailingPadding: CGFloat {
         isHeaderOnlyContent
-            ? (indicatorSize + padding + .xxSmall)
+            ? (indicatorSize + .medium)
             : 0
     }
 
-    var indicatorContentBottomPadding: CGFloat {
+    private var indicatorContentBottomPadding: CGFloat {
         isHeaderOnlyContent
             ? .xxxSmall
             : 0
     }
 
-    var isHeaderOnlyContent: Bool {
+    private var isHeaderOnlyContent: Bool {
         alignment == .default && content is EmptyView && message == nil
     }
 
-    var messageDescription: String {
+    private var messageDescription: String {
         message?.description ?? ""
     }
 }
@@ -227,7 +266,7 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: 
 // MARK: - Inits
 public extension ChoiceTile {
 
-    /// Creates Orbit ChoiceTile component.
+    /// Creates Orbit ``ChoiceTile`` component.
     ///
     /// - Parameters:
     ///   - content: The content shown below the header.
@@ -264,7 +303,7 @@ public extension ChoiceTile {
         self.illustration = illustration()
     }
 
-    /// Creates Orbit ChoiceTile component.
+    /// Creates Orbit ``ChoiceTile`` component.
     ///
     /// - Parameters:
     ///   - content: The content shown below the header.
@@ -311,9 +350,10 @@ public extension ChoiceTile {
 
 // MARK: - Types
 
-/// An indicator used for Orbit ChoiceTile.
+/// Indicator used for Orbit ``ChoiceTile``.
 public enum ChoiceTileIndicator {
 
+    /// Alignment used for Orbit ``ChoiceTileIndicator``.
     public enum Alignment {
         case bottomTrailing
         case bottom
@@ -324,7 +364,7 @@ public enum ChoiceTileIndicator {
     case checkbox
 }
 
-/// Alignment variant of Orbit ChoiceTile.
+/// Alignment variant of Orbit ``ChoiceTile``.
 public enum ChoiceTileAlignment {
     case `default`
     case center

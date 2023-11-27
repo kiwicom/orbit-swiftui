@@ -7,7 +7,7 @@ public struct CheckboxButtonStyle: ButtonStyle {
 
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.isEnabled) private var isEnabled
-    @Environment(\.textColor) var textColor
+    @Environment(\.textColor) private var textColor
 
     private let state: Checkbox.State
     private let isChecked: Bool
@@ -20,7 +20,7 @@ public struct CheckboxButtonStyle: ButtonStyle {
         .accessibility(addTraits: isChecked ? .isSelected : [])
     }
 
-    func indicator(isPressed: Bool) -> some View {
+    private func indicator(isPressed: Bool) -> some View {
         shape
             .strokeBorder(indicatorStrokeColor(isPressed: isPressed), lineWidth: indicatorStrokeWidth)
             .background(
@@ -50,11 +50,11 @@ public struct CheckboxButtonStyle: ButtonStyle {
             }
     }
 
-    var shape: some InsettableShape {
+    private var shape: some InsettableShape {
         RoundedRectangle(cornerRadius: BorderRadius.default * sizeCategory.controlRatio, style: .continuous)
     }
 
-    func indicatorStrokeColor(isPressed: Bool) -> some ShapeStyle {
+    private func indicatorStrokeColor(isPressed: Bool) -> some ShapeStyle {
         switch (isEnabled, isChecked, isPressed) {
             case (true, true, false):       return .blueNormal
             case (true, true, true):        return .blueLightActive
@@ -62,7 +62,7 @@ public struct CheckboxButtonStyle: ButtonStyle {
         }
     }
 
-    func indicatorBackgroundColor(isPressed: Bool) -> some ShapeStyle {
+    private func indicatorBackgroundColor(isPressed: Bool) -> some ShapeStyle {
         switch (isEnabled, isChecked, isPressed) {
             case (true, true, false):       return .blueNormal
             case (true, true, true):        return .blueLightActive
@@ -72,7 +72,7 @@ public struct CheckboxButtonStyle: ButtonStyle {
         }
     }
 
-    func indicatorOverlayStrokeColor(isPressed: Bool) -> some ShapeStyle {
+    private func indicatorOverlayStrokeColor(isPressed: Bool) -> some ShapeStyle {
         switch (state, isPressed) {
             case (.normal, true):           return .blueNormal
             case (.error, true):            return .redLightActive
@@ -81,31 +81,31 @@ public struct CheckboxButtonStyle: ButtonStyle {
         }
     }
     
-    var labelColor: Color {
+    private var labelColor: Color {
         isEnabled
             ? textColor ?? .inkDark
             : .cloudDarkHover
     }
 
-    var descriptionColor: Color {
+    private var descriptionColor: Color {
         isEnabled
             ? .inkNormal
             : .cloudDarkHover
     }
 
-    var size: CGFloat {
+    private var size: CGFloat {
         Self.size * sizeCategory.controlRatio
     }
 
-    var inset: CGFloat {
+    private var inset: CGFloat {
         0.5 * sizeCategory.controlRatio
     }
 
-    var errorStrokeWidth: CGFloat {
+    private var errorStrokeWidth: CGFloat {
         3 * sizeCategory.controlRatio
     }
 
-    var indicatorStrokeWidth: CGFloat {
+    private var indicatorStrokeWidth: CGFloat {
         2 * sizeCategory.controlRatio
     }
     

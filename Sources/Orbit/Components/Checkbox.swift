@@ -1,20 +1,51 @@
 import SwiftUI
 
-/// Enables users to pick multiple options from a group.
+/// Orbit input component that displays a selectable option to pick from multiple selectable options. 
+/// A counterpart of the native `SwiftUI.Toggle` with `checkbox` style applied.
 ///
-/// Can be also used to display just the checkbox with no label or description.
+/// A ``Checkbox`` consists of a title, description and the checkbox indicator.
+///
+/// ```swift
+/// Checkbox("Free", isChecked: $isFree)
+/// ```
 /// 
-/// - Note: [Orbit definition](https://orbit.kiwi/components/checkbox/)
+/// The component can be disabled by ``disabled(_:)`` modifier:
+/// 
+/// ```swift
+/// Checkbox(isChecked: $isFree)
+///     .disabled()
+/// ```
+///
+/// Before the selection is changed, a haptic feedback is fired via ``HapticsProvider/sendHapticFeedback(_:)``.
+///
+/// ### Customizing appearance
+/// 
+/// The title color can be modified by ``textColor(_:)`` modifier:
+/// 
+/// ```swift
+/// Checkbox("Free", isChecked: $isFree)
+///     .textColor(.blueNormal)
+/// ```
+/// 
+/// ### Layout
+/// 
+/// When the provided textual content is empty, the component results in a standalone control.
+/// 
+/// ```swift
+/// Checkbox(isChecked: $isFree)
+/// ```
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/checkbox/)
 public struct Checkbox: View {
 
-    @Environment(\.isEnabled) var isEnabled
-    @Environment(\.textColor) var textColor
+    @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.textColor) private var textColor
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    let title: String
-    let description: String
-    let state: State
-    @Binding var isChecked: Bool
+    private let title: String
+    private let description: String
+    private let state: State
+    @Binding private var isChecked: Bool
 
     public var body: some View {
         SwiftUI.Button {
@@ -43,13 +74,13 @@ public struct Checkbox: View {
         )
     }
 
-    var labelColor: Color {
+    private var labelColor: Color {
         isEnabled
             ? textColor ?? .inkDark
             : .cloudDarkHover
     }
 
-    var descriptionColor: Color {
+    private var descriptionColor: Color {
         isEnabled
             ? .inkNormal
             : .cloudDarkHover
@@ -59,7 +90,7 @@ public struct Checkbox: View {
 // MARK: - Inits
 public extension Checkbox {
 
-    /// Creates Orbit Checkbox component.
+    /// Creates Orbit ``Checkbox`` component.
     init(
         _ title: String = "",
         description: String = "",
@@ -73,6 +104,7 @@ public extension Checkbox {
 // MARK: - Types
 public extension Checkbox {
     
+    /// A state of Orbit ``Checkbox``.
     enum State {
         case normal
         case error

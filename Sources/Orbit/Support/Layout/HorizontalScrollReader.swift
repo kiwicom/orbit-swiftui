@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// A proxy for Orbit ``HorizontalScrollReader``.
 @available(iOS 14, *)
 public class HorizontalScrollViewProxy: ObservableObject {
 
@@ -10,14 +11,13 @@ public class HorizontalScrollViewProxy: ObservableObject {
     }
 }
 
-/// A view that provides programmatic scrolling of `HorizontalScroll` component,
-/// by working with a proxy to scroll to child views marked by `identifier()`.
+/// Orbit component that provides programmatic scrolling of ``HorizontalScroll`` component,
+/// by working with a ``HorizontalScrollViewProxy`` to scroll to child views marked by Orbit `identifier()` modifier.
 @available(iOS 14, *)
 public struct HorizontalScrollReader<Content: View>: View {
 
-    @ViewBuilder let content: (HorizontalScrollViewProxy) -> Content
-
     @StateObject private var proxy = HorizontalScrollViewProxy()
+    @ViewBuilder private let content: (HorizontalScrollViewProxy) -> Content
 
     public var body: some View {
         content(proxy)
@@ -28,6 +28,7 @@ public struct HorizontalScrollReader<Content: View>: View {
             .environment(\.scrollTarget, proxy.scrollTarget)
     }
 
+    /// Creates Orbit ``HorizontalScrollReader`` component.
     public init(@ViewBuilder content: @escaping (HorizontalScrollViewProxy) -> Content) {
         self.content = content
     }

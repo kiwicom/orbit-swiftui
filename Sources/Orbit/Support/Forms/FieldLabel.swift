@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Orbit label positioned above a form field.
+/// Orbit support component that displays label positioned above a form field.
 public struct FieldLabel: View {
 
     private let label: String
@@ -10,7 +10,7 @@ public struct FieldLabel: View {
             .fontWeight(.medium)
     }
 
-    /// Create Orbit form field label.
+    /// Creates Orbit ``FieldLabel``.
     public init(_ label: String) {
         self.label = label
     }

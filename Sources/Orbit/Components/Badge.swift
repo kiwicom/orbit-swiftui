@@ -1,11 +1,37 @@
 import SwiftUI
 
-/// Presents users with short, relevant information.
+/// Orbit component that displays non-actionable, short and static information.
 ///
-/// Badges are indicators of static information.
-/// They can be updated when a status changes, but they should not be actionable.
+/// A ``Badge`` consists of a title and up to two icons.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/badge/)
+/// ```swift
+/// Badge("Label", icon: .grid, type: .lightInverted)
+/// ```
+///
+/// ### Customizing appearance
+///
+/// The label and icon colors can be modified by ``textColor(_:)`` and ``iconColor(_:)`` modifiers.
+/// The icon size can be modified by ``iconSize(custom:)`` modifier.
+/// 
+/// ```swift
+/// Badge("Label", type: .status(nil))
+///     .textColor(.inkNormal)
+///     .iconColor(.redNormal)
+///     .iconSize(.small)
+/// ```
+///
+/// When type is set to ``BadgeType/status(_:inverted:)`` with a `nil` value, the default ``Status/info`` status can be modified by ``status(_:)`` modifier:
+///
+/// ```swift
+/// Badge("Label", type: .status(nil))
+///     .status(.warning)
+/// ```
+///
+/// ### Layout
+/// 
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/badge/)
 public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmptyView {
 
     @Environment(\.backgroundShape) private var backgroundShape
@@ -47,7 +73,7 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmp
         }
     }
 
-    @ViewBuilder var resolvedBackground: some View {
+    @ViewBuilder private var resolvedBackground: some View {
         if let backgroundShape {
             backgroundShape.inactiveView
         } else {
@@ -55,11 +81,15 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmp
         }
     }
     
-    var resolvedLabelColor: Color {
+    var isEmpty: Bool {
+        leadingIcon.isEmpty && label.isEmpty && trailingIcon.isEmpty
+    }
+    
+    private var resolvedLabelColor: Color {
         textColor ?? labelColor
     }
     
-    var labelColor: Color {
+    private var labelColor: Color {
         switch type {
             case .light:                                return .inkDark
             case .lightInverted:                        return .whiteNormal
@@ -69,7 +99,7 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmp
         }
     }
     
-    var defaultBackgroundColor: Color {
+    private var defaultBackgroundColor: Color {
         switch type {
             case .light:                                return .whiteDarker
             case .lightInverted:                        return .inkDark
@@ -79,15 +109,11 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmp
         }
     }
 
-    var minTextWidth: CGFloat {
+    private var minTextWidth: CGFloat {
         Text.Size.small.lineHeight * sizeCategory.ratio - .xSmall
     }
 
-    var isEmpty: Bool {
-        leadingIcon.isEmpty && label.isEmpty && trailingIcon.isEmpty
-    }
-
-    var defaultStatus: Status {
+    private var defaultStatus: Status {
         status ?? .info
     }
 }
@@ -95,10 +121,7 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmp
 // MARK: - Inits
 public extension Badge {
     
-    /// Creates Orbit Badge component.
-    ///
-    /// - Parameters:
-    ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    /// Creates Orbit ``Badge`` component.
     init(
         _ label: String = "",
         icon: Icon.Symbol? = nil,
@@ -112,10 +135,7 @@ public extension Badge {
         }
     }
 
-    /// Creates Orbit Badge component with custom icons.
-    ///
-    /// - Parameters:
-    ///   - style: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    /// Creates Orbit ``Badge`` component with custom icons.
     init(
         _ label: String = "",
         type: BadgeType = .neutral,
@@ -130,6 +150,8 @@ public extension Badge {
 }
 
 // MARK: - Types
+
+/// A type of Orbit ``Badge`` and ``NotificationBadge``.
 public enum BadgeType {
 
     case light
@@ -137,6 +159,7 @@ public enum BadgeType {
     case neutral
     case status(_ status: Status? = nil, inverted: Bool = false)
 
+    /// An Orbit ``BadgeType`` `status` type with no value provided.
     public static var status: Self {
         .status(nil)
     }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// State of Orbit input.
+/// State of Orbit input components.
 public enum InputState {
 
     case `default`

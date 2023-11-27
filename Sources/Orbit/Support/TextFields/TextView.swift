@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Orbit control that displays a multiline editable text interface, a replacement for the native multiline `TextField` component.
+/// Orbit control that displays a multiline editable text interface, a replacement for the native multiline `SwiftUI.TextField` component.
 ///
 /// The component uses UIKit `UITextView` implementation to support these feature for older iOS versions:
 /// - focus changes

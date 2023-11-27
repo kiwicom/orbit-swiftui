@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Orbit informational message used in forms.
 public enum Message: Equatable, Hashable, CustomStringConvertible {
 
     case normal(String, icon: Icon.Symbol? = nil)

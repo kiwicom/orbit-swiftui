@@ -1,11 +1,51 @@
 import SwiftUI
 
-/// Displays a single, less important action a user can take.
+/// Orbit component that displays a less important control that initiates an action. 
+/// A counterpart of the native `SwiftUI.Button` with `plain` button style.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/buttonlink/)
+/// A ``ButtonLink`` consists of a label and up to two icons.
+///
+/// ```swift
+/// ButtonLink("Edit", icon: .edit) {
+///     // Tap action
+/// }
+/// ```
+///
+/// ### Customizing appearance
+///
+/// The icon color can be modified by ``iconColor(_:)`` modifier.
+/// The icon size can be modified by ``iconSize(custom:)`` modifier.
+/// 
+/// ```swift
+/// ButtonLink("More", icon: .informationCircle) {
+///     // Tap action
+/// }
+/// .iconColor(.blueNormal)
+/// .iconSize(.large)
+/// ```
+/// 
+/// When type is set to ``ButtonLinkType/status(_:)`` with a `nil` value, the default ``Status/info`` status can be modified by ``status(_:)`` modifier:
+///
+/// ```swift
+/// ButtonLink("Delete", type: .status(nil)) {
+///     // Tap action
+/// }
+/// .status(.critical)
+/// ```
+///
+/// Before the action is triggered, a relevant haptic feedback, based on the `ButtonLink` type, is fired via ``HapticsProvider/sendHapticFeedback(_:)``.
+///
+/// ### Layout
+///
+/// Component expands horizontally unless prevented by the native `fixedSize()` or ``idealSize()`` modifier or by specifying the ``ButtonSize/compact`` size.
+/// The default ``ButtonSize/regular`` size can be modified by a ``buttonSize(_:)`` modifier.
+///
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/buttonlink/)
 public struct ButtonLink<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmptyView {
 
-    @Environment(\.suppressButtonStyle) var suppressButtonStyle
+    @Environment(\.suppressButtonStyle) private var suppressButtonStyle
 
     private let label: String
     private let type: ButtonLinkType
@@ -30,7 +70,7 @@ public struct ButtonLink<LeadingIcon: View, TrailingIcon: View>: View, Potential
         }
     }
 
-    @ViewBuilder var button: some View {
+    @ViewBuilder private var button: some View {
         SwiftUI.Button() {
             action()
         } label: {
@@ -46,12 +86,7 @@ public struct ButtonLink<LeadingIcon: View, TrailingIcon: View>: View, Potential
 // MARK: - Inits
 public extension ButtonLink {
 
-    /// Creates Orbit ButtonLink component.
-    ///
-    /// Button size can be specified using `.buttonSize()` modifier.
-    ///
-    /// - Parameters:
-    ///   - type: A visual style of component. A style can be optionally modified using `status()` modifier when `nil` status value is provided.
+    /// Creates Orbit ``ButtonLink`` component.
     init(
         _ label: String = "",
         type: ButtonLinkType = .primary,
@@ -68,12 +103,7 @@ public extension ButtonLink {
         }
     }
 
-    /// Creates Orbit ButtonLink component with custom icons.
-    ///
-    /// Button size can be specified using `.buttonSize()` modifier.
-    ///
-    /// - Parameters:
-    ///   - type: A visual style of component. A style can be optionally modified using `status()` modifier when `nil` status value is provided.
+    /// Creates Orbit ``ButtonLink`` component with custom icons.
     init(
         _ label: String = "",
         type: ButtonLinkType = .primary,
@@ -90,6 +120,8 @@ public extension ButtonLink {
 }
 
 // MARK: - Types
+
+/// A predefined type of Orbit ``ButtonLink``.
 public enum ButtonLinkType: Equatable {
     case primary
     case critical
@@ -113,7 +145,7 @@ struct ButtonLinkPreviews: PreviewProvider {
 
     static var standalone: some View {
         VStack(spacing: 0) {
-            ButtonLink("ButtonLink", action: {})
+            ButtonLink("ButtonLink", icon: .grid, action: {})
                 .buttonSize(.regular)
             ButtonLink("ButtonLink", type: .critical, action: {})
                 .buttonSize(.regular)

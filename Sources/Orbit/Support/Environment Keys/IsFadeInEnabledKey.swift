@@ -6,7 +6,7 @@ struct IsFadeInEnabledKey: EnvironmentKey {
 
 public extension EnvironmentValues {
 
-    /// Indicates whether a fade-in animation is enabled.
+    /// Indicates whether a fade-in animation is enabled in Orbit views.
     var isFadeInEnabled: Bool {
         get { self[IsFadeInEnabledKey.self] }
         set { self[IsFadeInEnabledKey.self] = newValue }

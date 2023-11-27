@@ -6,7 +6,7 @@ struct TextLinkActionKey: EnvironmentKey {
 
 public extension EnvironmentValues {
 
-    /// A `TextLink` action stored in a view’s environment.
+    /// Orbit `TextLink` ``TextLink/Action`` stored in a view’s environment.
     var textLinkAction: TextLink.Action? {
         get { self[TextLinkActionKey.self] }
         set { self[TextLinkActionKey.self] = newValue }
@@ -15,10 +15,10 @@ public extension EnvironmentValues {
 
 public extension View {
 
-    /// Set the `TextLink` action for this view.
+    /// Set the `TextLink` ``TextLink/Action`` for text links found in this view.
     ///
     /// - Parameters:
-    ///   - action: A  handler that is executed when the user taps on any `TextLink` inside the view hierarchy.
+    ///   - action: A  handler that is executed when the user taps on any ``TextLink`` inside the view hierarchy.
     func textLinkAction(_ action: @escaping TextLink.Action) -> some View {
         environment(\.textLinkAction, action)
     }

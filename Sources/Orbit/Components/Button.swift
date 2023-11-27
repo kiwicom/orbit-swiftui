@@ -1,9 +1,50 @@
 import SwiftUI
 
-/// Displays a single important action a user can take.
+/// Orbit component that displays a primary control that initiates an action. 
+/// A counterpart of the native `SwiftUI.Button` with `borderedProminent` button style.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/button/)
-/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
+/// A ``Button`` consists of a label and up to two icons.
+///
+/// ```swift
+/// Button("Continue", icon: .chevronForward) {
+///     // Tap action 
+/// }
+/// ```
+/// 
+/// ### Customizing appearance
+///
+/// The label and icon colors can be modified by ``textColor(_:)`` and ``iconColor(_:)`` modifiers.
+/// The icon size can be modified by ``iconSize(custom:)`` modifier.
+///
+/// ```swift
+/// Button("Continue") {
+///     // Tap action
+/// }
+/// .textColor(.blueLight)
+/// .iconColor(.blueNormal)
+/// .iconSize(.large)
+/// ```
+/// 
+/// When type is set to ``ButtonType/status(_:isSubtle:)`` with a `nil` value, 
+/// the default ``Status/info`` status can be modified by ``status(_:)`` modifier:
+///
+/// ```swift
+/// Button("Delete", type: .status(nil)) {
+///     // Tap action
+/// }
+/// .status(.critical)
+/// ```
+///
+/// Before the action is triggered, a relevant haptic feedback, based on the `Button` type, is fired via ``HapticsProvider/sendHapticFeedback(_:)``.
+///
+/// ### Layout
+///
+/// Component expands horizontally unless prevented by the native `fixedSize()` or ``idealSize()`` modifier.
+/// The default ``ButtonSize/regular`` size can be modified by a ``buttonSize(_:)`` modifier.
+/// 
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/button/)
 public struct Button<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmptyView {
 
     @Environment(\.suppressButtonStyle) private var suppressButtonStyle
@@ -29,7 +70,7 @@ public struct Button<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEm
         }
     }
 
-    @ViewBuilder var button: some View {
+    @ViewBuilder private var button: some View {
         if isEmpty == false {
             SwiftUI.Button() {
                 action()
@@ -47,12 +88,7 @@ public struct Button<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEm
 // MARK: - Inits
 public extension Button {
 
-    /// Creates Orbit Button component.
-    ///
-    /// Button size can be specified using `.buttonSize()` modifier.
-    ///
-    /// - Parameters:
-    ///   - type: A visual style of component. A style can be optionally modified using `status()` modifier when `nil` status value is provided.
+    /// Creates Orbit ``Button`` component.
     init(
         _ label: String = "",
         icon: Icon.Symbol? = nil,
@@ -69,12 +105,7 @@ public extension Button {
         }
     }
 
-    /// Creates Orbit Button component with custom icons.
-    ///
-    /// Button size can be specified using `.buttonSize()` modifier.
-    ///
-    /// - Parameters:
-    ///   - type: A visual style of component. A style can be optionally modified using `status()` modifier when `nil` status value is provided.
+    /// Creates Orbit ``Button`` component with custom icons.
     init(
         _ label: String = "",
         type: ButtonType = .primary,
@@ -92,6 +123,7 @@ public extension Button {
 
 // MARK: - Types
 
+/// A predefined type of Orbit ``Button``.
 public enum ButtonType {
     case primary
     case primarySubtle

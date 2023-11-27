@@ -2,7 +2,7 @@ import SwiftUI
 
 public enum Layout {
 
-    /// Maximum readable width used for layout in regular width environment.
+    /// Maximum readable width used for Orbit layout in regular width environment.
     public static var readableMaxWidth: CGFloat = 672
 }
 

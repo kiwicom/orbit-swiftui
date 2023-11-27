@@ -1,8 +1,18 @@
 import SwiftUI
 
-/// Shows content placeholder before data is loaded.
+/// Orbit component that displays placeholder before data is loaded.
+/// A counterpart of the native `redacted()` modifier.
+/// 
+/// A ``Skeleton`` is defined by a shape that mimics the shape and size of loaded content.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/skeleton/)
+/// ```swift
+/// Skeleton(.button)
+/// Skeleton(.image)
+/// Skeleton(.atomic(.rectangle), animation: animation)
+///     .frame(height: 60)
+/// ```
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/progress-indicators/skeleton/)
 public struct Skeleton: View {
 
     public static let color: Color = .cloudNormal
@@ -26,7 +36,7 @@ public struct Skeleton: View {
             }
     }
 
-    @ViewBuilder var content: some View {
+    @ViewBuilder private var content: some View {
         switch preset {
             case .atomic(let atomic):
                 switch atomic {
@@ -68,18 +78,34 @@ public struct Skeleton: View {
         }
     }
 
-    var roundedRectangle: RoundedRectangle {
+    @ViewBuilder private func line(height: CGFloat) -> some View {
+        roundedRectangle.fill(color).frame(height: height)
+    }
+    
+    private var roundedRectangle: RoundedRectangle {
         RoundedRectangle(cornerRadius: borderRadius)
     }
+}
 
-    @ViewBuilder func line(height: CGFloat) -> some View {
-        roundedRectangle.fill(color).frame(height: height)
+// MARK: - Inits
+public extension Skeleton {
+ 
+    /// Creates Orbit ``Skeleton`` component.
+    init(
+        _ preset: Preset,
+        borderRadius: CGFloat = BorderRadius.desktop,
+        animation: Animation = .default
+    ) {
+        self.preset = preset
+        self.borderRadius = borderRadius
+        self.animation = animation
     }
 }
 
 // MARK: - Types
 extension Skeleton {
     
+    /// Orbit ``Skeleton`` shape and size preset.
     public enum Preset {
 
         public enum Atomic {
@@ -93,8 +119,13 @@ extension Skeleton {
         case image(height: CGFloat? = nil)
         case list(rows: Int, rowHeight: CGFloat = 20, spacing: CGFloat = .xSmall)
         case text(lines: Int, lineHeight: CGFloat = 20, spacing: CGFloat = .xSmall)
+        
+        public static let button: Self = .button()
+        public static let card: Self = .card()
+        public static let image: Self = .image()
     }
 
+    /// Orbit ``Skeleton`` animation.
     public enum Animation {
         case none
         case `default`
@@ -110,21 +141,6 @@ extension Skeleton {
     }
 }
 
-// MARK: - Inits
-public extension Skeleton {
- 
-    /// Creates Orbit Skeleton component.
-    init(
-        _ preset: Preset,
-        borderRadius: CGFloat = BorderRadius.desktop,
-        animation: Animation = .default
-    ) {
-        self.preset = preset
-        self.borderRadius = borderRadius
-        self.animation = animation
-    }
-}
-
 // MARK: - Previews
 struct SkeletonPreviews: PreviewProvider {
 
@@ -132,9 +148,9 @@ struct SkeletonPreviews: PreviewProvider {
         PreviewWrapper {
             content(animation: .none)
             contentAtomic(animation: .none)
-            Skeleton(.card(), borderRadius: BorderRadius.large, animation: .none)
+            Skeleton(.card, borderRadius: BorderRadius.large, animation: .none)
                 .frame(height: 100)
-            Skeleton(.image(), borderRadius: BorderRadius.large, animation: .none)
+            Skeleton(.image, borderRadius: BorderRadius.large, animation: .none)
                 .frame(height: 100)
             livePreview
         }
@@ -164,7 +180,7 @@ struct SkeletonPreviews: PreviewProvider {
             Skeleton(.list(rows: 3), animation: animation)
             Skeleton(.image(height: 150), animation: animation)
             Skeleton(.card(height: 200), animation: animation)
-            Skeleton(.button(), animation: animation)
+            Skeleton(.button, animation: animation)
             Skeleton(.text(lines: 4), animation: animation)
         }
     }

@@ -1,7 +1,7 @@
 import UIKit
 import SwiftUI
 
-/// A view representing `TextLink` layer.
+/// A view that represents the Orbit ``TextLink`` layer.
 public final class TextLinkView: UITextView, UITextViewDelegate {
 
     let action: TextLink.Action

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// An icon-based bar button for suitable for actions inside toolbar or navigation bar.
+/// Orbit support component that displays icon-based button suitable for actions in a toolbar or navigation bar.
 public struct BarButton<Icon: View>: View {
 
     @Environment(\.iconSize) private var iconSize
@@ -29,11 +29,11 @@ public struct BarButton<Icon: View>: View {
         .buttonStyle(IconButtonStyle())
     }
 
-    var resolvedIconSize: CGFloat {
+    private var resolvedIconSize: CGFloat {
         iconSize ?? Orbit.Icon.Size.large.value
     }
 
-    var horizontalEdges: Edge.Set {
+    private var horizontalEdges: Edge.Set {
         switch alignment {
             case .leading:      return .trailing
             case .trailing:     return .leading
@@ -41,7 +41,7 @@ public struct BarButton<Icon: View>: View {
         }
     }
 
-    /// Creates Orbit BarButton component.
+    /// Creates Orbit ``BarButton`` component.
     public init(
         _ icon: Icon.Symbol,
         alignment: HorizontalAlignment = .center,
@@ -54,7 +54,7 @@ public struct BarButton<Icon: View>: View {
         }
     }
 
-    /// Creates Orbit BarButton component with custom icon.
+    /// Creates Orbit ``BarButton`` component with custom icon.
     public init(
         alignment: HorizontalAlignment = .center,
         action: @escaping () -> Void,

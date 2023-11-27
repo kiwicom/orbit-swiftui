@@ -1,20 +1,50 @@
 import SwiftUI
 
-/// Prompts users to take or complete an action.
+/// Orbit component that prompts user to complete an action. 
+/// A counterpart of the native `alert()` modifier.
 ///
-/// Use at most three actions in a Dialog. A Dialog expands both horizontally 
-/// and vertically and is meant to be used as a modal fullscreen overlay.
+/// A ``Dialog`` consists of a title, description, illustration, at most three buttons and an optional custom content.
 ///
 /// ```swift
 /// Dialog("Title") {
-///     Button("Primary") { /* */ }
-///     Button("Secondary") { /* */ }
-///     Button("Tertiary") { /* */ }
+///     // Content
+/// } buttons: {
+///     Button("Primary") { /* Tap action */ }
+///     Button("Secondary") { /* Tap action */ }
+///     Button("Tertiary") { /* Tap action */ }
+/// } illustration: {
+///     Illustration(.accommodation)
+/// }
+/// ```
+/// 
+/// ### Customizing appearance
+/// 
+/// A ``Status`` of buttons can be modified by ``status(_:)`` modifier:
+///
+/// ```swift
+/// Dialog("Title") {
+///     Button("Primary") { /* Tap action */ }
+///     Button("Secondary") { /* Tap action */ }
 /// }
 /// .status(.critical)
 /// ```
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/overlay/dialog/)
+/// The default button priority can be overridden by ``buttonPriority(_:)`` modifier:
+///
+/// ```swift
+/// Dialog("Title") {
+///     Button("Secondary Only") {
+///         // Tap action 
+///     }
+///     .buttonPriority(.secondary)
+/// }
+/// ```
+///
+/// ### Layout
+///
+/// The component expands in both axis and is meant to be used as a fullscreen modal overlay.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/overlay/dialog/)
 public struct Dialog<Content: View, Buttons: View, Illustration: View>: View {
 
     private let title: String
@@ -51,7 +81,7 @@ public struct Dialog<Content: View, Buttons: View, Illustration: View>: View {
         .accessibilityElement(children: .contain)
     }
 
-    @ViewBuilder var texts: some View {
+    @ViewBuilder private var texts: some View {
         if title.isEmpty == false || description.isEmpty == false {
             VStack(alignment: .leading, spacing: .xSmall) {
                 Heading(title, style: .title4)
@@ -64,7 +94,7 @@ public struct Dialog<Content: View, Buttons: View, Illustration: View>: View {
         }
     }
 
-    var shape: some InsettableShape {
+    private var shape: some InsettableShape {
         RoundedRectangle(cornerRadius: .small)
     }
 }
@@ -72,7 +102,7 @@ public struct Dialog<Content: View, Buttons: View, Illustration: View>: View {
 // MARK: - Inits
 extension Dialog {
 
-    /// Creates Orbit Dialog component.
+    /// Creates Orbit ``Dialog`` component.
     public init(
         _ title: String = "",
         description: String = "",

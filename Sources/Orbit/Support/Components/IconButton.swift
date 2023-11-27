@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// An icon-based button.
+/// Orbit support component that displays an icon-based button.
 public struct IconButton<Icon: View>: View {
 
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
@@ -27,7 +27,7 @@ public struct IconButton<Icon: View>: View {
 // MARK: - Icons
 public extension IconButton {
 
-    /// Creates Orbit IconButton component with custom icon.
+    /// Creates Orbit ``IconButton`` component with custom icon.
     init(
         action: @escaping () -> Void,
         @ViewBuilder icon: () -> Icon
@@ -36,7 +36,7 @@ public extension IconButton {
         self.icon = icon()
     }
 
-    /// Creates Orbit IconButton component.
+    /// Creates Orbit ``IconButton`` component.
     init(
         _ icon: Orbit.Icon.Symbol,
         action: @escaping () -> Void

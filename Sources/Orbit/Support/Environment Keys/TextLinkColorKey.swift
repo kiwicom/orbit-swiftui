@@ -6,7 +6,7 @@ struct TextLinkColorKey: EnvironmentKey {
 
 public extension EnvironmentValues {
 
-    /// A `TextLink` color stored in a view’s environment.
+    /// Orbit `TextLink` ``TextLink/Color`` color stored in a view’s environment.
     var textLinkColor: TextLink.Color? {
         get { self[TextLinkColorKey.self] }
         set { self[TextLinkColorKey.self] = newValue }
@@ -15,10 +15,10 @@ public extension EnvironmentValues {
 
 public extension View {
 
-    /// Override the default `TextLink` color for this view.
+    /// Override the default Orbit `TextLink` ``TextLink/Color` for this view.
     ///
     /// - Parameters:
-    ///   - color: A color that will be used by all `TextLink`s inside the view hierarchy.
+    ///   - color: A color that will be used by all ``TextLink``s inside the view hierarchy.
     func textLinkColor(_ color: TextLink.Color?) -> some View {
         environment(\.textLinkColor, color)
     }

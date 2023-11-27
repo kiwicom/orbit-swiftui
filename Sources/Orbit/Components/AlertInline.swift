@@ -1,12 +1,38 @@
 import SwiftUI
 
-/// Breaks the main user flow to present information.
+/// Orbit component that breaks the main user flow to present information.
 ///
-/// There are times when just simple information isn’t enough and the user needs
-/// to take additional steps to resolve the problem or get additional details.
+/// An ``AlertInline`` (an inline variant of ``Alert``) consists of a title, icon and a single action.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/alert/)
-/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
+/// ```swift
+/// AlertInline("Alert") {
+///     Button("Primary") {
+///         // Tap action 
+///     }
+/// }
+/// ```
+///
+/// ### Customizing appearance
+///
+/// The title and icon colors can be modified by ``textColor(_:)`` and ``iconColor(_:)`` modifiers.
+/// The icon size can be modified by ``iconSize(custom:)`` modifier.
+///
+/// A default ``Status/info`` status can be modified by ``status(_:)`` modifier:
+///
+/// ```swift
+/// AlertInline("Alert") {
+///     Button("Primary") {
+///         // Tap action 
+///     }
+/// }
+/// .status(.warning)
+/// ```
+/// 
+/// ### Layout
+///
+/// Component expands horizontally unless prevented by native `fixedSize()` or ``idealSize()`` modifier.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/alert/)
 public struct AlertInline<Icon: View, Button: View>: View {
 
     private let title: String
@@ -28,7 +54,7 @@ public struct AlertInline<Icon: View, Button: View>: View {
 
 public extension AlertInline {
 
-    /// Creates Orbit AlertInline component.
+    /// Creates Orbit ``AlertInline`` component.
     init(
         _ title: String = "",
         icon: Icon.Symbol? = nil,
@@ -40,7 +66,7 @@ public extension AlertInline {
         }
     }
 
-    /// Creates Orbit AlertInline component with custom content and icon.
+    /// Creates Orbit ``AlertInline`` component with custom content and icon.
     init(
         _ title: String = "",
         isSubtle: Bool = false,

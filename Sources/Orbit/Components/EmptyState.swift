@@ -1,15 +1,41 @@
 import SwiftUI
 
-/// Indicates when there’s no data to show, like when a search has no results.
+/// Orbit component that indicates there is no data to display. 
+/// A counterpart of the native `SwiftUI.ContentUnavailableView`.
+///
+/// An ``EmptyState`` consists of a title, description, icon, optional custom content and at most two actions.
 ///
 /// ```swift
-/// EmptyState("No items") {
-///     Button("Add item") { /* */ }
+/// EmptyState("No travelers") {
+///     Button("Add new traveler") { /* Tap action */ }
 /// }
-/// .status(.critical)
+/// ```
+/// 
+/// ### Customizing appearance
+///
+/// The title color can be modified by ``textColor(_:)`` modifier.
+///
+/// A ``Status`` of buttons can be modified by ``status(_:)`` modifier:
+///
+/// ```swift
+/// EmptyState("No data") {
+///     Button("Add item") { /* Tap action */ }
+/// }
+/// .status(.warning)
 /// ```
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/emptystate/)
+/// The default button priority can be overridden by ``buttonPriority(_:)`` modifier:
+///
+/// ```swift
+/// EmptyState("No data") {
+///     Button("Secondary Only") {
+///         // Tap action 
+///     }
+///     .buttonPriority(.secondary)
+/// }
+/// ```
+/// 
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/progress-indicators/emptystate/)
 public struct EmptyState<Content: View, Buttons: View, Illustration: View>: View {
 
     private let title: String
@@ -61,7 +87,7 @@ public struct EmptyState<Content: View, Buttons: View, Illustration: View>: View
 // MARK: - Inits
 public extension EmptyState {
 
-    /// Creates Orbit EmptyState component.
+    /// Creates Orbit ``EmptyState`` component.
     init(
         _ title: String = "",
         description: String = "",
@@ -78,7 +104,7 @@ public extension EmptyState {
         }
     }
 
-    /// Creates Orbit EmptyState component with no action.
+    /// Creates Orbit ``EmptyState`` component with no action.
     init(
         _ title: String = "",
         description: String = "",

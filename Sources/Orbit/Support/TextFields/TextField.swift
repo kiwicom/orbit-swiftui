@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Orbit control that displays an editable text interface, a replacement for native `TextField` component.
+/// Orbit control that displays an editable text interface, a replacement for native `SwiftUI.TextField` component.
 ///
 /// The component uses UIKit `UITextField` implementation to support these feature for older iOS versions:
 /// - focus changes

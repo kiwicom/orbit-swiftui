@@ -3,7 +3,7 @@ import Orbit
 
 public extension EmptyState {
 
-    /// Creates Orbit EmptyState component with illustration.
+    /// Creates Orbit ``EmptyState`` component with illustration.
     init(
         _ title: String = "",
         description: String = "",
@@ -16,7 +16,7 @@ public extension EmptyState {
         }
     }
 
-    /// Creates Orbit EmptyState component with illustration and no action.
+    /// Creates Orbit ``EmptyState`` component with illustration and no action.
     init(
         _ title: String = "",
         description: String = "",
