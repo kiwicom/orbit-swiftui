@@ -11,7 +11,9 @@ public struct StepperButton: View {
     let action: () -> Void
     
     public var body: some View {
-        SwiftUI.Button(action: action) {
+        SwiftUI.Button {
+            action()
+        } label: {
             Icon(icon)
                 .textColor(color)
         }

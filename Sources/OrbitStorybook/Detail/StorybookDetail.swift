@@ -154,6 +154,7 @@ struct StorybookDetail: View {
             case (.tabs, 1):                StorybookTabs.live
             case (.tag, _):                 StorybookTag.basic
             case (.text, _):                StorybookText.basic
+            case (.textarea, _):            StorybookTextarea.basic
             case (.textLink, 0):            StorybookTextLink.basic
             case (.textLink, 1):            StorybookTextLink.live
             case (.tile, 0):                StorybookTile.basic

@@ -1,14 +1,39 @@
 import SwiftUI
 import UIKit
 
-/// Also known as textbox. Offers users a simple input for a form.
+/// Orbit component that offers a simple text input. The component is an equivalent of the native `TextField` component.
 ///
-/// When you have additional information or helpful examples, include prompt text to help users along.
+/// The InputField is created with an optional label and a binding to a string value.
+/// 
+/// ```swift
+/// InputField("Label", value: $email, prompt: "E-mail")
+///     .keyboardType(.emailAddress)
+///     .returnKeyType(.done)
+///     .focused($isEmailFocused)
+///     .inputFieldReturnAction {
+///         // Action after the value is submitted
+///     }
+/// ```
+/// 
+/// For secure version, the `passwordStrength` hint can be provided.
+///     
+/// ```swift    
+/// InputField(
+///     "Password", 
+///     value: $password, 
+///     isSecure: true,
+///     passwordStrength: passwordStrength,
+///     message: .help("Must be at least 8 characters long")
+/// )
+/// ```
 ///
-/// The custom Orbit version of ``TextField`` component is used internally.
+/// The component uses a custom ``TextField`` component (implemented using `UITextField`) that represents the native `TextField`.
+/// 
+/// ### Layout
+///
+/// The component expands horizontally.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/inputfield/)
-/// - Important: Component expands horizontally unless prevented by `fixedSize` modifier.
 public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
 
     @Environment(\.inputFieldBeginEditingAction) private var inputFieldBeginEditingAction
@@ -41,18 +66,8 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
     var shouldDeleteBackwardAction: (String) -> Bool = { _ in true }
 
     public var body: some View {
-        FieldWrapper(
-            defaultLabel,
-            message: message,
-            messageHeight: $messageHeight
-        ) {
-            InputContent(
-                state: state,
-                label: compactLabel,
-                message: message,
-                isFocused: isFocused,
-                isPlaceholder: value.isEmpty
-            ) {
+        FieldWrapper(defaultLabel, message: message, messageHeight: $messageHeight) {
+            InputContent(state: state, label: compactLabel, message: message, isFocused: isFocused) {
                 textField
             } prefix: {
                 prefix
@@ -131,18 +146,11 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
 
 public extension InputField {
 
-    /// Creates Orbit InputField component.
-    ///
-    /// The keyboard related modifiers can be used directly on this component to modify the keyboard behaviour:
-    /// - `autocapitalization()`
-    /// - `autocorrectionDisabled()`
-    /// - `keyboardType()`
-    /// - `textContentType()`
+    /// Creates Orbit ``InputField`` component.
     ///
     /// - Parameters:
-    ///   - message: Optional message below the InputField.
+    ///   - message: Optional message below the text field.
     ///   - messageHeight: Binding to the current height of the optional message.
-    ///   - suffixAction: Optional action when suffix icon is tapped.
     init(
         _ label: String = "",
         value: Binding<String>,
@@ -173,18 +181,11 @@ public extension InputField {
         }
     }
 
-    /// Creates Orbit InputField component with custom prefix or suffix.
-    ///
-    /// The keyboard related modifiers can be used directly on this component to modify the keyboard behaviour:
-    /// - `autocapitalization()`
-    /// - `autocorrectionDisabled()`
-    /// - `keyboardType()`
-    /// - `textContentType()`
+    /// Creates Orbit ``InputField`` component with custom prefix or suffix.
     ///
     /// - Parameters:
-    ///   - message: Optional message below the InputField.
+    ///   - message: Optional message below the text field.
     ///   - messageHeight: Binding to the current height of the optional message.
-    ///   - suffixAction: Optional action when suffix icon is tapped.
     init(
         _ label: String = "",
         value: Binding<String>,

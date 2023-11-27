@@ -24,18 +24,15 @@ public struct Tile<Content: View, Icon: View>: View {
     @ViewBuilder private let icon: Icon
 
     public var body: some View {
-        SwiftUI.Button(
-            action: {
-                if isHapticsEnabled {
-                    HapticsProvider.sendHapticFeedback(.light(0.5))
-                }
-                
-                action()
-            },
-            label: {
-                buttonContent
+        SwiftUI.Button {
+            if isHapticsEnabled {
+                HapticsProvider.sendHapticFeedback(.light(0.5))
             }
-        )
+            
+            action()
+        } label: {
+            buttonContent
+        }
         .buttonStyle(TileButtonStyle(style: tileBorderStyle))
         .accessibilityElement(children: .ignore)
         .accessibility(label: .init(title))

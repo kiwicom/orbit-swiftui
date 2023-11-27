@@ -17,30 +17,27 @@ public struct Checkbox: View {
     @Binding var isChecked: Bool
 
     public var body: some View {
-        SwiftUI.Button(
-            action: {
-                if isHapticsEnabled {
-                    HapticsProvider.sendHapticFeedback(.light(0.5))
-                }
-                
-                isChecked.toggle()
-            },
-            label: {
-                if title.isEmpty == false || description.isEmpty == false {
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text(title)
-                            .textColor(labelColor)
-                            .fontWeight(.medium)
-                            .accessibility(.checkboxTitle)
-                        
-                        Text(description)
-                            .textSize(.small)
-                            .textColor(descriptionColor)
-                            .accessibility(.checkboxDescription)
-                    }
+        SwiftUI.Button {
+            if isHapticsEnabled {
+                HapticsProvider.sendHapticFeedback(.light(0.5))
+            }
+            
+            isChecked.toggle()
+        } label: {
+            if title.isEmpty == false || description.isEmpty == false {
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(title)
+                        .textColor(labelColor)
+                        .fontWeight(.medium)
+                        .accessibility(.checkboxTitle)
+                    
+                    Text(description)
+                        .textSize(.small)
+                        .textColor(descriptionColor)
+                        .accessibility(.checkboxDescription)
                 }
             }
-        )
+        }
         .buttonStyle(
             CheckboxButtonStyle(state: state, isChecked: isChecked)
         )

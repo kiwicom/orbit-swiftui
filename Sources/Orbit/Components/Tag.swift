@@ -17,34 +17,31 @@ public struct Tag<Icon: View>: View, PotentiallyEmptyView {
 
     public var body: some View {
         if isEmpty == false {
-            SwiftUI.Button(
-                action: {
-                    if isHapticsEnabled {
-                        HapticsProvider.sendHapticFeedback(.light(0.5))
+            SwiftUI.Button {
+                if isHapticsEnabled {
+                    HapticsProvider.sendHapticFeedback(.light(0.5))
+                }
+                
+                isSelected.toggle()
+            } label: {
+                HStack(spacing: 0) {
+                    if idealSize.horizontal == false {
+                        Spacer(minLength: 0)
                     }
                     
-                    isSelected.toggle()
-                },
-                label: {
-                    HStack(spacing: 0) {
-                        if idealSize.horizontal == false {
-                            Spacer(minLength: 0)
-                        }
-
-                        HStack(spacing: 6) {
-                            icon
-                                .font(.system(size: Text.Size.normal.value))
-                            
-                            Text(label)
-                        }
-                        .fixedSize(horizontal: true, vertical: false)
-
-                        if idealSize.horizontal == false {
-                            Spacer(minLength: 0)
-                        }
+                    HStack(spacing: 6) {
+                        icon
+                            .font(.system(size: Text.Size.normal.value))
+                        
+                        Text(label)
+                    }
+                    .fixedSize(horizontal: true, vertical: false)
+                    
+                    if idealSize.horizontal == false {
+                        Spacer(minLength: 0)
                     }
                 }
-            )
+            }
             .buttonStyle(
                 TagButtonStyle(
                     style: style,

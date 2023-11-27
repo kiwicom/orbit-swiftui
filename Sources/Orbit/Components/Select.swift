@@ -24,33 +24,25 @@ public struct Select<Prefix: View, Suffix: View>: View {
     @ViewBuilder private let suffix: Suffix
 
     public var body: some View {
-        FieldWrapper(
-            defaultLabel,
-            message: message,
-            messageHeight: $messageHeight
-        ) {
-            SwiftUI.Button(
-                action: {
-                    if isHapticsEnabled {
-                        HapticsProvider.sendHapticFeedback(.light(0.5))
-                    }
-                    
-                    action()
-                },
-                label: {
-                    Text(value ?? prompt)
-                        .textColor(valueColor)
-                        .accessibility(.selectValue)
-                        .padding(.horizontal, .small)
-                        .padding(.vertical, verticalTextPadding)
+        FieldWrapper(defaultLabel, message: message, messageHeight: $messageHeight) {
+            SwiftUI.Button {
+                if isHapticsEnabled {
+                    HapticsProvider.sendHapticFeedback(.light(0.5))
                 }
-            )
+                
+                action()
+            } label: {
+                Text(value ?? prompt)
+                    .textColor(valueColor)
+                    .accessibility(.selectValue)
+                    .padding(.horizontal, .small)
+                    .padding(.vertical, verticalTextPadding)
+            }
             .buttonStyle(
                 InputContentButtonStyle(
                     state: state,
                     label: compactLabel,
-                    message: message,
-                    isPlaceholder: value == nil
+                    message: message
                 ) {
                     prefix
                         .accessibility(.selectPrefix)
