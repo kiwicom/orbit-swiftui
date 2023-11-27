@@ -22,10 +22,7 @@ public struct CheckboxButtonStyle: ButtonStyle {
 
     func indicator(isPressed: Bool) -> some View {
         shape
-            .strokeBorder(
-                indicatorStrokeColor(isPressed: isPressed),
-                lineWidth: indicatorStrokeWidth
-            )
+            .strokeBorder(indicatorStrokeColor(isPressed: isPressed), lineWidth: indicatorStrokeWidth)
             .background(
                 shape
                     .fill(indicatorBackgroundColor(isPressed: isPressed))

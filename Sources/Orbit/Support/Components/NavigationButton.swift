@@ -9,18 +9,15 @@ public struct NavigationButton: View {
     private let action: () -> Void
 
     public var body: some View {
-        SwiftUI.Button(
-            action: {
-                if isHapticsEnabled {
-                    HapticsProvider.sendHapticFeedback(.light(0.5))
-                }
-                
-                action()
-            },
-            label: {
-                Image(state.imageSymbol)
+        SwiftUI.Button {
+            if isHapticsEnabled {
+                HapticsProvider.sendHapticFeedback(.light(0.5))
             }
-        )
+            
+            action()
+        } label: {
+            Image(state.imageSymbol)
+        }
         .buttonStyle(NavigationButtonStyle())
     }
 

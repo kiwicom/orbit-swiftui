@@ -29,31 +29,28 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: 
     @ViewBuilder let illustration: Illustration
 
     public var body: some View {
-        SwiftUI.Button(
-            action: {
-                if isHapticsEnabled {
-                    HapticsProvider.sendHapticFeedback(.light(0.3))
+        SwiftUI.Button {
+            if isHapticsEnabled {
+                HapticsProvider.sendHapticFeedback(.light(0.3))
+            }
+            
+            action()
+        } label: {
+            HStack(spacing: 0) {
+                VStack(alignment: contentAlignment, spacing: padding) {
+                    headerRow
+                    content
+                    messageView
+                    centerIndicator
                 }
                 
-                action()
-            },
-            label: {
-                HStack(spacing: 0) {
-                    VStack(alignment: contentAlignment, spacing: padding) {
-                        headerRow
-                        content
-                        messageView
-                        centerIndicator
-                    }
-
-                    TextStrut()
-                        .padding(.vertical, .xxSmall)   // Minimum 52pt @ normal size
-                }
-                .frame(maxWidth: idealSize.horizontal == true ? nil: .infinity, alignment: .leading)
-                .overlay(indicatorOverlay, alignment: indicatorAlignment)
-                .padding(padding)
+                TextStrut()
+                    .padding(.vertical, .xxSmall)   // Minimum 52pt @ normal size
             }
-        )
+            .frame(maxWidth: idealSize.horizontal == true ? nil: .infinity, alignment: .leading)
+            .overlay(indicatorOverlay, alignment: indicatorAlignment)
+            .padding(padding)
+        }
         .buttonStyle(
             TileButtonStyle(isSelected: isSelected)
         )

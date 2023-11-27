@@ -17,30 +17,27 @@ public struct Radio: View {
     @Binding var isChecked: Bool
 
     public var body: some View {
-        SwiftUI.Button(
-            action: {
-                if isHapticsEnabled {
-                    HapticsProvider.sendHapticFeedback(.light(0.5))
-                }
-                
-                isChecked.toggle()
-            },
-            label: {
-                if title.isEmpty == false || description.isEmpty == false {
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text(title)
-                            .textColor(labelColor)
-                            .fontWeight(.medium)
-                            .accessibility(.radioTitle)
-                        
-                        Text(description)
-                            .textSize(.small)
-                            .textColor(descriptionColor)
-                            .accessibility(.radioDescription)
-                    }
+        SwiftUI.Button {
+            if isHapticsEnabled {
+                HapticsProvider.sendHapticFeedback(.light(0.5))
+            }
+            
+            isChecked.toggle()
+        } label: {
+            if title.isEmpty == false || description.isEmpty == false {
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(title)
+                        .textColor(labelColor)
+                        .fontWeight(.medium)
+                        .accessibility(.radioTitle)
+                    
+                    Text(description)
+                        .textSize(.small)
+                        .textColor(descriptionColor)
+                        .accessibility(.radioDescription)
                 }
             }
-        )
+        }
         .buttonStyle(
             RadioButtonStyle(state: state, isChecked: isChecked)
         )

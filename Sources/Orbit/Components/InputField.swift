@@ -66,17 +66,8 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
     var shouldDeleteBackwardAction: (String) -> Bool = { _ in true }
 
     public var body: some View {
-        FieldWrapper(
-            defaultLabel,
-            message: message,
-            messageHeight: $messageHeight
-        ) {
-            InputContent(
-                state: state,
-                label: compactLabel,
-                message: message,
-                isFocused: isFocused
-            ) {
+        FieldWrapper(defaultLabel, message: message, messageHeight: $messageHeight) {
+            InputContent(state: state, label: compactLabel, message: message, isFocused: isFocused) {
                 textField
             } prefix: {
                 prefix
