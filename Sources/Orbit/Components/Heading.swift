@@ -5,12 +5,6 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/heading/)
 public struct Heading: View, FormattedTextBuildable {
 
-    @Environment(\.sizeCategory) var sizeCategory
-
-    let content: String
-    let style: Style
-    let isSelectable: Bool
-
     // Builder properties
     var accentColor: Color?
     var baselineOffset: CGFloat?
@@ -24,6 +18,9 @@ public struct Heading: View, FormattedTextBuildable {
     var lineHeight: CGFloat?
     var size: CGFloat?
     var strikethrough: Bool?
+        
+    private let content: String
+    private let style: Style
 
     public var body: some View {
         textContent
@@ -45,11 +42,6 @@ public struct Heading: View, FormattedTextBuildable {
             .textAccentColor(accentColor)
             .textLineHeight(style.lineHeight)
     }
-
-    func text(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text {
-        textContent
-            .text(textRepresentableEnvironment: textRepresentableEnvironment)
-    }
 }
 
 // MARK: - Inits
@@ -64,7 +56,6 @@ public extension Heading {
     /// - Parameters:
     ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
     ///   - style: Heading style.
-    ///   - isSelectable: Determines if text is copyable using long tap gesture.
     init(
         _ content: String,
         style: Style,
@@ -72,7 +63,6 @@ public extension Heading {
     ) {
         self.content = content
         self.style = style
-        self.isSelectable = isSelectable
 
         // Set default weight
         self.fontWeight = style.weight
@@ -136,7 +126,8 @@ extension Heading: TextRepresentable {
     public func swiftUIText(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
         if content.isEmpty { return nil }
 
-        return text(textRepresentableEnvironment: textRepresentableEnvironment)
+        return textContent
+            .text(textRepresentableEnvironment: textRepresentableEnvironment)
     }
 }
 
