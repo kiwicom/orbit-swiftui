@@ -105,7 +105,7 @@ struct EmptyStatePreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
-            subtle
+            override
             noAction
         }
         .previewLayout(.sizeThatFits)
@@ -123,11 +123,12 @@ struct EmptyStatePreviews: PreviewProvider {
         .previewDisplayName()
     }
     
-    static var subtle: some View {
+    static var override: some View {
         EmptyState(title, description: description) {
-
-        } buttons: {
             Button(primaryButton) {}
+            Button(primaryButton) {}
+                .buttonPriority(.primary)
+                .status(.info)
         } illustration: {
             illustrationPlaceholder
         }

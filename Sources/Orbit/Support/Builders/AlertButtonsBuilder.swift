@@ -13,17 +13,19 @@ public enum AlertButtonsBuilder {
             .suppressButtonStyle()
             .buttonStyle(AlertButtonStyle())
             .buttonSize(.compact)
+            .buttonPriority(.primary)
             .accessibility(.alertButtonPrimary)
     }
 
     public static func buildBlock(_ primary: some View, _ secondary: some View) -> some View {
         HStack(alignment: .top, spacing: .xSmall) {
             primary
+                .buttonPriority(.primary)
                 .accessibility(.alertButtonPrimary)
 
             secondary
-                .accessibility(.alertButtonSecondary)
                 .buttonPriority(.secondary)
+                .accessibility(.alertButtonSecondary)
         }
         .suppressButtonStyle()
         .buttonStyle(AlertButtonStyle())
