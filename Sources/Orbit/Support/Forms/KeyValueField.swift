@@ -5,13 +5,14 @@ import SwiftUI
 /// - Note: [Orbit definition](https://orbit.kiwi/components/keyvalue/)
 public struct KeyValueField<Content: View>: View {
 
+    @Environment(\.multilineTextAlignment) private var multilineTextAlignment
+    
     let key: String
     let size: KeyValue.Size
-    let alignment: HorizontalAlignment
     @ViewBuilder let content: Content
 
     public var body: some View {
-        VStack(alignment: alignment, spacing: 0) {
+        VStack(alignment: .init(multilineTextAlignment), spacing: 0) {
             Text(key)
                 .textSize(size.keySize)
                 .textColor(.inkNormal)
@@ -20,7 +21,6 @@ public struct KeyValueField<Content: View>: View {
             content
                 .accessibility(.keyValueValue)
         }
-        .multilineTextAlignment(.init(alignment))
     }
 }
 
@@ -31,12 +31,10 @@ extension KeyValueField {
     public init(
         _ key: String = "",
         size: KeyValue.Size = .normal,
-        alignment: HorizontalAlignment = .leading,
         @ViewBuilder content: () -> Content
     ) {
         self.key = key
         self.size = size
-        self.alignment = alignment
         self.content = content()
     }
 }
@@ -52,19 +50,21 @@ struct KeyValueFieldPreviews: PreviewProvider {
                 Text("Value")
             }
 
-            KeyValueField("Trailing", alignment: .trailing) {
+            KeyValueField("Trailing") {
                 contentPlaceholder
             }
+            .multilineTextAlignment(.trailing)
 
             KeyValueField("Key") {
                 Text("Custom text")
                     .kerning(10)
             }
 
-            KeyValueField("Multiline and very long key", alignment: .trailing) {
+            KeyValueField("Multiline and very long key") {
                 Text("Multiline and very long value")
             }
             .frame(width: 100)
+            .multilineTextAlignment(.trailing)
         }
         .padding()
         .previewLayout(PreviewLayout.sizeThatFits)
