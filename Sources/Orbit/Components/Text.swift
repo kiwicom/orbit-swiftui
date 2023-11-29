@@ -313,18 +313,6 @@ public extension Text {
     }
 }
 
-extension TextAlignment {
-
-    public init(_ horizontalAlignment: HorizontalAlignment) {
-        switch horizontalAlignment {
-            case .leading:      self = .leading
-            case .center:       self = .center
-            case .trailing:     self = .trailing
-            default:            self = .center
-        }
-    }
-}
-
 // MARK: - TextRepresentable
 extension Text: TextRepresentable {
 
