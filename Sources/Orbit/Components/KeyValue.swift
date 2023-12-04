@@ -1,13 +1,25 @@
 import SwiftUI
 
-/// A pair of label and value to display read-only information.
+/// Orbit component that displays a pair of label and a value.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/keyvalue/)
+/// A ``KeyValue`` consists of a label and a value that is copyable by default.
+///
+/// ```swift
+/// KeyValue("First Name", value: "Pavel")
+/// ```
+///
+/// ### Layout
+///
+/// The text alignment can be modified by ``multilineTextAlignment(_:)``.
+///
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/keyvalue/)
 public struct KeyValue: View, PotentiallyEmptyView {
 
-    let key: String
-    let value: String
-    let size: Size
+    private let key: String
+    private let value: String
+    private let size: Size
 
     public var body: some View {
         if isEmpty == false {
@@ -32,7 +44,7 @@ public struct KeyValue: View, PotentiallyEmptyView {
 // MARK: - Inits
 extension KeyValue {
 
-    /// Creates Orbit KeyValue component.
+    /// Creates Orbit ``KeyValue`` component.
     public init(
         _ key: String = "",
         value: String = "",
@@ -47,6 +59,7 @@ extension KeyValue {
 // MARK: - Types
 extension KeyValue {
 
+    /// Orbit ``KeyValue`` size.
     public enum Size {
         case normal
         case large

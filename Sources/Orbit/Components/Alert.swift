@@ -1,38 +1,48 @@
 import SwiftUI
 
-/// Breaks the main user flow to present information.
+/// Orbit component that breaks the main user flow to present information.
 ///
-/// There are times when just simple information isn’t enough and the user needs
-/// to take additional steps to resolve the problem or get additional details.
-///
-/// In such cases, provide additional actions for your message.
-/// Alerts use special status buttons to match the button color with the alert color.
-///
-/// Use at most two actions in each Alert: one primary and one subtle.
-///
-/// ```swift
-/// Alert("Alert", description: "Description") {
-///     customContent
-/// } buttons: {
-///     Button("Primary") { /* */ }
-///     Button("Secondary") { /* */ }
-/// }
-/// .status(.warning)
-/// ```
-///
-/// The button priority can be overridden by using `buttonPriority()` modifier.
+/// An ``Alert`` consists of a title, description, icon, optional custom content and at most two actions.
 ///
 /// ```swift
 /// Alert("Alert") {
-///     customContent
+///     Button("Primary") { /* Tap action */ }
+///     Button("Secondary") { /* Tap action */ }
+/// }
+/// ```
+/// 
+/// ### Customizing appearance
+///
+/// The title and icon colors can be modified by ``textColor(_:)`` and ``iconColor(_:)`` modifiers.
+/// The icon size can be modified by ``iconSize(custom:)`` modifier.
+///
+/// A default ``Status/info`` status can be modified by ``status(_:)`` modifier:
+///
+/// ```swift
+/// Alert("Alert", description: "Please check your <applink1>visa</applink1>")
+///     .status(.warning)
+/// ```
+///
+/// The default button priority can be overridden by ``buttonPriority(_:)`` modifier:
+///
+/// ```swift
+/// Alert("Alert") {
+///     content
 /// } buttons: {
-///     Button("Secondary Only") { /* */ }
-///       .buttonPriority(.secondary)
+///     Button("Secondary Only") {
+///         // Tap action 
+///     }
+///     .buttonPriority(.secondary)
 /// }
 /// ```
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/alert/)
-/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
+/// For compact variant, use ``AlertInline`` component.
+///
+/// ### Layout
+///
+/// Component expands horizontally unless prevented by native `fixedSize()` or ``idealSize()`` modifier.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/alert/)
 public struct Alert<Content: View, Icon: View, Buttons: View>: View {
 
     private let title: String
@@ -56,7 +66,7 @@ public struct Alert<Content: View, Icon: View, Buttons: View>: View {
 
 public extension Alert {
 
-    /// Creates Orbit Alert component.
+    /// Creates Orbit ``Alert`` component.
     init(
         _ title: String = "",
         description: String = "",
@@ -73,7 +83,7 @@ public extension Alert {
         }
     }
 
-    /// Creates Orbit Alert component with no buttons.
+    /// Creates Orbit ``Alert`` component with no buttons.
     init(
         _ title: String = "",
         description: String = "",
@@ -89,7 +99,7 @@ public extension Alert {
         }
     }
 
-    /// Creates Orbit Alert component with custom content and icon.
+    /// Creates Orbit ``Alert`` component with custom content and icon.
     init(
         _ title: String = "",
         description: String = "",

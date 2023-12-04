@@ -1,8 +1,69 @@
 import SwiftUI
 
-/// Shows the content hierarchy and improves the reading experience. Also known as Title.
+/// Orbit component that displays title that helps to define content hierarchy. 
+/// A counterpart of the native `SwiftUI.Text` with one of the title font styles applied.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/heading/)
+/// A ``Heading`` is created using one of predefined title styles.
+///
+/// ```swift
+/// Heading("Passengers", style: .title2)
+/// ```
+///
+/// ### Customizing appearance
+///
+/// Textual properties can be modified in two ways:
+/// - Modifiers applied directly to `Heading` that return the same type, such as ``textColor(_:)-80ix5`` or ``textAccentColor(_:)-k54u``. 
+/// These can also be used for concatenation with other Orbit textual components like ``Text`` or ``Icon``. 
+/// See the `InstanceMethods` section below for full list.
+/// - Modifiers applied to view hierarchy, such as ``textColor(_:)-828ud`` or ``textIsCopyable(_:)``. 
+/// See a full list of `View` extensions in documentation.
+/// 
+/// ```swift
+/// VStack {
+///     // Will result in `inkNormal` color
+///     Heading("Override", type: .title3)
+///         .textColor(.inkNormal)
+///         
+///     // Will result in `blueDark` color passed from environment
+///     Heading("Modified", type: .title3)
+///     
+///     // Will result in a default `inkDark` color, ignoring the environment value
+///     Heading("Default", type: .title3)
+///         .textColor(nil)
+///     
+///     // Will result in mixed `redNormal` and `blueDark` colors
+///     Heading("Concatenated", type: .title3)
+///         .textColor(.redNormal) 
+///     + Heading(" Title", type: .title2)
+///         .bold()
+///     + Icon(.grid)
+///         .iconColor(.redNormal)
+/// }
+/// .textColor(.blueDark)
+/// ```
+/// 
+/// Formatting and behaviour for ``TextLink``s found in the text can be modified by ``textLinkAction(_:)`` and
+/// ``textLinkColor(_:)`` modifiers.
+/// 
+/// ```swift
+/// Heading("Information for <applink1>Passenger</applink1>", type: .title3)
+///     .textLinkColor(.inkNormal)
+///     .textLinkAction {
+///         // TextLink tap Action
+///     }
+/// ```
+///
+/// ### Layout
+///
+/// Orbit text components use a designated vertical padding that is the same in both single and multiline variant. 
+/// This makes it easier to align them consistently next to other Orbit components like ``Icon`` not only based on the baseline, 
+/// but also by `top` or `bottom` edges, provided the component text sizes match according to Orbit rules.
+///
+/// Orbit text components have a fixed vertical size. 
+/// 
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/heading/)
 public struct Heading: View, FormattedTextBuildable {
 
     // Builder properties
@@ -27,7 +88,7 @@ public struct Heading: View, FormattedTextBuildable {
             .accessibility(addTraits: .isHeader)
     }
 
-    @ViewBuilder var textContent: Text {
+    @ViewBuilder private var textContent: Text {
         Text(content)
             .textColor(color)
             .textSize(custom: style.size)
@@ -47,15 +108,11 @@ public struct Heading: View, FormattedTextBuildable {
 // MARK: - Inits
 public extension Heading {
 
-    /// Creates Orbit Heading component.
-    ///
-    /// Modifiers like `textAccentColor()` or `italic()` can be used to further adjust the formatting.
-    /// To specify the formatting and behaviour for `TextLink`s found in the text, use `textLinkAction()` and
-    /// `textLinkColor()` modifiers.
+    /// Creates Orbit ``Heading`` component.
     /// 
     /// - Parameters:
     ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
-    ///   - style: Heading style.
+    ///   - style: A predefined title style.
     init(
         _ content: String,
         style: Style,
@@ -72,7 +129,7 @@ public extension Heading {
 // MARK: - Types
 public extension Heading {
 
-    /// Orbit heading style.
+    /// Orbit ``Heading`` style that represents the default size and color of a title.
     enum Style: Equatable {
         /// 28 pts.
         case title1
@@ -87,7 +144,7 @@ public extension Heading {
         /// 13 pts.
         case title6
 
-        /// Text font size value.
+        /// Orbit `Heading` ``Heading/Style`` font size.
         public var size: CGFloat {
             switch self {
                 case .title1:           return 28
@@ -99,7 +156,7 @@ public extension Heading {
             }
         }
 
-        /// Designated line height.
+        /// Orbit `Heading` ``Heading/Style`` designated line height.
         public var lineHeight: CGFloat {
             switch self {
                 case .title1:           return 32
@@ -111,6 +168,7 @@ public extension Heading {
             }
         }
 
+        /// Orbit `Heading` ``Heading/Style`` font weight.
         public var weight: Font.Weight {
             switch self {
                 case .title1, .title4, .title5, .title6:    return .bold

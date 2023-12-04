@@ -1,12 +1,12 @@
 import SwiftUI
 
-/// Showing choices from which only one can be selected.
+/// Orbit input component that displays two choices to pick from.
+/// A counterpart of the native `SwiftUI.Picker` with `segmented` style applied.
 ///
-/// Specify two, or at most, three views in the content closure,
-/// giving each an `.identifier` that matches a value
-/// of the selection binding:
+/// A ``SegmentedSwitch`` consists of a label and two or three choices. 
+/// Each choice must be given an Orbit  `identifier` that matches a value of the selection binding:
 ///
-/// ```
+/// ```swift
 /// enum Direction {
 ///     case left
 ///     case right
@@ -21,21 +21,25 @@ import SwiftUI
 ///         .identifier(Direction.right)
 /// }
 /// ```
+/// 
+/// The component can be disabled by ``disabled(_:)`` modifier.
+/// 
+/// ### Layout
+/// 
+/// Component expands horizontally unless prevented by the native `fixedSize()` or ``idealSize()`` modifier.
 ///
-/// SegmentedSwitch can be in error state only in unselected state.
-///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/interaction/segmentedswitch/)
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/interaction/segmentedswitch/)
 public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
 
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.idealSize) private var idealSize
     @Binding private var selection: Selection?
-    let label: String
-    let message: Message?
-    let content: Content
+    private let label: String
+    private let message: Message?
+    private let content: Content
 
-    let borderWidth: CGFloat = BorderWidth.active
-    let horizontalPadding: CGFloat = .small
+    private let borderWidth: CGFloat = BorderWidth.active
+    private let horizontalPadding: CGFloat = .small
 
     public var body: some View {
         FieldWrapper(label, message: message) {
@@ -61,7 +65,7 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
         .accessibility(hint: .init(message?.description ?? ""))
     }
 
-    @ViewBuilder func selectedSegmentButton(preferences: [IDPreference]) -> some View {
+    @ViewBuilder private func selectedSegmentButton(preferences: [IDPreference]) -> some View {
         if let index = preferences.firstIndex(where: isSelected) {
             segmentButton(preferences: preferences, index: index) {
                 segmentBackground
@@ -71,7 +75,7 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
         }
     }
 
-    @ViewBuilder func unselectedSegmentButtons(_ preferences: [IDPreference]) -> some View {
+    @ViewBuilder private func unselectedSegmentButtons(_ preferences: [IDPreference]) -> some View {
         ForEach(unselectedPreferences(preferences), id: \.1.id) { index, preference in
             segmentButton(preferences: preferences, index: index) {
                 Color.clear
@@ -83,7 +87,7 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
         .animation(.easeOut(duration: 0.2), value: selection)
     }
 
-    @ViewBuilder func segmentButton(
+    @ViewBuilder private func segmentButton(
         preferences: [IDPreference],
         index: Int,
         @ViewBuilder label: @escaping () -> some View
@@ -114,7 +118,7 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
         }
     }
 
-    @ViewBuilder func noSelectionBackground(_ preferences: [IDPreference]) -> some View {
+    @ViewBuilder private func noSelectionBackground(_ preferences: [IDPreference]) -> some View {
         if selection == nil {
             GeometryReader { geometry in
                 segmentBackground
@@ -139,13 +143,13 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
         }
     }
 
-    @ViewBuilder var segmentBackground: some View {
+    @ViewBuilder private var segmentBackground: some View {
         (colorScheme == .light ? Color.whiteDarker : Color.cloudDarkActive)
             .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default - 1))
             .padding(borderWidth)
     }
 
-    @ViewBuilder var separator: some View {
+    @ViewBuilder private var separator: some View {
         (message?.status?.color ?? .cloudNormal)
             .frame(width: borderWidth)
             .frame(maxHeight: .infinity)
@@ -168,7 +172,36 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
         idealSize.horizontal == true
     }
     
-    public init(
+    private func measurements(
+        index: Int,
+        preferences: [IDPreference],
+        idealSize: Bool,
+        horizontalPadding: CGFloat,
+        separatorWidth: CGFloat,
+        in geometry: GeometryProxy
+    ) -> (width: CGFloat, minX: CGFloat) {
+        if idealSize {
+            let minX = preferences.prefix(upTo: index).reduce(into: 0) { finalMinX, preference in
+                finalMinX += geometry[preference.bounds].width + separatorWidth + horizontalPadding * 2
+            }
+            let width = geometry[preferences[index].bounds].width + horizontalPadding * 2
+
+            return (width, minX)
+        } else {
+            let width = geometry.size.width / CGFloat(preferences.count)
+            let minX = (geometry[preferences[index].bounds].minX / width).rounded(.down) * width
+
+            return (width, minX)
+        }
+    }
+
+}
+
+// MARK: - Inits
+public extension SegmentedSwitch {
+    
+    /// Creates Orbit ``SegmentedSwitch`` component with optional selection.
+    init(
         _ label: String = "",
         selection: Binding<Selection?>,
         message: Message? = nil,
@@ -180,7 +213,8 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
         self.content = content()
     }
 
-    public init(
+    /// Creates Orbit ``SegmentedSwitch`` component with non-optional selection.
+    init(
         _ label: String = "",
         selection: Binding<Selection>,
         message: Message? = nil,
@@ -195,29 +229,6 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
             message: message,
             content: content
         )
-    }
-}
-
-private func measurements(
-    index: Int,
-    preferences: [IDPreference],
-    idealSize: Bool,
-    horizontalPadding: CGFloat,
-    separatorWidth: CGFloat,
-    in geometry: GeometryProxy
-) -> (width: CGFloat, minX: CGFloat) {
-    if idealSize {
-        let minX = preferences.prefix(upTo: index).reduce(into: 0) { finalMinX, preference in
-            finalMinX += geometry[preference.bounds].width + separatorWidth + horizontalPadding * 2
-        }
-        let width = geometry[preferences[index].bounds].width + horizontalPadding * 2
-
-        return (width, minX)
-    } else {
-        let width = geometry.size.width / CGFloat(preferences.count)
-        let minX = (geometry[preferences[index].bounds].minX / width).rounded(.down) * width
-
-        return (width, minX)
     }
 }
 
@@ -330,8 +341,8 @@ struct SegmentedSwitchPreviews: PreviewProvider {
         label: String = "Gender",
         message: Message? = nil
     ) -> some View {
-        StateWrapper(selection) { value in
-            SegmentedSwitch(label, selection: value, message: message) {
+        StateWrapper(selection) { $value in
+            SegmentedSwitch(label, selection: $value, message: message) {
                 Text(firstOption)
                     .identifier(Gender.male)
 
@@ -349,8 +360,8 @@ struct SegmentedSwitchPreviews: PreviewProvider {
         label: String = "Gender",
         message: Message? = nil
     ) -> some View {
-        StateWrapper(selection) { value in
-            SegmentedSwitch(label, selection: value, message: message) {
+        StateWrapper(selection) { $value in
+            SegmentedSwitch(label, selection: $value, message: message) {
                 Text(firstOption)
                     .identifier(Gender.male)
 

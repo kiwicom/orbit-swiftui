@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Non-default status of a component.
+/// Non-default status of Orbit components.
 public enum Status: Equatable {
     case info
     case success

@@ -7,7 +7,7 @@ struct SliderThumb: View {
     public static let circleDiameter: CGFloat = 24
     public static let dotDiameter: CGFloat = 8
 
-    public var body: some View {
+    var body: some View {
         Circle()
             .frame(width: circleDiameter, height: circleDiameter)
             .foregroundColor(.white)

@@ -1,4 +1,5 @@
 
+/// Type that provides asset name for Orbit components.
 public protocol AssetNameProviding: RawRepresentable {
 
     var assetName: String { get }

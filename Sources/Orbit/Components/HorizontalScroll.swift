@@ -1,18 +1,42 @@
 import SwiftUI
 import Combine
 
-public enum HorizontalScrollItemWidth {
-    /// Width ratio calculated from the available container width.
-    case ratio(CGFloat = 0.48, maxWidth: CGFloat? = Layout.readableMaxWidth - 270)
-    /// Custom fixed width.
-    case fixed(CGFloat)
-}
-
-/// Groups items onto one accessible row even on small screens.
+/// Orbit component that groups items onto one accessible scrollable row. 
+/// In contrast to the native horizontal `SwiftUI.ScrollView`, this component offers snapping to item leading edges both manually and programmatically.
 ///
-/// Can be used to present similar items (such as cards with baggage options) as a single row even on small screens.
+/// A ``HorizontalScroll`` consists of provided content that will be arranged horizontally with the consistent item width and provided spacing.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/layout/horizontalscroll/)
+/// ```swift
+/// HorizontalScroll {
+///     Tile("Choice 1")
+///     Tile("Choice 2")
+///     Tile("Choice 3")
+/// }
+/// ```
+///
+/// The content can be scrolled programatically when wrapped inside ``HorizontalScrollReader``.
+/// 
+/// ```swift
+/// HorizontalScrollReader { scrollProxy in
+///     HorizontalScroll {
+///         Tile("Choice 1")
+///         Tile("Choice 2")
+///         Tile("Choice 3")
+///     }
+///     
+///     Button("Scroll to first choice") {
+///         scrollProxy.scrollTo(0)
+///     }
+/// }
+/// ```
+///
+/// ### Layout
+///
+/// The component adds `HStack` over the provided content.
+/// 
+/// Component expands horizontally and has a layout similar to the native `ScrollView` with `horizontal` scrollable axis.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/layout/horizontalscroll/)
 public struct HorizontalScroll<Content: View>: View {
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -37,10 +61,10 @@ public struct HorizontalScroll<Content: View>: View {
     private let snapAnimationDuration: CGFloat = 0.8
     private let programaticSnapAnimationDuration: CGFloat = 0.5
 
-    let spacing: CGFloat
-    let isSnapping: Bool
-    let itemWidth: HorizontalScrollItemWidth
-    @ViewBuilder let content: Content
+    private let spacing: CGFloat
+    private let isSnapping: Bool
+    private let itemWidth: HorizontalScrollItemWidth
+    @ViewBuilder private let content: Content
 
     public var body: some View {
         scrollViewContent
@@ -53,7 +77,7 @@ public struct HorizontalScroll<Content: View>: View {
             .padding(-clippingPadding)
     }
 
-    @ViewBuilder var scrollViewContent: some View {
+    @ViewBuilder private var scrollViewContent: some View {
         GeometryReader { geometry in
             HStack(alignment: .top, spacing: spacing) {
                 content
@@ -102,7 +126,7 @@ public struct HorizontalScroll<Content: View>: View {
         }
     }
 
-    @ViewBuilder var contentHeightReader: some View {
+    @ViewBuilder private var contentHeightReader: some View {
         GeometryReader { geometry in
             Color.clear.preference(
                 key: ContentSizePreferenceKey.self,
@@ -111,17 +135,17 @@ public struct HorizontalScroll<Content: View>: View {
         }
     }
 
-    @ViewBuilder var availableWidthReader: some View {
+    @ViewBuilder private var availableWidthReader: some View {
         SingleAxisGeometryReader(axis: .horizontal) { width in
             Color.clear.preference(key: ScrollViewWidthPreferenceKey.self, value: width)
         }
     }
 
-    var isIdle: Bool {
+    private var isIdle: Bool {
         (scrollingInProgress || isAnimating) == false
     }
 
-    var screenLayoutHorizontalPadding: CGFloat {
+    private var screenLayoutHorizontalPadding: CGFloat {
         guard let screenLayoutPadding = screenLayoutPadding else {
             return spacing
         }
@@ -129,7 +153,7 @@ public struct HorizontalScroll<Content: View>: View {
         return screenLayoutPadding.horizontal(horizontalSizeClass: horizontalSizeClass)
     }
 
-    var scrollingGesture: some Gesture {
+    private var scrollingGesture: some Gesture {
         DragGesture(minimumDistance: .xxxSmall)
             .onChanged { gesture in
                 updateOffset(gesture: gesture)
@@ -139,22 +163,22 @@ public struct HorizontalScroll<Content: View>: View {
             }
     }
 
-    var scrollStoppingGesture: some Gesture {
+    private var scrollStoppingGesture: some Gesture {
         TapGesture()
             .onEnded {
                 stopSnappingAnimation()
             }
     }
 
-    var isContentBiggerThanScrollView: Bool {
+    private var isContentBiggerThanScrollView: Bool {
         contentSize.width > scrollViewWidth
     }
 
-    var maxOffset: CGFloat {
+    private var maxOffset: CGFloat {
         -contentSize.width + scrollViewWidth
     }
 
-    var resolvedItemWidth: CGFloat {
+    private var resolvedItemWidth: CGFloat {
         switch itemWidth {
             case .ratio(let ratio, let maxWidth):
                 let ratio = max(0.05, ratio)
@@ -313,15 +337,13 @@ public struct HorizontalScroll<Content: View>: View {
 // MARK: - Inits
 public extension HorizontalScroll {
 
-    /// Creates Orbit HorizontalScroll component.
-    ///
-    /// Can be scrolled programatically when wrapped inside `HorizontalScrollReader`.
+    /// Creates Orbit ``HorizontalScroll`` component.
     ///
     /// - Parameters:
     ///   - isSnapping: Specifies whether the scrolling should snap items to their leading edge.
     ///   - spacing: Spacing between items.
     ///   - itemWidth: Horizontal sizing of each item.
-    ///   - content: Child items that will be horizontally laid out based on above parameters.
+    ///   - content: Items that will be arranged horizontally based on above parameters.
     init(
         isSnapping: Bool = true,
         spacing: CGFloat = .small,
@@ -333,6 +355,16 @@ public extension HorizontalScroll {
         self.itemWidth = itemWidth
         self.content = content()
     }
+}
+
+// MARK: - Types
+
+/// Width for all items used in Orbit ``HorizontalScroll``.
+public enum HorizontalScrollItemWidth {
+    /// Width ratio calculated from the available container width.
+    case ratio(CGFloat = 0.48, maxWidth: CGFloat? = Layout.readableMaxWidth - 270)
+    /// Custom fixed width.
+    case fixed(CGFloat)
 }
 
 // MARK: - Preference keys

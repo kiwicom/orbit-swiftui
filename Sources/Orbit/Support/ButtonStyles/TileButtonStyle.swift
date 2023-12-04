@@ -16,7 +16,7 @@ public struct TileButtonStyle: ButtonStyle {
             .tileBorder(style, isSelected: isSelected)
     }
     
-    @ViewBuilder func backgroundColor(isPressed: Bool) -> some View {
+    @ViewBuilder private func backgroundColor(isPressed: Bool) -> some View {
         if isPressed {
             resolvedActiveBackground
         } else {
@@ -24,7 +24,7 @@ public struct TileButtonStyle: ButtonStyle {
         }
     }
     
-    @ViewBuilder var resolvedInactiveBackground: some View {
+    @ViewBuilder private var resolvedInactiveBackground: some View {
         if let backgroundShape {
             backgroundShape.inactiveView
         } else {
@@ -32,7 +32,7 @@ public struct TileButtonStyle: ButtonStyle {
         }
     }
     
-    @ViewBuilder var resolvedActiveBackground: some View {
+    @ViewBuilder private var resolvedActiveBackground: some View {
         if let backgroundShape {
             backgroundShape.activeView
         } else {

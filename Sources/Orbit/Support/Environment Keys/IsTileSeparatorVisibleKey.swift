@@ -6,7 +6,7 @@ struct IsTileSeparatorVisibleKey: EnvironmentKey {
 
 public extension EnvironmentValues {
 
-    /// Indicates whether a ``Tile``'s separator should be visible.
+    /// Indicates whether an Orbit ``Tile``'s separator should be visible.
     var isTileSeparatorVisible: Bool {
         get { self[IsTileSeparatorVisibleKey.self] }
         set { self[IsTileSeparatorVisibleKey.self] = newValue }

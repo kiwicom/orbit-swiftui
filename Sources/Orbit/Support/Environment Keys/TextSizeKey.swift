@@ -6,7 +6,7 @@ struct TextSizeKey: EnvironmentKey {
 
 public extension EnvironmentValues {
 
-    /// A text size stored in a view’s environment, used for Orbit text based components, such as `Text`, `Heading` or `Icon`.
+    /// A text size stored in a view’s environment, used for Orbit text based components, such as ``Text``, ``Heading`` or ``Icon``.
     ///
     /// This environment value serves as a replacement for non-public `font` environment value.
     var textSize: CGFloat? {
@@ -20,7 +20,7 @@ public extension View {
     /// Set the text size for any text based Orbit component within the view hierarchy.
     ///
     /// - Parameters:
-    ///   - size: A size that will be used in text based Orbit components such as `Text` or `Icon`.
+    ///   - size: A size that will be used in text based Orbit components such as ``Text`` or ``Icon``.
     ///    Pass `nil` to ignore environment text size and to allow the system or the container to provide its own size.
     ///    If a container-specific override doesn’t exist, the `.normal` size will be used.
     func textSize(_ size: Text.Size?) -> some View {
@@ -31,7 +31,7 @@ public extension View {
     /// Set the custom text size for any text based Orbit component within the view hierarchy.
     ///
     /// - Parameters:
-    ///   - size: A size that will be used in text based Orbit components such as `Text` or `Icon`.
+    ///   - size: A size that will be used in text based Orbit components such as ``Text`` or ``Icon``.
     ///    Pass `nil` to ignore environment text size and to allow the system or the container to provide its own size.
     ///    If a container-specific override doesn’t exist, the `.normal` size will be used.
     func textSize(custom size: CGFloat?) -> some View {

@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS, deprecated: 14.0, message: "Use native variant")
 struct LazyVStack<Content: View>: View {
 
     var alignment: HorizontalAlignment = .center

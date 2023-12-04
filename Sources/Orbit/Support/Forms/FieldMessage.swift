@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Orbit message below form fields.
+/// Orbit support component that displays message below form fields.
 public struct FieldMessage: View {
 
     @Environment(\.sizeCategory) private var sizeCategory
@@ -28,6 +28,7 @@ public struct FieldMessage: View {
         }
     }
 
+    /// Creates Orbit ``FieldMessage``.
     public init(_ message: Message?, spacing: CGFloat = .xxSmall) {
         self.message = message
         self.spacing = spacing

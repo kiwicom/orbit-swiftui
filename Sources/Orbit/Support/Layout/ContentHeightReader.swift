@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Invisible wrapper that communicates its current content height.
+/// Invisible Orbit wrapper that communicates its current content height.
 public struct ContentHeightReader<Content: View>: View {
 
     @Binding var height: CGFloat

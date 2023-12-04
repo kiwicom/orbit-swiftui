@@ -22,9 +22,9 @@ struct IgnoreScreenLayoutHorizontalPaddingModifier: ViewModifier {
 
 public extension View {
 
-    /// Reverts any horizontal padding provided by `screenLayout` context. Can be optionally limited to a specific horizontal size class.
+    /// Reverts any horizontal padding provided by Orbit `screenLayout` context. Can be optionally limited to a specific horizontal size class.
     ///
-    /// A typical usage is to mimic the edge-to-edge appearance of the `Card` component.
+    /// A typical usage is to mimic the edge-to-edge appearance of the ``Card`` component.
     func ignoreScreenLayoutHorizontalPadding(limitToSizeClass sizeClass: UserInterfaceSizeClass? = nil) -> some View {
         modifier(IgnoreScreenLayoutHorizontalPaddingModifier(limitToSizeClass: sizeClass))
     }

@@ -1,9 +1,33 @@
 import SwiftUI
 
-/// Offers a label that can optionally be selected and unselected or removed.
+/// Orbit component that displays a control that can be selected, unselected, or removed.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/tag/)
-/// - Important: Component can expand horizontally by using `idealSize` modifier.
+/// A ``Tag`` consists of a label, icon and optional removable action.
+///
+/// ```swift
+/// Tag("Sorting", icon: .sort, isSelected: $isSortingApplied)
+/// Tag("Filters", style: .removable(action: { /* Tap action */ }), isSelected: $isFiltersApplied)
+/// ```
+/// 
+/// ### Customizing appearance
+///
+/// The label and icon colors can be modified by ``textColor(_:)`` and ``iconColor(_:)`` modifiers.
+///
+/// ```swift
+/// Tag("Selected", isSelected: $isSelected)
+///     .textColor(.blueLight)
+///     .iconColor(.blueNormal)
+/// ```
+///
+/// Before the action is triggered, a haptic feedback is fired via ``HapticsProvider/sendHapticFeedback(_:)``.
+///
+/// ### Layout
+///
+/// Component does not expand horizontally, unless forced by the native ``idealSize()`` modifier with a `false` value.
+/// 
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/tag/)
 public struct Tag<Icon: View>: View, PotentiallyEmptyView {
 
     @Environment(\.idealSize) private var idealSize
@@ -61,7 +85,7 @@ public struct Tag<Icon: View>: View, PotentiallyEmptyView {
 // MARK: - Inits
 public extension Tag {
 
-    /// Creates Orbit Tag component with custom icon.
+    /// Creates Orbit ``Tag`` component with custom leading icon.
     init(
         _ label: String = "",
         style: TagStyle = .default,
@@ -76,7 +100,7 @@ public extension Tag {
         self.icon = icon()
     }
 
-    /// Creates Orbit Tag component.
+    /// Creates Orbit ``Tag`` component.
     init(
         _ label: String = "",
         icon: Icon.Symbol? = nil,
@@ -98,6 +122,7 @@ public extension Tag {
 
 // MARK: - Types
 
+/// Orbit ``Tag`` style.
 public enum TagStyle: Equatable {
 
     case `default`

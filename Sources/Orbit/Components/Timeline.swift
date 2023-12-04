@@ -1,20 +1,31 @@
 import SwiftUI
 
-/// Shows progress on a process over time.
+/// Orbit component that shows progress on a process over time.
 ///
-/// - Related components
-///   - ``TimelineItem``
+/// A ``Timeline`` consists of a set of ``TimelineItem`` content:
+/// 
+/// ```swift
+/// Timeline {
+///     TimelineItem("Booked", type: .past)
+///     TimelineItem("Checked in", type: .past)
+///     TimelineItem("Board", type: .present)
+/// }
+/// ```
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/progress-indicators/timeline/)
-public struct Timeline<Content: View>: View, PotentiallyEmptyView {
+/// ### Layout
+///
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/progress-indicators/timeline/)
+public struct Timeline<TimelineItems: View>: View, PotentiallyEmptyView {
 
-    @Environment(\.sizeCategory) var sizeCategory
-    @ViewBuilder let content: Content
-
+    @Environment(\.sizeCategory) private var sizeCategory
+    @ViewBuilder private let timelineItems: TimelineItems
+    
     public var body: some View {
         if isEmpty == false {
-            VStack(alignment: .leading, spacing: Self.spacing) {
-                content
+            VStack(alignment: .leading, spacing: .large) {
+                timelineItems
             }
             .backgroundPreferenceValue(TimelineItemPreferenceKey.self) { preferences in
                 GeometryReader { geometry in
@@ -35,29 +46,27 @@ public struct Timeline<Content: View>: View, PotentiallyEmptyView {
     }
 
     var isEmpty: Bool {
-        content.isEmpty
+        timelineItems.isEmpty
     }
 
-    func progressLineHeight(
+    private func progressLineHeight(
         for index: Int,
         in preferences: TimelineItemPreferenceKey.Value,
         geometry: GeometryProxy
     ) -> CGFloat {
         guard preferences.indices.contains(index) else { return 0 }
 
-        return geometry[preferences[index].bounds].height + Self.spacing
-    }
-
-    /// Creates Orbit TimelineItem component.
-    public init(@ViewBuilder content: () -> Content) {
-        self.content = content()
+        return geometry[preferences[index].bounds].height + .large
     }
 }
 
-// MARK: - Constants
+// MARK: - Inits
 public extension Timeline {
 
-    static var spacing: CGFloat { .large }
+    /// Creates Orbit ``TimelineItem`` component.
+    init(@ViewBuilder _ timelineItems: () -> TimelineItems) {
+        self.timelineItems = timelineItems()
+    }
 }
 
 // MARK: - Previews
@@ -101,7 +110,7 @@ struct TimelinePreviews: PreviewProvider {
             TimelineItem(
                 "Board",
                 sublabel: "May 4, 8:15",
-                type: .present(),
+                type: .present,
                 description: "Be at your departure gate at least 30 minutes before boarding."
             ) {
                 contentPlaceholder

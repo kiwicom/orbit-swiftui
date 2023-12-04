@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Customized button style for Orbit ``ButtonLink`` component.
+/// Button style for Orbit ``ButtonLink`` component.
 public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>: PrimitiveButtonStyle {
 
     @Environment(\.buttonSize) private var buttonSize
@@ -34,7 +34,7 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
         .idealSize(horizontal: idealSizeHorizontal, vertical: idealSize.vertical)
     }
 
-    var backgroundActive: Color {
+    private var backgroundActive: Color {
         switch type {
             case .primary:                      return .productLightActive
             case .critical:                     return .redLightActive
@@ -42,17 +42,17 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
         }
     }
 
-    var resolvedButtonSize: ButtonSize {
+    private var resolvedButtonSize: ButtonSize {
         buttonSize ?? .regular
     }
 
-    var idealSizeHorizontal: Bool? {
+    private var idealSizeHorizontal: Bool? {
         idealSize.horizontal == false
             ? idealSize.horizontal
             : (resolvedButtonSize == .compact || idealSize.horizontal == true)
     }
 
-    var textColor: Color {
+    private var textColor: Color {
         switch type {
             case .primary:                      return .productNormal
             case .critical:                     return .redNormal
@@ -60,7 +60,7 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
         }
     }
 
-    var textActiveColor: Color {
+    private var textActiveColor: Color {
         switch type {
             case .primary:                      return .productDarkActive
             case .critical:                     return .redDarkActive
@@ -68,14 +68,14 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
         }
     }
 
-    var resolvedStatus: Status {
+    private var resolvedStatus: Status {
         switch type {
             case .status(let status):   return status ?? self.status ?? .info
             default:                    return .info
         }
     }
 
-    var hapticFeedback: HapticsProvider.HapticFeedbackType {
+    private var hapticFeedback: HapticsProvider.HapticFeedbackType {
         switch type {
             case .primary:  return .light(1)
             case .critical: return .notification(.error)
@@ -83,28 +83,28 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
         }
     }
 
-    var horizontalPadding: CGFloat {
+    private var horizontalPadding: CGFloat {
         switch resolvedButtonSize {
             case .regular:  return .small
             case .compact:  return 0
         }
     }
 
-    var verticalPadding: CGFloat {
+    private var verticalPadding: CGFloat {
         switch resolvedButtonSize {
             case .regular:  return .small   // = 44 height @ normal size
             case .compact:  return 6        // = 32 height @ normal size
         }
     }
 
-    var horizontalBackgroundPadding: CGFloat {
+    private var horizontalBackgroundPadding: CGFloat {
         switch resolvedButtonSize {
             case .regular:  return 0
             case .compact:  return .xSmall
         }
     }
 
-    var verticalBackgroundPadding: CGFloat {
+    private var verticalBackgroundPadding: CGFloat {
         switch resolvedButtonSize {
             case .regular:  return 0
             case .compact:  return .xxxSmall

@@ -1,15 +1,23 @@
 import SwiftUI
 
-/// Hides long or complex information.
+/// Orbit component that hides long or complex content.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/collapse/)
+/// A ``Collapse`` consists of a header and a collapsible content.
+///
+/// ```swift
+/// Collapse("Details", isExpanded: $showDetails) {
+///     content
+/// }
+/// ```
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/collapse/)
 public struct Collapse<Header: View, Content: View>: View {
 
-    let headerVerticalPadding: CGFloat
-    let showSeparator: Bool
-    let isExpanded: Binding<Bool>?
-    @ViewBuilder let content: Content
-    @ViewBuilder let header: Header
+    private let headerVerticalPadding: CGFloat
+    private let showSeparator: Bool
+    private let isExpanded: Binding<Bool>?
+    @ViewBuilder private let content: Content
+    @ViewBuilder private let header: Header
 
     public var body: some View {
         BindingSource(isExpanded, fallbackInitialValue: false) { $isExpanded in
@@ -41,16 +49,18 @@ public struct Collapse<Header: View, Content: View>: View {
         }
     }
 
-    @ViewBuilder var separator: some View {
+    @ViewBuilder private var separator: some View {
         if showSeparator {
             Separator()
         }
     }
 }
 
+// MARK: - Inits
+
 public extension Collapse {
 
-    /// Creates Orbit Collapse component with a binding to the expansion state.
+    /// Creates Orbit ``Collapse`` component with a binding to the expansion state.
     init(
         isExpanded: Binding<Bool>,
         showSeparator: Bool = true,
@@ -64,7 +74,7 @@ public extension Collapse {
         self.isExpanded = isExpanded
     }
 
-    /// Creates Orbit Collapse component.
+    /// Creates Orbit ``Collapse`` component.
     init(@ViewBuilder content: () -> Content, showSeparator: Bool = true, @ViewBuilder header: () -> Header) {
         self.header = header()
         self.headerVerticalPadding = 0
@@ -76,7 +86,7 @@ public extension Collapse {
 
 public extension Collapse where Header == Text {
 
-    /// Creates Orbit Collapse component with a binding to the expansion state.
+    /// Creates Orbit ``Collapse`` component with a binding to the expansion state.
     init(_ title: String, isExpanded: Binding<Bool>, showSeparator: Bool = true,  @ViewBuilder content: () -> Content) {
         self.header = Text(title)
         self.headerVerticalPadding = .small
@@ -85,7 +95,7 @@ public extension Collapse where Header == Text {
         self.isExpanded = isExpanded
     }
 
-    /// Creates Orbit Collapse component.
+    /// Creates Orbit ``Collapse`` component.
     init(_ title: String, showSeparator: Bool = true, @ViewBuilder content: () -> Content) {
         self.header = Text(title)
         self.headerVerticalPadding = .small

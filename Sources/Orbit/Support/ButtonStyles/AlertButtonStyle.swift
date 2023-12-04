@@ -26,7 +26,7 @@ public struct AlertButtonStyle: PrimitiveButtonStyle {
         .backgroundStyle(background, active: backgroundActive)
     }
 
-    var textColor: Color {
+    private var textColor: Color {
         switch (resolvedPriority, isSubtle) {
             case (.primary, _):         return .whiteNormal
             case (.secondary, true):    return .inkDark
@@ -34,7 +34,7 @@ public struct AlertButtonStyle: PrimitiveButtonStyle {
         }
     }
 
-    var textActiveColor: Color {
+    private var textActiveColor: Color {
         switch (resolvedPriority, isSubtle) {
             case (.primary, _):         return .whiteNormal
             case (.secondary, true):    return .inkDarkActive
@@ -42,7 +42,7 @@ public struct AlertButtonStyle: PrimitiveButtonStyle {
         }
     }
 
-    var background: Color {
+    private var background: Color {
         switch (resolvedPriority, isSubtle) {
             case (.primary, _):         return resolvedStatus.color
             case (.secondary, true):    return .inkDark.opacity(0.1)
@@ -50,7 +50,7 @@ public struct AlertButtonStyle: PrimitiveButtonStyle {
         }
     }
 
-    var backgroundActive: Color {
+    private var backgroundActive: Color {
         switch (resolvedPriority, isSubtle) {
             case (.primary, _):         return resolvedStatus.activeColor
             case (.secondary, true):    return .inkDark.opacity(0.2)
@@ -58,15 +58,15 @@ public struct AlertButtonStyle: PrimitiveButtonStyle {
         }
     }
 
-    var resolvedPriority: ButtonPriority {
+    private var resolvedPriority: ButtonPriority {
         buttonPriority ?? .primary
     }
 
-    var resolvedStatus: Status {
+    private var resolvedStatus: Status {
         status ?? .info
     }
     
-    /// Create button style for Orbit ``Alert`` component.
+    /// Creates button style for Orbit ``Alert`` component.
     public init() {}
 }
 

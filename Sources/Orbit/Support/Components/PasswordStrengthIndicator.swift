@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// Orbit password strength indicator.
+/// Orbit support component that displays password strength indicator.
 public struct PasswordStrengthIndicator: View {
 
-    let passwordStrength: PasswordStrength
+    private let passwordStrength: PasswordStrength
 
     public var body: some View {
         if text.isEmpty == false {
@@ -20,7 +20,7 @@ public struct PasswordStrengthIndicator: View {
         }
     }
 
-    var indicator: some View {
+    private var indicator: some View {
         Capsule()
             .fill(.cloudNormal)
             .overlay(bar)
@@ -28,7 +28,7 @@ public struct PasswordStrengthIndicator: View {
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    var bar: some View {
+    private var bar: some View {
         HStack(spacing: 0) {
             Capsule()
                 .fill(color)
@@ -41,7 +41,7 @@ public struct PasswordStrengthIndicator: View {
         }
     }
 
-    var text: String {
+    private var text: String {
         switch passwordStrength {
             case .weak(let title):     return title
             case .medium(let title):   return title
@@ -49,7 +49,7 @@ public struct PasswordStrengthIndicator: View {
         }
     }
 
-    var spacers: Int {
+    private var spacers: Int {
         switch passwordStrength {
             case .weak:     return 3
             case .medium:   return 1
@@ -57,7 +57,7 @@ public struct PasswordStrengthIndicator: View {
         }
     }
 
-    var color: Color {
+    private var color: Color {
         switch passwordStrength {
             case .weak:     return .redNormal
             case .medium:   return .orangeNormal
@@ -65,6 +65,7 @@ public struct PasswordStrengthIndicator: View {
         }
     }
 
+    /// Creates Orbit ``PasswordStrengthIndicator`` component.
     public init(passwordStrength: PasswordStrengthIndicator.PasswordStrength) {
         self.passwordStrength = passwordStrength
     }
@@ -73,6 +74,7 @@ public struct PasswordStrengthIndicator: View {
 // MARK: - Types
 public extension PasswordStrengthIndicator {
 
+    /// Orbit ``PasswordStrengthIndicator`` strength.
     enum PasswordStrength: Equatable {
         case weak(title: String)
         case medium(title: String)

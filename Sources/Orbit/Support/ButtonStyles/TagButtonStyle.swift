@@ -39,7 +39,7 @@ public struct TagButtonStyle: ButtonStyle {
         .cornerRadius(BorderRadius.default)
     }
     
-    @ViewBuilder func resolvedBackgroundColor(isPressed: Bool) -> some View {
+    @ViewBuilder private func resolvedBackgroundColor(isPressed: Bool) -> some View {
         if isPressed {
             resolvedActiveBackground
         } else {
@@ -47,7 +47,7 @@ public struct TagButtonStyle: ButtonStyle {
         }
     }
     
-    @ViewBuilder var resolvedInactiveBackground: some View {
+    @ViewBuilder private var resolvedInactiveBackground: some View {
         if let backgroundShape {
             backgroundShape.inactiveView
         } else {
@@ -55,7 +55,7 @@ public struct TagButtonStyle: ButtonStyle {
         }
     }
     
-    @ViewBuilder var resolvedActiveBackground: some View {
+    @ViewBuilder private var resolvedActiveBackground: some View {
         if let backgroundShape {
             backgroundShape.activeView
         } else {
@@ -63,7 +63,7 @@ public struct TagButtonStyle: ButtonStyle {
         }
     }
     
-    var inactiveBackgroundColor: Color {
+    private var inactiveBackgroundColor: Color {
         switch (isFocused, isSelected) {
             case (true, false):             return .blueLight
             case (true, true):              return .blueNormal
@@ -72,7 +72,7 @@ public struct TagButtonStyle: ButtonStyle {
         }
     }
     
-    var activeBackgroundColor: Color {
+    private var activeBackgroundColor: Color {
         switch (isFocused, isSelected) {
             case (true, false):             return .blueLightActive
             case (true, true):              return .blueNormalActive
@@ -81,11 +81,11 @@ public struct TagButtonStyle: ButtonStyle {
         }
     }
     
-    var resolvedTextColor: Color {
+    private var resolvedTextColor: Color {
         textColor ?? labelColor
     }
     
-    var labelColor: Color {
+    private var labelColor: Color {
         switch (isFocused, isSelected) {
             case (_, true):                 return .whiteNormal
             case (true, false):             return .blueDarker
@@ -93,11 +93,11 @@ public struct TagButtonStyle: ButtonStyle {
         }
     }
 
-    func resolvedIconColor(isPressed: Bool) -> Color {
+    private func resolvedIconColor(isPressed: Bool) -> Color {
         iconColor ?? iconColor(isPressed: isPressed)
     }
     
-    func iconColor(isPressed: Bool) -> Color {
+    private func iconColor(isPressed: Bool) -> Color {
         switch (isSelected, isFocused, isPressed) {
             case (true, _, _):              return .whiteNormal
             case (false, true, false):      return .blueDarker.opacity(0.3)

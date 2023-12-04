@@ -1,6 +1,6 @@
 import UIKit
 
-/// Orbit UITextField wrapper with a larger touch area.
+/// Orbit `UITextField` wrapper with a larger touch area.
 public class InsetableTextField: UITextField {
 
     // Using .small vertical padding would cause resize issue in secure mode

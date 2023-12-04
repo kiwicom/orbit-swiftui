@@ -1,12 +1,78 @@
 import SwiftUI
 
-/// Renders text blocks in styles to fit the purpose.
+/// Orbit component that displays one or more lines of read-only text. 
+/// A counterpart of the native `SwiftUI.Text` with a support for Orbit markup formatting and ``TextLink``s.
 ///
-/// A view that displays one or more lines of read-only text. Text content supports html tags `<strong>`, `<u>`, `<ref>` for text formatting.
-/// The `<a href>` and `<applink>` tags support embedding interactive ``TextLink``s withing the text.
+/// A ``Text`` is created using the `String` content that can include html tags `<strong>`, `<u>`, `<ref>`, `<br>` to customize formatting. 
+/// Interactive tags `<a href>` and `<applinkX>` can be used to insert ``TextLink``s in the text.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/text/)
-/// - Important: Component has fixed vertical size. When the content is empty, the component results in `EmptyView`.
+/// ```swift
+/// Text("Text with <ref>formatting</ref>,<br> <u>multiline</u> content and <a href=\"...\">TextLink</a>")
+/// ```
+///
+/// The Orbit ``Text`` component consists of up to 3 layers on top of each other:
+///
+/// 1) A base `SwiftUI.Text` layer, either:
+///     - `SwiftUI.Text(verbatim:)` (when the whole text is a plain text with no formatting)
+///     - `SwiftUI.Text(attributedString:)` (when the text contains any Orbit html formatting)
+/// 2) ``TextLink`` overlay (when the text contains ``TextLink``s). The native text modifier support is limited for this layer.
+/// 3) A long tap gesture overlay (when the `textIsCopyable` is `true`)
+///
+/// ### Customizing appearance
+///
+/// Textual properties can be modified in two ways:
+/// - Modifiers applied directly to `Text` that return the same type, such as ``textColor(_:)-7qk2x`` or ``textAccentColor(_:)-xmqw``. 
+/// These can also be used for concatenation with other Orbit textual components like ``Heading`` or ``Icon``. 
+/// See the `InstanceMethods` section below for full list.
+/// - Modifiers applied to view hierarchy, such as ``textColor(_:)-828ud`` or ``textIsCopyable(_:)``.
+/// See a full list of `View` extensions in documentation.
+/// 
+/// ```swift
+/// VStack {
+///     // Will result in `inkNormal` color
+///     Text("Override")
+///         .textColor(.inkNormal)
+///         
+///     // Will result in `blueDark` color passed from environment
+///     Text("Modified")
+///     
+///     // Will result in a default `inkDark` color, ignoring the environment value
+///     Text("Default")
+///         .textColor(nil)
+///     
+///     // Will result in mixed `redNormal` and `blueDark` colors
+///     Text("Concatenated")
+///         .textColor(.redNormal) 
+///     + Text(" Title")
+///         .bold()
+///     + Icon(.grid)
+///         .iconColor(.redNormal)
+/// }
+/// .textColor(.blueDark)
+/// ```
+/// 
+/// Formatting and behaviour for ``TextLink``s found in the text can be modified by ``textLinkAction(_:)`` and
+/// ``textLinkColor(_:)`` modifiers.
+/// 
+/// ```swift
+/// Heading("Information for <applink1>Passenger</applink1>", type: .title3)
+///     .textLinkColor(.inkNormal)
+///     .textLinkAction {
+///         // TextLink tap Action
+///     }
+/// ```
+///
+/// ### Layout
+///
+/// Orbit text components use a designated vertical padding that is the same in both single and multiline variant. 
+/// This makes it easier to align them consistently next to other Orbit components like ``Icon`` not only based on the baseline, 
+/// but also by `top` or `bottom` edges, provided the component text sizes match according to Orbit rules.
+///
+/// Orbit text components have a fixed vertical size. 
+/// 
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/text/)
 public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
 
     @Environment(\.multilineTextAlignment) private var multilineTextAlignment
@@ -34,14 +100,6 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
     var isUnderline: Bool?
     var isMonospacedDigit: Bool?
     var lineHeight: CGFloat?
-
-    // The Orbit Text consists of up to 3 layers:
-    //
-    // 1) SwiftUI.Text base layer, either:
-    //      - SwiftUI.Text(verbatim:)           (when text is a plain text only)
-    //      - SwiftUI.Text(attributedString:)   (when text contains any Orbit html formatting)
-    // 2) TextLink-only overlay                 (when text contains any TextLink; limited native modifier support)
-    // 3) Long-tap-to-copy gesture overlay      (when isSelectable == true)
 
     public var body: some View {
         if isEmpty == false {
@@ -249,19 +307,13 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
 // MARK: - Inits
 public extension Text {
     
-    /// Creates Orbit Text component that displays a string literal.
-    ///
-    /// Modifiers like `textAccentColor()`, `textSize()` or `fontWeight()` can be used to further adjust the formatting.
-    /// To specify the formatting and behaviour for `TextLink`s found in the text, use `textLinkAction()` and
-    /// `textLinkColor()` modifiers.
-    ///
-    /// Use `textIsCopyable()` to allow text to react on long tap.
+    /// Creates Orbit ``Text`` component that displays a string literal.
     ///
     /// - Parameters:
     ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
     ///
-    /// - Important: The text concatenation does not support interactive TextLinks. It also does not fully support some global SwiftUI native text formatting view modifiers.
-    /// For proper rendering of TextLinks, any required text formatting modifiers must be also called on the Text directly.
+    /// - Important: The text concatenation does not support interactive ``TextLink``s. It also does not fully support some global SwiftUI native text formatting view modifiers.
+    /// For proper rendering of `TextLinks`, any required text formatting modifiers must be also called on the `Text` directly.
     init(_ content: String) {
         self.content = content
     }
@@ -270,7 +322,7 @@ public extension Text {
 // MARK: - Types
 public extension Text {
 
-    /// Orbit text font size.
+    /// Orbit predefined ``Text`` font size.
     enum Size: Equatable {
         /// 13 pts.
         case small
@@ -291,7 +343,7 @@ public extension Text {
             }
         }
 
-        /// Text font size value.
+        /// Value of Orbit `Text` ``Text/Size``.
         public var value: CGFloat {
             switch self {
                 case .small:                        return 13
@@ -301,7 +353,7 @@ public extension Text {
             }
         }
 
-        /// Designated line height.
+        /// Designated line height for Orbit `Text` ``Text/Size``.
         public var lineHeight: CGFloat {
             switch self {
                 case .small:                        return 16

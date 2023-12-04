@@ -1,11 +1,36 @@
 import Combine
 import SwiftUI
 
-/// A  companion component to ``Text`` that only shows TextLinks, detected in html formatted content.
+/// Orbit component that displays a one or more interactive links detected in html formatted content.
+/// A counterpart of the native `SwiftUI.Link`.
 ///
-/// The component is created automatically for all `<a href>` and `<applink>` tags found in a formatted text.
+/// A ``TextLink`` is created using the `NSAttributedString` content that includes html tags `<a href>` or `<applinkX>` and an ``TextLink/Action`` provided by ``textLinkAction(_:)`` modifier.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/textlink/)
+/// ```swift
+/// Group {
+///     // A standalone `TextLink` component
+///     TextLink(NSAttributedString("<a href=\"...\">TextLink</a>"))
+///     
+///     // Orbit `Text` that contains a `TextLink` as an interactive layer over the text.
+///     Text("Text with <ref>formatting</ref>,<br> <u>multiline</u> content and <a href=\"...\">TextLink</a>")
+/// }
+/// .textLinkAction { url, label in
+///     // TextLink tap Action
+/// }
+/// ```
+///
+/// ### Customizing appearance
+/// 
+/// The `TextLink` color can be modified by ``textLinkColor(_:)`` modifier.
+///
+/// ```swift
+/// TextLink(NSAttributedString(htmlText))
+///     .textLinkColor(.blueNormal)
+/// Text(htmlText)
+///     .textLinkColor(.blueNormal)
+/// ```
+/// - Important: Prefer using the Orbit ``Text`` component that automatically includes the `TextLink` as a layer for all detected links.
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/textlink/)
 public struct TextLink: UIViewRepresentable {
 
     @Environment(\.textLinkAction) private var textLinkAction
@@ -75,13 +100,12 @@ public struct TextLink: UIViewRepresentable {
 }
 
 // MARK: - Inits
-extension TextLink {
+public extension TextLink {
 
-    /// Creates an Orbit TextLink.
-    ///
-    /// The component has a size of the original text, but it only display detected links, hiding any non-link content.
-    /// Use `textLink(color:)` to override the TextLink colors.
-    public init(_ content: NSAttributedString) {
+    /// Creates Orbit ``TextLink`` component.
+    /// 
+    /// - Important: Prefer using the Orbit ``Text`` component that automatically includes the `TextLink` as a layer for all detected links.
+    init(_ content: NSAttributedString) {
         self.content = content
     }
 }
@@ -89,10 +113,10 @@ extension TextLink {
 // MARK: - Types
 public extension TextLink {
 
-    /// An action handler for a link tapped inside the ``Text`` or ``TextLink`` component.
+    /// An action handler for links tapped inside the Orbit ``Text`` and ``TextLink`` components.
     typealias Action = (URL, String) -> Void
 
-    /// Orbit TextLink color.
+    /// Orbit ``TextLink`` color.
     enum Color: Equatable {
         case primary
         case secondary

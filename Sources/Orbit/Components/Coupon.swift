@@ -1,9 +1,19 @@
 import SwiftUI
 
-/// Orbit component that highlights promo codes.
+/// Orbit component that displays promo codes.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/visuals/coupon/)
-public struct Coupon: View {
+/// ```swift
+/// Coupon("HXT3B81F")
+///     .textColor(.blueDark)
+///     .textSize(.small)
+/// ```
+///
+/// ### Layout
+/// 
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/visuals/coupon/)
+public struct Coupon: View, PotentiallyEmptyView {
 
     @Environment(\.textSize) private var textSize
 
@@ -22,12 +32,16 @@ public struct Coupon: View {
                     .foregroundColor(.cloudDark)
             )
     }
+    
+    var isEmpty: Bool {
+        label.isEmpty
+    }
 }
 
 // MARK: - Inits
 public extension Coupon {
     
-    /// Creates Orbit Coupon component.
+    /// Creates Orbit ``Coupon`` component.
     init(_ label: String = "") {
         self.label = label
     }

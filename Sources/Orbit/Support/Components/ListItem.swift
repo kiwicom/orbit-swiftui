@@ -1,11 +1,17 @@
 import SwiftUI
 
-/// One item in Orbit List component.
+/// Orbit component that displays one item in Orbit ``List``.
 ///
-/// - Related components
-///   - ``List``
+/// A ``ListItem`` consists of a label and icon.
 ///
-/// - [Orbit](https://orbit.kiwi/components/structure/list/)
+/// ```swift
+/// List {
+///     ListItem("Planes", icon: .airplane)
+///     ListItem("Trains")
+/// }
+/// ```
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/structure/list/)
 public struct ListItem<Icon: View>: View {
 
     @Environment(\.sizeCategory) private var sizeCategory
@@ -33,7 +39,7 @@ public struct ListItem<Icon: View>: View {
 // MARK: - Inits
 public extension ListItem {
 
-    /// Creates Orbit ListItem component.
+    /// Creates Orbit ``ListItem`` component.
     init(
         _ text: String = "",
         icon: Icon.Symbol? = .circleSmall,
@@ -47,7 +53,7 @@ public extension ListItem {
         }
     }
 
-    /// Creates Orbit ListItem component.
+    /// Creates Orbit ``ListItem`` component with custom icon.
     init(
         _ text: String = "",
         type: ListItemType = .primary,
@@ -61,6 +67,7 @@ public extension ListItem {
 
 // MARK: - Types
 
+/// Orbit ``ListItem`` type.
 public enum ListItemType {
 
     case primary

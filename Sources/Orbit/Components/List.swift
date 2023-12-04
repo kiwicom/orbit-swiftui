@@ -1,21 +1,38 @@
 import SwiftUI
 
-/// Shows related items.
+/// Orbit component that displays vertically arranged related items.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/list/)
+/// A ``List`` typically consists of ``ListItem`` content.
+///
+/// ```swift
+/// List {
+///     ListItem("Planes", icon: .airplane)
+///     ListItem("Trains")
+/// }
+/// ```
+///
+/// ### Layout
+///
+/// The component arranges list items in a `VStack` aligned to `leading` edge.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/list/)
 public struct List<Content: View>: View {
 
-    let spacing: CGFloat
-    @ViewBuilder let content: Content
+    private let spacing: CGFloat
+    @ViewBuilder private let content: Content
 
     public var body: some View {
         VStack(alignment: .leading, spacing: spacing) {
             content
         }
     }
+}
 
-    /// Creates Orbit List component, wrapping ListItem content.
-    public init(spacing: CGFloat = .xSmall, @ViewBuilder content: () -> Content) {
+// MARK: - Inits
+public extension List {
+    
+    /// Creates Orbit ``List`` component that wraps ``ListItem`` content.
+    init(spacing: CGFloat = .xSmall, @ViewBuilder _ content: () -> Content) {
         self.spacing = spacing
         self.content = content()
     }

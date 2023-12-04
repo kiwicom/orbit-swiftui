@@ -1,23 +1,27 @@
 import SwiftUI
 
-/// Displays flags of countries from around the world.
-///
-/// The component is sized in a similar way as `Icon`, using `iconSize()` modifier.
+/// Orbit component that displays flag of a country.
 ///
 /// ```swift
 /// CountryFlag(.us)
 ///   .iconSize(.large)
 /// ```
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/countryflag/)
+/// ### Layout
+/// 
+/// The component size can be modified by ``iconSize(_:)`` modifier.
+/// 
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/countryflag/)
 public struct CountryFlag: View, PotentiallyEmptyView {
 
-    @Environment(\.textSize) var textSize
-    @Environment(\.iconSize) var iconSize
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.textSize) private var textSize
+    @Environment(\.iconSize) private var iconSize
+    @Environment(\.sizeCategory) private var sizeCategory
 
-    let countryCode: CountryCode?
-    let border: Border
+    private let countryCode: CountryCode?
+    private let border: Border
 
     public var body: some View {
         if let countryCode {
@@ -35,12 +39,16 @@ public struct CountryFlag: View, PotentiallyEmptyView {
                 .accessibility(label: SwiftUI.Text(countryCode.rawValue))
         }
     }
+    
+    var isEmpty: Bool {
+        countryCode == nil
+    }
 
-    var clipShape: some InsettableShape {
+    private var clipShape: some InsettableShape {
         RoundedRectangle(cornerRadius: cornerRadius)
     }
     
-    var cornerRadius: CGFloat {
+    private var cornerRadius: CGFloat {
         switch border {
             case .none:                             return 0
             case .default(let cornerRadius?):       return cornerRadius
@@ -48,19 +56,15 @@ public struct CountryFlag: View, PotentiallyEmptyView {
         }
     }
 
-    var size: CGFloat {
+    private var size: CGFloat {
         (iconSize ?? textSize.map(Icon.Size.fromTextSize(size:)) ?? Icon.Size.normal.value) * sizeCategory.ratio
-    }
-
-    var isEmpty: Bool {
-        countryCode == nil
     }
 }
 
 // MARK: - Inits
 public extension CountryFlag {
 
-    /// Creates Orbit CountryFlag component.
+    /// Creates Orbit ``CountryFlag`` component.
     init(_ countryCode: CountryCode, border: Border = .default()) {
         self.init(
             countryCode: countryCode,
@@ -68,9 +72,9 @@ public extension CountryFlag {
         )
     }
 
-    /// Creates Orbit CountryFlag component with a string country code.
+    /// Creates Orbit ``CountryFlag`` component using a country code string.
     ///
-    /// If a corresponding image is not found, the flag for unknown codes is used.
+    /// - Note: If a corresponding image is not found, the flag for unknown flag is used.
     init(_ countryCode: String, border: Border = .default()) {
         self.init(
             countryCode: countryCode.isEmpty ? nil : .init(countryCode),
@@ -82,6 +86,7 @@ public extension CountryFlag {
 // MARK: - Types
 public extension CountryFlag {
 
+    /// Orbit ``CountryFlag`` border.
     enum Border {
         case none
         case `default`(cornerRadius: CGFloat? = nil)
@@ -94,6 +99,7 @@ public extension CountryFlag {
         }
     }
 
+    /// Orbit ``CountryFlag`` size.
     enum Size {
         case width(_ width: CGFloat)
         case icon(_ size: Icon.Size = .normal)

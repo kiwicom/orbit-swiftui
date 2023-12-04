@@ -1,32 +1,42 @@
 import SwiftUI
 
-/// Wraps tiles to show related interactions.
+/// Orbit component that wraps multiple ``Tile``s to show related interactions.
 ///
-/// Only ``Tile``s should be used inside of a group.
+/// A ``TileGroup`` consists of a set of ``Tile`` content:
+/// 
+/// ```swift
+/// TileGroup {
+///     Tile("Title 1")
+///     Tile("Title 2")
+/// }
+/// ```
 ///
-/// Tiles in a group show separators by default, except for the last tile,
-/// which is handled automatically and never shows a separator.
-///
+/// All tiles in a group include bottom separators by default, except for the last separator.
 /// Use ``Tile/tileSeparator(_:)`` to modify separator visibility for a given tile:
 ///
 /// ```swift
 /// TileGroup {
-///     Tile("Title")
-///     Tile("No Separator")
+///     Tile("Tile with no Separator")
 ///         .tileSeparator(false)
-///     Tile("Title")
+///     Tile("Tile 2")
 /// }
 /// ```
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/tilegroup/)
-public struct TileGroup<Content: View>: View, PotentiallyEmptyView {
+/// ### Layout
+/// 
+/// The component adds a `VStack` over the provided content. Avoid using the component when the content is large and should be embedded in a lazy stack.
+///
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/tilegroup/)
+public struct TileGroup<Tiles: View>: View, PotentiallyEmptyView {
 
-    @ViewBuilder let content: Content
+    @ViewBuilder private let tiles: Tiles
 
     public var body: some View {
         if isEmpty == false {
             VStack(alignment: .leading, spacing: 0) {
-                content
+                tiles
                     .environment(\.isInsideTileGroup, true)
             }
             // hide any last separator automatically by clipping it
@@ -38,12 +48,16 @@ public struct TileGroup<Content: View>: View, PotentiallyEmptyView {
     }
 
     var isEmpty: Bool {
-        content.isEmpty
+        tiles.isEmpty
     }
+}
 
-    /// Creates Orbit TileGroup component as a wrapper for Tile content.
-    public init(@ViewBuilder _ content: () -> Content) {
-        self.content = content()
+// MARK: - Inits
+public extension TileGroup {
+
+    /// Creates Orbit ``TileGroup`` component.
+    init(@ViewBuilder _ tiles: () -> Tiles) {
+        self.tiles = tiles()
     }
 }
 

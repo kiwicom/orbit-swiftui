@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Use elevation to bring content closer to users.
+/// Predefined Orbit elevation that brings content closer to user.
 ///
 /// Elevation levels with higher numbers are usually visually closer to the user.
 public enum Elevation {
@@ -11,7 +11,7 @@ public enum Elevation {
     case custom(opacity: Double, radius: CGFloat, x: CGFloat = 0, y: CGFloat = 0, padding: CGFloat? = nil)
 }
 
-/// A shape to use as a surface on which `elevation` is applied.
+/// A shape to use as a surface on which Orbit `elevation` is applied.
 public enum ElevationShape {
     /// Elevation effect shape is based on provided content.
     ///
@@ -29,7 +29,7 @@ public enum ElevationShape {
 
 public extension View {
 
-    /// Elevates the view to make it more prominent.
+    /// Elevates the Orbit view to make it more prominent.
     ///
     /// Effective only in light mode.
     func elevation(

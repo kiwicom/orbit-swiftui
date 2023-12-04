@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Predefined Orbit border styles for ``Tile``-like components.
 public enum TileBorderStyle {
     case none
     case `default`
@@ -9,16 +10,16 @@ public enum TileBorderStyle {
     case plain
 }
 
-/// Provides decoration with ``Tile`` appearance.
+/// Provides decoration using Orbit ``Tile`` appearance.
 public struct TileBorderModifier: ViewModifier {
 
     static let animation: Animation = .easeIn(duration: 0.15)
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.status) var status
+    @Environment(\.status) private var status
 
-    let style: TileBorderStyle
-    let isSelected: Bool
+    private let style: TileBorderStyle
+    private let isSelected: Bool
 
     public func body(content: Content) -> some View {
         content
@@ -28,7 +29,7 @@ public struct TileBorderModifier: ViewModifier {
             .overlay(border.animation(Self.animation, value: isSelected))
     }
 
-    @ViewBuilder var border: some View {
+    @ViewBuilder private var border: some View {
         switch (style, horizontalSizeClass) {
             case (.none, _):
                 EmptyView()
@@ -45,20 +46,20 @@ public struct TileBorderModifier: ViewModifier {
         }
     }
 
-    @ViewBuilder var compactSeparatorBorder: some View {
+    @ViewBuilder private var compactSeparatorBorder: some View {
         borderColor
             .frame(height: status == nil ? 1 : BorderWidth.active)
     }
 
-    @ViewBuilder var clipShape: some InsettableShape {
+    @ViewBuilder private var clipShape: some InsettableShape {
         RoundedRectangle(cornerRadius: cornerRadius)
     }
 
-    var isCompact: Bool {
+    private var isCompact: Bool {
         (style == .iOS) && horizontalSizeClass == .compact
     }
 
-    var cornerRadius: CGFloat {
+    private var cornerRadius: CGFloat {
         switch (style, horizontalSizeClass) {
             case (.default, _):     return BorderRadius.default
             case (.plain, _):       return BorderRadius.default
@@ -68,7 +69,7 @@ public struct TileBorderModifier: ViewModifier {
         }
     }
 
-    var elevation: Elevation? {
+    private var elevation: Elevation? {
         guard status == .none else {
             return nil
         }
@@ -81,13 +82,13 @@ public struct TileBorderModifier: ViewModifier {
         }
     }
 
-    var borderWidth: CGFloat {
+    private var borderWidth: CGFloat {
         isSelected || status != nil
             ? BorderWidth.active
             : 1
     }
 
-    var borderColor: Color {
+    private var borderColor: Color {
         if let status = status {
             return status.color
         }
@@ -99,17 +100,23 @@ public struct TileBorderModifier: ViewModifier {
         return showOuterBorder ? .cloudNormal : .clear
     }
 
-    var showOuterBorder: Bool {
+    private var showOuterBorder: Bool {
         switch style {
             case .iOS, .plain:      return true
             case .none, .default:   return false
         }
     }
+    
+    /// Creates Orbit ``TileBorderModifier``.
+    public init(style: TileBorderStyle, isSelected: Bool) {
+        self.style = style
+        self.isSelected = isSelected
+    }
 }
 
 public extension View {
 
-    /// Decorates content with a border similar to ``Tile`` or ``Card`` appearance using specified style.
+    /// Decorates content with Orbit border similar to ``Tile`` or ``Card`` appearance using specified style.
     func tileBorder(
         _ style: TileBorderStyle = .default,
         isSelected: Bool = false

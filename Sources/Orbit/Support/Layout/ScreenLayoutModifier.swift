@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Padding to apply in a `screenLayout` context.
+/// Padding to apply in Orbit `screenLayout` context.
 public enum ScreenLayoutPadding {
     /// Padding of `medium` size in compact horizontal size and `xxLarge` size in regular horizontal size.
     case `default`
@@ -65,7 +65,7 @@ struct ScreenLayoutModifier: ViewModifier {
 
 public extension View {
 
-    /// Adds unified screen layout for both `regular` and `compact` width environment.
+    /// Adds unified Orbit layout to a screen for both `regular` and `compact` width environment.
     ///
     /// Screen layout adds maximum width and padding behaviour for provided content, horizontally expanding to `infinity`.
     ///

@@ -1,24 +1,30 @@
 import SwiftUI
 
-/// Offers a control to toggle a setting on or off.
+/// Orbit input component that displays a binary toggle control.
+/// A counterpart of the native `SwiftUI.Toggle`. 
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/interaction/switch/)
+/// ```swift
+/// Switch(isOn: $isOn)
+/// ```
+/// 
+/// The component can be disabled by ``disabled(_:)`` modifier.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/interaction/switch/)
 public struct Switch: View {
 
-    public static let size = CGSize(width: 50, height: 28)
-    public static let circleDiameter: CGFloat = 30
-    public static let dotDiameter: CGFloat = 10
-    
-    static let borderColor = Color(white: 0.2, opacity: 0.25)
-    static let animation = Animation.spring(response: 0.25, dampingFraction: 0.6)
+    private static let size = CGSize(width: 50, height: 28)
+    private static let circleDiameter: CGFloat = 30
+    private static let dotDiameter: CGFloat = 10
+    private static let borderColor = Color(white: 0.2, opacity: 0.25)
+    private static let animation = Animation.spring(response: 0.25, dampingFraction: 0.6)
 
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
-    @Binding var isOn: Bool
-
-    let hasIcon: Bool
+    
+    private let hasIcon: Bool
+    @Binding private var isOn: Bool
 
     public var body: some View {
         capsule
@@ -34,14 +40,14 @@ public struct Switch: View {
             .disabled(isEnabled == false)
     }
 
-    @ViewBuilder var capsule: some View {
+    @ViewBuilder private var capsule: some View {
         Capsule(style: .circular)
             .frame(width: width, height: height)
             .foregroundColor(tint)
             .animation(Self.animation, value: isOn)
     }
 
-    @ViewBuilder var indicator: some View {
+    @ViewBuilder private var indicator: some View {
         Circle()
             .frame(width: circleDiameter, height: circleDiameter)
             .foregroundColor(indicatorColor)
@@ -58,7 +64,7 @@ public struct Switch: View {
             .animation(Self.animation, value: isOn)
     }
 
-    @ViewBuilder var indicatorSymbol: some View {
+    @ViewBuilder private var indicatorSymbol: some View {
         if hasIcon {
             Icon(isOn ? .lock : .lockOpen)
                 .iconSize(.small)
@@ -71,42 +77,46 @@ public struct Switch: View {
         }
     }
 
-    var tint: Color {
+    private var tint: Color {
         (isOn ? .blueNormal : capsuleBackgroundColor)
             .opacity(isEnabled ? 1 : 0.5)
     }
 
-    var iconTint: Color {
+    private var iconTint: Color {
         (isOn ? Color.blueNormal : Color.inkNormal)
             .opacity(isEnabled ? 1 : 0.5)
     }
 
-    var capsuleBackgroundColor: Color {
+    private var capsuleBackgroundColor: Color {
         colorScheme == .light ? .cloudDark : .cloudDark
     }
 
-    var indicatorColor: Color {
+    private var indicatorColor: Color {
         colorScheme == .light ? .whiteNormal : .cloudNormal
     }
 
-    var width: CGFloat {
+    private var width: CGFloat {
         Self.size.width * sizeCategory.controlRatio
     }
 
-    var height: CGFloat {
+    private var height: CGFloat {
         Self.size.height * sizeCategory.controlRatio
     }
 
-    var circleDiameter: CGFloat {
+    private var circleDiameter: CGFloat {
         Self.circleDiameter * sizeCategory.controlRatio
     }
 
-    var dotDiameter: CGFloat {
+    private var dotDiameter: CGFloat {
         Self.dotDiameter * sizeCategory.controlRatio
     }
+}
 
-    /// Creates Orbit Switch component.
-    public init(isOn: Binding<Bool>, hasIcon: Bool = false) {
+// MARK: - Previews
+public extension Switch {
+    
+    /// Creates Orbit ``Switch`` component.
+    init(isOn: Binding<Bool>, hasIcon: Bool = false) {
         self._isOn = isOn
         self.hasIcon = hasIcon
     }

@@ -1,15 +1,34 @@
 import SwiftUI
 
-/// Separates content.
+/// Orbit component that displays vertical separator between content.
+///
+/// A ``Separator`` consists of an optional label.
+///
+/// ```swift
+/// Separator("OR", thickness: .hairline)
+/// ```
 /// 
-/// - Important: Component expands horizontally to infinity.
+/// ### Customizing appearance
+///
+/// The label color can be modified by ``textColor(_:)`` modifier.
+///
+/// ```swift
+/// Separator("OR")
+///     .textColor(.blueLight)
+/// ```
+///
+/// ### Layout
+///
+/// Component expands horizontally.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/structure/separator/)
 public struct Separator: View {
 
     @Environment(\.textColor) private var textColor
 
-    let label: String
-    let color: Color
-    let thickness: CGFloat
+    private let label: String
+    private let color: Color
+    private let thickness: CGFloat
 
     public var body: some View {
         if label.isEmpty {
@@ -30,12 +49,12 @@ public struct Separator: View {
         }
     }
 
-    @ViewBuilder var line: some View {
+    @ViewBuilder private var line: some View {
         color
             .frame(height: thickness)
     }
 
-    @ViewBuilder var leadingLine: some View {
+    @ViewBuilder private var leadingLine: some View {
         HStack(spacing: 0) {
             line
             LinearGradient(colors: [color, color.opacity(0)], startPoint: .leading, endPoint: .trailing)
@@ -44,7 +63,7 @@ public struct Separator: View {
         }
     }
 
-    @ViewBuilder var trailingLine: some View {
+    @ViewBuilder private var trailingLine: some View {
         HStack(spacing: 0) {
             LinearGradient(colors: [color, color.opacity(0)], startPoint: .trailing, endPoint: .leading)
                 .frame(width: .large)
@@ -57,7 +76,7 @@ public struct Separator: View {
 // MARK: - Inits
 public extension Separator {
     
-    /// Creates Orbit Separator component.
+    /// Creates Orbit ``Separator`` component.
     init(
         _ label: String = "",
         color: Color = .cloudNormal,
@@ -72,11 +91,13 @@ public extension Separator {
 // MARK: - Types
 public extension Separator {
 
+    /// Orbit ``Separator`` thickness.
     enum Thickness {
         case `default`
         case hairline
         case custom(CGFloat)
 
+        /// Value of Orbit `Separator` ``Separator/Thickness``.
         public var value: CGFloat {
             switch self {
                 case .`default`:            return 1

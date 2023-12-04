@@ -1,8 +1,7 @@
 import UIKit
 import SwiftUI
 
-// Duplicate of TagAttributedStringBuilder in SharedUI with slight alterations.
-@available(iOS, deprecated: 15.0, message: "Will be replaced with a native markdown-enabled Text component")
+@available(iOS, deprecated: 15.0, message: "Use native markdown-enabled Text component")
 final class TagAttributedStringBuilder {
 
     enum Tag: Equatable, CaseIterable {
@@ -172,7 +171,7 @@ struct TagAttributedStringBuilderTagFinder {
     }
 }
 
-public extension String {
+extension String {
 
     var containsHtmlFormatting: Bool {
         TagAttributedStringBuilder.all.tagFinder.hasMatches(for: self)

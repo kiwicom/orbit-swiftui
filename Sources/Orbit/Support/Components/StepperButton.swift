@@ -1,14 +1,14 @@
 import SwiftUI
 
-/// An icon-based stepper button for suitable for actions inside components like `Stepper`.
+/// Orbit support component that displays icon-based stepper button for suitable for actions inside components like ``Stepper``.
 public struct StepperButton: View {
 
-    @Environment(\.isEnabled) var isEnabled
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.sizeCategory) private var sizeCategory
 
-    let icon: Icon.Symbol
-    let style: Stepper.Style
-    let action: () -> Void
+    private let icon: Icon.Symbol
+    private let style: Stepper.Style
+    private let action: () -> Void
     
     public var body: some View {
         SwiftUI.Button {
@@ -21,11 +21,11 @@ public struct StepperButton: View {
         .buttonStyle(OrbitStyle(style: style))
     }
 
-    var color: Color {
+    private var color: Color {
         isEnabled ? style.textActiveColor : style.textColor
     }
 
-    var size: CGFloat {
+    private var size: CGFloat {
         .xxLarge * sizeCategory.controlRatio
     }
 }
@@ -33,7 +33,7 @@ public struct StepperButton: View {
 // MARK: - Inits
 extension StepperButton {
 
-    /// Creates Orbit StepperButton component used in a Stepper.
+    /// Creates Orbit ``StepperButton`` component used in a ``Stepper``.
     public init(
         _ icon: Icon.Symbol,
         style: Stepper.Style = .primary,

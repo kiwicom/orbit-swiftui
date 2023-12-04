@@ -1,19 +1,43 @@
 import SwiftUI
 
-/// Presents a list of short details with added visual information.
+/// Orbit component that displays non-actionable, short details with added visual information.
 ///
-/// The items in the list should all be static information, *not* actionable.
+/// A ``BadgeList`` consists of a description and icon.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/information/badgelist/)
+/// ```swift
+/// BadgeList("You must collect <applink1>your baggage</applink1>", icon: .baggage)
+/// ```
+///
+/// ### Customizing appearance
+///
+/// The label color can be modified by ``textColor(_:)``:
+/// 
+/// ```swift
+/// BadgeList("Label")
+///     .textColor(.blueNormal)
+/// ```
+///
+/// When type is set to ``BadgeListType/status(_:)`` with a `nil` value, the default ``Status/info`` status can be modified by ``status(_:)`` modifier:
+///
+/// ```swift
+/// BadgeList("Does not include guarantee", type: .status(nil))
+///     .status(.warning)
+/// ```
+///
+/// ### Layout
+/// 
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/information/badgelist/)
 public struct BadgeList<Icon: View, Content: View>: View, PotentiallyEmptyView {
 
     @Environment(\.status) private var status
     @Environment(\.textAccentColor) private var textAccentColor
     @Environment(\.textColor) private var textColor
 
-    let type: BadgeListType
-    @ViewBuilder let icon: Icon
-    @ViewBuilder let content: Content
+    private let type: BadgeListType
+    @ViewBuilder private let icon: Icon
+    @ViewBuilder private let content: Content
 
     public var body: some View {
         if isEmpty == false {
@@ -32,7 +56,7 @@ public struct BadgeList<Icon: View, Content: View>: View, PotentiallyEmptyView {
         }
     }
 
-    @ViewBuilder var badge: some View {
+    @ViewBuilder private var badge: some View {
         if icon.isEmpty {
             Orbit.Icon(.grid)
                 .iconSize(.small)
@@ -42,14 +66,18 @@ public struct BadgeList<Icon: View, Content: View>: View, PotentiallyEmptyView {
         }
     }
 
-    @ViewBuilder var badgeBackground: some View {
+    @ViewBuilder private var badgeBackground: some View {
         if icon.isEmpty == false {
             backgroundColor
                 .clipShape(Circle())
         }
     }
+    
+    var isEmpty: Bool {
+        content.isEmpty && icon.isEmpty
+    }
 
-    public var iconColor: Color {
+    private var iconColor: Color {
         switch type {
             case .neutral:                              return .inkNormal
             case .status(let status):                   return (status ?? defaultStatus).color
@@ -57,7 +85,7 @@ public struct BadgeList<Icon: View, Content: View>: View, PotentiallyEmptyView {
         }
     }
 
-    public var backgroundColor: Color {
+    private var backgroundColor: Color {
         switch type {
             case .neutral:                              return .cloudLight
             case .status(let status):                   return (status ?? defaultStatus).lightColor
@@ -65,22 +93,15 @@ public struct BadgeList<Icon: View, Content: View>: View, PotentiallyEmptyView {
         }
     }
 
-    var defaultStatus: Status {
+    private var defaultStatus: Status {
         status ?? .info
-    }
-
-    var isEmpty: Bool {
-        content.isEmpty && icon.isEmpty
     }
 }
 
 // MARK: - Inits
 public extension BadgeList {
 
-    /// Creates Orbit BadgeList component.
-    ///
-    /// - Parameters:
-    ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    /// Creates Orbit ``BadgeList`` component.
     init(
         _ label: String = "",
         icon: Icon.Symbol? = nil,
@@ -92,10 +113,7 @@ public extension BadgeList {
         }
     }
 
-    /// Creates Orbit BadgeList component with custom icon.
-    ///
-    /// - Parameters:
-    ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    /// Creates Orbit ``BadgeList`` component with custom icon.
     init(
         _ label: String = "",
         type: BadgeListType = .neutral,
@@ -108,10 +126,7 @@ public extension BadgeList {
         }
     }
 
-    /// Creates Orbit BadgeList component with custom icon and content.
-    ///
-    /// - Parameters:
-    ///   - type: A visual style of component. A `status` style can be optionally modified using `status()` modifier when `nil` value is provided.
+    /// Creates Orbit ``BadgeList`` component with custom icon and content.
     init(
         type: BadgeListType = .neutral,
         @ViewBuilder content: () -> Content,
@@ -125,10 +140,17 @@ public extension BadgeList {
 
 // MARK: - Types
 
+/// A type of Orbit ``BadgeList``.
 public enum BadgeListType: Equatable, Hashable {
     case neutral
     case status(_ status: Status?)
+    // FIXME: Remove and use override modifiers
     case custom(iconColor: Color, backgroundColor: Color)
+    
+    /// An Orbit ``BadgeListType`` `status` type with no value provided.
+    public static var status: Self {
+        .status(nil)
+    }
 }
 
 // MARK: - Previews

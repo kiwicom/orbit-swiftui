@@ -3,7 +3,7 @@ import Orbit
 
 public extension ChoiceTile {
 
-    /// Creates Orbit ChoiceTile component.
+    /// Creates Orbit ``ChoiceTile`` component with illustration.
     ///
     /// - Parameters:
     ///   - content: The content shown below the header.
@@ -43,7 +43,7 @@ public extension ChoiceTile {
         }
     }
 
-    /// Creates Orbit ChoiceTile component.
+    /// Creates Orbit ``ChoiceTile`` component with illustration.
     ///
     /// - Parameters:
     ///   - content: The content shown below the header.

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Coordinator that manages Orbit text input components `InputField` and `Textarea`.
+/// Coordinator that manages Orbit text input components ``InputField`` and ``Textarea``.
 public final class TextFieldCoordinator: NSObject, ObservableObject {
 
     static var textFieldToBecomeResponder: UITextInput?

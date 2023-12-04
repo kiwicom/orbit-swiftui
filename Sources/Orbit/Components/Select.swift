@@ -1,12 +1,42 @@
 import SwiftUI
 
-/// Also known as dropdown. Offers a simple form control to select from many options.
+/// Orbit component that displays a dropdown control to select from many options. 
+/// A counterpart of the native `SwiftUI.Picker` with `default` style.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/select/)
-/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
+/// A ``Select`` consists of a label, value, icon and a default trailing disclosure.
+///
+/// ```swift
+/// Select("Country", value: "Czechia") {
+///     // Tap action
+/// }
+/// ```
+/// 
+/// The component can be disabled by ``disabled(_:)`` modifier.
+/// 
+/// ### Customizing appearance
+///
+/// The label and icon colors can be modified by ``textColor(_:)`` and ``iconColor(_:)`` modifiers.
+/// The icon size can be modified by ``iconSize(custom:)`` modifier.
+///
+/// ```swift
+/// Select("Country", value: "Czechia") {
+///     // Tap action
+/// }
+/// .textColor(.blueLight)
+/// .iconColor(.blueNormal)
+/// .iconSize(.large)
+/// ```
+///
+/// Before the action is triggered, a haptic feedback is fired via ``HapticsProvider/sendHapticFeedback(_:)``.
+///
+/// ### Layout
+///
+/// Component expands horizontally unless prevented by the native `fixedSize()` or ``idealSize()`` modifier.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/select/)
 public struct Select<Prefix: View, Suffix: View>: View {
 
-    public let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
+    private let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
 
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
@@ -91,7 +121,7 @@ public struct Select<Prefix: View, Suffix: View>: View {
 // MARK: - Inits
 public extension Select {
  
-    /// Creates Orbit Select component.
+    /// Creates Orbit ``Select`` component.
     init(
         _ label: String = "",
         prefix: Icon.Symbol? = nil,
@@ -123,7 +153,7 @@ public extension Select {
     }
 
 
-   /// Creates Orbit Select component with custom prefix or suffix.
+   /// Creates Orbit ``Select`` component with custom prefix or suffix.
    init(
        _ label: String = "",
        value: String?,

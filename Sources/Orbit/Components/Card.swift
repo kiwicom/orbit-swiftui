@@ -1,25 +1,42 @@
 import SwiftUI
 
-/// Separates content into sections.
+/// Orbit component that separates content into sections.
 ///
-/// Card is a wrapping component around a custom content.
+/// A ``Card`` consists of a title, description, optional action and a custom content.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/card/)
-/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
+/// ```swift
+/// Card("Card", description: "Description") {
+///     content1
+///     content2
+/// }
+/// ```
+/// 
+/// ### Customizing appearance
+/// 
+/// The title color can be modified by ``textColor(_:)`` modifier.
+/// The default background can be overridden by ``backgroundStyle(_:)-9odue`` modifier.
+///
+/// ### Layout
+///
+/// The component adds a `VStack` over the provided content. Avoid using the component when the content is large and should be embedded in a lazy stack.
+/// 
+/// Component expands horizontally unless prevented by native `fixedSize()` or ``idealSize()`` modifier.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/card/)
 public struct Card<Content: View>: View {
 
     @Environment(\.backgroundShape) private var backgroundShape
     @Environment(\.idealSize) private var idealSize
 
-    let title: String
-    let description: String
-    let action: CardAction
-    let headerSpacing: CGFloat
-    let contentLayout: CardContentLayout
-    let contentAlignment: HorizontalAlignment
-    let showBorder: Bool
-    let titleStyle: Heading.Style
-    @ViewBuilder let content: Content
+    private let title: String
+    private let description: String
+    private let action: CardAction
+    private let headerSpacing: CGFloat
+    private let contentLayout: CardContentLayout
+    private let contentAlignment: HorizontalAlignment
+    private let showBorder: Bool
+    private let titleStyle: Heading.Style
+    @ViewBuilder private let content: Content
 
     public var body: some View {
         VStack(alignment: .leading, spacing: headerSpacing) {
@@ -43,7 +60,7 @@ public struct Card<Content: View>: View {
         .accessibilityElement(children: .contain)
     }
 
-    @ViewBuilder var header: some View {
+    @ViewBuilder private var header: some View {
         if isHeaderEmpty == false {
             HStack(alignment: .top, spacing: 0) {
                 VStack(alignment: .leading, spacing: .xxSmall) {
@@ -77,7 +94,7 @@ public struct Card<Content: View>: View {
         }
     }
     
-    @ViewBuilder var resolvedBackground: some View {
+    @ViewBuilder private var resolvedBackground: some View {
         if let backgroundShape {
             backgroundShape.inactiveView
         } else {
@@ -85,7 +102,7 @@ public struct Card<Content: View>: View {
         }
     }
 
-    var isHeaderEmpty: Bool {
+    private var isHeaderEmpty: Bool {
         if case .none = action, title.isEmpty, description.isEmpty {
             return true
         } else {
@@ -93,11 +110,11 @@ public struct Card<Content: View>: View {
         }
     }
 
-    var isContentEmpty: Bool {
+    private var isContentEmpty: Bool {
         content is EmptyView
     }
     
-    var contentPadding: CGFloat {
+    private var contentPadding: CGFloat {
         switch contentLayout {
             case .fill:                         return 0
             case .default:                      return .medium
@@ -105,7 +122,7 @@ public struct Card<Content: View>: View {
         }
     }
     
-    var contentSpacing: CGFloat {
+    private var contentSpacing: CGFloat {
         switch contentLayout {
             case .fill:                         return 0
             case .default(let spacing):         return spacing
@@ -117,7 +134,7 @@ public struct Card<Content: View>: View {
 // MARK: - Inits
 public extension Card {
 
-    /// Creates Orbit Card component.
+    /// Creates Orbit ``Card`` component.
     init(
         _ title: String = "",
         description: String = "",
@@ -151,13 +168,13 @@ public extension AccessibilityID {
 
 // MARK: - Types
 
-/// Specifies the trailing action of Card component.
+/// The trailing action of Orbit ``Card`` header.
 public enum CardAction {
     case none
     case buttonLink(_ label: String, type: ButtonLinkType = .primary, action: () -> Void)
 }
 
-/// Specifies the padding and spacing behavior of Card content.
+/// The layout of Orbit ``Card`` content.
 public enum CardContentLayout {
     /// Content fills all available space with no padding or spacing.
     case fill

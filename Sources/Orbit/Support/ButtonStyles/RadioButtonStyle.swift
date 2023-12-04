@@ -19,7 +19,7 @@ public struct RadioButtonStyle: ButtonStyle {
         .accessibility(addTraits: isChecked ? .isSelected : [])
     }
 
-    func indicator(isPressed: Bool) -> some View {
+    private func indicator(isPressed: Bool) -> some View {
         indicatorShape
             .strokeBorder(indicatorStrokeColor(isPressed: isPressed), lineWidth: strokeWidth)
             .background(
@@ -43,11 +43,11 @@ public struct RadioButtonStyle: ButtonStyle {
             }
     }
 
-    var indicatorShape: some InsettableShape {
+    private var indicatorShape: some InsettableShape {
         Circle()
     }
 
-    func indicatorStrokeColor(isPressed: Bool) -> some ShapeStyle {
+    private func indicatorStrokeColor(isPressed: Bool) -> some ShapeStyle {
         switch (isEnabled, isChecked, isPressed) {
             case (true, true, false):       return .blueNormal
             case (true, true, true):        return .blueLightActive
@@ -55,14 +55,14 @@ public struct RadioButtonStyle: ButtonStyle {
         }
     }
 
-    var indicatorBackgroundColor: some ShapeStyle {
+    private var indicatorBackgroundColor: some ShapeStyle {
         switch (isEnabled, isChecked) {
             case (false, false):            return .cloudNormal
             case (_, _):                    return .clear
         }
     }
 
-    func indicatorOverlayStrokeColor(isPressed: Bool) -> some ShapeStyle {
+    private func indicatorOverlayStrokeColor(isPressed: Bool) -> some ShapeStyle {
         switch (state, isPressed) {
             case (.normal, true):           return .blueNormal
             case (.error, true):            return .redLightActive
@@ -71,19 +71,19 @@ public struct RadioButtonStyle: ButtonStyle {
         }
     }
 
-    var size: CGFloat {
+    private var size: CGFloat {
         Self.size * sizeCategory.controlRatio
     }
 
-    var strokeWidth: CGFloat {
+    private var strokeWidth: CGFloat {
         (isChecked ? 6 : 2) * sizeCategory.controlRatio
     }
 
-    var errorStrokeWidth: CGFloat {
+    private var errorStrokeWidth: CGFloat {
         3 * sizeCategory.controlRatio
     }
 
-    var indicatorStrokeWidth: CGFloat {
+    private var indicatorStrokeWidth: CGFloat {
         2 * sizeCategory.controlRatio
     }
     

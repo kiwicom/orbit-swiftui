@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Defines Orbit gradient styles.
+/// Predefined Orbit gradient styles.
 public enum Gradient {
     
     case bundleBasic

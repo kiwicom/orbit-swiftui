@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Orbit support component that displays progress.
 public struct Progress: View {
 
     public static let height: CGFloat = 5
@@ -20,6 +21,7 @@ public struct Progress: View {
             )
     }
 
+    /// Creates Orbit ``Progress`` component.
     public init(_ progress: CGFloat) {
         self.progress = progress
     }

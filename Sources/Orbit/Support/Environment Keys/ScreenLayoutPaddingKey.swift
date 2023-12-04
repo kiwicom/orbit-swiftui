@@ -6,7 +6,7 @@ struct ScreenLayoutPaddingKey: EnvironmentKey {
 
 public extension EnvironmentValues {
 
-    /// Indicates whether the content is inside the `screenLayout` context
+    /// Indicates whether the content is inside the Orbit `screenLayout` context
     /// and specifies its padding in case it is.
     var screenLayoutPadding: ScreenLayoutPadding? {
         get { self[ScreenLayoutPaddingKey.self] }

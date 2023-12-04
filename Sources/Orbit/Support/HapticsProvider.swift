@@ -1,5 +1,9 @@
 import UIKit
+import SwiftUI
 
+/// Orbit haptics feedback provider. 
+/// 
+/// Can be disabled by ``SwiftUI/View/hapticsDisabled(_:)``. 
 public enum HapticsProvider {
 
     public enum HapticFeedbackType {

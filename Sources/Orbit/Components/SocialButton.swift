@@ -1,12 +1,25 @@
 import SwiftUI
 
-/// Lets users sign in using a social service.
+/// Orbit component that displays a control that initiates an action related to a social service. 
 ///
-/// Social buttons are designed to ease the flow for users signing in.
-/// Don’t use them in any other case or in any complex scenarios.
+/// A ``SocialButton`` consists of a label and predefined icon.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/socialbutton/)
-/// - Important: Component expands horizontally unless prevented by `fixedSize` or `idealSize` modifier.
+/// ```swift
+/// SocialButton("Sign in with Facebook", service: .facebook) {
+///     // Tap action 
+/// }
+/// ```
+///
+/// Before the action is triggered, a haptic feedback is fired via ``HapticsProvider/sendHapticFeedback(_:)``.
+///
+/// ### Layout
+///
+/// Component expands horizontally unless prevented by the native `fixedSize()` or ``idealSize()`` modifier.
+/// The default ``ButtonSize/regular`` size can be modified by a ``buttonSize(_:)`` modifier.
+/// 
+/// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/socialbutton/)
 public struct SocialButton: View {
 
     @Environment(\.colorScheme) private var colorScheme
@@ -40,7 +53,7 @@ public struct SocialButton: View {
         .backgroundStyle(background, active: backgroundActive)
     }
 
-    @ViewBuilder var logo: some View {
+    @ViewBuilder private var logo: some View {
         switch service {
             case .apple:        Self.appleLogo.foregroundColor(.whiteNormal).padding(1)
             case .google:       Self.googleLogo
@@ -49,7 +62,7 @@ public struct SocialButton: View {
         }
     }
 
-    var textColor: Color {
+    private var textColor: Color {
         switch service {
             case .apple:        return .whiteNormal
             case .google:       return .inkDark
@@ -58,7 +71,7 @@ public struct SocialButton: View {
         }
     }
 
-    var background: Color {
+    private var background: Color {
         switch service {
             case .apple:        return colorScheme == .light ? .black : .white
             case .google:       return .cloudNormal
@@ -67,7 +80,7 @@ public struct SocialButton: View {
         }
     }
 
-    var backgroundActive: Color {
+    private var backgroundActive: Color {
         switch service {
             case .apple:        return colorScheme == .light ? .inkNormalActive : .inkNormalActive
             case .google:       return .cloudNormalActive
@@ -80,7 +93,7 @@ public struct SocialButton: View {
 // MARK: - Inits
 public extension SocialButton {
     
-    /// Creates Orbit SocialButton component.
+    /// Creates Orbit ``SocialButton`` component.
     init(_ label: String, service: Service, action: @escaping () -> Void) {
         self.label = label
         self.service = service
@@ -95,6 +108,7 @@ extension SocialButton {
     private static let googleLogo = Image(.google).resizable()
     private static let facebookLogo = Image(.facebook).resizable()
 
+    /// Orbit ``SocialButton`` social service or login method.
     public enum Service {
         case apple
         case google

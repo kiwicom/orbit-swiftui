@@ -1,20 +1,51 @@
 import SwiftUI
 
-/// Enables users to pick exactly one option from a group.
+/// Orbit input component that displays a single selectable option to pick from a group. 
+/// A counterpart of the native `SwiftUI.Picker` with `radioGroup` style applied.
 ///
-/// Can be also used to display just the radio rounded indicator.
+/// A ``Radio`` consists of a title, description and the radio indicator.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/components/radio/)
+/// ```swift
+/// Radio("Free", isChecked: $isFree)
+/// ```
+/// 
+/// The component can be disabled by ``disabled(_:)`` modifier:
+/// 
+/// ```swift
+/// Radio(isChecked: $isFree)
+///     .disabled()
+/// ```
+///
+/// Before the selection is changed, a haptic feedback is fired via ``HapticsProvider/sendHapticFeedback(_:)``.
+///
+/// ### Customizing appearance
+/// 
+/// The title color can be modified by ``textColor(_:)`` modifier:
+/// 
+/// ```swift
+/// Radio("Free", isChecked: $isFree)
+///     .textColor(.blueNormal)
+/// ```
+///
+/// ### Layout
+/// 
+/// When the provided textual content is empty, the component results in a standalone control.
+/// 
+/// ```swift
+/// Radio(isChecked: $isFree)
+/// ```
+///
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/radio/)
 public struct Radio: View {
 
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.textColor) private var textColor
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    let title: String
-    let description: String
-    let state: State
-    @Binding var isChecked: Bool
+    private let title: String
+    private let description: String
+    private let state: State
+    @Binding private var isChecked: Bool
 
     public var body: some View {
         SwiftUI.Button {
@@ -43,13 +74,13 @@ public struct Radio: View {
         )
     }
 
-    var labelColor: Color {
+    private var labelColor: Color {
         isEnabled
             ? textColor ?? .inkDark
             : .cloudDarkHover
     }
 
-    var descriptionColor: Color {
+    private var descriptionColor: Color {
         isEnabled
             ? .inkNormal
             : .cloudDarkHover
@@ -59,7 +90,7 @@ public struct Radio: View {
 // MARK: - Inits
 public extension Radio {
     
-    /// Creates Orbit Radio component.
+    /// Creates Orbit ``Radio`` component.
     init(
         _ title: String = "",
         description: String = "",
@@ -73,6 +104,7 @@ public extension Radio {
 // MARK: - Types
 public extension Radio {
     
+    /// A state of Orbit ``Radio``.
     enum State {
         case normal
         case error

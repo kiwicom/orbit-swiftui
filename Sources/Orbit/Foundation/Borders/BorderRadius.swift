@@ -1,8 +1,8 @@
 import CoreGraphics
 
-/// Defines Orbit border radiuses.
+/// Orbit predefined border radiuses.
 ///
-/// - Note: [Orbit definition](https://orbit.kiwi/foundation/border-radiuses/)
+/// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/foundation/border-radiuses/)
 public enum BorderRadius {
     /// 3 pts border radius.
     public static let desktop: CGFloat = 3
