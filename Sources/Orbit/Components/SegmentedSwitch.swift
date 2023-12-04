@@ -74,7 +74,7 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
     @ViewBuilder func unselectedSegmentButtons(_ preferences: [IDPreference]) -> some View {
         ForEach(unselectedPreferences(preferences), id: \.1.id) { index, preference in
             segmentButton(preferences: preferences, index: index) {
-                Color.cloudNormal
+                Color.clear
             }
         }
         .overlay(

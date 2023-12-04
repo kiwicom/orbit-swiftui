@@ -13,3 +13,4 @@
 ### Customizing Appearance
 
 - ``status(_:)``
+- ``buttonPriority(_:)``

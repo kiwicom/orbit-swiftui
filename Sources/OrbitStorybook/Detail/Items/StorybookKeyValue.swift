@@ -19,11 +19,14 @@ struct StorybookKeyValue {
             }
             Separator()
             HStack(alignment: .firstTextBaseline, spacing: .large) {
-                KeyValue("Trailing very long key", value: longValue, alignment: .trailing)
+                KeyValue("Trailing very long key", value: longValue)
+                    .multilineTextAlignment(.trailing)
                 Spacer()
-                KeyValue("Centered very long key", value: longValue, alignment: .center)
+                KeyValue("Centered very long key", value: longValue)
+                    .multilineTextAlignment(.center)
                 Spacer()
-                KeyValue("Leading very long key", value: longValue, alignment: .leading)
+                KeyValue("Leading very long key", value: longValue)
+                    .multilineTextAlignment(.leading)
             }
         }
         .previewDisplayName()

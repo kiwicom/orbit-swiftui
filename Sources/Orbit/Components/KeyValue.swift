@@ -3,25 +3,29 @@ import SwiftUI
 /// A pair of label and value to display read-only information.
 ///
 /// - Note: [Orbit definition](https://orbit.kiwi/components/keyvalue/)
-public struct KeyValue: View {
+public struct KeyValue: View, PotentiallyEmptyView {
 
     let key: String
     let value: String
     let size: Size
-    let alignment: HorizontalAlignment
 
     public var body: some View {
-        KeyValueField(key, size: size, alignment: alignment) {
-            Text(value)
-                .textSize(size.valueSize)
-                .fontWeight(.medium)
-                .textIsCopyable()
-                .multilineTextAlignment(.init(alignment))
+        if isEmpty == false {
+            KeyValueField(key, size: size) {
+                Text(value)
+                    .textSize(size.valueSize)
+                    .fontWeight(.medium)
+                    .textIsCopyable()
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibility(label: .init(key))
+            .accessibility(value: .init(value))
+            .accessibility(addTraits: .isStaticText)
         }
-        .accessibilityElement(children: .ignore)
-        .accessibility(label: .init(key))
-        .accessibility(value: .init(value))
-        .accessibility(addTraits: .isStaticText)
+    }
+    
+    var isEmpty: Bool {
+        key.isEmpty && value.isEmpty
     }
 }
 
@@ -32,13 +36,11 @@ extension KeyValue {
     public init(
         _ key: String = "",
         value: String = "",
-        size: Size = .normal,
-        alignment: HorizontalAlignment = .leading
+        size: Size = .normal
     ) {
         self.key = key
         self.value = value
         self.size = size
-        self.alignment = alignment
     }
 }
 
@@ -110,11 +112,14 @@ struct KeyValuePreviews: PreviewProvider {
             }
             Separator()
             HStack(alignment: .firstTextBaseline, spacing: .large) {
-                KeyValue("Trailing very long key", value: longValue, alignment: .trailing)
+                KeyValue("Trailing very long key", value: longValue)
+                    .multilineTextAlignment(.trailing)
                 Spacer()
-                KeyValue("Centered very long key", value: longValue, alignment: .center)
+                KeyValue("Centered very long key", value: longValue)
+                    .multilineTextAlignment(.center)
                 Spacer()
-                KeyValue("Leading very long key", value: longValue, alignment: .leading)
+                KeyValue("Leading very long key", value: longValue)
+                    .multilineTextAlignment(.leading)
             }
         }
         .previewDisplayName()

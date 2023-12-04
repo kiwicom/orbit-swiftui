@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// A builder that constructs buttons for  ``Dialog`` and ``EmptyState`` components.
+/// A builder that constructs buttons for  Orbit ``Dialog`` and ``EmptyState`` components.
 ///
-/// Up to three buttons are supported. The first one is resolved to primary Button with the rest resolved to ButtonLinks.
-/// A `status()` modifier can be used to override the button style.
+/// Up to three buttons are supported. The first one is resolved to primary Button with the rest resolved to ButtonLinks by default.
+/// A `status()` or `buttonPriority()` modifiers can be used to override the button style.
 @resultBuilder public enum ButtonStackBuilder {
 
     public static func buildBlock(_ empty: EmptyView) -> EmptyView {
@@ -42,14 +42,16 @@ import SwiftUI
     static func primaryButton(_ content: some View) -> some View {
         content
             .suppressButtonStyle()
-            .buttonStyle(OrbitButtonStyle(type: .status(nil)))
+            .buttonPriority(.primary)
+            .buttonStyle(ButtonStackStyle())
             .accessibility(.buttonStackPrimary)
     }
 
     static func nonPrimaryButton(_ content: some View) -> some View {
         content
             .suppressButtonStyle()
-            .buttonStyle(OrbitButtonLinkButtonStyle(type: .status(nil)))
+            .buttonPriority(.secondary)
+            .buttonStyle(ButtonStackStyle())
     }
 
     static func secondaryButton(_ content: some View) -> some View {
