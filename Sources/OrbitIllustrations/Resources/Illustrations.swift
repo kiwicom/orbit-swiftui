@@ -70,6 +70,7 @@ public extension Illustration {
         case onlineCheckIn
         case openSearch
         case parking
+        case passportUpdate
         case pets
         case placeholderAirport
         case placeholderDestination
