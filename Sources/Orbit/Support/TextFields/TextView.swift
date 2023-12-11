@@ -30,8 +30,10 @@ public struct TextView: UIViewRepresentable, TextFieldBuildable {
     @Environment(\.textFontWeight) private var textFontWeight
     @Environment(\.textColor) private var textColor
     @Environment(\.textSize) private var textSize
+    @Environment(\.lineLimit) private var lineLimit
 
     @Binding private var value: String
+    @Binding private var calculatedHeight: CGFloat
     private var prompt: String
     private var state: InputState
     private var insets: UIEdgeInsets
@@ -52,7 +54,6 @@ public struct TextView: UIViewRepresentable, TextFieldBuildable {
         textView.adjustsFontForContentSizeCategory = false
         textView.tintColor = .blueNormal
 
-        textView.setContentHuggingPriority(.defaultHigh, for: .vertical)
         textView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         
         // Set initial text value to distinguish from binding updates
@@ -66,6 +67,7 @@ public struct TextView: UIViewRepresentable, TextFieldBuildable {
         context.coordinator.isBeingUpdated = true
 
         uiView.updateIfNeeded(\.contentInset, to: insets)
+        uiView.updateIfNeeded(\.numberOfLines, to: lineLimit ?? 0)
 
         // Keyboard related
         uiView.updateIfNeeded(\.returnKeyType, to: returnKeyType)
@@ -126,8 +128,23 @@ public struct TextView: UIViewRepresentable, TextFieldBuildable {
                 return
             }
         }
+        
+        recalculateHeight(view: uiView)
 
         context.coordinator.isBeingUpdated = false
+    }
+    
+    func recalculateHeight(view: UIView) {
+        let newSize = view.sizeThatFits(CGSize(width: view.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
+        if 10 < newSize.height && calculatedHeight != newSize.height {
+            DispatchQueue.main.async {
+                self.$calculatedHeight.wrappedValue = newSize.height
+            }
+        } else if 10 >= newSize.height && calculatedHeight != 10 {
+            DispatchQueue.main.async {
+                self.$calculatedHeight.wrappedValue = 10
+            }
+        }
     }
 
     public func makeCoordinator() -> TextFieldCoordinator {
@@ -163,11 +180,13 @@ public extension TextView {
     /// Creates Orbit ``TextView`` wrapper over `UITextView`. The component is used in ``Textarea`` component.
     init(
         value: Binding<String>,
+        calculatedHeight: Binding<CGFloat>,
         prompt: String = "",
         state: InputState = .default,
         insets: UIEdgeInsets = .zero
     ) {
         self._value = value
+        self._calculatedHeight = calculatedHeight
         self.prompt = prompt
         self.state = state
         self.insets = insets
@@ -193,6 +212,7 @@ struct TextViewPreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             alignment
+            lineLimit
         }
         .padding(.medium)
         .previewLayout(.sizeThatFits)
@@ -201,21 +221,21 @@ struct TextViewPreviews: PreviewProvider {
     static var standalone: some View {
         VStack(spacing: .medium) {
             Group {
-                TextView(value: .constant(""), prompt: "Disabled")
-                    .disabled(true)
-                    .frame(width: 50, height: 50)
+//                TextView(value: .constant(""), calculatedHeight: <#T##Binding<CGFloat>#> prompt: "Disabled")
+//                    .disabled(true)
+//                    .frame(width: 50, height: 50)
                 
-                StateWrapper("") { $value in
-                    TextView(value: $value, prompt: "Enter value")
-                        .frame(height: 50)
-                }
-                StateWrapper("value") { $value in
-                    TextView(value: $value, prompt: "Enter value")
-                        .frame(width: 200, height: 100)
-                }
-                StateWrapper("value") { $value in
-                    TextView(value: $value, prompt: "Enter value")
-                }
+//                StateWrapper("") { $value in
+//                    TextView(value: $value, prompt: "Enter value")
+//                        .frame(height: 50)
+//                }
+//                StateWrapper("value") { $value in
+//                    TextView(value: $value, prompt: "Enter value")
+//                        .frame(width: 200, height: 100)
+//                }
+//                StateWrapper("value") { $value in
+//                    TextView(value: $value, prompt: "Enter value")
+//                }
             }
             .border(.black, width: .hairline)
         }
@@ -225,47 +245,13 @@ struct TextViewPreviews: PreviewProvider {
     static var alignment: some View {
         VStack(spacing: .medium) {
             Group {
-                if #available(iOS 16.0, *) {
-                    HStack(alignment: .firstTextBaseline) {
-                        Text("Native")
-                        SwiftUI.TextField("Enter value", text: .constant("Value"), axis: .vertical)
-                            .lineLimit(3, reservesSpace: true)
-                            .border(.black, width: .hairline)
-                    }
-                    
-                    HStack(alignment: .firstTextBaseline) {
-                        Text("Native")
-                        SwiftUI.TextField("Enter value", text: .constant(""), axis: .vertical)
-                            .lineLimit(3, reservesSpace: true)
-                            .border(.black, width: .hairline)
-                    }
-                }
-                
-                HStack(alignment: .firstTextBaseline) {
-                    Text("TextField")
-                    TextField(value: .constant(""), prompt: "Enter value")
-                        .border(.black, width: .hairline)
-                }
                 
                 HStack(alignment: .firstTextBaseline) {
                     Text("Label")
-                    TextView(value: .constant(""), prompt: "Enter value value value value value value value value value value value", insets: .init(top: .medium, left: .medium, bottom: .medium, right: .medium))
-                        .frame(height: 100)
-                        .border(.black, width: .hairline)
-                }
-                
-                HStack(alignment: .firstTextBaseline) {
-                    Text("Label")
-                    TextView(value: .constant("Value"), prompt: "Enter value value value value value value value")
-                        .frame(height: 100)
-                        .border(.black, width: .hairline)
                 }
 
                 HStack(alignment: .firstTextBaseline) {
                     Text("Label")
-                    TextView(value: .constant("Value"), prompt: "Enter value")
-                        .frame(width: 200, height: 100)
-                        .border(.black, width: .hairline)
                 }
                 .textSize(custom: 40)
                 .textColor(.blueDark)
@@ -277,6 +263,28 @@ struct TextViewPreviews: PreviewProvider {
                 ,
                 alignment: .centerFirstTextBaseline
             )
+        }
+        .previewDisplayName()
+    }
+    
+    static var lineLimit: some View {
+        VStack(spacing: .medium) {
+            Group {
+                StateWrapper(CGFloat(100)) { $height in
+                    TextView(value: .constant(""), calculatedHeight: $height, prompt: "Disabled")
+                        .disabled(true)
+                        .frame(height: height)
+                }
+                
+                StateWrapper(CGFloat(100)) { $height in
+                    StateWrapper("value") { $value in
+                        TextView(value: $value, calculatedHeight: $height, prompt: "Enter value")
+                            .frame(height: height)
+                    }
+                }
+            }
+            .lineLimit(3)
+            .border(.black, width: .hairline)
         }
         .previewDisplayName()
     }

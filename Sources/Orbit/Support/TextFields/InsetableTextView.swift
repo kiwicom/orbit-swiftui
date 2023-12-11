@@ -16,6 +16,13 @@ public class InsetableTextView: UITextView {
         }
     }
     
+    var numberOfLines = 0 {
+        didSet {
+            textContainer.maximumNumberOfLines = numberOfLines
+            promptLabel.numberOfLines = numberOfLines
+        }
+    }
+    
     let promptLabel = UILabel()
     
     public init() {
@@ -33,8 +40,9 @@ public class InsetableTextView: UITextView {
         textContainer.lineFragmentPadding = 0
         textContainerInset = .zero
         textContainer.lineBreakMode = .byWordWrapping
+        textContainer.maximumNumberOfLines = numberOfLines
         
-        promptLabel.numberOfLines = 0
+        promptLabel.numberOfLines = numberOfLines
         promptLabel.adjustsFontSizeToFitWidth = true
         promptLabel.lineBreakMode = .byWordWrapping
         promptLabel.textColor = .inkLight

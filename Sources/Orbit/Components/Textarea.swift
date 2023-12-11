@@ -30,7 +30,8 @@ public struct Textarea: View, TextFieldBuildable {
     @Environment(\.sizeCategory) private var sizeCategory
 
     @State private var isFocused: Bool = false
-
+    @State private var calculatedHeight: CGFloat = 10
+    
     private let label: String
     @Binding private var value: String
     private let prompt: String
@@ -62,6 +63,7 @@ public struct Textarea: View, TextFieldBuildable {
     @ViewBuilder private var textView: some View {
         TextView(
             value: $value, 
+            calculatedHeight: $calculatedHeight, 
             prompt: prompt, 
             insets: .init(
                 top: .small, 
@@ -85,6 +87,7 @@ public struct Textarea: View, TextFieldBuildable {
             isFocused = false
             inputFieldEndEditingAction()
         }
+        .frame(height: calculatedHeight)
     } 
 }
 
