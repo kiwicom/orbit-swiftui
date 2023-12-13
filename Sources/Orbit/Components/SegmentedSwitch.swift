@@ -4,7 +4,7 @@ import SwiftUI
 /// A counterpart of the native `SwiftUI.Picker` with `segmented` style applied.
 ///
 /// A ``SegmentedSwitch`` consists of a label and two or three choices. 
-/// Each choice must be given an Orbit  `identifier` that matches a value of the selection binding:
+/// Each choice must be given an Orbit  ``identifier(_:)`` that matches a value of the selection binding:
 ///
 /// ```swift
 /// enum Direction {

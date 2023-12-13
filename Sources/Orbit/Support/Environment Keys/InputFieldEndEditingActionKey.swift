@@ -38,7 +38,7 @@ public extension View {
 
     /// Set the `textFieldDidEndEditing` action for Orbit identifiable text fields.
     ///
-    /// Mark the associated Orbit text field with `identifier()` modifier to set its identity.
+    /// - Important: Mark the associated Orbit text field with ``identifier(_:)`` modifier to set its identity.
     ///
     /// - Parameters:
     ///   - action: A  handler that is executed after the user ends editing a specific identifiable text field inside the view hierarchy.

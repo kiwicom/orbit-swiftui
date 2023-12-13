@@ -25,7 +25,13 @@ public extension EnvironmentValues {
 
 public extension View {
 
-    /// Set the `textFieldShouldReturn` action for Orbit text fields.
+    /// Set the `textFieldShouldReturn` action for Orbit text fields that decides whether to process the keyboard Return button. 
+    /// 
+    /// By default, pressing the Return button will be processed and the keyboard will be dismissed, 
+    /// triggering the optional ``inputFieldReturnAction(_:)-9w13u`` after the processing.
+    /// 
+    /// If the Return button should be ignored instead, return `false` from the provided action. 
+    /// If the focus should be switched to another field, modify the focus value in the provided action.
     ///
     /// - Parameters:
     ///   - action: A  handler that is executed to ask whether to process the pressing of the Return button for text fields inside the view hierarchy.
@@ -33,9 +39,15 @@ public extension View {
         environment(\.inputFieldShouldReturnAction, action)
     }
 
-    /// Set the `textFieldShouldReturn` action for Orbit identifiable text fields.
+    /// Set the `textFieldShouldReturn` action for Orbit identifiable text fields that decides whether to process the keyboard Return button.
+    /// 
+    /// By default, pressing the Return button will be processed and the keyboard will be dismissed, 
+    /// triggering the optional ``inputFieldReturnAction(_:)-1mvv4`` after the processing.
+    /// 
+    /// If the Return button should be ignored instead, return `false` from the provided action. 
+    /// If the focus should be switched to another field, modify the focus value in the provided action.
     ///
-    /// Mark the associated Orbit text field with `identifier()` modifier to set its identity.
+    /// - Important: Mark the associated Orbit text field with ``identifier(_:)`` modifier to set its identity.
     ///
     /// - Parameters:
     ///   - action: A  handler that is executed to ask whether to process the pressing of the Return button for the identifiable text field inside the view hierarchy.

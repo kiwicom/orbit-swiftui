@@ -4,7 +4,7 @@ import SwiftUI
 /// A counterpart of the native `SwiftUI.Picker` with `segmented` style applied. A typical use case is switching between tabs in a native `SwiftUI.TabView`.
 ///
 /// A ``Tabs`` consists of labels that represent specific tabs.
-/// Each tab label must be given an Orbit  `identifier` that matches a value of the selection binding:
+/// Each tab label must be given an Orbit  ``identifier(_:)`` that matches a value of the selection binding:
 ///
 /// ```swift
 /// Tabs(selection: $selectedTab) {
