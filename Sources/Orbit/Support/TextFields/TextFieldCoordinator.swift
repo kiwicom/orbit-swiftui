@@ -126,7 +126,8 @@ public final class TextFieldCoordinator: NSObject, ObservableObject {
         
         if shouldReturn {
             DispatchQueue.main.async {
-                textInput.textInputView?.superview?.resignFirstResponder()
+                textInput.resignFirstResponder()
+                
                 self.inputFieldReturnAction()
 
                 if let identifier = self.identifier {
@@ -297,6 +298,24 @@ extension UITextInput {
         }
         set {
             replace(textRange, withText: newValue) 
+        }
+    }
+    
+    /// Attempt to dismiss the keyboard.
+    /// Setting the @FocusState to nil in a call site has the same effect.
+    func resignFirstResponder() {
+        var attempts = 2
+        var view: UIView? = textInputView
+        
+        while attempts > 0 {
+            guard let superview = view?.superview else { return }
+            
+            if superview.resignFirstResponder() {
+                return
+            }
+            
+            view = superview
+            attempts -= 1
         }
     }
 }

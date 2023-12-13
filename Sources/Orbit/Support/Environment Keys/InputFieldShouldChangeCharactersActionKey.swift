@@ -37,7 +37,7 @@ public extension View {
 
     /// Set the `textField(shouldChangeCharactersIn:)` action for Orbit identifiable text fields.
     ///
-    /// Mark the associated Orbit text field with `identifier()` modifier to set its identity.
+    /// - Important: Mark the associated Orbit text field with ``identifier(_:)`` modifier to set its identity.
     ///
     /// - Parameters:
     ///   - action: A  handler that is executed for identifiable text fields inside the view hierarchy when deciding whether to change the specified text.

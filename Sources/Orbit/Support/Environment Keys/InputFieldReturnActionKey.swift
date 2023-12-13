@@ -35,7 +35,7 @@ public extension View {
 
     /// Set the `textFieldReturn` action for Orbit identifiable text fields.
     ///
-    /// Mark the associated Orbit text field with `identifier()` modifier to set its identity.
+    /// - Important: Mark the associated Orbit text field with ``identifier(_:)`` modifier to set its identity.
     ///
     /// - Parameters:
     ///   - action: A  handler that is executed immediately after keyboard Return action for the identifiable text field inside the view hierarchy.
