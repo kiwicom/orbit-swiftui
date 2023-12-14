@@ -26,6 +26,7 @@ public struct TextView: UIViewRepresentable, TextFieldBuildable {
     @Environment(\.inputFieldShouldReturnIdentifiableAction) private var inputFieldShouldReturnIdentifiableAction
     @Environment(\.inputFieldShouldChangeCharactersAction) private var inputFieldShouldChangeCharactersAction
     @Environment(\.inputFieldShouldChangeCharactersIdentifiableAction) private var inputFieldShouldChangeCharactersIdentifiableAction
+    @Environment(\.lineLimit) private var lineLimit
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.textFontWeight) private var textFontWeight
     @Environment(\.textColor) private var textColor
@@ -36,6 +37,7 @@ public struct TextView: UIViewRepresentable, TextFieldBuildable {
     @Binding private var calculatedHeight: CGFloat
     private var prompt: String
     private var state: InputState
+    private var isScrollable: Bool
     private var insets: UIEdgeInsets
     
     // Builder properties (keyboard related)
@@ -66,6 +68,8 @@ public struct TextView: UIViewRepresentable, TextFieldBuildable {
         // Prevent delegate call cycle when updating values from SwiftUI
         context.coordinator.isBeingUpdated = true
 
+        uiView.updateIfNeeded(\.textContainer.maximumNumberOfLines, to: lineLimit ?? 0)
+        uiView.updateIfNeeded(\.isScrollEnabled, to: isScrollable)
         uiView.updateIfNeeded(\.contentInset, to: insets)
         uiView.updateIfNeeded(\.numberOfLines, to: lineLimit ?? 0)
 
@@ -102,6 +106,7 @@ public struct TextView: UIViewRepresentable, TextFieldBuildable {
         uiView.updateIfNeeded(\.textColor, to: isEnabled ? (textColor ?? state.textColor).uiColor : .cloudDarkActive)
         uiView.updateIfNeeded(\.isEditable, to: isEnabled)
         uiView.updateIfNeeded(\.prompt, to: prompt)
+        uiView.updateIfNeeded(\.promptLabel.numberOfLines, to: lineLimit == nil ? 0 : 1)
         uiView.updateIfNeeded(\.promptLabel.textColor, to: isEnabled ? state.placeholderColor.uiColor : .cloudDarkActive)
         
         // Check if the binding value is different to replace the text content
@@ -183,12 +188,14 @@ public extension TextView {
         calculatedHeight: Binding<CGFloat>,
         prompt: String = "",
         state: InputState = .default,
+        isScrollable: Bool = true,
         insets: UIEdgeInsets = .zero
     ) {
         self._value = value
         self._calculatedHeight = calculatedHeight
         self.prompt = prompt
         self.state = state
+        self.isScrollable = isScrollable
         self.insets = insets
     }
 }
@@ -211,6 +218,7 @@ struct TextViewPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            nonScrollable
             alignment
             lineLimit
         }
@@ -238,6 +246,18 @@ struct TextViewPreviews: PreviewProvider {
 //                }
             }
             .border(.black, width: .hairline)
+        }
+        .previewDisplayName()
+    }
+    
+    static var nonScrollable: some View {
+        StateWrapper("") { $value in
+            VStack {
+                TextView(value: $value, prompt: "Enter value value value value value value value value value value value", isScrollable: false)
+                    .lineLimit(3)
+                    .border(.black, width: .hairline)
+                Spacer()
+            }
         }
         .previewDisplayName()
     }

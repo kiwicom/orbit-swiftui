@@ -255,7 +255,20 @@ extension TextFieldCoordinator: UITextViewDelegate {
     }
     
     public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        shouldChange(textInput: textView, charactersIn: range, replacementString: text)
+        let shouldChange = shouldChange(textInput: textView, charactersIn: range, replacementString: text)
+        
+        let numberOfGlyphs = textView.layoutManager.numberOfGlyphs
+        var numberOfLines: Int = 0
+        var index: Int = 0
+        var lineRange = NSRange()
+
+        while index < numberOfGlyphs {
+            textView.layoutManager.lineFragmentRect(forGlyphAt: index, effectiveRange: &lineRange)
+            index = NSMaxRange(lineRange)
+            numberOfLines += 1
+        }
+
+        return shouldChange && (numberOfLines <= textView.textContainer.maximumNumberOfLines)
     }
 
     public func textViewDidChange(_ textView: UITextView) {

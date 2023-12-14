@@ -24,9 +24,12 @@ import UIKit
 /// - Note: [Orbit definition](https://orbit.kiwi/components/input/textarea/)
 public struct Textarea: View, TextFieldBuildable {
     
+    // TODO: scrollview yes: TextEditor, no: TextField.lineLimit
+    
     @Environment(\.inputFieldBeginEditingAction) private var inputFieldBeginEditingAction
     @Environment(\.inputFieldEndEditingAction) private var inputFieldEndEditingAction
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.lineLimit) private var lineLimit
     @Environment(\.sizeCategory) private var sizeCategory
 
     @State private var isFocused: Bool = false
@@ -64,7 +67,8 @@ public struct Textarea: View, TextFieldBuildable {
         TextView(
             value: $value, 
             calculatedHeight: $calculatedHeight, 
-            prompt: prompt, 
+            prompt: prompt,
+            isScrollable: lineLimit == nil,
             insets: .init(
                 top: .small, 
                 left: .small, 
@@ -124,6 +128,7 @@ struct TextareaPreviews: PreviewProvider {
     static var previews: some View {
         PreviewWrapper {
             standalone
+            lineLimit
             layout
         }
         .previewLayout(.sizeThatFits)
@@ -131,13 +136,30 @@ struct TextareaPreviews: PreviewProvider {
     
     static var standalone: some View {
         textarea
+            .frame(height: 160)
             .padding(.medium)
             .previewDisplayName()
+    }
+    
+    static var lineLimit: some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            textarea
+                .lineLimit(1)
+            
+            textarea
+                .lineLimit(2)
+            
+            textarea
+                .lineLimit(10)
+        }
+        .padding(.medium)
+        .previewDisplayName()
     }
     
     static var layout: some View {
         VStack(alignment: .leading, spacing: .medium) {
             textarea
+                .frame(height: 100)
             
             StateWrapper("") { $value in
                 Textarea(value: $value, prompt: prompt)
@@ -146,7 +168,9 @@ struct TextareaPreviews: PreviewProvider {
             
             HStack(alignment: .top, spacing: .medium) {
                 textarea
+                    .frame(height: 100)
                 textarea
+                    .frame(height: 100)
             }
         }
         .padding(.medium)
@@ -156,7 +180,6 @@ struct TextareaPreviews: PreviewProvider {
     static var textarea: some View {
         StateWrapper(prompt) { $value in
             Textarea("Label", value: $value, prompt: prompt)
-                .frame(height: 100)
         }
     }
 }
