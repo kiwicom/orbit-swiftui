@@ -51,6 +51,10 @@ public struct Textarea: View, TextFieldBuildable {
         FieldWrapper(label, message: message, messageHeight: $messageHeight) {
             InputContent(state: state, message: message, isFocused: isFocused) {
                 textView
+                    .alignmentGuide(.firstTextBaseline) { dimension in
+                        // Required to fix resizing issues when typing
+                        dimension[.top]
+                    }
             }
         }
     }
