@@ -109,6 +109,7 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
                 selection = selection(from: preference)
             } label: {
                 label()
+                    .contentShape(.rect)
             }
             .buttonStyle(TransparentButtonStyle(isActive: isSelected, borderWidth: borderWidth, pressedOpacity: 0.4))
             .frame(width: width)

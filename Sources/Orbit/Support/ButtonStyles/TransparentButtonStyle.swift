@@ -11,8 +11,8 @@ struct TransparentButtonStyle: ButtonStyle {
         HStack(spacing: 0) {
             if isActive {
                 configuration.label
-                    .scaleEffect(configuration.isPressed ? 0.95 : 1)
-                    .animation(.easeInOut(duration: 0.05), value: configuration.isPressed)
+                    .padding(configuration.isPressed ? 1 : 0)
+                    .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
             } else {
                 configuration.label
                     .overlay(
