@@ -45,6 +45,8 @@ public class InsetableTextView: UITextView {
     public override func layoutSubviews() {
         super.layoutSubviews()
         contentInset = insets
+        // Fixes iOS15 inset issues
+        contentOffset = .init(x: -insets.left, y: contentOffset.y)
         let size = promptLabel.sizeThatFits(bounds.inset(by: insets).size)
         promptLabel.frame = .init(origin: .zero, size: size)
     }
