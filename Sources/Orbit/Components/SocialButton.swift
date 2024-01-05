@@ -34,19 +34,18 @@ public struct SocialButton: View {
             action()
         } label: {
             Text(label)
-                .fontWeight(.medium)
         }
         .buttonStyle(
             OrbitButtonStyle {
                 logo
                     .scaledToFit()
                     .frame(width: .large * sizeCategory.ratio)
-                    .padding([.leading, .vertical], -.xxSmall)
+                    .padding(.vertical, -.xxSmall)
             } trailingIcon: {
                 Spacer(minLength: 0)
                 Icon(.chevronForward)
                     .iconSize(.large)
-                    .padding([.trailing, .vertical], -.xxSmall)
+                    .padding(.vertical, -.xxSmall)
             }
         )
         .textColor(textColor)
