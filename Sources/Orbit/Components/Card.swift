@@ -141,7 +141,7 @@ public extension Card {
         action: CardAction = .none,
         headerSpacing: CGFloat = .medium,
         showBorder: Bool = true,
-        titleStyle: Heading.Style = .title4,
+        titleStyle: Heading.Style = .title3,
         contentLayout: CardContentLayout = .default(),
         contentAlignment: HorizontalAlignment = .leading,
         @ViewBuilder content: () -> Content = { EmptyView() }
