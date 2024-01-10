@@ -3,9 +3,7 @@ import Orbit
 
 public extension Illustration {
 
-    enum Asset: String, CaseIterable, AssetNameProviding {
-        case none
-        
+    enum Asset: String, CaseIterable, AssetNameProviding {        
         case accommodation
         case airHelp
         case airportShuttle
@@ -98,9 +96,5 @@ public extension Illustration {
         case transportTaxi
         case wheelchair
         case womanWithPhone
-
-        public var assetName: String {
-            self == .none ? "" : defaultAssetName
-        }
     }
 }

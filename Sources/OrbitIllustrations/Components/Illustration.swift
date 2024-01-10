@@ -61,10 +61,10 @@ public extension Illustration {
     ///     - layout: Layout behavior of illustration content.
     ///     By default, a `frame` layout is used to automatically resize the illustration and center it horizontally.
     init(
-        _ asset: Asset,
+        _ asset: Asset?,
         layout: Layout = .frame()
     ) {
-        self.name = asset.assetName
+        self.name = asset?.assetName ?? ""
         self.bundle = .module
         self.layout = layout
     }
@@ -125,7 +125,7 @@ struct IllustrationPreviews: PreviewProvider {
     static var standalone: some View {
         VStack {
             Illustration(.womanWithPhone)
-            Illustration(.none) // EmptyView
+            Illustration("", bundle: .orbitIllustrations) // EmptyView
         }
         .previewDisplayName()
     }
