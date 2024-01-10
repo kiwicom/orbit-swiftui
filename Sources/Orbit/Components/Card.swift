@@ -17,12 +17,43 @@ import SwiftUI
 /// The default background can be overridden by ``backgroundStyle(_:)-9odue`` modifier.
 ///
 /// ### Layout
-///
-/// The component adds a `VStack` over the provided content. Avoid using the component when the content is large and should be embedded in a lazy stack.
 /// 
-/// Component expands horizontally unless prevented by native `fixedSize()` or ``idealSize()`` modifier.
+/// The component adds a `VStack` with `.medium` spacing between the header and any provided content.
+/// The provided content itself is separated by zero spacing.
+///
+/// To use the full space provided by card for the content, use zero `contentPadding`. 
+/// This padding is applied to horizontal and bottom edges around the whole content:
+///
+/// ```swift
+/// Card("Card with filling content", contentPadding: 0) {
+///     content1
+///     content2
+/// }
+/// ```
+///
+/// To fully customize the layout of content,  use a custom vertical stack and negative paddings:
+///
+/// ```swift
+/// Card("Card with custom content layout") {
+///     VStack(alignment: .trailing, spacing: .xSmall) {
+///         content1
+///         content2
+///     }
+///     .padding(.top, -.medium)
+/// }
+/// ```
+///
+/// Component expands horizontally unless prevented by native `fixedSize()` or ``idealSize()`` modifier:
+///
+/// ```swift
+/// Card("Narrow Card") {
+///     IntrinsicContent
+/// }
+/// .idealSize()
+/// ```
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/card/)
+/// - Important: Avoid using the component when the content is large and should be embedded in a lazy stack.
 public struct Card<Content: View>: View {
 
     @Environment(\.backgroundShape) private var backgroundShape
@@ -31,26 +62,25 @@ public struct Card<Content: View>: View {
     private let title: String
     private let description: String
     private let action: CardAction
-    private let headerSpacing: CGFloat
-    private let contentLayout: CardContentLayout
-    private let contentAlignment: HorizontalAlignment
+    private let contentPadding: CGFloat
     private let showBorder: Bool
     private let titleStyle: Heading.Style
     @ViewBuilder private let content: Content
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: headerSpacing) {
+        VStack(alignment: .leading, spacing: 0) {
             header
+                // Header uses fixed spacing
+                .padding(.bottom, isContentEmpty ? 0 : .medium)
 
             if isContentEmpty == false {
-                VStack(alignment: contentAlignment, spacing: contentSpacing) {
-                    content
-                        .environment(\.backgroundShape, nil)
-                }
-                .padding(.top, isHeaderEmpty ? contentPadding : 0)
-                .padding([.horizontal, .bottom], contentPadding)
+                content
+                    .environment(\.backgroundShape, nil)
+                    .padding(.horizontal, contentPadding)
             }
         }
+        .padding(.top, isHeaderEmpty ? contentPadding : 0)
+        .padding(.bottom, isContentEmpty ? 0 : contentPadding)
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
         .background(resolvedBackground)
         .tileBorder(
@@ -113,22 +143,6 @@ public struct Card<Content: View>: View {
     private var isContentEmpty: Bool {
         content is EmptyView
     }
-    
-    private var contentPadding: CGFloat {
-        switch contentLayout {
-            case .fill:                         return 0
-            case .default:                      return .medium
-            case .custom(let padding, _):       return padding
-        }
-    }
-    
-    private var contentSpacing: CGFloat {
-        switch contentLayout {
-            case .fill:                         return 0
-            case .default(let spacing):         return spacing
-            case .custom(_, let spacing):       return spacing
-        }
-    }
 }
 
 // MARK: - Inits
@@ -139,21 +153,17 @@ public extension Card {
         _ title: String = "",
         description: String = "",
         action: CardAction = .none,
-        headerSpacing: CGFloat = .medium,
         showBorder: Bool = true,
         titleStyle: Heading.Style = .title3,
-        contentLayout: CardContentLayout = .default(),
-        contentAlignment: HorizontalAlignment = .leading,
+        contentPadding: CGFloat = .medium,
         @ViewBuilder content: () -> Content = { EmptyView() }
     ) {
         self.title = title
         self.description = description
         self.action = action
-        self.headerSpacing = headerSpacing
         self.showBorder = showBorder
         self.titleStyle = titleStyle
-        self.contentLayout = contentLayout
-        self.contentAlignment = contentAlignment
+        self.contentPadding = contentPadding
         self.content = content()
     }
 }
@@ -172,16 +182,6 @@ public extension AccessibilityID {
 public enum CardAction {
     case none
     case buttonLink(_ label: String, type: ButtonLinkType = .primary, action: () -> Void)
-}
-
-/// The layout of Orbit ``Card`` content.
-public enum CardContentLayout {
-    /// Content fills all available space with no padding or spacing.
-    case fill
-    /// Content with `.medium` padding and overridable spacing.
-    case `default`(spacing: CGFloat = .medium)
-    /// Content with custom padding and spacing.
-    case custom(padding: CGFloat, spacing: CGFloat)
 }
 
 // MARK: - Previews
@@ -205,8 +205,6 @@ struct CardPreviews: PreviewProvider {
     }
 
     @ViewBuilder static var content: some View {
-        cardWithoutContent
-        cardWithFillLayoutContent
         cardWithFillLayoutContentNoHeader
         cardWithOnlyCustomContent
         cardWithTiles
@@ -215,9 +213,18 @@ struct CardPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Card("Card title", description: "Card description", action: .buttonLink("ButtonLink", action: {})) {
-            contentPlaceholder
-            contentPlaceholder
+        VStack(spacing: .medium) {
+            Card("Card with default layout", description: TilePreviews.descriptionMultiline, action: .buttonLink("ButtonLink", action: {})) {
+                contentPlaceholder
+                contentPlaceholder
+            }
+            
+            Card("Card with custom layout", description: TilePreviews.descriptionMultiline, action: .buttonLink("ButtonLink", action: {}), contentPadding: 0) {
+                contentPlaceholder
+                contentPlaceholder
+            }
+            
+            Card("Card with no content", description: TilePreviews.descriptionMultiline, action: .buttonLink("Edit", type: .critical, action: {}))
         }
         .previewDisplayName()
     }
@@ -234,24 +241,9 @@ struct CardPreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static var cardWithoutContent: some View {
-        Card("Card with no content", action: .buttonLink("Edit", type: .critical, action: {}))
-            .previewDisplayName()
-    }
-
-    static var cardWithFillLayoutContent: some View {
-        Card("Card with fill layout content", action: .buttonLink("Edit", type: .status(.info), action: {}), contentLayout: .fill) {
-            contentPlaceholder
-            Separator()
-            contentPlaceholder
-        }
-        .previewDisplayName()
-    }
-
     static var cardWithFillLayoutContentNoHeader: some View {
-        Card(contentLayout: .fill) {
+        Card(contentPadding: 0) {
             contentPlaceholder
-            Separator()
             contentPlaceholder
         }
         .previewDisplayName()
@@ -267,27 +259,30 @@ struct CardPreviews: PreviewProvider {
 
     static var cardWithTiles: some View {
         Card("Card with mixed content", description: "Card description", action: .buttonLink("ButtonLink", action: {})) {
-            contentPlaceholder
-                .frame(height: 30).clipped()
-            Tile("Tile", action: {})
-
-            TileGroup {
-                Tile("Tile in TileGroup 1", action: {})
-                Tile("Tile in TileGroup 2", action: {})
+            VStack(spacing: .xSmall) {
+                contentPlaceholder
+                
+                Tile("Tile", action: {})
+                
+                TileGroup {
+                    Tile("Tile in TileGroup 1", action: {})
+                    Tile("Tile in TileGroup 2", action: {})
+                }
+                
+                TileGroup {
+                    Tile("Tile in TileGroup 1 (fixed)", action: {})
+                    Tile("Tile in TileGroup 2 (fixed)", action: {})
+                }
+                .fixedSize(horizontal: true, vertical: false)
+                
+                VStack(spacing: 0) {
+                    ListChoice("ListChoice 1", action: {})
+                    ListChoice("ListChoice 2", action: {})
+                }
+                .padding(.horizontal, -.medium)
+                
+                contentPlaceholder
             }
-
-            TileGroup {
-                Tile("Tile in TileGroup 1 (fixed)", action: {})
-                Tile("Tile in TileGroup 2 (fixed)", action: {})
-            }
-            .fixedSize(horizontal: true, vertical: false)
-
-            ListChoice("ListChoice 1", action: {})
-                .padding(.trailing, -.medium)
-            ListChoice("ListChoice 2", action: {})
-                .padding(.trailing, -.medium)
-            contentPlaceholder
-                .frame(height: 30).clipped()
         }
         .previewDisplayName()
     }
@@ -307,19 +302,16 @@ struct CardPreviews: PreviewProvider {
     static var clear: some View {
         Card(
             "Card without borders and background",
-            headerSpacing: .xSmall,
             showBorder: false,
-            contentLayout: .fill
+            contentPadding: 0
         ) {
-            VStack(spacing: 0) {
-                ListChoice("ListChoice", action: {})
-                    .backgroundStyle(.blueLight, active: .greenLight)
-                ListChoice("ListChoice", icon: .map, action: {})
-                ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false, action: {})
-            }
-            .padding(.top, .xSmall)
+            ListChoice("ListChoice", action: {})
+                .backgroundStyle(.blueLight, active: .greenLight)
+            ListChoice("ListChoice", icon: .map, action: {})
+            ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false, action: {})
         }
         .backgroundStyle(.clear)
+        .padding(.vertical, -.medium)
         .previewDisplayName()
     }
 

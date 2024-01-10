@@ -194,7 +194,7 @@ struct ScreenLayoutModifierPreviews: PreviewProvider {
 
             Tile(TilePreviews.title, description: TilePreviews.description, icon: .grid, action: {})
 
-            Card("Card", contentLayout: .fill) {
+            Card("Card", contentPadding: 0) {
                 ListChoice(ListChoicePreviews.title, value: ListChoicePreviews.value, action: {})
                 ListChoice(ListChoicePreviews.title, description: ListChoicePreviews.description, action: {})
             }

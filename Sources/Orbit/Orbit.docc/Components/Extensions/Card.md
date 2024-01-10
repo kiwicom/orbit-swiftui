@@ -12,5 +12,4 @@
 
 ### Customizing Appearance
 
-- ``CardContentLayout``
 - ``BackgroundShape``
