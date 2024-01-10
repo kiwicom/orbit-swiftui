@@ -251,7 +251,7 @@ private struct ColorCard<Content: View>: View {
             title,
             showBorder: false,
             titleStyle: .title6,
-            contentLayout: .custom(padding: .xSmall, spacing: 0)
+            contentPadding: .xSmall
         ) {
             VStack(spacing: .xxxSmall) {
                 content

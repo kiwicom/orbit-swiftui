@@ -178,13 +178,17 @@ struct ScreenLayoutModifierPreviews: PreviewProvider {
 
             Button("Button", icon: .grid, action: {})
 
-            Card("Card title", description: "Card description", action: .buttonLink("ButtonLink", action: {})) {
-                TileGroup {
-                    Tile("Tile 1", action: {})
-                    Tile("Tile 2", action: {})
+            Card("Card title", description: "Card description") {
+                VStack(spacing: .medium) {
+                    TileGroup {
+                        Tile("Tile 1", action: {})
+                        Tile("Tile 2", action: {})
+                    }
+                    Tile("Tile 3", action: {})
+                    contentPlaceholder
                 }
-                Tile("Tile 3", action: {})
-                contentPlaceholder
+            } action: {
+                ButtonLink("ButtonLink", action: {})
             }
 
             TileGroup {

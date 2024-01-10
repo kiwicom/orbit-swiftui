@@ -2,12 +2,16 @@ import SwiftUI
 
 /// Orbit component that separates content into sections.
 ///
-/// A ``Card`` consists of a title, description, optional action and a custom content.
+/// A ``Card`` consists of a title, description, content and optional top-trailing action.
 ///
 /// ```swift
 /// Card("Card", description: "Description") {
 ///     content1
 ///     content2
+/// } action: {
+///     ButtonLink("Action") {
+///         // Tap action
+///     }
 /// }
 /// ```
 /// 
@@ -20,6 +24,9 @@ import SwiftUI
 /// 
 /// The component adds a `VStack` with `.medium` spacing between the header and any provided content.
 /// The provided content itself is separated by zero spacing.
+///
+/// The optional action is aligned to the title using firstTextBaseline alignment 
+/// and has a negative vertical padding applied to fit the default ``ButtonLink`` component.
 ///
 /// To use the full space provided by card for the content, use zero `contentPadding`. 
 /// This padding is applied to horizontal and bottom edges around the whole content:
@@ -54,18 +61,18 @@ import SwiftUI
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/card/)
 /// - Important: Avoid using the component when the content is large and should be embedded in a lazy stack.
-public struct Card<Content: View>: View {
+public struct Card<Content: View, Action: View>: View {
 
     @Environment(\.backgroundShape) private var backgroundShape
     @Environment(\.idealSize) private var idealSize
 
     private let title: String
     private let description: String
-    private let action: CardAction
     private let contentPadding: CGFloat
     private let showBorder: Bool
     private let titleStyle: Heading.Style
     @ViewBuilder private let content: Content
+    @ViewBuilder private let action: Action
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -92,36 +99,45 @@ public struct Card<Content: View>: View {
 
     @ViewBuilder private var header: some View {
         if isHeaderEmpty == false {
-            HStack(alignment: .top, spacing: 0) {
-                VStack(alignment: .leading, spacing: .xxSmall) {
+            VStack(alignment: .leading, spacing: .xxSmall) {
+                HStack(alignment: .firstTextBaseline, spacing: 0) {
                     Heading(title, style: titleStyle)
                         .accessibility(.cardTitle)
                     
+                    if title.isEmpty == false {
+                        if idealSize.horizontal != true {
+                            Spacer(minLength: .small)
+                        }
+                        
+                        topTrailingAction
+                    }
+                }
+                
+                HStack(alignment: .firstTextBaseline, spacing: 0) {
                     Text(description)
                         .textColor(.inkNormal)
                         .accessibility(.cardDescription)
-                }
-
-                if idealSize.horizontal != true {
-                    Spacer(minLength: 0)
-                }
-
-                switch action {
-                    case .buttonLink(let label, let type, let action):
-                        if label.isEmpty == false {
-                            ButtonLink(label, type: type, action: action)
-                                .buttonSize(.compact)
-                                .padding(.leading, .xxxSmall)
-                                .padding(.vertical, -6)
-                                .accessibility(.cardActionButtonLink)
+                    
+                    if title.isEmpty {
+                        if idealSize.horizontal != true {
+                            Spacer(minLength: .small)
                         }
-                    case .none:
-                        EmptyView()
+                        
+                        topTrailingAction
+                    }
                 }
             }
             .padding([.horizontal, .top], .medium)
             .padding(.bottom, isContentEmpty ? .medium : 0)
         }
+    }
+    
+    @ViewBuilder private var topTrailingAction: some View {
+        action
+            .buttonSize(.compact)
+            // Prevent the default ButtonLink from vertically expanding the header
+            .padding(.vertical, -.xSmall)
+            .accessibility(.cardAction)
     }
     
     @ViewBuilder private var resolvedBackground: some View {
@@ -133,7 +149,7 @@ public struct Card<Content: View>: View {
     }
 
     private var isHeaderEmpty: Bool {
-        if case .none = action, title.isEmpty, description.isEmpty {
+        if action.isEmpty, title.isEmpty, description.isEmpty {
             return true
         } else {
             return false
@@ -152,19 +168,19 @@ public extension Card {
     init(
         _ title: String = "",
         description: String = "",
-        action: CardAction = .none,
         showBorder: Bool = true,
         titleStyle: Heading.Style = .title3,
         contentPadding: CGFloat = .medium,
-        @ViewBuilder content: () -> Content = { EmptyView() }
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder action: () -> Action = { EmptyView() }
     ) {
         self.title = title
         self.description = description
-        self.action = action
         self.showBorder = showBorder
         self.titleStyle = titleStyle
         self.contentPadding = contentPadding
         self.content = content()
+        self.action = action()
     }
 }
 
@@ -173,15 +189,7 @@ public extension AccessibilityID {
 
     static let cardTitle                = Self(rawValue: "orbit.card.title")
     static let cardDescription          = Self(rawValue: "orbit.card.description")
-    static let cardActionButtonLink     = Self(rawValue: "orbit.card.action.buttonLink")
-}
-
-// MARK: - Types
-
-/// The trailing action of Orbit ``Card`` header.
-public enum CardAction {
-    case none
-    case buttonLink(_ label: String, type: ButtonLinkType = .primary, action: () -> Void)
+    static let cardAction               = Self(rawValue: "orbit.card.action")
 }
 
 // MARK: - Previews
@@ -214,17 +222,25 @@ struct CardPreviews: PreviewProvider {
 
     static var standalone: some View {
         VStack(spacing: .medium) {
-            Card("Card with default layout", description: TilePreviews.descriptionMultiline, action: .buttonLink("ButtonLink", action: {})) {
+            Card("Card", description: TilePreviews.descriptionMultiline) {
                 contentPlaceholder
                 contentPlaceholder
+            } action: {
+                ButtonLink("ButtonLink", action: {})
             }
             
-            Card("Card with custom layout", description: TilePreviews.descriptionMultiline, action: .buttonLink("ButtonLink", action: {}), contentPadding: 0) {
+            Card("Card with custom layout", description: TilePreviews.descriptionMultiline, contentPadding: 0) {
                 contentPlaceholder
                 contentPlaceholder
+            } action: {
+                ButtonLink("ButtonLink", action: {})
             }
             
-            Card("Card with no content", description: TilePreviews.descriptionMultiline, action: .buttonLink("Edit", type: .critical, action: {}))
+            Card("Card with no content", description: TilePreviews.descriptionMultiline) {
+                EmptyView()
+            } action: {
+                ButtonLink("Edit", type: .critical, action: {})
+            }
         }
         .previewDisplayName()
     }
@@ -258,7 +274,7 @@ struct CardPreviews: PreviewProvider {
     }
 
     static var cardWithTiles: some View {
-        Card("Card with mixed content", description: "Card description", action: .buttonLink("ButtonLink", action: {})) {
+        Card("Card with mixed content", description: "Card description") {
             VStack(spacing: .xSmall) {
                 contentPlaceholder
                 
@@ -283,6 +299,8 @@ struct CardPreviews: PreviewProvider {
                 
                 contentPlaceholder
             }
+        } action: {
+            ButtonLink("ButtonLink", action: {})
         }
         .previewDisplayName()
     }
@@ -290,10 +308,11 @@ struct CardPreviews: PreviewProvider {
     static var cardMultilineCritical: some View {
         Card(
             "Card with very very very very very very long and multi-line title",
-            description: "Very very very very very long and multi-line description",
-            action: .buttonLink("ButtonLink with a long description", action: {})
+            description: "Very very very very very long and multi-line description"
         ) {
             contentPlaceholder
+        } action: {
+            ButtonLink("ButtonLink with a long description", action: {})
         }
         .status(.critical)
         .previewDisplayName()

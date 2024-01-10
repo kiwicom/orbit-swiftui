@@ -13,15 +13,31 @@ struct StorybookCard {
     }
 
     static var standalone: some View {
-        Card("Card title", description: "Card description", action: .buttonLink("ButtonLink", action: {})) {
-            contentPlaceholder
-            contentPlaceholder
+        VStack(spacing: .medium) {
+            Card("Card", description: StorybookTile.descriptionMultiline) {
+                contentPlaceholder
+                contentPlaceholder
+            } action: {
+                ButtonLink("ButtonLink", action: {})
+            }
+            
+            Card("Card with custom layout", description: StorybookTile.descriptionMultiline, contentPadding: 0) {
+                contentPlaceholder
+                contentPlaceholder
+            } action: {
+                ButtonLink("ButtonLink", action: {})
+            }
+            
+            Card("Card with no content", description: StorybookTile.descriptionMultiline) {
+                EmptyView()
+            } action: {
+                ButtonLink("Edit", type: .critical, action: {})
+            }
         }
+        .previewDisplayName()
     }
 
     @ViewBuilder static var content: some View {
-        cardWithoutContent
-        cardWithFillLayoutContent
         cardWithFillLayoutContentNoHeader
         cardWithOnlyCustomContent
         cardWithTiles
@@ -29,20 +45,8 @@ struct StorybookCard {
         clear
     }
 
-    static var cardWithoutContent: some View {
-        Card("Card with no content", action: .buttonLink("Edit", action: {}))
-    }
-
-    static var cardWithFillLayoutContent: some View {
-        Card("Card with fill layout content", action: .buttonLink("Edit", action: {}), contentLayout: .fill) {
-            contentPlaceholder
-            Separator()
-            contentPlaceholder
-        }
-    }
-
     static var cardWithFillLayoutContentNoHeader: some View {
-        Card(contentLayout: .fill) {
+        Card(contentPadding: 0) {
             contentPlaceholder
             Separator()
             contentPlaceholder
@@ -50,16 +54,16 @@ struct StorybookCard {
     }
 
     static var cardWithOnlyCustomContent: some View {
-        Card {
+        Card(contentPadding: 0) {
             contentPlaceholder
             contentPlaceholder
         }
     }
 
     static var cardWithTiles: some View {
-        Card("Card with mixed content", description: "Card description", action: .buttonLink("ButtonLink", action: {})) {
+        Card("Card with mixed content", description: "Card description", contentPadding: 0) {
             contentPlaceholder
-                .frame(height: 30).clipped()
+            
             Tile("Tile", action: {})
 
             TileGroup {
@@ -77,18 +81,22 @@ struct StorybookCard {
                 .padding(.trailing, -.medium)
             ListChoice("ListChoice 2", action: {})
                 .padding(.trailing, -.medium)
+            
             contentPlaceholder
-                .frame(height: 30).clipped()
+        } action: {
+            ButtonLink("ButtonLink", action: {})
         }
+        
     }
 
     static var cardMultilineCritical: some View {
         Card(
             "Card with very very very very very very long and multi-line title",
-            description: "Very very very very very long and multi-line description",
-            action: .buttonLink("ButtonLink with a long description", action: {})
+            description: "Very very very very very long and multi-line description"
         ) {
             contentPlaceholder
+        } action: {
+            ButtonLink("ButtonLink with a long description", action: {})
         }
         .status(.critical)
     }
@@ -96,20 +104,16 @@ struct StorybookCard {
     static var clear: some View {
         Card(
             "Card without borders and background",
-            headerSpacing: .xSmall,
             showBorder: false,
-            contentLayout: .fill
+            contentPadding: 0
         ) {
-            VStack(spacing: 0) {
-                ListChoice("ListChoice", action: {})
-                ListChoice("ListChoice") {
-                    // No action
-                } icon: {
-                    CountryFlag("us")
-                }
-                ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false, action: {})
+            ListChoice("ListChoice", action: {})
+            ListChoice("ListChoice") {
+                // No action
+            } icon: {
+                CountryFlag("us")
             }
-            .padding(.top, .xSmall)
+            ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false, action: {})
         }
         .backgroundStyle(.clear)
     }

@@ -9,7 +9,7 @@ struct TutorialScreen: View {
     
     var body: some View {
         VStack(spacing: .large) {
-            Card("Card Title", action: .buttonLink("Edit", action: {})) {
+            Card("Card Title") {
                 List {
                     ListItem("List Item 1", icon: .check)
                         .iconColor(.greenNormal)
@@ -27,6 +27,8 @@ struct TutorialScreen: View {
                     Button("Secondary Button", type: .secondary, action: secondaryAction)
                     Button(icon: .creditCard, type: .status(.warning), action: {})
                 }
+            } action: {
+                ButtonLink("Edit", action: {})
             }
             
             VStack(alignment: .leading, spacing: .medium) {
