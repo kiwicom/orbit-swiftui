@@ -46,7 +46,7 @@ public struct Tile<Content: View, Icon: View>: View {
 
     private let title: String
     private let description: String
-    private let disclosure: TileDisclosure
+    private let disclosure: TileDisclosure?
     private let showBorder: Bool
     private let titleStyle: Heading.Style
     private let descriptionColor: Color
@@ -174,7 +174,7 @@ public extension Tile {
     init(
         _ title: String = "",
         description: String = "",
-        disclosure: TileDisclosure = .icon(.chevronForward),
+        disclosure: TileDisclosure? = .icon(.chevronForward),
         showBorder: Bool = true,
         titleStyle: Heading.Style = .title4,
         descriptionColor: Color = .inkNormal,
@@ -198,7 +198,7 @@ public extension Tile {
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol? = nil,
-        disclosure: TileDisclosure = .icon(.chevronForward),
+        disclosure: TileDisclosure? = .icon(.chevronForward),
         showBorder: Bool = true,
         titleStyle: Heading.Style = .title4,
         descriptionColor: Color = .inkNormal,
@@ -239,7 +239,6 @@ public extension Tile {
 // MARK: - Types
 
 public enum TileDisclosure: Equatable {
-    case none
     /// Icon with optional color override.
     case icon(Icon.Symbol, alignment: VerticalAlignment = .center)
     /// ButtonLink indicator.
