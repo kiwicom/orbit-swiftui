@@ -158,8 +158,8 @@ public struct Tile<Content: View, Icon: View>: View {
         }
     }
     
-    private var tileBorderStyle: TileBorderStyle {
-        showBorder && isInsideTileGroup == false ? .default : .none
+    private var tileBorderStyle: TileBorderStyle? {
+        showBorder && isInsideTileGroup == false ? .default : nil
     }
     
     private var isHeaderEmpty: Bool {

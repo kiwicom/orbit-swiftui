@@ -7,7 +7,7 @@ public struct TileButtonStyle: ButtonStyle {
 
     @Environment(\.backgroundShape) private var backgroundShape
     
-    private let style: TileBorderStyle
+    private let style: TileBorderStyle?
     private let isSelected: Bool
 
     public func makeBody(configuration: Configuration) -> some View {
@@ -41,7 +41,7 @@ public struct TileButtonStyle: ButtonStyle {
     }
     
     /// Create button style for Orbit ``Tile``, ``ChoiceTile`` and similar components.
-    public init(style: TileBorderStyle = .default, isSelected: Bool = false) {
+    public init(style: TileBorderStyle? = .default, isSelected: Bool = false) {
         self.style = style
         self.isSelected = isSelected
     }
