@@ -21,7 +21,7 @@ public struct CountryFlag: View, PotentiallyEmptyView {
     @Environment(\.sizeCategory) private var sizeCategory
 
     private let countryCode: CountryCode?
-    private let border: Border
+    private let border: Border?
 
     public var body: some View {
         if let countryCode {
@@ -30,7 +30,7 @@ public struct CountryFlag: View, PotentiallyEmptyView {
                 .scaledToFit()
                 .clipShape(clipShape)
                 .overlay(
-                    clipShape.strokeBorder(border.color, lineWidth: BorderWidth.hairline)
+                    clipShape.strokeBorder(border?.color ?? .clear, lineWidth: BorderWidth.hairline)
                         .blendMode(.darken)
                 )
                 .frame(width: size, height: size)
@@ -65,7 +65,7 @@ public struct CountryFlag: View, PotentiallyEmptyView {
 public extension CountryFlag {
 
     /// Creates Orbit ``CountryFlag`` component.
-    init(_ countryCode: CountryCode, border: Border = .default()) {
+    init(_ countryCode: CountryCode, border: Border? = .default()) {
         self.init(
             countryCode: countryCode,
             border: border
@@ -75,7 +75,7 @@ public extension CountryFlag {
     /// Creates Orbit ``CountryFlag`` component using a country code string.
     ///
     /// - Note: If a corresponding image is not found, the flag for unknown flag is used.
-    init(_ countryCode: String, border: Border = .default()) {
+    init(_ countryCode: String, border: Border? = .default()) {
         self.init(
             countryCode: countryCode.isEmpty ? nil : .init(countryCode),
             border: border
@@ -88,12 +88,10 @@ public extension CountryFlag {
 
     /// Orbit ``CountryFlag`` border.
     enum Border {
-        case none
         case `default`(cornerRadius: CGFloat? = nil)
 
         var color: Color {
             switch self {
-                case .none:                 return .clear
                 case .default:              return .cloudDark.opacity(0.8)
             }
         }
@@ -160,7 +158,7 @@ struct CountryFlagPreviews: PreviewProvider {
                 Text("Borders")
                 CountryFlag("CZ", border: .default(cornerRadius: 8))
                 CountryFlag("cZ", border: .default(cornerRadius: 0))
-                CountryFlag("Cz", border: .none)
+                CountryFlag("Cz", border: nil)
             }
             .textSize(.xLarge)
         }
