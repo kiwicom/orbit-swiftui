@@ -12,7 +12,8 @@ import SwiftUI
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/interaction/switch/)
 public struct Switch: View {
 
-    private static let size = CGSize(width: 50, height: 28)
+    static let size = CGSize(width: 50, height: 28)
+    
     private static let circleDiameter: CGFloat = 30
     private static let dotDiameter: CGFloat = 10
     private static let borderColor = Color(white: 0.2, opacity: 0.25)

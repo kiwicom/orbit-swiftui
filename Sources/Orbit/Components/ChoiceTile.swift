@@ -55,7 +55,7 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: 
     private let title: String
     private let description: String
     private let badgeOverlay: String
-    private let indicator: ChoiceTileIndicator
+    private let indicator: ChoiceTileIndicator?
     private let titleStyle: Heading.Style
     private let isSelected: Bool
     private let isError: Bool
@@ -198,9 +198,20 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: 
 
     @ViewBuilder private var indicatorElement: some View {
         switch indicator {
-            case .none:         EmptyView()
-            case .radio:        Radio(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: .constant(shouldSelectIndicator))
-            case .checkbox:     Checkbox(state: errorShouldHighlightIndicator ? .error : .normal, isChecked: .constant(shouldSelectIndicator))
+            case .none:         
+                EmptyView()
+            case .radio:        
+                Radio(
+                    state: errorShouldHighlightIndicator ? .error : .normal, 
+                    isChecked: .constant(shouldSelectIndicator)
+                )
+            case .checkbox:     
+                Checkbox(
+                    state: errorShouldHighlightIndicator ? .error : .normal, 
+                    isChecked: .constant(shouldSelectIndicator)
+                )
+            case .switch:       
+                Switch(isOn: .constant(shouldSelectIndicator))
         }
     }
 
@@ -234,17 +245,18 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: 
         }
     }
     
-    private var indicatorSize: CGFloat {
+    private var indicatorWidth: CGFloat {
         switch indicator {
             case .none:             return 0
             case .radio:            return RadioButtonStyle.size
             case .checkbox:         return CheckboxButtonStyle.size
+            case .switch:           return Switch.size.width
         }
     }
     
     private var indicatorTrailingPadding: CGFloat {
         isHeaderOnlyContent
-            ? (indicatorSize + .medium)
+            ? (indicatorWidth + .medium)
             : 0
     }
 
@@ -275,7 +287,7 @@ public extension ChoiceTile {
         _ title: String = "",
         description: String = "",
         badgeOverlay: String = "",
-        indicator: ChoiceTileIndicator = .radio,
+        indicator: ChoiceTileIndicator? = .radio,
         titleStyle: Heading.Style = .title3,
         isSelected: Bool = false,
         isError: Bool = false,
@@ -313,7 +325,7 @@ public extension ChoiceTile {
         description: String = "",
         icon: Icon.Symbol? = nil,
         badgeOverlay: String = "",
-        indicator: ChoiceTileIndicator = .radio,
+        indicator: ChoiceTileIndicator? = .radio,
         titleStyle: Heading.Style = .title3,
         isSelected: Bool = false,
         isError: Bool = false,
@@ -352,16 +364,9 @@ public extension ChoiceTile {
 
 /// Indicator used for Orbit ``ChoiceTile``.
 public enum ChoiceTileIndicator {
-
-    /// Alignment used for Orbit ``ChoiceTileIndicator``.
-    public enum Alignment {
-        case bottomTrailing
-        case bottom
-    }
-
-    case none
     case radio
     case checkbox
+    case `switch`
 }
 
 /// Alignment variant of Orbit ``ChoiceTile``.
@@ -389,6 +394,7 @@ struct ChoiceTilePreviews: PreviewProvider {
         PreviewWrapper {
             standalone
             standaloneCentered
+            indicators
             sizing
             idealSize
             styles
@@ -405,6 +411,42 @@ struct ChoiceTilePreviews: PreviewProvider {
             contentPlaceholder
         } header: {
             headerPlaceholder
+        }
+        .padding(.medium)
+        .previewDisplayName()
+    }
+    
+    static var indicators: some View {
+        VStack(spacing: .medium) {
+            StateWrapper(false) { $isSelected in 
+                ChoiceTile("Radio", description: description, indicator: .radio, isSelected: isSelected) {
+                    isSelected.toggle()
+                }
+            }
+            StateWrapper(false) { $isSelected in 
+                ChoiceTile("Checkbox", description: description, indicator: .checkbox, isSelected: isSelected) {
+                    isSelected.toggle()
+                }
+            }
+            StateWrapper(false) { $isSelected in 
+                ChoiceTile("Switch", description: description, indicator: .switch, isSelected: isSelected) {
+                    isSelected.toggle()
+                }
+            }
+            StateWrapper(false) { $isSelected in 
+                ChoiceTile("No indicator", description: description, indicator: nil, isSelected: isSelected) {
+                    isSelected.toggle()
+                }
+            }
+            StateWrapper(false) { $isSelected in 
+                ChoiceTile("Custom indicator", description: description, indicator: nil, isSelected: isSelected) {
+                    isSelected.toggle()
+                } content: {
+                    Icon(.check)
+                        .opacity(isSelected ? 1 : 0)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+            }
         }
         .padding(.medium)
         .previewDisplayName()

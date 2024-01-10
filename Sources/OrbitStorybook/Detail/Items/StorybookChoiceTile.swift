@@ -59,6 +59,35 @@ struct StorybookChoiceTile {
                         .overlay(Text("Custom content, no header"))
                 }
             }
+            StateWrapper(false) { $isSelected in 
+                ChoiceTile("Radio", description: description, indicator: .radio, isSelected: isSelected) {
+                    isSelected.toggle()
+                }
+            }
+            StateWrapper(false) { $isSelected in 
+                ChoiceTile("Checkbox", description: description, indicator: .checkbox, isSelected: isSelected) {
+                    isSelected.toggle()
+                }
+            }
+            StateWrapper(false) { $isSelected in 
+                ChoiceTile("Switch", description: description, indicator: .switch, isSelected: isSelected) {
+                    isSelected.toggle()
+                }
+            }
+            StateWrapper(false) { $isSelected in 
+                ChoiceTile("No indicator", description: description, indicator: nil, isSelected: isSelected) {
+                    isSelected.toggle()
+                }
+            }
+            StateWrapper(false) { $isSelected in 
+                ChoiceTile("Custom indicator", description: description, indicator: nil, isSelected: isSelected) {
+                    isSelected.toggle()
+                } content: {
+                    Icon(.check)
+                        .opacity(isSelected ? 1 : 0)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+            }
         }
         .previewDisplayName()
     }
