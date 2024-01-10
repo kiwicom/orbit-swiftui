@@ -402,7 +402,8 @@ struct ListChoicePreviews: PreviewProvider {
         ListChoice(title, description: description, icon: .grid, action: {}) {
             intrinsicContentPlaceholder
         } header: {
-            intrinsicContentPlaceholder
+            headerPlaceholder
+                .fixedSize()
         }
         .idealSize()
         .previewDisplayName()
@@ -443,7 +444,8 @@ struct ListChoicePreviews: PreviewProvider {
             ListChoice(title, description: description, icon: .grid, action: {}) {
                 intrinsicContentPlaceholder
             } header: {
-                intrinsicContentPlaceholder
+                headerPlaceholder
+                    .fixedSize()
             }
             ListChoice(disclosure: .none) {
                 // No action

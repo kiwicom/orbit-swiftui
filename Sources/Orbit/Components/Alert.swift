@@ -170,8 +170,6 @@ struct AlertPreviews: PreviewProvider {
                 description: "Alert <strong>multiline</strong> description\nwith <applink1>link</applink1>"
             ) {
                 contentPlaceholder
-                    .frame(height: 30)
-                    .clipped()
             } buttons: {
                 Button("Primary") {}
                 Button("Secondary") {}
