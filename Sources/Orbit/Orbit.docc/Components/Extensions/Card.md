@@ -6,11 +6,6 @@
 
 ## Topics
 
-### Interaction
-
-- ``CardAction``
-
 ### Customizing Appearance
 
-- ``CardContentLayout``
 - ``BackgroundShape``

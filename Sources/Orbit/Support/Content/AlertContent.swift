@@ -35,7 +35,7 @@ struct AlertContent<Content: View, Icon: View, Buttons: View>: View {
         HStack(alignment: .top, spacing: .xSmall) {
             iconContent
 
-            VStack(alignment: .leading, spacing: .medium) {
+            VStack(alignment: .leading, spacing: .small) {
                 defaultHeader
                 content
                 buttons
@@ -150,20 +150,38 @@ struct AlertContentPreviews: PreviewProvider {
     }
 
     static var content: some View {
-        AlertContent(title: title, description: description, isInline: false) {
-            contentPlaceholder
-        } icon: {
-            Icon(.informationCircle)
-        } buttons: {
-            HStack(spacing: .xSmall) {
-                Button("Primary") {}
-                    .suppressButtonStyle()
-                    .buttonStyle(AlertButtonStyle())
-
-                Button("Secondary") {}
-                    .suppressButtonStyle()
-                    .buttonStyle(AlertButtonStyle())
-                    .buttonPriority(.secondary)
+        VStack(spacing: .medium) {
+            AlertContent(title: title, description: description, isInline: false) {
+                contentPlaceholder
+            } icon: {
+                Icon(.informationCircle)
+            } buttons: {
+                HStack(spacing: .xSmall) {
+                    Button("Primary") {}
+                        .suppressButtonStyle()
+                        .buttonStyle(AlertButtonStyle())
+                    
+                    Button("Secondary") {}
+                        .suppressButtonStyle()
+                        .buttonStyle(AlertButtonStyle())
+                        .buttonPriority(.secondary)
+                }
+            }
+            
+            AlertContent(title: title, isInline: false) {
+                contentPlaceholder
+            } icon: {
+                EmptyView()
+            } buttons: {
+                EmptyView()
+            }
+            
+            AlertContent(title: "", isInline: false) {
+                contentPlaceholder
+            } icon: {
+                EmptyView()
+            } buttons: {
+                EmptyView()
             }
         }
         .previewDisplayName()
