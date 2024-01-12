@@ -67,7 +67,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
     private let title: String
     private let description: String
     private let value: String
-    private let disclosure: ListChoiceDisclosure
+    private let disclosure: ListChoiceDisclosure?
     private let showSeparator: Bool
     private let action: () -> Void
     @ViewBuilder private let content: Content
@@ -129,7 +129,7 @@ public struct ListChoice<Header: View, Icon: View, Content: View>: View, Potenti
 
                 header
                     .padding(.leading, isHeaderEmpty ? .medium : 0)
-                    .padding(.trailing, disclosure == .none ? .medium : 0)
+                    .padding(.trailing, disclosure == nil ? .medium : 0)
                     .accessibility(.listChoiceValue)
             }
         }
@@ -231,7 +231,7 @@ public extension ListChoice {
         _ title: String = "",
         description: String = "",
         value: String = "",
-        disclosure: ListChoiceDisclosure = .disclosure(),
+        disclosure: ListChoiceDisclosure? = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void,
         @ViewBuilder content: () -> Content = { EmptyView() },
@@ -254,7 +254,7 @@ public extension ListChoice {
         _ title: String = "",
         description: String = "",
         icon: Icon.Symbol? = nil,
-        disclosure: ListChoiceDisclosure = .disclosure(),
+        disclosure: ListChoiceDisclosure? = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void,
         @ViewBuilder content: () -> Content = { EmptyView() },
@@ -285,7 +285,7 @@ public extension ListChoice where Header == Text {
         description: String = "",
         icon: Icon.Symbol? = nil,
         value: String,
-        disclosure: ListChoiceDisclosure = .disclosure(),
+        disclosure: ListChoiceDisclosure? = .disclosure(),
         showSeparator: Bool = true,
         action: @escaping () -> Void,
         @ViewBuilder content: () -> Content = { EmptyView() }
@@ -319,8 +319,7 @@ public enum ListChoiceDisclosure: Equatable {
         case add
         case remove
     }
-
-    case none
+    
     /// An iOS-style disclosure indicator.
     case disclosure(Color = .inkNormal)
     /// A non-interactive button.

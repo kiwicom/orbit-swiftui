@@ -7,7 +7,7 @@ public extension EmptyState {
     init(
         _ title: String = "",
         description: String = "",
-        illustration: OrbitIllustrations.Illustration.Asset,
+        illustration: OrbitIllustrations.Illustration.Asset?,
         @ViewBuilder content: () -> Content = { EmptyView() },
         @ButtonStackBuilder buttons: () -> Buttons
     ) where Illustration == OrbitIllustrations.Illustration {
@@ -20,7 +20,7 @@ public extension EmptyState {
     init(
         _ title: String = "",
         description: String = "",
-        illustration: Illustration.Asset
+        illustration: Illustration.Asset? = nil
     ) where Content == EmptyView, Buttons == EmptyView, Illustration == OrbitIllustrations.Illustration {
         self.init(title, description: description, illustration: illustration) {
             EmptyView()

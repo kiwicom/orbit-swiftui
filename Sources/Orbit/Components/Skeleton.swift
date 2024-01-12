@@ -22,14 +22,14 @@ public struct Skeleton: View {
 
     private let preset: Preset
     private let borderRadius: CGFloat
-    private let animation: Animation
+    private let animation: Animation?
 
     public var body: some View {
         content
             .onAppear {
                 // https://developer.apple.com/forums/thread/670836
                 DispatchQueue.main.async {
-                    withAnimation(animation.value?.repeatForever()) {
+                    withAnimation(animation?.value.repeatForever()) {
                         color = Self.lightColor
                     }
                 }
@@ -94,7 +94,7 @@ public extension Skeleton {
     init(
         _ preset: Preset,
         borderRadius: CGFloat = BorderRadius.desktop,
-        animation: Animation = .default
+        animation: Animation? = .default
     ) {
         self.preset = preset
         self.borderRadius = borderRadius
@@ -127,13 +127,11 @@ extension Skeleton {
 
     /// Orbit ``Skeleton`` animation.
     public enum Animation {
-        case none
         case `default`
         case custom(SwiftUI.Animation)
 
-        var value: SwiftUI.Animation? {
+        var value: SwiftUI.Animation {
             switch self {
-                case .none:                     return nil
                 case .default:                  return .easeInOut(duration: 1.2)
                 case .custom(let animation):    return animation
             }
@@ -146,7 +144,7 @@ struct SkeletonPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            content(animation: .none)
+            content(animation: nil)
             contentAtomic(animation: .none)
             Skeleton(.card, borderRadius: BorderRadius.large, animation: .none)
                 .frame(height: 100)
@@ -159,11 +157,11 @@ struct SkeletonPreviews: PreviewProvider {
     }
 
     static var snapshot: some View {
-        content(animation: .none)
+        content(animation: nil)
             .padding(.medium)
     }
 
-    static func contentAtomic(animation: Skeleton.Animation = .default) -> some View {
+    static func contentAtomic(animation: Skeleton.Animation? = .default) -> some View {
         VStack(alignment: .leading, spacing: .medium) {
             Skeleton(.atomic(.circle), animation: animation)
                 .frame(height: 60)
@@ -175,7 +173,7 @@ struct SkeletonPreviews: PreviewProvider {
         .previewDisplayName("Atomic")
     }
 
-    static func content(animation: Skeleton.Animation = .default) -> some View {
+    static func content(animation: Skeleton.Animation? = .default) -> some View {
         VStack(alignment: .leading, spacing: .medium) {
             Skeleton(.list(rows: 3), animation: animation)
             Skeleton(.image(height: 150), animation: animation)

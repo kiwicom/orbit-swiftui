@@ -1,5 +1,6 @@
 import SwiftUI
 import Orbit
+import OrbitIllustrations
 
 struct StorybookChoiceTile {
 
@@ -137,7 +138,7 @@ struct StorybookChoiceTile {
                 title,
                 description: description,
                 icon: showIllustration ? .none : .grid,
-                illustration: showIllustration ? .priorityBoarding : .none,
+                illustration: showIllustration ? .priorityBoarding : nil,
                 badgeOverlay: "Recommended",
                 titleStyle: titleStyle,
                 isSelected: state.wrappedValue,

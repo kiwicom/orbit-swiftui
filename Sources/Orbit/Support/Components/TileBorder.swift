@@ -2,7 +2,6 @@ import SwiftUI
 
 /// Predefined Orbit border styles for ``Tile``-like components.
 public enum TileBorderStyle {
-    case none
     case `default`
     /// A border style that visually matches the iOS plain table section appearance in `compact` width environment.
     case iOS
@@ -18,7 +17,7 @@ public struct TileBorderModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.status) private var status
 
-    private let style: TileBorderStyle
+    private let style: TileBorderStyle?
     private let isSelected: Bool
 
     public func body(content: Content) -> some View {
@@ -108,7 +107,7 @@ public struct TileBorderModifier: ViewModifier {
     }
     
     /// Creates Orbit ``TileBorderModifier``.
-    public init(style: TileBorderStyle, isSelected: Bool) {
+    public init(style: TileBorderStyle?, isSelected: Bool) {
         self.style = style
         self.isSelected = isSelected
     }
@@ -118,7 +117,7 @@ public extension View {
 
     /// Decorates content with Orbit border similar to ``Tile`` or ``Card`` appearance using specified style.
     func tileBorder(
-        _ style: TileBorderStyle = .default,
+        _ style: TileBorderStyle? = .default,
         isSelected: Bool = false
     ) -> some View {
         modifier(
