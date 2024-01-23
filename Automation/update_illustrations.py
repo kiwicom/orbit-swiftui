@@ -47,13 +47,8 @@ import Orbit
 
 public extension Illustration {{
 
-    enum Asset: String, CaseIterable, AssetNameProviding {{    
+    enum Asset: String, CaseIterable, AssetNameProviding {{
 {cases}
-
-        public var assetName: String {{
-            self == .none ? "" : defaultAssetName
-        }}
-    }}
 }}
 '''
 
