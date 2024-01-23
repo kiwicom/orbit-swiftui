@@ -14,7 +14,12 @@ struct ContentView: View {
             .bold: Bundle.main.url(forResource: "Circular20-Bold.otf", withExtension: nil),
             .black: Bundle.main.url(forResource: "Circular20-Black.otf", withExtension: nil),
         ]
+        
+        // Register above custom fonts for use in Orbit textual components
         Font.registerOrbitFonts()
+        
+        // Register custom font for use in Orbit `Icon` component
+        Font.registerOrbitIconFont()
     }
 }
 

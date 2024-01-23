@@ -16,6 +16,7 @@ To use Orbit components in SwiftUI, import the `Orbit` library and use the compo
 
 ```swift
 import Orbit
+import OrbitIllustrations
 
 ...
 
@@ -23,11 +24,17 @@ VStack(spacing: .medium) {
     Heading("Messages", style: .title2)
     Illustration(.mailbox)
     Text("...<strong>...</strong>...<a href="...">here</a>.")
-    Button("Continue", style: .secondary)
+        .textSize(.large)
+        .textColor(.inkNormal)
+    Button("Continue", style: .secondary) {
+        // Action
+    }
 }
 ```
 
-As some Orbit components already exist in standard SwiftUI library (`Text` and `List` for example), you can create a typealias for Orbit components to shadow these. In order to access standard components where needed, a `SwifUI.` prefix can be used to specify the native component.
+As some components with Orbit component names already exist in standard SwiftUI library (`Text` and `List` for example), 
+you can create a typealias for Orbit components to shadow these. 
+In order to access standard components where needed, a `SwifUI.` prefix can be used to specify the native component.
 
 ```swift
 // Add these lines to prefer Orbit components over SwiftUI ones
@@ -66,4 +73,4 @@ Use ``BorderRadius`` and ``BorderWidth`` enums.
 
 Use `Font` extensions. 
 
-All Orbit components use the Orbit font (see <doc:GettingStarted>) automatically.
+All Orbit components use the (optional) Orbit font (see <doc:GettingStarted>) automatically.
