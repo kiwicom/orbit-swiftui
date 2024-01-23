@@ -455,19 +455,17 @@ struct InputFieldPreviews: PreviewProvider {
 struct InputFieldLivePreviews: PreviewProvider {
 
     static var previews: some View {
-        PreviewWrapper()
-        securedWrapper
+        PreviewWrapper {
+            InputFieldWrapper()
+            securedWrapper
+        }
     }
     
-    struct PreviewWrapper: View {
+    struct InputFieldWrapper: View {
 
         @State var message: Message? = nil
         @State var textValue = "12"
         @State var intValue = 0
-
-        init() {
-            Font.registerOrbitFonts()
-        }
 
         var body: some View {
             ScrollView {
