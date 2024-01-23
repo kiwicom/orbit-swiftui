@@ -11,6 +11,7 @@ public struct OrbitPreviewWrapper<Content: View>: View {
 
     public init(@ViewBuilder content: () -> Content) {
         Font.registerOrbitFonts()
+        Font.registerOrbitIconFont()
         self.content = content()
     }
 }

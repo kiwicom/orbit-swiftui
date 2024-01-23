@@ -31,18 +31,20 @@ public extension Font {
         Font(UIFont.orbit(size: size, weight: weight.uiKit))
     }
 
-    /// Creates Orbit icon font.
+    /// Creates Orbit icon font for use in ``Icon`` component.
     static func orbitIcon(size: CGFloat) -> Font {
         customFont(orbitIconFontName, size: size)
     }
-
-    /// Registers Orbit fonts set in the `orbitTextFonts` property.
-    static func registerOrbitFonts() {
-
+    
+    /// Registers Orbit icon font for use in ``Icon`` component.
+    static func registerOrbitIconFont() {
         if let iconsFontURL = Bundle.orbit.url(forResource: "Icons.ttf", withExtension: nil) {
             _ = registerFont(at: iconsFontURL)
         }
+    }
 
+    /// Registers Orbit fonts set in the `Font.orbitFonts` property for use in all Orbit text components.
+    static func registerOrbitFonts() {
         var registeredFonts: [URL: CGFont] = [:]
 
         for case let (weight, url?) in orbitFonts {
