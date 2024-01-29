@@ -49,6 +49,7 @@ public extension Illustration {{
 
     enum Asset: String, CaseIterable, AssetNameProviding {{
 {cases}
+    }}
 }}
 '''
 

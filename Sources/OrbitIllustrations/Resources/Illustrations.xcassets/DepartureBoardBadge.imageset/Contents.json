@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "DepartureBoardBadge@1x.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "DepartureBoardBadge@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "DepartureBoardBadge@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
