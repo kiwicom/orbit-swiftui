@@ -99,4 +99,5 @@ public extension Illustration {
         case transportTaxi
         case wheelchair
         case womanWithPhone
+    }
 }
