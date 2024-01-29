@@ -3,7 +3,7 @@ import Orbit
 
 public extension Illustration {
 
-    enum Asset: String, CaseIterable, AssetNameProviding {        
+    enum Asset: String, CaseIterable, AssetNameProviding {
         case accommodation
         case airHelp
         case airportShuttle
@@ -30,6 +30,9 @@ public extension Illustration {
         case compassSaveOnBooking
         case compassTravelPlan
         case damage
+        case departureBoard
+        case departureBoardBadge
+        case departureBoardLounge
         case desktopSearch
         case eVisa
         case enjoyApp
@@ -96,5 +99,4 @@ public extension Illustration {
         case transportTaxi
         case wheelchair
         case womanWithPhone
-    }
 }
