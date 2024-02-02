@@ -3,33 +3,48 @@ import SwiftUI
 /// Orbit input component that displays a binary toggle control.
 /// A counterpart of the native `SwiftUI.Toggle`. 
 ///
+/// A ``Switch`` consists of a binding to a boolean value and an optional icon.
+///
 /// ```swift
-/// Switch(isOn: $isOn)
+/// Switch(isOn: $isOn, icon: .airplaneUp)
 /// ```
 /// 
-/// The component can be disabled by ``disabled(_:)`` modifier.
+/// The component can be disabled by ``disabled(_:)`` modifier:
+/// 
+/// ```swift
+/// Switch(isOn: $isOn)
+///     .disabled(isDisabled)
+/// ```
+/// 
+/// A default ``Status/info`` status can be modified by ``status(_:)`` modifier:
+///
+/// ```swift
+/// Switch(isOn: $isOn)
+///     .status(.critical)
+/// ```
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/interaction/switch/)
-public struct Switch: View {
+public struct Switch<Icon: View>: View {
 
-    static let size = CGSize(width: 50, height: 28)
-    
-    private static let circleDiameter: CGFloat = 30
-    private static let dotDiameter: CGFloat = 10
-    private static let borderColor = Color(white: 0.2, opacity: 0.25)
-    private static let animation = Animation.spring(response: 0.25, dampingFraction: 0.6)
-
-    @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
+    @Environment(\.status) private var status
     
-    private let hasIcon: Bool
+    @ViewBuilder private let icon: Icon
     @Binding private var isOn: Bool
 
     public var body: some View {
-        capsule
-            .overlay(indicator)
+        Rectangle()
+            .frame(width: 50, height: 32)
+            .foregroundColor(tint)
+            .overlay(
+                knob,
+                alignment: isOn ? .trailing : .leading
+            )
+            .opacity(isEnabled ? 1 : 0.3)
+            .animation(.easeInOut(duration: 0.15), value: isOn)
+            // FIXME: Replace with a SwitchButtonStyle
             .accessibility(addTraits: [.isButton])
             .onTapGesture {
                 if isHapticsEnabled {
@@ -39,87 +54,75 @@ public struct Switch: View {
                 isOn.toggle()
             }
             .disabled(isEnabled == false)
-    }
-
-    @ViewBuilder private var capsule: some View {
-        Capsule(style: .circular)
-            .frame(width: width, height: height)
-            .foregroundColor(tint)
-            .animation(Self.animation, value: isOn)
-    }
-
-    @ViewBuilder private var indicator: some View {
-        Circle()
-            .frame(width: circleDiameter, height: circleDiameter)
-            .foregroundColor(indicatorColor)
-            .elevation(
-                isEnabled ? .custom(opacity: 0.25, radius: 1.4, y: 1.2) : nil,
-                shape: .roundedRectangle(borderRadius: circleDiameter / 2)
-            )
+            .mask(capsuleMask)
             .overlay(
-                Circle()
-                    .strokeBorder(Self.borderColor, lineWidth: BorderWidth.hairline)
+                outline
             )
-            .overlay(indicatorSymbol)
-            .offset(x: isOn ? width / 5 : -width / 5)
-            .animation(Self.animation, value: isOn)
     }
 
-    @ViewBuilder private var indicatorSymbol: some View {
-        if hasIcon {
-            Icon(isOn ? .lock : .lockOpen)
-                .iconSize(.small)
-                .iconColor(iconTint)
-                .environment(\.sizeCategory, .large)
-        } else {
-            Circle()
-                .foregroundColor(tint)
-                .frame(width: dotDiameter, height: dotDiameter)
+    @ViewBuilder private var knob: some View {
+        Circle()
+            .foregroundColor(indicatorColor)
+            .elevation(isEnabled ? .level3 : nil)
+            .overlay(knobIcon)
+            .padding(.xxxSmall)
+    }
+
+    @ViewBuilder private var knobIcon: some View {
+        icon
+            .iconSize(.small)
+            .iconColor(iconTint)
+            .environment(\.sizeCategory, .large)
+            .animation(.easeIn(duration: 0.15), value: isOn)
+    }
+    
+    @ViewBuilder private var outline: some View {
+        if let status {
+            Capsule(style: .circular)
+                .strokeBorder(lineWidth: .xxxSmall)
+                .foregroundColor(status.color)
         }
+    }
+    
+    @ViewBuilder private var capsuleMask: some View {
+        Capsule(style: .circular)
+            .padding(status == nil ? 0 : 1)
     }
 
     private var tint: Color {
-        (isOn ? .blueNormal : capsuleBackgroundColor)
-            .opacity(isEnabled ? 1 : 0.5)
+        isOn ? .blueNormal : .cloudDark
     }
 
     private var iconTint: Color {
-        (isOn ? Color.blueNormal : Color.inkNormal)
-            .opacity(isEnabled ? 1 : 0.5)
-    }
-
-    private var capsuleBackgroundColor: Color {
-        colorScheme == .light ? .cloudDark : .cloudDark
+        isOn ? .blueDark : .inkLight
     }
 
     private var indicatorColor: Color {
         colorScheme == .light ? .whiteNormal : .cloudNormal
-    }
-
-    private var width: CGFloat {
-        Self.size.width * sizeCategory.controlRatio
-    }
-
-    private var height: CGFloat {
-        Self.size.height * sizeCategory.controlRatio
-    }
-
-    private var circleDiameter: CGFloat {
-        Self.circleDiameter * sizeCategory.controlRatio
-    }
-
-    private var dotDiameter: CGFloat {
-        Self.dotDiameter * sizeCategory.controlRatio
     }
 }
 
 // MARK: - Previews
 public extension Switch {
     
-    /// Creates Orbit ``Switch`` component.
-    init(isOn: Binding<Bool>, hasIcon: Bool = false) {
+    /// Creates Orbit ``Switch`` component with custom icon.
+    init(isOn: Binding<Bool>, @ViewBuilder icon: () -> Icon) {
         self._isOn = isOn
-        self.hasIcon = hasIcon
+        self.icon = icon()
+    }
+    
+    /// Creates Orbit ``Switch`` component with Orbit ``Icon/Symbol``.
+    init(isOn: Binding<Bool>, icon: Icon.Symbol?) where Icon == Orbit.Icon {
+        self.init(isOn: isOn) {
+            Icon(icon)
+        }
+    }
+    
+    /// Creates Orbit ``Switch`` component.
+    init(isOn: Binding<Bool>) where Icon == EmptyView {
+        self.init(isOn: isOn) {
+            EmptyView()
+        }
     }
 }
 
@@ -137,7 +140,7 @@ struct SwitchPreviews: PreviewProvider {
 
     static var standalone: some View {
         StateWrapper(true) { state in
-            Switch(isOn: state)
+            Switch(isOn: state, icon: .airplaneUp)
         }
         .previewDisplayName()
     }
@@ -152,6 +155,7 @@ struct SwitchPreviews: PreviewProvider {
                 switchView(isOn: true, hasIcon: true)
                     .disabled(true)
             }
+            
             HStack(spacing: .large) {
                 switchView(isOn: false)
                 switchView(isOn: false, hasIcon: true)
@@ -160,6 +164,27 @@ struct SwitchPreviews: PreviewProvider {
                 switchView(isOn: false, hasIcon: true)
                     .disabled(true)
             }
+            .padding(.bottom, .xLarge)
+            
+            HStack(spacing: .large) {
+                switchView(isOn: true)
+                switchView(isOn: true, hasIcon: true)
+                switchView(isOn: true)
+                    .disabled(true)
+                switchView(isOn: true, hasIcon: true)
+                    .disabled(true)
+            }
+            .status(.critical)
+            
+            HStack(spacing: .large) {
+                switchView(isOn: false)
+                switchView(isOn: false, hasIcon: true)
+                switchView(isOn: false)
+                    .disabled(true)
+                switchView(isOn: false, hasIcon: true)
+                    .disabled(true)
+            }
+            .status(.critical)
         }
         .previewDisplayName()
     }
@@ -171,7 +196,7 @@ struct SwitchPreviews: PreviewProvider {
 
     static func switchView(isOn: Bool, hasIcon: Bool = false) -> some View {
         StateWrapper(isOn) { isOnState in
-            Switch(isOn: isOnState, hasIcon: hasIcon)
+            Switch(isOn: isOnState, icon: hasIcon ? .airplaneUp : nil)
         }
     }
 }

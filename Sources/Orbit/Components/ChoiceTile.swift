@@ -250,7 +250,7 @@ public struct ChoiceTile<Content: View, Icon: View, Header: View, Illustration: 
             case .none:             return 0
             case .radio:            return RadioButtonStyle.size
             case .checkbox:         return CheckboxButtonStyle.size
-            case .switch:           return Switch.size.width
+            case .switch:           return 50
         }
     }
     
