@@ -57,7 +57,7 @@
     
     @Section(title: "(Optional) Configure Fonts to be Used by Orbit Components") {
         @ContentAndMedia {
-            Orbit uses a set of fonts for all its components.
+            Orbit uses a set of fonts for all its textual components.
             
             If you own a licence for Orbit's default Circular20 font family, you can set it up. Or you can use any custom fonts for each font weight.
         }

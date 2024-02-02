@@ -100,6 +100,7 @@ Our components are a collection of interface elements that can be reused across 
 
 - ``Heading``
 - ``Text``
+- ``Textarea``
 - ``TextRepresentable``
 
 ### Utility components
