@@ -111,7 +111,8 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
             isSecureTextEntry: isSecure && isSecureTextRedacted,
             state: state,
             leadingPadding: .small,
-            trailingPadding: .small
+            trailingPadding: .small,
+            keyboardSpacing: keyboardSpacing
         )
         .returnKeyType(returnKeyType)
         .autocorrectionDisabled(isAutocorrectionDisabled)
@@ -128,6 +129,8 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
             isFocused = false
             inputFieldEndEditingAction()
         }
+        // Reverts the additional keyboard spacing used for native keyboard avoidance
+        .padding(.bottom, -keyboardSpacing)
     }
 
     @ViewBuilder private var secureTextRedactedButton: some View {
@@ -136,6 +139,10 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
                 isSecureTextRedacted.toggle()
             }
         }
+    }
+    
+    private var keyboardSpacing: CGFloat {
+        .medium
     }
 
     private var defaultLabel: String {
