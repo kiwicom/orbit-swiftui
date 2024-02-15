@@ -120,7 +120,8 @@ public struct InputField<Label: View, Prompt: View, Prefix: View, Suffix: View>:
             isSecureTextEntry: isSecure && isSecureTextRedacted,
             state: state,
             leadingPadding: .small,
-            trailingPadding: .small
+            trailingPadding: .small,
+            keyboardSpacing: keyboardSpacing
         )
         .returnKeyType(returnKeyType)
         .autocorrectionDisabled(isAutocorrectionDisabled)
@@ -136,6 +137,8 @@ public struct InputField<Label: View, Prompt: View, Prefix: View, Suffix: View>:
             isFocused = false
             inputFieldEndEditingAction()
         }
+        // Reverts the additional keyboard spacing used for native keyboard avoidance
+        .padding(.bottom, -keyboardSpacing)
         .overlay(
             resolvedPrompt, 
             alignment: .leadingFirstTextBaseline
@@ -155,6 +158,10 @@ public struct InputField<Label: View, Prompt: View, Prefix: View, Suffix: View>:
                 isSecureTextRedacted.toggle()
             }
         }
+    }
+    
+    private var keyboardSpacing: CGFloat {
+        .medium
     }
 
     @ViewBuilder private var defaultLabel: some View {
