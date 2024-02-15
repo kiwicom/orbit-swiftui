@@ -71,7 +71,6 @@ public struct InputField<Label: View, Prompt: View, Prefix: View, Suffix: View>:
     private let isSecure: Bool
     private let passwordStrength: PasswordStrengthIndicator.PasswordStrength?
     private let message: Message?
-    @Binding private var messageHeight: CGFloat
 
     // Builder properties (keyboard related)
     var autocapitalizationType: UITextAutocapitalizationType = .none
@@ -82,7 +81,7 @@ public struct InputField<Label: View, Prompt: View, Prefix: View, Suffix: View>:
     var shouldDeleteBackwardAction: (String) -> Bool = { _ in true }
 
     public var body: some View {
-        FieldWrapper(message: message, messageHeight: $messageHeight) {
+        FieldWrapper(message: message) {
             InputContent(state: state, message: message, isFocused: isFocused) {
                 textField
             } label: {
@@ -206,7 +205,6 @@ public struct InputField<Label: View, Prompt: View, Prefix: View, Suffix: View>:
     ///
     /// - Parameters:
     ///   - message: Optional message below the text field.
-    ///   - messageHeight: Binding to the current height of the optional message.
     public init(
         value: Binding<String>,
         state: InputState = .default,
@@ -214,7 +212,6 @@ public struct InputField<Label: View, Prompt: View, Prefix: View, Suffix: View>:
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder label: () -> Label,
         @ViewBuilder prompt: () -> Prompt = { EmptyView() },
         @ViewBuilder prefix: () -> Prefix = { EmptyView() },
@@ -226,7 +223,6 @@ public struct InputField<Label: View, Prompt: View, Prefix: View, Suffix: View>:
         self.isSecure = isSecure
         self.passwordStrength = passwordStrength
         self.message = message
-        self._messageHeight = messageHeight
         self.label = label()
         self.prompt = prompt()
         self.prefix = prefix()
@@ -241,7 +237,6 @@ public extension InputField where Label == Text, Prompt == Text, Prefix == Icon,
     ///
     /// - Parameters:
     ///   - message: Optional message below the text field.
-    ///   - messageHeight: Binding to the current height of the optional message.
     @_disfavoredOverload
     init(
         _ label: some StringProtocol = String(""),
@@ -253,8 +248,7 @@ public extension InputField where Label == Text, Prompt == Text, Prefix == Icon,
         labelStyle: InputLabelStyle = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
-        message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0)
+        message: Message? = nil
     ) {
         self.init(
             value: value,
@@ -262,8 +256,7 @@ public extension InputField where Label == Text, Prompt == Text, Prefix == Icon,
             labelStyle: labelStyle,
             isSecure: isSecure,
             passwordStrength: passwordStrength,
-            message: message,
-            messageHeight: messageHeight
+            message: message
         ) {
             Text(label)
         } prompt: {
@@ -279,7 +272,6 @@ public extension InputField where Label == Text, Prompt == Text, Prefix == Icon,
     ///
     /// - Parameters:
     ///   - message: Optional message below the text field.
-    ///   - messageHeight: Binding to the current height of the optional message.
     @_semantics("swiftui.init_with_localization")
     init(
         _ label: LocalizedStringKey = "",
@@ -292,7 +284,6 @@ public extension InputField where Label == Text, Prompt == Text, Prefix == Icon,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
         tableName: String? = nil,
         bundle: Bundle? = nil,
         labelComment: StaticString? = nil
@@ -303,8 +294,7 @@ public extension InputField where Label == Text, Prompt == Text, Prefix == Icon,
             labelStyle: labelStyle,
             isSecure: isSecure,
             passwordStrength: passwordStrength,
-            message: message,
-            messageHeight: messageHeight
+            message: message
         ) {
             Text(label, tableName: tableName, bundle: bundle)
         } prompt: {
