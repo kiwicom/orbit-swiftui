@@ -45,6 +45,7 @@ public extension Illustration {
         case fastTrackMan
         case feedback
         case flexibleDates
+        case flightChange
         case flightDisruptions
         case groundTransport404
         case help
