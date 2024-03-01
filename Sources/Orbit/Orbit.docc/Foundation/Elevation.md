@@ -10,7 +10,7 @@ Note: [Orbit definition](https://orbit.kiwi/foundation/elevation/)
 
 ## Adding elevation to a view
 
-Use the `View.elevation(_:)` modifier to add elevation to a view:
+Use the ``SwiftUI/View/elevation(_:shadowColor:shape:)`` modifier to add elevation to a view:
 
 ```swift
 // Level 3 elevation
@@ -37,7 +37,7 @@ in order to achieve better performance.
 
 ## Suppressing existing elevation
 
-Elevation in child views can be optionally disabled by using ``IsElevationEnabledKey`` environment key,
+Elevation in child views can be optionally disabled by using `isElevationEnabled` environment value,
 typically in order to disable elevation that is present by default on some Orbit components,
 to be able to apply the elevation for a subset of components at once.
 

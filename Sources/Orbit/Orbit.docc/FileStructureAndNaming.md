@@ -48,7 +48,7 @@ Most Foundation types and values are accessed using extensions on related types.
 
 #### Spacing
 
-Use the ``Spacing`` enum with `CGFloat` extensions to access values.
+Use the ``Orbit/Spacing`` enum with `CGFloat` extensions to access values.
 
 ```swift
 VStack(spacing: .medium) {
