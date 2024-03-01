@@ -21,7 +21,7 @@ import SwiftUI
 /// - Modifiers applied directly to `Icon` that return the same type, such as ``iconColor(_:)-1h3pr`` or ``iconSize(_:)-4p0n3``. 
 /// These can also be used for concatenation with other Orbit textual components like ``Heading`` or ``Text``. 
 /// See the `InstanceMethods` section below for full list.
-/// - Modifiers applied to view hierarchy, such as ``iconColor(_:)-e48e`` or ``iconSize(_:)-1pg82``. 
+/// - Modifiers applied to view hierarchy, such as ``SwiftUI/View/iconColor(_:)`` or ``SwiftUI/View/iconSize(_:)``. 
 /// See a full list of `View` extensions in documentation.
 /// 
 /// ```swift

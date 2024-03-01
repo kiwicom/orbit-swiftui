@@ -17,7 +17,7 @@ import SwiftUI
 /// The title and icon colors can be modified by ``textColor(_:)`` and ``iconColor(_:)`` modifiers.
 /// The icon size can be modified by ``iconSize(custom:)`` modifier.
 /// 
-/// The default background can be overridden by ``backgroundStyle(_:)-9odue`` modifier.
+/// The default background can be overridden by ``SwiftUI/View/backgroundStyle(_:)`` modifier.
 /// 
 /// ```swift
 /// ChoiceTile("Full", icon: .informationCircle, isSelected: $isFull) {

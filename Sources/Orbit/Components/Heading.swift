@@ -15,7 +15,7 @@ import SwiftUI
 /// - Modifiers applied directly to `Heading` that return the same type, such as ``textColor(_:)-80ix5`` or ``textAccentColor(_:)-k54u``. 
 /// These can also be used for concatenation with other Orbit textual components like ``Text`` or ``Icon``. 
 /// See the `InstanceMethods` section below for full list.
-/// - Modifiers applied to view hierarchy, such as ``textColor(_:)-828ud`` or ``textIsCopyable(_:)``. 
+/// - Modifiers applied to view hierarchy, such as ``SwiftUI/View/textColor(_:)`` or ``SwiftUI/View/textIsCopyable(_:)``. 
 /// See a full list of `View` extensions in documentation.
 /// 
 /// ```swift

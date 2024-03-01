@@ -24,14 +24,6 @@ Supporting types and components under development.
 - ``StateWrapper``
 - ``StateObjectWrapper``
 
-### SwiftUI environment
-
-- ``IsElevationEnabledKey``
-- ``IsExpandedKey``
-- ``IsFadeInEnabledKey``
-- ``IsTileSeparatorVisibleKey``
-- ``ScreenLayoutPaddingKey``
-
 ### Forms
 
 - ``FieldLabel``
@@ -68,7 +60,6 @@ Supporting types and components under development.
 - ``IconButton``
 - ``IdealSizeValue``
 - ``KeyValueField``
-- ``LazyVStack``
 - ``NavigationButton``
 - ``PasswordStrengthIndicator``
 - ``Progress``

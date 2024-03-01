@@ -69,7 +69,7 @@ public extension View {
     ///
     /// Screen layout adds maximum width and padding behaviour for provided content, horizontally expanding to `infinity`.
     ///
-    /// A component can inspect the ``ScreenLayoutPaddingKey`` environment key to act upon this modifier.
+    /// A component can inspect the `screenLayoutPadding` environment key to act upon this modifier.
     /// One example is a `Card` component that ignores horizontal paddings in `compact` environment.
     ///
     /// - Parameters:
