@@ -427,7 +427,7 @@ struct ListChoicePreviews: PreviewProvider {
     }
     
     static var mix: some View {
-        Card(contentPadding: 0) {
+        Card {
             ListChoice(title, description: "Multiline\ndescription", value: "USD", action: {})
             ListChoice(title, description: description, icon: .airplane, value: value, action: {})
             ListChoice(title, description: description, action: {}) {
@@ -467,11 +467,12 @@ struct ListChoicePreviews: PreviewProvider {
                 headerPlaceholder
             }
         }
+        .cardLayout(.fill)
         .previewDisplayName()
     }
     
     static var buttons: some View {
-        Card(contentPadding: 0) {
+        Card {
             StateWrapper(ListChoiceDisclosure.button(type: .add)) { button in
                 ListChoice(title, disclosure: button.wrappedValue) {
                     if .button(type: .add) ~= button.wrappedValue {
@@ -495,11 +496,12 @@ struct ListChoicePreviews: PreviewProvider {
                 headerPlaceholder
             }
         }
+        .cardLayout(.fill)
         .previewDisplayName()
     }
 
     static var checkbox: some View {
-        Card(contentPadding: 0) {
+        Card {
             ListChoice(title, disclosure: uncheckedCheckbox, action: {})
             ListChoice(title, disclosure: checkedCheckbox, action: {})
             ListChoice(title, description: description, disclosure: .checkbox(state: .error), action: {})
@@ -517,11 +519,12 @@ struct ListChoicePreviews: PreviewProvider {
                 headerPlaceholder
             }
         }
+        .cardLayout(.fill)
         .previewDisplayName()
     }
 
     static var radio: some View {
-        Card(contentPadding: 0) {
+        Card {
             ListChoice(title, description: description, disclosure: .radio(isChecked: false), action: {})
             ListChoice(title, description: description, disclosure: .radio(isChecked: true), action: {})
             ListChoice(title, description: description, disclosure: .radio(state: .error), action: {})
@@ -543,11 +546,12 @@ struct ListChoicePreviews: PreviewProvider {
                 headerPlaceholder
             }
         }
+        .cardLayout(.fill)
         .previewDisplayName()
     }
 
     static var plain: some View {
-        Card(contentPadding: 0) {
+        Card {
             ListChoice(title, disclosure: .none, action: {})
             ListChoice(title, description: description, disclosure: .none, action: {})
             ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false, action: {})
@@ -573,6 +577,7 @@ struct ListChoicePreviews: PreviewProvider {
                 headerPlaceholder
             }
         }
+        .cardLayout(.fill)
         .previewDisplayName()
     }
 

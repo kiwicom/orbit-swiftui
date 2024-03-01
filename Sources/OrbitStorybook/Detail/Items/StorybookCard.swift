@@ -21,12 +21,13 @@ struct StorybookCard {
                 ButtonLink("ButtonLink", action: {})
             }
             
-            Card("Card with custom layout", description: StorybookTile.descriptionMultiline, contentPadding: 0) {
+            Card("Card with custom layout", description: StorybookTile.descriptionMultiline) {
                 contentPlaceholder
                 contentPlaceholder
             } action: {
                 ButtonLink("ButtonLink", action: {})
             }
+            .cardLayout(.fill)
             
             Card("Card with no content", description: StorybookTile.descriptionMultiline) {
                 EmptyView()
@@ -46,22 +47,24 @@ struct StorybookCard {
     }
 
     static var cardWithFillLayoutContentNoHeader: some View {
-        Card(contentPadding: 0) {
+        Card {
             contentPlaceholder
             Separator()
             contentPlaceholder
         }
+        .cardLayout(.fill)
     }
 
     static var cardWithOnlyCustomContent: some View {
-        Card(contentPadding: 0) {
+        Card {
             contentPlaceholder
             contentPlaceholder
         }
+        .cardLayout(.fill)
     }
 
     static var cardWithTiles: some View {
-        Card("Card with mixed content", description: "Card description", contentPadding: 0) {
+        Card("Card with mixed content", description: "Card description") {
             contentPlaceholder
             
             Tile("Tile", action: {})
@@ -86,7 +89,7 @@ struct StorybookCard {
         } action: {
             ButtonLink("ButtonLink", action: {})
         }
-        
+        .cardLayout(.fill)
     }
 
     static var cardMultilineCritical: some View {
@@ -104,8 +107,7 @@ struct StorybookCard {
     static var clear: some View {
         Card(
             "Card without borders and background",
-            showBorder: false,
-            contentPadding: 0
+            showBorder: false
         ) {
             ListChoice("ListChoice", action: {})
             ListChoice("ListChoice") {
@@ -116,6 +118,7 @@ struct StorybookCard {
             ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false, action: {})
         }
         .backgroundStyle(.clear)
+        .cardLayout(.fill)
     }
 }
 

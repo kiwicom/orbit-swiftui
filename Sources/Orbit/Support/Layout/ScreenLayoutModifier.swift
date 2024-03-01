@@ -198,10 +198,11 @@ struct ScreenLayoutModifierPreviews: PreviewProvider {
 
             Tile(TilePreviews.title, description: TilePreviews.description, icon: .grid, action: {})
 
-            Card("Card", contentPadding: 0) {
+            Card("Card") {
                 ListChoice(ListChoicePreviews.title, value: ListChoicePreviews.value, action: {})
                 ListChoice(ListChoicePreviews.title, description: ListChoicePreviews.description, action: {})
             }
+            .cardLayout(.fill)
         }
         .screenLayout()
         .background(Color.screen)
