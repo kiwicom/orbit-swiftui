@@ -50,9 +50,10 @@ struct ScreenLayoutHorizontalPaddingModifierPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .medium) {
             Heading("Heading", style: .title1)
 
-            Card("Card", contentPadding: 0) {
+            Card("Card") {
                 ListChoice("ListChoice", action: {})
             }
+            .cardLayout(.fill)
 
             Color.blueLight
                 .frame(height: 100)

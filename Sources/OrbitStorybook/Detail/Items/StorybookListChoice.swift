@@ -13,7 +13,7 @@ struct StorybookListChoice {
     static let checkedCheckbox = ListChoiceDisclosure.checkbox(isChecked: true)
 
     static var basic: some View {
-        Card(contentPadding: 0) {
+        Card {
             ListChoice(title, action: {})
             ListChoice(title, value: "10", action: {})
             ListChoice(title, description: description, action: {})
@@ -33,11 +33,12 @@ struct StorybookListChoice {
                 badge
             }
         }
+        .cardLayout(.fill)
         .previewDisplayName()
     }
 
     static var button: some View {
-        Card(contentPadding: 0) {
+        Card {
             ListChoice(title, disclosure: addButton, action: {})
             ListChoice(title, disclosure: removeButton, action: {})
             ListChoice(title, description: description, disclosure: addButton, action: {})
@@ -53,11 +54,12 @@ struct StorybookListChoice {
                 headerContent
             }
         }
+        .cardLayout(.fill)
         .previewDisplayName()
     }
 
     static var checkbox: some View {
-        Card(contentPadding: 0) {
+        Card {
             ListChoice(title, disclosure: uncheckedCheckbox, action: {})
             ListChoice(title, disclosure: checkedCheckbox, action: {})
             ListChoice(title, description: description, disclosure: .checkbox(state: .error), action: {})
@@ -75,6 +77,7 @@ struct StorybookListChoice {
                 headerContent
             }
         }
+        .cardLayout(.fill)
         .previewDisplayName()
     }
 
@@ -86,7 +89,7 @@ struct StorybookListChoice {
     }
 
     static var plain: some View {
-        Card(contentPadding: 0) {
+        Card {
             ListChoice(title, disclosure: .none, action: {})
             ListChoice(title, description: description, disclosure: .none, action: {})
             ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false, action: {})
@@ -110,10 +113,11 @@ struct StorybookListChoice {
                 headerContent
             }
         }
+        .cardLayout(.fill)
     }
 
     static var radio: some View {
-        Card(contentPadding: 0) {
+        Card {
             ListChoice(title, description: description, disclosure: .radio(isChecked: false), action: {})
             ListChoice(title, description: description, disclosure: .radio(isChecked: true), action: {})
             ListChoice(title, description: description, disclosure: .radio(state: .error), action: {})
@@ -134,6 +138,7 @@ struct StorybookListChoice {
                 headerContent
             }
         }
+        .cardLayout(.fill)
         .previewDisplayName("Radio")
     }
 

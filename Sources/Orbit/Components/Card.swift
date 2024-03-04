@@ -18,43 +18,43 @@ import SwiftUI
 /// ### Customizing appearance
 /// 
 /// The title color can be modified by ``textColor(_:)`` modifier.
-/// The default background can be overridden by ``backgroundStyle(_:)-9odue`` modifier.
+/// The default background can be overridden by ``SwiftUI/View/backgroundStyle(_:)`` modifier.
 ///
 /// ### Layout
-/// 
-/// The component adds a `VStack` with `.medium` spacing between the header and any provided content.
-/// The provided content itself is separated by zero spacing.
 ///
 /// The optional action is aligned to the title using firstTextBaseline alignment 
 /// and has a negative vertical padding applied to fit the default ``ButtonLink`` component.
+/// 
+/// The component adds a `VStack` over provided content.
+/// The stack layout can be configured by using  ``SwiftUI/View/cardLayout(_:)`` modifier.
+/// The content padding is applied only to horizontal and bottom edges around the content. 
+/// The space between header and content is fixed.
 ///
-/// To use the full space provided by card for the content, use zero `contentPadding`. 
-/// This padding is applied to horizontal and bottom edges around the whole content:
+/// For example, to use the full space provided by card for the content, use ``CardLayout/fill`` layout:
 ///
 /// ```swift
-/// Card("Card with filling content", contentPadding: 0) {
-///     content1
-///     content2
+/// Card("Card with fill content layout") {
+///     ListChoice("Choice 1") { /* Tap action */ }
+///     ListChoice("Choice 2") { /* Tap action */ }
 /// }
+/// .cardLayout(.fill)
 /// ```
 ///
-/// To fully customize the layout of content,  use a custom vertical stack and negative paddings:
+/// To customize the layout of the content, use custom values for alignment, padding or spacing:
 ///
 /// ```swift
 /// Card("Card with custom content layout") {
-///     VStack(alignment: .trailing, spacing: .xSmall) {
-///         content1
-///         content2
-///     }
-///     .padding(.top, -.medium)
+///     content1
+///     content2
 /// }
+/// .cardLayout(alignment: .center, padding: .xSmall, spacing: .xSmall)
 /// ```
 ///
 /// Component expands horizontally unless prevented by native `fixedSize()` or ``idealSize()`` modifier:
 ///
 /// ```swift
 /// Card("Narrow Card") {
-///     IntrinsicContent
+///     intrinsicContent
 /// }
 /// .idealSize()
 /// ```
@@ -64,11 +64,11 @@ import SwiftUI
 public struct Card<Content: View, Action: View>: View {
 
     @Environment(\.backgroundShape) private var backgroundShape
+    @Environment(\.cardLayout) private var cardLayout
     @Environment(\.idealSize) private var idealSize
 
     private let title: String
     private let description: String
-    private let contentPadding: CGFloat
     private let showBorder: Bool
     private let titleStyle: Heading.Style
     @ViewBuilder private let content: Content
@@ -77,22 +77,19 @@ public struct Card<Content: View, Action: View>: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             header
-                // Header uses fixed spacing
-                .padding(.bottom, isContentEmpty ? 0 : .medium)
 
             if isContentEmpty == false {
-                content
-                    .environment(\.backgroundShape, nil)
-                    .padding(.horizontal, contentPadding)
+                VStack(alignment: cardLayout.alignment, spacing: cardLayout.spacing) {
+                    content
+                }
+                .environment(\.backgroundShape, nil)
+                .padding([.horizontal, .bottom], cardLayout.padding)
+                .padding(.top, isHeaderEmpty ? cardLayout.padding : 0)
             }
         }
-        .padding(.top, isHeaderEmpty ? contentPadding : 0)
-        .padding(.bottom, isContentEmpty ? 0 : contentPadding)
         .frame(maxWidth: idealSize.horizontal == true ? nil : .infinity, alignment: .leading)
         .background(resolvedBackground)
-        .tileBorder(
-            showBorder ? .iOS : .none
-        )
+        .tileBorder(showBorder ? .iOS : .none)
         .ignoreScreenLayoutHorizontalPadding(limitToSizeClass: .compact)
         .accessibilityElement(children: .contain)
     }
@@ -127,8 +124,7 @@ public struct Card<Content: View, Action: View>: View {
                     }
                 }
             }
-            .padding([.horizontal, .top], .medium)
-            .padding(.bottom, isContentEmpty ? .medium : 0)
+            .padding(.medium)
         }
     }
     
@@ -170,7 +166,6 @@ public extension Card {
         description: String = "",
         showBorder: Bool = true,
         titleStyle: Heading.Style = .title3,
-        contentPadding: CGFloat = .medium,
         @ViewBuilder content: () -> Content,
         @ViewBuilder action: () -> Action = { EmptyView() }
     ) {
@@ -178,7 +173,6 @@ public extension Card {
         self.description = description
         self.showBorder = showBorder
         self.titleStyle = titleStyle
-        self.contentPadding = contentPadding
         self.content = content()
         self.action = action()
     }
@@ -190,6 +184,22 @@ public extension AccessibilityID {
     static let cardTitle                = Self(rawValue: "orbit.card.title")
     static let cardDescription          = Self(rawValue: "orbit.card.description")
     static let cardAction               = Self(rawValue: "orbit.card.action")
+}
+
+// MARK: - Types
+
+/// The layout of Orbit ``Card`` stack content.
+public struct CardLayout {
+    
+    /// Content layout uses a `VStack` with default `.medium` padding and spacing.
+    public static let `default` = Self()
+    
+    /// Content layout uses a `VStack` with no padding and spacing to fill the content to `Card` edges.
+    public static let fill = Self(alignment: .leading, padding: 0, spacing: 0)
+    
+    var alignment: HorizontalAlignment = .leading
+    var padding: CGFloat = .medium
+    var spacing: CGFloat = .medium
 }
 
 // MARK: - Previews
@@ -229,12 +239,13 @@ struct CardPreviews: PreviewProvider {
                 ButtonLink("ButtonLink", action: {})
             }
             
-            Card("Card with custom layout", description: TilePreviews.descriptionMultiline, contentPadding: 0) {
+            Card("Card with filling layout", description: TilePreviews.descriptionMultiline) {
                 contentPlaceholder
                 contentPlaceholder
             } action: {
                 ButtonLink("ButtonLink", action: {})
             }
+            .cardLayout(.fill)
             
             Card("Card with no content", description: TilePreviews.descriptionMultiline) {
                 EmptyView()
@@ -258,10 +269,11 @@ struct CardPreviews: PreviewProvider {
     }
 
     static var cardWithFillLayoutContentNoHeader: some View {
-        Card(contentPadding: 0) {
+        Card {
             contentPlaceholder
             contentPlaceholder
         }
+        .cardLayout(.fill)
         .previewDisplayName()
     }
 
@@ -321,14 +333,14 @@ struct CardPreviews: PreviewProvider {
     static var clear: some View {
         Card(
             "Card without borders and background",
-            showBorder: false,
-            contentPadding: 0
+            showBorder: false
         ) {
             ListChoice("ListChoice", action: {})
                 .backgroundStyle(.blueLight, active: .greenLight)
             ListChoice("ListChoice", icon: .map, action: {})
             ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false, action: {})
         }
+        .cardLayout(.fill)
         .backgroundStyle(.clear)
         .padding(.vertical, -.medium)
         .previewDisplayName()

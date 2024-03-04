@@ -250,8 +250,7 @@ private struct ColorCard<Content: View>: View {
         Card(
             title,
             showBorder: false,
-            titleStyle: .title6,
-            contentPadding: .xSmall
+            titleStyle: .title6
         ) {
             VStack(spacing: .xxxSmall) {
                 content
@@ -261,6 +260,7 @@ private struct ColorCard<Content: View>: View {
             .elevation(.level2)
         }
         .backgroundStyle(.clear)
+        .cardLayout(padding: .xSmall)
     }
 }
 
