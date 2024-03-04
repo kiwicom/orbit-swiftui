@@ -5,6 +5,7 @@ struct ConcatenatedText: View {
     @Environment(\.iconColor) var iconColor
     @Environment(\.iconSize) var iconSize
     @Environment(\.lineSpacing) var lineSpacing
+    @Environment(\.locale) var locale
     @Environment(\.sizeCategory) var sizeCategory
     @Environment(\.textAccentColor) var textAccentColor
     @Environment(\.textColor) var textColor
@@ -32,6 +33,7 @@ struct ConcatenatedText: View {
         .init(
             iconColor: iconColor,
             iconSize: iconSize,
+            locale: locale,
             textAccentColor: textAccentColor,
             textColor: textColor,
             textFontWeight: textFontWeight,

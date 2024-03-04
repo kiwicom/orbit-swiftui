@@ -64,7 +64,7 @@ import SwiftUI
 /// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/heading/)
-public struct Heading: View, FormattedTextBuildable {
+public struct Heading: View, FormattedTextBuildable, PotentiallyEmptyView {
 
     // Builder properties
     var accentColor: Color?
@@ -80,7 +80,7 @@ public struct Heading: View, FormattedTextBuildable {
     var size: CGFloat?
     var strikethrough: Bool?
         
-    private let content: String
+    private let content: Text
     private let style: Style
 
     public var body: some View {
@@ -89,7 +89,7 @@ public struct Heading: View, FormattedTextBuildable {
     }
 
     @ViewBuilder private var textContent: Text {
-        Text(content)
+        content
             .textColor(color)
             .textSize(custom: style.size)
             .fontWeight(fontWeight)
@@ -103,22 +103,37 @@ public struct Heading: View, FormattedTextBuildable {
             .textAccentColor(accentColor)
             .textLineHeight(style.lineHeight)
     }
+    
+    public var isEmpty: Bool {
+        content.isEmpty
+    }
 }
 
 // MARK: - Inits
 public extension Heading {
 
     /// Creates Orbit ``Heading`` component.
-    /// 
-    /// - Parameters:
-    ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
-    ///   - style: A predefined title style.
     init(
-        _ content: String,
-        style: Style,
-        isSelectable: Bool = false
+        _ content: some StringProtocol = String(""),
+        style: Style
     ) {
-        self.content = content
+        self.content = Text(content)
+        self.style = style
+
+        // Set default weight
+        self.fontWeight = style.weight
+    }
+    
+    /// Creates Orbit ``Heading`` component using localizable key.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ keyAndValue: LocalizedStringKey,
+        style: Style,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil
+    ) {
+        self.content = Text(keyAndValue, tableName: tableName, bundle: bundle)
         self.style = style
 
         // Set default weight

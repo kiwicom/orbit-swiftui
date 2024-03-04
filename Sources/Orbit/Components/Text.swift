@@ -1,9 +1,10 @@
 import SwiftUI
 
 /// Orbit component that displays one or more lines of read-only text. 
-/// A counterpart of the native `SwiftUI.Text` with a support for Orbit markup formatting and ``TextLink``s.
+/// A counterpart of the native `SwiftUI.Text` with a support for Orbit markup formatting, ``TextLink``s and custom vertical padding.
 ///
-/// A ``Text`` is created using the `String` content that can include html tags `<strong>`, `<u>`, `<ref>`, `<br>` to customize formatting. 
+/// A ``Text`` is created using the `String` verbatim or localizable content that can include 
+/// html tags `<strong>`, `<u>`, `<ref>`, `<br>` to customize formatting.
 /// Interactive tags `<a href>` and `<applinkX>` can be used to insert ``TextLink``s in the text.
 ///
 /// ```swift
@@ -17,6 +18,17 @@ import SwiftUI
 ///     - `SwiftUI.Text(attributedString:)` (when the text contains any Orbit html formatting)
 /// 2) ``TextLink`` overlay (when the text contains ``TextLink``s). The native text modifier support is limited for this layer.
 /// 3) A long tap gesture overlay (when the `textIsCopyable` is `true`)
+///
+/// ### Localization
+/// 
+/// The localization follows the same pattern as the native ``SwiftUI.Text``.
+/// The default `main` bundle can be modified by using ``SwiftUI/View/localizationBundle(_:)`` modifier.
+///
+/// ### Concatenation
+/// 
+/// The Orbit Text supports concatenation, but does not fully support concatenating text that includes interactive ``TextLink``s.
+/// It also does not fully support some global SwiftUI native text formatting view modifiers.
+/// For proper rendering of `TextLinks`, any required text formatting modifiers must be also called on the `Text` directly.
 ///
 /// ### Customizing appearance
 ///
@@ -77,6 +89,8 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
 
     @Environment(\.multilineTextAlignment) private var multilineTextAlignment
     @Environment(\.lineSpacing) private var lineSpacing
+    @Environment(\.locale) private var locale
+    @Environment(\.localizationBundle) private var localizationBundle
     @Environment(\.textAccentColor) private var textAccentColor
     @Environment(\.textColor) private var textColor
     @Environment(\.textFontWeight) private var textFontWeight
@@ -85,8 +99,11 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
     @Environment(\.textSize) private var textSize
     @Environment(\.sizeCategory) private var sizeCategory
 
-    private let content: String
-
+    private let verbatimContent: String
+    
+    // Localization
+    private let localization: TextLocalization?
+    
     // Builder properties
     var size: CGFloat?
     var baselineOffset: CGFloat?
@@ -107,7 +124,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
                 .lineSpacing(lineSpacingAdjusted)
                 .overlay(copyableText)
                 // If the text contains links, the TextLink overlay takes accessibility priority
-                .accessibility(hidden: content.containsTextLinks)
+                .accessibility(hidden: content(textRepresentableEnvironment.locale).containsTextLinks)
                 .overlay(textLinks)
                 .padding(.vertical, textRepresentableEnvironment.lineHeightPadding(lineHeight: lineHeight, size: size))
                 .fixedSize(horizontal: false, vertical: true)
@@ -115,7 +132,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
     }
 
     @ViewBuilder private var textLinks: some View {
-        if content.containsTextLinks {
+        if content(locale).containsTextLinks {
             TextLink(textLinkAttributedString(textRepresentableEnvironment: textRepresentableEnvironment))
         }
     }
@@ -129,11 +146,11 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
     }
     
     var isEmpty: Bool {
-        content.isEmpty
+        verbatimContent.isEmpty
     }
 
     func text(textRepresentableEnvironment: TextRepresentableEnvironment, isConcatenated: Bool = false) -> SwiftUI.Text {
-        if content.containsHtmlFormatting {
+        if content(textRepresentableEnvironment.locale).containsHtmlFormatting {
             return modifierWrapper(
                 SwiftUI.Text(
                     attributedString(
@@ -146,7 +163,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
             return modifierWrapper(
                 fontWeightWrapper(
                     boldWrapper(
-                        SwiftUI.Text(verbatim: content)
+                        SwiftUI.Text(verbatim: content(textRepresentableEnvironment.locale))
                             .foregroundColor(textRepresentableEnvironment.resolvedColor(color))
                     )
                 )
@@ -154,11 +171,35 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
             .font(textRepresentableEnvironment.font(size: size, weight: fontWeight, isBold: isBold))
         }
     }
+    
+    private func content(_ locale: Locale) -> String {
+        switch localization {
+            case .key(let localizedStringKey, let bundle, let tableName, let explicitKey):
+                localizedStringKey.localized(locale: locale, bundle: bundle ?? localizationBundle, tableName: tableName, explicitKey: explicitKey) ?? verbatimContent
+            case .resource(let resource):
+                resolvedLocalizedStringResource(resource, locale: locale) ?? verbatimContent
+            case nil:
+                verbatimContent
+        }
+    }
+    
+    private func resolvedLocalizedStringResource(_ resource: Any, locale: Locale) -> String? {
+        if #available(iOS 16, *) {
+            if let resource = resource as? LocalizedStringResource {
+                var res = resource
+                res.locale = locale
+                return String(localized: res)
+            }
+        }
+        
+        return nil
+    }
 
     private var textRepresentableEnvironment: TextRepresentableEnvironment {
         .init(
             iconColor: nil,
             iconSize: nil,
+            locale: locale,
             textAccentColor: textAccentColor,
             textColor: textColor,
             textFontWeight: textFontWeight,
@@ -270,7 +311,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
         textRepresentableEnvironment: TextRepresentableEnvironment
     ) -> NSAttributedString {
         TagAttributedStringBuilder.all.attributedString(
-            content,
+            content(textRepresentableEnvironment.locale),
             alignment: multilineTextAlignment,
             fontSize: textRepresentableEnvironment.scaledSize(size),
             fontWeight: textRepresentableEnvironment.resolvedFontWeight(fontWeight, isBold: isBold),
@@ -287,7 +328,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
         isConcatenated: Bool = false
     ) -> NSAttributedString {
         TagAttributedStringBuilder.all.attributedString(
-            content,
+            content(textRepresentableEnvironment.locale),
             alignment: multilineTextAlignment,
             fontSize: textRepresentableEnvironment.scaledSize(size),
             fontWeight: textRepresentableEnvironment.resolvedFontWeight(fontWeight, isBold: isBold),
@@ -304,18 +345,83 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
     }
 }
 
-// MARK: - Inits
+// MARK: - Inits (Localized)
+
 public extension Text {
     
-    /// Creates Orbit ``Text`` component that displays a string literal.
+    /// Creates Orbit ``Text`` component that displays a localized content identified by a separate key and default value.
     ///
     /// - Parameters:
-    ///   - content: String to display. Supports html formatting tags `<strong>`, `<u>`, `<ref>`, `<a href>` and `<applink>`.
+    ///   - key: The unique key for a string in the table identified by `tableName`.
+    ///   - value: The default value for a string in the table identified by `tableName`.
+    ///   - tableName: The name of the string table to search.
+    ///   - bundle: The bundle containing the strings file. If `nil`, use the
+    ///     main bundle.
+    ///   - comment: Contextual information about this key-value pair.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ key: StaticString,
+        value: LocalizedStringKey,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil
+    ) {
+        self.localization = .key(value, bundle: bundle, tableName: tableName, explicitKey: key.description)
+        self.verbatimContent = String(describing: key)
+    }
+    
+    /// Creates Orbit ``Text`` component that displays a localized content identified by a key.
     ///
-    /// - Important: The text concatenation does not support interactive ``TextLink``s. It also does not fully support some global SwiftUI native text formatting view modifiers.
-    /// For proper rendering of `TextLinks`, any required text formatting modifiers must be also called on the `Text` directly.
-    init(_ content: String) {
-        self.content = content
+    /// - Parameters:
+    ///   - keyAndValue: The key for a string in the table identified by `tableName`.
+    ///   - tableName: The name of the string table to search.
+    ///   - bundle: The bundle containing the strings file. If `nil`, use the
+    ///     main bundle.
+    ///   - comment: Contextual information about this key-value pair.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ keyAndValue: LocalizedStringKey,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil
+    ) {
+        self.localization = .key(keyAndValue, bundle: bundle, tableName: tableName)
+        self.verbatimContent = keyAndValue.key ?? ""
+    }
+}
+
+// MARK: iOS16+
+@available(iOS 16, *)
+public extension Text {
+    
+    /// Creates Orbit ``Text`` component that displays a localized string resource.
+    ///
+    /// - Parameter resource: Localized resource to display.
+    @_disfavoredOverload
+    @_semantics("swiftui.init_with_localization")
+    init(_ resource: LocalizedStringResource) {
+        self.localization = .resource(resource)
+        self.verbatimContent = resource.key
+    }
+}
+
+// MARK: - Inits (Verbatim)
+public extension Text {
+    
+    /// Creates Orbit ``Text`` component that displays a stored string without localization.
+    ///
+    /// - Parameter content: The string value to display without localization.
+    @_disfavoredOverload
+    init<S: StringProtocol>(_ content: S) {
+        self.init(verbatim: String(content))
+    }
+    
+    /// Creates Orbit ``Text`` component that displays a string literal without localization.
+    ///
+    /// - Parameter resource: A string to display without localization.
+    init(verbatim content: String) {
+        self.localization = nil
+        self.verbatimContent = content
     }
 }
 
@@ -365,6 +471,11 @@ public extension Text {
     }
 }
 
+enum TextLocalization {
+    case key(LocalizedStringKey, bundle: Bundle?, tableName: String? = nil, explicitKey: String? = nil)
+    case resource(Any)
+}
+
 // MARK: - TextRepresentable
 extension Text: TextRepresentable {
 
@@ -375,6 +486,19 @@ extension Text: TextRepresentable {
     }
 }
 
+@available(iOS 16, *)
+extension LocalizedStringResource.BundleDescription {
+    
+    fileprivate var bundle: Bundle? {        
+        switch self {
+            case .forClass(let anyClass):   Bundle(for: anyClass)
+            case .atURL(let uRL):           Bundle(url: uRL)
+            case .main:                     .main
+            @unknown default:               .main
+        }
+    }
+}
+    
 // MARK: - Previews
 struct TextPreviews: PreviewProvider {
 
@@ -667,7 +791,7 @@ Multiline <applink1>text</applink1> <u>underlined</u>, <strong>strong</strong>, 
 
         var body: some View {
             HStack(spacing: .xxSmall) {
-                Text("\(sizeText) \(formatted ? "<applink1>" : "")\(size)\(formatted ? "</applink1>" : "")")
+                Text("\(sizeText) \(formatted ? "<applink1>" : "")\(String(describing: size))\(formatted ? "</applink1>" : "")")
                     .textSize(size)
                     .textAccentColor(Status.info.darkColor)
                     .fixedSize()

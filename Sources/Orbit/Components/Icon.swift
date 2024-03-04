@@ -64,6 +64,7 @@ public struct Icon: View, TextBuildable, PotentiallyEmptyView {
 
     @Environment(\.iconColor) private var iconColor
     @Environment(\.iconSize) private var iconSize
+    @Environment(\.locale) private var locale
     @Environment(\.textColor) private var textColor
     @Environment(\.textFontWeight) private var textFontWeight
     @Environment(\.textSize) private var textSize
@@ -110,6 +111,7 @@ public struct Icon: View, TextBuildable, PotentiallyEmptyView {
         .init(
             iconColor: iconColor,
             iconSize: iconSize,
+            locale: locale,
             textAccentColor: nil,
             textColor: textColor,
             textFontWeight: textFontWeight,

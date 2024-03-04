@@ -1,6 +1,8 @@
 import SwiftUI
 import Orbit
 
+typealias Text = Orbit.Text
+
 /// Orbit component that displays an illustration.
 ///
 /// An ``Illustration`` is created using Orbit or custom resource.

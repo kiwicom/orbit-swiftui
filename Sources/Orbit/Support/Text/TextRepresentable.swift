@@ -14,6 +14,7 @@ public struct TextRepresentableEnvironment {
 
     public let iconColor: Color?
     public let iconSize: CGFloat?
+    public let locale: Locale
     public let textAccentColor: Color?
     public let textColor: Color?
     public let textFontWeight: Font.Weight?
@@ -24,6 +25,7 @@ public struct TextRepresentableEnvironment {
     public init(
         iconColor: Color?,
         iconSize: CGFloat?,
+        locale: Locale,
         textAccentColor: Color?,
         textColor: Color?,
         textFontWeight: Font.Weight?,
@@ -33,6 +35,7 @@ public struct TextRepresentableEnvironment {
     ) {
         self.iconColor = iconColor
         self.iconSize = iconSize
+        self.locale = locale
         self.textAccentColor = textAccentColor
         self.textColor = textColor
         self.textFontWeight = textFontWeight
