@@ -66,6 +66,7 @@ public struct Card<Content: View, Action: View>: View {
     @Environment(\.backgroundShape) private var backgroundShape
     @Environment(\.cardLayout) private var cardLayout
     @Environment(\.idealSize) private var idealSize
+    @Environment(\.textColor) private var textColor
 
     private let title: String
     private let description: String
@@ -99,6 +100,7 @@ public struct Card<Content: View, Action: View>: View {
             VStack(alignment: .leading, spacing: .xxSmall) {
                 HStack(alignment: .firstTextBaseline, spacing: 0) {
                     Heading(title, style: titleStyle)
+                        .textColor(.inkDark)
                         .accessibility(.cardTitle)
                     
                     if title.isEmpty == false {
@@ -112,7 +114,7 @@ public struct Card<Content: View, Action: View>: View {
                 
                 HStack(alignment: .firstTextBaseline, spacing: 0) {
                     Text(description)
-                        .textColor(.inkNormal)
+                        .textColor(descriptionColor)
                         .accessibility(.cardDescription)
                     
                     if title.isEmpty {
@@ -142,6 +144,10 @@ public struct Card<Content: View, Action: View>: View {
         } else {
             Color.whiteDarker
         }
+    }
+    
+    private var descriptionColor: Color? {
+        textColor ?? nil
     }
 
     private var isHeaderEmpty: Bool {
@@ -252,6 +258,7 @@ struct CardPreviews: PreviewProvider {
             } action: {
                 ButtonLink("Edit", type: .critical, action: {})
             }
+            .textColor(.blueDark)
         }
         .previewDisplayName()
     }
