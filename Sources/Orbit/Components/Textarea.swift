@@ -85,18 +85,14 @@ public struct Textarea: View, TextFieldBuildable {
             isFocused = false
             inputFieldEndEditingAction()
         }
-    } 
-}
-
-// MARK: - Inits
-public extension Textarea {
+    }
     
     /// Creates Orbit ``Textarea`` component.
     ///
     /// - Parameters:
     ///   - message: Optional message below the text field.
     ///   - messageHeight: Binding to the current height of the optional message.
-    init(
+    public init(
         _ label: String = "",
         value: Binding<String>,
         prompt: String = "",

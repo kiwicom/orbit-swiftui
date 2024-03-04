@@ -55,13 +55,9 @@ public struct Stepper: View {
         .environment(\.isEnabled, isEnabled && value < maxValue)
         .accessibility(.stepperIncrement)
     }
-}
-
-// MARK: - Inits
-public extension Stepper {
     
     /// Creates Orbit ``Stepper`` component.
-    init(
+    public init(
         value: Binding<Int>,
         minValue: Int,
         maxValue: Int,

@@ -72,14 +72,9 @@ public struct TimelineItem<Footer: View>: View {
     private var hasDescription: Bool {
         description.isEmpty == false
     }
-}
-
-// MARK: - Inits
-
-public extension TimelineItem {
-
+    
     /// Creates Orbit ``TimelineItem`` component.
-    init(
+    public init(
         _ label: String = "",
         sublabel: String = "",
         type: TimelineItemType = .future,

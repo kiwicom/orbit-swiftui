@@ -61,19 +61,18 @@ import SwiftUI
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/card/)
 /// - Important: Avoid using the component when the content is large and should be embedded in a lazy stack.
-public struct Card<Content: View, Action: View>: View {
+public struct Card<Title: View, Description: View, Content: View, Action: View>: View {
 
     @Environment(\.backgroundShape) private var backgroundShape
     @Environment(\.cardLayout) private var cardLayout
     @Environment(\.idealSize) private var idealSize
     @Environment(\.textColor) private var textColor
 
-    private let title: String
-    private let description: String
     private let showBorder: Bool
-    private let titleStyle: Heading.Style
-    @ViewBuilder private let content: Content
+    @ViewBuilder private let title: Title
+    @ViewBuilder private let description: Description
     @ViewBuilder private let action: Action
+    @ViewBuilder private let content: Content
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -99,7 +98,7 @@ public struct Card<Content: View, Action: View>: View {
         if isHeaderEmpty == false {
             VStack(alignment: .leading, spacing: .xxSmall) {
                 HStack(alignment: .firstTextBaseline, spacing: 0) {
-                    Heading(title, style: titleStyle)
+                    title
                         .textColor(.inkDark)
                         .accessibility(.cardTitle)
                     
@@ -113,7 +112,7 @@ public struct Card<Content: View, Action: View>: View {
                 }
                 
                 HStack(alignment: .firstTextBaseline, spacing: 0) {
-                    Text(description)
+                    description
                         .textColor(descriptionColor)
                         .accessibility(.cardDescription)
                     
@@ -161,26 +160,69 @@ public struct Card<Content: View, Action: View>: View {
     private var isContentEmpty: Bool {
         content is EmptyView
     }
+    
+    /// Creates Orbit ``Card`` component with custom content.
+    public init(
+        showBorder: Bool = true,
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder title: () -> Title = { EmptyView() },
+        @ViewBuilder description: () -> Description = { EmptyView() },
+        @ViewBuilder action: () -> Action = { EmptyView() }
+    ) {
+        self.showBorder = showBorder
+        self.title = title()
+        self.description = description()
+        self.action = action()
+        self.content = content()
+    }
 }
 
-// MARK: - Inits
-public extension Card {
+// MARK: - Convenience Inits
+public extension Card where Title == Heading, Description == Text {
 
     /// Creates Orbit ``Card`` component.
+    @_disfavoredOverload
     init(
-        _ title: String = "",
-        description: String = "",
+        _ title: some StringProtocol = String(""),
+        description: some StringProtocol = String(""),
         showBorder: Bool = true,
         titleStyle: Heading.Style = .title3,
         @ViewBuilder content: () -> Content,
         @ViewBuilder action: () -> Action = { EmptyView() }
     ) {
-        self.title = title
-        self.description = description
-        self.showBorder = showBorder
-        self.titleStyle = titleStyle
-        self.content = content()
-        self.action = action()
+        self.init(showBorder: showBorder) {
+            content()
+        } title: {
+            Heading(title, style: titleStyle)
+        } description: {
+            Text(description)
+        } action: {
+            action()
+        }
+    }
+    
+    /// Creates Orbit ``Card`` component with localizable texts.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ title: LocalizedStringKey = "",
+        description: LocalizedStringKey = "",
+        showBorder: Bool = true,
+        titleStyle: Heading.Style = .title3,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        titleComment: StaticString? = nil,
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder action: () -> Action = { EmptyView() }
+    ) {
+        self.init(showBorder: showBorder) {
+            content()
+        } title: {
+            Heading(title, style: titleStyle, tableName: tableName, bundle: bundle)
+        } description: {
+            Text(description, tableName: tableName, bundle: bundle)
+        } action: {
+            action()
+        }
     }
 }
 

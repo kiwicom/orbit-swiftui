@@ -100,16 +100,16 @@ public struct Switch<Icon: View>: View {
     private var indicatorColor: Color {
         colorScheme == .light ? .whiteNormal : .cloudNormal
     }
-}
-
-// MARK: - Previews
-public extension Switch {
     
     /// Creates Orbit ``Switch`` component with custom icon.
-    init(isOn: Binding<Bool>, @ViewBuilder icon: () -> Icon) {
+    public init(isOn: Binding<Bool>, @ViewBuilder icon: () -> Icon) {
         self._isOn = isOn
         self.icon = icon()
     }
+}
+
+// MARK: - Convenience Inits
+public extension Switch {
     
     /// Creates Orbit ``Switch`` component with Orbit ``Icon/Symbol``.
     init(isOn: Binding<Bool>, icon: Icon.Symbol?) where Icon == Orbit.Icon {
@@ -118,7 +118,7 @@ public extension Switch {
         }
     }
     
-    /// Creates Orbit ``Switch`` component.
+    /// Creates Orbit ``Switch`` component with no icon.
     init(isOn: Binding<Bool>) where Icon == EmptyView {
         self.init(isOn: isOn) {
             EmptyView()

@@ -58,13 +58,9 @@ public struct Timeline<TimelineItems: View>: View, PotentiallyEmptyView {
 
         return geometry[preferences[index].bounds].height + .large
     }
-}
-
-// MARK: - Inits
-public extension Timeline {
-
+    
     /// Creates Orbit ``TimelineItem`` component.
-    init(@ViewBuilder _ timelineItems: () -> TimelineItems) {
+    public init(@ViewBuilder _ timelineItems: () -> TimelineItems) {
         self.timelineItems = timelineItems()
     }
 }

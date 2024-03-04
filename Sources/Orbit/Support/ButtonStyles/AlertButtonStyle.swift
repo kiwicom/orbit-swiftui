@@ -85,6 +85,14 @@ struct AlertButtonStylePreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: .medium) {
             button
                 .buttonStyle(AlertButtonStyle())
+            
+            button
+                .buttonStyle(AlertButtonStyle())
+                .buttonPriority(.primary)
+            
+            button
+                .buttonStyle(AlertButtonStyle())
+                .buttonPriority(.secondary)
         }
         .previewDisplayName()
     }

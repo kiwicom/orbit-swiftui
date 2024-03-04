@@ -36,11 +36,10 @@ import SwiftUI
 /// ```
 /// 
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/progress-indicators/emptystate/)
-public struct EmptyState<Content: View, Buttons: View, Illustration: View>: View {
+public struct EmptyState<Title: View, Description: View, Buttons: View, Illustration: View>: View {
 
-    private let title: String
-    private let description: String
-    @ViewBuilder private let content: Content
+    @ViewBuilder private let title: Title
+    @ViewBuilder private let description: Description
     @ViewBuilder private let buttons: Buttons
     @ViewBuilder private let illustration: Illustration
 
@@ -52,10 +51,6 @@ public struct EmptyState<Content: View, Buttons: View, Illustration: View>: View
             }
         
             texts
-
-            if content.isEmpty == false {
-                content
-            }
 
             if buttons.isEmpty == false {
                 VStack(spacing: .xSmall) {
@@ -72,45 +67,48 @@ public struct EmptyState<Content: View, Buttons: View, Illustration: View>: View
     @ViewBuilder var texts: some View {
         if title.isEmpty == false || description.isEmpty == false {
             VStack(spacing: .xxSmall) {
-                Heading(title, style: .title3)
+                title
                     .accessibility(.emptyStateTitle)
                 
-                Text(description)
+                description
                     .textColor(.inkNormal)
                     .accessibility(.emptyStateDescription)
             }
             .multilineTextAlignment(.center)
         }
     }
-}
-
-// MARK: - Inits
-public extension EmptyState {
-
-    /// Creates Orbit ``EmptyState`` component.
-    init(
-        _ title: String = "",
-        description: String = "",
-        @ViewBuilder content: () -> Content = { EmptyView() },
+    
+    /// Creates Orbit ``EmptyState`` component with custom content.
+    public init(
         @ButtonStackBuilder buttons: () -> Buttons,
+        @ViewBuilder title: () -> Title = { EmptyView() },
+        @ViewBuilder description: () -> Description = { EmptyView() },
         @ViewBuilder illustration: () -> Illustration = { EmptyView() }
     ) {
-        self.init(title: title, description: description) {
-            content()
-        } buttons: {
-            buttons()
-        } illustration: {
-            illustration()
-        }
+        self.title = title()
+        self.description = description()
+        self.buttons = buttons()
+        self.illustration = illustration()
     }
+}
 
-    /// Creates Orbit ``EmptyState`` component with no action.
+// MARK: - Convenience Inits
+public extension EmptyState where Title == Heading, Description == Text {
+    
+    /// Creates Orbit ``EmptyState`` component.
+    @_disfavoredOverload
     init(
-        _ title: String = "",
-        description: String = "",
+        _ title: some StringProtocol = String(""),
+        description: some StringProtocol = String(""),
+        @ButtonStackBuilder buttons: () -> Buttons = { EmptyView() },
         @ViewBuilder illustration: () -> Illustration = { EmptyView() }
-    ) where Content == EmptyView, Buttons == EmptyView {
-        self.init(title, description: description, buttons: { EmptyView() }, illustration: illustration)
+    ) {
+        self.init(
+            buttons: buttons,  
+            title: { Heading(title, style: .title3) }, 
+            description: { Text(description) }, 
+            illustration: { illustration() }
+        )
     }
 }
 
@@ -139,8 +137,6 @@ struct EmptyStatePreviews: PreviewProvider {
 
     static var standalone: some View {
         EmptyState(title, description: description) {
-            contentPlaceholder
-        } buttons: {
             Button(primaryButton) {}
             Button(secondaryButton) {}
         } illustration: {
@@ -164,6 +160,8 @@ struct EmptyStatePreviews: PreviewProvider {
     
     static var noAction: some View {
         EmptyState(title, description: description) {
+            contentPlaceholder
+        } illustration: {
             illustrationPlaceholder
         }
         .previewDisplayName()

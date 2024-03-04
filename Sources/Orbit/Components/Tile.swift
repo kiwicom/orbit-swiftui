@@ -165,13 +165,9 @@ public struct Tile<Content: View, Icon: View>: View {
     private var isHeaderEmpty: Bool {
         title.isEmpty && description.isEmpty && icon.isEmpty
     }
-}
-
-// MARK: - Inits
-public extension Tile {
     
-    /// Creates Orbit ``Tile`` component with custom icon.
-    init(
+    /// Creates Orbit ``Tile`` component with custom content.
+    public init(
         _ title: String = "",
         description: String = "",
         disclosure: TileDisclosure? = .icon(.chevronForward),
@@ -192,6 +188,10 @@ public extension Tile {
         self.content = content()
         self.icon = icon()
     }
+}
+
+// MARK: - Inits
+public extension Tile {
     
     /// Creates Orbit ``Tile`` component.
     init(

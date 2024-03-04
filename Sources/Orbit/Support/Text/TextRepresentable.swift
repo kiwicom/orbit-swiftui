@@ -5,8 +5,8 @@ import SwiftUI
 /// Use the `+` operator to concatenate ``TextRepresentable`` elements.
 public protocol TextRepresentable {
 
-    /// Extracts native `SwiftUI.Text` from type that represents textual content.
-    func swiftUIText(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text?
+    /// The native `SwiftUI.Text` representation.
+    func text(environment: TextRepresentableEnvironment) -> SwiftUI.Text?
 }
 
 /// Environment values required for proper formatting of concatenated Orbit text components.
@@ -15,6 +15,7 @@ public struct TextRepresentableEnvironment {
     public let iconColor: Color?
     public let iconSize: CGFloat?
     public let locale: Locale
+    public let localizationBundle: Bundle
     public let textAccentColor: Color?
     public let textColor: Color?
     public let textFontWeight: Font.Weight?
@@ -26,6 +27,7 @@ public struct TextRepresentableEnvironment {
         iconColor: Color?,
         iconSize: CGFloat?,
         locale: Locale,
+        localizationBundle: Bundle,
         textAccentColor: Color?,
         textColor: Color?,
         textFontWeight: Font.Weight?,
@@ -36,12 +38,27 @@ public struct TextRepresentableEnvironment {
         self.iconColor = iconColor
         self.iconSize = iconSize
         self.locale = locale
+        self.localizationBundle = localizationBundle
         self.textAccentColor = textAccentColor
         self.textColor = textColor
         self.textFontWeight = textFontWeight
         self.textLineHeight = textLineHeight
         self.textSize = textSize
         self.sizeCategory = sizeCategory
+    }
+    
+    /// Creates ``TextRepresentableEnvironment`` with no formatting.
+    public init(locale: Locale, localizationBundle: Bundle) {
+        self.iconColor = nil
+        self.iconSize = nil
+        self.locale = locale
+        self.localizationBundle = localizationBundle
+        self.textAccentColor = nil
+        self.textColor = nil
+        self.textFontWeight = nil
+        self.textLineHeight = nil
+        self.textSize = nil
+        self.sizeCategory = .large
     }
 
     func designatedLineHeight(_ lineHeight: CGFloat?, size: CGFloat?) -> CGFloat {

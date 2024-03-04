@@ -65,6 +65,7 @@ public struct Icon: View, TextBuildable, PotentiallyEmptyView {
     @Environment(\.iconColor) private var iconColor
     @Environment(\.iconSize) private var iconSize
     @Environment(\.locale) private var locale
+    @Environment(\.localizationBundle) private var localizationBundle
     @Environment(\.textColor) private var textColor
     @Environment(\.textFontWeight) private var textFontWeight
     @Environment(\.textSize) private var textSize
@@ -112,6 +113,7 @@ public struct Icon: View, TextBuildable, PotentiallyEmptyView {
             iconColor: iconColor,
             iconSize: iconSize,
             locale: locale,
+            localizationBundle: localizationBundle,
             textAccentColor: nil,
             textColor: textColor,
             textFontWeight: textFontWeight,
@@ -223,46 +225,46 @@ private extension Icon {
 
 // MARK: - TextRepresentable
 extension Icon: TextRepresentable {
-
-    public func swiftUIText(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
+    
+    public func text(environment: TextRepresentableEnvironment) -> SwiftUI.Text? {
         if #available(iOS 14.0, *) {
-            return text(textRepresentableEnvironment: textRepresentableEnvironment)
+            text(textRepresentableEnvironment)
         } else {
-            return textFallback(textRepresentableEnvironment: textRepresentableEnvironment)
+            textFallback(textRepresentableEnvironment)
         }
     }
 
     @available(iOS 14.0, *)
-    private func text(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
+    private func text(_ environment: TextRepresentableEnvironment) -> SwiftUI.Text? {
         switch content {
             case .none:
                 return nil
             case .symbol(let symbol):
-                return symbolWrapper(textRepresentableEnvironment) {
-                    colorWrapper(textRepresentableEnvironment) {
+                return symbolWrapper(environment) {
+                    colorWrapper(environment) {
                         SwiftUI.Text(verbatim: symbol.value)
                     }
                 }
             case .sfSymbol(let systemName):
                 return baselineWrapper {
-                    colorWrapper(textRepresentableEnvironment) {
+                    colorWrapper(environment) {
                         SwiftUI.Text(Image(systemName: systemName))
                             .font(
-                                sfSymbolFont(textRepresentableEnvironment)
+                                sfSymbolFont(environment)
                             )
                     }
                 }
         }
     }
 
-    private func textFallback(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
+    private func textFallback(_ environment: TextRepresentableEnvironment) -> SwiftUI.Text? {
         switch content {
             case .none:
                 return nil
             case .symbol(let symbol):
-                return symbolWrapper(textRepresentableEnvironment) {
+                return symbolWrapper(environment) {
                     baselineWrapper {
-                        colorWrapper(textRepresentableEnvironment) {
+                        colorWrapper(environment) {
                             SwiftUI.Text(verbatim: symbol.value)
                         }
                     }

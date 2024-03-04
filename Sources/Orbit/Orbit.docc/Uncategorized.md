@@ -26,7 +26,6 @@ Supporting types and components under development.
 
 ### Forms
 
-- ``FieldLabel``
 - ``FieldMessage``
 - ``FieldWrapper``
 - ``InputContent``
@@ -56,10 +55,10 @@ Supporting types and components under development.
 - ``BorderWidth``
 - ``ChoiceTileAlignment``
 - ``ChoiceTileIndicator``
+- ``CollapseTitle``
 - ``ElevationShape``
 - ``IconButton``
 - ``IdealSizeValue``
-- ``KeyValueField``
 - ``NavigationButton``
 - ``PasswordStrengthIndicator``
 - ``Progress``

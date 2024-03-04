@@ -6,6 +6,7 @@ struct ConcatenatedText: View {
     @Environment(\.iconSize) var iconSize
     @Environment(\.lineSpacing) var lineSpacing
     @Environment(\.locale) var locale
+    @Environment(\.localizationBundle) var localizationBundle
     @Environment(\.sizeCategory) var sizeCategory
     @Environment(\.textAccentColor) var textAccentColor
     @Environment(\.textColor) var textColor
@@ -34,6 +35,7 @@ struct ConcatenatedText: View {
             iconColor: iconColor,
             iconSize: iconSize,
             locale: locale,
+            localizationBundle: localizationBundle,
             textAccentColor: textAccentColor,
             textColor: textColor,
             textFontWeight: textFontWeight,
@@ -46,18 +48,18 @@ struct ConcatenatedText: View {
 
 extension ConcatenatedText: TextRepresentable {
 
-    func swiftUIText(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
-        content(textRepresentableEnvironment)
+    func text(environment: TextRepresentableEnvironment) -> SwiftUI.Text? {
+        content(environment)
     }
 }
 
 extension ConcatenatedText {
 
-    init(_ TextRepresentable: TextRepresentable) {
-        if let concatenatedText = TextRepresentable as? ConcatenatedText {
+    init(_ textRepresentable: TextRepresentable) {
+        if let concatenatedText = textRepresentable as? ConcatenatedText {
             self = concatenatedText
         } else {
-            self.init(content: TextRepresentable.swiftUIText)
+            self.init(content: textRepresentable.text)
         }
     }
 }
