@@ -68,7 +68,6 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
     private let isSecure: Bool
     private let passwordStrength: PasswordStrengthIndicator.PasswordStrength?
     private let message: Message?
-    @Binding private var messageHeight: CGFloat
 
     // Builder properties (keyboard related)
     var autocapitalizationType: UITextAutocapitalizationType = .none
@@ -79,7 +78,7 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
     var shouldDeleteBackwardAction: (String) -> Bool = { _ in true }
 
     public var body: some View {
-        FieldWrapper(defaultLabel, message: message, messageHeight: $messageHeight) {
+        FieldWrapper(defaultLabel, message: message) {
             InputContent(state: state, label: compactLabel, message: message, isFocused: isFocused) {
                 textField
             } prefix: {
@@ -111,7 +110,8 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
             isSecureTextEntry: isSecure && isSecureTextRedacted,
             state: state,
             leadingPadding: .small,
-            trailingPadding: .small
+            trailingPadding: .small,
+            keyboardSpacing: keyboardSpacing
         )
         .returnKeyType(returnKeyType)
         .autocorrectionDisabled(isAutocorrectionDisabled)
@@ -128,6 +128,8 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
             isFocused = false
             inputFieldEndEditingAction()
         }
+        // Reverts the additional keyboard spacing used for native keyboard avoidance
+        .padding(.bottom, -keyboardSpacing)
     }
 
     @ViewBuilder private var secureTextRedactedButton: some View {
@@ -136,6 +138,10 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
                 isSecureTextRedacted.toggle()
             }
         }
+    }
+    
+    private var keyboardSpacing: CGFloat {
+        .medium
     }
 
     private var defaultLabel: String {
@@ -163,7 +169,6 @@ public extension InputField {
     ///
     /// - Parameters:
     ///   - message: Optional message below the text field.
-    ///   - messageHeight: Binding to the current height of the optional message.
     init(
         _ label: String = "",
         value: Binding<String>,
@@ -174,8 +179,7 @@ public extension InputField {
         labelStyle: InputLabelStyle = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
-        message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0)
+        message: Message? = nil
     ) where Prefix == Icon, Suffix == Icon {
         self.init(
             label,
@@ -185,8 +189,7 @@ public extension InputField {
             labelStyle: labelStyle,
             isSecure: isSecure,
             passwordStrength: passwordStrength,
-            message: message,
-            messageHeight: messageHeight
+            message: message
         ) {
             Icon(prefix)
         } suffix: {
@@ -198,7 +201,6 @@ public extension InputField {
     ///
     /// - Parameters:
     ///   - message: Optional message below the text field.
-    ///   - messageHeight: Binding to the current height of the optional message.
     init(
         _ label: String = "",
         value: Binding<String>,
@@ -208,7 +210,6 @@ public extension InputField {
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder prefix: () -> Prefix,
         @ViewBuilder suffix: () -> Suffix = { EmptyView() }
     ) {
@@ -220,7 +221,6 @@ public extension InputField {
         self.isSecure = isSecure
         self.passwordStrength = passwordStrength
         self.message = message
-        self._messageHeight = messageHeight
         self.prefix = prefix()
         self.suffix = suffix()
     }

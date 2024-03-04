@@ -40,8 +40,6 @@ public struct Select<Prefix: View, Suffix: View>: View {
 
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
-
-    @Binding private var messageHeight: CGFloat
     
     private let label: String
     private let value: String?
@@ -54,7 +52,7 @@ public struct Select<Prefix: View, Suffix: View>: View {
     @ViewBuilder private let suffix: Suffix
 
     public var body: some View {
-        FieldWrapper(defaultLabel, message: message, messageHeight: $messageHeight) {
+        FieldWrapper(defaultLabel, message: message) {
             SwiftUI.Button {
                 if isHapticsEnabled {
                     HapticsProvider.sendHapticFeedback(.light(0.5))
@@ -131,7 +129,6 @@ public extension Select {
         state: InputState = .default,
         labelStyle: InputLabelStyle = .default,
         message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
         action: @escaping () -> Void
     ) where Prefix == Icon, Suffix == Icon {
         self.init(
@@ -140,8 +137,7 @@ public extension Select {
             prompt: prompt,
             state: state,
             labelStyle: labelStyle,
-            message: message,
-            messageHeight: messageHeight
+            message: message
         ) {
             action()
         } prefix: {
@@ -161,7 +157,6 @@ public extension Select {
        state: InputState = .default,
        labelStyle: InputLabelStyle = .default,
        message: Message? = nil,
-       messageHeight: Binding<CGFloat> = .constant(0),
        action: @escaping () -> Void,
        @ViewBuilder prefix: () -> Prefix,
        @ViewBuilder suffix: () -> Suffix = { Icon(.chevronDown) }
@@ -172,7 +167,6 @@ public extension Select {
        self.state = state
        self.labelStyle = labelStyle
        self.message = message
-       self._messageHeight = messageHeight
        self.action = action
        self.prefix = prefix()
        self.suffix = suffix()

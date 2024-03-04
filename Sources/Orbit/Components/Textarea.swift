@@ -37,7 +37,6 @@ public struct Textarea: View, TextFieldBuildable {
     private let state: InputState
 
     private let message: Message?
-    @Binding private var messageHeight: CGFloat
 
     // Builder properties (keyboard related)
     var autocapitalizationType: UITextAutocapitalizationType = .none
@@ -48,7 +47,7 @@ public struct Textarea: View, TextFieldBuildable {
     var shouldDeleteBackwardAction: (String) -> Bool = { _ in true }
     
     public var body: some View {
-        FieldWrapper(label, message: message, messageHeight: $messageHeight) {
+        FieldWrapper(label, message: message) {
             InputContent(state: state, message: message, isFocused: isFocused) {
                 textView
                     .alignmentGuide(.firstTextBaseline) { dimension in
@@ -95,21 +94,18 @@ public extension Textarea {
     ///
     /// - Parameters:
     ///   - message: Optional message below the text field.
-    ///   - messageHeight: Binding to the current height of the optional message.
     init(
         _ label: String = "",
         value: Binding<String>,
         prompt: String = "",
         state: InputState = .default,
-        message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0)
+        message: Message? = nil
     ) {
         self.label = label
         self._value = value
         self.prompt = prompt
         self.state = state
         self.message = message
-        self._messageHeight = messageHeight
     }
 }
 
