@@ -1,6 +1,8 @@
 import SwiftUI
 import Orbit
 
+typealias Text = Orbit.Text
+
 public struct Storybook: View {
 
     static var userInterfaceStyleOverride : UIUserInterfaceStyle  {
