@@ -6,7 +6,9 @@ import SwiftUI
 ///
 /// ```swift
 /// Tag("Sorting", icon: .sort, isSelected: $isSortingApplied)
-/// Tag("Filters", style: .removable(action: { /* Tap action */ }), isSelected: $isFiltersApplied)
+/// Tag("Filters", isSelected: $isFiltersApplied) {
+///    // Tap action
+/// }
 /// ```
 /// 
 /// ### Customizing appearance
@@ -34,10 +36,10 @@ public struct Tag<Icon: View>: View, PotentiallyEmptyView {
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     private let label: String
-    private let style: TagStyle
     private let isFocused: Bool
     @Binding private var isSelected: Bool
     @ViewBuilder private let icon: Icon
+    private let removeAction: (() -> Void)?
 
     public var body: some View {
         if isEmpty == false {
@@ -67,11 +69,7 @@ public struct Tag<Icon: View>: View, PotentiallyEmptyView {
                 }
             }
             .buttonStyle(
-                TagButtonStyle(
-                    style: style,
-                    isFocused: isFocused,
-                    isSelected: isSelected
-                )
+                TagButtonStyle(isFocused: isFocused, isSelected: isSelected, removeAction: removeAction)
             )
             .accessibility(addTraits: isSelected ? .isSelected : [])
         }
@@ -88,52 +86,36 @@ public extension Tag {
     /// Creates Orbit ``Tag`` component with custom leading icon.
     init(
         _ label: String = "",
-        style: TagStyle = .default,
         isFocused: Bool = true,
         isSelected: Binding<Bool>,
-        @ViewBuilder icon: () -> Icon
+        @ViewBuilder icon: () -> Icon,
+        removeAction: (() -> Void)? = nil
     ) {
         self.label = label
-        self.style = style
         self.isFocused = isFocused
         self._isSelected = isSelected
         self.icon = icon()
+        self.removeAction = removeAction
     }
 
     /// Creates Orbit ``Tag`` component.
     init(
         _ label: String = "",
         icon: Icon.Symbol? = nil,
-        style: TagStyle = .default,
         isFocused: Bool = true,
-        isSelected: Binding<Bool>
+        isSelected: Binding<Bool>,
+        removeAction: (() -> Void)? = nil
     ) where Icon == Orbit.Icon {
         self.init(
             label,
-            style: style,
             isFocused: isFocused,
-            isSelected: isSelected
-        ) {
-            Icon(icon)
-                .iconSize(textSize: .normal)
-        }
-    }
-}
-
-// MARK: - Types
-
-/// Orbit ``Tag`` style.
-public enum TagStyle: Equatable {
-
-    case `default`
-    case removable(action: () -> Void)
-
-    public static func == (lhs: TagStyle, rhs: TagStyle) -> Bool {
-        switch (lhs, rhs) {
-            case (.default, .default):      return true
-            case (.removable, .removable):  return true
-            default:                        return false
-        }
+            isSelected: isSelected,
+            icon: {
+                Icon(icon)
+                    .iconSize(textSize: .normal)
+            },
+            removeAction: removeAction
+        )
     }
 }
 
@@ -154,7 +136,7 @@ struct TagPreviews: PreviewProvider {
 
     static var standalone: some View {
         StateWrapper(true) { isSelected in
-            Tag(label, icon: .grid, style: .removable(action: {}), isSelected: isSelected)
+            Tag(label, icon: .grid, isSelected: isSelected, removeAction: {})
             Tag("", isSelected: .constant(false)) // EmptyView
         }
         .padding(.medium)
@@ -163,7 +145,7 @@ struct TagPreviews: PreviewProvider {
 
     static var standaloneExpanding: some View {
         StateWrapper(true) { isSelected in
-            Tag(label, icon: .grid, style: .removable(action: {}), isSelected: isSelected)
+            Tag(label, icon: .grid, isSelected: isSelected, removeAction: {})
                 .idealSize(horizontal: false)
         }
         .padding(.medium)
@@ -172,17 +154,17 @@ struct TagPreviews: PreviewProvider {
 
     static var styles: some View {
         VStack(alignment: .leading, spacing: .large) {
-            stack(style: .default, isFocused: true)
-            stack(style: .default, isFocused: false)
-            stack(style: .removable(action: {}), isFocused: true)
-            stack(style: .removable(action: {}), isFocused: false)
+            stack(isRemovable: false, isFocused: true)
+            stack(isRemovable: false, isFocused: false)
+            stack(isRemovable: true, isFocused: true)
+            stack(isRemovable: true, isFocused: false)
             Separator()
-            stack(style: .default, isFocused: false, idealWidth: false)
-            stack(style: .removable(action: {}), isFocused: true, idealWidth: false)
+            stack(isRemovable: false, isFocused: false, idealWidth: false)
+            stack(isRemovable: true, isFocused: true, idealWidth: false)
             Separator()
             HStack(spacing: .medium) {
                 StateWrapper(true) { isSelected in
-                    Tag(label, icon: .sort, style: .removable(action: {}), isSelected: isSelected)
+                    Tag(label, icon: .sort, isSelected: isSelected, removeAction: {})
                 }
                 StateWrapper(false) { isSelected in
                     Tag(icon: .notificationAdd, isFocused: false, isSelected: isSelected)
@@ -206,23 +188,23 @@ struct TagPreviews: PreviewProvider {
         .previewDisplayName()
     }
 
-    static func stack(style: TagStyle, isFocused: Bool, idealWidth: Bool? = nil) -> some View {
+    static func stack(isRemovable: Bool, isFocused: Bool, idealWidth: Bool? = nil) -> some View {
         HStack(spacing: .medium) {
             VStack(spacing: .small) {
-                tag(style: style, isFocused: isFocused, isSelected: false)
-                tag(style: style, isFocused: isFocused, isSelected: true)
+                tag(isRemovable: isRemovable, isFocused: isFocused, isSelected: false)
+                tag(isRemovable: isRemovable, isFocused: isFocused, isSelected: true)
             }
         }
         .idealSize(horizontal: idealWidth)
     }
 
-    static func tag(style: TagStyle, isFocused: Bool, isSelected: Bool) -> some View {
-        StateWrapper((style, isSelected, true)) { state in
+    static func tag(isRemovable: Bool, isFocused: Bool, isSelected: Bool) -> some View {
+        StateWrapper((isRemovable, isSelected, true)) { state in
             Tag(
                 label,
-                style: style == .default ? .default : .removable(action: { state.wrappedValue.2 = false }),
                 isFocused: isFocused,
-                isSelected: state.1
+                isSelected: state.1,
+                removeAction: state.0.wrappedValue ? { state.wrappedValue.2 = false } : nil
             )
             .opacity(state.wrappedValue.2 ? 1 : 0)
         }

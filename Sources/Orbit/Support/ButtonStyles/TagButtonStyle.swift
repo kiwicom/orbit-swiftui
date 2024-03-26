@@ -9,10 +9,10 @@ public struct TagButtonStyle: ButtonStyle {
     @Environment(\.backgroundShape) private var backgroundShape
     @Environment(\.iconColor) private var iconColor
     @Environment(\.textColor) private var textColor
-    
-    private let style: TagStyle
+
     private let isFocused: Bool
     private let isSelected: Bool
+    private let removeAction: (() -> Void)?
 
     public func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: .xSmall) {
@@ -21,7 +21,7 @@ public struct TagButtonStyle: ButtonStyle {
                 .textColor(resolvedTextColor)
                 .lineLimit(1)
 
-            if case .removable(let removeAction) = style {
+            if let removeAction {
                 Icon(.closeCircle)
                     .iconSize(.small)
                     .iconColor(resolvedIconColor(isPressed: configuration.isPressed))
@@ -110,13 +110,13 @@ public struct TagButtonStyle: ButtonStyle {
     
     /// Create button style for Orbit ``Tag`` component.
     public init(
-        style: TagStyle,
         isFocused: Bool,
-        isSelected: Bool
+        isSelected: Bool,
+        removeAction: (() -> Void)?
     ) {
-        self.style = style
         self.isFocused = isFocused
         self.isSelected = isSelected
+        self.removeAction = removeAction
     }
 }
 
@@ -134,25 +134,25 @@ struct TagButtonStylePreviews: PreviewProvider {
     static var styles: some View {
         VStack(alignment: .leading, spacing: .medium) {
             button
-                .buttonStyle(TagButtonStyle(style: .default, isFocused: false, isSelected: false))
-            
+                .buttonStyle(TagButtonStyle(isFocused: false, isSelected: false, removeAction: nil))
+
             button
-                .buttonStyle(TagButtonStyle(style: .default, isFocused: true, isSelected: false))
-            
+                .buttonStyle(TagButtonStyle(isFocused: true, isSelected: false, removeAction: nil))
+
             button
-                .buttonStyle(TagButtonStyle(style: .default, isFocused: true, isSelected: true))
-            
+                .buttonStyle(TagButtonStyle(isFocused: true, isSelected: true, removeAction: nil))
+
             button
-                .buttonStyle(TagButtonStyle(style: .removable(action: {}), isFocused: true, isSelected: false))
-            
+                .buttonStyle(TagButtonStyle(isFocused: true, isSelected: false, removeAction: {}))
+
             button
-                .buttonStyle(TagButtonStyle(style: .removable(action: {}), isFocused: true, isSelected: true))
-            
+                .buttonStyle(TagButtonStyle(isFocused: true, isSelected: true, removeAction: {}))
+
             button
-                .buttonStyle(TagButtonStyle(style: .removable(action: {}), isFocused: false, isSelected: false))
-            
+                .buttonStyle(TagButtonStyle(isFocused: false, isSelected: false, removeAction: {}))
+
             button
-                .buttonStyle(TagButtonStyle(style: .removable(action: {}), isFocused: false, isSelected: true))
+                .buttonStyle(TagButtonStyle(isFocused: false, isSelected: true, removeAction: {}))
         }
         .previewDisplayName()
     }
@@ -171,11 +171,11 @@ struct TagButtonStylePreviews: PreviewProvider {
                 .backgroundStyle(Gradient.bundleBasic.background, active: .redLight)
             
             button
-                .buttonStyle(TagButtonStyle(style: .removable(action: {}), isFocused: true, isSelected: true))
+                .buttonStyle(TagButtonStyle(isFocused: true, isSelected: true, removeAction: {}))
                 .iconColor(.blueLight)
                 .textColor(.blueLight)
         }
-        .buttonStyle(TagButtonStyle(style: .default, isFocused: false, isSelected: false))
+        .buttonStyle(TagButtonStyle(isFocused: false, isSelected: false, removeAction: nil))
         .previewDisplayName()
     }
     

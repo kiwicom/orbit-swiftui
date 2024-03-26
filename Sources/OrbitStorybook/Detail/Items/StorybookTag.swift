@@ -7,17 +7,17 @@ struct StorybookTag {
 
     @ViewBuilder static var basic: some View {
         VStack(alignment: .leading, spacing: .large) {
-            stack(style: .default, isFocused: true)
-            stack(style: .default, isFocused: false)
-            stack(style: .removable(action: {}), isFocused: true)
-            stack(style: .removable(action: {}), isFocused: false)
+            stack(isRemovable: false, isFocused: true)
+            stack(isRemovable: false, isFocused: false)
+            stack(isRemovable: true, isFocused: true)
+            stack(isRemovable: true, isFocused: false)
             Separator()
-            stack(style: .default, isFocused: false, idealWidth: false)
-            stack(style: .removable(action: {}), isFocused: true, idealWidth: false)
+            stack(isRemovable: false, isFocused: false, idealWidth: false)
+            stack(isRemovable: true, isFocused: true, idealWidth: false)
             Separator()
             HStack(spacing: .medium) {
                 StateWrapper(true) { isSelected in
-                    Tag(label, icon: .sort, style: .removable(action: {}), isSelected: isSelected)
+                    Tag(label, icon: .sort, isSelected: isSelected, removeAction: {})
                 }
                 StateWrapper(false) { isSelected in
                     Tag(icon: .notificationAdd, isFocused: false, isSelected: isSelected)
@@ -27,23 +27,23 @@ struct StorybookTag {
         .previewDisplayName()
     }
 
-    @ViewBuilder static func stack(style: TagStyle, isFocused: Bool, idealWidth: Bool? = nil) -> some View {
+    static func stack(isRemovable: Bool, isFocused: Bool, idealWidth: Bool? = nil) -> some View {
         HStack(spacing: .medium) {
             VStack(spacing: .small) {
-                tag(style: style, isFocused: isFocused, isSelected: false)
-                tag(style: style, isFocused: isFocused, isSelected: true)
+                tag(isRemovable: isRemovable, isFocused: isFocused, isSelected: false)
+                tag(isRemovable: isRemovable, isFocused: isFocused, isSelected: true)
             }
         }
         .idealSize(horizontal: idealWidth)
     }
 
-    @ViewBuilder static func tag(style: TagStyle, isFocused: Bool, isSelected: Bool) -> some View {
-        StateWrapper((style, isSelected, true)) { state in
+    static func tag(isRemovable: Bool, isFocused: Bool, isSelected: Bool) -> some View {
+        StateWrapper((isRemovable, isSelected, true)) { state in
             Tag(
                 label,
-                style: style == .default ? .default : .removable(action: { state.wrappedValue.2 = false }),
                 isFocused: isFocused,
-                isSelected: state.1
+                isSelected: state.1,
+                removeAction: state.0.wrappedValue ? { state.wrappedValue.2 = false } : nil
             )
             .opacity(state.wrappedValue.2 ? 1 : 0)
         }
