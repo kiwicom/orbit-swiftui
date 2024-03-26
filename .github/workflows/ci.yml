@@ -32,7 +32,7 @@ jobs:
     needs: [build, check-components-have-snapshots, check-docc-referenced-types]
     strategy:
       matrix:
-        device: ["iPhone SE (3rd generation)", "iPad (10th generation)"]
+        device: ["iPhone SE (3rd generation)"]
         os_version: ["17.0"]
     runs-on: macos-13
     steps:

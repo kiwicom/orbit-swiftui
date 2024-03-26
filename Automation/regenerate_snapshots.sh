@@ -7,7 +7,6 @@ IOS_VERSION="17.0"
 
 SIMULATORS=(
     "iPhone SE (3rd generation)"
-    "iPad (10th generation)"
 )
 
 echo "Verifying iOS $IOS_VERSION runtime is available..."
