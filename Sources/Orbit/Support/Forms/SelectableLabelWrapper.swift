@@ -30,8 +30,10 @@ private final class CopyableLabel: UILabel {
         super.init(frame: frame)
 
         isUserInteractionEnabled = true
-        isAccessibilityElement = true
-        accessibilityTraits = .staticText
+        
+        isAccessibilityElement = false
+//        accessibilityTraits = .staticText
+        
         addGestureRecognizer(
             UILongPressGestureRecognizer(
                 target: self,

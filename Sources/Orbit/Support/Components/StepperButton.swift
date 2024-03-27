@@ -28,11 +28,7 @@ public struct StepperButton: View {
     private var size: CGFloat {
         .xxLarge * sizeCategory.controlRatio
     }
-}
-
-// MARK: - Inits
-extension StepperButton {
-
+    
     /// Creates Orbit ``StepperButton`` component used in a ``Stepper``.
     public init(
         _ icon: Icon.Symbol,

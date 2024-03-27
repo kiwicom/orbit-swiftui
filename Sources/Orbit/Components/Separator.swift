@@ -71,13 +71,9 @@ public struct Separator: View {
             line
         }
     }
-}
-
-// MARK: - Inits
-public extension Separator {
     
     /// Creates Orbit ``Separator`` component.
-    init(
+    public init(
         _ label: String = "",
         color: Color = .cloudNormal,
         thickness: Thickness = .default

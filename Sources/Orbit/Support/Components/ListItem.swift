@@ -34,9 +34,20 @@ public struct ListItem<Icon: View>: View {
         }
         .textColor(textColor ?? type.textColor)
     }
+    
+    /// Creates Orbit ``ListItem`` component with custom icon.
+    public init(
+        _ text: String = "",
+        type: ListItemType = .primary,
+        @ViewBuilder icon: () -> Icon
+    ) {
+        self.text = text
+        self.type = type
+        self.icon = icon()
+    }
 }
 
-// MARK: - Inits
+// MARK: - Convenience Inits
 public extension ListItem {
 
     /// Creates Orbit ``ListItem`` component.
@@ -51,17 +62,6 @@ public extension ListItem {
         ) {
             Icon(icon)
         }
-    }
-
-    /// Creates Orbit ``ListItem`` component with custom icon.
-    init(
-        _ text: String = "",
-        type: ListItemType = .primary,
-        @ViewBuilder icon: () -> Icon
-    ) {
-        self.text = text
-        self.type = type
-        self.icon = icon()
     }
 }
 

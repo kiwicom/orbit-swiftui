@@ -42,17 +42,23 @@ struct StorybookButton {
 
     @ViewBuilder static var mix: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
-            Button("Button with SF Symbol") {
+            Button {
                 // No action
+            } label: {
+              Text("Button with SF Symbol")  
             } icon: {
                 Icon("info.circle.fill")
             }
-            Button("Button with Flag") {
+            
+            Button(type: .secondary) {
                 // No action
+            } label: {
+                Text("Button with SF Symbol")  
             } icon: {
                 CountryFlag("us")
             }
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 

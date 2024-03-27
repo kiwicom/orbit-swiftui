@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AlertContent<Content: View, Icon: View, Buttons: View>: View {
+struct AlertContent<Title: View, Description: View, Icon: View, Buttons: View>: View {
 
     @Environment(\.iconColor) private var iconColor
     @Environment(\.idealSize) private var idealSize
@@ -9,12 +9,11 @@ struct AlertContent<Content: View, Icon: View, Buttons: View>: View {
     @Environment(\.textColor) private var textColor
     @Environment(\.textLinkColor) private var textLinkColor
 
-    let title: String
-    var description: String = ""
     let isInline: Bool
-    @ViewBuilder let content: Content
-    @ViewBuilder let icon: Icon
     @ViewBuilder let buttons: Buttons
+    @ViewBuilder let title: Title
+    @ViewBuilder let description: Description
+    @ViewBuilder let icon: Icon
 
     var body: some View {
         variantContent
@@ -37,7 +36,6 @@ struct AlertContent<Content: View, Icon: View, Buttons: View>: View {
 
             VStack(alignment: .leading, spacing: .small) {
                 defaultHeader
-                content
                 buttons
             }
         }
@@ -61,7 +59,8 @@ struct AlertContent<Content: View, Icon: View, Buttons: View>: View {
         if title.isEmpty == false || description.isEmpty == false {
             VStack(alignment: .leading, spacing: .xxSmall) {
                 titleContent
-                Text(description)
+                
+                description
                     .textLinkColor(textLinkColor ?? textColor.map { TextLink.Color.custom($0) } ?? .secondary)
                     .accessibility(.alertDescription)
             }
@@ -88,8 +87,8 @@ struct AlertContent<Content: View, Icon: View, Buttons: View>: View {
     }
 
     @ViewBuilder var titleContent: some View {
-        Text(title)
-            .bold()
+        title
+            .textFontWeight(.bold)
             .accessibility(.alertTitle)
     }
 
@@ -151,11 +150,7 @@ struct AlertContentPreviews: PreviewProvider {
 
     static var content: some View {
         VStack(spacing: .medium) {
-            AlertContent(title: title, description: description, isInline: false) {
-                contentPlaceholder
-            } icon: {
-                Icon(.informationCircle)
-            } buttons: {
+            AlertContent(isInline: false) {
                 HStack(spacing: .xSmall) {
                     Button("Primary") {}
                         .suppressButtonStyle()
@@ -166,21 +161,34 @@ struct AlertContentPreviews: PreviewProvider {
                         .buttonStyle(AlertButtonStyle())
                         .buttonPriority(.secondary)
                 }
+            } title: {
+                Text(title)
+            } description: {
+                VStack(alignment: .leading, spacing: .medium) {
+                    Text(description)
+                    contentPlaceholder
+                }
+            } icon: {
+                Icon(.informationCircle)
             }
             
-            AlertContent(title: title, isInline: false) {
+            AlertContent(isInline: false) {
+                EmptyView()
+            } title: {
+                Text(title)
+            } description: {
                 contentPlaceholder
             } icon: {
                 EmptyView()
-            } buttons: {
-                EmptyView()
             }
             
-            AlertContent(title: "", isInline: false) {
+            AlertContent(isInline: false) {
+                EmptyView()
+            } title: {
+                EmptyView()
+            } description: {
                 contentPlaceholder
             } icon: {
-                EmptyView()
-            } buttons: {
                 EmptyView()
             }
         }
@@ -188,15 +196,20 @@ struct AlertContentPreviews: PreviewProvider {
     }
 
     static var inline: some View {
-        AlertContent(title: title, description: description, isInline: true) {
-            contentPlaceholder
-        } icon: {
-            Icon(.informationCircle)
-        } buttons: {
+        AlertContent(isInline: true) {
             Button("Primary") {}
                 .suppressButtonStyle()
                 .buttonStyle(AlertInlineButtonStyle())
                 .padding(.trailing, .small)
+        } title: {
+            Text(title)
+        } description: {
+            VStack(alignment: .leading, spacing: .medium) {
+                Text(description)
+                contentPlaceholder
+            }
+        } icon: {
+            Icon(.informationCircle)
         }
         .previewDisplayName()
     }

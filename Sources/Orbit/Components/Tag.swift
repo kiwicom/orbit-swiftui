@@ -78,25 +78,26 @@ public struct Tag<Icon: View>: View, PotentiallyEmptyView {
     var isEmpty: Bool {
         label.isEmpty && icon.isEmpty
     }
-}
-
-// MARK: - Inits
-public extension Tag {
-
-    /// Creates Orbit ``Tag`` component with custom leading icon.
-    init(
+    
+    /// Creates Orbit ``Tag`` component with custom content.
+    public init(
         _ label: String = "",
         isFocused: Bool = true,
         isSelected: Binding<Bool>,
         @ViewBuilder icon: () -> Icon,
         removeAction: (() -> Void)? = nil
     ) {
+        // TODO: Label
         self.label = label
         self.isFocused = isFocused
         self._isSelected = isSelected
         self.icon = icon()
         self.removeAction = removeAction
     }
+}
+
+// MARK: - Convenience Inits
+public extension Tag {
 
     /// Creates Orbit ``Tag`` component.
     init(

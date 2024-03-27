@@ -195,14 +195,9 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
             return (width, minX)
         }
     }
-
-}
-
-// MARK: - Inits
-public extension SegmentedSwitch {
     
     /// Creates Orbit ``SegmentedSwitch`` component with optional selection.
-    init(
+    public init(
         _ label: String = "",
         selection: Binding<Selection?>,
         message: Message? = nil,
@@ -213,6 +208,10 @@ public extension SegmentedSwitch {
         self.message = message
         self.content = content()
     }
+}
+
+// MARK: - Convenience Inits
+public extension SegmentedSwitch {
 
     /// Creates Orbit ``SegmentedSwitch`` component with non-optional selection.
     init(

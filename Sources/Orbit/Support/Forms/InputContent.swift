@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Orbit support component representing input components that share common layout with a prefix and suffix.
-public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
+public struct InputContent<Content: View, Label: View, Prefix: View, Suffix: View>: View {
 
     @Environment(\.iconColor) private var iconColor
     @Environment(\.idealSize) private var idealSize
@@ -11,11 +11,11 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
     public let verticalPadding: CGFloat = .small // = 44 @ normal text size
 
     private let state: InputState
-    private let label: String
     private let message: Message?
     private let isPressed: Bool
     private let isFocused: Bool
     @ViewBuilder private let content: Content
+    @ViewBuilder private let label: Label
     @ViewBuilder private let prefix: Prefix
     @ViewBuilder private let suffix: Suffix
     
@@ -29,7 +29,7 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
                 .padding(.vertical, verticalPadding)
 
             HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Text(label)
+                label
                     .padding(.leading, .small)
                     .padding(.trailing, -.xxSmall)
                     .textColor(labelColor)
@@ -127,20 +127,20 @@ public struct InputContent<Content: View, Prefix: View, Suffix: View>: View {
     /// Create Orbit ``InputContent``.
     public init(
         state: InputState = .default,
-        label: String = "",
         message: Message? = nil,
         isPressed: Bool = false,
         isFocused: Bool = false,
         @ViewBuilder content: () -> Content,
+        @ViewBuilder label: () -> Label = { EmptyView() },
         @ViewBuilder prefix: () -> Prefix = { EmptyView() },
         @ViewBuilder suffix: () -> Suffix = { EmptyView() }
     ) {
         self.state = state
-        self.label = label
         self.message = message
         self.isPressed = isPressed
         self.isFocused = isFocused
         self.content = content()
+        self.label = label()
         self.prefix = prefix()
         self.suffix = suffix()
     }
@@ -160,9 +160,11 @@ struct InputContentPreviews: PreviewProvider {
 
     static var standalone: some View {
         VStack(spacing: .medium) {
-            InputContent(label: "Label") {
+            InputContent {
                 TextField(value: .constant("Value"))
                     .padding(.horizontal, .small)
+            } label: {
+              Text("Label")  
             } prefix: {
                 Icon(.visa)
             } suffix: {
@@ -177,15 +179,19 @@ struct InputContentPreviews: PreviewProvider {
                 Icon(.checkCircle)
             }
 
-            InputContent(label: "Label") {
+            InputContent {
                 Text("Value")
                     .padding(.horizontal, .small)
+            } label: {
+                Text("Label")  
             } suffix: {
                 Icon(.checkCircle)
             }
 
-            InputContent(label: "Label") {
+            InputContent {
                 EmptyView()
+            } label: {
+                Text("Label")  
             } prefix: {
                 Icon(.visa)
             } suffix: {

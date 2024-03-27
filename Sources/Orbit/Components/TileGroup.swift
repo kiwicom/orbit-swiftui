@@ -50,13 +50,9 @@ public struct TileGroup<Tiles: View>: View, PotentiallyEmptyView {
     var isEmpty: Bool {
         tiles.isEmpty
     }
-}
-
-// MARK: - Inits
-public extension TileGroup {
-
+    
     /// Creates Orbit ``TileGroup`` component.
-    init(@ViewBuilder _ tiles: () -> Tiles) {
+    public init(@ViewBuilder _ tiles: () -> Tiles) {
         self.tiles = tiles()
     }
 }
