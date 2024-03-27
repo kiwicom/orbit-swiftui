@@ -97,11 +97,11 @@ public struct TextView: UIViewRepresentable, TextFieldBuildable {
             context.coordinator.fontWeight = resolvedTextWeight
         }
 
-        uiView.updateIfNeeded(\.textColor, to: isEnabled ? (textColor ?? state.textColor).uiColor : .cloudDarkActive)
+        uiView.updateIfNeeded(\.textColor, to: resolvedTextColor(in: context.environment))
         uiView.updateIfNeeded(\.isEditable, to: isEnabled)
         uiView.updateIfNeeded(\.prompt, to: prompt)
-        uiView.updateIfNeeded(\.promptLabel.textColor, to: isEnabled ? state.placeholderColor.uiColor : .cloudDarkActive)
-        
+        uiView.updateIfNeeded(\.promptLabel.textColor, to: resolvedPromptColor(in: context.environment))
+
         // Check if the binding value is different to replace the text content
         if value != uiView.text {
             uiView.replace(withText: value)
@@ -146,6 +146,22 @@ public struct TextView: UIViewRepresentable, TextFieldBuildable {
             inputFieldShouldChangeCharactersAction: inputFieldShouldChangeCharactersAction,
             inputFieldShouldChangeCharactersIdentifiableAction: inputFieldShouldChangeCharactersIdentifiableAction
         )
+    }
+
+    private func resolvedTextColor(in environment: EnvironmentValues) -> UIColor {
+        if #available(iOS 14, *), environment.redactionReasons.isEmpty == false {
+            return .clear
+        }
+
+        return isEnabled ? (textColor ?? state.textColor).uiColor : .cloudDarkActive
+    }
+
+    private func resolvedPromptColor(in environment: EnvironmentValues) -> UIColor {
+        if #available(iOS 14, *), environment.redactionReasons.isEmpty == false {
+            return .clear
+        }
+
+        return isEnabled ? state.placeholderColor.uiColor : .cloudDarkActive
     }
 
     private var resolvedTextSize: CGFloat {

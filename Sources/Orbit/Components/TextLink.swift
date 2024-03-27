@@ -39,6 +39,14 @@ public struct TextLink: UIViewRepresentable {
 
     private let content: NSAttributedString
     
+    private func resolvedLinkColor(in environment: EnvironmentValues) -> UIColor {
+        if #available(iOS 14, *), environment.redactionReasons.isEmpty == false {
+            return .clear
+        }
+
+        return textLinkColor?.value.uiColor ?? Color.primary.value.uiColor
+    }
+
     public func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
@@ -65,7 +73,7 @@ public struct TextLink: UIViewRepresentable {
         uiView.update(
             content: content,
             lineLimit: context.environment.lineLimit ?? 0,
-            color: textLinkColor?.value.uiColor ?? Color.primary.value.uiColor
+            color: resolvedLinkColor(in: context.environment)
         )
     }
     
