@@ -32,7 +32,6 @@ public struct TextView: UIViewRepresentable, TextFieldBuildable {
     @Environment(\.textSize) private var textSize
 
     @Binding private var value: String
-    private var prompt: String
     private var state: InputState
     private var insets: UIEdgeInsets
     
@@ -91,16 +90,13 @@ public struct TextView: UIViewRepresentable, TextFieldBuildable {
         uiView.shouldDeleteBackwardAction = shouldDeleteBackwardAction
 
         if resolvedTextSize != context.coordinator.fontSize || resolvedTextWeight != context.coordinator.fontWeight {
-            uiView.font = UIFont.orbit(size: resolvedTextSize, weight: resolvedTextWeight)
-            uiView.promptLabel.font = uiView.font 
+            uiView.font = UIFont.orbit(size: resolvedTextSize, weight: resolvedTextWeight) 
             context.coordinator.fontSize = resolvedTextSize
             context.coordinator.fontWeight = resolvedTextWeight
         }
 
         uiView.updateIfNeeded(\.textColor, to: resolvedTextColor(in: context.environment))
         uiView.updateIfNeeded(\.isEditable, to: isEnabled)
-        uiView.updateIfNeeded(\.prompt, to: prompt)
-        uiView.updateIfNeeded(\.promptLabel.textColor, to: resolvedPromptColor(in: context.environment))
 
         // Check if the binding value is different to replace the text content
         if value != uiView.text {
@@ -156,14 +152,6 @@ public struct TextView: UIViewRepresentable, TextFieldBuildable {
         return isEnabled ? (textColor ?? state.textColor).uiColor : .cloudDarkActive
     }
 
-    private func resolvedPromptColor(in environment: EnvironmentValues) -> UIColor {
-        if #available(iOS 14, *), environment.redactionReasons.isEmpty == false {
-            return .clear
-        }
-
-        return isEnabled ? state.placeholderColor.uiColor : .cloudDarkActive
-    }
-
     private var resolvedTextSize: CGFloat {
         (textSize ?? Text.Size.normal.value) * sizeCategory.ratio
     }
@@ -179,12 +167,10 @@ public extension TextView {
     /// Creates Orbit ``TextView`` wrapper over `UITextView`. The component is used in ``Textarea`` component.
     init(
         value: Binding<String>,
-        prompt: String = "",
         state: InputState = .default,
         insets: UIEdgeInsets = .zero
     ) {
         self._value = value
-        self.prompt = prompt
         self.state = state
         self.insets = insets
     }
@@ -217,20 +203,20 @@ struct TextViewPreviews: PreviewProvider {
     static var standalone: some View {
         VStack(spacing: .medium) {
             Group {
-                TextView(value: .constant(""), prompt: "Disabled")
+                TextView(value: .constant(""))
                     .disabled(true)
                     .frame(width: 50, height: 50)
                 
                 StateWrapper("") { $value in
-                    TextView(value: $value, prompt: "Enter value")
+                    TextView(value: $value)
                         .frame(height: 50)
                 }
                 StateWrapper("value") { $value in
-                    TextView(value: $value, prompt: "Enter value")
+                    TextView(value: $value)
                         .frame(width: 200, height: 100)
                 }
                 StateWrapper("value") { $value in
-                    TextView(value: $value, prompt: "Enter value")
+                    TextView(value: $value)
                 }
             }
             .border(.black, width: .hairline)
@@ -259,27 +245,27 @@ struct TextViewPreviews: PreviewProvider {
                 
                 HStack(alignment: .firstTextBaseline) {
                     Text("TextField")
-                    TextField(value: .constant(""), prompt: "Enter value")
+                    TextField(value: .constant(""))
                         .border(.black, width: .hairline)
                 }
                 
                 HStack(alignment: .firstTextBaseline) {
                     Text("Label")
-                    TextView(value: .constant(""), prompt: "Enter value value value value value value value value value value value", insets: .init(top: .medium, left: .medium, bottom: .medium, right: .medium))
+                    TextView(value: .constant(""), insets: .init(top: .medium, left: .medium, bottom: .medium, right: .medium))
                         .frame(height: 100)
                         .border(.black, width: .hairline)
                 }
                 
                 HStack(alignment: .firstTextBaseline) {
                     Text("Label")
-                    TextView(value: .constant("Value"), prompt: "Enter value value value value value value value")
+                    TextView(value: .constant("Value"))
                         .frame(height: 100)
                         .border(.black, width: .hairline)
                 }
 
                 HStack(alignment: .firstTextBaseline) {
                     Text("Label")
-                    TextView(value: .constant("Value"), prompt: "Enter value")
+                    TextView(value: .constant("Value"))
                         .frame(width: 200, height: 100)
                         .border(.black, width: .hairline)
                 }
