@@ -1,22 +1,11 @@
 import UIKit
 
 /// Orbit `UITextView` wrapper with a larger touch area and a prompt.
-public class InsetableTextView: UITextView {
+public class InsetableTextView: UITextView, NSLayoutManagerDelegate {
 
     public var insets: UIEdgeInsets = .zero
     
     public var shouldDeleteBackwardAction: (String) -> Bool = { _ in true }
-    
-    var prompt = "" {
-        didSet {
-            if prompt != promptLabel.text {
-                promptLabel.text = prompt
-                updatePromptVisibility()
-            }
-        }
-    }
-    
-    let promptLabel = UILabel()
     
     public init() {
         super.init(frame: .zero, textContainer: nil)
@@ -33,13 +22,8 @@ public class InsetableTextView: UITextView {
         textContainer.lineFragmentPadding = 0
         textContainerInset = .zero
         textContainer.lineBreakMode = .byWordWrapping
-        
-        promptLabel.numberOfLines = 0
-        promptLabel.adjustsFontSizeToFitWidth = true
-        promptLabel.lineBreakMode = .byWordWrapping
-        promptLabel.textColor = .inkLight
-        
-        addSubview(promptLabel)
+        contentInsetAdjustmentBehavior = .always
+        layoutManager.delegate = self
     }
     
     public override func layoutSubviews() {
@@ -47,8 +31,6 @@ public class InsetableTextView: UITextView {
         contentInset = insets
         // Fixes iOS15 inset issues
         contentOffset = .init(x: -insets.left, y: contentOffset.y)
-        let size = promptLabel.sizeThatFits(bounds.inset(by: insets).size)
-        promptLabel.frame = .init(origin: .zero, size: size)
     }
     
     override public func deleteBackward() {
@@ -67,9 +49,10 @@ public class InsetableTextView: UITextView {
 
         return success
     }
-
-    func updatePromptVisibility() {
-        promptLabel.isHidden = text.isEmpty == false
+    
+    public func layoutManager(_ layoutManager: NSLayoutManager, lineSpacingAfterGlyphAt glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
+        // Matches the multiline line spacing of Orbit Text.
+        2.5
     }
     
     func replace(withText text: String, keepingCapacity: Bool = false) {
