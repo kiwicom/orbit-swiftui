@@ -27,8 +27,6 @@ struct StorybookDialog {
             description: description1,
             illustration: .noNotification
         ) {
-            contentPlaceholder
-        } buttons: {
             Button("Main CTA") {}
             Button("Secondary") {}
             Button("Tertiary") {}

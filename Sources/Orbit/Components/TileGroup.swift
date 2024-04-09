@@ -40,7 +40,7 @@ public struct TileGroup<Tiles: View>: View, PotentiallyEmptyView {
                     .environment(\.isInsideTileGroup, true)
             }
             // hide any last separator automatically by clipping it
-            .padding(.bottom, -Separator.Thickness.default.value)
+            .padding(.bottom, -1)
             .clipShape(RoundedRectangle(cornerRadius: BorderRadius.default))
             .compositingGroup()
             .elevation(.level1, shape: .roundedRectangle())
@@ -50,13 +50,9 @@ public struct TileGroup<Tiles: View>: View, PotentiallyEmptyView {
     var isEmpty: Bool {
         tiles.isEmpty
     }
-}
-
-// MARK: - Inits
-public extension TileGroup {
-
+    
     /// Creates Orbit ``TileGroup`` component.
-    init(@ViewBuilder _ tiles: () -> Tiles) {
+    public init(@ViewBuilder _ tiles: () -> Tiles) {
         self.tiles = tiles()
     }
 }
