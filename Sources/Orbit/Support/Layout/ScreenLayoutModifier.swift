@@ -161,12 +161,18 @@ struct ScreenLayoutModifierPreviews: PreviewProvider {
 
     static var snapshot: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            Alert(AlertPreviews.title, description: AlertPreviews.description) {
-                illustrationPlaceholder
-                    .padding(.horizontal, .xxLarge)
-            } buttons: {
+            Alert {
                 Button("Primary") {}
                 Button("Secondary") {}
+            } title: {
+                Heading(AlertPreviews.title, style: .title5)
+            } description: {
+                VStack(alignment: .leading, spacing: .medium) {
+                    Text(AlertPreviews.description)
+                    
+                    illustrationPlaceholder
+                        .padding(.horizontal, .xxLarge)
+                }
             } icon: {
                 Icon(.grid)
             }

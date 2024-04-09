@@ -13,16 +13,16 @@ import SwiftUI
 /// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/visuals/coupon/)
-public struct Coupon: View, PotentiallyEmptyView {
+public struct Coupon<Label: View>: View, PotentiallyEmptyView {
 
     @Environment(\.textSize) private var textSize
 
-    private let label: String
+    @ViewBuilder private let label: Label
 
     public var body: some View {
-        Text(label)
+        label
             .textSize(custom: textSize ?? Text.Size.small.value)
-            .bold()
+            .textFontWeight(.bold)
             .textIsCopyable()
             .padding(.horizontal, .xxSmall)
             .padding(.vertical, .xxxSmall)
@@ -36,14 +36,21 @@ public struct Coupon: View, PotentiallyEmptyView {
     var isEmpty: Bool {
         label.isEmpty
     }
+    
+    /// Creates Orbit ``Coupon`` component with custom content.
+    public init(@ViewBuilder _ label: () -> Label) {
+        self.label = label()
+    }
 }
 
-// MARK: - Inits
-public extension Coupon {
+// MARK: - Convenience Inits
+public extension Coupon where Label == Orbit.Text {
     
     /// Creates Orbit ``Coupon`` component.
-    init(_ label: String = "") {
-        self.label = label
+    init(_ label: some StringProtocol = String("")) {
+        self.init {
+            Text(label)
+        }
     }
 }
 

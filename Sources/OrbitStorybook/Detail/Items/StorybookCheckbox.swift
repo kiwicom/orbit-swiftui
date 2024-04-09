@@ -32,13 +32,13 @@ struct StorybookCheckbox {
         }
     }
 
-    static func checkbox(standalone: Bool, state: Checkbox.State = .normal, checked: Bool) -> some View {
+    static func checkbox(standalone: Bool, state: CheckboxState = .normal, checked: Bool) -> some View {
         StateWrapper(checked) { isChecked in
             Checkbox(
                 standalone ? "" : label,
                 description: standalone ? "" : description,
-                state: state,
-                isChecked: isChecked
+                isChecked: isChecked,
+                state: state
             )
         }
     }

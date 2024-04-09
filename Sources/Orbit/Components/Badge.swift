@@ -32,17 +32,17 @@ import SwiftUI
 /// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/badge/)
-public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmptyView {
+public struct Badge<LeadingIcon: View, Label: View, TrailingIcon: View>: View, PotentiallyEmptyView {
 
     @Environment(\.backgroundShape) private var backgroundShape
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.status) private var status
     @Environment(\.textColor) private var textColor
 
-    private let label: String
-    private let leadingIcon: LeadingIcon
-    private let trailingIcon: TrailingIcon
-    private let type: BadgeType
+    @ViewBuilder private let leadingIcon: LeadingIcon
+    @ViewBuilder private let label: Label
+    @ViewBuilder private let trailingIcon: TrailingIcon
+    @ViewBuilder private let type: BadgeType
 
     public var body: some View {
         if isEmpty == false {
@@ -52,9 +52,9 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmp
                     .font(.system(size: Icon.Size.small.value))
                     .foregroundColor(resolvedLabelColor)
 
-                Text(label)
+                label
+                    .textFontWeight(.medium)
                     .textSize(.small)
-                    .fontWeight(.medium)
                     .textLinkColor(.custom(resolvedLabelColor))
                     .frame(minWidth: minTextWidth)
 
@@ -116,36 +116,59 @@ public struct Badge<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmp
     private var defaultStatus: Status {
         status ?? .info
     }
+    
+    /// Creates Orbit ``Badge`` component with custom content.
+    public init(
+        type: BadgeType = .neutral,
+        @ViewBuilder label: () -> Label,
+        @ViewBuilder icon: () -> LeadingIcon = { EmptyView() },
+        @ViewBuilder trailingIcon: () -> TrailingIcon = { EmptyView() }
+    ) {
+        self.type = type
+        self.label = label()
+        self.leadingIcon = icon()
+        self.trailingIcon = trailingIcon()
+    }
 }
 
-// MARK: - Inits
-public extension Badge {
+// MARK: - Convenience Inits
+public extension Badge where Label == Text, LeadingIcon == Icon, TrailingIcon == Icon {
     
     /// Creates Orbit ``Badge`` component.
+    @_disfavoredOverload
     init(
-        _ label: String = "",
+        _ label: some StringProtocol = String(""),
         icon: Icon.Symbol? = nil,
         trailingIcon: Icon.Symbol? = nil,
         type: BadgeType = .neutral
-    ) where LeadingIcon == Icon, TrailingIcon == Icon {
-        self.init(label, type: type) {
+    ) {
+        self.init(type: type) {
+            Text(label)
+        } icon: {
             Icon(icon)
         } trailingIcon: {
             Icon(trailingIcon)
         }
     }
-
-    /// Creates Orbit ``Badge`` component with custom icons.
+    
+    /// Creates Orbit ``Badge`` component with localizable label.
+    @_semantics("swiftui.init_with_localization")
     init(
-        _ label: String = "",
+        _ label: LocalizedStringKey,
+        icon: Icon.Symbol? = nil,
+        trailingIcon: Icon.Symbol? = nil,
         type: BadgeType = .neutral,
-        @ViewBuilder icon: () -> LeadingIcon,
-        @ViewBuilder trailingIcon: () -> TrailingIcon = { EmptyView() }
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil
     ) {
-        self.label = label
-        self.leadingIcon = icon()
-        self.trailingIcon = trailingIcon()
-        self.type = type
+        self.init(type: type) {
+            Text(label, tableName: tableName, bundle: bundle)
+        } icon: {
+            Icon(icon)
+        } trailingIcon: {
+            Icon(trailingIcon)
+        }
     }
 }
 
@@ -180,10 +203,21 @@ struct BadgePreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        VStack(spacing: 0) {
+        VStack {
             Badge("label", icon: .grid)
-            Badge()    // EmptyView
-            Badge("")  // EmptyView
+            
+            // EmptyView
+            Group {
+                Badge()    
+                Badge("")
+                
+                Badge {
+                    Text("")
+                } icon: {
+                    Icon(nil)
+                }
+            }
+            .border(.redNormal)
         }
         .padding(.medium)
         .previewDisplayName()
@@ -245,22 +279,30 @@ struct BadgePreviews: PreviewProvider {
                     .textColor(.blueDark)
                     .backgroundStyle(.whiteHover)
 
-                Badge("Flag") {
-                    CountryFlag("us")
+                Badge {
+                    Text("Flag")
+                } icon: {
+                    CountryFlag("us")                    
                 }
-
-                Badge("Flag", type: .status(.critical, inverted: true)) {
-                    CountryFlag("cz")
+                
+                Badge(type: .status(.critical, inverted: true)) {
+                    Text("Flag")
+                } icon: {
+                    CountryFlag("cz")                    
                 }
             }
 
             HStack(spacing: .small) {
-                Badge("SF Symbol", type: .status(.success)) {
-                    Icon("info.circle.fill")
+                Badge(type: .status(.success)) {
+                    Text("SF Symbol")
+                } icon: {
+                    Icon("info.circle.fill")                    
                 }
-
-                Badge("SF Symbol", type: .status(.warning, inverted: true)) {
-                    Image(systemName: "info.circle.fill")
+                
+                Badge(type: .status(.warning, inverted: true)) {
+                    Text("SF Symbol")
+                } icon: {
+                    Image(systemName: "info.circle.fill")                    
                 }
             }
         }
