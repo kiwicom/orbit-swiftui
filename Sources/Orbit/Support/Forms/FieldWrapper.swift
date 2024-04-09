@@ -13,6 +13,7 @@ public struct FieldWrapper<Label: View, Content: View, Footer: View>: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             label
+                .textFontWeight(.medium)
                 // Component should expose label as part of content
                 .accessibility(hidden: true)
                 .accessibility(removeTraits: .isStaticText)
@@ -30,15 +31,11 @@ public struct FieldWrapper<Label: View, Content: View, Footer: View>: View {
             }
         }
     }
-}
-
-// MARK: - Inits
-public extension FieldWrapper {
-
+    
     /// Creates Orbit ``FieldWrapper`` around form field content with a custom label and an additional message content.
     ///
     /// ``FieldLabel`` is a default component for constructing custom label.
-    init(
+    public init(
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content,
@@ -53,7 +50,8 @@ public extension FieldWrapper {
     }
 }
 
-public extension FieldWrapper where Label == FieldLabel {
+// MARK: - Convenience Inits
+public extension FieldWrapper where Label == Text {
 
     /// Creates Orbit ``FieldWrapper`` around form field content with an additional message content.
     init(
@@ -68,7 +66,7 @@ public extension FieldWrapper where Label == FieldLabel {
             messageHeight: messageHeight,
             content: content,
             label: {
-                FieldLabel(label)
+                Text(label)
             },
             footer: footer
         )
@@ -91,7 +89,7 @@ struct FieldWrapperPreviews: PreviewProvider {
             FieldWrapper {
                 contentPlaceholder
             } label: {
-                FieldLabel("Form Field Label with <ref>accent</ref> and <applink1>TextLink</applink1>")
+                Text("Form Field Label with <ref>accent</ref> and <applink1>TextLink</applink1>")
                     .textLinkColor(.status(.info))
                     .textAccentColor(.orangeNormal)
             }
