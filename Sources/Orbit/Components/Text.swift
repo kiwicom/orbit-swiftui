@@ -142,6 +142,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView, CustomSt
             CopyableText(
                 attributedString(environment: textRepresentableEnvironment).string
             )
+            .accessibility(hidden: true)
         }
     }
     
