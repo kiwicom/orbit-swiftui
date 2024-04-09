@@ -36,16 +36,16 @@ import SwiftUI
 /// ```
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/radio/)
-public struct Radio: View {
+public struct Radio<Title: View, Description: View>: View {
 
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.textColor) private var textColor
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    private let title: String
-    private let description: String
-    private let state: State
+    private let state: RadioState
     @Binding private var isChecked: Bool
+    @ViewBuilder private let title: Title
+    @ViewBuilder private let description: Description
 
     public var body: some View {
         SwiftUI.Button {
@@ -57,12 +57,12 @@ public struct Radio: View {
         } label: {
             if title.isEmpty == false || description.isEmpty == false {
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(title)
+                    title
                         .textColor(labelColor)
-                        .fontWeight(.medium)
+                        .textFontWeight(.medium)
                         .accessibility(.radioTitle)
                     
-                    Text(description)
+                    description
                         .textSize(.small)
                         .textColor(descriptionColor)
                         .accessibility(.radioDescription)
@@ -72,6 +72,7 @@ public struct Radio: View {
         .buttonStyle(
             RadioButtonStyle(state: state, isChecked: isChecked)
         )
+        .accessibility(.radio)
     }
 
     private var labelColor: Color {
@@ -85,35 +86,69 @@ public struct Radio: View {
             ? .inkNormal
             : .cloudDarkHover
     }
+    
+    /// Creates Orbit ``Radio`` component with custom content.
+    public init(
+        isChecked: Binding<Bool>,
+        state: RadioState = .normal,
+        @ViewBuilder title: () -> Title = { EmptyView() },
+        @ViewBuilder description: () -> Description = { EmptyView() }
+    ) {
+        self._isChecked = isChecked
+        self.state = state
+        self.title = title()
+        self.description = description()
+    }
 }
 
-// MARK: - Inits
-public extension Radio {
-    
+// MARK: - Convenience Inits
+public extension Radio where Title == Text, Description == Text {
+
     /// Creates Orbit ``Radio`` component.
+    @_disfavoredOverload
     init(
-        _ title: String = "",
-        description: String = "",
-        state: State = .normal,
-        isChecked: Binding<Bool>
+        _ title: some StringProtocol = String(""),
+        description: some StringProtocol = String(""),
+        isChecked: Binding<Bool>,
+        state: RadioState = .normal
     ) {
-        self.init(title: title, description: description, state: state, isChecked: isChecked)
+        self.init(isChecked: isChecked, state: state) {
+            Text(title)
+        } description: {
+            Text(description)
+        }
+    }
+    
+    /// Creates Orbit ``Radio`` component with localizable texts.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ title: LocalizedStringKey = "",
+        description: LocalizedStringKey = "",
+        isChecked: Binding<Bool>,
+        state: RadioState = .normal,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        titleComment: StaticString? = nil        
+    ) {
+        self.init(isChecked: isChecked, state: state) {
+            Text(title, tableName: tableName, bundle: bundle)
+        } description: {
+            Text(description, tableName: tableName, bundle: bundle)
+        }
     }
 }
 
 // MARK: - Types
-public extension Radio {
-    
-    /// A state of Orbit ``Radio``.
-    enum State {
-        case normal
-        case error
-    }
+
+/// A state of Orbit ``Radio``.
+public enum RadioState {
+    case normal
+    case error
 }
 
 // MARK: - Identifiers
 public extension AccessibilityID {
-
+    static let radio                = Self(rawValue: "orbit.radio")
     static let radioTitle           = Self(rawValue: "orbit.radio.title")
     static let radioDescription     = Self(rawValue: "orbit.radio.description")
 }
@@ -172,9 +207,9 @@ struct RadioPreviews: PreviewProvider {
         }
     }
 
-    static func radio(standalone: Bool, state: Radio.State = .normal, checked: Bool) -> some View {
+    static func radio(standalone: Bool, state: RadioState = .normal, checked: Bool) -> some View {
         StateWrapper(checked) { isChecked in
-            Radio(standalone ? "" : label, description: standalone ? "" : description, state: state, isChecked: isChecked)
+            Radio(standalone ? "" : label, description: standalone ? "" : description, isChecked: isChecked, state: state)
         }
     }
 }

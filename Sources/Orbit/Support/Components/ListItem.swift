@@ -12,13 +12,13 @@ import SwiftUI
 /// ```
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/structure/list/)
-public struct ListItem<Icon: View>: View {
+public struct ListItem<Label: View, Icon: View>: View {
 
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.textColor) private var textColor
 
-    private let text: String
     private let type: ListItemType
+    @ViewBuilder private let label: Label
     @ViewBuilder private let icon: Icon
 
     public var body: some View {
@@ -30,38 +30,55 @@ public struct ListItem<Icon: View>: View {
                 icon
             }
 
-            Text(text)
+            label
         }
         .textColor(textColor ?? type.textColor)
     }
+    
+    /// Creates Orbit ``ListItem`` component with custom content.
+    public init(
+        type: ListItemType = .primary,
+        @ViewBuilder label: () -> Label,
+        @ViewBuilder icon: () -> Icon
+    ) {
+        self.type = type
+        self.label = label()
+        self.icon = icon()
+    }
 }
 
-// MARK: - Inits
-public extension ListItem {
+// MARK: - Convenience Inits
+public extension ListItem where Label == Text, Icon == Orbit.Icon {
 
     /// Creates Orbit ``ListItem`` component.
+    @_disfavoredOverload
     init(
-        _ text: String = "",
+        _ label: some StringProtocol = "",
         icon: Icon.Symbol? = .circleSmall,
         type: ListItemType = .primary
-    ) where Icon == Orbit.Icon {
-        self.init(
-            text,
-            type: type
-        ) {
+    ) {
+        self.init(type: type) {
+            Text(label)
+        } icon: {
             Icon(icon)
         }
     }
-
-    /// Creates Orbit ``ListItem`` component with custom icon.
+    
+    /// Creates Orbit ``ListItem`` component with localizable label.
+    @_semantics("swiftui.init_with_localization")
     init(
-        _ text: String = "",
+        _ label: LocalizedStringKey,
+        icon: Icon.Symbol? = .circleSmall,
         type: ListItemType = .primary,
-        @ViewBuilder icon: () -> Icon
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil
     ) {
-        self.text = text
-        self.type = type
-        self.icon = icon()
+        self.init(type: type) {
+            Text(label, tableName: tableName, bundle: bundle)
+        } icon: {
+            Icon(icon)
+        }
     }
 }
 
@@ -149,14 +166,23 @@ struct ListItemPreviews: PreviewProvider {
             ListItem("ListItem")
             ListItem("ListItem with custom icon", icon: .check)
                 .textColor(.greenNormal)
-            ListItem("ListItem with SF Symbol") {
+            
+            ListItem {
+                Text("ListItem with SF Symbol")
+            } icon: {
                 Icon("info.circle.fill")
             }
-            ListItem("ListItem with SF Symbol") {
+            
+            ListItem {
+                Text("ListItem with SF Symbol")
+            } icon: {
                 Icon("info.circle.fill")
                     .iconColor(.blueDark)
             }
-            ListItem("ListItem with flag") {
+            
+            ListItem {
+                Text("ListItem with flag")
+            } icon: {
                 CountryFlag("cz")
             }
             ListItem("ListItem with custom icon")

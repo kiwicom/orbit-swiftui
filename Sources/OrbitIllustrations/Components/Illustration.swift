@@ -51,9 +51,26 @@ public struct Illustration: View {
     @ViewBuilder var image: SwiftUI.Image {
         SwiftUI.Image(name, bundle: bundle)
     }
+    
+    /// Creates Orbit Illustration component for custom image resource.
+    ///
+    /// - Parameters:
+    ///     - name: Resource name. Empty value results in no illustration.
+    ///     - bundle: The bundle to search for the image resource and localization.
+    ///     - layout: Layout behavior of illustration content.
+    ///     By default, a `frame` layout is used to automatically resize the illustration and center it horizontally.
+    public init(
+        _ name: String,
+        bundle: Bundle,
+        layout: Layout = .frame()
+    ) {
+        self.name = name
+        self.bundle = bundle
+        self.layout = layout
+    }
 }
 
-// MARK: - Inits
+// MARK: - Convenience Inits
 public extension Illustration {
 
     /// Creates Orbit Illustration component using Orbit illustration asset.
@@ -66,26 +83,11 @@ public extension Illustration {
         _ asset: Asset?,
         layout: Layout = .frame()
     ) {
-        self.name = asset?.assetName ?? ""
-        self.bundle = .module
-        self.layout = layout
-    }
-    
-    /// Creates Orbit Illustration component for custom image resource.
-    ///
-    /// - Parameters:
-    ///     - name: Resource name. Empty value results in no illustration.
-    ///     - bundle: The bundle to search for the image resource and localization.
-    ///     - layout: Layout behavior of illustration content.
-    ///     By default, a `frame` layout is used to automatically resize the illustration and center it horizontally.
-    init(
-        _ name: String,
-        bundle: Bundle,
-        layout: Layout = .frame()
-    ) {
-        self.name = name
-        self.bundle = bundle
-        self.layout = layout
+        self.init(
+            asset?.assetName ?? "", 
+            bundle: .module, 
+            layout: layout
+        )
     }
 }
 
