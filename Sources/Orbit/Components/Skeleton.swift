@@ -14,16 +14,16 @@ import SwiftUI
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/progress-indicators/skeleton/)
 public struct Skeleton: View {
-
+    
     public static let color: Color = .cloudNormal
     public static let lightColor: Color = .cloudLight
-
+    
     @State private var color: Color = Self.color
-
+    
     private let preset: Preset
     private let borderRadius: CGFloat
     private let animation: Animation?
-
+    
     public var body: some View {
         content
             .onAppear {
@@ -35,7 +35,7 @@ public struct Skeleton: View {
                 }
             }
     }
-
+    
     @ViewBuilder private var content: some View {
         switch preset {
             case .atomic(let atomic):
@@ -77,7 +77,7 @@ public struct Skeleton: View {
                 }
         }
     }
-
+    
     @ViewBuilder private func line(height: CGFloat) -> some View {
         roundedRectangle.fill(color).frame(height: height)
     }
@@ -85,13 +85,9 @@ public struct Skeleton: View {
     private var roundedRectangle: RoundedRectangle {
         RoundedRectangle(cornerRadius: borderRadius)
     }
-}
-
-// MARK: - Inits
-public extension Skeleton {
- 
+    
     /// Creates Orbit ``Skeleton`` component.
-    init(
+    public init(
         _ preset: Preset,
         borderRadius: CGFloat = BorderRadius.desktop,
         animation: Animation? = .default
@@ -107,12 +103,12 @@ extension Skeleton {
     
     /// Orbit ``Skeleton`` shape and size preset.
     public enum Preset {
-
+        
         public enum Atomic {
             case circle
             case rectangle
         }
-
+        
         case atomic(Atomic)
         case button(_ size: ButtonSize = .regular)
         case card(height: CGFloat? = nil)
@@ -124,12 +120,12 @@ extension Skeleton {
         public static let card: Self = .card()
         public static let image: Self = .image()
     }
-
+    
     /// Orbit ``Skeleton`` animation.
     public enum Animation {
         case `default`
         case custom(SwiftUI.Animation)
-
+        
         var value: SwiftUI.Animation {
             switch self {
                 case .default:                  return .easeInOut(duration: 1.2)
@@ -141,7 +137,7 @@ extension Skeleton {
 
 // MARK: - Previews
 struct SkeletonPreviews: PreviewProvider {
-
+    
     static var previews: some View {
         PreviewWrapper {
             content(animation: nil)
@@ -155,12 +151,12 @@ struct SkeletonPreviews: PreviewProvider {
         .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
-
+    
     static var snapshot: some View {
         content(animation: nil)
             .padding(.medium)
     }
-
+    
     static func contentAtomic(animation: Skeleton.Animation? = .default) -> some View {
         VStack(alignment: .leading, spacing: .medium) {
             Skeleton(.atomic(.circle), animation: animation)
@@ -172,7 +168,7 @@ struct SkeletonPreviews: PreviewProvider {
         }
         .previewDisplayName("Atomic")
     }
-
+    
     static func content(animation: Skeleton.Animation? = .default) -> some View {
         VStack(alignment: .leading, spacing: .medium) {
             Skeleton(.list(rows: 3), animation: animation)
@@ -182,7 +178,7 @@ struct SkeletonPreviews: PreviewProvider {
             Skeleton(.text(lines: 4), animation: animation)
         }
     }
-
+    
     static var livePreview: some View {
         VStack(spacing: .large) {
             Heading("Loading...", style: .title3)

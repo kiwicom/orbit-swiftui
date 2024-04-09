@@ -59,27 +59,23 @@ public struct CountryFlag: View, PotentiallyEmptyView {
     private var size: CGFloat {
         (iconSize ?? textSize.map(Icon.Size.fromTextSize(size:)) ?? Icon.Size.normal.value) * sizeCategory.ratio
     }
+    
+    /// Creates Orbit ``CountryFlag`` component.
+    public init(_ countryCode: CountryCode, border: Border? = .default()) {
+        self.countryCode = countryCode
+        self.border = border
+    }
 }
 
-// MARK: - Inits
+// MARK: - Convenience Inits
 public extension CountryFlag {
-
-    /// Creates Orbit ``CountryFlag`` component.
-    init(_ countryCode: CountryCode, border: Border? = .default()) {
-        self.init(
-            countryCode: countryCode,
-            border: border
-        )
-    }
 
     /// Creates Orbit ``CountryFlag`` component using a country code string.
     ///
     /// - Note: If a corresponding image is not found, the flag for unknown flag is used.
     init(_ countryCode: String, border: Border? = .default()) {
-        self.init(
-            countryCode: countryCode.isEmpty ? nil : .init(countryCode),
-            border: border
-        )
+        self.countryCode = countryCode.isEmpty ? nil : .init(countryCode)
+        self.border = border
     }
 }
 

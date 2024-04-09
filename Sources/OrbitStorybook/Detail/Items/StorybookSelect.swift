@@ -31,52 +31,57 @@ struct StorybookSelect {
         VStack(spacing: .medium) {
             Group {
                 Select("Label", value: "Value", action: {})
-                Select("", prefix: .grid, value: "Value", action: {})
-                Select("", prefix: .airplane, value: nil, prompt: "Please select", action: {})
-                Select("Label (Empty Value)", prefix: .airplane, value: "", action: {})
-                Select("Label (No Value)", prefix: .airplane, value: nil, prompt: "Please select", action: {})
-                Select("Label", prefix: .phone, value: "Value", action: {})
-                Select("Label", value: "Value") {
+                Select("", value: "Value", prefix: .grid, action: {})
+                Select("", value: nil, prompt: "Please select", prefix: .airplane, action: {})
+                Select("Label (Empty Value)", value: "", prefix: .airplane, action: {})
+                Select("Label (No Value)", value: nil, prompt: "Please select", prefix: .airplane, action: {})
+                Select("Label", value: "Value", prefix: .phone, action: {})
+                
+                Select {
                     // No action
+                } label: {
+                    Text("Label")
+                } value: {
+                    Text("Value")
                 } prefix: {
                     CountryFlag("us")
                 }
             }
 
             Group {
-                Select("Label (Disabled)", prefix: .airplane, value: "Value", action: {})
+                Select("Label (Disabled)", value: "Value", prefix: .airplane, action: {})
                     .disabled(true)
 
                 Select(
                     "Label (Disabled)",
-                    prefix: .airplane,
                     value: nil,
-                    prompt: "Please select",
+                    prompt: "Please select", 
+                    prefix: .airplane,
                     action: {}
                 )
                 .disabled(true)
 
-                Select("Label (Modified)", prefix: .airplane, value: "Modified Value", state: .modified, action: {})
+                Select("Label (Modified)", value: "Modified Value", prefix: .airplane, state: .modified, action: {})
                 Select(
                     "Label (Modified)",
-                    prefix: .airplane,
                     value: nil,
-                    prompt: "Please select",
+                    prompt: "Please select", 
+                    prefix: .airplane,
                     state: .modified,
                     action: {}
                 )
                 Select(
                     "Label (Info)",
-                    prefix: .informationCircle,
                     value: "Value",
+                    prefix: .informationCircle,
                     message: .help("Help message, also very long and multi-line to test that it works."),
                     action: {}
                 )
 
                 Select(
                     fieldLongLabel,
-                    prefix: .grid,
                     value: "Bad Value with a very long text that should overflow",
+                    prefix: .grid,
                     message: .error("Error message, but also very long and multi-line to test that it works."),
                     action: {}
                 )
@@ -88,7 +93,7 @@ struct StorybookSelect {
     }
 
     static func select(value: String, message: Message? = nil) -> some View {
-        Select(label, prefix: .grid, value: value, prompt: prompt, message: message, action: {})
+        Select(label, value: value, prompt: prompt, prefix: .grid, message: message, action: {})
     }
 }
 

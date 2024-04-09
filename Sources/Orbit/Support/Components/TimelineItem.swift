@@ -13,26 +13,27 @@ import SwiftUI
 /// ```
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/progress-indicators/timeline/)
-public struct TimelineItem<Footer: View>: View {
+public struct TimelineItem<Label: View, Sublabel: View, Description: View, Footer: View>: View {
 
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    private let label: String
-    private let sublabel: String
-    private let description: String
     private let type: TimelineItemType
+    
+    @ViewBuilder private let label: Label
+    @ViewBuilder private let sublabel: Sublabel
+    @ViewBuilder private let description: Description
     @ViewBuilder private let footer: Footer
 
     public var body: some View {
-        HStack(alignment: alignment, spacing: .small) {
+        HStack(alignment: .firstTextBaseline, spacing: .small) {
             TimelineIndicator(type: type)
             
             VStack(alignment: .leading, spacing: .xxSmall) {
                 header
                     .textColor(type.textColor)
 
-                Text(description)
+                description
                     .textColor(type.textColor)
 
                 footer
@@ -56,41 +57,65 @@ public struct TimelineItem<Footer: View>: View {
     }
 
     @ViewBuilder private var headerContent: some View {
-        Heading(label, style: .title5)
-        Text(sublabel)
+        label
+        sublabel
             .textSize(.small)
     }
-
-    private var alignment: VerticalAlignment {
-        hasHeaderContent || hasDescription ? .firstTextBaseline : .top
-    }
-
-    private var hasHeaderContent: Bool {
-        label.isEmpty == false || sublabel.isEmpty == false
-    }
-
-    private var hasDescription: Bool {
-        description.isEmpty == false
+    
+    /// Creates Orbit ``TimelineItem`` component with custom content.
+    public init(
+        type: TimelineItemType = .future,
+        @ViewBuilder label: () -> Label,
+        @ViewBuilder sublabel: () -> Sublabel = { EmptyView() },
+        @ViewBuilder description: () -> Description = { EmptyView() },
+        @ViewBuilder footer: () -> Footer = { EmptyView() }
+    ) {
+        self.type = type
+        self.label = label()
+        self.sublabel = sublabel()
+        self.description = description()
+        self.footer = footer()
     }
 }
 
-// MARK: - Inits
-
-public extension TimelineItem {
+// MARK: - Convenience Inits
+public extension TimelineItem where Label == Heading, Sublabel == Text, Description == Text, Footer == EmptyView {
 
     /// Creates Orbit ``TimelineItem`` component.
+    @_disfavoredOverload
     init(
-        _ label: String = "",
-        sublabel: String = "",
-        type: TimelineItemType = .future,
-        description: String = "",
-        @ViewBuilder footer: () -> Footer = { EmptyView() }
+        _ label: some StringProtocol = String(""),
+        sublabel: some StringProtocol = String(""),
+        description: some StringProtocol = String(""),
+        type: TimelineItemType
     ) {
-        self.label = label
-        self.sublabel = sublabel
-        self.type = type
-        self.description = description
-        self.footer = footer()
+        self.init(type: type) {
+            Heading(label, style: .title5)
+        } sublabel: {
+            Text(sublabel)
+        } description: {
+            Text(description)
+        }
+    }
+    
+    /// Creates Orbit ``TimelineItem`` component with localizable texts.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ label: LocalizedStringKey,
+        sublabel: LocalizedStringKey,
+        description: LocalizedStringKey,
+        type: TimelineItemType,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        labelComment: StaticString? = nil
+    ) {
+        self.init(type: type) {
+            Heading(label, style: .title5, tableName: tableName, bundle: bundle)
+        } sublabel: {
+            Text(sublabel, tableName: tableName, bundle: bundle)
+        } description: {
+            Text(description, tableName: tableName, bundle: bundle)
+        }
     }
 }
 
@@ -189,8 +214,8 @@ struct TimelineItemPreviews: PreviewProvider {
         TimelineItem(
             "Requested",
             sublabel: "3rd May 14:04",
-            type: .past,
-            description: "We’ve assigned your request to one of our agents."
+            description: "We’ve assigned your request to one of our agents.",
+            type: .past
         )
         .padding()
         .previewDisplayName()
@@ -201,32 +226,32 @@ struct TimelineItemPreviews: PreviewProvider {
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                type: .future,
-                description: "We’ve assigned your request to one of our agents."
+                description: "We’ve assigned your request to one of our agents.",
+                type: .future
             )
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                type: .present(),
-                description: "We’ve assigned your request to one of our agents."
+                description: "We’ve assigned your request to one of our agents.",
+                type: .present
             )
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                type: .present(.warning),
-                description: "We’ve assigned your request to one of our agents."
+                description: "We’ve assigned your request to one of our agents.",
+                type: .present(.warning)
             )
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                type: .present(.critical),
-                description: "We’ve assigned your request to one of our agents."
+                description: "We’ve assigned your request to one of our agents.",
+                type: .present(.critical)
             )
             TimelineItem(
                 "Requested",
                 sublabel: "3rd May 14:04",
-                type: .past,
-                description: "We’ve assigned your request to one of our agents."
+                description: "We’ve assigned your request to one of our agents.",
+                type: .past
             )
             TimelineItem(
                 type: .present(.warning)
@@ -250,20 +275,21 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
 
     @ViewBuilder static var customContent: some View {
         VStack(alignment: .leading) {
-            TimelineItem(
-                "Requested",
-                sublabel: "3rd May 14:04",
-                type: .future,
-                description: "We’ve assigned your request to one of our agents."
-            ) {
+            TimelineItem(type: .future) {
+                Heading("Requested", style: .title5)
+            } sublabel: {
+                Text("3rd May 14:04")
+            } description: {
+                Text("We’ve assigned your request to one of our agents.")
+            } footer: {
                 Button("Add info", action: {})
             }
 
-            TimelineItem(
-                type: .present(.warning),
-                description: "We’ve assigned your request to one of our agents."
-            ) {
-
+            TimelineItem(type: .present(.warning)) { 
+                EmptyView()
+            } description: {
+                Text("We’ve assigned your request to one of our agents.")
+            } footer: {
                 VStack {
                     Text("1 Passenger must check in with the airline for a possible fee")
                         .textSize(custom: 50)
@@ -272,10 +298,12 @@ struct TimelineItemCustomContentPreviews: PreviewProvider {
                         .padding(.leading, .xSmall)
                 }
             }
-            TimelineItem(
-                type: .present(.warning),
-                description: "We’ve assigned your request to one of our agents."
-            ) {
+                         
+            TimelineItem(type: .present(.warning)) { 
+                EmptyView()
+            } description: {
+                Text("We’ve assigned your request to one of our agents.")
+            } footer: {
                 Circle()
                     .fill(.red)
                     .frame(width: 50, height: 50)

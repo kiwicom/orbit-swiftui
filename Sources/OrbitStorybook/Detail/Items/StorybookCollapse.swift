@@ -10,15 +10,11 @@ struct StorybookCollapse {
                     contentPlaceholder
                 }
             }
+            
             StateWrapper(true) { isExpanded in
                 Collapse("Toggle content (expanded)", isExpanded: isExpanded) {
                     contentPlaceholder
                 }
-            }
-            Collapse {
-                contentPlaceholder
-            } header: {
-                headerPlaceholder
             }
         }
         .padding(.medium)

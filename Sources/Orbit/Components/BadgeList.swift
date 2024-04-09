@@ -29,7 +29,7 @@ import SwiftUI
 /// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/information/badgelist/)
-public struct BadgeList<Icon: View, Content: View>: View, PotentiallyEmptyView {
+public struct BadgeList<Icon: View, Label: View>: View, PotentiallyEmptyView {
 
     @Environment(\.status) private var status
     @Environment(\.textAccentColor) private var textAccentColor
@@ -37,7 +37,7 @@ public struct BadgeList<Icon: View, Content: View>: View, PotentiallyEmptyView {
 
     private let type: BadgeListType
     @ViewBuilder private let icon: Icon
-    @ViewBuilder private let content: Content
+    @ViewBuilder private let label: Label
 
     public var body: some View {
         if isEmpty == false {
@@ -49,7 +49,7 @@ public struct BadgeList<Icon: View, Content: View>: View, PotentiallyEmptyView {
                     .padding(.xxSmall)
                     .background(badgeBackground)
 
-                content
+                label
                     .textAccentColor(textAccentColor ?? iconColor)
                     .textLinkColor(.custom(textColor ?? .inkDark))
             }
@@ -63,6 +63,7 @@ public struct BadgeList<Icon: View, Content: View>: View, PotentiallyEmptyView {
                 .opacity(0)
         } else {
             icon
+                .iconSize(.small)
         }
     }
 
@@ -74,7 +75,7 @@ public struct BadgeList<Icon: View, Content: View>: View, PotentiallyEmptyView {
     }
     
     var isEmpty: Bool {
-        content.isEmpty && icon.isEmpty
+        label.isEmpty && icon.isEmpty
     }
 
     private var iconColor: Color {
@@ -96,45 +97,51 @@ public struct BadgeList<Icon: View, Content: View>: View, PotentiallyEmptyView {
     private var defaultStatus: Status {
         status ?? .info
     }
-}
-
-// MARK: - Inits
-public extension BadgeList {
-
-    /// Creates Orbit ``BadgeList`` component.
-    init(
-        _ label: String = "",
-        icon: Icon.Symbol? = nil,
-        type: BadgeListType = .neutral
-    ) where Icon == Orbit.Icon, Content == Text {
-        self.init(label, type: type) {
-            Icon(icon)
-                .iconSize(.small)
-        }
-    }
-
-    /// Creates Orbit ``BadgeList`` component with custom icon.
-    init(
-        _ label: String = "",
+    
+    /// Creates Orbit ``BadgeList`` component with custom content.
+    public init(
         type: BadgeListType = .neutral,
-        @ViewBuilder icon: () -> Icon
-    ) where Content == Text {
-        self.init(type: type) {
-            Text(label)
-        } icon: {
-            icon()
-        }
-    }
-
-    /// Creates Orbit ``BadgeList`` component with custom icon and content.
-    init(
-        type: BadgeListType = .neutral,
-        @ViewBuilder content: () -> Content,
+        @ViewBuilder label: () -> Label,
         @ViewBuilder icon: () -> Icon
     ) {
         self.type = type
         self.icon = icon()
-        self.content = content()
+        self.label = label()
+    }
+}
+
+// MARK: - Convenience Inits
+public extension BadgeList where Icon == Orbit.Icon, Label == Text {
+
+    /// Creates Orbit ``BadgeList`` component.
+    @_disfavoredOverload
+    init(
+        _ label: some StringProtocol = String(""),
+        icon: Icon.Symbol? = nil,
+        type: BadgeListType = .neutral
+    ) {
+        self.init(type: type) {
+            Text(label)
+        } icon: {
+            Icon(icon)
+        }
+    }
+    
+    /// Creates Orbit ``BadgeList`` component with localizable label.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ label: LocalizedStringKey,
+        icon: Icon.Symbol? = nil,
+        type: BadgeListType = .neutral,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil
+    ) {
+        self.init(type: type) {
+            Text(label, tableName: tableName, bundle: bundle)
+        } icon: {
+            Icon(icon)
+        }
     }
 }
 
@@ -170,10 +177,21 @@ struct BadgeListPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack {
             BadgeList("Neutral BadgeList", icon: .grid)
-            BadgeList()   // EmptyView
-            BadgeList("") // EmptyView
+            
+            // EmptyView
+            Group {
+                BadgeList()
+                BadgeList("")
+                
+                BadgeList {
+                    Text("")
+                } icon: {
+                    Icon(nil)
+                }
+            }
+            .border(.redNormal)
         }
         .padding(.medium)
         .previewDisplayName()
@@ -212,16 +230,25 @@ struct BadgeListPreviews: PreviewProvider {
 
     static var mix: some View {
         VStack(alignment: .leading, spacing: .medium) {
-            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>SF Symbol</strong>", type: .status(.info)) {
+            BadgeList(type: .status(.info)) {
+                Text("This is simple <ref>BadgeList</ref> item with <strong>SF Symbol</strong>")
+            } icon: {
                 Icon("info.circle.fill")
             }
-            BadgeList("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>", type: .status(.critical)) {
-                CountryFlag("us")
+            
+            BadgeList(type: .status(.critical)) {
+                Text("This is simple <ref>BadgeList</ref> item with <strong>CountryFlag</strong>")
+            } icon: {
+                CountryFlag("us")                
             }
+            
             BadgeList("This is <ref>BadgeList</ref> item with no icon and custom color")
                 .textColor(.blueDark)
-            BadgeList("This is a <ref>BadgeList</ref> with <strong>status</strong> override", type: .status(nil)) {
-                Icon("info.circle.fill")
+            
+            BadgeList(type: .status(nil)) {
+                Text("This is a <ref>BadgeList</ref> with <strong>status</strong> override")
+            } icon: {
+                Icon("info.circle.fill")                
             }
         }
         .iconSize(.small)

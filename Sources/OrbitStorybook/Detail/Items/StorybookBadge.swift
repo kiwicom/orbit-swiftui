@@ -42,20 +42,30 @@ struct StorybookBadge {
                     .textColor(.blueDark)
                     .backgroundStyle(.whiteHover)
 
-                Badge("Flag") {
-                    CountryFlag("us")
+                Badge {
+                    Text("Flag")
+                } icon: {
+                    CountryFlag("us")                    
                 }
-                Badge("Flag", type: .status(.critical, inverted: true)) {
-                    CountryFlag("us")
+                
+                Badge(type: .status(.critical, inverted: true)) {
+                    Text("Flag")
+                } icon: {
+                    CountryFlag("cz")                    
                 }
             }
 
             HStack(spacing: .small) {
-                Badge("SF Symbol") {
-                    Icon("info.circle.fill")
+                Badge(type: .status(.success)) {
+                    Text("SF Symbol")
+                } icon: {
+                    Icon("info.circle.fill")                    
                 }
-                Badge("SF Symbol", type: .status(.warning, inverted: true)) {
-                    Icon("info.circle.fill")
+                
+                Badge(type: .status(.warning, inverted: true)) {
+                    Text("SF Symbol")
+                } icon: {
+                    Image(systemName: "info.circle.fill")                    
                 }
             }
         }

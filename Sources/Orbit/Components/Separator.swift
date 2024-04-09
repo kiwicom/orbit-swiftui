@@ -22,13 +22,13 @@ import SwiftUI
 /// Component expands horizontally.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/structure/separator/)
-public struct Separator: View {
+public struct Separator<Label: View>: View {
 
     @Environment(\.textColor) private var textColor
 
-    private let label: String
     private let color: Color
     private let thickness: CGFloat
+    @ViewBuilder private let label: Label
 
     public var body: some View {
         if label.isEmpty {
@@ -37,10 +37,10 @@ public struct Separator: View {
             HStack(spacing: .xxxSmall) {
                 leadingLine
 
-                Text(label)
+                label
                     .textSize(.small)
                     .textColor(textColor ?? .inkNormal)
-                    .fontWeight(.medium)
+                    .textFontWeight(.medium)
                     .multilineTextAlignment(.center)
                     .layoutPriority(1)
 
@@ -71,39 +71,46 @@ public struct Separator: View {
             line
         }
     }
-}
-
-// MARK: - Inits
-public extension Separator {
     
-    /// Creates Orbit ``Separator`` component.
-    init(
-        _ label: String = "",
+    /// Creates Orbit ``Separator`` component with custom label.
+    public init(
         color: Color = .cloudNormal,
-        thickness: Thickness = .default
+        thickness: CGFloat = 1,
+        @ViewBuilder label: () -> Label
     ) {
-        self.label = label
         self.color = color
-        self.thickness = thickness.value
+        self.thickness = thickness
+        self.label = label()
     }
 }
 
-// MARK: - Types
-public extension Separator {
+// MARK: - Convenience Inits
+public extension Separator where Label == Text {
 
-    /// Orbit ``Separator`` thickness.
-    enum Thickness {
-        case `default`
-        case hairline
-        case custom(CGFloat)
-
-        /// Value of Orbit `Separator` ``Separator/Thickness``.
-        public var value: CGFloat {
-            switch self {
-                case .`default`:            return 1
-                case .hairline:             return .hairline
-                case .custom(let value):    return value
-            }
+    /// Creates Orbit ``Separator`` component.
+    @_disfavoredOverload
+    init(
+        _ label: some StringProtocol = String(""),
+        color: Color = .cloudNormal,
+        thickness: CGFloat = 1
+    ) {
+        self.init(color: color, thickness: thickness) {
+            Text(label)
+        }
+    }
+    
+    /// Creates Orbit ``Separator`` component with localizable label.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ label: LocalizedStringKey = "",
+        color: Color = .cloudNormal,
+        thickness: CGFloat = 1,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil
+    ) {
+        self.init(color: color, thickness: thickness) {
+            Text(label, tableName: tableName, bundle: bundle)
         }
     }
 }
@@ -140,7 +147,7 @@ struct SeparatorPreviews: PreviewProvider {
                 .textColor(.productDark)
             Separator("Separator with very very very very very long and multiline label")
             Separator("Hairline thickness", thickness: .hairline)
-            Separator("Custom thickness", thickness: .custom(.xSmall))
+            Separator("Custom thickness", thickness: .xSmall)
         }
         .previewDisplayName()
     }

@@ -77,13 +77,13 @@ public extension KeyValue where Key == Text, Value == Text {
     @_semantics("swiftui.init_with_localization")
     init(
         _ key: LocalizedStringKey,
-        _ value: LocalizedStringKey,
+        value: some StringProtocol = String(""),
         tableName: String? = nil,
         bundle: Bundle? = nil,
-        keyComment: StaticString? = nil
+        comment: StaticString? = nil
     ) {
         self.init {
-            Text(value, tableName: tableName, bundle: bundle)
+            Text(value)
         } key: {
             Text(key, tableName: tableName, bundle: bundle)
         }

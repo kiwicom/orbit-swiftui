@@ -8,34 +8,37 @@ struct StorybookTimeline {
             TimelineItem(
                 "Booked",
                 sublabel: "January 3, 10:43",
-                type: .present(.success),
-                description: "You booked the trip and received e-tickets."
+                description: "You booked the trip and received e-tickets.", 
+                type: .present(.success)
             )
             TimelineItem(
                 "Checked in",
                 sublabel: "May 3, 8:45",
-                type: .present(.success),
-                description: "You checked in for the trip and received boarding passes"
+                description: "You checked in for the trip and received boarding passes",
+                type: .present(.success)
             )
             TimelineItem(
                 "Board",
                 sublabel: "May 4, 8:15",
-                type: .present(.warning),
-                description: "Be at your departure gate at least 30 minutes before boarding."
+                description: "Be at your departure gate at least 30 minutes before boarding.",
+                type: .present(.warning)
             )
-            TimelineItem(
-                "Board",
-                sublabel: "May 4, 8:15",
-                type: .present(.critical),
-                description: "Be at your departure gate at least 30 minutes before boarding."
-            ) {
+
+            TimelineItem(type: .present) {
+                Heading("Board", style: .title5)
+            } sublabel: {
+                Text("May 4, 8:15")
+            } description: {
+                Text("Be at your departure gate at least 30 minutes before boarding.")
+            } footer: {
                 contentPlaceholder
             }
 
             TimelineItem(
                 "Arrive",
                 sublabel: "May 4, 11:49",
-                description: "Arrive at your destination"
+                description: "Arrive at your destination",
+                type: .future
             )
         }
         .previewDisplayName()
@@ -45,31 +48,31 @@ struct StorybookTimeline {
         VStack(alignment: .leading, spacing: .xxLarge) {
             Timeline {
                 ForEach(steps) { step in
-                    TimelineItem(step.label, sublabel: step.sublabel, type: step.type, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, description: step.content, type: step.type)
                 }
             }
 
             Timeline {
                 ForEach(steps1) { step in
-                    TimelineItem(step.label, sublabel: step.sublabel, type: step.type, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, description: step.content, type: step.type)
                 }
             }
 
             Timeline {
                 ForEach(steps2) { step in
-                    TimelineItem(step.label, sublabel: step.sublabel, type: step.type, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, description: step.content, type: step.type)
                 }
             }
 
             Timeline {
                 ForEach(steps3) { step in
-                    TimelineItem(step.label, sublabel: step.sublabel, type: step.type, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, description: step.content, type: step.type)
                 }
             }
 
             Timeline {
                 ForEach(steps4) { step in
-                    TimelineItem(step.label, sublabel: step.sublabel, type: step.type, description: step.content)
+                    TimelineItem(step.label, sublabel: step.sublabel, description: step.content, type: step.type)
                 }
             }
         }

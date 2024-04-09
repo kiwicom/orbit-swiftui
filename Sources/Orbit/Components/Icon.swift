@@ -85,20 +85,20 @@ public struct Icon: View, TextBuildable, PotentiallyEmptyView {
                 EmptyView()
             case .symbol(let symbol):
                 SwiftUI.Text(verbatim: symbol.value)
-                    .font(.orbitIcon(size: resolvedSize(textRepresentableEnvironment)))
-                    .foregroundColor(resolvedColor(textRepresentableEnvironment))
+                    .font(.orbitIcon(size: resolvedSize(environment)))
+                    .foregroundColor(resolvedColor(environment))
                     .flipsForRightToLeftLayoutDirection(symbol.flipsForRightToLeftLayoutDirection)
-                    .frame(height: frameSize)
-                    .frame(minWidth: frameSize)
+                    .frame(height: frameSize(environment))
+                    .frame(minWidth: frameSize(environment))
                     .alignmentGuide(.firstTextBaseline, computeValue: baseline)
                     .alignmentGuide(.lastTextBaseline, computeValue: baseline)
                     .accessibility(label: .init(String(describing: symbol).titleCased))
             case .sfSymbol(let systemName):
                 Image(systemName: systemName)
-                    .font(sfSymbolFont(textRepresentableEnvironment))
-                    .foregroundColor(resolvedColor(textRepresentableEnvironment))
-                    .frame(height: frameSize)
-                    .frame(minWidth: frameSize)
+                    .font(sfSymbolFont(environment))
+                    .foregroundColor(resolvedColor(environment))
+                    .frame(height: frameSize(environment))
+                    .frame(minWidth: frameSize(environment))
                     .alignmentGuide(.firstTextBaseline) { $0[.firstTextBaseline] + resolvedBaselineOffset }
                     .alignmentGuide(.lastTextBaseline) { $0[.lastTextBaseline] + resolvedBaselineOffset }
         }
@@ -108,7 +108,7 @@ public struct Icon: View, TextBuildable, PotentiallyEmptyView {
         content?.isEmpty ?? true
     }
 
-    private var textRepresentableEnvironment: TextRepresentableEnvironment {
+    private var environment: TextRepresentableEnvironment {
         .init(
             iconColor: iconColor,
             iconSize: iconSize,
@@ -123,29 +123,29 @@ public struct Icon: View, TextBuildable, PotentiallyEmptyView {
         )
     }
     
-    private func sfSymbolFont(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> Font {
+    private func sfSymbolFont(_ environment: TextRepresentableEnvironment) -> Font {
         .system(
-            size: sfSymbolSize(textRepresentableEnvironment) * textRepresentableEnvironment.sizeCategory.ratio,
-            weight: fontWeight ?? textRepresentableEnvironment.textFontWeight ?? Self.sfSymbolDefaultWeight
+            size: sfSymbolSize(environment) * environment.sizeCategory.ratio,
+            weight: fontWeight ?? environment.textFontWeight ?? Self.sfSymbolDefaultWeight
         )
     }
 
-    private func resolvedColor(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> Color {
-        color ?? textRepresentableEnvironment.iconColor ?? textRepresentableEnvironment.textColor ?? .inkDark
+    private func resolvedColor(_ environment: TextRepresentableEnvironment) -> Color {
+        color ?? environment.iconColor ?? environment.textColor ?? .inkDark
     }
 
-    private var frameSize: CGFloat {
-        round(resolvedSize(textRepresentableEnvironment) * sizeCategory.ratio)
+    private func frameSize(_ environment: TextRepresentableEnvironment) -> CGFloat {
+        round(resolvedSize(environment) * sizeCategory.ratio)
     }
 
-    private func sfSymbolSize(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
-        round(resolvedSize(textRepresentableEnvironment) * Self.sfSymbolToOrbitSymbolSizeRatio)
+    private func sfSymbolSize(_ environment: TextRepresentableEnvironment) -> CGFloat {
+        round(resolvedSize(environment) * Self.sfSymbolToOrbitSymbolSizeRatio)
     }
 
-    private func resolvedSize(_ textRepresentableEnvironment: TextRepresentableEnvironment) -> CGFloat {
+    private func resolvedSize(_ environment: TextRepresentableEnvironment) -> CGFloat {
         size
-        ?? textRepresentableEnvironment.iconSize
-        ?? textRepresentableEnvironment.textSize.map(Icon.Size.fromTextSize(size:))
+        ?? environment.iconSize
+        ?? environment.textSize.map(Icon.Size.fromTextSize(size:))
         ?? Icon.Size.normal.value
     }
 
@@ -225,46 +225,46 @@ private extension Icon {
 
 // MARK: - TextRepresentable
 extension Icon: TextRepresentable {
-
+    
     public func text(environment: TextRepresentableEnvironment) -> SwiftUI.Text? {
         if #available(iOS 14.0, *) {
-            return text(textRepresentableEnvironment: environment)
+            text(environment)
         } else {
-            return textFallback(textRepresentableEnvironment: environment)
+            textFallback(environment)
         }
     }
 
     @available(iOS 14.0, *)
-    private func text(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
+    private func text(_ environment: TextRepresentableEnvironment) -> SwiftUI.Text? {
         switch content {
             case .none:
                 return nil
             case .symbol(let symbol):
-                return symbolWrapper(textRepresentableEnvironment) {
-                    colorWrapper(textRepresentableEnvironment) {
+                return symbolWrapper(environment) {
+                    colorWrapper(environment) {
                         SwiftUI.Text(verbatim: symbol.value)
                     }
                 }
             case .sfSymbol(let systemName):
                 return baselineWrapper {
-                    colorWrapper(textRepresentableEnvironment) {
+                    colorWrapper(environment) {
                         SwiftUI.Text(Image(systemName: systemName))
                             .font(
-                                sfSymbolFont(textRepresentableEnvironment)
+                                sfSymbolFont(environment)
                             )
                     }
                 }
         }
     }
 
-    private func textFallback(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
+    private func textFallback(_ environment: TextRepresentableEnvironment) -> SwiftUI.Text? {
         switch content {
             case .none:
                 return nil
             case .symbol(let symbol):
-                return symbolWrapper(textRepresentableEnvironment) {
+                return symbolWrapper(environment) {
                     baselineWrapper {
-                        colorWrapper(textRepresentableEnvironment) {
+                        colorWrapper(environment) {
                             SwiftUI.Text(verbatim: symbol.value)
                         }
                     }

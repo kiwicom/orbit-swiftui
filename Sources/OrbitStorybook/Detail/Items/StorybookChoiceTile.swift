@@ -39,13 +39,14 @@ struct StorybookChoiceTile {
             }
             StateWrapper(false) { isSelected in
                 ChoiceTile(
-                    description: "Long and multiline description with no title",
                     isSelected: isSelected.wrappedValue,
                     message: .warning("Warning multiline and very very very very long message")
                 ) {
                     isSelected.wrappedValue.toggle()
                 } content: {
                     contentPlaceholder
+                } description: {
+                    Text("Long and multiline description with no title")
                 } icon: {
                     CountryFlag("cz")
                 }
@@ -58,35 +59,6 @@ struct StorybookChoiceTile {
                 } content: {
                     Color.greenLight
                         .overlay(Text("Custom content, no header"))
-                }
-            }
-            StateWrapper(false) { $isSelected in 
-                ChoiceTile("Radio", description: description, indicator: .radio, isSelected: isSelected) {
-                    isSelected.toggle()
-                }
-            }
-            StateWrapper(false) { $isSelected in 
-                ChoiceTile("Checkbox", description: description, indicator: .checkbox, isSelected: isSelected) {
-                    isSelected.toggle()
-                }
-            }
-            StateWrapper(false) { $isSelected in 
-                ChoiceTile("Switch", description: description, indicator: .switch, isSelected: isSelected) {
-                    isSelected.toggle()
-                }
-            }
-            StateWrapper(false) { $isSelected in 
-                ChoiceTile("No indicator", description: description, indicator: nil, isSelected: isSelected) {
-                    isSelected.toggle()
-                }
-            }
-            StateWrapper(false) { $isSelected in 
-                ChoiceTile("Custom indicator", description: description, indicator: nil, isSelected: isSelected) {
-                    isSelected.toggle()
-                } content: {
-                    Icon(.check)
-                        .opacity(isSelected ? 1 : 0)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
                 }
             }
         }
@@ -138,8 +110,7 @@ struct StorybookChoiceTile {
                 title,
                 description: description,
                 icon: showIllustration ? .none : .grid,
-                illustration: showIllustration ? .priorityBoarding : nil,
-                badgeOverlay: "Recommended",
+                badge: "Recommended",
                 titleStyle: titleStyle,
                 isSelected: state.wrappedValue,
                 isError: isError,
@@ -148,6 +119,10 @@ struct StorybookChoiceTile {
                 state.wrappedValue.toggle()
             } content: {
                 contentPlaceholder
+            } illustration: {
+                if showIllustration {
+                    illustrationPlaceholder
+                }
             }
         }
     }

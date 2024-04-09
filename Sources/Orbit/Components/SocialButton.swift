@@ -20,20 +20,20 @@ import SwiftUI
 /// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/socialbutton/)
-public struct SocialButton: View {
-
+public struct SocialButton<Label: View>: View {
+    
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.sizeCategory) private var sizeCategory
-
-    private let label: String
-    private let service: Service
+    
+    private let service: SocialButtonService
     private let action: () -> Void
-
+    @ViewBuilder private let label: Label
+    
     public var body: some View {
         SwiftUI.Button {
             action()
         } label: {
-            Text(label)
+            label
         }
         .buttonStyle(
             OrbitButtonStyle {
@@ -51,16 +51,25 @@ public struct SocialButton: View {
         .textColor(textColor)
         .backgroundStyle(background, active: backgroundActive)
     }
-
+    
     @ViewBuilder private var logo: some View {
         switch service {
-            case .apple:        Self.appleLogo.foregroundColor(.whiteNormal).padding(1)
-            case .google:       Self.googleLogo
-            case .facebook:     Self.facebookLogo
+            case .apple:
+                Image(.apple)
+                    .renderingMode(.template)
+                    .resizable()
+                    .foregroundColor(.whiteNormal)
+                    .padding(1)
+            case .google:
+                Image(.google)
+                    .resizable()
+            case .facebook:
+                Image(.facebook)
+                    .resizable()
             case .email:        Icon(.email).iconSize(.large)
         }
     }
-
+    
     private var textColor: Color {
         switch service {
             case .apple:        return .whiteNormal
@@ -69,7 +78,7 @@ public struct SocialButton: View {
             case .email:        return .inkDark
         }
     }
-
+    
     private var background: Color {
         switch service {
             case .apple:        return colorScheme == .light ? .black : .white
@@ -78,7 +87,7 @@ public struct SocialButton: View {
             case .email:        return .cloudNormal
         }
     }
-
+    
     private var backgroundActive: Color {
         switch service {
             case .apple:        return colorScheme == .light ? .inkNormalActive : .inkNormalActive
@@ -87,38 +96,67 @@ public struct SocialButton: View {
             case .email:        return .cloudNormalActive
         }
     }
-}
-
-// MARK: - Inits
-public extension SocialButton {
     
-    /// Creates Orbit ``SocialButton`` component.
-    init(_ label: String, service: Service, action: @escaping () -> Void) {
-        self.label = label
+    /// Creates Orbit ``SocialButton`` component with custom content.
+    public init(
+        service: SocialButtonService, 
+        action: @escaping () -> Void, 
+        @ViewBuilder label: () -> Label
+    ) {
         self.service = service
         self.action = action
+        self.label = label()
+    }
+}
+
+// MARK: - Convenience Inits
+public extension SocialButton where Label == Text {
+    
+    /// Creates Orbit ``SocialButton`` component.
+    @_disfavoredOverload
+    init(
+        _ label: some StringProtocol = String(""),
+        service: SocialButtonService, 
+        action: @escaping () -> Void
+    ) {
+        self.init(service: service) {
+            action()
+        } label: {
+            Text(label)
+        }
+    }
+    
+    /// Creates Orbit ``SocialButton`` component with localizable label.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ label: LocalizedStringKey = "",
+        service: SocialButtonService,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil,
+        action: @escaping () -> Void
+    ) {
+        self.init(service: service) {
+            action()
+        } label: {
+            Text(label, tableName: tableName, bundle: bundle)
+        }
     }
 }
 
 // MARK: - Types
-extension SocialButton {
 
-    private static let appleLogo = Image(.apple).renderingMode(.template).resizable()
-    private static let googleLogo = Image(.google).resizable()
-    private static let facebookLogo = Image(.facebook).resizable()
-
-    /// Orbit ``SocialButton`` social service or login method.
-    public enum Service {
-        case apple
-        case google
-        case facebook
-        case email
-    }
+/// Orbit ``SocialButton`` social service or login method.
+public enum SocialButtonService {
+    case apple
+    case google
+    case facebook
+    case email
 }
 
 // MARK: - Previews
 struct SocialButtonPreviews: PreviewProvider {
-
+    
     static var previews: some View {
         PreviewWrapper {
             standalone
@@ -129,18 +167,18 @@ struct SocialButtonPreviews: PreviewProvider {
         .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
-
+    
     static var standalone: some View {
         SocialButton("Sign in with Facebook", service: .facebook, action: {})
             .previewDisplayName()
     }
-
+    
     static var idealSize: some View {
         content
             .idealSize()
             .previewDisplayName()
     }
-
+    
     static var sizing: some View {
         VStack(spacing: .medium) {
             Group {
@@ -155,12 +193,12 @@ struct SocialButtonPreviews: PreviewProvider {
         .padding(.medium)
         .previewDisplayName()
     }
-
+    
     static var all: some View {
         content
             .previewDisplayName()
     }
-
+    
     static var content: some View {
         VStack(spacing: .medium) {
             SocialButton("Sign in with E-mail", service: .email, action: {})
@@ -169,7 +207,7 @@ struct SocialButtonPreviews: PreviewProvider {
             SocialButton("Sign in with Apple", service: .apple, action: {})
         }
     }
-
+    
     static var snapshot: some View {
         VStack(spacing: .medium) {
             all

@@ -34,27 +34,29 @@ import SwiftUI
 /// Component expands horizontally unless prevented by the native `fixedSize()` or ``idealSize()`` modifier.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/select/)
-public struct Select<Prefix: View, Suffix: View>: View {
+public struct Select<Label: View, Value: View, Prompt: View, Prefix: View, Suffix: View>: View {
 
     private let verticalTextPadding: CGFloat = .small // = 44 @ normal text size
 
+    @Environment(\.iconColor) private var iconColor
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
+    @Environment(\.textColor) private var textColor
 
     @Binding private var messageHeight: CGFloat
     
-    private let label: String
-    private let value: String?
-    private let prompt: String
     private let state: InputState
     private let labelStyle: InputLabelStyle
     private let message: Message?
     private let action: () -> Void
+    @ViewBuilder private let label: Label
+    @ViewBuilder private let value: Value
+    @ViewBuilder private let prompt: Prompt
     @ViewBuilder private let prefix: Prefix
     @ViewBuilder private let suffix: Suffix
 
     public var body: some View {
-        FieldWrapper(defaultLabel, message: message, messageHeight: $messageHeight) {
+        FieldWrapper(message: message, messageHeight: $messageHeight) {
             SwiftUI.Button {
                 if isHapticsEnabled {
                     HapticsProvider.sendHapticFeedback(.light(0.5))
@@ -62,88 +64,136 @@ public struct Select<Prefix: View, Suffix: View>: View {
                 
                 action()
             } label: {
-                Text(value ?? prompt)
+                buttonLabel
                     .textColor(valueColor)
                     .accessibility(.selectValue)
                     .padding(.horizontal, .small)
                     .padding(.vertical, verticalTextPadding)
             }
             .buttonStyle(
-                InputContentButtonStyle(
-                    state: state,
-                    label: compactLabel,
-                    message: message
-                ) {
+                InputContentButtonStyle(state: state, message: message) {
+                    compactLabel
+                } prefix: {
                     prefix
+                        .textColor(prefixIconColor)
                         .accessibility(.selectPrefix)
                 } suffix: {
                     suffix
                         .accessibility(.selectSuffix)
                 }
-            )
+            )   
+        } label: {
+            defaultLabel
         }
-        .accessibilityElement(children: .ignore)
-        .accessibility(label: .init(label))
-        .accessibility(value: .init(value ?? ""))
-        .accessibility(hint: .init(messageDescription.isEmpty ? prompt : messageDescription))
+        .accessibility {
+            label
+        } value: {
+            value
+        } hint: {
+            Text(messageDescription)
+        }
         .accessibility(addTraits: .isButton)
+        .accessibility(.select)
     }
-
-    private var defaultLabel: String {
-        switch labelStyle {
-            case .default:          return label
-            case .compact:          return ""
+    
+    @ViewBuilder private var buttonLabel: some View {
+        if value.isEmpty {
+            prompt  
+        } else {
+            value
         }
     }
 
-    private var compactLabel: String {
+    @ViewBuilder private var defaultLabel: some View {
         switch labelStyle {
-            case .default:          return ""
-            case .compact:          return label
+            case .default:          label
+            case .compact:          EmptyView()
+        }
+    }
+
+    @ViewBuilder private var compactLabel: some View {
+        switch labelStyle {
+            case .default:          EmptyView()
+            case .compact:          label
         }
     }
 
     private var valueColor: Color {
         if isEnabled {
-            return value == nil
+            return value.isEmpty
                 ? state.placeholderColor
                 : state.textColor
         } else {
             return .cloudDarkActive
         }
     }
+    
+    private var prefixIconColor: Color? {
+        isEnabled
+            ? iconColor ?? textColor ?? (labelStyle == .default ? .inkDark : .inkNormal)
+            : .cloudDarkActive
+    }
 
     private var messageDescription: String {
         message?.description ?? ""
     }
+    
+    /// Creates Orbit ``Select`` component with custom content.
+    public init(
+        state: InputState = .default,
+        labelStyle: InputLabelStyle = .default,
+        message: Message? = nil,
+        messageHeight: Binding<CGFloat> = .constant(0),
+        action: @escaping () -> Void,
+        @ViewBuilder label: () -> Label = { EmptyView() },
+        @ViewBuilder value: () -> Value = { EmptyView() },
+        @ViewBuilder prompt: () -> Prompt = { EmptyView() },
+        @ViewBuilder prefix: () -> Prefix = { EmptyView() },
+        @ViewBuilder suffix: () -> Suffix = { Icon(.chevronDown) }
+    ) {
+        self.state = state
+        self.labelStyle = labelStyle
+        self.message = message
+        self._messageHeight = messageHeight
+        self.action = action
+        self.label = label()
+        self.value = value()
+        self.prompt = prompt()
+        self.prefix = prefix()
+        self.suffix = suffix()
+    }
 }
 
-// MARK: - Inits
-public extension Select {
- 
-    /// Creates Orbit ``Select`` component.
+// MARK: - Convenience Inits
+public extension Select where Prefix == Icon, Suffix == Icon, Label == Text, Value == SelectValue, Prompt == Text {
+    
+    /// Creates Orbit ``Select`` component with custom content.
+    @_disfavoredOverload
     init(
-        _ label: String = "",
-        prefix: Icon.Symbol? = nil,
+        _ label: some StringProtocol = String(""),
         value: String?,
-        prompt: String = "",
+        prompt: some StringProtocol = String(""),
+        prefix: Icon.Symbol? = nil,
         suffix: Icon.Symbol? = .chevronDown,
         state: InputState = .default,
         labelStyle: InputLabelStyle = .default,
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         action: @escaping () -> Void
-    ) where Prefix == Icon, Suffix == Icon {
+    ) {
         self.init(
-            label,
-            value: value,
-            prompt: prompt,
             state: state,
             labelStyle: labelStyle,
             message: message,
             messageHeight: messageHeight
         ) {
             action()
+        } label: {
+            Text(label)
+        } value: {
+            SelectValue(value: value)
+        } prompt: {
+            Text(prompt)
         } prefix: {
             Icon(prefix)
         } suffix: {
@@ -151,37 +201,66 @@ public extension Select {
                 .iconColor(.inkDark)
         }
     }
+    
+    /// Creates Orbit ``Select`` component with localizable label.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ label: LocalizedStringKey = "",
+        value: String?,
+        prompt: LocalizedStringKey = "",
+        prefix: Icon.Symbol? = nil,
+        suffix: Icon.Symbol? = .chevronDown,
+        state: InputState = .default,
+        labelStyle: InputLabelStyle = .default,
+        message: Message? = nil,
+        messageHeight: Binding<CGFloat> = .constant(0),
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        labelComment: StaticString? = nil,
+        action: @escaping () -> Void
+    ) {
+        self.init(
+            state: state,
+            labelStyle: labelStyle,
+            message: message,
+            messageHeight: messageHeight
+        ) {
+            action()
+        } label: {
+            Text(label, tableName: tableName, bundle: bundle)
+        } value: {
+            SelectValue(value: value)
+        } prompt: {
+            Text(prompt, tableName: tableName, bundle: bundle)
+        } prefix: {
+            Icon(prefix)
+        } suffix: {
+            Icon(suffix)
+                .iconColor(.inkDark)
+        }
+    }
+}
 
+// MARK: - Types
 
-   /// Creates Orbit ``Select`` component with custom prefix or suffix.
-   init(
-       _ label: String = "",
-       value: String?,
-       prompt: String = "",
-       state: InputState = .default,
-       labelStyle: InputLabelStyle = .default,
-       message: Message? = nil,
-       messageHeight: Binding<CGFloat> = .constant(0),
-       action: @escaping () -> Void,
-       @ViewBuilder prefix: () -> Prefix,
-       @ViewBuilder suffix: () -> Suffix = { Icon(.chevronDown) }
-   ) {
-       self.label = label
-       self.value = value
-       self.prompt = prompt
-       self.state = state
-       self.labelStyle = labelStyle
-       self.message = message
-       self._messageHeight = messageHeight
-       self.action = action
-       self.prefix = prefix()
-       self.suffix = suffix()
-   }
+public struct SelectValue: View, PotentiallyEmptyView {
+    
+    let value: String?
+
+    public var body: some View {
+        if let value {
+            Text(value)
+        }
+    }
+    
+    public var isEmpty: Bool {
+        value == nil
+    }
 }
 
 // MARK: - Identifiers
 public extension AccessibilityID {
-
+    static let select           = Self(rawValue: "orbit.select")
     static let selectPrefix     = Self(rawValue: "orbit.select.prefix")
     static let selectSuffix     = Self(rawValue: "orbit.select.suffix")
     static let selectValue      = Self(rawValue: "orbit.select.value")
@@ -190,6 +269,8 @@ public extension AccessibilityID {
 // MARK: - Previews
 struct SelectPreviews: PreviewProvider {
 
+    static let longValue = "Value with a very very very very very long value.."
+    
     static var previews: some View {
         PreviewWrapper {
             standalone
@@ -207,13 +288,13 @@ struct SelectPreviews: PreviewProvider {
             Select(InputFieldPreviews.label, value: InputFieldPreviews.value) {
                 // No action
             }
-            Select(InputFieldPreviews.label, prefix: .grid, value: InputFieldPreviews.value) {
+            Select(InputFieldPreviews.label, value: InputFieldPreviews.value, prefix: .grid) {
                 // No action
             }
-            Select(InputFieldPreviews.label, prefix: .grid, value: InputFieldPreviews.value, labelStyle: .compact) {
+            Select(InputFieldPreviews.label, value: InputFieldPreviews.value, prefix: .grid, labelStyle: .compact) {
                 // No action
             }
-            Select(InputFieldPreviews.label, prefix: .grid, value: nil, prompt: "Prompt", labelStyle: .compact) {
+            Select(InputFieldPreviews.label, value: nil, prompt: "Prompt", prefix: .grid, labelStyle: .compact) {
                 // No action
             }
             Select(InputFieldPreviews.label, value: nil, prompt: "Prompt", labelStyle: .compact) {
@@ -226,26 +307,32 @@ struct SelectPreviews: PreviewProvider {
 
     static var customContent: some View {
         VStack(spacing: .medium) {
-            Select(value: "Value with a very very very very very long value..") {
+            Select {
                 // No action
+            } value: {
+                Text(longValue)
             } prefix: {
                 EmptyView()
             } suffix: {
                 EmptyView()
             }
 
-            Select(value: "Value with a very very very very very long value..") {
+            Select {
                 // No action
+            } value: {
+                Text(longValue)
             } prefix: {
                 CountryFlag("")
             } suffix: {
                 CountryFlag("")
             }
 
-            // FIXME: conditional content EmptyView
+            // FIXME: conditional content EmptyView padding
             StateWrapper(false) { state in
-                Select(value: "Value with a very very very very very long value..") {
+                Select {
                     state.wrappedValue.toggle()
+                } value: {
+                    Text(longValue)
                 } prefix: {
                     if state.wrappedValue {
                         CountryFlag("us")
@@ -263,8 +350,8 @@ struct SelectPreviews: PreviewProvider {
 
     static var idealSize: some View {
         VStack(spacing: .medium) {
-            Select("Ideal size", prefix: .grid, value: InputFieldPreviews.value, action: {})
-            Select("Ideal size", prefix: .grid, value: InputFieldPreviews.value, suffix: nil, action: {})
+            Select("Ideal size", value: InputFieldPreviews.value, prefix: .grid, action: {})
+            Select("Ideal size", value: InputFieldPreviews.value, prefix: .grid, suffix: nil, action: {})
             Select("Ideal size", value: InputFieldPreviews.value, suffix: nil, action: {})
         }
         .idealSize()
@@ -284,23 +371,24 @@ struct SelectPreviews: PreviewProvider {
             .frame(width: 200)
             .measured()
         }
+        .padding(.medium)
         .previewDisplayName()
     }
 
     static var styles: some View {
         VStack(spacing: .medium) {
-            Select(prefix: .grid, value: "", prompt: InputFieldPreviews.prompt, action: {})
-            Select(prefix: .grid, value: "", prompt: InputFieldPreviews.prompt, message: .help(InputFieldPreviews.helpMessage), action: {})
-            Select(prefix: .grid, value: "", prompt: InputFieldPreviews.prompt, message: .error(InputFieldPreviews.errorMessage), action: {})
+            Select(value: "", prompt: InputFieldPreviews.prompt, prefix: .grid, action: {})
+            Select(value: "", prompt: InputFieldPreviews.prompt, prefix: .grid, message: .help(InputFieldPreviews.helpMessage), action: {})
+            Select(value: "", prompt: InputFieldPreviews.prompt, prefix: .grid, message: .error(InputFieldPreviews.errorMessage), action: {})
 
             Separator()
 
             Group {
-                Select(prefix: .grid, value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, action: {})
-                Select(prefix: .grid, value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, message: .help(InputFieldPreviews.helpMessage), action: {})
-                Select(prefix: .grid, value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, message: .error(InputFieldPreviews.errorMessage), action: {})
-                Select(prefix: .grid, value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, labelStyle: .compact, action: {})
-                Select("Inline", prefix: .grid, value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, labelStyle: .compact, action: {})
+                Select(value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, prefix: .grid, action: {})
+                Select(value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, prefix: .grid, message: .help(InputFieldPreviews.helpMessage), action: {})
+                Select(value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, prefix: .grid, message: .error(InputFieldPreviews.errorMessage), action: {})
+                Select(value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, prefix: .grid, action: {})
+                Select("Inline", value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, prefix: .grid, labelStyle: .compact, action: {})
                 Select("Inline", value: InputFieldPreviews.value, prompt: InputFieldPreviews.prompt, labelStyle: .compact, action: {})
                 Select("Inline", value: nil, prompt: InputFieldPreviews.prompt, labelStyle: .compact, action: {})
             }
@@ -317,7 +405,7 @@ struct SelectPreviews: PreviewProvider {
         suffix: Icon.Symbol? = .chevronDown,
         message: Message? = nil
     ) -> some View {
-        Select(label, prefix: prefix, value: value, prompt: prompt, suffix: suffix, message: message, action: {})
+        Select(label, value: value, prompt: prompt, prefix: prefix, suffix: suffix, message: message, action: {})
     }
 
     @ViewBuilder static var mix: some View {
@@ -326,48 +414,48 @@ struct SelectPreviews: PreviewProvider {
                 Select("No Value", value: "", suffix: .none, action: {})
                 Select("No Suffix", value: "Value", suffix: .none, action: {})
                 Select("Label", value: "Value", action: {})
-                Select("", prefix: .grid, value: "Value", action: {})
-                Select("", prefix: .airplane, value: nil, prompt: "Please select", action: {})
-                Select("Label (Empty Value)", prefix: .airplane, value: "", action: {})
-                Select("Label (No Value)", prefix: .airplane, value: nil, prompt: "Please select", action: {})
-                Select("Label", prefix: .phone, value: "Value", action: {})
-                Select("Label", prefix: .map, value: "Value", action: {})
+                Select("", value: "Value", prefix: .grid, action: {})
+                Select("", value: nil, prompt: "Please select", prefix: .airplane, action: {})
+                Select("Label (Empty Value)", value: "", prefix: .airplane, action: {})
+                Select("Label (No Value)", value: nil, prompt: "Please select", prefix: .airplane, action: {})
+                Select("Label", value: "Value", prefix: .phone, action: {})
+                Select("Label", value: "Value", prefix: .map, action: {})
             }
 
             Group {
-                Select("Label (Disabled)", prefix: .airplane, value: "Value", action: {})
+                Select("Label (Disabled)", value: "Value", prefix: .airplane, action: {})
                     .disabled(true)
 
                 Select(
                     "Label (Disabled)",
-                    prefix: .airplane,
                     value: nil,
                     prompt: "Please select",
+                    prefix: .airplane,
                     action: {}
                 )
                 .disabled(true)
 
-                Select("Label (Modified)", prefix: .airplane, value: "Modified Value", state: .modified, action: {})
+                Select("Label (Modified)", value: "Modified Value", prefix: .airplane, state: .modified, action: {})
                 Select(
                     "Label (Modified)",
-                    prefix: .airplane,
                     value: nil,
                     prompt: "Please select",
+                    prefix: .airplane,
                     state: .modified,
                     action: {}
                 )
                 Select(
                     "Label (Info)",
-                    prefix: .informationCircle,
                     value: "Value",
+                    prefix: .informationCircle,
                     message: .help("Help message, also very long and multi-line to test that it works."),
                     action: {}
                 )
 
                 Select(
-                    FieldLabelPreviews.longLabel,
-                    prefix: .grid,
+                    "Multiline\nLabel",
                     value: "Bad Value with a very long text that should overflow",
+                    prefix: .grid,
                     message: .error("Error message, but also very long and multi-line to test that it works."),
                     action: {}
                 )
@@ -389,8 +477,8 @@ struct SelectPreviews: PreviewProvider {
 
                         Select(
                             "Label (Error) with a long multiline label to test that it works",
-                            prefix: .grid,
                             value: "Bad Value with a very long text that should overflow",
+                            prefix: .grid,
                             message: state.wrappedValue
                                 ? .error("Error message, but also very long and multi-line to test that it works.")
                                 : .none

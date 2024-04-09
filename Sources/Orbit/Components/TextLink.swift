@@ -105,15 +105,9 @@ public struct TextLink: UIViewRepresentable {
             }
         }
     }
-}
-
-// MARK: - Inits
-public extension TextLink {
-
-    /// Creates Orbit ``TextLink`` component.
-    /// 
-    /// - Important: Prefer using the Orbit ``Text`` component that automatically includes the `TextLink` as a layer for all detected links.
-    init(_ content: NSAttributedString) {
+    
+    /// Creates Orbit ``TextLink`` standalone component.
+    public init(_ content: NSAttributedString) {
         self.content = content
     }
 }
