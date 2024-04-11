@@ -30,6 +30,7 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
     @Environment(\.textFontWeight) private var textFontWeight
     @Environment(\.textColor) private var textColor
     @Environment(\.textSize) private var textSize
+    @Environment(\.isSnapshotTesting) private var isSnapshotTesting
 
     @Binding private var value: String
     private var prompt: String
@@ -52,7 +53,7 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
 
         textField.clearsOnBeginEditing = false
         textField.adjustsFontForContentSizeCategory = false
-        textField.tintColor = .blueNormal
+        textField.tintColor = context.environment.isSnapshotTesting ? .clear : .blueNormal
 
         textField.setContentHuggingPriority(.defaultHigh, for: .vertical)
         textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
