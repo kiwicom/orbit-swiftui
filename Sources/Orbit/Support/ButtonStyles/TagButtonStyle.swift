@@ -12,6 +12,7 @@ public struct TagButtonStyle: ButtonStyle {
 
     private let isFocused: Bool
     private let isSelected: Bool
+    private let isRemovable: Bool
     private let removeAction: (() -> Void)?
 
     public func makeBody(configuration: Configuration) -> some View {
@@ -21,7 +22,7 @@ public struct TagButtonStyle: ButtonStyle {
                 .textColor(resolvedTextColor)
                 .lineLimit(1)
 
-            if let removeAction {
+            if let removeAction, isRemovable {
                 IconButton(.closeCircle) {
                     removeAction()
                 }
@@ -112,10 +113,12 @@ public struct TagButtonStyle: ButtonStyle {
     public init(
         isFocused: Bool,
         isSelected: Bool,
+        isRemovable: Bool = false,
         removeAction: (() -> Void)?
     ) {
         self.isFocused = isFocused
         self.isSelected = isSelected
+        self.isRemovable = isRemovable
         self.removeAction = removeAction
     }
 }
