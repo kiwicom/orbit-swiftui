@@ -36,8 +36,9 @@ public struct Tag<Icon: View>: View, PotentiallyEmptyView {
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
     private let label: String
-    private let isFocused: Bool
     @Binding private var isSelected: Bool
+    private let isFocused: Bool
+    private let isRemovable: Bool
     @ViewBuilder private let icon: Icon
     private let removeAction: (() -> Void)?
 
@@ -69,7 +70,12 @@ public struct Tag<Icon: View>: View, PotentiallyEmptyView {
                 }
             }
             .buttonStyle(
-                TagButtonStyle(isFocused: isFocused, isSelected: isSelected, removeAction: removeAction)
+                TagButtonStyle(
+                    isFocused: isFocused, 
+                    isSelected: isSelected, 
+                    isRemovable: isRemovable, 
+                    removeAction: removeAction
+                )
             )
             .accessibility(addTraits: isSelected ? .isSelected : [])
         }
@@ -88,12 +94,14 @@ public extension Tag {
         _ label: String = "",
         isFocused: Bool = true,
         isSelected: Binding<Bool>,
+        isRemovable: Bool = false,
         @ViewBuilder icon: () -> Icon,
         removeAction: (() -> Void)? = nil
     ) {
         self.label = label
         self.isFocused = isFocused
         self._isSelected = isSelected
+        self.isRemovable = isRemovable
         self.icon = icon()
         self.removeAction = removeAction
     }
@@ -104,12 +112,14 @@ public extension Tag {
         icon: Icon.Symbol? = nil,
         isFocused: Bool = true,
         isSelected: Binding<Bool>,
+        isRemovable: Bool = false,
         removeAction: (() -> Void)? = nil
     ) where Icon == Orbit.Icon {
         self.init(
             label,
             isFocused: isFocused,
             isSelected: isSelected,
+            isRemovable: isRemovable,
             icon: {
                 Icon(icon)
                     .iconSize(textSize: .normal)
@@ -164,7 +174,7 @@ struct TagPreviews: PreviewProvider {
             Separator()
             HStack(spacing: .medium) {
                 StateWrapper(true) { isSelected in
-                    Tag(label, icon: .sort, isSelected: isSelected, removeAction: {})
+                    Tag(label, icon: .sort, isSelected: isSelected, isRemovable: true, removeAction: {})
                 }
                 StateWrapper(false) { isSelected in
                     Tag(icon: .notificationAdd, isFocused: false, isSelected: isSelected)
@@ -204,6 +214,7 @@ struct TagPreviews: PreviewProvider {
                 label,
                 isFocused: isFocused,
                 isSelected: state.1,
+                isRemovable: true,
                 removeAction: state.0.wrappedValue ? { state.wrappedValue.2 = false } : nil
             )
             .opacity(state.wrappedValue.2 ? 1 : 0)

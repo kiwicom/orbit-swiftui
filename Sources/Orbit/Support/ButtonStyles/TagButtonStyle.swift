@@ -12,6 +12,7 @@ public struct TagButtonStyle: ButtonStyle {
 
     private let isFocused: Bool
     private let isSelected: Bool
+    private let isRemovable: Bool
     private let removeAction: (() -> Void)?
 
     public func makeBody(configuration: Configuration) -> some View {
@@ -21,12 +22,12 @@ public struct TagButtonStyle: ButtonStyle {
                 .textColor(resolvedTextColor)
                 .lineLimit(1)
 
-            if let removeAction {
-                Icon(.closeCircle)
-                    .iconSize(.small)
-                    .iconColor(resolvedIconColor(isPressed: configuration.isPressed))
-                    .onTapGesture(perform: removeAction)
-                    .accessibility(addTraits: .isButton)
+            if let removeAction, isRemovable {
+                IconButton(.closeCircle) {
+                    removeAction()
+                }
+                .iconColor(resolvedIconColor(isPressed: configuration.isPressed))
+                .iconSize(.small)
             }
         }
         .textFontWeight(.medium)
@@ -34,9 +35,9 @@ public struct TagButtonStyle: ButtonStyle {
         .padding(.vertical, Self.verticalPadding)
         .background(
             resolvedBackgroundColor(isPressed: configuration.isPressed)
-                .animation(nil)
         )
         .cornerRadius(BorderRadius.default)
+        .animation(nil, value: isSelected)
     }
     
     @ViewBuilder private func resolvedBackgroundColor(isPressed: Bool) -> some View {
@@ -112,10 +113,12 @@ public struct TagButtonStyle: ButtonStyle {
     public init(
         isFocused: Bool,
         isSelected: Bool,
+        isRemovable: Bool = false,
         removeAction: (() -> Void)?
     ) {
         self.isFocused = isFocused
         self.isSelected = isSelected
+        self.isRemovable = isRemovable
         self.removeAction = removeAction
     }
 }
