@@ -34,9 +34,9 @@ public struct TagButtonStyle: ButtonStyle {
         .padding(.vertical, Self.verticalPadding)
         .background(
             resolvedBackgroundColor(isPressed: configuration.isPressed)
-                .animation(nil)
         )
         .cornerRadius(BorderRadius.default)
+        .animation(nil, value: isSelected)
     }
     
     @ViewBuilder private func resolvedBackgroundColor(isPressed: Bool) -> some View {
