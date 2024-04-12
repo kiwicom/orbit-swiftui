@@ -22,11 +22,11 @@ public struct TagButtonStyle: ButtonStyle {
                 .lineLimit(1)
 
             if let removeAction {
-                Icon(.closeCircle)
-                    .iconSize(.small)
-                    .iconColor(resolvedIconColor(isPressed: configuration.isPressed))
-                    .onTapGesture(perform: removeAction)
-                    .accessibility(addTraits: .isButton)
+                IconButton(.closeCircle) {
+                    removeAction()
+                }
+                .iconColor(resolvedIconColor(isPressed: configuration.isPressed))
+                .iconSize(.small)
             }
         }
         .textFontWeight(.medium)
