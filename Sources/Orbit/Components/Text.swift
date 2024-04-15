@@ -85,7 +85,7 @@ import SwiftUI
 /// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/text/)
-public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
+public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView, CustomStringConvertible {
 
     @Environment(\.multilineTextAlignment) private var multilineTextAlignment
     @Environment(\.lineSpacing) private var lineSpacing
@@ -99,7 +99,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
     @Environment(\.textSize) private var textSize
     @Environment(\.sizeCategory) private var sizeCategory
 
-    private let verbatimContent: String
+    public let description: String
     
     // Localization
     private let localization: TextLocalization?
@@ -120,11 +120,11 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
 
     public var body: some View {
         if isEmpty == false {
-            text(textRepresentableEnvironment: textRepresentableEnvironment)
+            text(environment: textRepresentableEnvironment, showTextLinks: false)
                 .lineSpacing(lineSpacingAdjusted)
                 .overlay(copyableText)
                 // If the text contains links, the TextLink overlay takes accessibility priority
-                .accessibility(hidden: content(textRepresentableEnvironment.locale).containsTextLinks)
+                .accessibility(hidden: content(textRepresentableEnvironment).containsTextLinks)
                 .overlay(textLinks)
                 .padding(.vertical, textRepresentableEnvironment.lineHeightPadding(lineHeight: lineHeight, size: size))
                 .fixedSize(horizontal: false, vertical: true)
@@ -132,30 +132,30 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
     }
 
     @ViewBuilder private var textLinks: some View {
-        if content(locale).containsTextLinks {
-            TextLink(textLinkAttributedString(textRepresentableEnvironment: textRepresentableEnvironment))
+        if content(textRepresentableEnvironment).containsTextLinks {
+            TextLink(textLinkAttributedString(environment: textRepresentableEnvironment))
         }
     }
 
     @ViewBuilder private var copyableText: some View {
         if textIsCopyable {
             CopyableText(
-                attributedString(textRepresentableEnvironment: textRepresentableEnvironment).string
+                attributedString(environment: textRepresentableEnvironment).string
             )
         }
     }
     
     var isEmpty: Bool {
-        verbatimContent.isEmpty
+        description.isEmpty
     }
 
-    func text(textRepresentableEnvironment: TextRepresentableEnvironment, isConcatenated: Bool = false) -> SwiftUI.Text {
-        if content(textRepresentableEnvironment.locale).containsHtmlFormatting {
+    func text(environment: TextRepresentableEnvironment, showTextLinks: Bool = false) -> SwiftUI.Text {
+        if content(environment).containsHtmlFormatting {
             return modifierWrapper(
                 SwiftUI.Text(
                     attributedString(
-                        textRepresentableEnvironment: textRepresentableEnvironment,
-                        isConcatenated: isConcatenated
+                        environment: environment,
+                        showTextLinks: showTextLinks
                     )
                 )
             )
@@ -163,23 +163,23 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
             return modifierWrapper(
                 fontWeightWrapper(
                     boldWrapper(
-                        SwiftUI.Text(verbatim: content(textRepresentableEnvironment.locale))
-                            .foregroundColor(textRepresentableEnvironment.resolvedColor(color))
+                        SwiftUI.Text(verbatim: content(environment))
+                            .foregroundColor(environment.resolvedColor(color))
                     )
                 )
             )
-            .font(textRepresentableEnvironment.font(size: size, weight: fontWeight, isBold: isBold))
+            .font(environment.font(size: size, weight: fontWeight, isBold: isBold))
         }
     }
     
-    private func content(_ locale: Locale) -> String {
+    private func content(_ environment: TextRepresentableEnvironment) -> String {
         switch localization {
             case .key(let localizedStringKey, let bundle, let tableName, let explicitKey):
-                localizedStringKey.localized(locale: locale, bundle: bundle ?? localizationBundle, tableName: tableName, explicitKey: explicitKey) ?? verbatimContent
+                localizedStringKey.localized(locale: environment.locale, bundle: bundle ?? environment.localizationBundle, tableName: tableName, explicitKey: explicitKey) ?? description
             case .resource(let resource):
-                resolvedLocalizedStringResource(resource, locale: locale) ?? verbatimContent
+                resolvedLocalizedStringResource(resource, locale: environment.locale) ?? description
             case nil:
-                verbatimContent
+                description
         }
     }
     
@@ -200,6 +200,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
             iconColor: nil,
             iconSize: nil,
             locale: locale,
+            localizationBundle: localizationBundle,
             textAccentColor: textAccentColor,
             textColor: textColor,
             textFontWeight: textFontWeight,
@@ -308,13 +309,13 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
     }
 
     private func textLinkAttributedString(
-        textRepresentableEnvironment: TextRepresentableEnvironment
+        environment: TextRepresentableEnvironment
     ) -> NSAttributedString {
         TagAttributedStringBuilder.all.attributedString(
-            content(textRepresentableEnvironment.locale),
+            content(environment),
             alignment: multilineTextAlignment,
-            fontSize: textRepresentableEnvironment.scaledSize(size),
-            fontWeight: textRepresentableEnvironment.resolvedFontWeight(fontWeight, isBold: isBold),
+            fontSize: environment.scaledSize(size),
+            fontWeight: environment.resolvedFontWeight(fontWeight, isBold: isBold),
             lineSpacing: lineSpacingAdjusted,
             kerning: kerning,
             strikethrough: strikethrough ?? false,
@@ -324,24 +325,29 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView {
     }
 
     private func attributedString(
-        textRepresentableEnvironment: TextRepresentableEnvironment,
-        isConcatenated: Bool = false
+        environment: TextRepresentableEnvironment,
+        showTextLinks: Bool = false
     ) -> NSAttributedString {
         TagAttributedStringBuilder.all.attributedString(
-            content(textRepresentableEnvironment.locale),
+            content(environment),
             alignment: multilineTextAlignment,
-            fontSize: textRepresentableEnvironment.scaledSize(size),
-            fontWeight: textRepresentableEnvironment.resolvedFontWeight(fontWeight, isBold: isBold),
+            fontSize: environment.scaledSize(size),
+            fontWeight: environment.resolvedFontWeight(fontWeight, isBold: isBold),
             lineSpacing: lineSpacingAdjusted,
             kerning: kerning,
-            color: textRepresentableEnvironment.resolvedColor(color).uiColor,
-            linkColor: isConcatenated ? nil : .clear,
-            accentColor: textRepresentableEnvironment.resolvedAccentColor(accentColor, color: color).uiColor
+            color: environment.resolvedColor(color).uiColor,
+            linkColor: showTextLinks ? nil : .clear,
+            accentColor: environment.resolvedAccentColor(accentColor, color: color).uiColor
         )
     }
 
     private var lineSpacingAdjusted: CGFloat {
         textRepresentableEnvironment.lineSpacingAdjusted(lineSpacing, lineHeight: lineHeight, size: size)
+    }
+    
+    private init(localization: TextLocalization?, description: String) {
+        self.localization = localization
+        self.description = description
     }
 }
 
@@ -366,8 +372,10 @@ public extension Text {
         bundle: Bundle? = nil,
         comment: StaticString? = nil
     ) {
-        self.localization = .key(value, bundle: bundle, tableName: tableName, explicitKey: key.description)
-        self.verbatimContent = String(describing: key)
+        self.init(
+            localization: .key(value, bundle: bundle, tableName: tableName, explicitKey: key.description), 
+            description: String(describing: key)
+        )
     }
     
     /// Creates Orbit ``Text`` component that displays a localized content identified by a key.
@@ -385,8 +393,10 @@ public extension Text {
         bundle: Bundle? = nil,
         comment: StaticString? = nil
     ) {
-        self.localization = .key(keyAndValue, bundle: bundle, tableName: tableName)
-        self.verbatimContent = keyAndValue.key ?? ""
+        self.init(
+            localization: .key(keyAndValue, bundle: bundle, tableName: tableName), 
+            description: keyAndValue.key ?? ""
+        )
     }
 }
 
@@ -400,8 +410,10 @@ public extension Text {
     @_disfavoredOverload
     @_semantics("swiftui.init_with_localization")
     init(_ resource: LocalizedStringResource) {
-        self.localization = .resource(resource)
-        self.verbatimContent = resource.key
+        self.init(
+            localization: .resource(resource), 
+            description: resource.key
+        )
     }
 }
 
@@ -420,8 +432,10 @@ public extension Text {
     ///
     /// - Parameter resource: A string to display without localization.
     init(verbatim content: String) {
-        self.localization = nil
-        self.verbatimContent = content
+        self.init(
+            localization: nil, 
+            description: content
+        )
     }
 }
 
@@ -479,10 +493,10 @@ enum TextLocalization {
 // MARK: - TextRepresentable
 extension Text: TextRepresentable {
 
-    public func swiftUIText(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
-        if isEmpty { return nil }
-
-        return text(textRepresentableEnvironment: textRepresentableEnvironment, isConcatenated: true)
+    public func text(environment: TextRepresentableEnvironment) -> SwiftUI.Text? {
+        isEmpty
+            ? nil
+            : text(environment: environment, showTextLinks: true)
     }
 }
 
