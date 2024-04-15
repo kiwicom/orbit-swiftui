@@ -28,6 +28,7 @@ public struct TagButtonStyle: ButtonStyle {
                 }
                 .iconColor(resolvedIconColor(isPressed: configuration.isPressed))
                 .iconSize(.small)
+                .accessibility(addTraits: .isButton)
             }
         }
         .textFontWeight(.medium)
