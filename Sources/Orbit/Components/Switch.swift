@@ -38,11 +38,11 @@ public struct Switch<Icon: View>: View {
         Rectangle()
             .frame(width: 50, height: 32)
             .foregroundColor(tint)
+            .opacity(isEnabled ? 1 : 0.3)
             .overlay(
                 knob,
                 alignment: isOn ? .trailing : .leading
             )
-            .opacity(isEnabled ? 1 : 0.3)
             .animation(.easeInOut(duration: 0.15), value: isOn)
             // FIXME: Replace with a SwitchButtonStyle
             .accessibility(addTraits: [.isButton])
@@ -72,6 +72,7 @@ public struct Switch<Icon: View>: View {
         icon
             .iconSize(.small)
             .iconColor(iconTint)
+            .opacity(isEnabled ? 1 : 0.3)
             .environment(\.sizeCategory, .large)
             .animation(.easeIn(duration: 0.15), value: isOn)
     }
