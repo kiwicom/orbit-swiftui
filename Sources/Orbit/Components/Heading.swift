@@ -107,6 +107,17 @@ public struct Heading: View, FormattedTextBuildable, PotentiallyEmptyView {
     public var isEmpty: Bool {
         content.isEmpty
     }
+    
+    private init(
+        text: Text,
+        style: Style
+    ) {
+        self.content = text
+        self.style = style
+
+        // Set default weight
+        self.fontWeight = style.weight
+    }
 }
 
 // MARK: - Inits
@@ -117,11 +128,7 @@ public extension Heading {
         _ content: some StringProtocol = String(""),
         style: Style
     ) {
-        self.content = Text(content)
-        self.style = style
-
-        // Set default weight
-        self.fontWeight = style.weight
+        self.init(text: Text(content), style: style)
     }
     
     /// Creates Orbit ``Heading`` component using localizable key.
@@ -133,11 +140,7 @@ public extension Heading {
         bundle: Bundle? = nil,
         comment: StaticString? = nil
     ) {
-        self.content = Text(keyAndValue, tableName: tableName, bundle: bundle)
-        self.style = style
-
-        // Set default weight
-        self.fontWeight = style.weight
+        self.init(text: Text(keyAndValue, tableName: tableName, bundle: bundle), style: style)
     }
 }
 
@@ -196,11 +199,10 @@ public extension Heading {
 // MARK: - TextRepresentable
 extension Heading: TextRepresentable {
 
-    public func swiftUIText(textRepresentableEnvironment: TextRepresentableEnvironment) -> SwiftUI.Text? {
-        if content.isEmpty { return nil }
-
-        return textContent
-            .text(textRepresentableEnvironment: textRepresentableEnvironment)
+    public func text(environment: TextRepresentableEnvironment) -> SwiftUI.Text? {
+        content.isEmpty
+            ? nil
+            : textContent.text(environment: environment)
     }
 }
 
