@@ -11,7 +11,7 @@ env:
 
 jobs:
   build:
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
     - uses: actions/checkout@v4
     - name: Build
@@ -34,7 +34,7 @@ jobs:
       matrix:
         device: ["iPhone SE (3rd generation)"]
         os_version: ["17.0"]
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
     - uses: actions/checkout@v4
     - name: Test
