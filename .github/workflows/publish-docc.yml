@@ -22,7 +22,7 @@ jobs:
           OTHER_DOCC_FLAGS="--transform-for-static-hosting --hosting-base-path orbit-swiftui --output-path docs" \
           | xcpretty
     - name: Deploy to Github Pages
-      uses: JamesIves/github-pages-deploy-action@v4.6.0
+      uses: JamesIves/github-pages-deploy-action@v4.6.1
       with:
         branch: docc
         folder: docs
