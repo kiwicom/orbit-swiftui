@@ -55,24 +55,42 @@ public extension Icon {
         case attachment
         /// Orbit `baggageCabin` icon symbol.
         case baggageCabin
+        /// Orbit `baggageCabinLight` icon symbol.
+        case baggageCabinLight
         /// Orbit `baggageCabinNone` icon symbol.
         case baggageCabinNone
+        /// Orbit `baggageCabinNoneLight` icon symbol.
+        case baggageCabinNoneLight
         /// Orbit `baggageChecked10` icon symbol.
         case baggageChecked10
+        /// Orbit `baggageChecked10Light` icon symbol.
+        case baggageChecked10Light
         /// Orbit `baggageChecked20` icon symbol.
         case baggageChecked20
+        /// Orbit `baggageChecked20Light` icon symbol.
+        case baggageChecked20Light
         /// Orbit `baggageChecked30` icon symbol.
         case baggageChecked30
+        /// Orbit `baggageChecked30Light` icon symbol.
+        case baggageChecked30Light
         /// Orbit `baggageCheckedNone` icon symbol.
         case baggageCheckedNone
+        /// Orbit `baggageCheckedNoneLight` icon symbol.
+        case baggageCheckedNoneLight
         /// Orbit `baggagePersonal` icon symbol.
         case baggagePersonal
+        /// Orbit `baggagePersonalLight` icon symbol.
+        case baggagePersonalLight
         /// Orbit `baggagePersonalNone` icon symbol.
         case baggagePersonalNone
+        /// Orbit `baggagePersonalNoneLight` icon symbol.
+        case baggagePersonalNoneLight
         /// Orbit `baggageRecheck` icon symbol.
         case baggageRecheck
         /// Orbit `baggageSet` icon symbol.
         case baggageSet
+        /// Orbit `baggageSetLight` icon symbol.
+        case baggageSetLight
         /// Orbit `baggageStorage` icon symbol.
         case baggageStorage
         /// Orbit `bank` icon symbol.
@@ -457,8 +475,16 @@ public extension Icon {
         case radar
         /// Orbit `radiusSearch` icon symbol.
         case radiusSearch
+        /// Orbit `rebookingLight` icon symbol.
+        case rebookingLight
+        /// Orbit `rebookingNoneLight` icon symbol.
+        case rebookingNoneLight
         /// Orbit `refund` icon symbol.
         case refund
+        /// Orbit `refundLight` icon symbol.
+        case refundLight
+        /// Orbit `refundNoneLight` icon symbol.
+        case refundNoneLight
         /// Orbit `relax` icon symbol.
         case relax
         /// Orbit `reload` icon symbol.
@@ -483,6 +509,8 @@ public extension Icon {
         case seatAisle
         /// Orbit `seatExtraLegroom` icon symbol.
         case seatExtraLegroom
+        /// Orbit `seatLight` icon symbol.
+        case seatLight
         /// Orbit `seatWindow` icon symbol.
         case seatWindow
         /// Orbit `security` icon symbol.
@@ -624,15 +652,24 @@ public extension Icon {
                 case .atm: return "\u{1364}"
                 case .attachment: return "\u{4440}"
                 case .baggageCabin: return "\u{1218}"
+                case .baggageCabinLight: return "\u{2521}"
                 case .baggageCabinNone: return "\u{5633}"
+                case .baggageCabinNoneLight: return "\u{3427}"
                 case .baggageChecked10: return "\u{9038}"
+                case .baggageChecked10Light: return "\u{9187}"
                 case .baggageChecked20: return "\u{5715}"
+                case .baggageChecked20Light: return "\u{5988}"
                 case .baggageChecked30: return "\u{9714}"
+                case .baggageChecked30Light: return "\u{4855}"
                 case .baggageCheckedNone: return "\u{2865}"
+                case .baggageCheckedNoneLight: return "\u{2193}"
                 case .baggagePersonal: return "\u{1585}"
+                case .baggagePersonalLight: return "\u{2461}"
                 case .baggagePersonalNone: return "\u{6407}"
+                case .baggagePersonalNoneLight: return "\u{5115}"
                 case .baggageRecheck: return "\u{7766}"
                 case .baggageSet: return "\u{8851}"
+                case .baggageSetLight: return "\u{3296}"
                 case .baggageStorage: return "\u{1472}"
                 case .bank: return "\u{6692}"
                 case .billingDetails: return "\u{5623}"
@@ -825,7 +862,11 @@ public extension Icon {
                 case .questionCircle: return "\u{3632}"
                 case .radar: return "\u{6913}"
                 case .radiusSearch: return "\u{9013}"
+                case .rebookingLight: return "\u{7002}"
+                case .rebookingNoneLight: return "\u{8997}"
                 case .refund: return "\u{2560}"
+                case .refundLight: return "\u{9565}"
+                case .refundNoneLight: return "\u{7572}"
                 case .relax: return "\u{9709}"
                 case .reload: return "\u{1300}"
                 case .remove: return "\u{1263}"
@@ -838,6 +879,7 @@ public extension Icon {
                 case .seat: return "\u{4321}"
                 case .seatAisle: return "\u{2999}"
                 case .seatExtraLegroom: return "\u{6396}"
+                case .seatLight: return "\u{4998}"
                 case .seatWindow: return "\u{9964}"
                 case .security: return "\u{8185}"
                 case .selfTransfer: return "\u{8546}"
