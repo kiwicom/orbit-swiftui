@@ -33,7 +33,6 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
     @Environment(\.isSnapshotTesting) private var isSnapshotTesting
 
     @Binding private var value: String
-    private var prompt: String
     private var isSecureTextEntry: Bool
     private var state: InputState
     private var leadingPadding: CGFloat
@@ -104,16 +103,6 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         uiView.updateIfNeeded(\.textColor, to: resolvedTextColor(in: context.environment))
         uiView.updateIfNeeded(\.isEnabled, to: isEnabled)
 
-        uiView.updateIfNeeded(
-            \.attributedPlaceholder,
-             to: .init(
-                string: prompt,
-                attributes: [
-                    .foregroundColor: resolvedPromptColor(in: context.environment)
-                ]
-             )
-        )
-
         // Check if the binding value is different to replace the text content
         if value != uiView.text {
             uiView.replace(withText: value)
@@ -168,14 +157,6 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
         return isEnabled ? (textColor ?? state.textColor).uiColor : .cloudDarkActive
     }
 
-    private func resolvedPromptColor(in environment: EnvironmentValues) -> UIColor {
-        if #available(iOS 14, *), environment.redactionReasons.isEmpty == false {
-            return .clear
-        }
-
-        return isEnabled ? state.placeholderColor.uiColor : .cloudDarkActive
-    }
-
     private var resolvedTextSize: CGFloat {
         (textSize ?? Text.Size.normal.value) * sizeCategory.ratio
     }
@@ -191,14 +172,12 @@ public extension TextField {
     /// Creates Orbit ``TextField`` wrapper over UITextField, used in ``InputField``.
     init(
         value: Binding<String>,
-        prompt: String = "",
         isSecureTextEntry: Bool = false,
         state: InputState = .default,
         leadingPadding: CGFloat = 0,
         trailingPadding: CGFloat = 0
     ) {
         self._value = value
-        self.prompt = prompt
         self.isSecureTextEntry = isSecureTextEntry
         self.state = state
         self.leadingPadding = leadingPadding
@@ -245,13 +224,13 @@ struct TextFieldPreviews: PreviewProvider {
         VStack(spacing: .medium) {
             Group {
                 StateWrapper("") { value in
-                    TextField(value: value, prompt: "Enter value", isSecureTextEntry: true)
+                    TextField(value: value, isSecureTextEntry: true)
                 }
                 StateWrapper("value") { value in
-                    TextField(value: value, prompt: "Enter value", isSecureTextEntry: true)
+                    TextField(value: value, isSecureTextEntry: true)
                 }
                 StateWrapper("value") { value in
-                    TextField(value: value, prompt: "Enter value", isSecureTextEntry: false)
+                    TextField(value: value, isSecureTextEntry: false)
                 }
             }
             .border(.black, width: .hairline)

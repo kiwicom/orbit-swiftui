@@ -46,6 +46,20 @@ public struct TextRepresentableEnvironment {
         self.textSize = textSize
         self.sizeCategory = sizeCategory
     }
+    
+    /// Creates ``TextRepresentableEnvironment`` with no formatting.
+    public init(locale: Locale, localizationBundle: Bundle) {
+        self.iconColor = nil
+        self.iconSize = nil
+        self.locale = locale
+        self.localizationBundle = localizationBundle
+        self.textAccentColor = nil
+        self.textColor = nil
+        self.textFontWeight = nil
+        self.textLineHeight = nil
+        self.textSize = nil
+        self.sizeCategory = .large
+    }
 
     func designatedLineHeight(_ lineHeight: CGFloat?, size: CGFloat?) -> CGFloat {
         (lineHeight ?? textLineHeight ?? (Text.Size.lineHeight(forTextSize: resolvedSize(size))))
@@ -239,5 +253,17 @@ struct TextConcatenationPreviews: PreviewProvider {
         }
         .textColor(.blueDark)
         .previewDisplayName()
+    }
+}
+
+extension View {
+    
+    /// Textual representation of view.
+    func text(locale: Locale, localizationBundle: Bundle) -> SwiftUI.Text? {
+        switch self {
+            case let text as SwiftUI.Text:          text
+            case let text as TextRepresentable:     text.text(environment: .init(locale: locale, localizationBundle: localizationBundle))
+            default:                                nil
+        }
     }
 }

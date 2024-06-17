@@ -22,13 +22,25 @@ struct StorybookListChoice {
             ListChoice(title, icon: .airplane, value: value, action: {})
             ListChoice(title, description: description, icon: .airplane, action: {})
             ListChoice(title, description: description, icon: .airplane, value: value, action: {})
-            ListChoice(title, description: description, action: {}) {
+            
+            ListChoice(action: {}) {
                 EmptyView()
+            } title: {
+                Heading(title, style: .title3)
+            } description: {
+                Text(description)
             } header: {
                 badge
             }
-            ListChoice(title, description: description, icon: .grid, action: {}) {
+            
+            ListChoice(action: {}) {
                 EmptyView()
+            } title: {
+                Heading(title, style: .title3)
+            } description: {
+                Text(description)
+            } icon: {
+                Icon(.airplane)
             } header: {
                 badge
             }
@@ -48,8 +60,14 @@ struct StorybookListChoice {
             ListChoice(title, description: description, icon: .airplane, disclosure: addButton, action: {})
             ListChoice(title, description: description, icon: .airplane, disclosure: removeButton, action: {})
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: addButton, action: {})
-            ListChoice(title, description: description, icon: .airplane, disclosure: removeButton, action: {}) {
+            ListChoice(disclosure: removeButton, action: {}) {
                 contentPlaceholder
+            } title: {
+                Heading(title, style: .title3)
+            } description: {
+                Text(description)
+            } icon: {
+                Icon(.airplane)
             } header: {
                 headerContent
             }
@@ -71,8 +89,14 @@ struct StorybookListChoice {
             ListChoice(title, description: description, icon: .airplane, disclosure: uncheckedCheckbox, action: {})
             ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox, action: {})
             ListChoice(title, description: description, icon: .airplane, value: value, disclosure: uncheckedCheckbox, action: {})
-            ListChoice(title, description: description, icon: .airplane, disclosure: checkedCheckbox, action: {}) {
+            ListChoice(disclosure: checkedCheckbox, action: {}) {
                 contentPlaceholder
+            } title: {
+                Heading(title, style: .title3)
+            } description: {
+                Text(description)
+            } icon: {
+                Icon(.airplane)
             } header: {
                 headerContent
             }
@@ -96,14 +120,22 @@ struct StorybookListChoice {
             ListChoice(title, icon: .airplane, disclosure: .none, action: {})
             ListChoice(title, icon: .airplane, disclosure: .none, action: {})
                 .iconColor(.blueNormal)
-            ListChoice(title, description: description, disclosure: .none) {
+            ListChoice(disclosure: .none) {
                 // No action
+            } title: {
+                Heading(title, style: .title3)
+            } description: {
+                Text(description)
             } icon: {
                 CountryFlag("us")
             }
             ListChoice(title, description: description, icon: .grid, value: value, disclosure: .none, action: {})
-            ListChoice(title, description: description, disclosure: .none, action: {}) {
+            ListChoice(disclosure: .none, action: {}) {
                 EmptyView()
+            } title: {
+                Heading(title, style: .title3)
+            } description: {
+                Text(description)
             } header: {
                 badge
             }
@@ -126,14 +158,14 @@ struct StorybookListChoice {
             ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false, state: .error), action: {})
             ListChoice(title, icon: .airplane, disclosure: .radio(isChecked: false), action: {})
                 .disabled(true)
-            ListChoice(
-                title,
-                description: description,
-                icon: .airplane,
-                disclosure: .radio(isChecked: false),
-                action: {}
-            ) {
+            ListChoice(disclosure: .radio(isChecked: false), action: {}) {
                 contentPlaceholder
+            } title: {
+                Heading(title, style: .title3)
+            } description: {
+                Text(description)
+            } icon: {
+                Icon(.airplane)
             } header: {
                 headerContent
             }

@@ -332,11 +332,7 @@ public struct HorizontalScroll<Content: View>: View {
             .zero
         )
     }
-}
-
-// MARK: - Inits
-public extension HorizontalScroll {
-
+    
     /// Creates Orbit ``HorizontalScroll`` component.
     ///
     /// - Parameters:
@@ -344,7 +340,7 @@ public extension HorizontalScroll {
     ///   - spacing: Spacing between items.
     ///   - itemWidth: Horizontal sizing of each item.
     ///   - content: Items that will be arranged horizontally based on above parameters.
-    init(
+    public init(
         isSnapping: Bool = true,
         spacing: CGFloat = .small,
         itemWidth: HorizontalScrollItemWidth = .ratio(),
