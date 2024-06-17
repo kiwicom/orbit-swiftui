@@ -1,18 +1,17 @@
 import SwiftUI
 
-/// Orbit support component that orovides label and message around input field.
+/// Orbit support component that provides label and message around the form field.
 public struct FieldWrapper<Label: View, Content: View, Footer: View>: View {
 
-    @Binding private var messageHeight: CGFloat
-
     private let message: Message?
-    @ViewBuilder private let content: Content
     @ViewBuilder private let label: Label
     @ViewBuilder private let footer: Footer
+    @ViewBuilder private let content: Content
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             label
+                .textFontWeight(.medium)
                 // Component should expose label as part of content
                 .accessibility(hidden: true)
                 .accessibility(removeTraits: .isStaticText)
@@ -20,55 +19,46 @@ public struct FieldWrapper<Label: View, Content: View, Footer: View>: View {
 
             content
 
-            ContentHeightReader(height: $messageHeight) {
-                VStack(alignment: .leading, spacing: 0) {
-                    footer
+            VStack(alignment: .leading, spacing: 0) {
+                footer
 
-                    FieldMessage(message)
-                        .padding(.top, .xxSmall)
-                }
+                FieldMessage(message)
+                    .padding(.top, .xxSmall)
             }
         }
     }
-}
-
-// MARK: - Inits
-public extension FieldWrapper {
-
+    
     /// Creates Orbit ``FieldWrapper`` around form field content with a custom label and an additional message content.
     ///
     /// ``FieldLabel`` is a default component for constructing custom label.
-    init(
+    public init(
         message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content,
         @ViewBuilder label: () -> Label,
         @ViewBuilder footer: () -> Footer = { EmptyView() }
     ) {
         self.message = message
-        self._messageHeight = messageHeight
         self.content = content()
         self.label = label()
         self.footer = footer()
     }
 }
 
-public extension FieldWrapper where Label == FieldLabel {
+// MARK: - Convenience Inits
+public extension FieldWrapper where Label == Text {
 
     /// Creates Orbit ``FieldWrapper`` around form field content with an additional message content.
     init(
         _ label: String,
         message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content,
         @ViewBuilder footer: () -> Footer = { EmptyView() }
     ) {
         self.init(
             message: message,
-            messageHeight: messageHeight,
             content: content,
             label: {
-                FieldLabel(label)
+                Text(label)
             },
             footer: footer
         )
@@ -91,7 +81,7 @@ struct FieldWrapperPreviews: PreviewProvider {
             FieldWrapper {
                 contentPlaceholder
             } label: {
-                FieldLabel("Form Field Label with <ref>accent</ref> and <applink1>TextLink</applink1>")
+                Text("Form Field Label with <ref>accent</ref> and <applink1>TextLink</applink1>")
                     .textLinkColor(.status(.info))
                     .textAccentColor(.orangeNormal)
             }
@@ -100,32 +90,29 @@ struct FieldWrapperPreviews: PreviewProvider {
                 contentPlaceholder
             }
 
-            StateWrapper((true, true, CGFloat(0), false)) { state in
+            StateWrapper((true, true, false)) { state in
                 VStack(alignment: .leading, spacing: .large) {
                     FieldWrapper(
                         state.0.wrappedValue ? "Form Field Label" : "",
-                        message: state.1.wrappedValue ? .error("Error message") : .none,
-                        messageHeight: state.2
+                        message: state.1.wrappedValue ? .error("Error message") : .none
                     ) {
                         contentPlaceholder
                     }
 
-                    Text("Message height: \(state.2.wrappedValue)")
-
                     HStack(spacing: .medium) {
                         Button("Toggle label") {
                             state.0.wrappedValue.toggle()
-                            state.3.wrappedValue.toggle()
+                            state.2.wrappedValue.toggle()
                         }
                         Button("Toggle message") {
                             state.1.wrappedValue.toggle()
-                            state.3.wrappedValue.toggle()
+                            state.2.wrappedValue.toggle()
                         }
                     }
                     
                     Spacer()
                 }
-                .animation(.easeOut(duration: 1), value: state.3.wrappedValue)
+                .animation(.easeOut(duration: 1), value: state.2.wrappedValue)
             }
             .previewDisplayName("Live preview")
         }

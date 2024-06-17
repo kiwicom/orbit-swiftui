@@ -4,6 +4,6 @@ import XCTest
 class ToastTests: SnapshotTestCase {
 
     func testToasts() {
-        assert(ToastPreviews.snapshot)
+        assert(ToastContentPreviews.snapshot)
     }
 }

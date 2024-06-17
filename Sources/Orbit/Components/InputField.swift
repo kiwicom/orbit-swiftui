@@ -47,28 +47,31 @@ import UIKit
 /// The component expands horizontally.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/inputfield/)
-public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
+public struct InputField<Label: View, Prompt: View, Prefix: View, Suffix: View>: View, TextFieldBuildable {
 
+    @Environment(\.iconColor) private var iconColor
     @Environment(\.inputFieldBeginEditingAction) private var inputFieldBeginEditingAction
     @Environment(\.inputFieldEndEditingAction) private var inputFieldEndEditingAction
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.locale) private var locale
     @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.textColor) private var textColor
 
     @State private var isFocused: Bool = false
     @State private var isSecureTextRedacted: Bool = true
 
-    private let label: String
     @Binding private var value: String
-    private let prompt: String
+
     private let state: InputState
     private let labelStyle: InputLabelStyle
+    @ViewBuilder private let label: Label
+    @ViewBuilder private let prompt: Prompt
     @ViewBuilder private var prefix: Prefix
     @ViewBuilder private var suffix: Suffix
 
     private let isSecure: Bool
     private let passwordStrength: PasswordStrengthIndicator.PasswordStrength?
     private let message: Message?
-    @Binding private var messageHeight: CGFloat
 
     // Builder properties (keyboard related)
     var autocapitalizationType: UITextAutocapitalizationType = .none
@@ -79,11 +82,14 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
     var shouldDeleteBackwardAction: (String) -> Bool = { _ in true }
 
     public var body: some View {
-        FieldWrapper(defaultLabel, message: message, messageHeight: $messageHeight) {
-            InputContent(state: state, label: compactLabel, message: message, isFocused: isFocused) {
+        FieldWrapper(message: message) {
+            InputContent(state: state, message: message, isFocused: isFocused) {
                 textField
+            } label: {
+                compactLabel
             } prefix: {
                 prefix
+                    .iconColor(prefixIconColor)
                     .accessibility(.inputFieldPrefix)
                     .accessibility(hidden: true)
             } suffix: {
@@ -96,22 +102,25 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
                     }
                 }
             }
+        } label: {
+            defaultLabel
         } footer: {
             if let passwordStrength {
                 PasswordStrengthIndicator(passwordStrength: passwordStrength)
                     .padding(.top, .xxSmall)
             }
         }
+        .accessibility(.inputField)
     }
 
     @ViewBuilder private var textField: some View {
         TextField(
             value: $value,
-            prompt: prompt,
             isSecureTextEntry: isSecure && isSecureTextRedacted,
             state: state,
             leadingPadding: .small,
-            trailingPadding: .small
+            trailingPadding: .small,
+            keyboardSpacing: keyboardSpacing
         )
         .returnKeyType(returnKeyType)
         .autocorrectionDisabled(isAutocorrectionDisabled)
@@ -119,7 +128,6 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
         .textContentType(textContentType)
         .autocapitalization(autocapitalizationType)
         .shouldDeleteBackwardAction(shouldDeleteBackwardAction)
-        .accessibility(label: .init(label))
         .inputFieldBeginEditingAction {
             isFocused = true
             inputFieldBeginEditingAction()
@@ -127,6 +135,19 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
         .inputFieldEndEditingAction {
             isFocused = false
             inputFieldEndEditingAction()
+        }
+        // Reverts the additional keyboard spacing used for native keyboard avoidance
+        .padding(.bottom, -keyboardSpacing)
+        .overlay(
+            resolvedPrompt, 
+            alignment: .leadingFirstTextBaseline
+        )
+        .accessibility {
+            label
+        } value: {
+            Text(value)
+        } hint: {
+            Text(message?.description ?? "")
         }
     }
 
@@ -137,111 +158,157 @@ public struct InputField<Prefix: View, Suffix: View>: View, TextFieldBuildable {
             }
         }
     }
+    
+    private var keyboardSpacing: CGFloat {
+        .medium
+    }
 
-    private var defaultLabel: String {
+    @ViewBuilder private var defaultLabel: some View {
         switch labelStyle {
-            case .default:          return label
-            case .compact:          return ""
+            case .default:          label
+            case .compact:          EmptyView()
         }
     }
 
-    private var compactLabel: String {
+    @ViewBuilder private var compactLabel: some View {
         switch labelStyle {
-            case .default:          return ""
-            case .compact:          return label
+            case .default:          EmptyView()
+            case .compact:          label
         }
+    }
+    
+    @ViewBuilder private var resolvedPrompt: some View {
+        if value.isEmpty {
+            prompt
+                .textColor(isEnabled ? state.placeholderColor : .cloudDarkActive)
+                .lineLimit(1)
+                .padding(.horizontal, .small)
+                .allowsHitTesting(false)
+        }
+    }
+    
+    private var prefixIconColor: Color? {
+        isEnabled
+            ? iconColor ?? textColor ?? (labelStyle == .default ? .inkDark : .inkNormal)
+            : .cloudDarkActive
     }
 
     private var showSecureTextRedactedButton: Bool {
         isSecure && value.description.isEmpty == false && isEnabled
     }
-}
-
-public extension InputField {
-
-    /// Creates Orbit ``InputField`` component.
+    
+    /// Creates Orbit ``InputField`` component with custom content.
     ///
     /// - Parameters:
     ///   - message: Optional message below the text field.
-    ///   - messageHeight: Binding to the current height of the optional message.
-    init(
-        _ label: String = "",
+    public init(
         value: Binding<String>,
-        prefix: Icon.Symbol? = nil,
-        suffix: Icon.Symbol? = nil,
-        prompt: String = "",
         state: InputState = .default,
         labelStyle: InputLabelStyle = .default,
         isSecure: Bool = false,
         passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
         message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0)
-    ) where Prefix == Icon, Suffix == Icon {
-        self.init(
-            label,
-            value: value,
-            prompt: prompt,
-            state: state,
-            labelStyle: labelStyle,
-            isSecure: isSecure,
-            passwordStrength: passwordStrength,
-            message: message,
-            messageHeight: messageHeight
-        ) {
-            Icon(prefix)
-        } suffix: {
-            Icon(suffix)
-        }
-    }
-
-    /// Creates Orbit ``InputField`` component with custom prefix or suffix.
-    ///
-    /// - Parameters:
-    ///   - message: Optional message below the text field.
-    ///   - messageHeight: Binding to the current height of the optional message.
-    init(
-        _ label: String = "",
-        value: Binding<String>,
-        prompt: String = "",
-        state: InputState = .default,
-        labelStyle: InputLabelStyle = .default,
-        isSecure: Bool = false,
-        passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
-        message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
-        @ViewBuilder prefix: () -> Prefix,
+        @ViewBuilder label: () -> Label,
+        @ViewBuilder prompt: () -> Prompt = { EmptyView() },
+        @ViewBuilder prefix: () -> Prefix = { EmptyView() },
         @ViewBuilder suffix: () -> Suffix = { EmptyView() }
     ) {
-        self.label = label
         self._value = value
-        self.prompt = prompt
         self.state = state
         self.labelStyle = labelStyle
         self.isSecure = isSecure
         self.passwordStrength = passwordStrength
         self.message = message
-        self._messageHeight = messageHeight
+        self.label = label()
+        self.prompt = prompt()
         self.prefix = prefix()
         self.suffix = suffix()
     }
 }
 
+// MARK: - Convenience Inits
+public extension InputField where Label == Text, Prompt == Text, Prefix == Icon, Suffix == Icon {
+    
+    /// Creates Orbit ``InputField`` component.
+    ///
+    /// - Parameters:
+    ///   - message: Optional message below the text field.
+    @_disfavoredOverload
+    init(
+        _ label: some StringProtocol = String(""),
+        value: Binding<String>,
+        prompt: some StringProtocol = String(""),
+        prefix: Icon.Symbol? = nil,
+        suffix: Icon.Symbol? = nil,
+        state: InputState = .default,
+        labelStyle: InputLabelStyle = .default,
+        isSecure: Bool = false,
+        passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
+        message: Message? = nil
+    ) {
+        self.init(
+            value: value,
+            state: state,
+            labelStyle: labelStyle,
+            isSecure: isSecure,
+            passwordStrength: passwordStrength,
+            message: message
+        ) {
+            Text(label)
+        } prompt: {
+            Text(prompt)
+        } prefix: {
+            Icon(prefix)
+        } suffix: {
+            Icon(suffix)
+        }
+    }
+    
+    /// Creates Orbit ``InputField`` component with localizable texts.
+    ///
+    /// - Parameters:
+    ///   - message: Optional message below the text field.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ label: LocalizedStringKey = "",
+        value: Binding<String>,
+        prompt: LocalizedStringKey = "",
+        prefix: Icon.Symbol? = nil,
+        suffix: Icon.Symbol? = nil,
+        state: InputState = .default,
+        labelStyle: InputLabelStyle = .default,
+        isSecure: Bool = false,
+        passwordStrength: PasswordStrengthIndicator.PasswordStrength? = nil,
+        message: Message? = nil,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        labelComment: StaticString? = nil
+    ) {
+        self.init(
+            value: value,
+            state: state,
+            labelStyle: labelStyle,
+            isSecure: isSecure,
+            passwordStrength: passwordStrength,
+            message: message
+        ) {
+            Text(label, tableName: tableName, bundle: bundle)
+        } prompt: {
+            Text(prompt, tableName: tableName, bundle: bundle)
+        } prefix: {
+            Icon(prefix)
+        } suffix: {
+            Icon(suffix)
+        }
+    }
+}
+
 // MARK: - Identifiers
 public extension AccessibilityID {
-
+    static let inputField                   = Self(rawValue: "orbit.inputfield")
     static let inputFieldPrefix             = Self(rawValue: "orbit.inputfield.prefix")
     static let inputFieldSuffix             = Self(rawValue: "orbit.inputfield.suffix")
     static let inputFieldPasswordToggle     = Self(rawValue: "orbit.inputfield.password.toggle")
-}
-
-// MARK: - Private
-private extension InputField {
-
-    func set<V>(_ keypath: WritableKeyPath<Self, V>, to value: V) -> Self {
-        var copy = self
-        copy[keyPath: keypath] = value
-        return copy
-    }
 }
 
 // MARK: - Previews
@@ -279,19 +346,19 @@ struct InputFieldPreviews: PreviewProvider {
                 InputField(label, value: state, prompt: prompt, state: .default)
             }
             StateWrapper(value) { state in
-                InputField(label, value: state, prefix: .grid, suffix: .grid, prompt: prompt, state: .default)
+                InputField(label, value: state, prompt: prompt, prefix: .grid, suffix: .grid, state: .default)
             }
             StateWrapper("") { state in
-                InputField(label, value: state, prefix: .grid, suffix: .grid, prompt: prompt, state: .default)
+                InputField(label, value: state, prompt: prompt, prefix: .grid, suffix: .grid, state: .default)
             }
             StateWrapper(value) { state in
-                InputField("Secure", value: state, prefix: .grid, prompt: prompt, state: .default, isSecure: true)
+                InputField("Secure", value: state, prompt: prompt, prefix: .grid, state: .default, isSecure: true)
             }
             StateWrapper(value) { state in
-                InputField("Compact", value: state, prefix: .grid, prompt: prompt, state: .default, labelStyle: .compact)
+                InputField("Compact", value: state, prompt: prompt, prefix: .grid, state: .default, labelStyle: .compact)
             }
             StateWrapper("") { state in
-                InputField("Compact", value: state, prefix: .grid, prompt: prompt, state: .default, labelStyle: .compact)
+                InputField("Compact", value: state, prompt: prompt, prefix: .grid, state: .default, labelStyle: .compact)
             }
             StateWrapper("") { state in
                 InputField("Compact", value: state, prompt: prompt, state: .default, labelStyle: .compact)
@@ -310,13 +377,13 @@ struct InputFieldPreviews: PreviewProvider {
                 InputField(label, value: state, prompt: prompt, state: .default)
             }
             StateWrapper(value) { state in
-                InputField(label, value: state, prefix: .grid, suffix: .grid, prompt: prompt, state: .default)
+                InputField(label, value: state, prompt: prompt, prefix: .grid, suffix: .grid, state: .default)
             }
             StateWrapper("") { state in
-                InputField("Inline", value: state, prefix: .grid, suffix: .grid, prompt: prompt, state: .default, labelStyle: .compact)
+                InputField("Inline", value: state, prompt: prompt, prefix: .grid, suffix: .grid, state: .default, labelStyle: .compact)
             }
             StateWrapper(value) { state in
-                InputField("Inline", value: state, prefix: .grid, prompt: prompt, state: .default, labelStyle: .compact)
+                InputField("Inline", value: state, prompt: prompt, prefix: .grid, state: .default, labelStyle: .compact)
             }
         }
         .frame(width: 100)
@@ -351,7 +418,7 @@ struct InputFieldPreviews: PreviewProvider {
     static var sizing: some View {
         VStack(alignment: .leading, spacing: .small) {
             Group {
-                inputField("", value: "", message: .none)
+                inputField("test", value: "", message: .none)
                 inputField("", value: "", prefix: nil, suffix: nil)
                 inputField("", value: "Value", prefix: nil, suffix: nil)
                 inputField("", value: "", suffix: nil, prompt: "")
@@ -386,7 +453,9 @@ struct InputFieldPreviews: PreviewProvider {
             inputField("Empty", value: "", prefix: .grid, suffix: .grid)
                 .iconColor(.blueDark)
             StateWrapper(value) { value in
-                InputField("Disabled, Empty", value: value) {
+                InputField(value: value) {
+                    Text("Disabled, Empty")
+                } prefix: {
                     CountryFlag("us")
                 } suffix: {
                     CountryFlag("cz")
@@ -398,7 +467,7 @@ struct InputFieldPreviews: PreviewProvider {
             inputField("Modified from previous state", value: "Modified value", state: .modified)
             inputField("Focused", value: "Focused / Help", message: .help("Help message"))
             inputField(
-                FieldLabelPreviews.longLabel,
+                label,
                 value: longValue,
                 message: .error(longErrorMessage)
             )
@@ -411,7 +480,9 @@ struct InputFieldPreviews: PreviewProvider {
                 inputField(value: "No label")
 
                 StateWrapper(value) { value in
-                    InputField("Flag prefix", value: value) {
+                    InputField(value: value) {
+                        Text("Flag prefix")
+                    } prefix: {
                         CountryFlag("us")
                     } suffix: {
                         EmptyView()
@@ -439,9 +510,9 @@ struct InputFieldPreviews: PreviewProvider {
             InputField(
                 label,
                 value: value,
+                prompt: prompt,
                 prefix: prefix,
                 suffix: suffix,
-                prompt: prompt,
                 state: state,
                 labelStyle: labelStyle,
                 isSecure: isSecure,
@@ -470,8 +541,10 @@ struct InputFieldLivePreviews: PreviewProvider {
         var body: some View {
             ScrollView {
                 VStack(alignment: .leading, spacing: .medium) {
-                    InputField("InputField", value: $textValue, prompt: "Placeholder", message: message) {
-                        EmptyView()
+                    InputField(value: $textValue, message: message) {
+                        Text("InputField")
+                    } prompt: {
+                        Text("Placeholder")
                     } suffix: {
                         Icon(.email)
                             .onTapGesture {

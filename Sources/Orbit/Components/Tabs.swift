@@ -201,6 +201,7 @@ public struct Tabs<Selection: Hashable, Content: View>: View {
         idealSize.horizontal == true
     }
 
+    /// Creates Orbit ``Tabs`` component.
     public init(selection: Binding<Selection>, @ViewBuilder content: () -> Content) {
         self._selection = selection
         self.content = content()
