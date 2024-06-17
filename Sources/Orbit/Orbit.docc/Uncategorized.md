@@ -68,3 +68,5 @@ Supporting types and components under development.
 - ``IDPreferenceKey``
 - ``IDPreference``
 - ``HorizontalScrollViewProxy``
+- ``OptionalBinding``
+- ``OptionalBindingSource``

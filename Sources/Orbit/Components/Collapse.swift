@@ -15,12 +15,12 @@ public struct Collapse<Header: View, Content: View>: View {
 
     private let headerVerticalPadding: CGFloat
     private let showSeparator: Bool
-    private let isExpanded: Binding<Bool>?
+    private let isExpanded: OptionalBindingSource<Bool>
     @ViewBuilder private let content: Content
     @ViewBuilder private let header: Header
 
     public var body: some View {
-        BindingSource(isExpanded, fallbackInitialValue: false) { $isExpanded in
+        OptionalBinding(isExpanded) { $isExpanded in
             VStack(alignment: .leading, spacing: 0) {
                 SwiftUI.Button {
                     withAnimation(.easeInOut(duration: 0.2)) {
@@ -71,7 +71,7 @@ public extension Collapse {
         self.headerVerticalPadding = 0
         self.content = content()
         self.showSeparator = showSeparator
-        self.isExpanded = isExpanded
+        self.isExpanded = .binding(isExpanded)
     }
 
     /// Creates Orbit ``Collapse`` component.
@@ -80,7 +80,7 @@ public extension Collapse {
         self.headerVerticalPadding = 0
         self.content = content()
         self.showSeparator = showSeparator
-        self.isExpanded = nil
+        self.isExpanded = .state(false)
     }
 }
 
@@ -92,7 +92,7 @@ public extension Collapse where Header == Text {
         self.headerVerticalPadding = .small
         self.content = content()
         self.showSeparator = showSeparator
-        self.isExpanded = isExpanded
+        self.isExpanded = .binding(isExpanded)
     }
 
     /// Creates Orbit ``Collapse`` component.
@@ -101,7 +101,7 @@ public extension Collapse where Header == Text {
         self.headerVerticalPadding = .small
         self.content = content()
         self.showSeparator = showSeparator
-        self.isExpanded = nil
+        self.isExpanded = .state(false)
     }
 }
 
@@ -143,6 +143,9 @@ struct CollapsePreviews: PreviewProvider {
                 } header: {
                     headerPlaceholder
                 }
+            }
+            Collapse("Toggle with internal state") {
+                contentPlaceholder
             }
         }
         .padding(.medium)
