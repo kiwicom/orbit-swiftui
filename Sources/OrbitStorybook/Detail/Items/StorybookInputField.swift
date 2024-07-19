@@ -58,7 +58,9 @@ struct StorybookInputField {
                 .iconColor(.blueDark)
 
             StateWrapper("") { value in
-                InputField("Disabled, Empty", value: value) {
+                InputField(value: value) {
+                    Text("Disabled, Empty")
+                } prefix: {
                     CountryFlag("cz")
                 } suffix: {
                     CountryFlag("us")
@@ -66,7 +68,9 @@ struct StorybookInputField {
                 .disabled(true)
             }
 
-            InputField("Disabled", value: .constant("Disabled Value")) {
+            InputField(value: .constant("Disabled Value")) {
+                Text("Disabled")
+            } prefix: {
                 Icon("info.circle.fill")
             } suffix: {
                 Icon("info.circle.fill")
@@ -114,9 +118,9 @@ struct StorybookInputField {
             InputField(
                 label,
                 value: value,
+                prompt: prompt, 
                 prefix: prefix,
                 suffix: suffix,
-                prompt: prompt,
                 state: state,
                 labelStyle: style,
                 isSecure: isSecure,

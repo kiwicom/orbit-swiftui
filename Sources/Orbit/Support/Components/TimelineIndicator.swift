@@ -17,7 +17,7 @@ struct TimelineIndicator: View {
                 width: TimelineIndicator.indicatorDiameter * sizeCategory.ratio,
                 height: TimelineIndicator.indicatorDiameter * sizeCategory.ratio
             )
-            .alignmentGuide(.firstTextBaseline) { $0.height * 0.68 }
+            .alignmentGuide(.firstTextBaseline) { $0.height * 0.7 }
             .onAppear { animationLoopTrigger = !isReduceMotionEnabled }
     }
 

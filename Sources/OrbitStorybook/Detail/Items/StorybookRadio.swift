@@ -32,9 +32,9 @@ struct StorybookRadio {
         }
     }
 
-    static func radio(standalone: Bool, state: Radio.State = .normal, checked: Bool) -> some View {
+    static func radio(standalone: Bool, state: RadioState = .normal, checked: Bool) -> some View {
         StateWrapper(checked) { isChecked in
-            Radio(standalone ? "" : label, description: standalone ? "" : description, state: state, isChecked: isChecked)
+            Radio(standalone ? "" : label, description: standalone ? "" : description, isChecked: isChecked, state: state)
         }
     }
 }

@@ -43,14 +43,14 @@ import SwiftUI
 /// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/buttonlink/)
-public struct ButtonLink<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmptyView {
+public struct ButtonLink<LeadingIcon: View, Label: View, TrailingIcon: View>: View, PotentiallyEmptyView {
 
     @Environment(\.suppressButtonStyle) private var suppressButtonStyle
 
-    private let label: String
     private let type: ButtonLinkType
     private let action: () -> Void
     @ViewBuilder private let leadingIcon: LeadingIcon
+    @ViewBuilder private let label: Label
     @ViewBuilder private let trailingIcon: TrailingIcon
 
     public var body: some View {
@@ -71,51 +71,77 @@ public struct ButtonLink<LeadingIcon: View, TrailingIcon: View>: View, Potential
     }
 
     @ViewBuilder private var button: some View {
-        SwiftUI.Button() {
+        SwiftUI.Button {
             action()
         } label: {
-            Text(label)
+            label
         }
     }
 
     var isEmpty: Bool {
         label.isEmpty && leadingIcon.isEmpty && trailingIcon.isEmpty
     }
+    
+    /// Creates Orbit ``ButtonLink`` component with custom content.
+    public init(
+        type: ButtonLinkType = .primary,
+        action: @escaping () -> Void,
+        @ViewBuilder label: () -> Label,
+        @ViewBuilder icon: () -> LeadingIcon = { EmptyView() },
+        @ViewBuilder disclosureIcon: () -> TrailingIcon = { EmptyView() }
+    ) {
+        self.type = type
+        self.action = action
+        self.label = label()
+        self.leadingIcon = icon()
+        self.trailingIcon = disclosureIcon()
+    }
 }
 
-// MARK: - Inits
-public extension ButtonLink {
+// MARK: - Convenience Inits
+public extension ButtonLink where Label == Text, LeadingIcon == Orbit.Icon, TrailingIcon == Orbit.Icon {
 
     /// Creates Orbit ``ButtonLink`` component.
+    @_disfavoredOverload
     init(
-        _ label: String = "",
-        type: ButtonLinkType = .primary,
+        _ label: some StringProtocol = String(""),
         icon: Icon.Symbol? = nil,
         disclosureIcon: Icon.Symbol? = nil,
+        type: ButtonLinkType = .primary,
         action: @escaping () -> Void
-    ) where LeadingIcon == Orbit.Icon, TrailingIcon == Orbit.Icon  {
-        self.init(label, type: type) {
+    ) {
+        self.init(type: type) {
             action()
+        } label: {
+            Text(label)
         } icon: {
             Icon(icon)
         } disclosureIcon: {
             Icon(disclosureIcon)
         }
     }
-
-    /// Creates Orbit ``ButtonLink`` component with custom icons.
+    
+    /// Creates Orbit ``ButtonLink`` component with localizable label.
+    @_semantics("swiftui.init_with_localization")
     init(
-        _ label: String = "",
+        _ label: LocalizedStringKey,
         type: ButtonLinkType = .primary,
-        action: @escaping () -> Void,
-        @ViewBuilder icon: () -> LeadingIcon,
-        @ViewBuilder disclosureIcon: () -> TrailingIcon = { EmptyView() }
+        icon: Icon.Symbol? = nil,
+        disclosureIcon: Icon.Symbol? = nil,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil,
+        action: @escaping () -> Void
     ) {
-        self.label = label
-        self.type = type
-        self.action = action
-        self.leadingIcon = icon()
-        self.trailingIcon = disclosureIcon()
+        self.init(type: type) {
+            action()
+        } label: {
+            Text(label, tableName: tableName, bundle: bundle)
+        } icon: {
+            Icon(icon)
+        } disclosureIcon: {
+            Icon(disclosureIcon)
+        }
     }
 }
 
@@ -144,14 +170,29 @@ struct ButtonLinkPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
             ButtonLink("ButtonLink", icon: .grid, action: {})
                 .buttonSize(.regular)
-            ButtonLink("ButtonLink", type: .critical, action: {})
+            ButtonLink("ButtonLink", type: .critical, icon: .grid, disclosureIcon: .grid, action: {})
                 .buttonSize(.regular)
             ButtonLink("ButtonLink", action: {})
-            ButtonLink("", action: {}) // EmptyView
-            ButtonLink(action: {})   // EmptyView
+            
+            // EmptyView
+            Group {
+                ButtonLink(action: {})
+                ButtonLink("", action: {})
+                
+                ButtonLink {
+                    // No action
+                } label: {
+                    Text("")
+                } icon: {
+                    Icon(nil)
+                } disclosureIcon: {
+                    Icon(nil)
+                }
+            }
+            .border(.redNormal)
         }
         .buttonSize(.compact)
         .padding(.medium)

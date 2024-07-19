@@ -45,11 +45,10 @@ import SwiftUI
 /// The component expands in both axis and is meant to be used as a fullscreen modal overlay.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/overlay/dialog/)
-public struct Dialog<Content: View, Buttons: View, Illustration: View>: View {
+public struct Dialog<Title: View, Description: View, Buttons: View, Illustration: View>: View {
 
-    private let title: String
-    private let description: String
-    @ViewBuilder private let content: Content
+    @ViewBuilder private let title: Title
+    @ViewBuilder private let description: Description
     @ViewBuilder private let buttons: Buttons
     @ViewBuilder private let illustration: Illustration
 
@@ -59,10 +58,6 @@ public struct Dialog<Content: View, Buttons: View, Illustration: View>: View {
                 .padding(.top, .xSmall)
 
             texts
-
-            if content.isEmpty == false {
-                content
-            }
 
             if buttons.isEmpty == false {
                 VStack(spacing: .xSmall) {
@@ -79,15 +74,16 @@ public struct Dialog<Content: View, Buttons: View, Illustration: View>: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.overlay.edgesIgnoringSafeArea(.all))
         .accessibilityElement(children: .contain)
+        .accessibility(.dialog)
     }
 
     @ViewBuilder private var texts: some View {
         if title.isEmpty == false || description.isEmpty == false {
             VStack(alignment: .leading, spacing: .xSmall) {
-                Heading(title, style: .title4)
+                title
                     .accessibility(.dialogTitle)
 
-                Text(description)
+                description
                     .textColor(.inkNormal)
                     .accessibility(.dialogDescription)
             }
@@ -97,23 +93,56 @@ public struct Dialog<Content: View, Buttons: View, Illustration: View>: View {
     private var shape: some InsettableShape {
         RoundedRectangle(cornerRadius: .small)
     }
+    
+    /// Creates Orbit ``Dialog`` component with custom content.
+    public init(
+        @ButtonStackBuilder buttons: () -> Buttons,
+        @ViewBuilder title: () -> Title,
+        @ViewBuilder description: () -> Description = { EmptyView() },
+        @ViewBuilder illustration: () -> Illustration = { EmptyView() }
+    ) {
+        self.title = title()
+        self.description = description()
+        self.buttons = buttons()
+        self.illustration = illustration()
+    }
 }
 
-// MARK: - Inits
-extension Dialog {
+// MARK: - Convenience Inits
+public extension Dialog where Title == Heading, Description == Text {
 
     /// Creates Orbit ``Dialog`` component.
-    public init(
-        _ title: String = "",
-        description: String = "",
-        @ViewBuilder content: () -> Content = { EmptyView() },
+    @_disfavoredOverload
+    init(
+        _ title: some StringProtocol = String(""),
+        description: some StringProtocol = String(""),
         @ButtonStackBuilder buttons: () -> Buttons,
         @ViewBuilder illustration: () -> Illustration = { EmptyView() }
     ) {
-        self.init(title: title, description: description) {
-            content()
-        } buttons: {
-            buttons()
+        self.init(buttons: buttons) {
+            Heading(title, style: .title4)
+        } description: {
+            Text(description)
+        } illustration: {
+            illustration()
+        }
+    }
+    
+    /// Creates Orbit ``Dialog`` component with localizable texts.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ title: LocalizedStringKey = "",
+        description: LocalizedStringKey = "",
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        titleComment: StaticString? = nil,
+        @ButtonStackBuilder buttons: () -> Buttons,
+        @ViewBuilder illustration: () -> Illustration = { EmptyView() }
+    ) {
+        self.init(buttons: buttons) {
+            Heading(title, style: .title4, tableName: tableName, bundle: bundle)
+        } description: {
+            Text(description, tableName: tableName, bundle: bundle)
         } illustration: {
             illustration()
         }
@@ -122,6 +151,7 @@ extension Dialog {
 
 // MARK: - Identifiers
 public extension AccessibilityID {
+    static let dialog                   = Self(rawValue: "orbit.dialog")
     static let dialogTitle              = Self(rawValue: "orbit.dialog.title")
     static let dialogDescription        = Self(rawValue: "orbit.dialog.description")
 }
@@ -152,12 +182,17 @@ struct DialogPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Dialog(title1, description: description1) {
-            contentPlaceholder
-        } buttons: {
+        Dialog {
             Button("Main CTA") {}
             Button("Secondary") {}
             Button("Tertiary") {}
+        } title: {
+            Heading(title1, style: .title4)
+        } description: {
+            VStack(alignment: .leading, spacing: .medium) {
+                Text(description1)
+                contentPlaceholder
+            }
         } illustration: {
             illustrationPlaceholder
         }
