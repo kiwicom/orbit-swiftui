@@ -48,7 +48,7 @@ public struct HorizontalScroll<Content: View>: View {
     @State private var idPreferences: [IDPreference] = []
     @State private var itemCount = 0
     @State private var scrollViewWidth: CGFloat = 0
-
+    @State private var scrolledItemID: AnyHashable?
     @State private var scrollOffset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
     @State private var lastOffsetDifference: CGFloat?
@@ -73,6 +73,7 @@ public struct HorizontalScroll<Content: View>: View {
             .onPreferenceChange(ScrollViewWidthPreferenceKey.self) {
                 scrollViewWidth = $0
             }
+            .preference(key: HorizontalScrollScrolledItemIDKey.self, value: scrolledItemID)
             .clipped()
             .padding(-clippingPadding)
     }
@@ -190,16 +191,26 @@ public struct HorizontalScroll<Content: View>: View {
                 return width
         }
     }
+    
+    private func scrollOffsetForItem(index: Int, geometry: GeometryProxy) -> CGFloat {
+        let itemToScrollTo = idPreferences[index]
+        let minX = geometry[itemToScrollTo.bounds].minX
+        let paddingOffset = index < itemCount - 2 ? screenLayoutHorizontalPadding : 0
+        return offsetInBounds(offset: -minX + scrollOffset) + paddingOffset
+    }
+    
+    private func itemIndexForScrollOffset(scrollOffset: CGFloat) -> AnyHashable? {
+        let offset = offsetInBounds(offset: scrollOffset) - screenLayoutHorizontalPadding
+        let index = -Int((offset / (resolvedItemWidth + spacing)).rounded())
+        return idPreferences.indices.contains(index) ? idPreferences[index].id : index
+    }
 
     private func scrollTo(id: AnyHashable, geometry: GeometryProxy, animated: Bool) {
         guard let preferenceIndex = idPreferences.firstIndex(where: { $0.id == id }) else {
             return
         }
 
-        let itemToScrollTo = idPreferences[preferenceIndex]
-        let minX = geometry[itemToScrollTo.bounds].minX
-        let paddingOffset = preferenceIndex < itemCount - 2 ? screenLayoutHorizontalPadding : 0
-        let offset = offsetInBounds(offset: -minX + scrollOffset) + paddingOffset
+        let offset = scrollOffsetForItem(index: preferenceIndex, geometry: geometry)
 
         if animated {
             withAnimation(.easeOut(duration: programaticSnapAnimationDuration)) {
@@ -272,6 +283,9 @@ public struct HorizontalScroll<Content: View>: View {
         guard isContentBiggerThanScrollView else { return }
 
         let modifiedOffset = offsetToSnap(gesture: gesture)
+        
+        scrolledItemID = itemIndexForScrollOffset(scrollOffset: modifiedOffset)
+        
         let offsetDifference = modifiedOffset - gesture.translation.width - lastOffset
         lastOffsetDifference = offsetDifference
 
@@ -379,6 +393,11 @@ private struct ContentSizePreferenceKey: PreferenceKey {
     static func reduce(value _: inout CGSize, nextValue _: () -> CGSize) { /* Take first value */ }
 }
 
+struct HorizontalScrollScrolledItemIDKey: PreferenceKey {
+    static var defaultValue: AnyHashable?
+    static func reduce(value _: inout AnyHashable?, nextValue _: () -> AnyHashable?) { /* Take first value */ }
+}
+
 struct HorizontalScrollOffsetPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat?
 
@@ -406,6 +425,7 @@ struct HorizontalScrollPreviews: PreviewProvider {
             ratio
             fixed
             fitting
+            fullWidth
             insideCards
         }
         .screenLayout()
@@ -459,6 +479,23 @@ struct HorizontalScrollPreviews: PreviewProvider {
 
             HorizontalScroll(isSnapping: false, spacing: .medium, itemWidth: .fixed(180)) {
                 tile
+            }
+        }
+        .previewDisplayName()
+    }
+    
+    static var fullWidth: some View {
+        VStack(alignment: .leading, spacing: .medium) {
+            Heading("Snapping", style: .title4)
+
+            HorizontalScroll(isSnapping: true, itemWidth: .ratio(0.9)) {
+                tileVariants
+            }
+
+            Heading("No snapping", style: .title4)
+
+            HorizontalScroll(isSnapping: false, itemWidth: .ratio(1)) {
+                tileVariants
             }
         }
         .previewDisplayName()

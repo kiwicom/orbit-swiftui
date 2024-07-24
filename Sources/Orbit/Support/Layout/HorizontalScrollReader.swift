@@ -13,6 +13,8 @@ public class HorizontalScrollViewProxy: ObservableObject {
 
 /// Orbit component that provides programmatic scrolling of ``HorizontalScroll`` component,
 /// by working with a ``HorizontalScrollViewProxy`` to scroll to child views marked by Orbit `identifier()` modifier.
+/// 
+/// A  ``horizontalScrollPosition(id:)`` can be used instead for a bidirectional management of currently scrolled item.
 @available(iOS 14, *)
 public struct HorizontalScrollReader<Content: View>: View {
 
