@@ -33,8 +33,6 @@ public struct FieldWrapper<Label: View, Content: View, Footer: View>: View {
     }
     
     /// Creates Orbit ``FieldWrapper`` around form field content with a custom label and an additional message content.
-    ///
-    /// ``FieldLabel`` is a default component for constructing custom label.
     public init(
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
