@@ -19,7 +19,7 @@ import SwiftUI
 /// The title and icon colors can be modified by ``textColor(_:)`` and ``iconColor(_:)`` modifiers.
 /// The icon size can be modified by ``iconSize(custom:)`` modifier.
 /// 
-/// The default background can be overridden by ``SwiftUI/View/backgroundStyle(_:)`` modifier.
+/// The default background can be overridden by ``backgroundStyle(_:)`` modifier.
 /// 
 /// A ``Status`` can be modified by ``status(_:)`` modifier:
 ///
@@ -28,6 +28,15 @@ import SwiftUI
 ///     // Action
 /// }
 /// .status(.critical)
+/// ```
+///
+/// Use ``showsSeparator(_:)`` to adjust separator visibility.
+///
+/// ```swift
+/// Tile("Details") {
+///     // Action
+/// }
+/// .showsSeparator(false)
 /// ```
 ///
 /// Before the action is triggered, a haptic feedback is fired via ``HapticsProvider/sendHapticFeedback(_:)``.
@@ -41,8 +50,8 @@ public struct Tile<Icon: View, Title: View, Description: View, Content: View>: V
 
     @Environment(\.idealSize) private var idealSize
     @Environment(\.isInsideTileGroup) private var isInsideTileGroup
-    @Environment(\.isTileSeparatorVisible) private var isTileSeparatorVisible
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
+    @Environment(\.showsSeparator) private var showsSeparator
 
     private let disclosure: TileDisclosure?
     private let showBorder: Bool
@@ -156,7 +165,7 @@ public struct Tile<Icon: View, Title: View, Description: View, Content: View>: V
     }
 
     @ViewBuilder private var separator: some View {
-        if isInsideTileGroup, isTileSeparatorVisible {
+        if isInsideTileGroup, showsSeparator {
             Separator()
         }
     }
@@ -247,20 +256,6 @@ public extension Tile where Title == Heading, Description == Text, Icon == Orbit
         } icon: {
             Icon(icon)
         }
-    }
-}
-
-// MARK: - Modifiers
-public extension Tile {
-
-    /// Sets the visibility of the separator associated with this tile.
-    ///
-    /// Only applies if the tile is contained in a ``TileGroup``.
-    ///
-    /// - Parameter isVisible: Whether the separator is visible or not.
-    func tileSeparator(_ isVisible: Bool) -> some View {
-        self
-            .environment(\.isTileSeparatorVisible, isVisible)
     }
 }
 

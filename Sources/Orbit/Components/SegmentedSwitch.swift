@@ -33,6 +33,8 @@ public struct SegmentedSwitch<Selection: Hashable, Label: View, Content: View>: 
 
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.idealSize) private var idealSize
+    @Environment(\.showsSeparator) private var showsSeparator
+    
     @Binding private var selection: Selection
     private let message: Message?
     
@@ -158,6 +160,7 @@ public struct SegmentedSwitch<Selection: Hashable, Label: View, Content: View>: 
             .frame(width: borderWidth)
             .frame(maxHeight: .infinity)
             .padding(.vertical, borderWidth)
+            .opacity(showsSeparator ? 1 : 0)
     }
 
     private func unselectedPreferences(_ preferences: [IDPreference]) -> [(Int, IDPreference)] {

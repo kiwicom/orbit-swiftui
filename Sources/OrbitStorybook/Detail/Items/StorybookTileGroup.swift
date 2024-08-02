@@ -21,7 +21,7 @@ struct StorybookTileGroup {
         }
         Tile("Title", description: "No disclosure", icon: .notification, disclosure: .none, action: {})
         Tile("No Separator", icon: .notification, action: {})
-            .tileSeparator(false)
+            .showsSeparator(false)
         Tile("Title", description: "Description", icon: .airplane, action: {})
     }
 }

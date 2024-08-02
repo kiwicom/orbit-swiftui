@@ -39,8 +39,10 @@ public struct Tabs<Selection: Hashable, Content: View>: View {
 
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.idealSize) private var idealSize
+    @Environment(\.showsSeparator) private var showsSeparator
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.textColor) private var textColor
+    
     @Binding private var selection: Selection
     @State private var activeTabStyles: [ActiveTabStyle] = []
 
@@ -146,6 +148,7 @@ public struct Tabs<Selection: Hashable, Content: View>: View {
                         .frame(width: .hairline)
                         .padding(.vertical, .xSmall)
                         .offset(x: separatorXOffset(index: index, preferences: preferences, geometry: geometry))
+                        .opacity(showsSeparator ? 1 : 0)
                 }
             }
         }

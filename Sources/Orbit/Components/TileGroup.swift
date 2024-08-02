@@ -12,12 +12,12 @@ import SwiftUI
 /// ```
 ///
 /// All tiles in a group include bottom separators by default, except for the last separator.
-/// Use ``Tile/tileSeparator(_:)`` to modify separator visibility for a given tile:
+/// Use ``showsSeparator(_:)`` to modify separator visibility for a given tile:
 ///
 /// ```swift
 /// TileGroup {
 ///     Tile("Tile with no Separator")
-///         .tileSeparator(false)
+///         .showsSeparator(false)
 ///     Tile("Tile 2")
 /// }
 /// ```
@@ -104,7 +104,7 @@ struct TileGroupPreviews: PreviewProvider {
         }
         Tile("Title", description: "No disclosure", icon: .notification, disclosure: .none, action: {})
         Tile("No Separator", icon: .notification, action: {})
-            .tileSeparator(false)
+            .showsSeparator(false)
         Tile("Title", description: TilePreviews.description, icon: .airplane, action: {})
     }
 

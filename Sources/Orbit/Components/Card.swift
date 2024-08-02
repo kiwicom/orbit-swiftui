@@ -387,7 +387,8 @@ struct CardPreviews: PreviewProvider {
             ListChoice("ListChoice", action: {})
                 .backgroundStyle(.blueLight, active: .greenLight)
             ListChoice("ListChoice", icon: .map, action: {})
-            ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false, action: {})
+            ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, action: {})
+                .showsSeparator(false)
         }
         .cardLayout(.fill)
         .backgroundStyle(.clear)
