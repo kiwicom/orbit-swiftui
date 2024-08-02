@@ -24,17 +24,18 @@
 
 ### Managing text entry
 
-- ``autocapitalization(_:)-6ecdh``
-- ``autocorrectionDisabled(_:)-7sz54``
-- ``keyboardType(_:)-1uu7i``
+- ``autocapitalization(_:)``
+- ``autocorrectionDisabled(_:)``
+- ``keyboardType(_:)``
 - ``returnKeyType(_:)``
 - ``shouldDeleteBackwardAction(_:)``
-- ``textContentType(_:)-4ng7o``
+- ``textContentType(_:)``
 
 ### UIKit components
 
 - ``TextField``
 - ``InsetableTextField``
+- ``TextFieldCoordinator``
 
 ### Customizing Appearance 
 
