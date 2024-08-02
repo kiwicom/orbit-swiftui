@@ -167,7 +167,8 @@ struct TileBorderModifierPreviews: PreviewProvider {
             }
             .status(.critical)
 
-            ListChoice("ListChoice", showSeparator: false, action: {})
+            ListChoice("ListChoice", action: {})
+                .showSeparator(false)
                 .fixedSize()
                 .tileBorder()
         }

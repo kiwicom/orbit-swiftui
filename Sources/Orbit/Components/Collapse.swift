@@ -10,41 +10,51 @@ import SwiftUI
 /// }
 /// ```
 ///
+/// Use ``showSeparator(_:)`` to adjust separator visibility.
+///
+/// ```swift
+/// Collapse("Details", isExpanded: $showDetails) {
+///     content
+/// }
+/// .showSeparator(false)
+/// ```
+///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/collapse/)
 public struct Collapse<Title: View, Content: View>: View {
-
-    private let showSeparator: Bool
+    
+    @Environment(\.showSeparator) private var showSeparator
+    
     private let isExpanded: OptionalBindingSource<Bool>
     @ViewBuilder private let content: Content
     @ViewBuilder private let title: Title
 
     public var body: some View {
 		OptionalBinding(isExpanded) { $isExpanded in
-        VStack(alignment: .leading, spacing: 0) {
-            SwiftUI.Button {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    isExpanded.toggle()
+            VStack(alignment: .leading, spacing: 0) {
+                SwiftUI.Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isExpanded.toggle()
+                    }
+                } label: {
+                    HStack(spacing: 0) {
+                        title
+                            .textFontWeight(.medium)
+                            .accessibility(.collapseHeader)
+
+                        Spacer(minLength: .xSmall)
+
+                        Icon(.chevronDown)
+                            .rotationEffect(isExpanded ? .degrees(180) : .zero)
+                    }
                 }
-            } label: {
-                HStack(spacing: 0) {
-                    title
-                        .textFontWeight(.medium)
-                        .accessibility(.collapseHeader)
+                .buttonStyle(ListChoiceButtonStyle())
 
-                    Spacer(minLength: .xSmall)
-
-                    Icon(.chevronDown)
-                        .rotationEffect(isExpanded ? .degrees(180) : .zero)
+                if isExpanded {
+                    content
+                        .padding(.vertical, .small)
                 }
             }
-            .buttonStyle(ListChoiceButtonStyle())
-
-            if isExpanded {
-                content
-                    .padding(.vertical, .small)
-            }
-        }
-        .overlay(separator, alignment: .bottom)
+            .overlay(separator, alignment: .bottom)
 		}
     }
 
@@ -57,26 +67,22 @@ public struct Collapse<Title: View, Content: View>: View {
     /// Creates Orbit ``Collapse`` component with custom content.
     public init(
         isExpanded: Binding<Bool>,
-        showSeparator: Bool = true,
         @ViewBuilder content: () -> Content,
         @ViewBuilder title: () -> Title
     ) {
         self.title = title()
         self.content = content()
-        self.showSeparator = showSeparator
         self.isExpanded = .binding(isExpanded)
     }
     
     /// Creates Orbit ``Collapse`` component with custom content.
     public init(
         isExpanded: Bool = false,
-        showSeparator: Bool = true,
         @ViewBuilder content: () -> Content,
         @ViewBuilder title: () -> Title
     ) {
         self.title = title()
         self.content = content()
-        self.showSeparator = showSeparator
         self.isExpanded = .state(isExpanded)
     }
 }
@@ -89,13 +95,9 @@ public extension Collapse where Title == CollapseTitle {
     init(
         _ title: some StringProtocol = String(""),
         isExpanded: Binding<Bool>, 
-        showSeparator: Bool = true,
         @ViewBuilder content: () -> Content
     ) {
-        self.init(
-            isExpanded: isExpanded, 
-            showSeparator: showSeparator
-        ) {
+        self.init(isExpanded: isExpanded) {
             content()
         } title: {
             CollapseTitle(title: Text(title))
@@ -107,13 +109,9 @@ public extension Collapse where Title == CollapseTitle {
     init(
         _ title: some StringProtocol = String(""),
         isExpanded: Bool = false, 
-        showSeparator: Bool = true,
         @ViewBuilder content: () -> Content
     ) {
-        self.init(
-            isExpanded: isExpanded, 
-            showSeparator: showSeparator
-        ) {
+        self.init(isExpanded: isExpanded) {
             content()
         } title: {
             CollapseTitle(title: Text(title))
@@ -125,16 +123,12 @@ public extension Collapse where Title == CollapseTitle {
     init(
         _ title: LocalizedStringKey = "",
         isExpanded: Binding<Bool>, 
-        showSeparator: Bool = true,
         tableName: String? = nil,
         bundle: Bundle? = nil,
         comment: StaticString? = nil,
         @ViewBuilder content: () -> Content
     ) {
-        self.init(
-            isExpanded: isExpanded, 
-            showSeparator: showSeparator
-        ) {
+        self.init(isExpanded: isExpanded) {
             content()
         } title: {
             CollapseTitle(title: Text(title, tableName: tableName, bundle: bundle))
@@ -146,16 +140,12 @@ public extension Collapse where Title == CollapseTitle {
     init(
         _ title: LocalizedStringKey = "",
         isExpanded: Bool = false, 
-        showSeparator: Bool = true,
         tableName: String? = nil,
         bundle: Bundle? = nil,
         comment: StaticString? = nil,
         @ViewBuilder content: () -> Content
     ) {
-        self.init(
-            isExpanded: isExpanded, 
-            showSeparator: showSeparator
-        ) {
+        self.init(isExpanded: isExpanded) {
             content()
         } title: {
             CollapseTitle(title: Text(title, tableName: tableName, bundle: bundle))
@@ -244,9 +234,10 @@ struct CollapsePreviews: PreviewProvider {
             } title: {
                 headerPlaceholder
             }
-            Collapse("No separator", isExpanded: .constant(false), showSeparator: false) {
+            Collapse("No separator", isExpanded: .constant(false)) {
                 contentPlaceholder
             }
+            .showSeparator(false)
         }
         .padding(.medium)
         .previewDisplayName()
