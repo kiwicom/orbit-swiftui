@@ -48,7 +48,7 @@ public struct HorizontalScroll<Content: View>: View {
     @State private var idPreferences: [IDPreference] = []
     @State private var itemCount = 0
     @State private var scrollViewWidth: CGFloat = 0
-    @State private var scrolledItemID: AnyHashable?
+    @State private var scrolledItemID: AnyHashable = 0
     @State private var scrollOffset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
     @State private var lastOffsetDifference: CGFloat?
@@ -199,7 +199,7 @@ public struct HorizontalScroll<Content: View>: View {
         return offsetInBounds(offset: -minX + scrollOffset) + paddingOffset
     }
     
-    private func itemIndexForScrollOffset(scrollOffset: CGFloat) -> AnyHashable? {
+    private func itemIndexForScrollOffset(scrollOffset: CGFloat) -> AnyHashable {
         let offset = offsetInBounds(offset: scrollOffset) - screenLayoutHorizontalPadding
         let index = -Int((offset / (resolvedItemWidth + spacing)).rounded())
         return idPreferences.indices.contains(index) ? idPreferences[index].id : index
@@ -207,6 +207,10 @@ public struct HorizontalScroll<Content: View>: View {
 
     private func scrollTo(id: AnyHashable, geometry: GeometryProxy, animated: Bool) {
         guard let preferenceIndex = idPreferences.firstIndex(where: { $0.id == id }) else {
+            return
+        }
+        
+        guard isContentBiggerThanScrollView else {
             return
         }
 
@@ -338,13 +342,7 @@ public struct HorizontalScroll<Content: View>: View {
     }
 
     private func offsetInBounds(offset: CGFloat) -> CGFloat {
-        min(
-            max(
-                -contentSize.width + scrollViewWidth,
-                offset
-            ),
-            .zero
-        )
+        min(max(scrollViewWidth - contentSize.width, offset), 0)
     }
 }
 
@@ -394,8 +392,8 @@ private struct ContentSizePreferenceKey: PreferenceKey {
 }
 
 struct HorizontalScrollScrolledItemIDKey: PreferenceKey {
-    static var defaultValue: AnyHashable?
-    static func reduce(value _: inout AnyHashable?, nextValue _: () -> AnyHashable?) { /* Take first value */ }
+    static var defaultValue: AnyHashable = 0
+    static func reduce(value _: inout AnyHashable, nextValue _: () -> AnyHashable) { /* Take first value */ }
 }
 
 struct HorizontalScrollOffsetPreferenceKey: PreferenceKey {

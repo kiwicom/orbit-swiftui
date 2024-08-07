@@ -3,7 +3,7 @@ import SwiftUI
 @available(iOS 14, *)
 struct HorizontalScrollPositionModifier: ViewModifier {
 
-    @Binding var position: AnyHashable?
+    @Binding var position: AnyHashable
     @State private var isModified = false
     
     func body(content: Content) -> some View {
@@ -32,13 +32,16 @@ public extension View {
     /// 
     /// You can also write to the binding to scroll to the view with the provided identity.
     @available(iOS 14, *)
-    func horizontalScrollPosition<Value>(id: Binding<Value?>) -> some View where Value: Hashable {
+    func horizontalScrollPosition<Value>(id: Binding<Value>) -> some View where Value: Hashable {
         modifier(
             HorizontalScrollPositionModifier(
-                position: .init(
-                    get: { id.wrappedValue as AnyHashable? },
-                    set: { id.wrappedValue = $0 as? Value }
-                )
+                position: .init {
+                    id.wrappedValue
+                } set: {
+                    if let value = $0 as? Value {
+                        id.wrappedValue = value
+                    }
+                }
             )
         )
     }
@@ -50,7 +53,7 @@ struct HorizontalScrollPositionModifierPreviews: PreviewProvider {
 
     static var previews: some View {
         PreviewWrapper {
-            StateWrapper(Int?.none) { $id in
+            StateWrapper(0) { $id in
                 VStack(alignment: .leading, spacing: .medium) {
                     Heading("Snapping", style: .title3)
                     
