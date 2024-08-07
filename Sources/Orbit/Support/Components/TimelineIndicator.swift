@@ -1,17 +1,18 @@
 import SwiftUI
 
-struct TimelineIndicator: View {
+public struct TimelineIndicator: View {
 
     public static let indicatorDiameter: CGFloat = Icon.Size.large.value
 
-    @Environment(\.sizeCategory) var sizeCategory
-    @Environment(\.accessibilityReduceMotion) var isReduceMotionEnabled
+    @Environment(\.accessibilityReduceMotion) private var isReduceMotionEnabled
+    @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.iconColor) private var iconColor
 
-    let type: TimelineItemType
+    private let type: TimelineItemType
 
-    @State var animationLoopTrigger = false
+    @State private var animationLoopTrigger = false
 
-    var body: some View {
+    public var body: some View {
         indicator
             .frame(
                 width: TimelineIndicator.indicatorDiameter * sizeCategory.ratio,
@@ -21,7 +22,7 @@ struct TimelineIndicator: View {
             .onAppear { animationLoopTrigger = !isReduceMotionEnabled }
     }
 
-    @ViewBuilder var indicator: some View {
+    @ViewBuilder private var indicator: some View {
         switch type {
             case .future, .present(nil):
                 icon
@@ -42,11 +43,11 @@ struct TimelineIndicator: View {
         }
     }
 
-    @ViewBuilder var icon: some View {
+    @ViewBuilder private var icon: some View {
         switch type {
             case .future:
                 Circle()
-                    .strokeBorder(type.color, lineWidth: 2)
+                    .strokeBorder(iconColor ?? type.color, lineWidth: 2)
                     .background(Circle().fill(.whiteNormal))
                     .frame(width: .small * sizeCategory.ratio, height: .small * sizeCategory.ratio)
             case .present(nil):
@@ -57,29 +58,68 @@ struct TimelineIndicator: View {
                             height: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio
                         )
                         .animation(animation, value: animationLoopTrigger)
-                        .foregroundColor(type.color.opacity(0.1))
+                        .foregroundColor((iconColor ?? type.color).opacity(0.1))
 
                     Circle()
-                        .strokeBorder(type.color, lineWidth: 2)
+                        .strokeBorder(iconColor ?? type.color, lineWidth: 2)
                         .background(Circle().fill(.whiteNormal))
                         .frame(width: .small * sizeCategory.ratio, height: .small * sizeCategory.ratio)
 
                     Circle()
                         .frame(width: .xxSmall * sizeCategory.ratio, height: .xxSmall * sizeCategory.ratio)
-                        .scaleEffect(animationLoopTrigger ? .init(width: 0.5, height: 0.5) : .init(width: 1, height: 1))
-                        .foregroundColor(animationLoopTrigger ? Color.clear : type.color)
+                        .scaleEffect(animationLoopTrigger ? 0.5 : 1)
+                        .foregroundColor(animationLoopTrigger ? Color.clear : iconColor ?? type.color)
                         .animation(animation, value: animationLoopTrigger)
 
                 }
             case .present(.warning), .present(.critical), .present(.success), .past:
                 Icon(type.icon)
                     .iconSize(.small)
-                    .iconColor(type.color)
+                    .iconColor(iconColor ?? type.color)
                     .background(Circle().fill(.whiteNormal).padding(2))
         }
     }
 
-    var animation: Animation {
+    private var animation: Animation {
         Animation.easeInOut.repeatForever().speed(0.25)
+    }
+    
+    /// Creates Orbit ``TimelineIndicator`` component.
+    public init(type: TimelineItemType = .present) {
+        self.type = type
+    }
+}
+
+// MARK: - Previews
+struct TimelineIndicatorPreviews: PreviewProvider {
+
+    static var previews: some View {
+        PreviewWrapper {
+            standalone
+        }
+        .previewLayout(.sizeThatFits)
+    }
+
+    static var standalone: some View {
+        HorizontalScroll {
+            HStack(spacing: .xxSmall) {
+                ForEach(1..<20) { _ in
+                        VStack {
+                            SwiftUI.Button {
+                                // noa ction
+                            } label: {
+                                TimelineIndicator(type: .present)
+                                Text("Heyyyyyyyyyyy")
+                            }
+//                            Spacer()
+                        }
+                        
+                        Separator()
+                }
+            }
+            .padding(.medium)
+        }
+        .padding()
+        .previewDisplayName()
     }
 }
