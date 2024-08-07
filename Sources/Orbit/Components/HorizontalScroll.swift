@@ -37,6 +37,7 @@ import Combine
 /// Component expands horizontally and has a layout similar to the native `ScrollView` with `horizontal` scrollable axis.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/layout/horizontalscroll/)
+@available(iOS, obsoleted: 17.0, message: "Prefer using the native `ScrollView` with `scrollTargetBehaviour`")
 public struct HorizontalScroll<Content: View>: View {
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -57,8 +58,8 @@ public struct HorizontalScroll<Content: View>: View {
 
     // Padding to avoid ScrollView content clipping
     private let clippingPadding: CGFloat = .medium
-    private let snapAnimationDuration: CGFloat = 0.8
-    private let programaticSnapAnimationDuration: CGFloat = 0.5
+    private let snapAnimationDuration: CGFloat = 0.6
+    private let programaticSnapAnimationDuration: CGFloat = 0.3
 
     private let spacing: CGFloat
     private let isSnapping: Bool

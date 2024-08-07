@@ -4,6 +4,8 @@ import SwiftUI
 struct HorizontalScrollPositionModifier: ViewModifier {
 
     @Binding var position: AnyHashable
+    let animated: Bool
+    
     @State private var isModified = false
     
     func body(content: Content) -> some View {
@@ -14,7 +16,7 @@ struct HorizontalScrollPositionModifier: ViewModifier {
                         isModified = false
                         return
                     }
-                    proxy.scrollTo($0)
+                    proxy.scrollTo($0, animated: animated)
                 }
                 .onPreferenceChange(HorizontalScrollScrolledItemIDKey.self) {
                     isModified = true
@@ -26,13 +28,16 @@ struct HorizontalScrollPositionModifier: ViewModifier {
 
 public extension View {
 
-    /// Associates a binding to be updated when an Orbit HorizontalScroll view within this view scrolls.
+    /// Associates a binding to be updated when an Orbit ``HorizontalScroll`` view within this view scrolls.
     /// 
     /// Use this modifier along with the ``identifier(_:)`` and ``HorizontalScroll`` to know the identity of the view that is actively scrolled. As the scroll view scrolls, the binding will be updated with the identity of the leading-most / top-most view.
     /// 
     /// You can also write to the binding to scroll to the view with the provided identity.
+    /// 
+    /// - Important: Animated variant may not be reliable when used in a quick succession.
     @available(iOS 14, *)
-    func horizontalScrollPosition<Value>(id: Binding<Value>) -> some View where Value: Hashable {
+    @available(iOS, obsoleted: 17.0, message: "Prefer using the native `ScrollView` with `scrollPosition`")
+    func horizontalScrollPosition<Value>(id: Binding<Value>, animated: Bool = true) -> some View where Value: Hashable {
         modifier(
             HorizontalScrollPositionModifier(
                 position: .init {
@@ -41,7 +46,8 @@ public extension View {
                     if let value = $0 as? Value {
                         id.wrappedValue = value
                     }
-                }
+                },
+                animated: animated
             )
         )
     }
@@ -67,7 +73,7 @@ struct HorizontalScrollPositionModifierPreviews: PreviewProvider {
                     }
                     .horizontalScrollPosition(id: $id)
                     
-                    Heading("Non snapping", style: .title3)
+                    Heading("No snapping, no animation", style: .title3)
                     
                     HorizontalScroll(isSnapping: false, spacing: .medium, itemWidth: .ratio(0.95)) {
                         ForEach(0..<5) { index in
@@ -77,9 +83,7 @@ struct HorizontalScrollPositionModifierPreviews: PreviewProvider {
                             .identifier(index)
                         }
                     }
-                    .horizontalScrollPosition(id: $id)
-                    
-                    Text("Scrolled item index: \(id ?? -1)")
+                    .horizontalScrollPosition(id: $id, animated: false)
                     
                     Heading("Scroll to:", style: .title3)
                     
