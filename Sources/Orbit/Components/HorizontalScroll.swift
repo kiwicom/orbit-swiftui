@@ -46,7 +46,6 @@ public struct HorizontalScroll<Content: View>: View {
     @State private var contentSize: CGSize = .zero
     @State private var scrollingInProgress = false
     @State private var idPreferences: [IDPreference] = []
-    @State private var itemCount = 0
     @State private var scrollViewWidth: CGFloat = 0
     @State private var scrolledItemID: AnyHashable = 0
     @State private var scrollOffset: CGFloat = 0
@@ -88,9 +87,6 @@ public struct HorizontalScroll<Content: View>: View {
                         // Required to cancel tap gesture during scrolling
                         DragGesture()
                     )
-            }
-            .onPreferenceChange(ChildCountPreferenceKey.self) {
-                itemCount = $0
             }
             .padding(clippingPadding)
             // Vertically cap height to tallest item
@@ -174,6 +170,10 @@ public struct HorizontalScroll<Content: View>: View {
     private var isContentBiggerThanScrollView: Bool {
         contentSize.width > scrollViewWidth
     }
+    
+    private var isResolvedItemWiderThanScrollView: Bool {
+        (resolvedItemWidth + 2 * screenLayoutHorizontalPadding) > scrollViewWidth
+    }
 
     private var maxOffset: CGFloat {
         -contentSize.width + scrollViewWidth
@@ -195,8 +195,12 @@ public struct HorizontalScroll<Content: View>: View {
     private func scrollOffsetForItem(index: Int, geometry: GeometryProxy) -> CGFloat {
         let itemToScrollTo = idPreferences[index]
         let minX = geometry[itemToScrollTo.bounds].minX
-        let paddingOffset = index < itemCount - 2 ? screenLayoutHorizontalPadding : 0
-        return offsetInBounds(offset: -minX + scrollOffset) + paddingOffset
+        let isLastItem = idPreferences.indices.last == index
+        
+        let paddingOffset = isLastItem == false || isResolvedItemWiderThanScrollView 
+            ? screenLayoutHorizontalPadding 
+            : 0
+        return offsetInBounds(offset: scrollOffset - minX) + paddingOffset
     }
     
     private func itemIndexForScrollOffset(scrollOffset: CGFloat) -> AnyHashable {
