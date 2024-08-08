@@ -6,16 +6,20 @@ public class HorizontalScrollViewProxy: ObservableObject {
 
     @Published fileprivate var scrollTarget: ScrollTargetValue?
 
+    /// Attempts to scroll to the item marked by Orbit ``identifier(_:)``.
+    /// 
+    /// - Important: Animated variant may not be reliable when used in a quick succession.
     public func scrollTo(_ id: some Hashable, animated: Bool = true) {
         scrollTarget = .init(id: id, animated: animated)
     }
 }
 
 /// Orbit component that provides programmatic scrolling of ``HorizontalScroll`` component,
-/// by working with a ``HorizontalScrollViewProxy`` to scroll to child views marked by Orbit `identifier()` modifier.
+/// by working with a ``HorizontalScrollViewProxy`` to scroll to child views marked by Orbit ``identifier(_:)`` modifier.
 /// 
 /// A  ``horizontalScrollPosition(id:)`` can be used instead for a bidirectional management of currently scrolled item.
 @available(iOS 14, *)
+@available(iOS, obsoleted: 17.0, message: "Prefer using the native `ScrollViewReader`")
 public struct HorizontalScrollReader<Content: View>: View {
 
     @StateObject private var proxy = HorizontalScrollViewProxy()
