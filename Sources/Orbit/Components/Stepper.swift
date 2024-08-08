@@ -31,6 +31,7 @@ public struct Stepper: View {
             valueText
             incrementButton
         }
+        .accessibility(.stepper)
     }
     
     @ViewBuilder private var valueText: some View {
@@ -55,13 +56,9 @@ public struct Stepper: View {
         .environment(\.isEnabled, isEnabled && value < maxValue)
         .accessibility(.stepperIncrement)
     }
-}
-
-// MARK: - Inits
-public extension Stepper {
     
     /// Creates Orbit ``Stepper`` component.
-    init(
+    public init(
         value: Binding<Int>,
         minValue: Int,
         maxValue: Int,
@@ -121,7 +118,7 @@ extension Stepper {
 
 // MARK: - Identifiers
 public extension AccessibilityID {
-    
+    static let stepper                  = Self(rawValue: "orbit.stepper")
     static let stepperIncrement         = Self(rawValue: "orbit.stepper.increment")
     static let stepperDecrement         = Self(rawValue: "orbit.stepper.decrement")
     static let stepperValue             = Self(rawValue: "orbit.stepper.value")

@@ -108,8 +108,9 @@ public struct Heading: View, FormattedTextBuildable, PotentiallyEmptyView {
         content.isEmpty
     }
     
-    private init(
-        text: Text,
+    /// Creates Orbit ``Heading`` component from ``Text``.
+    public init(
+        _ text: Text,
         style: Style
     ) {
         self.content = text
@@ -124,11 +125,12 @@ public struct Heading: View, FormattedTextBuildable, PotentiallyEmptyView {
 public extension Heading {
 
     /// Creates Orbit ``Heading`` component.
+    @_disfavoredOverload
     init(
         _ content: some StringProtocol = String(""),
         style: Style
     ) {
-        self.init(text: Text(content), style: style)
+        self.init(Text(content), style: style)
     }
     
     /// Creates Orbit ``Heading`` component using localizable key.
@@ -140,7 +142,7 @@ public extension Heading {
         bundle: Bundle? = nil,
         comment: StaticString? = nil
     ) {
-        self.init(text: Text(keyAndValue, tableName: tableName, bundle: bundle), style: style)
+        self.init(Text(keyAndValue, tableName: tableName, bundle: bundle), style: style)
     }
 }
 

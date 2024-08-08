@@ -258,10 +258,6 @@ extension TextFieldCoordinator: UITextViewDelegate {
         shouldChange(textInput: textView, charactersIn: range, replacementString: text)
     }
 
-    public func textViewDidChange(_ textView: UITextView) {
-        (textView as? InsetableTextView)?.updatePromptVisibility()
-    }
-
     public func textViewDidChangeSelection(_ textView: UITextView) {
         didChange(textInput: textView)
     }
