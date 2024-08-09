@@ -11,16 +11,18 @@ struct HorizontalScrollPositionModifier: ViewModifier {
     func body(content: Content) -> some View {
         HorizontalScrollReader { proxy in
             content
-                .onChange(of: position) {
+                .onChange(of: position) { newValue in
                     if isModified {
                         isModified = false
                         return
                     }
-                    proxy.scrollTo($0, animated: animated)
+                    proxy.scrollTo(newValue, animated: animated)
                 }
-                .onPreferenceChange(HorizontalScrollScrolledItemIDKey.self) {
-                    isModified = true
-                    position = $0
+                .onPreferenceChange(HorizontalScrollScrolledItemIDKey.self) { value in
+                    if position != value {
+                        isModified = true
+                        position = value
+                    }
                 }
         }
     }
