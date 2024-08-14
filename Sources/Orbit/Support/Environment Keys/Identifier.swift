@@ -43,6 +43,12 @@ public struct IDPreference: Equatable {
     let id: AnyHashable
     let bounds: Anchor<CGRect>
 
+    /// Create Orbit `IDPreference`.
+    public init(id: AnyHashable, bounds: Anchor<CGRect>) {
+        self.id = id
+        self.bounds = bounds
+    }
+    
     // `Anchor` is only conditionally `Equatable` since iOS 15.
     // If synthesized, the compiler doesn't see any issues and this leads to a runtime crash on earlier iOS versions.
     // That's why this is written here explicitly.
