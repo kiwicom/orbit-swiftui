@@ -19,7 +19,13 @@ public struct TimelineIndicator: View {
                 height: TimelineIndicator.indicatorDiameter * sizeCategory.ratio
             )
             .alignmentGuide(.firstTextBaseline) { $0.height * 0.68 }
-            .onAppear { animationLoopTrigger = !isReduceMotionEnabled }
+            .onAppear { 
+                guard isReduceMotionEnabled == false else { return }
+                
+                withAnimation(.easeInOut.repeatForever().speed(0.25)) {
+                    animationLoopTrigger = true
+                } 
+            }
     }
 
     @ViewBuilder private var indicator: some View {
@@ -33,7 +39,6 @@ public struct TimelineIndicator: View {
                         height: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio
                     )
                     .foregroundColor(animationLoopTrigger ? Color.clear : type.color.opacity(0.1))
-                    .animation(animation, value: animationLoopTrigger)
                     .overlay(icon)
             case .past:
                 Circle()
@@ -57,7 +62,6 @@ public struct TimelineIndicator: View {
                             width: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio,
                             height: (animationLoopTrigger ? .medium : .xMedium) * sizeCategory.ratio
                         )
-                        .animation(animation, value: animationLoopTrigger)
                         .foregroundColor((iconColor ?? type.color).opacity(0.1))
 
                     Circle()
@@ -69,7 +73,6 @@ public struct TimelineIndicator: View {
                         .frame(width: .xxSmall * sizeCategory.ratio, height: .xxSmall * sizeCategory.ratio)
                         .scaleEffect(animationLoopTrigger ? 0.5 : 1)
                         .foregroundColor(animationLoopTrigger ? Color.clear : iconColor ?? type.color)
-                        .animation(animation, value: animationLoopTrigger)
 
                 }
             case .present(.warning), .present(.critical), .present(.success), .past:
@@ -78,10 +81,6 @@ public struct TimelineIndicator: View {
                     .iconColor(iconColor ?? type.color)
                     .background(Circle().fill(.whiteNormal).padding(2))
         }
-    }
-
-    private var animation: Animation {
-        Animation.easeInOut.repeatForever().speed(0.25)
     }
     
     /// Creates Orbit ``TimelineIndicator`` component.
@@ -103,18 +102,21 @@ struct TimelineIndicatorPreviews: PreviewProvider {
     static var standalone: some View {
         HorizontalScroll {
             HStack(spacing: .xxSmall) {
-                ForEach(1..<20) { _ in
-                        VStack {
-                            SwiftUI.Button {
-                                // noa ction
-                            } label: {
+                ForEach(1..<4) { index in
+                    VStack(spacing: .medium) {
+                        SwiftUI.Button {
+                            // No Action
+                        } label: {
+                            VStack(spacing: .medium) {
+                                TimelineIndicator(type: .future)
+                                TimelineIndicator(type: .past)
                                 TimelineIndicator(type: .present)
-                                Text("Heyyyyyyyyyyy")
+                                TimelineIndicator(type: .present(.critical))
                             }
-//                            Spacer()
                         }
-                        
-                        Separator()
+                    }
+                    
+                    Separator()
                 }
             }
             .padding(.medium)
