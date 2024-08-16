@@ -81,6 +81,7 @@ struct HorizontalScrollReaderPreviews: PreviewProvider {
                             Tile("Tile \(index)", description: "Tap to scroll to previous") {
                                 scrollProxy.scrollTo(index - 1, animated: state.wrappedValue.1)
                             }
+                            .overlay(TimelineIndicator(), alignment: .topTrailing)
                             .identifier(index)
                         }
 
@@ -92,11 +93,9 @@ struct HorizontalScrollReaderPreviews: PreviewProvider {
                     }
 
                     Checkbox("Snapping", isChecked: state.0)
-                    // FIXME: Binding does not work correctly?
                         .id(state.wrappedValue.0 ? 1 : 0)
 
                     Checkbox("Animated", isChecked: state.1)
-                    // FIXME: Binding does not work correctly?
                         .id(state.wrappedValue.1 ? 1 : 0)
 
                     Button("Scroll to First") {
