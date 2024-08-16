@@ -36,6 +36,7 @@ public struct RadioButtonStyle: ButtonStyle {
                     .strokeBorder(indicatorOverlayStrokeColor(isPressed: isPressed), lineWidth: indicatorStrokeWidth)
             )
             .frame(width: size, height: size)
+            .contentShape(Rectangle())
             .animation(.easeOut(duration: 0.2), value: state)
             .animation(.easeOut(duration: 0.15), value: isChecked)
             .alignmentGuide(.firstTextBaseline) { _ in
