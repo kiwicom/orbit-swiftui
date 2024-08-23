@@ -63,6 +63,8 @@ struct HorizontalScrollPositionModifierPreviews: PreviewProvider {
         PreviewWrapper {
             StateWrapper(0) { $id in
                 VStack(alignment: .leading, spacing: .medium) {
+                    Text("Current scroll index \(id)")
+                    
                     Heading("Snapping", style: .title3)
                     
                     HorizontalScroll(spacing: .medium, itemWidth: .ratio(0.95)) {
@@ -98,6 +100,9 @@ struct HorizontalScrollPositionModifierPreviews: PreviewProvider {
                     }
                 }
                 .screenLayout()
+                .onAppear {
+                    id = 2
+                }
             }
         }
     }

@@ -105,6 +105,7 @@ public struct HorizontalScroll<Content: View>: View {
                 guard let scrollTarget else {
                     return
                 }
+                scrolledItemID = scrollTarget.id
                 scrollTo(id: scrollTarget.id, geometry: geometry, animated: scrollTarget.animated)
             }
             .onReceive(timer) { output in
