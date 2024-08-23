@@ -38,7 +38,7 @@ public extension View {
     /// 
     /// - Important: Animated variant may not be reliable when used in a quick succession.
     @available(iOS 14, *)
-    @available(iOS, obsoleted: 17.0, message: "Prefer using the native `ScrollView` with `scrollPosition`")
+    @available(iOS, deprecated: 17.0, message: "Prefer using the native `ScrollView` with `scrollPosition`")
     func horizontalScrollPosition<Value>(id: Binding<Value>, animated: Bool = true) -> some View where Value: Hashable {
         modifier(
             HorizontalScrollPositionModifier(
