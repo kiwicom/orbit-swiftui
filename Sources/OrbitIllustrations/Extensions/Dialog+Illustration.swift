@@ -15,4 +15,20 @@ public extension Dialog where Title == Heading, Description == Orbit.Text, Illus
             Illustration(illustration, layout: .frame(height: 120, alignment: .leading))
         }
     }
+    
+    /// Creates Orbit ``Dialog`` component with an illustration.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ title: LocalizedStringKey = "",
+        description: LocalizedStringKey = "",
+        illustration: OrbitIllustrations.Illustration.Asset?,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        titleComment: StaticString? = nil,
+        @ButtonStackBuilder buttons: () -> Buttons
+    ) {
+        self.init(title, description: description, tableName: tableName, bundle: bundle, buttons: buttons) {
+            Illustration(illustration, layout: .frame(height: 120, alignment: .leading))
+        }
+    }
 }

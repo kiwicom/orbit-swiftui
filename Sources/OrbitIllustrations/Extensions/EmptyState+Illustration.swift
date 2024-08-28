@@ -15,4 +15,20 @@ public extension EmptyState where Title == Heading, Description == Orbit.Text, I
             Illustration(illustration, layout: .frame(height: 160))
         }
     }
+    
+    /// Creates Orbit ``EmptyState`` component with illustration.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ title: LocalizedStringKey = "",
+        description: LocalizedStringKey = "",
+        illustration: OrbitIllustrations.Illustration.Asset?,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        titleComment: StaticString? = nil,
+        @ButtonStackBuilder buttons: () -> Buttons = { EmptyView() }
+    ) {
+        self.init(title, description: description, tableName: tableName, bundle: bundle, buttons: buttons) {
+            Illustration(illustration, layout: .frame(height: 160))
+        }
+    }
 }
