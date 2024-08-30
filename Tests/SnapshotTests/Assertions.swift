@@ -3,21 +3,12 @@ import XCTest
 import SnapshotTesting
 import SwiftUI
 
-private var isForcedRecording: Bool {
+var isForcedRecording: Bool {
     #if XCODE_IS_SNAPSHOTS_RECORDING
     true
     #else
     false
     #endif
-}
-
-
-func setRecordingState() {
-    isRecording = isForcedRecording
-
-    // Uncomment the following line to force recording new snapshot baselines to run selected tests.
-    // To regenerate all snapshots for all simulators instead, run `Automation/generate_snapshots.sh`
-//     isRecording = true
 }
 
 enum SnapshotSize {
@@ -82,8 +73,6 @@ func assertImage(
     testName: String = #function,
     line: UInt = #line
 ) {
-    setRecordingState()
-
     if wait > 0 {
         assertSnapshotInCustomLocation(
             matching: try value(),
@@ -113,8 +102,6 @@ func assertImage(
     testName: String = #function,
     line: UInt = #line
 ) {
-    setRecordingState()
-
     if wait > 0 {
         assertSnapshotInCustomLocation(
             matching: try value(),
@@ -146,7 +133,6 @@ private func assertSnapshotInCustomLocation<Value, Format>(
     testName: String = #function,
     line: UInt = #line
 ) {
-
     if FileManager.default.fileExists(atPath: directory) {
         do {
             try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true)
@@ -159,10 +145,10 @@ private func assertSnapshotInCustomLocation<Value, Format>(
     let finalDirectory = URL(fileURLWithPath: directory, isDirectory: true).appendingPathComponent(testFileName)
 
     let failure = verifySnapshot(
-        matching: try value(),
+        of: try value(),
         as: snapshotting,
         named: name,
-        record: false,
+        record: isForcedRecording,
         snapshotDirectory: finalDirectory.path,
         timeout: timeout,
         file: file,
@@ -172,7 +158,9 @@ private func assertSnapshotInCustomLocation<Value, Format>(
 
     guard let message = failure else { return }
 
-    if message.contains("Record mode is on"), isForcedRecording { return }
+    if isForcedRecording, message.contains("Automatically recorded snapshot") {
+        return
+    }
 
     XCTFail(message, file: file, line: line)
 }
