@@ -20,14 +20,15 @@ import SwiftUI
 /// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/socialbutton/)
-public struct SocialButton<Label: View>: View {
+public struct SocialButton<Label: View, Icon: View>: View {
     
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.sizeCategory) private var sizeCategory
     
-    private let service: SocialButtonService
+    private let service: SocialButtonService?
     private let action: () -> Void
     @ViewBuilder private let label: Label
+    @ViewBuilder private let icon: Icon
     
     public var body: some View {
         SwiftUI.Button {
@@ -37,13 +38,13 @@ public struct SocialButton<Label: View>: View {
         }
         .buttonStyle(
             OrbitButtonStyle {
-                logo
+                icon
                     .scaledToFit()
                     .frame(width: .large * sizeCategory.ratio)
                     .padding(.vertical, -.xxSmall)
             } trailingIcon: {
                 Spacer(minLength: 0)
-                Icon(.chevronForward)
+                Orbit.Icon(.chevronForward)
                     .iconSize(.large)
                     .padding(.vertical, -.xxSmall)
             }
@@ -52,77 +53,57 @@ public struct SocialButton<Label: View>: View {
         .backgroundStyle(background, active: backgroundActive)
     }
     
-    @ViewBuilder private var logo: some View {
-        switch service {
-            case .apple:
-                Image(.apple)
-                    .renderingMode(.template)
-                    .resizable()
-                    .foregroundColor(.whiteNormal)
-                    .padding(1)
-            case .google:
-                Image(.google)
-                    .resizable()
-            case .facebook:
-                Image(.facebook)
-                    .resizable()
-            case .email:        Icon(.email).iconSize(.large)
-        }
-    }
-    
     private var textColor: Color {
         switch service {
-            case .apple:        return .whiteNormal
-            case .google:       return .inkDark
-            case .facebook:     return .inkDark
-            case .email:        return .inkDark
+            case .apple:    .whiteNormal
+            default:        .inkDark
         }
     }
     
     private var background: Color {
         switch service {
-            case .apple:        return colorScheme == .light ? .black : .white
-            case .google:       return .cloudNormal
-            case .facebook:     return .cloudNormal
-            case .email:        return .cloudNormal
+            case .apple:    colorScheme == .light ? .black : .white
+            default:        .cloudNormal
         }
     }
     
     private var backgroundActive: Color {
         switch service {
-            case .apple:        return colorScheme == .light ? .inkNormalActive : .inkNormalActive
-            case .google:       return .cloudNormalActive
-            case .facebook:     return .cloudNormalActive
-            case .email:        return .cloudNormalActive
+            case .apple:    colorScheme == .light ? .inkNormalActive : .inkNormalActive
+            default:        .cloudNormalActive
         }
     }
     
     /// Creates Orbit ``SocialButton`` component with custom content.
     public init(
-        service: SocialButtonService, 
-        action: @escaping () -> Void, 
-        @ViewBuilder label: () -> Label
+        service: SocialButtonService? = nil,
+        action: @escaping () -> Void,
+        @ViewBuilder label: () -> Label,
+        @ViewBuilder icon: () -> Icon
     ) {
         self.service = service
         self.action = action
         self.label = label()
+        self.icon = icon()
     }
 }
 
 // MARK: - Convenience Inits
-public extension SocialButton where Label == Text {
+public extension SocialButton where Label == Text, Icon == SocialButtonIcon {
     
     /// Creates Orbit ``SocialButton`` component.
     @_disfavoredOverload
     init(
         _ label: some StringProtocol = String(""),
-        service: SocialButtonService, 
+        service: SocialButtonService,
         action: @escaping () -> Void
     ) {
         self.init(service: service) {
             action()
         } label: {
             Text(label)
+        } icon: {
+            SocialButtonIcon(service)
         }
     }
     
@@ -140,18 +121,10 @@ public extension SocialButton where Label == Text {
             action()
         } label: {
             Text(label, tableName: tableName, bundle: bundle)
+        } icon: {
+            SocialButtonIcon(service)
         }
     }
-}
-
-// MARK: - Types
-
-/// Orbit ``SocialButton`` social service or login method.
-public enum SocialButtonService {
-    case apple
-    case google
-    case facebook
-    case email
 }
 
 // MARK: - Previews
@@ -162,6 +135,7 @@ struct SocialButtonPreviews: PreviewProvider {
             standalone
             idealSize
             sizing
+            custom
             all
         }
         .padding(.medium)
@@ -191,6 +165,17 @@ struct SocialButtonPreviews: PreviewProvider {
             .measured()
         }
         .padding(.medium)
+        .previewDisplayName()
+    }
+    
+    static var custom: some View {
+        SocialButton {
+            // No action
+        } label: {
+            Text("Custom service")
+        } icon: {
+            Icon(.admin)
+        }
         .previewDisplayName()
     }
     
