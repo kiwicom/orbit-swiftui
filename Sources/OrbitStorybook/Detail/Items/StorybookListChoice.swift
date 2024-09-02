@@ -116,7 +116,8 @@ struct StorybookListChoice {
         Card {
             ListChoice(title, disclosure: .none, action: {})
             ListChoice(title, description: description, disclosure: .none, action: {})
-            ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false, action: {})
+            ListChoice(title, description: "No Separator", disclosure: .none, action: {})
+                .showsSeparator(false)
             ListChoice(title, icon: .airplane, disclosure: .none, action: {})
             ListChoice(title, icon: .airplane, disclosure: .none, action: {})
                 .iconColor(.blueNormal)

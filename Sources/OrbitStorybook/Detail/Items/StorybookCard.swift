@@ -117,7 +117,8 @@ struct StorybookCard {
             } icon: {
                 CountryFlag("us")
             }
-            ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, showSeparator: false, action: {})
+            ListChoice("ListChoice", description: "ListChoice description", icon: .airplane, action: {})
+                .showsSeparator(false)
         }
         .backgroundStyle(.clear)
         .cardLayout(.fill)

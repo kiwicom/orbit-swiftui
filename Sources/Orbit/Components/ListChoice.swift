@@ -43,7 +43,7 @@ import SwiftUI
 /// The title and icon colors can be modified by ``textColor(_:)`` and ``iconColor(_:)`` modifiers.
 /// The icon size can be modified by ``iconSize(custom:)`` modifier.
 /// 
-/// The default background can be overridden by ``SwiftUI/View/backgroundStyle(_:)`` modifier.
+/// The default background can be overridden by ``backgroundStyle(_:)`` modifier.
 /// 
 /// A ``Status`` can be modified by ``status(_:)`` modifier:
 ///
@@ -52,6 +52,23 @@ import SwiftUI
 ///     // Action
 /// }
 /// .status(.critical)
+/// ```
+///
+/// A ListChoice shows a separator at the bottom by default.
+/// Use ``showsSeparator(_:)`` to modify separator visibility for ListChoice components in a subview:
+///
+/// ```swift
+/// VStack {
+///     ListChoice("ListChoice with no separator") { /* No action */ }
+///         .showsSeparator(false)
+///     ListChoice("ListChoice with separator") { /* No action */ }
+/// }
+/// 
+/// VStack {
+///     ListChoice("ListChoice with no separator") { /* No action */ }
+///     ListChoice("ListChoice with no separator") { /* No action */ }
+/// }
+/// .showsSeparator(false)
 /// ```
 ///
 /// Before the action is triggered, a haptic feedback is fired via ``HapticsProvider/sendHapticFeedback(_:)``.
@@ -69,9 +86,9 @@ public struct ListChoice<Icon: View, Title: View, Description: View, Header: Vie
 
     @Environment(\.idealSize) private var idealSize
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
+    @Environment(\.showsSeparator) private var showsSeparator
 
     private let disclosure: ListChoiceDisclosure?
-    private let showSeparator: Bool
     private let action: () -> Void
     @ViewBuilder private let title: Title
     @ViewBuilder private let description: Description
@@ -206,7 +223,7 @@ public struct ListChoice<Icon: View, Title: View, Description: View, Header: Vie
     }
 
     @ViewBuilder private var separator: some View {
-        if showSeparator {
+        if showsSeparator {
             Separator()
         }
     }
@@ -235,7 +252,6 @@ public struct ListChoice<Icon: View, Title: View, Description: View, Header: Vie
     /// Creates Orbit ``ListChoice`` component with custom content.
     public init(
         disclosure: ListChoiceDisclosure? = .disclosure(),
-        showSeparator: Bool = true,
         action: @escaping () -> Void,
         @ViewBuilder content: () -> Content = { EmptyView() },
         @ViewBuilder title: () -> Title = { EmptyView() },
@@ -244,7 +260,6 @@ public struct ListChoice<Icon: View, Title: View, Description: View, Header: Vie
         @ViewBuilder header: () -> Header = { EmptyView() }
     ) {
         self.disclosure = disclosure
-        self.showSeparator = showSeparator
         self.title = title()
         self.description = description()
         self.action = action
@@ -267,14 +282,10 @@ public extension ListChoice where Title == Text, Description == Text, Header == 
         icon: Icon.Symbol? = nil,
         value: some StringProtocol = String(""),
         disclosure: ListChoiceDisclosure? = .disclosure(),
-        showSeparator: Bool = true,
         action: @escaping () -> Void,
         @ViewBuilder content: () -> Content = { EmptyView() }
     ) {
-        self.init(
-            disclosure: disclosure, 
-            showSeparator: showSeparator
-        ) {
+        self.init(disclosure: disclosure) {
             action() 
         } content: {
             content()
@@ -297,17 +308,13 @@ public extension ListChoice where Title == Text, Description == Text, Header == 
         icon: Icon.Symbol? = nil,
         value: some StringProtocol = String(""),
         disclosure: ListChoiceDisclosure? = .disclosure(),
-        showSeparator: Bool = true,
         tableName: String? = nil,
         bundle: Bundle? = nil,
         titleComment: StaticString? = nil,
         action: @escaping () -> Void,
         @ViewBuilder content: () -> Content = { EmptyView() }
     ) {
-        self.init(
-            disclosure: disclosure, 
-            showSeparator: showSeparator
-        ) {
+        self.init(disclosure: disclosure) {
             action() 
         } content: {
             content()
@@ -638,7 +645,8 @@ struct ListChoicePreviews: PreviewProvider {
         Card {
             ListChoice(title, disclosure: .none, action: {})
             ListChoice(title, description: description, disclosure: .none, action: {})
-            ListChoice(title, description: "No Separator", disclosure: .none, showSeparator: false, action: {})
+            ListChoice(title, description: "No Separator", disclosure: .none, action: {})
+                .showsSeparator(false)
             ListChoice(title, icon: .airplane, disclosure: .none, action: {})
             ListChoice(title, icon: .airplane, disclosure: .none, action: {})
                 .iconColor(.blueNormal)

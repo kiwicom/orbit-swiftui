@@ -21,7 +21,7 @@ import SwiftUI
 ///
 /// ### Localization
 /// 
-/// The localization follows the same pattern as the native ``SwiftUI.Text``.
+/// The localization follows the same pattern as the native ``SwiftUI/Text``.
 /// The default `main` bundle can be modified by using ``SwiftUI/View/localizationBundle(_:)`` modifier.
 ///
 /// ### Concatenation

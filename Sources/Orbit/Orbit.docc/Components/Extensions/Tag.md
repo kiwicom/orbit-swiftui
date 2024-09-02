@@ -9,5 +9,4 @@
 ### Customizing Appearance
 
 - ``TagButtonStyle``
-- ``TagStyle``
 - ``BackgroundShape``

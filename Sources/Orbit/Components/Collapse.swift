@@ -10,10 +10,20 @@ import SwiftUI
 /// }
 /// ```
 ///
+/// Use ``showsSeparator(_:)`` to adjust separator visibility.
+///
+/// ```swift
+/// Collapse("Details", isExpanded: $showDetails) {
+///     content
+/// }
+/// .showsSeparator(false)
+/// ```
+///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/collapse/)
 public struct Collapse<Title: View, Content: View>: View {
-
-    private let showSeparator: Bool
+    
+    @Environment(\.showsSeparator) private var showsSeparator
+    
     private let isExpanded: OptionalBindingSource<Bool>
     @ViewBuilder private let content: Content
     @ViewBuilder private let title: Title
@@ -49,7 +59,7 @@ public struct Collapse<Title: View, Content: View>: View {
     }
 
     @ViewBuilder private var separator: some View {
-        if showSeparator {
+        if showsSeparator {
             Separator()
         }
     }
@@ -57,26 +67,22 @@ public struct Collapse<Title: View, Content: View>: View {
     /// Creates Orbit ``Collapse`` component with custom content.
     public init(
         isExpanded: Binding<Bool>,
-        showSeparator: Bool = true,
         @ViewBuilder content: () -> Content,
         @ViewBuilder title: () -> Title
     ) {
         self.title = title()
         self.content = content()
-        self.showSeparator = showSeparator
         self.isExpanded = .binding(isExpanded)
     }
     
     /// Creates Orbit ``Collapse`` component with custom content.
     public init(
         isExpanded: Bool = false,
-        showSeparator: Bool = true,
         @ViewBuilder content: () -> Content,
         @ViewBuilder title: () -> Title
     ) {
         self.title = title()
         self.content = content()
-        self.showSeparator = showSeparator
         self.isExpanded = .state(isExpanded)
     }
 }
@@ -89,13 +95,9 @@ public extension Collapse where Title == CollapseTitle {
     init(
         _ title: some StringProtocol = String(""),
         isExpanded: Binding<Bool>, 
-        showSeparator: Bool = true,
         @ViewBuilder content: () -> Content
     ) {
-        self.init(
-            isExpanded: isExpanded, 
-            showSeparator: showSeparator
-        ) {
+        self.init(isExpanded: isExpanded) {
             content()
         } title: {
             CollapseTitle(title: Text(title))
@@ -107,13 +109,9 @@ public extension Collapse where Title == CollapseTitle {
     init(
         _ title: some StringProtocol = String(""),
         isExpanded: Bool = false, 
-        showSeparator: Bool = true,
         @ViewBuilder content: () -> Content
     ) {
-        self.init(
-            isExpanded: isExpanded, 
-            showSeparator: showSeparator
-        ) {
+        self.init(isExpanded: isExpanded) {
             content()
         } title: {
             CollapseTitle(title: Text(title))
@@ -125,16 +123,12 @@ public extension Collapse where Title == CollapseTitle {
     init(
         _ title: LocalizedStringKey = "",
         isExpanded: Binding<Bool>, 
-        showSeparator: Bool = true,
         tableName: String? = nil,
         bundle: Bundle? = nil,
         comment: StaticString? = nil,
         @ViewBuilder content: () -> Content
     ) {
-        self.init(
-            isExpanded: isExpanded, 
-            showSeparator: showSeparator
-        ) {
+        self.init(isExpanded: isExpanded) {
             content()
         } title: {
             CollapseTitle(title: Text(title, tableName: tableName, bundle: bundle))
@@ -146,16 +140,12 @@ public extension Collapse where Title == CollapseTitle {
     init(
         _ title: LocalizedStringKey = "",
         isExpanded: Bool = false, 
-        showSeparator: Bool = true,
         tableName: String? = nil,
         bundle: Bundle? = nil,
         comment: StaticString? = nil,
         @ViewBuilder content: () -> Content
     ) {
-        self.init(
-            isExpanded: isExpanded, 
-            showSeparator: showSeparator
-        ) {
+        self.init(isExpanded: isExpanded) {
             content()
         } title: {
             CollapseTitle(title: Text(title, tableName: tableName, bundle: bundle))
@@ -244,9 +234,10 @@ struct CollapsePreviews: PreviewProvider {
             } title: {
                 headerPlaceholder
             }
-            Collapse("No separator", isExpanded: .constant(false), showSeparator: false) {
+            Collapse("No separator", isExpanded: .constant(false)) {
                 contentPlaceholder
             }
+            .showsSeparator(false)
         }
         .padding(.medium)
         .previewDisplayName()
