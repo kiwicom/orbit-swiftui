@@ -22,7 +22,7 @@ import UIKit
 /// The component expands horizontally and vertically. It would be typically further constrained by a `frame` modifier in vertical axis.
 /// 
 /// - Note: [Orbit definition](https://orbit.kiwi/components/input/textarea/)
-public struct Textarea: View, TextFieldBuildable {
+public struct Textarea<Label: View, Prompt: View>: View, TextFieldBuildable {
     
     @Environment(\.inputFieldBeginEditingAction) private var inputFieldBeginEditingAction
     @Environment(\.inputFieldEndEditingAction) private var inputFieldEndEditingAction
@@ -31,13 +31,13 @@ public struct Textarea: View, TextFieldBuildable {
 
     @State private var isFocused: Bool = false
 
-    private let label: String
     @Binding private var value: String
-    private let prompt: String
     private let state: InputState
 
     private let message: Message?
     @Binding private var messageHeight: CGFloat
+    @ViewBuilder private let label: Label
+    @ViewBuilder private let prompt: Prompt
 
     // Builder properties (keyboard related)
     var autocapitalizationType: UITextAutocapitalizationType = .none
@@ -48,7 +48,7 @@ public struct Textarea: View, TextFieldBuildable {
     var shouldDeleteBackwardAction: (String) -> Bool = { _ in true }
     
     public var body: some View {
-        FieldWrapper(label, message: message, messageHeight: $messageHeight) {
+        FieldWrapper(message: message, messageHeight: $messageHeight) {
             InputContent(state: state, message: message, isFocused: isFocused) {
                 textView
                     .alignmentGuide(.firstTextBaseline) { dimension in
@@ -56,13 +56,14 @@ public struct Textarea: View, TextFieldBuildable {
                         dimension[.top]
                     }
             }
+        } label: {
+            label
         }
     }
     
     @ViewBuilder private var textView: some View {
         TextView(
-            value: $value, 
-            prompt: prompt, 
+            value: $value,  
             insets: .init(
                 top: .small, 
                 left: .small, 
@@ -76,7 +77,6 @@ public struct Textarea: View, TextFieldBuildable {
         .textContentType(textContentType)
         .autocapitalization(autocapitalizationType)
         .shouldDeleteBackwardAction(shouldDeleteBackwardAction)
-        .accessibility(label: .init(label))
         .inputFieldBeginEditingAction {
             isFocused = true
             inputFieldBeginEditingAction()
@@ -85,31 +85,96 @@ public struct Textarea: View, TextFieldBuildable {
             isFocused = false
             inputFieldEndEditingAction()
         }
-    } 
+        .overlay(resolvedPrompt, alignment: .topLeading)
+    }
+    
+    @ViewBuilder private var resolvedPrompt: some View {
+        if value.isEmpty {
+            prompt
+                .textColor(isEnabled ? state.placeholderColor : .cloudDarkActive)
+                .padding(.small)
+                .allowsHitTesting(false)
+        }
+    }
+    
+    /// Creates Orbit ``Textarea`` component with custom content.
+    ///
+    /// - Parameters:
+    ///   - message: Optional message below the text field.
+    ///   - messageHeight: Binding to the current height of the optional message.
+    public init(
+        value: Binding<String>,
+        state: InputState = .default,
+        message: Message? = nil,
+        messageHeight: Binding<CGFloat> = .constant(0),
+        @ViewBuilder label: () -> Label,
+        @ViewBuilder prompt: () -> Prompt = { EmptyView() }
+    ) {
+        self._value = value
+        self.state = state
+        self.message = message
+        self._messageHeight = messageHeight
+        self.label = label()
+        self.prompt = prompt()
+    }
 }
 
-// MARK: - Inits
-public extension Textarea {
+// MARK: - Convenience Inits
+public extension Textarea where Label == Text, Prompt == Text {
     
     /// Creates Orbit ``Textarea`` component.
     ///
     /// - Parameters:
     ///   - message: Optional message below the text field.
     ///   - messageHeight: Binding to the current height of the optional message.
+    @_disfavoredOverload
     init(
-        _ label: String = "",
+        _ label: some StringProtocol = String(""),
         value: Binding<String>,
-        prompt: String = "",
+        prompt: some StringProtocol = String(""),
         state: InputState = .default,
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0)
     ) {
-        self.label = label
-        self._value = value
-        self.prompt = prompt
-        self.state = state
-        self.message = message
-        self._messageHeight = messageHeight
+        self.init(
+            value: value,
+            state: state,
+            message: message,
+            messageHeight: messageHeight
+        ) {
+            Text(label)
+        } prompt: {
+            Text(prompt)
+        }
+    }
+    
+    /// Creates Orbit ``Textarea`` component with localizable texts.
+    ///
+    /// - Parameters:
+    ///   - message: Optional message below the text field.
+    ///   - messageHeight: Binding to the current height of the optional message.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ label: LocalizedStringKey = "",
+        value: Binding<String>,
+        prompt: LocalizedStringKey = "",
+        state: InputState = .default,
+        message: Message? = nil,
+        messageHeight: Binding<CGFloat> = .constant(0),
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        labelComment: StaticString? = nil
+    ) {
+        self.init(
+            value: value,
+            state: state,
+            message: message,
+            messageHeight: messageHeight
+        ) {
+            Text(label, tableName: tableName, bundle: bundle)
+        } prompt: {
+            Text(prompt, tableName: tableName, bundle: bundle)
+        }
     }
 }
 

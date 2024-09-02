@@ -33,50 +33,74 @@ import SwiftUI
 /// Component expands horizontally unless prevented by native `fixedSize()` or ``idealSize()`` modifier.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/alert/)
-public struct AlertInline<Icon: View, Button: View>: View {
+public struct AlertInline<Icon: View, Title: View, Button: View>: View {
 
-    private let title: String
     private let isSubtle: Bool
-    @ViewBuilder private let button: Button
     @ViewBuilder private let icon: Icon
+    @ViewBuilder private let title: Title
+    @ViewBuilder private let button: Button
 
     public var body: some View {
-        AlertContent(title: title, isInline: true) {
+        AlertContent(isInline: true) {
+            button
+        } title: {
+            title
+        } description: {
             EmptyView()
         } icon: {
             icon
-        } buttons: {
-            button
         }
         .environment(\.isSubtle, isSubtle)
     }
+    
+    /// Creates Orbit ``AlertInline`` component with custom content.
+    public init(
+        isSubtle: Bool = false,
+        @AlertInlineButtonsBuilder button: () -> Button,
+        @ViewBuilder title: () -> Title = { EmptyView() },
+        @ViewBuilder icon: () -> Icon = { EmptyView() }
+    ) {
+        self.isSubtle = isSubtle
+        self.icon = icon()
+        self.title = title()
+        self.button = button()
+    }
 }
 
-public extension AlertInline {
+// MARK: - Convenience Inits
+public extension AlertInline where Title == Heading, Icon == Orbit.Icon {
 
     /// Creates Orbit ``AlertInline`` component.
+    @_disfavoredOverload
     init(
-        _ title: String = "",
+        _ title: some StringProtocol = String(""),
         icon: Icon.Symbol? = nil,
         isSubtle: Bool = false,
         @AlertInlineButtonsBuilder button: () -> Button = { EmptyView() }
-    ) where Icon == Orbit.Icon {
-        self.init(title, isSubtle: isSubtle, button: button) {
-            Icon(icon)
+    ) {
+        self.init(isSubtle: isSubtle, button: button) {
+            Heading(title, style: .title5)
+        } icon: {
+            Icon(icon)            
         }
     }
-
-    /// Creates Orbit ``AlertInline`` component with custom content and icon.
+    
+    /// Creates Orbit ``AlertInline`` component with localizable title.
+    @_semantics("swiftui.init_with_localization")
     init(
-        _ title: String = "",
+        _ title: LocalizedStringKey,
+        icon: Icon.Symbol? = nil,
         isSubtle: Bool = false,
-        @AlertInlineButtonsBuilder button: () -> Button,
-        @ViewBuilder icon: () -> Icon
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil,
+        @AlertInlineButtonsBuilder button: () -> Button = { EmptyView() }
     ) {
-        self.title = title
-        self.isSubtle = isSubtle
-        self.button = button()
-        self.icon = icon()
+        self.init(isSubtle: isSubtle, button: button) {
+            Heading(title, style: .title5, tableName: tableName, bundle: bundle)
+        } icon: {
+            Icon(icon)            
+        }
     }
 }
 
@@ -100,8 +124,14 @@ struct AlertInlinePreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        AlertInline("Alert", icon: .grid) {
-            Button("Primary") {}
+        VStack {
+            AlertInline("Alert", icon: .grid) {
+                Button("Primary") {}
+            }
+            
+            // EmptyView
+            AlertInline("", icon: nil)
+                .border(.redNormal)
         }
         .previewDisplayName()
     }

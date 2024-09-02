@@ -23,15 +23,15 @@ struct CopyableText: UIViewRepresentable {
 
 private final class CopyableLabel: UILabel {
 
-    /// Allows override default behaviour (copying whole text) by for example copying only part of it
+    /// Allows to override the default behaviour (copying whole text) for example by only copying a part of it.
     var textToBeCopied: String?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
 
         isUserInteractionEnabled = true
-        isAccessibilityElement = true
-        accessibilityTraits = .staticText
+        isAccessibilityElement = false
+        
         addGestureRecognizer(
             UILongPressGestureRecognizer(
                 target: self,

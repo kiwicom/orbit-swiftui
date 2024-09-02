@@ -110,8 +110,10 @@ struct StorybookCard {
             showBorder: false
         ) {
             ListChoice("ListChoice", action: {})
-            ListChoice("ListChoice") {
+            ListChoice {
                 // No action
+            } title: {
+                Heading("ListChoice", style: .title3)
             } icon: {
                 CountryFlag("us")
             }

@@ -21,8 +21,6 @@ struct StorybookEmptyState {
 
     static var standalone: some View {
         EmptyState(title, description: description, illustration: .noResults) {
-            contentPlaceholder
-        } buttons: {
             Button(primaryButton) {}
             Button(secondaryButton) {}
         }

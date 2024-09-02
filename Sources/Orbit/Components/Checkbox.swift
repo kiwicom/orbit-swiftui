@@ -36,16 +36,16 @@ import SwiftUI
 /// ```
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/checkbox/)
-public struct Checkbox: View {
+public struct Checkbox<Title: View, Description: View>: View {
 
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.textColor) private var textColor
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    private let title: String
-    private let description: String
-    private let state: State
+    private let state: CheckboxState
     @Binding private var isChecked: Bool
+    @ViewBuilder private let title: Title
+    @ViewBuilder private let description: Description
 
     public var body: some View {
         SwiftUI.Button {
@@ -57,12 +57,12 @@ public struct Checkbox: View {
         } label: {
             if title.isEmpty == false || description.isEmpty == false {
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(title)
+                    title
                         .textColor(labelColor)
-                        .fontWeight(.medium)
+                        .textFontWeight(.medium)
                         .accessibility(.checkboxTitle)
                     
-                    Text(description)
+                    description
                         .textSize(.small)
                         .textColor(descriptionColor)
                         .accessibility(.checkboxDescription)
@@ -72,6 +72,7 @@ public struct Checkbox: View {
         .buttonStyle(
             CheckboxButtonStyle(state: state, isChecked: isChecked)
         )
+        .accessibility(.checkbox)
     }
 
     private var labelColor: Color {
@@ -85,35 +86,69 @@ public struct Checkbox: View {
             ? .inkNormal
             : .cloudDarkHover
     }
+    
+    /// Creates Orbit ``Checkbox`` component with custom content.
+    public init(
+        isChecked: Binding<Bool>,
+        state: CheckboxState = .normal,
+        @ViewBuilder title: () -> Title = { EmptyView() },
+        @ViewBuilder description: () -> Description = { EmptyView() }
+    ) {
+        self._isChecked = isChecked
+        self.state = state
+        self.title = title()
+        self.description = description()
+    }
 }
 
-// MARK: - Inits
-public extension Checkbox {
+// MARK: - Convenience Inits
+public extension Checkbox where Title == Text, Description == Text {
 
     /// Creates Orbit ``Checkbox`` component.
+    @_disfavoredOverload
     init(
-        _ title: String = "",
-        description: String = "",
-        state: State = .normal,
-        isChecked: Binding<Bool>
+        _ title: some StringProtocol = String(""),
+        description: some StringProtocol = String(""),
+        isChecked: Binding<Bool>,
+        state: CheckboxState = .normal
     ) {
-        self.init(title: title, description: description, state: state, isChecked: isChecked)
+        self.init(isChecked: isChecked, state: state) {
+            Text(title)
+        } description: {
+            Text(description)
+        }
+    }
+    
+    /// Creates Orbit ``Checkbox`` component with localizable texts.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ title: LocalizedStringKey = "",
+        description: LocalizedStringKey = "",
+        isChecked: Binding<Bool>,
+        state: CheckboxState = .normal,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        titleComment: StaticString? = nil        
+    ) {
+        self.init(isChecked: isChecked, state: state) {
+            Text(title, tableName: tableName, bundle: bundle)
+        } description: {
+            Text(description, tableName: tableName, bundle: bundle)
+        }
     }
 }
 
 // MARK: - Types
-public extension Checkbox {
-    
-    /// A state of Orbit ``Checkbox``.
-    enum State {
-        case normal
-        case error
-    }
+
+/// A state of Orbit ``Checkbox``.
+public enum CheckboxState {
+    case normal
+    case error
 }
 
 // MARK: - Identifiers
 public extension AccessibilityID {
-
+    static let checkbox             = Self(rawValue: "orbit.checkbox")
     static let checkboxTitle        = Self(rawValue: "orbit.checkbox.title")
     static let checkboxDescription  = Self(rawValue: "orbit.checkbox.description")
 }
@@ -174,9 +209,9 @@ struct CheckboxPreviews: PreviewProvider {
         }
     }
 
-    static func checkbox(standalone: Bool, state: Checkbox.State = .normal, checked: Bool) -> some View {
+    static func checkbox(standalone: Bool, state: CheckboxState = .normal, checked: Bool) -> some View {
         StateWrapper(checked) { $isSelected in
-            Checkbox(standalone ? "" : label, description: standalone ? "" : description, state: state, isChecked: $isSelected)
+            Checkbox(standalone ? "" : label, description: standalone ? "" : description, isChecked: $isSelected, state: state)
         }
     }
 }

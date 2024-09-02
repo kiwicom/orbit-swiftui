@@ -76,27 +76,23 @@ public struct CarrierLogo: View, PotentiallyEmptyView {
     var isEmpty: Bool {
         images.isEmpty
     }
-}
-
-// MARK: - Inits
-public extension CarrierLogo {
-        
+    
+    /// Creates an Orbit ``CarrierLogo`` component with multiple images.
+    /// 
+    /// - Parameter images: logo images to show in the view.
+    public init(images: [Image]) {
+        self.images = images
+        self.size = .large
+    }
+    
     /// Creates an Orbit ``CarrierLogo`` component with a single logo image.
     /// 
     /// - Parameters:
     ///   - image: a logo image.
     ///   - size: the size of the view. The image will occupy the whole view.
-    init(image: Image, size: Icon.Size) {
+    public init(image: Image, size: Icon.Size) {
         self.images = [image]
         self.size = size
-    }
-        
-    /// Creates an Orbit ``CarrierLogo`` component with multiple images.
-    /// 
-    /// - Parameter images: logo images to show in the view.
-    init(images: [Image]) {
-        self.images = images
-        self.size = .large
     }
 }
 
@@ -135,7 +131,7 @@ struct CarrierLogoPreviews: PreviewProvider {
         .padding(.medium)
         .previewLayout(.sizeThatFits)
     }
-
+    
     static var standalone: some View {
         VStack {
             CarrierLogo(images: [square, plane1, plane2, plane3])
@@ -143,7 +139,7 @@ struct CarrierLogoPreviews: PreviewProvider {
         }
         .previewDisplayName()
     }
-
+    
     @ViewBuilder static var sizes: some View {
         HStack(alignment: .top, spacing: .medium) {
             CarrierLogo(image: square, size: .small)
@@ -152,7 +148,7 @@ struct CarrierLogoPreviews: PreviewProvider {
         }
         .previewDisplayName()
     }
-
+    
     @ViewBuilder static var sizesLogo: some View {
         HStack(alignment: .top, spacing: .medium) {
             CarrierLogo(image: plane1, size: .small)
@@ -161,22 +157,22 @@ struct CarrierLogoPreviews: PreviewProvider {
         }
         .previewDisplayName()
     }
-
+    
     @ViewBuilder static var twoLogos: some View {
         CarrierLogo(images: [square, square])
             .previewDisplayName()
     }
-
+    
     @ViewBuilder static var threeLogos: some View {
         CarrierLogo(images: [square, square, square])
             .previewDisplayName()
     }
-
+    
     @ViewBuilder static var fourLogos: some View {
         CarrierLogo(images: [square, square, square, square])
             .previewDisplayName()
     }
-
+    
     static var snapshot: some View {
         standalone
             .padding(.medium)

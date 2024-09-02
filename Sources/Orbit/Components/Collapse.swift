@@ -11,16 +11,15 @@ import SwiftUI
 /// ```
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/collapse/)
-public struct Collapse<Header: View, Content: View>: View {
+public struct Collapse<Title: View, Content: View>: View {
 
-    private let headerVerticalPadding: CGFloat
     private let showSeparator: Bool
     private let isExpanded: OptionalBindingSource<Bool>
     @ViewBuilder private let content: Content
-    @ViewBuilder private let header: Header
+    @ViewBuilder private let title: Title
 
     public var body: some View {
-        OptionalBinding(isExpanded) { $isExpanded in
+		OptionalBinding(isExpanded) { $isExpanded in
             VStack(alignment: .leading, spacing: 0) {
                 SwiftUI.Button {
                     withAnimation(.easeInOut(duration: 0.2)) {
@@ -28,7 +27,8 @@ public struct Collapse<Header: View, Content: View>: View {
                     }
                 } label: {
                     HStack(spacing: 0) {
-                        header
+                        title
+                            .textFontWeight(.medium)
                             .accessibility(.collapseHeader)
 
                         Spacer(minLength: .xSmall)
@@ -36,7 +36,6 @@ public struct Collapse<Header: View, Content: View>: View {
                         Icon(.chevronDown)
                             .rotationEffect(isExpanded ? .degrees(180) : .zero)
                     }
-                    .padding(.vertical, headerVerticalPadding)
                 }
                 .buttonStyle(ListChoiceButtonStyle())
 
@@ -46,7 +45,7 @@ public struct Collapse<Header: View, Content: View>: View {
                 }
             }
             .overlay(separator, alignment: .bottom)
-        }
+		}
     }
 
     @ViewBuilder private var separator: some View {
@@ -54,54 +53,113 @@ public struct Collapse<Header: View, Content: View>: View {
             Separator()
         }
     }
-}
-
-// MARK: - Inits
-
-public extension Collapse {
-
-    /// Creates Orbit ``Collapse`` component with a binding to the expansion state.
-    init(
+    
+    /// Creates Orbit ``Collapse`` component with custom content.
+    public init(
         isExpanded: Binding<Bool>,
         showSeparator: Bool = true,
         @ViewBuilder content: () -> Content,
-        @ViewBuilder header: () -> Header
+        @ViewBuilder title: () -> Title
     ) {
-        self.header = header()
-        self.headerVerticalPadding = 0
+        self.title = title()
         self.content = content()
         self.showSeparator = showSeparator
         self.isExpanded = .binding(isExpanded)
     }
-
-    /// Creates Orbit ``Collapse`` component.
-    init(@ViewBuilder content: () -> Content, showSeparator: Bool = true, @ViewBuilder header: () -> Header) {
-        self.header = header()
-        self.headerVerticalPadding = 0
+    
+    /// Creates Orbit ``Collapse`` component with custom content.
+    public init(
+        isExpanded: Bool = false,
+        showSeparator: Bool = true,
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder title: () -> Title
+    ) {
+        self.title = title()
         self.content = content()
         self.showSeparator = showSeparator
-        self.isExpanded = .state(false)
+        self.isExpanded = .state(isExpanded)
     }
 }
 
-public extension Collapse where Header == Text {
-
-    /// Creates Orbit ``Collapse`` component with a binding to the expansion state.
-    init(_ title: String, isExpanded: Binding<Bool>, showSeparator: Bool = true,  @ViewBuilder content: () -> Content) {
-        self.header = Text(title)
-        self.headerVerticalPadding = .small
-        self.content = content()
-        self.showSeparator = showSeparator
-        self.isExpanded = .binding(isExpanded)
-    }
+// MARK: - Convenience Inits
+public extension Collapse where Title == CollapseTitle {
 
     /// Creates Orbit ``Collapse`` component.
-    init(_ title: String, showSeparator: Bool = true, @ViewBuilder content: () -> Content) {
-        self.header = Text(title)
-        self.headerVerticalPadding = .small
-        self.content = content()
-        self.showSeparator = showSeparator
-        self.isExpanded = .state(false)
+    @_disfavoredOverload
+    init(
+        _ title: some StringProtocol = String(""),
+        isExpanded: Binding<Bool>, 
+        showSeparator: Bool = true,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            isExpanded: isExpanded, 
+            showSeparator: showSeparator
+        ) {
+            content()
+        } title: {
+            CollapseTitle(title: Text(title))
+        }
+    }
+    
+    /// Creates Orbit ``Collapse`` component.
+    @_disfavoredOverload
+    init(
+        _ title: some StringProtocol = String(""),
+        isExpanded: Bool = false, 
+        showSeparator: Bool = true,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            isExpanded: isExpanded, 
+            showSeparator: showSeparator
+        ) {
+            content()
+        } title: {
+            CollapseTitle(title: Text(title))
+        }
+    }
+    
+    /// Creates Orbit ``Collapse`` component with localizable title.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ title: LocalizedStringKey = "",
+        isExpanded: Binding<Bool>, 
+        showSeparator: Bool = true,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            isExpanded: isExpanded, 
+            showSeparator: showSeparator
+        ) {
+            content()
+        } title: {
+            CollapseTitle(title: Text(title, tableName: tableName, bundle: bundle))
+        }
+    }
+    
+    /// Creates Orbit ``Collapse`` component with localizable title.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ title: LocalizedStringKey = "",
+        isExpanded: Bool = false, 
+        showSeparator: Bool = true,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            isExpanded: isExpanded, 
+            showSeparator: showSeparator
+        ) {
+            content()
+        } title: {
+            CollapseTitle(title: Text(title, tableName: tableName, bundle: bundle))
+        }
     }
 }
 
@@ -110,11 +168,23 @@ public extension AccessibilityID {
     static let collapseHeader = Self(rawValue: "orbit.collapse.header")
 }
 
+// MARK: - Types
+
+public struct CollapseTitle: View {
+    
+    let title: Text
+
+    public var body: some View {
+        title
+            .padding(.vertical, .small)
+    }
+}
+
 // MARK: - Previews
 struct CollapsePreviews: PreviewProvider {
 
     static var previews: some View {
-        PreviewWrapper {
+        PreviewWrapper {            
             collapsed
             expanded
             snapshot
@@ -140,7 +210,7 @@ struct CollapsePreviews: PreviewProvider {
             StateWrapper(isExpanded) { isExpanded in
                 Collapse(isExpanded: isExpanded) {
                     contentPlaceholder
-                } header: {
+                } title: {
                     headerPlaceholder
                 }
             }
@@ -163,18 +233,18 @@ struct CollapsePreviews: PreviewProvider {
 
     static var snapshot: some View {
         VStack(spacing: 0) {
-            Collapse("Toggle content (collapsed)") {
+            Collapse("Toggle content (collapsed)", isExpanded: .constant(false)) {
                 contentPlaceholder
             }
             Collapse("Toggle content (expanded)", isExpanded: .constant(true)) {
                 contentPlaceholder
             }
-            Collapse {
+            Collapse(isExpanded: .constant(false)) {
                 contentPlaceholder
-            } header: {
+            } title: {
                 headerPlaceholder
             }
-            Collapse("No separator", showSeparator: false) {
+            Collapse("No separator", isExpanded: .constant(false), showSeparator: false) {
                 contentPlaceholder
             }
         }

@@ -46,6 +46,7 @@ public struct Switch<Icon: View>: View {
             .animation(.easeInOut(duration: 0.15), value: isOn)
             // FIXME: Replace with a SwitchButtonStyle
             .accessibility(addTraits: [.isButton])
+            .accessibility(value: SwiftUI.Text(isOn ? "1" : "0"))
             .onTapGesture {
                 if isHapticsEnabled {
                     HapticsProvider.sendHapticFeedback(.light(0.5))
@@ -101,28 +102,24 @@ public struct Switch<Icon: View>: View {
     private var indicatorColor: Color {
         colorScheme == .light ? .whiteNormal : .cloudNormal
     }
-}
-
-// MARK: - Previews
-public extension Switch {
     
     /// Creates Orbit ``Switch`` component with custom icon.
-    init(isOn: Binding<Bool>, @ViewBuilder icon: () -> Icon) {
+    public init(
+        isOn: Binding<Bool>, 
+        @ViewBuilder icon: () -> Icon = { EmptyView() }
+    ) {
         self._isOn = isOn
         self.icon = icon()
     }
+}
+
+// MARK: - Convenience Inits
+public extension Switch {
     
     /// Creates Orbit ``Switch`` component with Orbit ``Icon/Symbol``.
     init(isOn: Binding<Bool>, icon: Icon.Symbol?) where Icon == Orbit.Icon {
         self.init(isOn: isOn) {
             Icon(icon)
-        }
-    }
-    
-    /// Creates Orbit ``Switch`` component.
-    init(isOn: Binding<Bool>) where Icon == EmptyView {
-        self.init(isOn: isOn) {
-            EmptyView()
         }
     }
 }

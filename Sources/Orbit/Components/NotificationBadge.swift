@@ -97,23 +97,23 @@ public struct NotificationBadge<Content: View>: View {
     private var defaultStatus: Status {
         status ?? .info
     }
-}
-
-// MARK: - Inits
-public extension NotificationBadge {
-
+    
     /// Creates Orbit ``NotificationBadge`` component with custom content.
-    init(
+    public init(
         type: BadgeType = .status(nil),
         @ViewBuilder content: () -> Content
     ) {
         self.type = type
         self.content = content()
     }
+}
+
+// MARK: - Convenience Inits
+public extension NotificationBadge {
     
     /// Creates Orbit ``NotificationBadge`` component containing text.
     init(
-        _ label: String,
+        _ label: some StringProtocol,
         type: BadgeType = .status(nil)
     ) where Content == Text {
         self.init(type: type) {

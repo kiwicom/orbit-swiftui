@@ -8,7 +8,7 @@ public struct RadioButtonStyle: ButtonStyle {
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.isEnabled) private var isEnabled
 
-    private let state: Radio.State
+    private let state: RadioState
     private let isChecked: Bool
 
     public func makeBody(configuration: Configuration) -> some View {
@@ -89,7 +89,7 @@ public struct RadioButtonStyle: ButtonStyle {
     }
     
     /// Create button style for Orbit ``Radio`` component.
-    public init(state: Radio.State, isChecked: Bool) {
+    public init(state: RadioState, isChecked: Bool) {
         self.state = state
         self.isChecked = isChecked
     }

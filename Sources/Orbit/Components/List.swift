@@ -18,21 +18,17 @@ import SwiftUI
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/list/)
 public struct List<Content: View>: View {
 
-    private let spacing: CGFloat
     @ViewBuilder private let content: Content
+    private let spacing: CGFloat
 
     public var body: some View {
         VStack(alignment: .leading, spacing: spacing) {
             content
         }
     }
-}
-
-// MARK: - Inits
-public extension List {
     
     /// Creates Orbit ``List`` component that wraps ``ListItem`` content.
-    init(spacing: CGFloat = .xSmall, @ViewBuilder _ content: () -> Content) {
+    public init(spacing: CGFloat = .xSmall, @ViewBuilder content: () -> Content) {
         self.spacing = spacing
         self.content = content()
     }
@@ -59,7 +55,9 @@ struct ListPreviews: PreviewProvider {
             ListItem(listItemText, type: .secondary)
             ListItem(listItemText, icon: .circleSmall)
             ListItem(listItemText, icon: .circleSmall, type: .secondary)
-            ListItem(listItemText) {
+            ListItem {
+                Text(listItemText)
+            } icon: {
                 Icon(.grid)
                     .iconSize(.small)
             }

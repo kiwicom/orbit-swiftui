@@ -32,17 +32,28 @@ struct StorybookTile {
             }
             Tile(title, description: description, icon: .airplane, action: {})
                 .iconColor(.blueNormal)
-            Tile("SF Symbol", description: description) {
+            
+            Tile {
                 // No action
+            } title: {
+                Heading("SF Symbol", style: .title4)
+            } description: {
+                Text(description)
             } icon: {
                 Icon("info.circle.fill")
             }
-                .status(.critical)
-            Tile("Country Flag", description: description, disclosure: .buttonLink("Action", type: .primary)) {
+            .status(.critical)
+            
+            Tile(disclosure: .buttonLink("Action", type: .primary)) {
                 // No action
+            } title: {
+                Heading("Country Flag", style: .title4)
+            } description: {
+                Text(description)
             } icon: {
                 CountryFlag("us")
             }
+            
             Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", type: .critical), action: {})
             Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid), action: {})
             Tile(disclosure: .none) {

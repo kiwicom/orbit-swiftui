@@ -45,14 +45,14 @@ import SwiftUI
 /// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/button/)
-public struct Button<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEmptyView {
+public struct Button<LeadingIcon: View, Label: View, TrailingIcon: View>: View, PotentiallyEmptyView {
 
     @Environment(\.suppressButtonStyle) private var suppressButtonStyle
 
-    private let label: String
     private let type: ButtonType
     private let action: () -> Void
     @ViewBuilder private let leadingIcon: LeadingIcon
+    @ViewBuilder private let label: Label
     @ViewBuilder private let trailingIcon: TrailingIcon
 
     public var body: some View {
@@ -75,7 +75,7 @@ public struct Button<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEm
             SwiftUI.Button() {
                 action()
             } label: {
-                Text(label)
+                label
             }
         }
     }
@@ -83,41 +83,67 @@ public struct Button<LeadingIcon: View, TrailingIcon: View>: View, PotentiallyEm
     var isEmpty: Bool {
         label.isEmpty && leadingIcon.isEmpty && trailingIcon.isEmpty
     }
+    
+    /// Creates Orbit ``Button`` component with custom content.
+    public init(
+        type: ButtonType = .primary,
+        action: @escaping () -> Void,
+        @ViewBuilder label: () -> Label,
+        @ViewBuilder icon: () -> LeadingIcon = { EmptyView() },
+        @ViewBuilder disclosureIcon: () -> TrailingIcon = { EmptyView() }
+    ) {
+        self.type = type
+        self.action = action
+        self.label = label()
+        self.leadingIcon = icon()
+        self.trailingIcon = disclosureIcon()
+    }
 }
 
-// MARK: - Inits
-public extension Button {
+// MARK: - Convenience Inits
+public extension Button where Label == Text, LeadingIcon == Icon, TrailingIcon == Icon {
 
     /// Creates Orbit ``Button`` component.
+    @_disfavoredOverload
     init(
-        _ label: String = "",
+        _ label: some StringProtocol = String(""),
         icon: Icon.Symbol? = nil,
         disclosureIcon: Icon.Symbol? = nil,
         type: ButtonType = .primary,
         action: @escaping () -> Void
-    ) where LeadingIcon == Icon, TrailingIcon == Icon {
-        self.init(label, type: type) {
+    ) {
+        self.init(type: type) {
             action()
+        } label: {
+            Text(label)
         } icon: {
             Icon(icon)
         } disclosureIcon: {
             Icon(disclosureIcon)
         }
     }
-
-    /// Creates Orbit ``Button`` component with custom icons.
+    
+    /// Creates Orbit ``Button`` component with localizable label.
+    @_semantics("swiftui.init_with_localization")
     init(
-        _ label: String = "",
+        _ label: LocalizedStringKey,
+        icon: Icon.Symbol? = nil,
+        disclosureIcon: Icon.Symbol? = nil,
         type: ButtonType = .primary,
-        action: @escaping () -> Void,
-        @ViewBuilder icon: () -> LeadingIcon,
-        @ViewBuilder disclosureIcon: () -> TrailingIcon = { EmptyView() }
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil,
+        action: @escaping () -> Void
     ) {
-        self.label = label
-        self.type = type
-        self.action = action
-        self.leadingIcon = icon()
-        self.trailingIcon = disclosureIcon()
+        self.init(type: type) {
+            action()
+        } label: {
+            Text(label, tableName: tableName, bundle: bundle)
+        } icon: {
+            Icon(icon)
+        } disclosureIcon: {
+            Icon(disclosureIcon)
+        }
     }
 }
 
@@ -153,7 +179,24 @@ struct ButtonPreviews: PreviewProvider {
     static var standalone: some View {
         VStack {
             Button("Button", icon: .grid, action: {})
-            Button(action: {}) // Results in EmptyView
+            
+            // EmptyView
+            Group {
+                Button(action: {})
+                Button("", action: {})
+                
+                Button {
+                    // No action
+                } label: {
+                    Text("")
+                } icon: {
+                    Icon(nil)
+                } disclosureIcon: {
+                    Icon(nil)
+                }
+            }
+            .border(.redNormal)
+            
         }
         .padding(.medium)
         .previewDisplayName()
@@ -237,13 +280,18 @@ struct ButtonPreviews: PreviewProvider {
 
     @ViewBuilder static var mix: some View {
         VStack(alignment: .leading, spacing: .xLarge) {
-            Button("Button with SF Symbol") {
+            Button {
                 // No action
+            } label: {
+              Text("Button with SF Symbol")  
             } icon: {
                 Icon("info.circle.fill")
             }
-            Button("Button with Flag", type: .secondary) {
+            
+            Button(type: .secondary) {
                 // No action
+            } label: {
+                Text("Button with SF Symbol")  
             } icon: {
                 CountryFlag("us")
             }

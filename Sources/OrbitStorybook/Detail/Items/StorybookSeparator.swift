@@ -17,7 +17,7 @@ struct StorybookSeparator {
                 .textColor(.productDark)
             Separator("Separator with very very very very very long and multiline label")
             Separator("Hairline thickness", thickness: .hairline)
-            Separator("Custom thickness", thickness: .custom(.xSmall))
+            Separator("Custom thickness", thickness: .xSmall)
         }
         .previewDisplayName()
     }

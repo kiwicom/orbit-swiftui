@@ -20,7 +20,7 @@ struct StorybookTag {
                     Tag(label, icon: .sort, isSelected: isSelected, removeAction: {})
                 }
                 StateWrapper(false) { isSelected in
-                    Tag(icon: .notificationAdd, isFocused: false, isSelected: isSelected)
+                    Tag("", icon: .notificationAdd, isFocused: false, isSelected: isSelected)
                 }
             }
         }

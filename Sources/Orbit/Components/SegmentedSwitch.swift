@@ -29,20 +29,21 @@ import SwiftUI
 /// Component expands horizontally unless prevented by the native `fixedSize()` or ``idealSize()`` modifier.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/interaction/segmentedswitch/)
-public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
+public struct SegmentedSwitch<Selection: Hashable, Label: View, Content: View>: View {
 
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.idealSize) private var idealSize
-    @Binding private var selection: Selection?
-    private let label: String
+    @Binding private var selection: Selection
     private let message: Message?
-    private let content: Content
+    
+    @ViewBuilder private let label: Label
+    @ViewBuilder private let content: Content
 
     private let borderWidth: CGFloat = BorderWidth.active
     private let horizontalPadding: CGFloat = .small
 
     public var body: some View {
-        FieldWrapper(label, message: message) {
+        FieldWrapper(message: message) {
             InputContent(message: message) {
                 HStack(spacing: borderWidth) {
                     content
@@ -59,9 +60,10 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
                     unselectedSegmentButtons(preferences)
                 }
             }
+        } label: {
+            label
         }
         .accessibilityElement(children: .contain)
-        .accessibility(label: .init(label))
         .accessibility(hint: .init(message?.description ?? ""))
     }
 
@@ -106,7 +108,9 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
             )
 
             SwiftUI.Button {
-                selection = selection(from: preference)
+                if let selection = selection(from: preference) {
+                    self.selection = selection
+                }
             } label: {
                 label()
                     .contentShape(.rect)
@@ -114,13 +118,12 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
             .buttonStyle(TransparentButtonStyle(isActive: isSelected, borderWidth: borderWidth, pressedOpacity: 0.4))
             .frame(width: width)
             .offset(x: minX)
-            .accessibility(value: .init((selection(from: preference)).map(String.init(describing:)) ?? ""))
             .accessibility(addTraits: isSelected ? .isSelected : [])
         }
     }
 
     @ViewBuilder private func noSelectionBackground(_ preferences: [IDPreference]) -> some View {
-        if selection == nil {
+        if isSelected == false {
             GeometryReader { geometry in
                 segmentBackground
                     .overlay(
@@ -173,6 +176,11 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
         idealSize.horizontal == true
     }
     
+    private var isSelected: Bool {
+        // Check if the generic type is not nil
+        (selection as AnyObject) is NSNull == false
+    }
+    
     private func measurements(
         index: Int,
         preferences: [IDPreference],
@@ -195,41 +203,55 @@ public struct SegmentedSwitch<Selection: Hashable, Content: View>: View {
             return (width, minX)
         }
     }
-
-}
-
-// MARK: - Inits
-public extension SegmentedSwitch {
     
-    /// Creates Orbit ``SegmentedSwitch`` component with optional selection.
-    init(
-        _ label: String = "",
-        selection: Binding<Selection?>,
+    /// Creates Orbit ``SegmentedSwitch`` component with custom content.
+    public init(
+        selection: Binding<Selection>,
         message: Message? = nil,
-        @ViewBuilder content: () -> Content
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder label: () -> Label = { EmptyView() }
     ) {
-        self.label = label
         self._selection = selection
         self.message = message
         self.content = content()
+        self.label = label()
     }
+}
 
-    /// Creates Orbit ``SegmentedSwitch`` component with non-optional selection.
+// MARK: - Convenience Inits
+public extension SegmentedSwitch where Label == Text {
+
+    /// Creates Orbit ``SegmentedSwitch`` component.
+    @_disfavoredOverload
     init(
-        _ label: String = "",
+        _ label: some StringProtocol = String(""),
         selection: Binding<Selection>,
         message: Message? = nil,
         @ViewBuilder content: () -> Content
     ) {
-        self.init(
-            label,
-            selection: .init(
-                get: { selection.wrappedValue },
-                set: { newValue in newValue.map { selection.wrappedValue = $0 } }
-            ),
-            message: message,
-            content: content
-        )
+        self.init(selection: selection, message: message) {
+            content()
+        } label: {
+            Text(label)
+        }
+    }
+    
+    /// Creates Orbit ``SegmentedSwitch`` component with localizable label.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ label: LocalizedStringKey = "",
+        selection: Binding<Selection>,
+        message: Message? = nil,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(selection: selection, message: message) {
+            content()
+        } label: {
+            Text(label, tableName: tableName, bundle: bundle)
+        }
     }
 }
 

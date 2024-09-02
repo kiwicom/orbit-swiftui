@@ -9,7 +9,7 @@ public struct CheckboxButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.textColor) private var textColor
 
-    private let state: Checkbox.State
+    private let state: CheckboxState
     private let isChecked: Bool
     
     public func makeBody(configuration: Configuration) -> some View {
@@ -111,7 +111,7 @@ public struct CheckboxButtonStyle: ButtonStyle {
     }
     
     /// Create button style for Orbit ``Checkbox`` component.
-    public init(state: Checkbox.State, isChecked: Bool) {
+    public init(state: CheckboxState, isChecked: Bool) {
         self.state = state
         self.isChecked = isChecked
     }

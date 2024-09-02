@@ -20,24 +20,65 @@ public final class ToastQueue: ObservableObject {
     
     /// View model for Orbit ``Toast`` component.
     public struct Toast: Identifiable {
+        
         public let id: UUID
-        let description: String
-        let icon: Icon.Symbol?
         let progress: Double
+        
+        @ViewBuilder let icon: AnyView
+        @ViewBuilder let description: AnyView
 
-        init(id: UUID = UUID(), description: String, icon: Icon.Symbol?, progress: Double) {
+        init(
+            id: UUID = UUID(), 
+            progress: Double,
+            @ViewBuilder description: () -> AnyView,
+            @ViewBuilder icon: () -> AnyView
+        ) {
             self.id = id
-            self.description = description
-            self.icon = icon
             self.progress = progress
+            self.description = description()
+            self.icon = icon()
         }
 
-        public init(_ description: String, icon: Icon.Symbol? = nil) {
-            self.init(description: description, icon: icon, progress: 0)
+        public init(
+            @ViewBuilder description: () -> AnyView,
+            @ViewBuilder icon: () -> AnyView = { AnyView(EmptyView()) }
+        ) {
+            self.init(progress: 0, description: description, icon: icon)
+        }
+        
+        @_disfavoredOverload
+        public init(
+            _ description: some StringProtocol = String(""),
+            icon: Icon.Symbol? = nil
+        ) {
+            self.init {
+                AnyView(Text(description))
+            } icon: {
+                AnyView(Icon(icon))
+            }
+        }
+        
+        @_semantics("swiftui.init_with_localization")
+        public init(
+            _ description: LocalizedStringKey,
+            icon: Icon.Symbol? = nil,
+            tableName: String? = nil,
+            bundle: Bundle? = nil,
+            comment: StaticString? = nil
+        ) {
+            self.init {
+                AnyView(Text(description, tableName: tableName, bundle: bundle))
+            } icon: {
+                AnyView(Icon(icon))
+            }
         }
 
         func withProgress(_ progress: Double) -> Self {
-            .init(id: id, description: description, icon: icon, progress: max(min(1, progress), 0))
+            .init(id: id, progress: max(min(1, progress), 0)) {
+                description
+            } icon: {
+                icon
+            }
         }
     }
     
@@ -62,10 +103,29 @@ public final class ToastQueue: ObservableObject {
     }
 
     /// Add a new Toast to be displayed as soon as there is no active Toast displayed.
-    public func add(_ desctription: String, icon: Icon.Symbol? = nil) {
-        add(Toast(desctription, icon: icon))
+    @_disfavoredOverload
+    public func add(
+        _ description: some StringProtocol = String(""), 
+        icon: Icon.Symbol? = nil
+    ) {
+        add(
+            Toast(description, icon: icon)
+        )
     }
-
+    
+    /// Add a new Toast to be displayed as soon as there is no active Toast displayed.
+    public func add(
+        _ description: LocalizedStringKey, 
+        icon: Icon.Symbol? = nil,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil
+    ) {
+        add(
+            Toast(description, icon: icon)
+        )
+    }
+    
     /// Add a new Toast to be displayed as soon as there is no active Toast displayed.
     public func add(_ toast: Toast) {
         toastsSubject.send(toast)

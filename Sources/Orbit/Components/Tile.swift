@@ -37,22 +37,20 @@ import SwiftUI
 /// Component expands horizontally unless prevented by the native `fixedSize()` or ``idealSize()`` modifier.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/tile/)
-public struct Tile<Content: View, Icon: View>: View {
+public struct Tile<Icon: View, Title: View, Description: View, Content: View>: View {
 
     @Environment(\.idealSize) private var idealSize
     @Environment(\.isInsideTileGroup) private var isInsideTileGroup
     @Environment(\.isTileSeparatorVisible) private var isTileSeparatorVisible
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    private let title: String
-    private let description: String
     private let disclosure: TileDisclosure?
     private let showBorder: Bool
-    private let titleStyle: Heading.Style
-    private let descriptionColor: Color
     private let action: () -> Void
-    @ViewBuilder private let content: Content
     @ViewBuilder private let icon: Icon
+    @ViewBuilder private let title: Title
+    @ViewBuilder private let description: Description
+    @ViewBuilder private let content: Content
 
     public var body: some View {
         SwiftUI.Button {
@@ -65,10 +63,13 @@ public struct Tile<Content: View, Icon: View>: View {
             buttonContent
         }
         .buttonStyle(TileButtonStyle(style: tileBorderStyle))
-        .accessibilityElement(children: .ignore)
-        .accessibility(label: .init(title))
-        .accessibility(hint: .init(description))
+        .accessibility {
+            title
+        } hint: {
+            description
+        }
         .accessibility(addTraits: .isButton)
+        .accessibility(.tile)
     }
 
     @ViewBuilder private var buttonContent: some View {
@@ -96,16 +97,18 @@ public struct Tile<Content: View, Icon: View>: View {
         if isHeaderEmpty == false {
             HStack(alignment: .top, spacing: .xSmall) {
                 icon
-                    .font(.system(size: Orbit.Icon.Size.fromTextSize(size: titleStyle.size)))
+                    .font(
+                        .system(size: Orbit.Icon.Size.fromTextSize(size: Heading.Style.title4.size))
+                    )
                     .foregroundColor(.inkNormal)
                     .accessibility(.tileIcon)
 
                 VStack(alignment: .leading, spacing: .xxSmall) {
-                    Heading(title, style: titleStyle)
+                    title
                         .accessibility(.tileTitle)
 
-                    Text(description)
-                        .textColor(descriptionColor)
+                    description
+                        .textColor(.inkNormal)
                         .accessibility(.tileDescription)
                 }
                 .alignmentGuide(.listRowSeparatorLeading) { $0[.leading] }
@@ -165,57 +168,82 @@ public struct Tile<Content: View, Icon: View>: View {
     private var isHeaderEmpty: Bool {
         title.isEmpty && description.isEmpty && icon.isEmpty
     }
-}
-
-// MARK: - Inits
-public extension Tile {
     
-    /// Creates Orbit ``Tile`` component with custom icon.
-    init(
-        _ title: String = "",
-        description: String = "",
+    /// Creates Orbit ``Tile`` component with custom content.
+    public init(
         disclosure: TileDisclosure? = .icon(.chevronForward),
         showBorder: Bool = true,
-        titleStyle: Heading.Style = .title4,
-        descriptionColor: Color = .inkNormal,
         action: @escaping () -> Void,
         @ViewBuilder content: () -> Content = { EmptyView() },
-        @ViewBuilder icon: () -> Icon
+        @ViewBuilder title: () -> Title = { EmptyView() },
+        @ViewBuilder description: () -> Description = { EmptyView() },
+        @ViewBuilder icon: () -> Icon = { EmptyView() }
     ) {
-        self.title = title
-        self.description = description
         self.disclosure = disclosure
         self.showBorder = showBorder
-        self.titleStyle = titleStyle
-        self.descriptionColor = descriptionColor
+        self.title = title()
+        self.description = description()
         self.action = action
         self.content = content()
         self.icon = icon()
     }
+}
+
+// MARK: - Inits
+public extension Tile where Title == Heading, Description == Text, Icon == Orbit.Icon {
     
     /// Creates Orbit ``Tile`` component.
+    @_disfavoredOverload
     init(
-        _ title: String = "",
-        description: String = "",
+        _ title: some StringProtocol = String(""),
+        description: some StringProtocol = String(""),
         icon: Icon.Symbol? = nil,
         disclosure: TileDisclosure? = .icon(.chevronForward),
         showBorder: Bool = true,
-        titleStyle: Heading.Style = .title4,
-        descriptionColor: Color = .inkNormal,
         action: @escaping () -> Void,
         @ViewBuilder content: () -> Content = { EmptyView() }
-    ) where Icon == Orbit.Icon {
+    ) {
         self.init(
-            title,
-            description: description,
             disclosure: disclosure,
-            showBorder: showBorder,
-            titleStyle: titleStyle,
-            descriptionColor: descriptionColor
+            showBorder: showBorder
         ) {
             action()
         } content: {
             content()
+        } title: {
+            Heading(title, style: .title4)
+        } description: {
+            Text(description)
+        } icon: {
+            Icon(icon)
+        }
+    }
+    
+    /// Creates Orbit ``Tile`` component with localizable texts.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ title: LocalizedStringKey = "",
+        description: LocalizedStringKey = "",
+        icon: Icon.Symbol? = nil,
+        disclosure: TileDisclosure? = .icon(.chevronForward),
+        showBorder: Bool = true,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        titleComment: StaticString? = nil,
+        action: @escaping () -> Void,
+        @ViewBuilder content: () -> Content = { EmptyView() }
+    ) {
+        self.init(
+            disclosure: disclosure,
+            showBorder: showBorder
+        ) {
+            action()
+        } content: {
+            content()
+        } title: {
+            Heading(title, style: .title4, tableName: tableName, bundle: bundle)
+        } description: {
+            Text(description, tableName: tableName, bundle: bundle)
         } icon: {
             Icon(icon)
         }
@@ -247,7 +275,7 @@ public enum TileDisclosure: Equatable {
 
 // MARK: - Identifiers
 public extension AccessibilityID {
-
+    static let tile                         = Self(rawValue: "orbit.tile")
     static let tileTitle                    = Self(rawValue: "orbit.tile.title")
     static let tileIcon                     = Self(rawValue: "orbit.tile.icon")
     static let tileDescription              = Self(rawValue: "orbit.tile.description")
@@ -339,14 +367,27 @@ struct TilePreviews: PreviewProvider {
             .iconColor(.blueNormal)
             .status(.info)
 
-            Tile("SF Symbol", description: description) {
+            Tile {
                 // No action
+            } title: {
+                Heading("SF Symbol", style: .title4)
+            } description: {
+                Text(description)
             } icon: {
                 Icon("info.circle.fill")
             }
             .status(.critical)
 
-            Tile("Country Flag", description: description, icon: .grid, disclosure: .buttonLink("Action", type: .primary), action: {})
+            Tile(disclosure: .buttonLink("Action", type: .primary)) {
+                // No action
+            } title: {
+                Heading("Country Flag", style: .title4)
+            } description: {
+                Text(description)
+            } icon: {
+                CountryFlag("us")
+            }
+            
             Tile(title, description: description, icon: .airplane, disclosure: .buttonLink("Action", type: .critical), action: {})
             Tile(title, description: description, icon: .airplane, disclosure: .icon(.grid), action: {})
         }

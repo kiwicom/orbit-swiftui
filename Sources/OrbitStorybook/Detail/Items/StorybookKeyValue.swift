@@ -10,7 +10,6 @@ struct StorybookKeyValue {
     static var basic: some View {
         VStack(alignment: .leading, spacing: .large) {
             KeyValue("Key", value: value)
-            KeyValue("Key", value: value, size: .large)
             Separator()
             HStack(alignment: .firstTextBaseline, spacing: .large) {
                 KeyValue("Key with no value")

@@ -43,78 +43,79 @@ import SwiftUI
 /// Component expands horizontally unless prevented by native `fixedSize()` or ``idealSize()`` modifier.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/alert/)
-public struct Alert<Content: View, Icon: View, Buttons: View>: View {
+public struct Alert<Icon: View, Title: View, Description: View, Buttons: View>: View {
 
-    private let title: String
-    private let description: String
     private let isSubtle: Bool
-    @ViewBuilder private let buttons: Buttons
-    @ViewBuilder private let content: Content
     @ViewBuilder private let icon: Icon
+    @ViewBuilder private let title: Title
+    @ViewBuilder private let description: Description
+    @ViewBuilder private let buttons: Buttons
 
     public var body: some View {
-        AlertContent(title: title, description: description, isInline: false) {
-            content
+        AlertContent(isInline: false) {
+            buttons
+        } title: {
+            title
+        } description: {
+            description
         } icon: {
             icon
-        } buttons: {
-            buttons
         }
         .environment(\.isSubtle, isSubtle)
     }
-}
-
-public extension Alert {
-
-    /// Creates Orbit ``Alert`` component.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Symbol? = nil,
+    
+    /// Creates Orbit ``Alert`` component with custom content.
+    public init(
         isSubtle: Bool = false,
-        @AlertButtonsBuilder buttons: () -> Buttons
-    ) where Content == EmptyView, Icon == Orbit.Icon {
-        self.init(title: title, description: description, isSubtle: isSubtle) {
-            buttons()
-        } content: {
-            EmptyView()
-        } icon: {
-            Icon(icon)
-        }
-    }
-
-    /// Creates Orbit ``Alert`` component with no buttons.
-    init(
-        _ title: String = "",
-        description: String = "",
-        icon: Icon.Symbol? = nil,
-        isSubtle: Bool = false
-    ) where Content == EmptyView, Icon == Orbit.Icon, Buttons == EmptyView {
-        self.init(title: title, description: description, isSubtle: isSubtle) {
-            EmptyView()
-        } content: {
-            EmptyView()
-        } icon: {
-            Icon(icon)
-        }
-    }
-
-    /// Creates Orbit ``Alert`` component with custom content and icon.
-    init(
-        _ title: String = "",
-        description: String = "",
-        isSubtle: Bool = false,
-        @ViewBuilder content: () -> Content = { EmptyView() },
         @AlertButtonsBuilder buttons: () -> Buttons,
+        @ViewBuilder title: () -> Title = { EmptyView() },
+        @ViewBuilder description: () -> Description = { EmptyView() },
         @ViewBuilder icon: () -> Icon = { EmptyView() }
     ) {
-        self.init(title: title, description: description, isSubtle: isSubtle) {
-            buttons()
-        } content: {
-            content()
-        } icon: {
-            icon()
-        }
+        self.isSubtle = isSubtle
+        self.icon = icon()
+        self.title = title()
+        self.description = description()
+        self.buttons = buttons()
+    }
+}
+
+// MARK: - Convenience Inits
+public extension Alert where Title == Heading, Description == Text, Icon == Orbit.Icon {
+
+    /// Creates Orbit ``Alert`` component.
+    @_disfavoredOverload
+    init(
+        _ title: some StringProtocol = String(""),
+        description: some StringProtocol = String(""),
+        icon: Icon.Symbol? = nil,
+        isSubtle: Bool = false,
+        @AlertButtonsBuilder buttons: () -> Buttons = { EmptyView() }
+    ) {
+        self.isSubtle = isSubtle
+        self.icon = Icon(icon)
+        self.title = Heading(title, style: .title5)
+        self.description = Text(description)
+        self.buttons = buttons()
+    }
+    
+    /// Creates Orbit ``Alert`` component with localizable texts.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ title: LocalizedStringKey,
+        description: LocalizedStringKey = "",
+        icon: Icon.Symbol? = nil,
+        isSubtle: Bool = false,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        titleComment: StaticString? = nil,
+        @AlertButtonsBuilder buttons: () -> Buttons = { EmptyView() }
+    ) {
+        self.isSubtle = isSubtle
+        self.icon = Icon(icon)
+        self.title = Heading(title, style: .title5, tableName: tableName, bundle: bundle)
+        self.description = Text(description, tableName: tableName, bundle: bundle)
+        self.buttons = buttons()
     }
 }
 
@@ -151,13 +152,9 @@ struct AlertPreviews: PreviewProvider {
     }
 
     static var standalone: some View {
-        Alert(title, description: description) {
-            contentPlaceholder
-        } buttons: {
+        Alert(title, description: description, icon: .informationCircle) {
             Button("Primary") {}
             Button("Secondary") {}
-        } icon: {
-            Icon(.informationCircle)
         }
         .status(.info)
         .previewDisplayName()
@@ -165,14 +162,16 @@ struct AlertPreviews: PreviewProvider {
 
     static var mixed: some View {
         VStack(alignment: .leading, spacing: .large) {
-            Alert(
-                "Alert with\n<u>multiline</u> title",
-                description: "Alert <strong>multiline</strong> description\nwith <applink1>link</applink1>"
-            ) {
-                contentPlaceholder
-            } buttons: {
+            Alert {
                 Button("Primary") {}
                 Button("Secondary") {}
+            } title: {
+                Heading("Alert with\n<u>multiline</u> title", style: .title5)
+            } description: {
+                VStack(alignment: .leading, spacing: .small) {
+                    Text("Alert <strong>multiline</strong> description\nwith <applink1>link</applink1>")
+                    contentPlaceholder
+                }
             } icon: {
                 Icon(.grid)
             }
@@ -272,36 +271,44 @@ struct AlertPreviews: PreviewProvider {
     static var secondaryButtonOnly: some View {
         VStack(spacing: .medium) {
             Alert(title, description: description, icon: .informationCircle) {
-                Button("Primary") {}
+                Button("Secondary") {}
+                    .buttonPriority(.secondary)
             }
             Alert(description: description, icon: .informationCircle) {
-                Button("Primary") {}
+                Button("Secondary") {}
+                    .buttonPriority(.secondary)
             }
             Alert(title, description: description) {
-                Button("Primary") {}
+                Button("Secondary") {}
+                    .buttonPriority(.secondary)
             }
             Alert(description: description) {
-                Button("Primary") {}
+                Button("Secondary") {}
+                    .buttonPriority(.secondary)
             }
             Alert( title, icon: .informationCircle) {
-                Button("Primary") {}
+                Button("Secondary") {}
+                    .buttonPriority(.secondary)
             }
             Alert(title) {
-                Button("Primary") {}
+                Button("Secondary") {}
+                    .buttonPriority(.secondary)
             }
             Alert(icon: .informationCircle) {
-                Button("Primary") {}
+                Button("Secondary") {}
+                    .buttonPriority(.secondary)
             }
             Alert {
-                Button("Primary") {}
+                Button("Secondary") {}
+                    .buttonPriority(.secondary)
             }
             Alert("Intrinsic width") {
-                Button("Primary") {}
+                Button("Secondary") {}
+                    .buttonPriority(.secondary)
             }
             .idealSize(horizontal: true, vertical: false)
         }
         .status(.warning)
-        .buttonPriority(.secondary)
         .previewDisplayName()
     }
     
@@ -314,6 +321,8 @@ struct AlertPreviews: PreviewProvider {
             }
             Alert {
                 contentPlaceholder
+            } title: {
+                EmptyView()
             }
             Alert(title, icon: .informationCircle)
             Alert(icon: .informationCircle)

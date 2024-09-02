@@ -1,11 +1,15 @@
 import SwiftUI
 
-public extension Bundle {
+extension Bundle {
     
     func localized(locale: Locale) -> Bundle {
-        let bundlePath = path(forResource: locale.identifier, ofType: "lproj") 
+        let identifier = locale.identifier.isEmpty 
+            ? Locale.preferredLanguages.first ?? Locale.current.identifier  
+            : locale.identifier
+        
+        let bundlePath = path(forResource: identifier, ofType: "lproj") 
             ?? path(
-                forResource: locale.identifier.split(separator: "_").map(String.init).first ?? locale.identifier, 
+                forResource: identifier.split(separator: "_").map(String.init).first ?? identifier, 
                 ofType: "lproj"
             )
         return (bundlePath.map(Bundle.init(path:)) ?? self) ?? self
@@ -16,10 +20,12 @@ public extension LocalizedStringKey {
 
     private typealias FormattedVarArgs = (CVarArg, Formatter?)
     
+    /// The localized value of this `LocalizedStringKey` using reflection.
     var localized: String? {
         localized()
     }
     
+    /// The key of this `LocalizedStringKey` using reflection.
     var key: String? {
         Mirror(reflecting: self).descendant("key") as? String
     }

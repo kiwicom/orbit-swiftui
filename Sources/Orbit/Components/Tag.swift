@@ -30,17 +30,17 @@ import SwiftUI
 /// When the provided content is empty, the component results in `EmptyView` so that it does not take up any space in the layout.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/components/tag/)
-public struct Tag<Icon: View>: View, PotentiallyEmptyView {
+public struct Tag<Label: View, Icon: View>: View, PotentiallyEmptyView {
 
     @Environment(\.idealSize) private var idealSize
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
 
-    private let label: String
-    @Binding private var isSelected: Bool
     private let isFocused: Bool
     private let isRemovable: Bool
-    @ViewBuilder private let icon: Icon
+    @Binding private var isSelected: Bool
     private let removeAction: (() -> Void)?
+    @ViewBuilder private let label: Label
+    @ViewBuilder private let icon: Icon
 
     public var body: some View {
         if isEmpty == false {
@@ -58,9 +58,10 @@ public struct Tag<Icon: View>: View, PotentiallyEmptyView {
                     
                     HStack(spacing: 6) {
                         icon
+                            .iconSize(textSize: .normal)
                             .font(.system(size: Text.Size.normal.value))
                         
-                        Text(label)
+                        label
                     }
                     .fixedSize(horizontal: true, vertical: false)
                     
@@ -84,48 +85,71 @@ public struct Tag<Icon: View>: View, PotentiallyEmptyView {
     var isEmpty: Bool {
         label.isEmpty && icon.isEmpty
     }
-}
-
-// MARK: - Inits
-public extension Tag {
-
-    /// Creates Orbit ``Tag`` component with custom leading icon.
-    init(
-        _ label: String = "",
+    
+    /// Creates Orbit ``Tag`` component with custom content.
+    public init(
         isFocused: Bool = true,
         isSelected: Binding<Bool>,
         isRemovable: Bool = false,
-        @ViewBuilder icon: () -> Icon,
-        removeAction: (() -> Void)? = nil
+        removeAction: (() -> Void)? = nil,
+        @ViewBuilder label: () -> Label,
+        @ViewBuilder icon: () -> Icon = { EmptyView() }
     ) {
-        self.label = label
         self.isFocused = isFocused
         self._isSelected = isSelected
         self.isRemovable = isRemovable
-        self.icon = icon()
         self.removeAction = removeAction
+        self.label = label()
+        self.icon = icon()
     }
+}
+
+// MARK: - Convenience Inits
+public extension Tag where Label == Text, Icon == Orbit.Icon {
 
     /// Creates Orbit ``Tag`` component.
+    @_disfavoredOverload
     init(
-        _ label: String = "",
+        _ label: some StringProtocol,
         icon: Icon.Symbol? = nil,
         isFocused: Bool = true,
         isSelected: Binding<Bool>,
         isRemovable: Bool = false,
         removeAction: (() -> Void)? = nil
-    ) where Icon == Orbit.Icon {
+    ) {
         self.init(
-            label,
             isFocused: isFocused,
             isSelected: isSelected,
             isRemovable: isRemovable,
-            icon: {
-                Icon(icon)
-                    .iconSize(textSize: .normal)
-            },
             removeAction: removeAction
-        )
+        ) {
+            Text(label)
+        } icon: {
+            Icon(icon)
+        }
+    }
+    
+    /// Creates Orbit ``Tag`` component with localizable label.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ label: LocalizedStringKey,
+        icon: Icon.Symbol? = nil,
+        isFocused: Bool = true,
+        isSelected: Binding<Bool>,
+        tableName: String? = nil,
+        bundle: Bundle? = nil,
+        comment: StaticString? = nil,
+        removeAction: (() -> Void)? = nil
+    ) {
+        self.init(
+            isFocused: isFocused,
+            isSelected: isSelected,
+            removeAction: removeAction
+        ) {
+            Text(label, tableName: tableName, bundle: bundle)
+        } icon: {
+            Icon(icon)
+        }
     }
 }
 
@@ -177,7 +201,7 @@ struct TagPreviews: PreviewProvider {
                     Tag(label, icon: .sort, isSelected: isSelected, isRemovable: true, removeAction: {})
                 }
                 StateWrapper(false) { isSelected in
-                    Tag(icon: .notificationAdd, isFocused: false, isSelected: isSelected)
+                    Tag("", icon: .notificationAdd, isFocused: false, isSelected: isSelected)
                 }
             }
         }
@@ -190,7 +214,7 @@ struct TagPreviews: PreviewProvider {
             Group {
                 Tag("Tag", isFocused: false, isSelected: .constant(false))
                 Tag("Tag", icon: .grid, isFocused: false, isSelected: .constant(false))
-                Tag(icon: .grid, isFocused: false, isSelected: .constant(false))
+                Tag("", icon: .grid, isFocused: false, isSelected: .constant(false))
             }
             .measured()
         }

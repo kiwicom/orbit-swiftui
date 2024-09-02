@@ -121,7 +121,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView, CustomSt
     public var body: some View {
         if isEmpty == false {
             text(environment: textRepresentableEnvironment, showTextLinks: false)
-                .lineSpacing(lineSpacingAdjusted)
+                .lineSpacing(lineSpacingAdjusted(environment: textRepresentableEnvironment))
                 .overlay(copyableText)
                 // If the text contains links, the TextLink overlay takes accessibility priority
                 .accessibility(hidden: content(textRepresentableEnvironment).containsTextLinks)
@@ -142,6 +142,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView, CustomSt
             CopyableText(
                 attributedString(environment: textRepresentableEnvironment).string
             )
+            .accessibility(hidden: true)
         }
     }
     
@@ -316,7 +317,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView, CustomSt
             alignment: multilineTextAlignment,
             fontSize: environment.scaledSize(size),
             fontWeight: environment.resolvedFontWeight(fontWeight, isBold: isBold),
-            lineSpacing: lineSpacingAdjusted,
+            lineSpacing: lineSpacingAdjusted(environment: environment),
             kerning: kerning,
             strikethrough: strikethrough ?? false,
             color: .clear,
@@ -333,7 +334,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView, CustomSt
             alignment: multilineTextAlignment,
             fontSize: environment.scaledSize(size),
             fontWeight: environment.resolvedFontWeight(fontWeight, isBold: isBold),
-            lineSpacing: lineSpacingAdjusted,
+            lineSpacing: lineSpacingAdjusted(environment: environment),
             kerning: kerning,
             color: environment.resolvedColor(color).uiColor,
             linkColor: showTextLinks ? nil : .clear,
@@ -341,8 +342,8 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView, CustomSt
         )
     }
 
-    private var lineSpacingAdjusted: CGFloat {
-        textRepresentableEnvironment.lineSpacingAdjusted(lineSpacing, lineHeight: lineHeight, size: size)
+    private func lineSpacingAdjusted(environment: TextRepresentableEnvironment) -> CGFloat {
+        environment.lineSpacingAdjusted(lineSpacing, lineHeight: lineHeight, size: size)
     }
     
     private init(localization: TextLocalization?, description: String) {
