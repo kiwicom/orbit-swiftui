@@ -127,7 +127,7 @@ public extension Heading {
     /// Creates Orbit ``Heading`` component.
     @_disfavoredOverload
     init(
-        _ content: some StringProtocol = String(""),
+        _ content: some StringProtocol,
         style: Style
     ) {
         self.init(Text(content), style: style)

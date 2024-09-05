@@ -101,9 +101,9 @@ public extension TimelineItem where Label == Heading, Sublabel == Text, Descript
     /// Creates Orbit ``TimelineItem`` component with localizable texts.
     @_semantics("swiftui.init_with_localization")
     init(
-        _ label: LocalizedStringKey,
-        sublabel: LocalizedStringKey,
-        description: LocalizedStringKey,
+        _ label: LocalizedStringKey = "",
+        sublabel: LocalizedStringKey = "",
+        description: LocalizedStringKey = "",
         type: TimelineItemType,
         tableName: String? = nil,
         bundle: Bundle? = nil,

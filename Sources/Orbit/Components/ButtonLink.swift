@@ -125,9 +125,9 @@ public extension ButtonLink where Label == Text, LeadingIcon == Orbit.Icon, Trai
     @_semantics("swiftui.init_with_localization")
     init(
         _ label: LocalizedStringKey,
-        type: ButtonLinkType = .primary,
         icon: Icon.Symbol? = nil,
         disclosureIcon: Icon.Symbol? = nil,
+        type: ButtonLinkType = .primary,
         tableName: String? = nil,
         bundle: Bundle? = nil,
         comment: StaticString? = nil,
@@ -173,7 +173,7 @@ struct ButtonLinkPreviews: PreviewProvider {
         VStack(alignment: .leading, spacing: 0) {
             ButtonLink("ButtonLink", icon: .grid, action: {})
                 .buttonSize(.regular)
-            ButtonLink("ButtonLink", type: .critical, icon: .grid, disclosureIcon: .grid, action: {})
+            ButtonLink("ButtonLink", icon: .grid, disclosureIcon: .grid, type: .critical, action: {})
                 .buttonSize(.regular)
             ButtonLink("ButtonLink", action: {})
             
@@ -225,8 +225,8 @@ struct ButtonLinkPreviews: PreviewProvider {
                 ButtonLink("ButtonLink Critical", type: .critical, action: {})
             }
             VStack(alignment: .leading, spacing: .large) {
-                ButtonLink("ButtonLink Primary", type: .primary, icon: .accommodation, action: {})
-                ButtonLink("ButtonLink Critical", type: .critical, icon: .alertCircle, action: {})
+                ButtonLink("ButtonLink Primary", icon: .accommodation, type: .primary, action: {})
+                ButtonLink("ButtonLink Critical", icon: .alertCircle, type: .critical, action: {})
             }
         }
         .buttonSize(.compact)
@@ -236,10 +236,10 @@ struct ButtonLinkPreviews: PreviewProvider {
     
     static var statuses: some View {
         VStack(alignment: .leading, spacing: .large) {
-            ButtonLink("ButtonLink Info", type: .status(.info), icon: .informationCircle, action: {})
-            ButtonLink("ButtonLink Success", type: .status(.success), icon: .checkCircle, action: {})
-            ButtonLink("ButtonLink Warning", type: .status(.warning), icon: .alert, action: {})
-            ButtonLink("ButtonLink Critical", type: .status(.critical), icon: .alertCircle, action: {})
+            ButtonLink("ButtonLink Info", icon: .informationCircle, type: .status(.info) , action: {})
+            ButtonLink("ButtonLink Success", icon: .checkCircle, type: .status(.success), action: {})
+            ButtonLink("ButtonLink Warning", icon: .alert, type: .status(.warning), action: {})
+            ButtonLink("ButtonLink Critical", icon: .alertCircle, type: .status(.critical), action: {})
         }
         .buttonSize(.compact)
         .padding(.medium)

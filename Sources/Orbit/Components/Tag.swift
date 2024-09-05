@@ -110,7 +110,7 @@ public extension Tag where Label == Text, Icon == Orbit.Icon {
     /// Creates Orbit ``Tag`` component.
     @_disfavoredOverload
     init(
-        _ label: some StringProtocol,
+        _ label: some StringProtocol = String(""),
         icon: Icon.Symbol? = nil,
         isFocused: Bool = true,
         isSelected: Binding<Bool>,
@@ -132,7 +132,7 @@ public extension Tag where Label == Text, Icon == Orbit.Icon {
     /// Creates Orbit ``Tag`` component with localizable label.
     @_semantics("swiftui.init_with_localization")
     init(
-        _ label: LocalizedStringKey,
+        _ label: LocalizedStringKey = "",
         icon: Icon.Symbol? = nil,
         isFocused: Bool = true,
         isSelected: Binding<Bool>,

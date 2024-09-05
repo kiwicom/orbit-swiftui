@@ -102,7 +102,7 @@ public extension Alert where Title == Heading, Description == Text, Icon == Orbi
     /// Creates Orbit ``Alert`` component with localizable texts.
     @_semantics("swiftui.init_with_localization")
     init(
-        _ title: LocalizedStringKey,
+        _ title: LocalizedStringKey = "",
         description: LocalizedStringKey = "",
         icon: Icon.Symbol? = nil,
         isSubtle: Bool = false,

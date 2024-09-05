@@ -10,8 +10,8 @@ struct StorybookButtonLink {
                 ButtonLink("ButtonLink Critical", type: .critical, action: {})
             }
             VStack(alignment: .leading, spacing: .large) {
-                ButtonLink("ButtonLink Primary", type: .primary, icon: .accommodation, action: {})
-                ButtonLink("ButtonLink Critical", type: .critical, icon: .alertCircle, action: {})
+                ButtonLink("ButtonLink Primary", icon: .accommodation, type: .primary, action: {})
+                ButtonLink("ButtonLink Critical", icon: .alertCircle, type: .critical, action: {})
             }
         }
         .buttonSize(.compact)
@@ -20,10 +20,10 @@ struct StorybookButtonLink {
 
     static var status: some View {
         VStack(alignment: .leading, spacing: .large) {
-            ButtonLink("ButtonLink Info", type: .status(.info), icon: .informationCircle, action: {})
-            ButtonLink("ButtonLink Success", type: .status(.success), icon: .checkCircle, action: {})
-            ButtonLink("ButtonLink Warning", type: .status(.warning), icon: .alert, action: {})
-            ButtonLink("ButtonLink Critical", type: .status(.critical), icon: .alertCircle, action: {})
+            ButtonLink("ButtonLink Info", icon: .informationCircle, type: .status(.info), action: {})
+            ButtonLink("ButtonLink Success", icon: .checkCircle, type: .status(.success), action: {})
+            ButtonLink("ButtonLink Warning", icon: .alert, type: .status(.warning), action: {})
+            ButtonLink("ButtonLink Critical", icon: .alertCircle, type: .status(.critical), action: {})
         }
         .buttonSize(.compact)
         .previewDisplayName()
