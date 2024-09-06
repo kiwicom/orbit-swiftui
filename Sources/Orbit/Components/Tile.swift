@@ -265,7 +265,7 @@ public enum TileDisclosure: Equatable {
     /// Icon with optional color override.
     case icon(Icon.Symbol, alignment: VerticalAlignment = .center)
     /// ButtonLink indicator.
-    case buttonLink(_ label: String, type: ButtonLinkType = .primary)
+    case buttonLink(_ label: LocalizedStringKey, type: ButtonLinkType = .primary)
 }
 
 // MARK: - Identifiers
