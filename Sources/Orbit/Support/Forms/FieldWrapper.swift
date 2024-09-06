@@ -52,8 +52,29 @@ public struct FieldWrapper<Label: View, Content: View, Footer: View>: View {
 public extension FieldWrapper where Label == Text {
 
     /// Creates Orbit ``FieldWrapper`` around form field content with an additional message content.
+    @_disfavoredOverload
     init(
-        _ label: String,
+        _ label: some StringProtocol = String(""),
+        message: Message? = nil,
+        messageHeight: Binding<CGFloat> = .constant(0),
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder footer: () -> Footer = { EmptyView() }
+    ) {
+        self.init(
+            message: message,
+            messageHeight: messageHeight,
+            content: content,
+            label: {
+                Text(label)
+            },
+            footer: footer
+        )
+    }
+    
+    /// Creates Orbit ``FieldWrapper`` around form field content with an additional message content.
+    @_semantics("swiftui.init_with_localization")
+    init(
+        _ label: LocalizedStringKey = "",
         message: Message? = nil,
         messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder content: () -> Content,
