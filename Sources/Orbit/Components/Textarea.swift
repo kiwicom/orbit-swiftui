@@ -85,6 +85,13 @@ public struct Textarea<Label: View, Prompt: View>: View, TextFieldBuildable {
             isFocused = false
             inputFieldEndEditingAction()
         }
+        .accessibility(children: nil) {
+            label
+        } value: {
+            Text(value)
+        } hint: {
+            prompt
+        }
         .overlay(resolvedPrompt, alignment: .topLeading)
     }
     
@@ -94,6 +101,7 @@ public struct Textarea<Label: View, Prompt: View>: View, TextFieldBuildable {
                 .textColor(isEnabled ? state.placeholderColor : .cloudDarkActive)
                 .padding(.small)
                 .allowsHitTesting(false)
+                .accessibility(hidden: true)
         }
     }
     

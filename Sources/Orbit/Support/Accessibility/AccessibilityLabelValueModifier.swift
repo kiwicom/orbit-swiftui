@@ -5,27 +5,34 @@ struct AccessibilityLabelValueModifier<Label: View, Value: View, Hint: View>: Vi
     @Environment(\.localizationBundle) private var localizationBundle
     @Environment(\.locale) private var locale
     
+    let childBehavior: AccessibilityChildBehavior?
     @ViewBuilder let label: Label
     @ViewBuilder let value: Value
     @ViewBuilder let hint: Hint
     
     func body(content: Content) -> some View {
-        if isLabelAndValueTextual {
-            content
-                .accessibilityElement(children: .ignore)
-                .accessibility(label: textualLabel ?? SwiftUI.Text(""))
-                .accessibility(value: textualValue ?? SwiftUI.Text(""))
-                .accessibility(hint: textualHint ?? SwiftUI.Text(""))
+        if isLabelTextual {
+            if let childBehavior {
+                content
+                    .accessibilityElement(children: childBehavior)
+                    .accessibility(label: textualLabel ?? SwiftUI.Text(""))
+                    .accessibility(value: textualValue ?? SwiftUI.Text(""))
+                    .accessibility(hint: textualHint ?? SwiftUI.Text(""))
+
+            } else {
+                content
+                    .accessibility(label: textualLabel ?? SwiftUI.Text(""))
+                    .accessibility(value: textualValue ?? SwiftUI.Text(""))
+                    .accessibility(hint: textualHint ?? SwiftUI.Text(""))
+            }
         } else {
             content
                 .accessibilityElement(children: .contain)
         }
     }
     
-    private var isLabelAndValueTextual: Bool {
-        textualLabel != nil 
-        && (textualValue != nil || value is EmptyView)
-        && (textualHint != nil || hint is EmptyView)
+    private var isLabelTextual: Bool {
+        textualLabel != nil
     }
     
     private var textualLabel: SwiftUI.Text? {
@@ -44,10 +51,11 @@ struct AccessibilityLabelValueModifier<Label: View, Value: View, Hint: View>: Vi
 extension View {
     
     func accessibility<Label: View, Value: View, Hint: View>(
+        children: AccessibilityChildBehavior? = .ignore,
         @ViewBuilder label: () -> Label, 
         @ViewBuilder value: () -> Value = { EmptyView() },
         @ViewBuilder hint: () -> Hint = { EmptyView() }
     ) -> some View {
-        modifier(AccessibilityLabelValueModifier(label: label, value: value, hint: hint))
+        modifier(AccessibilityLabelValueModifier(childBehavior: children, label: label, value: value, hint: hint))
     }
 }
