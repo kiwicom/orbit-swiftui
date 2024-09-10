@@ -54,6 +54,7 @@ public struct InputField<Label: View, Prompt: View, Prefix: View, Suffix: View>:
     @Environment(\.inputFieldEndEditingAction) private var inputFieldEndEditingAction
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.locale) private var locale
+    @Environment(\.localizationBundle) private var localizationBundle
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.textColor) private var textColor
 
@@ -136,19 +137,19 @@ public struct InputField<Label: View, Prompt: View, Prefix: View, Suffix: View>:
             isFocused = false
             inputFieldEndEditingAction()
         }
-        .overlay(
-            resolvedPrompt, 
-            alignment: .leadingFirstTextBaseline
-        )
-        .accessibility {
+        .accessibility(children: nil) {
             label
         } value: {
             Text(value)
         } hint: {
-            Text(message?.description ?? "")
+            prompt
         }
+        .overlay(
+            resolvedPrompt, 
+            alignment: .leadingFirstTextBaseline
+        )
     }
-
+    
     @ViewBuilder private var secureTextRedactedButton: some View {
         if showSecureTextRedactedButton {
             IconButton(isSecureTextRedacted ? .visibility : .visibilityOff) {
@@ -178,6 +179,7 @@ public struct InputField<Label: View, Prompt: View, Prefix: View, Suffix: View>:
                 .lineLimit(1)
                 .padding(.horizontal, .small)
                 .allowsHitTesting(false)
+                .accessibility(hidden: true)
         }
     }
     

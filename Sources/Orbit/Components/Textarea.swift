@@ -27,6 +27,8 @@ public struct Textarea<Label: View, Prompt: View>: View, TextFieldBuildable {
     @Environment(\.inputFieldBeginEditingAction) private var inputFieldBeginEditingAction
     @Environment(\.inputFieldEndEditingAction) private var inputFieldEndEditingAction
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.locale) private var locale
+    @Environment(\.localizationBundle) private var localizationBundle
     @Environment(\.sizeCategory) private var sizeCategory
 
     @State private var isFocused: Bool = false
@@ -85,6 +87,13 @@ public struct Textarea<Label: View, Prompt: View>: View, TextFieldBuildable {
             isFocused = false
             inputFieldEndEditingAction()
         }
+        .accessibility(children: nil) {
+            label
+        } value: {
+            Text(value)
+        } hint: {
+            prompt
+        }
         .overlay(resolvedPrompt, alignment: .topLeading)
     }
     
@@ -94,6 +103,7 @@ public struct Textarea<Label: View, Prompt: View>: View, TextFieldBuildable {
                 .textColor(isEnabled ? state.placeholderColor : .cloudDarkActive)
                 .padding(.small)
                 .allowsHitTesting(false)
+                .accessibility(hidden: true)
         }
     }
     
