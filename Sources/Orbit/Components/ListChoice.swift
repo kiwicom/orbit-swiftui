@@ -118,7 +118,7 @@ public struct ListChoice<Icon: View, Title: View, Description: View, Header: Vie
             } hint: {
                 description
             }
-            .accessibility(addTraits: accessibilityTraitsToAdd)
+            .accessibility(addTraits: accessibilityTraits)
             .accessibility(.listChoice)
         }
     }
@@ -240,12 +240,12 @@ public struct ListChoice<Icon: View, Title: View, Description: View, Header: Vie
         title.isEmpty && description.isEmpty
     }
     
-    private var accessibilityTraitsToAdd: AccessibilityTraits {
+    private var accessibilityTraits: AccessibilityTraits {
         switch disclosure {
             case .none, .disclosure, .button(.add), .buttonLink, .checkbox(false, _), .radio(false, _), .icon:
-                return []
+                .isButton
             case .button(.remove), .checkbox(true, _), .radio(true, _):
-                return .isSelected
+                [.isButton, .isSelected]
         }
     }
     
