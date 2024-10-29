@@ -6,7 +6,7 @@ import SwiftUI
 /// Can be disabled by ``SwiftUI/View/hapticsDisabled(_:)``. 
 public enum HapticsProvider {
 
-    public enum HapticFeedbackType {
+    public enum HapticFeedbackType: Sendable {
         case selection
         case light(_ intensity: CGFloat = 1.0)
         case medium(_ intensity: CGFloat = 1.0)

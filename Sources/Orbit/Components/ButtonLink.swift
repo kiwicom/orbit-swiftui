@@ -148,7 +148,7 @@ public extension ButtonLink where Label == Text, LeadingIcon == Orbit.Icon, Trai
 // MARK: - Types
 
 /// A predefined type of Orbit ``ButtonLink``.
-public enum ButtonLinkType: Equatable {
+public enum ButtonLinkType: Equatable, Sendable {
     case primary
     case critical
     case status(_ status: Status?)

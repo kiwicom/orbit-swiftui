@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Padding to apply in Orbit `screenLayout` context.
-public enum ScreenLayoutPadding {
+public enum ScreenLayoutPadding: Sendable {
     /// Padding of `medium` size in compact horizontal size and `xxLarge` size in regular horizontal size.
     case `default`
     /// Padding of `medium` size in both compact and regular horizontal size.

@@ -6,6 +6,8 @@ public enum OptionalBindingSource<Value> {
     case state(Value)
 }
 
+extension OptionalBindingSource: Sendable where Value: Sendable {}
+
 /// A view that provides either a binding to its content or an internal state, based on provided ``OptionalBindingSource`` value.
 ///
 /// The binding can either be supplied, in which case it is used directly,

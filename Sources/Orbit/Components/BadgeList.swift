@@ -148,7 +148,7 @@ public extension BadgeList where Icon == Orbit.Icon, Label == Text {
 // MARK: - Types
 
 /// A type of Orbit ``BadgeList``.
-public enum BadgeListType: Equatable, Hashable {
+public enum BadgeListType: Equatable, Hashable, Sendable {
     case neutral
     case status(_ status: Status?)
     // FIXME: Remove and use override modifiers

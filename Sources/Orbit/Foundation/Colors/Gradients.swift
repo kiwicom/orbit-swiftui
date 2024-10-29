@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Predefined Orbit gradient styles.
-public enum Gradient {
+public enum Gradient: Sendable {
     
     case bundleBasic
     case bundleMedium

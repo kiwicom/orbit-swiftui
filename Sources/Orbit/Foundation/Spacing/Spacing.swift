@@ -3,7 +3,7 @@ import SwiftUI
 /// Predefined Orbit spacing to help making interface clear and easy to scan.
 ///
 /// - Note: [Orbit.kiwi documentation](https://orbit.kiwi/foundation/spacing/)
-public enum Spacing: CGFloat {
+public enum Spacing: CGFloat, Sendable {
     /// 2 pts.
     case xxxSmall = 2
     /// 4 pts.

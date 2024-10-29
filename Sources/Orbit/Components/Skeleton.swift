@@ -102,9 +102,9 @@ public struct Skeleton: View {
 extension Skeleton {
     
     /// Orbit ``Skeleton`` shape and size preset.
-    public enum Preset {
-        
-        public enum Atomic {
+    public enum Preset: Sendable {
+
+        public enum Atomic: Sendable {
             case circle
             case rectangle
         }

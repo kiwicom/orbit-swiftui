@@ -141,7 +141,7 @@ public extension Radio where Title == Text, Description == Text {
 // MARK: - Types
 
 /// A state of Orbit ``Radio``.
-public enum RadioState {
+public enum RadioState: Sendable {
     case normal
     case error
 }

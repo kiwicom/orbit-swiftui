@@ -3,7 +3,7 @@ import SwiftUI
 public extension Image {
 
     /// Orbit image asset.
-    enum Asset: String, CaseIterable, AssetNameProviding {
+    enum Asset: String, CaseIterable, AssetNameProviding, Sendable {
 
         case apple
         case facebook

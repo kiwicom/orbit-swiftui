@@ -11,7 +11,7 @@ public extension Font {
     static var fontSizeToLineHeightRatio: CGFloat = 1.3333
     
     /// Default Orbit fonts used for rendering text.
-    static var orbitFonts: [Font.Weight: URL?] = [
+    @MainActor static var orbitFonts: [Font.Weight: URL?] = [
         .ultraLight:    Bundle.orbit.url(forResource: "Circular20-Book", withExtension: "otf"),
         .thin:          Bundle.orbit.url(forResource: "Circular20-Book", withExtension: "otf"),
         .light:         Bundle.orbit.url(forResource: "Circular20-Book", withExtension: "otf"),
@@ -44,7 +44,7 @@ public extension Font {
     }
 
     /// Registers Orbit fonts set in the `Font.orbitFonts` property for use in all Orbit text components.
-    static func registerOrbitFonts() {
+    @MainActor static func registerOrbitFonts() {
         var registeredFonts: [URL: CGFont] = [:]
 
         for case let (weight, url?) in orbitFonts {

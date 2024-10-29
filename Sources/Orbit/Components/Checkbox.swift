@@ -141,7 +141,7 @@ public extension Checkbox where Title == Text, Description == Text {
 // MARK: - Types
 
 /// A state of Orbit ``Checkbox``.
-public enum CheckboxState {
+public enum CheckboxState: Sendable {
     case normal
     case error
 }

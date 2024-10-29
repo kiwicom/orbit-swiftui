@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// The expanding behaviour of compatible Orbit components in a view relative to their ideal size for each axis.
-public struct IdealSizeValue {
+public struct IdealSizeValue: Sendable {
     public var horizontal: Bool?
     public var vertical: Bool?
 }

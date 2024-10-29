@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Orbit informational message used in forms.
-public enum Message: Equatable, Hashable, CustomStringConvertible {
+public enum Message: Equatable, Hashable, CustomStringConvertible, Sendable {
 
     case normal(String, icon: Icon.Symbol? = nil)
     case help(String, icon: Icon.Symbol? = .informationCircle)

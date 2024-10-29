@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Orbit button priority.
-public enum ButtonPriority {
+public enum ButtonPriority: Sendable {
     case primary
     case secondary
 }

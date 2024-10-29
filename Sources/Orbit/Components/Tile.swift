@@ -261,7 +261,8 @@ public extension Tile where Title == Heading, Description == Text, Icon == Orbit
 
 // MARK: - Types
 
-public enum TileDisclosure: Equatable {
+// FIXME: remove @unchecked if `LocalizedStringKey` becomes `Sendable`
+public enum TileDisclosure: Equatable, @unchecked Sendable {
     /// Icon with optional color override.
     case icon(Icon.Symbol, alignment: VerticalAlignment = .center)
     /// ButtonLink indicator.

@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Stores background shapes used for Orbit components that render their own background, such as `Card` or `Tile`.
-public struct BackgroundShape {
+public struct BackgroundShape: Sendable {
     
     public let inactive: any ShapeStyle
     public let active: any ShapeStyle
