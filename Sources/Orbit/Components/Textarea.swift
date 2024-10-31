@@ -35,7 +35,6 @@ public struct Textarea<Label: View, Prompt: View>: View, TextFieldBuildable {
     private let state: InputState
 
     private let message: Message?
-    @Binding private var messageHeight: CGFloat
     @ViewBuilder private let label: Label
     @ViewBuilder private let prompt: Prompt
 
@@ -48,7 +47,7 @@ public struct Textarea<Label: View, Prompt: View>: View, TextFieldBuildable {
     var shouldDeleteBackwardAction: (String) -> Bool = { _ in true }
     
     public var body: some View {
-        FieldWrapper(message: message, messageHeight: $messageHeight) {
+        FieldWrapper(message: message) {
             InputContent(state: state, message: message, isFocused: isFocused) {
                 textView
                     .alignmentGuide(.firstTextBaseline) { dimension in
@@ -109,19 +108,16 @@ public struct Textarea<Label: View, Prompt: View>: View, TextFieldBuildable {
     ///
     /// - Parameters:
     ///   - message: Optional message below the text field.
-    ///   - messageHeight: Binding to the current height of the optional message.
     public init(
         value: Binding<String>,
         state: InputState = .default,
         message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
         @ViewBuilder label: () -> Label,
         @ViewBuilder prompt: () -> Prompt = { EmptyView() }
     ) {
         self._value = value
         self.state = state
         self.message = message
-        self._messageHeight = messageHeight
         self.label = label()
         self.prompt = prompt()
     }
@@ -134,21 +130,18 @@ public extension Textarea where Label == Text, Prompt == Text {
     ///
     /// - Parameters:
     ///   - message: Optional message below the text field.
-    ///   - messageHeight: Binding to the current height of the optional message.
     @_disfavoredOverload
     init(
         _ label: some StringProtocol = String(""),
         value: Binding<String>,
         prompt: some StringProtocol = String(""),
         state: InputState = .default,
-        message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0)
+        message: Message? = nil
     ) {
         self.init(
             value: value,
             state: state,
-            message: message,
-            messageHeight: messageHeight
+            message: message
         ) {
             Text(label)
         } prompt: {
@@ -160,7 +153,6 @@ public extension Textarea where Label == Text, Prompt == Text {
     ///
     /// - Parameters:
     ///   - message: Optional message below the text field.
-    ///   - messageHeight: Binding to the current height of the optional message.
     @_semantics("swiftui.init_with_localization")
     init(
         _ label: LocalizedStringKey = "",
@@ -168,7 +160,6 @@ public extension Textarea where Label == Text, Prompt == Text {
         prompt: LocalizedStringKey = "",
         state: InputState = .default,
         message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
         tableName: String? = nil,
         bundle: Bundle? = nil,
         labelComment: StaticString? = nil
@@ -176,8 +167,7 @@ public extension Textarea where Label == Text, Prompt == Text {
         self.init(
             value: value,
             state: state,
-            message: message,
-            messageHeight: messageHeight
+            message: message
         ) {
             Text(label, tableName: tableName, bundle: bundle)
         } prompt: {

@@ -42,8 +42,6 @@ public struct Select<Label: View, Value: View, Prompt: View, Prefix: View, Suffi
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.isHapticsEnabled) private var isHapticsEnabled
     @Environment(\.textColor) private var textColor
-
-    @Binding private var messageHeight: CGFloat
     
     private let state: InputState
     private let labelStyle: InputLabelStyle
@@ -56,7 +54,7 @@ public struct Select<Label: View, Value: View, Prompt: View, Prefix: View, Suffi
     @ViewBuilder private let suffix: Suffix
 
     public var body: some View {
-        FieldWrapper(message: message, messageHeight: $messageHeight) {
+        FieldWrapper(message: message) {
             SwiftUI.Button {
                 if isHapticsEnabled {
                     HapticsProvider.sendHapticFeedback(.light(0.5))
@@ -143,7 +141,6 @@ public struct Select<Label: View, Value: View, Prompt: View, Prefix: View, Suffi
         state: InputState = .default,
         labelStyle: InputLabelStyle = .default,
         message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
         action: @escaping () -> Void,
         @ViewBuilder label: () -> Label = { EmptyView() },
         @ViewBuilder value: () -> Value = { EmptyView() },
@@ -154,7 +151,6 @@ public struct Select<Label: View, Value: View, Prompt: View, Prefix: View, Suffi
         self.state = state
         self.labelStyle = labelStyle
         self.message = message
-        self._messageHeight = messageHeight
         self.action = action
         self.label = label()
         self.value = value()
@@ -178,14 +174,12 @@ public extension Select where Prefix == Icon, Suffix == Icon, Label == Text, Val
         state: InputState = .default,
         labelStyle: InputLabelStyle = .default,
         message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
         action: @escaping () -> Void
     ) {
         self.init(
             state: state,
             labelStyle: labelStyle,
-            message: message,
-            messageHeight: messageHeight
+            message: message
         ) {
             action()
         } label: {
@@ -213,7 +207,6 @@ public extension Select where Prefix == Icon, Suffix == Icon, Label == Text, Val
         state: InputState = .default,
         labelStyle: InputLabelStyle = .default,
         message: Message? = nil,
-        messageHeight: Binding<CGFloat> = .constant(0),
         tableName: String? = nil,
         bundle: Bundle? = nil,
         labelComment: StaticString? = nil,
@@ -222,8 +215,7 @@ public extension Select where Prefix == Icon, Suffix == Icon, Label == Text, Val
         self.init(
             state: state,
             labelStyle: labelStyle,
-            message: message,
-            messageHeight: messageHeight
+            message: message
         ) {
             action()
         } label: {

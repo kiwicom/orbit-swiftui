@@ -37,6 +37,7 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
     private var state: InputState
     private var leadingPadding: CGFloat
     private var trailingPadding: CGFloat
+    private var keyboardSpacing: CGFloat
 
     // Builder properties (keyboard related)
     var returnKeyType: UIReturnKeyType = .default
@@ -69,6 +70,7 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
 
         uiView.updateIfNeeded(\.insets.left, to: leadingPadding)
         uiView.updateIfNeeded(\.insets.right, to: trailingPadding)
+        uiView.updateIfNeeded(\.keyboardSpacing, to: keyboardSpacing)
         uiView.updateIfNeeded(\.isSecureTextEntry, to: isSecureTextEntry)
 
         // Keyboard related
@@ -175,13 +177,15 @@ public extension TextField {
         isSecureTextEntry: Bool = false,
         state: InputState = .default,
         leadingPadding: CGFloat = 0,
-        trailingPadding: CGFloat = 0
+        trailingPadding: CGFloat = 0,
+        keyboardSpacing: CGFloat = 0
     ) {
         self._value = value
         self.isSecureTextEntry = isSecureTextEntry
         self.state = state
         self.leadingPadding = leadingPadding
         self.trailingPadding = trailingPadding
+        self.keyboardSpacing = keyboardSpacing
     }
 }
 
