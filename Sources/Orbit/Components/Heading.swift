@@ -150,7 +150,7 @@ public extension Heading {
 public extension Heading {
 
     /// Orbit ``Heading`` style that represents the default size and color of a title.
-    enum Style: Equatable {
+    enum Style: Equatable, Sendable {
         /// 28 pts.
         case title1
         /// 22 pts.

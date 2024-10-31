@@ -421,14 +421,14 @@ public extension ChoiceTile where Badge == Orbit.Badge<EmptyView, Text, EmptyVie
 // MARK: - Types
 
 /// Indicator used for Orbit ``ChoiceTile``.
-public enum ChoiceTileIndicator {
+public enum ChoiceTileIndicator: Sendable {
     case radio
     case checkbox
     case `switch`
 }
 
 /// Alignment variant of Orbit ``ChoiceTile``.
-public enum ChoiceTileAlignment {
+public enum ChoiceTileAlignment: Sendable {
     case `default`
     case center
 }

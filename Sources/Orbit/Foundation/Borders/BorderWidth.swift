@@ -2,7 +2,7 @@ import CoreGraphics
 import UIKit
 
 /// Predefiend Orbit border widths.
-public enum BorderWidth {
+public enum BorderWidth: Sendable {
     /// 1 pixel border width.
     public static let hairline: CGFloat = 1.0 / UIScreen.main.scale
     /// 0.5 pt border width.

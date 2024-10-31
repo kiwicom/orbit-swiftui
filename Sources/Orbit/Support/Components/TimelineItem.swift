@@ -122,10 +122,10 @@ public extension TimelineItem where Label == Heading, Sublabel == Text, Descript
 // MARK: - Types
 
 /// Orbit ``TimelineItem`` type.
-public enum TimelineItemType: Equatable {
+public enum TimelineItemType: Equatable, Sendable {
 
     /// Orbit ``TimelineItemType`` status.
-    public enum Status {
+    public enum Status: Sendable {
         case success
         case warning
         case critical
@@ -139,32 +139,30 @@ public enum TimelineItemType: Equatable {
     
     public var icon: Icon.Symbol? {
         switch self {
-            case .past:                  return .checkCircle
-            case .present(.critical):    return .closeCircle
-            case .present(.warning):     return .alertCircle
-            case .present(.success):     return .checkCircle
-            case .present:               return nil
-            case .future:                return nil
+            case .past:               .checkCircle
+            case .present(.critical): .closeCircle
+            case .present(.warning):  .alertCircle
+            case .present(.success):  .checkCircle
+            case .present:            nil
+            case .future:             nil
         }
     }
 
     public var color: Color {
         switch self {
-            case .past:                  return Orbit.Status.success.color
-            case .present(.critical):    return Orbit.Status.critical.color
-            case .present(.warning):     return Orbit.Status.warning.color
-            case .present(.success):     return Orbit.Status.success.color
-            case .present:               return Orbit.Status.success.color
-            case .future:                return .cloudNormalHover
+            case .past:               Orbit.Status.success.color
+            case .present(.critical): Orbit.Status.critical.color
+            case .present(.warning):  Orbit.Status.warning.color
+            case .present(.success):  Orbit.Status.success.color
+            case .present:            Orbit.Status.success.color
+            case .future:             .cloudNormalHover
         }
     }
 
     public var isCurrentStep: Bool {
         switch self {
-            case .present:
-                return true
-            case .past, .future:
-                return false
+            case .present:       true
+            case .past, .future: false
         }
     }
 
@@ -174,10 +172,8 @@ public enum TimelineItemType: Equatable {
 
     public var isLineDashed: Bool {
         switch self {
-            case .future:
-                return true
-            case .past, .present:
-                return false
+            case .future:           true
+            case .past, .present:   false
         }
     }
 }

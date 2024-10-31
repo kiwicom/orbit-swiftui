@@ -23,7 +23,7 @@ source_header = '''
 
 source_template = source_header + '''public extension Icon {{
 
-    enum Symbol: CaseIterable, Equatable {{
+    enum Symbol: CaseIterable, Equatable, Sendable {{
 {cases}
 
         public var value: String {{
@@ -97,8 +97,8 @@ if __name__ == "__main__":
         
         swift_icon_key = dots_to_camel_case(swift_icon_name)
         case_lines.append(f"        /// Orbit `{swift_icon_name}` icon symbol.\n        case {swift_icon_key}")
-        value_lines.append(f"                case .{swift_icon_key}: return \"{swift_value}\"")
-            
+        value_lines.append(f"                case .{swift_icon_key}: \"{swift_value}\"")
+
     updated_file_content = source_template.format(cases = '\n'.join(case_lines), values = '\n'.join(value_lines))
     
     with open(icons_swift_path, "w+") as source_file:

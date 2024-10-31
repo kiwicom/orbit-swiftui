@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Style variant for Orbit input label.
-public enum InputLabelStyle {
+public enum InputLabelStyle: Sendable {
 
     /// Style with label positioned above the input.
     case `default`

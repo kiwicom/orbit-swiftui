@@ -20,7 +20,7 @@ source_header = '''
 
 source_template = source_header + '''public extension CountryFlag {{
 
-    enum CountryCode: String, CaseIterable {{
+    enum CountryCode: String, CaseIterable, Sendable {{
 {cases}
     }}
 }}

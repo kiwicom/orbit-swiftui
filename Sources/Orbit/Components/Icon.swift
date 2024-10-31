@@ -180,7 +180,7 @@ public extension Icon {
 public extension Icon {
 
     /// Preferred Orbit ``Icon`` size in both dimensions. The actual size may differ based on icon content.
-    enum Size: Equatable {
+    enum Size: Equatable, Sendable {
         /// Size 16.
         case small
         /// Size 20.
@@ -210,7 +210,7 @@ public extension Icon {
 // MARK: - Private
 private extension Icon {
 
-    enum Content {
+    enum Content: Sendable {
         case symbol(Symbol)
         case sfSymbol(String)
 

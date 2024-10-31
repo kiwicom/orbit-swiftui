@@ -188,7 +188,7 @@ public extension TextField {
 // MARK: - Types
 
 /// The result of Orbit `inputFieldShouldChangeCharactersAction`.
-public enum InputFieldShouldChangeResult {
+public enum InputFieldShouldChangeResult: Sendable {
     /// Specifies that proposed changes should be accepted.
     case accept
     /// Specifies that proposed changes should not be accepted, making the `InputField` keeping the previous value.

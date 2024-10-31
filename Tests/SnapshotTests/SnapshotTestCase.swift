@@ -3,7 +3,7 @@ import Orbit
 import SwiftUI
 import SnapshotTesting
 
-class SnapshotTestCase: XCTestCase {
+@MainActor class SnapshotTestCase: XCTestCase {
 
     override class func setUp() {
         super.setUp()

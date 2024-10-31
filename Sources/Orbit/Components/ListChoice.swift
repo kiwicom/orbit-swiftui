@@ -333,10 +333,10 @@ public extension ListChoice where Title == Text, Description == Text, Header == 
 // MARK: - Types
 
 /// Disclosure used in Orbit ``ListChoice``.
-public enum ListChoiceDisclosure: Equatable {
+public enum ListChoiceDisclosure: Equatable, Sendable {
 
     /// Orbit ``ListChoiceDisclosure`` button type.
-    public enum ButtonType {
+    public enum ButtonType: Sendable {
         case add
         case remove
     }

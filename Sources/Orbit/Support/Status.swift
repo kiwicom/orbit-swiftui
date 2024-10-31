@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Non-default status of Orbit components.
-public enum Status: Equatable {
+public enum Status: Equatable, Sendable {
     case info
     case success
     case warning
@@ -13,99 +13,99 @@ public extension Status {
     /// Default icon associated with status.
     var icon: Icon.Symbol? {
         switch self {
-            case .info:         return nil
-            case .success:      return .informationCircle
-            case .warning:      return .alert
-            case .critical:     return .alertCircle
+            case .info:     nil
+            case .success:  .informationCircle
+            case .warning:  .alert
+            case .critical: .alertCircle
         }
     }
 
     /// Color associated with status.
     var color: Color {
         switch self {
-            case .info:         return .blueNormal
-            case .success:      return .greenNormal
-            case .warning:      return .orangeNormal
-            case .critical:     return .redNormal
+            case .info:     .blueNormal
+            case .success:  .greenNormal
+            case .warning:  .orangeNormal
+            case .critical: .redNormal
         }
     }
 
     /// Light color associated with status.
     var lightColor: Color {
         switch self {
-            case .info:         return .blueLight
-            case .success:      return .greenLight
-            case .warning:      return .orangeLight
-            case .critical:     return .redLight
+            case .info:     .blueLight
+            case .success:  .greenLight
+            case .warning:  .orangeLight
+            case .critical: .redLight
         }
     }
 
     /// Light hover color associated with status.
     var lightHoverColor: Color {
         switch self {
-            case .info:         return .blueLightHover
-            case .success:      return .greenLightHover
-            case .warning:      return .orangeLightHover
-            case .critical:     return .redLightHover
+            case .info:     .blueLightHover
+            case .success:  .greenLightHover
+            case .warning:  .orangeLightHover
+            case .critical: .redLightHover
         }
     }
 
     /// Dark color associated with status.
     var darkColor: Color {
         switch self {
-            case .info:         return .blueDark
-            case .success:      return .greenDark
-            case .warning:      return .orangeDark
-            case .critical:     return .redDark
+            case .info:     .blueDark
+            case .success:  .greenDark
+            case .warning:  .orangeDark
+            case .critical: .redDark
         }
     }
 
     /// Dark hover color associated with status.
     var darkHoverColor: Color {
         switch self {
-            case .info:         return .blueDarkHover
-            case .success:      return .greenDarkHover
-            case .warning:      return .orangeDarkHover
-            case .critical:     return .redDarkHover
+            case .info:     .blueDarkHover
+            case .success:  .greenDarkHover
+            case .warning:  .orangeDarkHover
+            case .critical: .redDarkHover
         }
     }
 
     /// Active color associated with status.
     var activeColor: Color {
         switch self {
-            case .info:         return .blueNormalActive
-            case .success:      return .greenNormalActive
-            case .warning:      return .orangeNormalActive
-            case .critical:     return .redNormalActive
+            case .info:     .blueNormalActive
+            case .success:  .greenNormalActive
+            case .warning:  .orangeNormalActive
+            case .critical: .redNormalActive
         }
     }
 
     /// Dark active color associated with status.
     var darkActiveColor: Color {
         switch self {
-            case .info:         return .blueDarkActive
-            case .success:      return .greenDarkActive
-            case .warning:      return .orangeDarkActive
-            case .critical:     return .redDarkActive
+            case .info:     .blueDarkActive
+            case .success:  .greenDarkActive
+            case .warning:  .orangeDarkActive
+            case .critical: .redDarkActive
         }
     }
 
     /// Light active color associated with status.
     var lightActiveColor: Color {
         switch self {
-            case .info:         return .blueLightActive
-            case .success:      return .greenLightActive
-            case .warning:      return .orangeLightActive
-            case .critical:     return .redLightActive
+            case .info:     .blueLightActive
+            case .success:  .greenLightActive
+            case .warning:  .orangeLightActive
+            case .critical: .redLightActive
         }
     }
 
     /// The default haptic feedback associated with status.
     var defaultHapticFeedback: HapticsProvider.HapticFeedbackType {
         switch self {
-            case .info, .success:       return .light(0.5)
-            case .warning:              return .notification(.warning)
-            case .critical:             return .notification(.error)
+            case .info, .success: .light(0.5)
+            case .warning:        .notification(.warning)
+            case .critical:       .notification(.error)
         }
     }
 }

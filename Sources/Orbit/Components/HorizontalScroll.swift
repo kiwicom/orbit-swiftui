@@ -374,7 +374,7 @@ public struct HorizontalScroll<Content: View>: View {
 // MARK: - Types
 
 /// Width for all items used in Orbit ``HorizontalScroll``.
-public enum HorizontalScrollItemWidth {
+public enum HorizontalScrollItemWidth: Sendable {
     /// Width ratio calculated from the available container width.
     case ratio(CGFloat = 0.48, maxWidth: CGFloat? = Layout.readableMaxWidth - 270)
     /// Custom fixed width.

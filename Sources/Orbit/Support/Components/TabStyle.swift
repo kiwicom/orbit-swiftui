@@ -3,7 +3,7 @@ import SwiftUI
 /// Orbit ``Tabs`` style applied to the active tab.
 ///
 /// To apply a style, use the `activeTabStyle()` modifier.
-public enum TabStyle: Equatable {
+public enum TabStyle: Equatable, Sendable {
     case `default`
     case underlined(Color)
     case underlinedGradient(Orbit.Gradient)

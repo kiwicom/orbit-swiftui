@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Orbit size used for various button components.
-public enum ButtonSize {
+public enum ButtonSize: Sendable {
     case regular
     case compact
 }

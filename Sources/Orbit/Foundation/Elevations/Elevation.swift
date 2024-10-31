@@ -3,7 +3,7 @@ import SwiftUI
 /// Predefined Orbit elevation that brings content closer to user.
 ///
 /// Elevation levels with higher numbers are usually visually closer to the user.
-public enum Elevation {
+public enum Elevation: Sendable {
     case level1
     case level2
     case level3
@@ -12,7 +12,7 @@ public enum Elevation {
 }
 
 /// A shape to use as a surface on which Orbit `elevation` is applied.
-public enum ElevationShape {
+public enum ElevationShape: Sendable {
     /// Elevation effect shape is based on provided content.
     ///
     /// To improve performance, the elevation can be applied on multiple views at once
