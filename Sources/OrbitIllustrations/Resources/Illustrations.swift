@@ -3,7 +3,7 @@ import Orbit
 
 public extension Illustration {
 
-    enum Asset: String, CaseIterable, AssetNameProviding, Sendable {
+    enum Asset: String, CaseIterable, AssetNameProviding {
         case accommodation
         case airHelp
         case airportShuttle
