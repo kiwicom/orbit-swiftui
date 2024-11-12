@@ -44,7 +44,21 @@ jobs:
   regenerate_snapshots:
     if: ${{ failure() }}
     needs: test
-    uses: ./.github/workflows/regenerate_snapshots.yml
-    secrets:
-      SNAPSHOT_PUSH_TOKEN: ${{ secrets.SNAPSHOT_PUSH_TOKEN }}
-      REF: ${{ github.event.pull_request.head.ref }}
+    strategy:
+      matrix:
+        device: ["iPhone SE (3rd generation)"]
+        os_version: ["17.0"]
+    runs-on: macos-14
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.SNAPSHOT_PUSH_TOKEN }}
+        fetch-depth: 0
+        ref: ${{ github.event.pull_request.head.ref }}
+    - name: Regenerate Snapshots
+      run: |
+        id=$(Automation/get_simulator.py "${{ matrix.device }}" "${{ matrix.os_version }}")
+        set -o pipefail && xcodebuild test -scheme Orbit-Package -destination "platform=iOS Simulator,id=$id,OS=${{ matrix.os_version }}" OTHER_SWIFT_FLAGS="-D XCODE_IS_SNAPSHOTS_RECORDING" | xcpretty
+        git -C Snapshots/ add .
+        git commit -m "Snapshots - ${{ matrix.device }} ${{ matrix.os_version }}" || true
+        git push
