@@ -64,8 +64,10 @@ public struct Icon: View, TextBuildable, PotentiallyEmptyView {
 
     @Environment(\.iconColor) private var iconColor
     @Environment(\.iconSize) private var iconSize
+    @Environment(\.lineSpacing) private var lineSpacing
     @Environment(\.locale) private var locale
     @Environment(\.localizationBundle) private var localizationBundle
+    @Environment(\.multilineTextAlignment) private var multilineTextAlignment
     @Environment(\.textColor) private var textColor
     @Environment(\.textFontWeight) private var textFontWeight
     @Environment(\.textSize) private var textSize
@@ -112,11 +114,13 @@ public struct Icon: View, TextBuildable, PotentiallyEmptyView {
         .init(
             iconColor: iconColor,
             iconSize: iconSize,
+            lineSpacing: lineSpacing,
             locale: locale,
             localizationBundle: localizationBundle,
             textAccentColor: nil,
+            textAlignment: multilineTextAlignment,
             textColor: textColor,
-            textFontWeight: textFontWeight,
+            textFontWeight: textFontWeight, 
             textLineHeight: nil,
             textSize: textSize,
             sizeCategory: sizeCategory

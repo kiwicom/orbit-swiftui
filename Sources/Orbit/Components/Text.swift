@@ -200,9 +200,11 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView, CustomSt
         .init(
             iconColor: nil,
             iconSize: nil,
+            lineSpacing: lineSpacing,
             locale: locale,
             localizationBundle: localizationBundle,
             textAccentColor: textAccentColor,
+            textAlignment: multilineTextAlignment,
             textColor: textColor,
             textFontWeight: textFontWeight,
             textLineHeight: lineHeight,
@@ -331,7 +333,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView, CustomSt
     ) -> NSAttributedString {
         TagAttributedStringBuilder.all.attributedString(
             content(environment),
-            alignment: multilineTextAlignment,
+            alignment: environment.textAlignment ?? .leading,
             fontSize: environment.scaledSize(size),
             fontWeight: environment.resolvedFontWeight(fontWeight, isBold: isBold),
             lineSpacing: lineSpacingAdjusted(environment: environment),
@@ -343,7 +345,7 @@ public struct Text: View, FormattedTextBuildable, PotentiallyEmptyView, CustomSt
     }
 
     private func lineSpacingAdjusted(environment: TextRepresentableEnvironment) -> CGFloat {
-        environment.lineSpacingAdjusted(lineSpacing, lineHeight: lineHeight, size: size)
+        environment.lineSpacingAdjusted(environment.lineSpacing ?? 0, lineHeight: lineHeight, size: size)
     }
     
     private init(localization: TextLocalization?, description: String) {

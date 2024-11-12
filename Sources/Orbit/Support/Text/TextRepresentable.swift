@@ -14,9 +14,11 @@ public struct TextRepresentableEnvironment {
 
     public let iconColor: Color?
     public let iconSize: CGFloat?
+    public let lineSpacing: CGFloat?
     public let locale: Locale
     public let localizationBundle: Bundle
     public let textAccentColor: Color?
+    public let textAlignment: TextAlignment?
     public let textColor: Color?
     public let textFontWeight: Font.Weight?
     public let textLineHeight: CGFloat?
@@ -26,9 +28,11 @@ public struct TextRepresentableEnvironment {
     public init(
         iconColor: Color?,
         iconSize: CGFloat?,
+        lineSpacing: CGFloat?,
         locale: Locale,
         localizationBundle: Bundle,
         textAccentColor: Color?,
+        textAlignment: TextAlignment?,
         textColor: Color?,
         textFontWeight: Font.Weight?,
         textLineHeight: CGFloat?,
@@ -37,9 +41,11 @@ public struct TextRepresentableEnvironment {
     ) {
         self.iconColor = iconColor
         self.iconSize = iconSize
+        self.lineSpacing = lineSpacing
         self.locale = locale
         self.localizationBundle = localizationBundle
         self.textAccentColor = textAccentColor
+        self.textAlignment = textAlignment 
         self.textColor = textColor
         self.textFontWeight = textFontWeight
         self.textLineHeight = textLineHeight
@@ -51,9 +57,11 @@ public struct TextRepresentableEnvironment {
     public init(locale: Locale, localizationBundle: Bundle) {
         self.iconColor = nil
         self.iconSize = nil
+        self.lineSpacing = nil
         self.locale = locale
         self.localizationBundle = localizationBundle
         self.textAccentColor = nil
+        self.textAlignment = nil
         self.textColor = nil
         self.textFontWeight = nil
         self.textLineHeight = nil
