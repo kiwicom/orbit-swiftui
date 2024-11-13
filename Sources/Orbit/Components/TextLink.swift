@@ -40,7 +40,7 @@ public struct TextLink: UIViewRepresentable {
     private let content: NSAttributedString
     
     private func resolvedLinkColor(in environment: EnvironmentValues) -> UIColor {
-        if #available(iOS 14, *), environment.redactionReasons.isEmpty == false {
+        if #available(iOS 14, *), environment.redactionReasons.contains(.placeholder) {
             return .clear
         }
 

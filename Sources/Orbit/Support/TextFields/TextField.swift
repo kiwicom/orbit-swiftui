@@ -150,7 +150,7 @@ public struct TextField: UIViewRepresentable, TextFieldBuildable {
     }
 
     private func resolvedTextColor(in environment: EnvironmentValues) -> UIColor {
-        if #available(iOS 14, *), environment.redactionReasons.isEmpty == false {
+        if #available(iOS 14, *), environment.redactionReasons.contains(.placeholder) {
             return .clear
         }
 
