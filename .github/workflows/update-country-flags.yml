@@ -16,9 +16,7 @@ jobs:
       - name: Regenerate flags accessors
         run: |
             Automation/update_country_flags.py Sources/Orbit/Foundation/CountryFlags
-      - name: upload
+      - name: Upload
         run: |
-            git config --global user.name "Mobile Automation"
-            git config --global user.email "mobile.automation@kiwi.com"
-            git commit -am "Updated country flags enum."
+            git commit -am "Updated country flags enum." || true
             git push
