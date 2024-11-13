@@ -20,6 +20,7 @@ public struct FieldMessage: View {
                 }
 
                 Text(message.description)
+                    .accessibility(.fieldMessage)
             }
             .iconColor(nil)
             .textColor(message.color)
@@ -33,6 +34,11 @@ public struct FieldMessage: View {
         self.message = message
         self.spacing = spacing
     }
+}
+
+// MARK: - Identifiers
+public extension AccessibilityID {
+    static let fieldMessage = Self(rawValue: "orbit.field.message")
 }
 
 // MARK: - Previews

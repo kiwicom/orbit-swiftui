@@ -11,7 +11,7 @@ struct AccessibilityLabelValueModifier<Label: View, Value: View, Hint: View>: Vi
     @ViewBuilder let hint: Hint
     
     func body(content: Content) -> some View {
-        if isLabelTextual {
+        if isLabelOrValueTextual {
             if let childBehavior {
                 content
                     .accessibilityElement(children: childBehavior)
@@ -31,8 +31,8 @@ struct AccessibilityLabelValueModifier<Label: View, Value: View, Hint: View>: Vi
         }
     }
     
-    private var isLabelTextual: Bool {
-        textualLabel != nil
+    private var isLabelOrValueTextual: Bool {
+        textualLabel != nil || textualValue != nil
     }
     
     private var textualLabel: SwiftUI.Text? {
