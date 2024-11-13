@@ -90,7 +90,7 @@ public struct Select<Label: View, Value: View, Prompt: View, Prefix: View, Suffi
         } value: {
             value
         } hint: {
-            Text(messageDescription)
+            SwiftUI.Text(messageDescription)
         }
         .accessibility(addTraits: .isButton)
         .accessibility(.select)
