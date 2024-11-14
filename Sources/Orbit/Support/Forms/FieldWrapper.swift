@@ -14,9 +14,6 @@ public struct FieldWrapper<Label: View, Content: View, Footer: View>: View {
         VStack(alignment: .leading, spacing: 0) {
             label
                 .textFontWeight(.medium)
-                // Component should expose label as part of content
-                .accessibility(hidden: true)
-                .accessibility(removeTraits: .isStaticText)
                 .padding(.bottom, .xxSmall)
 
             content

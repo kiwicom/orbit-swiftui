@@ -497,9 +497,7 @@ enum TextLocalization {
 extension Text: TextRepresentable {
 
     public func text(environment: TextRepresentableEnvironment) -> SwiftUI.Text? {
-        isEmpty
-            ? nil
-            : text(environment: environment, showTextLinks: true)
+        text(environment: environment, showTextLinks: true)
     }
 }
 

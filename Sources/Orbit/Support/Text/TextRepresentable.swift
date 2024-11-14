@@ -270,6 +270,7 @@ extension View {
     func text(locale: Locale, localizationBundle: Bundle) -> SwiftUI.Text? {
         switch self {
             case let text as SwiftUI.Text:          text
+            case let value as SelectValue:          value.value.map(SwiftUI.Text.init)
             case let text as TextRepresentable:     text.text(environment: .init(locale: locale, localizationBundle: localizationBundle))
             default:                                nil
         }

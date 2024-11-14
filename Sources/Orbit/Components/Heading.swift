@@ -202,9 +202,7 @@ public extension Heading {
 extension Heading: TextRepresentable {
 
     public func text(environment: TextRepresentableEnvironment) -> SwiftUI.Text? {
-        content.isEmpty
-            ? nil
-            : textContent.text(environment: environment)
+        textContent.text(environment: environment)
     }
 }
 
