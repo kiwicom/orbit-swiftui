@@ -148,10 +148,6 @@ public struct InputField<Label: View, Prompt: View, Prefix: View, Suffix: View>:
         } hint: {
             prompt
         }
-        .overlay(
-            resolvedPrompt, 
-            alignment: .leadingFirstTextBaseline
-        )
     }
     
     @ViewBuilder private var secureTextRedactedButton: some View {
