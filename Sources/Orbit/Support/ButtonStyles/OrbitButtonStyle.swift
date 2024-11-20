@@ -33,44 +33,47 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
     
     private var background: Color {
         switch type {
-            case .primary:                      return .productNormal
-            case .primarySubtle:                return .productLight
-            case .secondary:                    return .cloudNormal
-            case .critical:                     return .redNormal
-            case .criticalSubtle:               return .redLight
-            case .status(let status, false):    return (status ?? self.status)?.color ?? .productNormal
-            case .status(let status, true):     return (status ?? self.status)?.lightHoverColor ?? .productLight
+            case .primary:                      .productNormal
+            case .primarySubtle:                .productLight
+            case .secondary:                    .cloudNormal
+            case .critical:                     .redNormal
+            case .criticalSubtle:               .redLight
+            case .prominent:                    .inkDark
+            case .status(let status, false):    (status ?? self.status)?.color ?? .productNormal
+            case .status(let status, true):     (status ?? self.status)?.lightHoverColor ?? .productLight
         }
     }
 
     private var backgroundActive: Color {
         switch type {
-            case .primary:                      return .productNormalActive
-            case .primarySubtle:                return .productLightActive
-            case .secondary:                    return .cloudNormalActive
-            case .critical:                     return .redNormalActive
-            case .criticalSubtle:               return .redLightActive
-            case .status(let status, false):    return (status ?? self.status)?.activeColor ?? .productNormalActive
-            case .status(let status, true):     return (status ?? self.status)?.lightActiveColor ?? .productLightActive
+            case .primary:                      .productNormalActive
+            case .primarySubtle:                .productLightActive
+            case .secondary:                    .cloudNormalActive
+            case .critical:                     .redNormalActive
+            case .criticalSubtle:               .redLightActive
+            case .prominent:                    .inkDarkActive
+            case .status(let status, false):    (status ?? self.status)?.activeColor ?? .productNormalActive
+            case .status(let status, true):     (status ?? self.status)?.lightActiveColor ?? .productLightActive
         }
     }
 
     private var labelColor: Color {
         switch type {
-            case .primary:                      return .whiteNormal
-            case .primarySubtle:                return .productDark
-            case .secondary:                    return .inkDark
-            case .critical:                     return .whiteNormal
-            case .criticalSubtle:               return .redDark
-            case .status(_, false):             return .whiteNormal
-            case .status(let status, true):     return (status ?? self.status)?.darkHoverColor ?? .whiteNormal
+            case .primary:                      .whiteNormal
+            case .primarySubtle:                .productDark
+            case .secondary:                    .inkDark
+            case .critical:                     .whiteNormal
+            case .criticalSubtle:               .redDark
+            case .prominent:                    .whiteNormal
+            case .status(_, false):             .whiteNormal
+            case .status(let status, true):     (status ?? self.status)?.darkHoverColor ?? .whiteNormal
         }
     }
 
     private var resolvedStatus: Status {
         switch type {
-            case .status(let status, _):    return status ?? self.status ?? .info
-            default:                        return .info
+            case .status(let status, _):        status ?? self.status ?? .info
+            default:                            .info
         }
     }
 
@@ -80,24 +83,24 @@ public struct OrbitButtonStyle<LeadingIcon: View, TrailingIcon: View>: Primitive
 
     private var hapticFeedback: HapticsProvider.HapticFeedbackType {
         switch type {
-            case .primary:                                  return .light(1)
-            case .primarySubtle, .secondary:                return .light(0.5)
-            case .critical, .criticalSubtle:                return .notification(.error)
-            case .status:                                   return resolvedStatus.defaultHapticFeedback
+            case .primary, .prominent:          .light(1)
+            case .primarySubtle, .secondary:    .light(0.5)
+            case .critical, .criticalSubtle:    .notification(.error)
+            case .status:                       resolvedStatus.defaultHapticFeedback
         }
     }
 
     private var textSize: Text.Size {
         switch resolvedButtonSize {
-            case .regular:      return .normal
-            case .compact:      return .small
+            case .regular:                      .normal
+            case .compact:                      .small
         }
     }
 
     private var padding: CGFloat {
         switch resolvedButtonSize {
-            case .regular:      return .small   // = 44 height @ normal size
-            case .compact:      return .xSmall  // = 32 height @ normal size
+            case .regular:                      .small   // = 44 height @ normal size
+            case .compact:                      .xSmall  // = 32 height @ normal size
         }
     }
     
