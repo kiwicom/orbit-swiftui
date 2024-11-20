@@ -10,6 +10,7 @@ struct StorybookButton {
             buttons(.secondary)
             buttons(.critical)
             buttons(.criticalSubtle)
+            buttons(.prominent)
         }
         .previewDisplayName()
     }

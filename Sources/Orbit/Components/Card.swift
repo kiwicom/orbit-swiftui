@@ -132,6 +132,9 @@ public struct Card<Title: View, Description: View, Content: View, Action: View>:
     @ViewBuilder private var topTrailingAction: some View {
         action
             .buttonSize(.compact)
+            // Remove any text or background overrides
+            .environment(\.backgroundShape, nil)
+            .textColor(nil)
             // Prevent the default ButtonLink from vertically expanding the header
             .padding(.vertical, -.xSmall)
             .accessibility(.cardAction)

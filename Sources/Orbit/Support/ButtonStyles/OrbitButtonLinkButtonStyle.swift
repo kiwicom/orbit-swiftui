@@ -38,9 +38,10 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
 
     private var backgroundActive: Color {
         switch type {
-            case .primary:                      return .productLightActive
-            case .critical:                     return .redLightActive
-            case .status(let status):           return (status ?? self.status)?.lightActiveColor ?? .productLightActive
+            case .primary:                      .productLightActive
+            case .critical:                     .redLightActive
+            case .prominent:                    .cloudLightActive
+            case .status(let status):           (status ?? self.status)?.lightActiveColor ?? .productLightActive
         }
     }
 
@@ -56,60 +57,62 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
 
     private var labelColor: Color {
         switch type {
-            case .primary:                      return .productNormal
-            case .critical:                     return .redNormal
-            case .status(let status):           return (status ?? self.status)?.color ?? .productNormal
+            case .primary:                      .productNormal
+            case .critical:                     .redNormal
+            case .prominent:                    .inkDark
+            case .status(let status):           (status ?? self.status)?.color ?? .productNormal
         }
     }
 
     private var textActiveColor: Color {
         switch type {
-            case .primary:                      return .productDarkActive
-            case .critical:                     return .redDarkActive
-            case .status(let status):           return (status ?? self.status)?.darkHoverColor ?? .productDarkActive
+            case .primary:                      .productDarkActive
+            case .critical:                     .redDarkActive
+            case .prominent:                    .inkDarkActive
+            case .status(let status):           (status ?? self.status)?.darkHoverColor ?? .productDarkActive
         }
     }
 
     private var resolvedStatus: Status {
         switch type {
-            case .status(let status):   return status ?? self.status ?? .info
-            default:                    return .info
+            case .status(let status):           status ?? self.status ?? .info
+            default:                            .info
         }
     }
 
     private var hapticFeedback: HapticsProvider.HapticFeedbackType {
         switch type {
-            case .primary:  return .light(1)
-            case .critical: return .notification(.error)
-            case .status:   return resolvedStatus.defaultHapticFeedback
+            case .primary, .prominent:          .light(1)
+            case .critical:                     .notification(.error) 
+            case .status:                       resolvedStatus.defaultHapticFeedback
         }
     }
 
     private var horizontalPadding: CGFloat {
         switch resolvedButtonSize {
-            case .regular:  return .small
-            case .compact:  return 0
+            case .regular:                      .small
+            case .compact:                      0
         }
     }
 
     private var verticalPadding: CGFloat {
         switch resolvedButtonSize {
-            case .regular:  return .small   // = 44 height @ normal size
-            case .compact:  return 6        // = 32 height @ normal size
+            case .regular:                      .small   // = 44 height @ normal size
+            case .compact:                      6        // = 32 height @ normal size
         }
     }
 
     private var horizontalBackgroundPadding: CGFloat {
         switch resolvedButtonSize {
-            case .regular:  return 0
-            case .compact:  return .xSmall
+            case .regular:                      0
+            case .compact:                      .xSmall
         }
     }
 
     private var verticalBackgroundPadding: CGFloat {
         switch resolvedButtonSize {
-            case .regular:  return 0
-            case .compact:  return .xxxSmall
+            case .regular:                      0
+            case .compact:                      .xxxSmall
         }
     }
     

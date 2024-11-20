@@ -8,10 +8,12 @@ struct StorybookButtonLink {
             VStack(alignment: .leading, spacing: .large) {
                 ButtonLink("ButtonLink Primary", type: .primary, action: {})
                 ButtonLink("ButtonLink Critical", type: .critical, action: {})
+                ButtonLink("ButtonLink Prominent", type: .prominent, action: {})
             }
             VStack(alignment: .leading, spacing: .large) {
                 ButtonLink("ButtonLink Primary", icon: .accommodation, type: .primary, action: {})
                 ButtonLink("ButtonLink Critical", icon: .alertCircle, type: .critical, action: {})
+                ButtonLink("ButtonLink Prominent", icon: .alertCircle, type: .prominent, action: {})
             }
         }
         .buttonSize(.compact)

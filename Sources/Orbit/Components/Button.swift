@@ -156,6 +156,7 @@ public enum ButtonType {
     case secondary
     case critical
     case criticalSubtle
+    case prominent
     case status(Status?, isSubtle: Bool = false)
 }
 
@@ -307,6 +308,7 @@ struct ButtonPreviews: PreviewProvider {
             buttons(.secondary)
             buttons(.critical)
             buttons(.criticalSubtle)
+            buttons(.prominent)
         }
         .padding(.medium)
     }
