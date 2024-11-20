@@ -3,9 +3,11 @@ import SwiftUI
 /// Button style for Orbit ``ButtonLink`` component.
 public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>: PrimitiveButtonStyle {
 
+    @Environment(\.backgroundShape) private var backgroundShape
     @Environment(\.buttonSize) private var buttonSize
     @Environment(\.idealSize) private var idealSize
     @Environment(\.status) private var status
+    @Environment(\.textColor) private var textColor
 
     private let type: ButtonLinkType
     @ViewBuilder private let icon: LeadingIcon
@@ -28,8 +30,8 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
             disclosureIcon
         }
         .textFontWeight(.medium)
-        .textColor(textColor)
-        .backgroundStyle(.clear, active: backgroundActive)
+        .textColor(textColor ?? labelColor)
+        .backgroundStyle(backgroundShape?.inactive ?? .clear, active: backgroundShape?.active ?? backgroundActive)
         .buttonSize(resolvedButtonSize)
         .idealSize(horizontal: idealSizeHorizontal, vertical: idealSize.vertical)
     }
@@ -52,7 +54,7 @@ public struct OrbitButtonLinkButtonStyle<LeadingIcon: View, TrailingIcon: View>:
             : (resolvedButtonSize == .compact || idealSize.horizontal == true)
     }
 
-    private var textColor: Color {
+    private var labelColor: Color {
         switch type {
             case .primary:                      return .productNormal
             case .critical:                     return .redNormal
