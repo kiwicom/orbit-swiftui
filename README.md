@@ -16,6 +16,13 @@
 
 </div>
 
+## ⚠️ This repository has been archived
+
+As of **7/5/2025**, this repository has been **archived** and is **no longer actively maintained**.
+
+The code remains available for use and reference, but **no new issues, pull requests, or updates will be accepted**.  
+If you are currently using this library, you may continue to do so, but please note that **no further development or bug fixes will be provided**.
+
 ## Orbit Mission
 
 [Orbit](https://orbit.kiwi) aims to bring consistency to our products and processes. 
